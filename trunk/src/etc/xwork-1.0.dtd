@@ -45,7 +45,7 @@
 <!ELEMENT external-ref (#PCDATA)>
 <!ATTLIST external-ref
     name NMTOKEN #REQUIRED
-    required (true|false) "false"
+    required (true|false) "true"
 >
 
 <!ELEMENT global-results (result+)>
