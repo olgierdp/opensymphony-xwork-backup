@@ -137,24 +137,25 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             }
         }
 
-        if (value instanceof String[]) {
-            String[] sa = (String[]) value;
+        if (toType.isAssignableFrom(value.getClass())) {
+            // no need to do anything
+            result = (Collection) value;
+        } else if (value.getClass().isArray()) {
+            Object[] objArray = (Object[]) value;
 
             if (toType == Set.class) {
-                result = new HashSet(sa.length);
+                result = new HashSet(objArray.length);
             } else if (toType == SortedSet.class) {
                 result = new TreeSet();
             } else {
-                result = new XWorkList(memberType, sa.length);
+                result = new XWorkList(memberType, objArray.length);
             }
 
             TypeConverter converter = Ognl.getTypeConverter(context);
 
-            for (int i = 0; i < sa.length; i++) {
-                result.add(converter.convertValue(context, o, member, prop, sa[i], memberType));
+            for (int i = 0; i < objArray.length; i++) {
+                result.add(converter.convertValue(context, o, member, prop, objArray[i], memberType));
             }
-        } else if (toType.isAssignableFrom(value.getClass())) {
-            result = (Collection) value;
         } else if (Collection.class.isAssignableFrom(value.getClass())) {
             Collection col = (Collection) value;
 
