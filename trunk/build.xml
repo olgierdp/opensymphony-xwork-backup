@@ -20,13 +20,6 @@
         </fileset>
     </path>
 
-    <path id="clover.classpath">
-        <path refid="cp"/>
-        <fileset dir="lib/build">
-            <include name="clover*.jar"/>
-        </fileset>
-    </path>
-
     <property file="build.properties"/>
 
     <property name="lib" value="lib"/>
@@ -69,9 +62,7 @@
     </target>
 
     <target name="test" depends="format, java">
-        <taskdef resource="clovertasks">
-            <classpath refid="clover.classpath"/>
-        </taskdef>
+        <taskdef resource="clovertasks"/>
         <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
 
         <mkdir dir="${build.clover}"/>
@@ -86,7 +77,7 @@
         </copy>
 
         <mkdir dir="${build.java-test}"/>
-        <javac srcdir="${src.java}" destdir="${build.java-test}" classpathref="clover.classpath" debug="on" compiler="org.apache.tools.ant.taskdefs.CloverCompilerAdapter"/>
+        <javac srcdir="${src.java}" destdir="${build.java-test}" classpathref="cp" debug="on" compiler="org.apache.tools.ant.taskdefs.CloverCompilerAdapter"/>
         <copy filtering="no" todir="${build.java-test}">
             <fileset dir="${src.java}">
                 <exclude name="**/*.java"/>
