@@ -22,6 +22,7 @@ public class Dog {
     Cat hates;
     String name;
     int[] childAges;
+    boolean male;
     int age;
 
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -42,12 +43,28 @@ public class Dog {
         return childAges;
     }
 
+    public void setException(String blah) throws Exception {
+        throw new Exception("This is expected");
+    }
+
+    public String getException() throws Exception {
+        throw new Exception("This is expected");
+    }
+
     public void setHates(Cat hates) {
         this.hates = hates;
     }
 
     public Cat getHates() {
         return hates;
+    }
+
+    public void setMale(boolean male) {
+        this.male = male;
+    }
+
+    public boolean isMale() {
+        return male;
     }
 
     public void setName(String name) {

@@ -33,10 +33,15 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
             try {
                 if (OgnlRuntime.hasSetProperty(ognlContext, o, name)) {
-                    OgnlUtil.setProperty((String) name, value, o, context);
+                    OgnlRuntime.setProperty(ognlContext, o, name, value);
+
+                    return;
+                }
+            } catch (OgnlException e) {
+                if (e.getReason() != null) {
+                    throw new RuntimeException(e.getReason());
                 }
             } catch (IntrospectionException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -50,20 +55,33 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
             return root.cutStack(index.intValue());
         } else if (name instanceof String) {
+            if ("that".equals(name)) {
+                if (root.size() > 0) {
+                    return root.get(0);
+                } else {
+                    return null;
+                }
+            }
+
             for (Iterator iterator = root.iterator(); iterator.hasNext();) {
                 Object o = iterator.next();
 
                 try {
-                    Object value = OgnlRuntime.getProperty(ognlContext, o, name);
+                    if (OgnlRuntime.hasGetProperty(ognlContext, o, name)) {
+                        Object value = OgnlRuntime.getProperty(ognlContext, o, name);
 
-                    //Ognl.getValue(OgnlUtil.compile((String) name), context, o);
-                    if (value != null) {
-                        ognlContext.pushEvaluation(new Evaluation(ognlContext.getCurrentEvaluation().getNode(), o));
+                        //Ognl.getValue(OgnlUtil.compile((String) name), context, o);
+                        if (value != null) {
+                            ognlContext.pushEvaluation(new Evaluation(ognlContext.getCurrentEvaluation().getNode(), o));
 
-                        return value;
+                            return value;
+                        }
                     }
                 } catch (OgnlException e) {
-                    // try the next one
+                    if (e.getReason() != null) {
+                        throw new RuntimeException(e.getReason());
+                    }
+                } catch (IntrospectionException e) {
                 }
             }
 

@@ -57,6 +57,36 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals("Smokey", vs.findValue("hates.name", String.class));
     }
 
+    public void testExceptionThrown() {
+        OgnlValueStack vs = new OgnlValueStack();
+
+        Dog dog1 = new Dog();
+        dog1.setAge(12);
+        dog1.setName("Rover");
+
+        vs.push(dog1);
+
+        try {
+            vs.findValue("exception");
+            fail("An exception was expected");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            vs.setValue("exception", "blah");
+            fail("An exception was expected");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            vs.findValue("this");
+        } catch (Exception e) {
+            fail("an exception was not expected");
+        }
+    }
+
     public void testFooBarAsString() {
         OgnlValueStack vs = new OgnlValueStack();
         Foo foo = new Foo();
@@ -98,6 +128,17 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals("Rover", vs.findValue("[1].name"));
     }
 
+    public void testSettingDogGender() {
+        OgnlValueStack vs = new OgnlValueStack();
+
+        Dog dog = new Dog();
+        vs.push(dog);
+
+        vs.setValue("male", "false");
+
+        assertEquals(false, dog.isMale());
+    }
+
     public void testStatics() {
         OgnlValueStack vs = new OgnlValueStack();
 
@@ -115,6 +156,29 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals(new Integer(BigDecimal.ROUND_HALF_DOWN), vs.findValue("@java.math.BigDecimal@ROUND_HALF_DOWN"));
         assertNull(vs.findValue("@vs3@BLAH"));
         assertNull(vs.findValue("@com.nothing.here.Nothing@BLAH"));
+    }
+
+    public void testThat() {
+        OgnlValueStack vs = new OgnlValueStack();
+
+        Dog dog1 = new Dog();
+        dog1.setAge(12);
+        dog1.setName("Rover");
+
+        Dog dog2 = new Dog();
+        dog2.setAge(1);
+        dog2.setName("Jack");
+        vs.push(dog1);
+        vs.push(dog2);
+
+        assertEquals(dog2, vs.findValue("that"));
+        assertEquals("Jack", vs.findValue("that.name"));
+    }
+
+    public void testThatNull() {
+        OgnlValueStack vs = new OgnlValueStack();
+
+        assertNull(vs.findValue("that"));
     }
 
     public void testTwoDogs() {

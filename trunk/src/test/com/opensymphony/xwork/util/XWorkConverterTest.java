@@ -9,11 +9,7 @@ import junit.framework.TestCase;
 import ognl.Ognl;
 import ognl.OgnlException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -70,6 +66,12 @@ public class XWorkConverterTest extends TestCase {
             }, Double[].class);
         assertNotNull(doubles);
         assertTrue(Arrays.equals(new Double[] {new Double(123), new Double(456)}, doubles));
+
+        Boolean[] booleans = (Boolean[]) converter.convertValue(context, null, null, null, new String[] {
+                "true", "false"
+            }, Boolean[].class);
+        assertNotNull(booleans);
+        assertTrue(Arrays.equals(new Boolean[] {Boolean.TRUE, Boolean.FALSE}, booleans));
     }
 
     public void testStringArrayToPrimitives() throws OgnlException {
@@ -90,18 +92,38 @@ public class XWorkConverterTest extends TestCase {
             }, double[].class);
         assertNotNull(doubles);
         assertTrue(Arrays.equals(new double[] {123, 456}, doubles));
+
+        boolean[] booleans = (boolean[]) converter.convertValue(context, null, null, null, new String[] {
+                "true", "false"
+            }, boolean[].class);
+        assertNotNull(booleans);
+        assertTrue(Arrays.equals(new boolean[] {true, false}, booleans));
+    }
+
+    public void testStringArrayToSet() {
+        HashSet list = new HashSet();
+        list.add("foo");
+        list.add("bar");
+        list.add("baz");
+        assertEquals(list, converter.convertValue(context, null, null, null, new String[] {
+                    "foo", "bar", "bar", "baz"
+                }, Set.class));
     }
 
     public void testStringToPrimitiveWrappers() {
         assertEquals(new Long(123), converter.convertValue(context, null, null, null, "123", Long.class));
         assertEquals(new Integer(123), converter.convertValue(context, null, null, null, "123", Integer.class));
         assertEquals(new Double(123.5), converter.convertValue(context, null, null, null, "123.5", Double.class));
+        assertEquals(new Boolean(false), converter.convertValue(context, null, null, null, "false", Boolean.class));
+        assertEquals(new Boolean(true), converter.convertValue(context, null, null, null, "true", Boolean.class));
     }
 
     public void testStringToPrimitives() {
         assertEquals(new Long(123), converter.convertValue(context, null, null, null, "123", long.class));
         assertEquals(new Integer(123), converter.convertValue(context, null, null, null, "123", int.class));
         assertEquals(new Double(123.5), converter.convertValue(context, null, null, null, "123.5", double.class));
+        assertEquals(new Boolean(false), converter.convertValue(context, null, null, null, "false", boolean.class));
+        assertEquals(new Boolean(true), converter.convertValue(context, null, null, null, "true", boolean.class));
     }
 
     protected void setUp() throws Exception {

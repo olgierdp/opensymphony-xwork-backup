@@ -31,6 +31,14 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
         if (toType == String.class) {
             result = doConvertToString(context, value);
+        } else if (toType == boolean.class) {
+            result = doConvertToBoolean(context, value);
+        } else if (toType == Boolean.class) {
+            result = doConvertToBoolean(context, value);
+        } else if (toType == boolean[].class) {
+            result = doConvertToBoolArray(context, value);
+        } else if (toType == Boolean[].class) {
+            result = doConvertToBooleanArray(context, value);
         } else if (toType == int[].class) {
             result = doConvertToIntArray(context, value);
         } else if (toType == Integer[].class) {
@@ -47,6 +55,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = doConvertToDate(context, value);
         } else if (toType == List.class) {
             result = doConvertToList(context, value);
+        } else if (toType == Set.class) {
+            result = doConvertToSet(context, value);
         } else if (toType == Collection.class) {
             result = doConvertToList(context, value);
         } else if (toType == Class.class) {
@@ -70,6 +80,50 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             } else {
                 result = super.convertValue(context, value, toType);
             }
+        }
+
+        return result;
+    }
+
+    private Object doConvertToBoolArray(Map context, Object value) {
+        boolean[] result = null;
+
+        if (value instanceof String[]) {
+            String[] sa = (String[]) value;
+            boolean[] ba = new boolean[sa.length];
+
+            for (int i = 0; i < sa.length; i++) {
+                ba[i] = ((Boolean) doConvertToBoolean(context, sa[i])).booleanValue();
+            }
+
+            result = ba;
+        }
+
+        return result;
+    }
+
+    private Object doConvertToBoolean(Map context, Object value) {
+        if (value instanceof String) {
+            String bStr = (String) value;
+
+            return Boolean.valueOf(bStr);
+        }
+
+        return null;
+    }
+
+    private Object doConvertToBooleanArray(Map context, Object value) {
+        Boolean[] result = null;
+
+        if (value instanceof String[]) {
+            String[] sa = (String[]) value;
+            Boolean[] ba = new Boolean[sa.length];
+
+            for (int i = 0; i < sa.length; i++) {
+                ba[i] = ((Boolean) doConvertToBoolean(context, sa[i]));
+            }
+
+            result = ba;
         }
 
         return result;
@@ -219,6 +273,22 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return result;
     }
 
+    private Object doConvertToSet(Map context, Object value) {
+        Set result = null;
+
+        if (value instanceof String[]) {
+            String[] sa = (String[]) value;
+            result = new HashSet(sa.length);
+
+            for (int i = 0; i < sa.length; i++) {
+                String s = sa[i];
+                result.add(s);
+            }
+        }
+
+        return result;
+    }
+
     private String doConvertToString(Map context, Object value) {
         String result = null;
 
@@ -237,6 +307,24 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
             for (int i = 0; i < x.length; i++) {
                 intArray.add(new Long(x[i]));
+            }
+
+            result = TextUtils.join(", ", intArray);
+        } else if (value instanceof double[]) {
+            double[] x = (double[]) value;
+            List intArray = new ArrayList(x.length);
+
+            for (int i = 0; i < x.length; i++) {
+                intArray.add(new Double(x[i]));
+            }
+
+            result = TextUtils.join(", ", intArray);
+        } else if (value instanceof boolean[]) {
+            boolean[] x = (boolean[]) value;
+            List intArray = new ArrayList(x.length);
+
+            for (int i = 0; i < x.length; i++) {
+                intArray.add(new Boolean(x[i]));
             }
 
             result = TextUtils.join(", ", intArray);
