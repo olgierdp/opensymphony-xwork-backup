@@ -29,16 +29,21 @@ import java.util.*;
 public class LocalizedTextUtil {
     //~ Static fields/initializers /////////////////////////////////////////////
 
-    private static final List DEFAULT_RESOURCE_BUNDLES = Collections.synchronizedList(new ArrayList());
+    private static List DEFAULT_RESOURCE_BUNDLES = null;
     private static final Log LOG = LogFactory.getLog(LocalizedTextUtil.class);
     private static boolean reloadBundles = false;
     private static Collection misses = new HashSet();
 
     static {
-        DEFAULT_RESOURCE_BUNDLES.add("com/opensymphony/xwork/xwork-messages");
+        clearDefaultResourceBundles();
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
+
+    public static void clearDefaultResourceBundles() {
+        DEFAULT_RESOURCE_BUNDLES = Collections.synchronizedList(new ArrayList());
+        DEFAULT_RESOURCE_BUNDLES.add("com/opensymphony/xwork/xwork-messages");
+    }
 
     public static void setReloadBundles(boolean reloadBundles) {
         LocalizedTextUtil.reloadBundles = reloadBundles;

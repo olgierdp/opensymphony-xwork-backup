@@ -5,14 +5,12 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionInvocation;
+import com.opensymphony.xwork.Unchainable;
 import com.opensymphony.xwork.util.CompoundRoot;
 import com.opensymphony.xwork.util.OgnlUtil;
 import com.opensymphony.xwork.util.OgnlValueStack;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -36,11 +34,13 @@ public class ChainingInterceptor extends AroundInterceptor {
             list.remove(0);
             Collections.reverse(list);
 
+            Map ctxMap = invocation.getInvocationContext().getContextMap();
             Iterator iterator = list.iterator();
-
             while (iterator.hasNext()) {
                 Object o = iterator.next();
-                OgnlUtil.copy(o, invocation.getAction(), invocation.getInvocationContext().getContextMap());
+                if (!(o instanceof Unchainable)) {
+                    OgnlUtil.copy(o, invocation.getAction(), ctxMap);
+                }
             }
         }
     }

@@ -19,7 +19,7 @@ import java.io.ObjectStreamException;
  *
  * @author Jason Carreira <jcarreira@gmail.com>
  */
-public class DefaultTextProvider implements TextProvider, Serializable {
+public class DefaultTextProvider implements TextProvider, Serializable, Unchainable {
 
     public static final DefaultTextProvider INSTANCE = new DefaultTextProvider();
 

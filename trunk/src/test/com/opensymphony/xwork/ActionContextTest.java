@@ -13,8 +13,9 @@ import java.util.Map;
 
 /**
  * ActionContextTest
+ *
  * @author Jason Carreira
- * Created Feb 26, 2003 11:22:50 PM
+ *         Created Feb 26, 2003 11:22:50 PM
  */
 public class ActionContextTest extends TestCase {
     //~ Static fields/initializers /////////////////////////////////////////////
@@ -69,6 +70,6 @@ public class ActionContextTest extends TestCase {
         OgnlValueStack valueStack = context.getValueStack();
         String actionErrorMessage = (String) valueStack.findValue("getText('xwork.error.action.execution')");
         assertNotNull(actionErrorMessage);
-        assertEquals("Error during Action invocation",actionErrorMessage);
+        assertEquals("Error during Action invocation", actionErrorMessage);
     }
 }

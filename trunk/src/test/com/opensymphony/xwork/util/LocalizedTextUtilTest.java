@@ -228,4 +228,10 @@ public class LocalizedTextUtilTest extends TestCase {
         ActionContext.setContext(new ActionContext(stack.getContext()));
         ActionContext.getContext().setLocale(Locale.US);
     }
+
+    protected void tearDown() throws Exception {
+        super.tearDown();
+
+        LocalizedTextUtil.clearDefaultResourceBundles();
+    }
 }
