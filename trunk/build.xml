@@ -15,6 +15,7 @@
     </path>
 
     <property file="build.properties"/>
+    <property file="release.properties"/>
 
     <property name="lib" value="lib"/>
     <property name="lib.core" value="${lib}/core"/>
