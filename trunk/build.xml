@@ -265,20 +265,21 @@
               <include name="build.*"/>
            </fileset>
         </copy>
-        
-        <zip zipfile="${build}/${name}-${version}.zip" basedir="${build.dist}"/>
-    </target>
 
-    <!--
-      - A happy target to allow anthill to kick off a maven build.  As this does a site:deploy, you'll need to specify
-      - the user who should be doing the deploy
-      -
-      - ant -Dmaven.username=build site:deploy
-      -->
-    <target name="site:deploy">
-        <exec executable="maven" failonerror="true">
-            <arg line="-Dmaven.username=${maven.username} site:deploy"/>
-        </exec>
+        <!-- copy changelog and README -->
+        <tstamp/>
+        <copy filtering="on" todir="${build.dist}">
+            <fileset dir=".">
+                <include name="README.html"/>
+                <include name="changes.html"/> 
+            </fileset>
+            <filterset>
+                <filter token="version" value="${version}"/>
+                <filter token="builddate" value="${TODAY}"/>
+            </filterset>
+        </copy>
+
+        <zip zipfile="${build}/${name}-${version}.zip" basedir="${build.dist}"/>
     </target>
 
 </project>
