@@ -17,11 +17,7 @@ import java.io.InputStream;
 
 import java.lang.reflect.Member;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 
 /**
@@ -40,6 +36,7 @@ public class XWorkConverter extends DefaultTypeConverter {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     HashMap defaultMappings = new HashMap();
+    HashSet unknownMappings = new HashSet();
     HashMap mappings = new HashMap();
     HashSet noMapping = new HashSet();
     TypeConverter defaultTypeConverter = new XWorkBasicConverter();
@@ -184,6 +181,10 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     public TypeConverter lookup(String className) {
+        if (unknownMappings.contains(className)) {
+            return null;
+        }
+
         TypeConverter result = (TypeConverter) defaultMappings.get(className);
 
         //Looks for super classes
@@ -200,6 +201,9 @@ public class XWorkConverter extends DefaultTypeConverter {
             if (result != null) {
                 //Register now, the next lookup will be faster
                 registerConverter(className, result);
+            } else {
+                // if it isn't found, never look again (also faster)
+                registerConverterNotFound(className);
             }
         }
 
@@ -210,8 +214,12 @@ public class XWorkConverter extends DefaultTypeConverter {
         return lookup(clazz.getName());
     }
 
-    public void registerConverter(String className, TypeConverter converter) {
+    protected synchronized void registerConverter(String className, TypeConverter converter) {
         defaultMappings.put(className, converter);
+    }
+
+    protected synchronized void registerConverterNotFound(String className) {
+        unknownMappings.add(className);
     }
 
     protected void handleConversionException(Map context, String property, Object value, Object object) {

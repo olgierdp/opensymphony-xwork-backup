@@ -110,11 +110,14 @@ public class TextProviderSupport implements TextProvider {
      * @return     value of named text
      */
     public String getText(String aTextName, String defaultValue, List args) {
+        Object[] argsArray = (args != null ? args.toArray() : null);
         if (clazz != null) {
-            return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), defaultValue, args.toArray());
+            return LocalizedTextUtil.findText(clazz, aTextName, getLocale(),
+                    defaultValue, argsArray);
+        } else {
+            return LocalizedTextUtil.findText(bundle, aTextName, getLocale(),
+                    defaultValue, argsArray);
         }
-
-        return LocalizedTextUtil.findText(bundle, aTextName, getLocale(), defaultValue, args.toArray());
     }
 
     /**
