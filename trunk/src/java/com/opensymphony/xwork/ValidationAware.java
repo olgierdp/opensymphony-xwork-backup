@@ -4,13 +4,15 @@
  */
 package com.opensymphony.xwork;
 
+import java.io.Serializable;
+
 import java.util.Collection;
 import java.util.Map;
-import java.io.Serializable;
 
 
 /**
- * DOCUMENT ME!
+ * ValidationAware classes can accept Action (class level) or field level error messages. Action level messages are kept
+ * in a Collection. Field level error messages are kept in a Map from String field name to a List of field error msgs.
  *
  * @author $author$
  * @version $Revision$
