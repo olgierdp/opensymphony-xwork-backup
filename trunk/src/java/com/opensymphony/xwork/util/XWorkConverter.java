@@ -97,31 +97,16 @@ public class XWorkConverter extends DefaultTypeConverter {
             Class clazz = null;
 
             clazz = target.getClass();
+            Object[] classProp = null;
 
             // this is to handle weird issues with setValue with a different type
             if ((target instanceof CompoundRoot) && (context != null)) {
-                OgnlContext ognlContext = (OgnlContext) context;
-                Evaluation eval = ognlContext.getCurrentEvaluation();
+                classProp = getClassProperty(context);
+            }
 
-                if (eval == null) {
-                    eval = ognlContext.getLastEvaluation();
-                }
-
-                if ((eval != null) && (eval.getLastChild() != null)) {
-                    // since we changed what the source was (tricked Ognl essentially)
-                    if ((eval.getLastChild().getLastChild() != null) && (eval.getLastChild().getLastChild().getSource() != null) && (eval.getLastChild().getLastChild().getSource().getClass() != CompoundRoot.class)) {
-                        clazz = eval.getLastChild().getLastChild().getSource().getClass();
-                    } else {
-                        clazz = eval.getLastChild().getSource().getClass();
-                    }
-
-                    // ugly hack getting the property, but it works
-                    property = eval.getNode().jjtGetChild(eval.getNode().jjtGetNumChildren() - 1).toString();
-
-                    if (property.startsWith("\"") && property.endsWith("\"")) {
-                        property = property.substring(1, property.length() - 1);
-                    }
-                }
+            if (classProp != null) {
+                clazz = (Class) classProp[0];
+                property = (String) classProp[1];
             }
 
             if (!noMapping.contains(clazz)) {
@@ -178,6 +163,38 @@ public class XWorkConverter extends DefaultTypeConverter {
                 return acceptableErrorValue(toClass);
             }
         }
+    }
+
+    private Object[] getClassProperty(Map context) {
+        Object[] classProp = null;
+        OgnlContext ognlContext = (OgnlContext) context;
+        Evaluation eval = ognlContext.getCurrentEvaluation();
+
+        if (eval == null) {
+            eval = ognlContext.getLastEvaluation();
+        }
+
+        if ((eval != null) && (eval.getLastChild() != null)) {
+            classProp = new Object[2];
+
+            // since we changed what the source was (tricked Ognl essentially)
+            if ((eval.getLastChild().getLastChild() != null) && (eval.getLastChild().getLastChild().getSource() != null) && (eval.getLastChild().getLastChild().getSource().getClass() != CompoundRoot.class)) {
+                classProp[0] = eval.getLastChild().getLastChild().getSource().getClass();
+            } else {
+                classProp[0] = eval.getLastChild().getSource().getClass();
+            }
+
+            // ugly hack getting the property, but it works
+            String property = eval.getNode().jjtGetChild(eval.getNode().jjtGetNumChildren() - 1).toString();
+
+            if (property.startsWith("\"") && property.endsWith("\"")) {
+                property = property.substring(1, property.length() - 1);
+            }
+
+            classProp[1] = property;
+        }
+
+        return classProp;
     }
 
     public TypeConverter lookup(String className) {
@@ -268,7 +285,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         return null;
     }
 
-    private String buildConverterFilename(Class clazz) {
+    public static String buildConverterFilename(Class clazz) {
         String className = clazz.getName();
         String resource = className.replace('.', '/') + "-conversion.properties";
 

@@ -4,10 +4,13 @@
  */
 package com.opensymphony.xwork.util;
 
-import ognl.NullHandler;
+import ognl.*;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.io.InputStream;
+
+import com.opensymphony.util.FileManager;
 
 
 /**
@@ -20,6 +23,9 @@ public class InstantiatingNullHandler implements NullHandler {
 
     private Map clazzMap = new HashMap();
     public static final String CREATE_NULL_OBJECTS = "xwork.NullHandler.createNullObjects";
+
+    HashMap mappings = new HashMap();
+    HashSet noMapping = new HashSet();
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -45,8 +51,24 @@ public class InstantiatingNullHandler implements NullHandler {
             return null;
         }
 
-        Map methodMap = getMethodMap(target);
-        Method method = getMethod(methodMap, property.toString(), target);
+        Method method = null;
+        if (target instanceof CompoundRoot) {
+            // sometimes the null object may be at the root, so we need to check all of them
+            CompoundRoot root = (CompoundRoot) target;
+            for (Iterator iterator = root.iterator(); iterator.hasNext();) {
+                Object o = iterator.next();
+                Map methodMap = getMethodMap(o);
+                method = getMethod(methodMap, property.toString(), o);
+
+                if (method != null) {
+                    target = o;
+                    break;
+                }
+            }
+        } else {
+            Map methodMap = getMethodMap(target);
+            method = getMethod(methodMap, property.toString(), target);
+        }
 
         /**
          * if we didn't find any single parameter setters for this method, then there's nothing we can do.
@@ -57,7 +79,7 @@ public class InstantiatingNullHandler implements NullHandler {
 
         try {
             Class clazz = method.getParameterTypes()[0];
-            Object param = createObject(clazz, context);
+            Object param = createObject(context, clazz, target, property.toString());
             method.invoke(target, new Object[]{param});
 
             return param;
@@ -68,9 +90,9 @@ public class InstantiatingNullHandler implements NullHandler {
         return null;
     }
 
-    private Object createObject(Class clazz, Map context) throws InstantiationException, IllegalAccessException {
+    private Object createObject(Map context, Class clazz, Object target, String property) throws InstantiationException, IllegalAccessException {
         if (clazz == Collection.class || clazz == List.class) {
-            return createNewList(context);
+            return createNewList(target, property);
         } else if (clazz == Set.class) {
 
         } else if (clazz == Map.class) {
@@ -80,10 +102,73 @@ public class InstantiatingNullHandler implements NullHandler {
         return clazz.newInstance();
     }
 
-    private XWorkList createNewList(Map context) {
-        Class clazz = null;
+    private XWorkList createNewList(Object target, String property) {
+        Class clazz = getCollectionType(target.getClass(), property);
         return new XWorkList(clazz);
     }
+
+    private Map buildConverterMapping(Class clazz) throws Exception {
+        Map mapping = new HashMap();
+
+        String resource = XWorkConverter.buildConverterFilename(clazz);
+        InputStream is = FileManager.loadFile(resource, clazz);
+
+        if (is != null) {
+            Properties props = new Properties();
+            props.load(is);
+            mapping.putAll(props);
+
+            for (Iterator iterator = mapping.entrySet().iterator();
+                    iterator.hasNext();) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                String propName = (String) entry.getKey();
+                String className = (String) entry.getValue();
+                if (propName.startsWith("Collection_")) {
+                    entry.setValue(Class.forName(className));
+                }
+            }
+
+            mappings.put(clazz, mapping);
+        } else {
+            noMapping.add(clazz);
+        }
+
+        return mapping;
+    }
+
+    private Class getCollectionType(Class clazz, String property) {
+        Class propClass = null;
+        if (!noMapping.contains(clazz)) {
+            try {
+                Map mapping = (Map) mappings.get(clazz);
+
+                if (mapping == null) {
+                    mapping = buildConverterMapping(clazz);
+                } else {
+                    mapping = conditionalReload(clazz, mapping);
+                }
+
+                propClass = (Class) mapping.get("Collection_" + property);
+            } catch (Throwable t) {
+                noMapping.add(clazz);
+            }
+        }
+
+        return propClass;
+    }
+
+    private Map conditionalReload(Class clazz, Map oldValues) throws Exception {
+        Map mapping = oldValues;
+
+        if (FileManager.isReloadingConfigs()) {
+            if (FileManager.fileNeedsReloading(XWorkConverter.buildConverterFilename(clazz))) {
+                mapping = buildConverterMapping(clazz);
+            }
+        }
+
+        return mapping;
+    }
+
 
     /**
      * Attempt to find the setter associated with the provided instance and propertyName.  If we do find it, place that

@@ -27,7 +27,7 @@ public class Foo {
     boolean useful;
     int number;
     long aLong;
-    List bars;
+    List cats;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -103,11 +103,11 @@ public class Foo {
         return useful;
     }
 
-    public List getBars() {
-        return bars;
+    public List getCats() {
+        return cats;
     }
 
-    public void setBars(List bars) {
-        this.bars = bars;
+    public void setCats(List cats) {
+        this.cats = cats;
     }
 }

@@ -97,16 +97,14 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     if ((OgnlRuntime.hasGetProperty(ognlContext, o, name)) || ((o instanceof Map) && ((Map) o).containsKey(name))) {
                         Object value = OgnlRuntime.getProperty(ognlContext, o, name);
 
-                        if (value != null) {
-                            //Ognl.getValue(OgnlUtil.compile((String) name), context, o);
-                            Evaluation currentEvaluation = ognlContext.getCurrentEvaluation();
+                        //Ognl.getValue(OgnlUtil.compile((String) name), context, o);
+                        Evaluation currentEvaluation = ognlContext.getCurrentEvaluation();
 
-                            SimpleNode node = currentEvaluation.getNode();
-                            currentEvaluation.setSource(o);
-                            ognlContext.pushEvaluation(new Evaluation(node, o));
+                        SimpleNode node = currentEvaluation.getNode();
+                        currentEvaluation.setSource(o);
+                        ognlContext.pushEvaluation(new Evaluation(node, o));
 
-                            return value;
-                        }
+                        return value;
                     }
                 } catch (OgnlException e) {
                     if (e.getReason() != null) {
