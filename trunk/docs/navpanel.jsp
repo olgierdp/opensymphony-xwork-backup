@@ -1,7 +1,7 @@
 <p>
 <h3>XWork</h3>
 <a href="/xwork">Home</a><br/>
-<a href="https://xwork.dev.java.net/files/documents/709/5325/xwork-1.0.1.zip">Download</a><br>
+<a href="https://xwork.dev.java.net/files/documents/709/6567/xwork-1.0.2.zip">Download</a><br>
 <a href="/xwork/wikidocs/Documentation.html">Documentation</a> (<a href="/xwork/wikidocs/docs.pdf">PDF</a>)<br>
 <a href="/xwork/api/">API Documentation</a><br>
 </p>
