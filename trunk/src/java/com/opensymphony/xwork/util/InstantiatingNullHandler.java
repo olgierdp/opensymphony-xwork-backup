@@ -4,13 +4,11 @@
  */
 package com.opensymphony.xwork.util;
 
-import com.opensymphony.util.FileManager;
 import com.opensymphony.xwork.ObjectFactory;
 import ognl.NullHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -19,18 +17,18 @@ import java.util.*;
  * Normally does nothing, but if {@link #CREATE_NULL_OBJECTS} is in the action context
  * with a value of true, then this class will attempt to create null objects when Ognl
  * requests null objects be created.
- *
+ * <p/>
  * The following rules are used:
  * <ul>
- *  <li>If the null property is a simple bean with a no-arg constructor, it will simply be
- *      created using ObjectFactory's {@link ObjectFactory#buildBean(java.lang.Class) buildBean} method.</li>
- *  <li>If the property is declared <i>exactly</i> as a {@link Collection} or {@link List}, then this class
- *      will look in the conversion property file (see {@link XWorkConverter}) for an entry
- *      with a key of the form "Collection_[propertyName]". Using the value of this key as
- *      the class type in which the collection will be holding, an {@link XWorkList} will be
- *      created, allowing simple dynamic insertion.</li>
- *  <li>If the property is declared as a {@link Map}, then the same rules are applied for
- *      list, except that an {@link XWorkMap} will be created instead.</li>
+ * <li>If the null property is a simple bean with a no-arg constructor, it will simply be
+ * created using ObjectFactory's {@link ObjectFactory#buildBean(java.lang.Class) buildBean} method.</li>
+ * <li>If the property is declared <i>exactly</i> as a {@link Collection} or {@link List}, then this class
+ * will look in the conversion property file (see {@link XWorkConverter}) for an entry
+ * with a key of the form "Collection_[propertyName]". Using the value of this key as
+ * the class type in which the collection will be holding, an {@link XWorkList} will be
+ * created, allowing simple dynamic insertion.</li>
+ * <li>If the property is declared as a {@link Map}, then the same rules are applied for
+ * list, except that an {@link XWorkMap} will be created instead.</li>
  * </ul>
  *
  * @author Matt Ho
@@ -98,7 +96,7 @@ public class InstantiatingNullHandler implements NullHandler {
         try {
             Class clazz = method.getParameterTypes()[0];
             Object param = createObject(context, clazz, target, property.toString());
-            method.invoke(target, new Object[] {param});
+            method.invoke(target, new Object[]{param});
 
             return param;
         } catch (Exception e) {
@@ -108,26 +106,8 @@ public class InstantiatingNullHandler implements NullHandler {
         return null;
     }
 
-    private Class getCollectionType(Class clazz, String property) {
-        Class propClass = null;
-
-        if (!noMapping.contains(clazz)) {
-            try {
-                Map mapping = (Map) mappings.get(clazz);
-
-                if (mapping == null) {
-                    mapping = buildConverterMapping(clazz);
-                } else {
-                    mapping = conditionalReload(clazz, mapping);
-                }
-
-                propClass = (Class) mapping.get("Collection_" + property);
-            } catch (Throwable t) {
-                noMapping.add(clazz);
-            }
-        }
-
-        return propClass;
+    protected Class getCollectionType(Class clazz, String property) {
+        return (Class) XWorkConverter.getInstance().getConverter(clazz, "Collection_" + property);
     }
 
     /**
@@ -135,7 +115,7 @@ public class InstantiatingNullHandler implements NullHandler {
      * Method into the methodMap keyed by property name
      *
      * @param propertyName the name of the property we're looking up
-     * @param instance of instance of the Class we're attempting to find the setter for
+     * @param instance     of instance of the Class we're attempting to find the setter for
      */
     private Method getMethod(Map methodMap, String propertyName, Object instance) {
         synchronized (methodMap) {
@@ -180,48 +160,6 @@ public class InstantiatingNullHandler implements NullHandler {
 
             return methodMap;
         }
-    }
-
-    private Map buildConverterMapping(Class clazz) throws Exception {
-        Map mapping = new HashMap();
-
-        String resource = XWorkConverter.buildConverterFilename(clazz);
-        InputStream is = FileManager.loadFile(resource, clazz);
-
-        if (is != null) {
-            Properties props = new Properties();
-            props.load(is);
-            mapping.putAll(props);
-
-            for (Iterator iterator = mapping.entrySet().iterator();
-                    iterator.hasNext();) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                String propName = (String) entry.getKey();
-                String className = (String) entry.getValue();
-
-                if (propName.startsWith("Collection_")) {
-                    entry.setValue(Class.forName(className));
-                }
-            }
-
-            mappings.put(clazz, mapping);
-        } else {
-            noMapping.add(clazz);
-        }
-
-        return mapping;
-    }
-
-    private Map conditionalReload(Class clazz, Map oldValues) throws Exception {
-        Map mapping = oldValues;
-
-        if (FileManager.isReloadingConfigs()) {
-            if (FileManager.fileNeedsReloading(XWorkConverter.buildConverterFilename(clazz))) {
-                mapping = buildConverterMapping(clazz);
-            }
-        }
-
-        return mapping;
     }
 
     private Object createObject(Map context, Class clazz, Object target, String property) throws Exception {

@@ -5,19 +5,17 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.util.FileManager;
-
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ObjectFactory;
-
-import ognl.*;
-
+import ognl.DefaultTypeConverter;
+import ognl.Evaluation;
+import ognl.OgnlContext;
+import ognl.TypeConverter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
-
 import java.lang.reflect.Member;
-
 import java.util.*;
 
 
@@ -116,21 +114,7 @@ public class XWorkConverter extends DefaultTypeConverter {
                 property = (String) classProp[1];
             }
 
-            if (!noMapping.contains(clazz)) {
-                try {
-                    Map mapping = (Map) mappings.get(clazz);
-
-                    if (mapping == null) {
-                        mapping = buildConverterMapping(clazz);
-                    } else {
-                        mapping = conditionalReload(clazz, mapping);
-                    }
-
-                    tc = (TypeConverter) mapping.get(property);
-                } catch (Throwable t) {
-                    noMapping.add(clazz);
-                }
-            }
+            tc = (TypeConverter) getConverter(clazz, property);
         }
 
         if (tc == null) {
@@ -172,12 +156,32 @@ public class XWorkConverter extends DefaultTypeConverter {
         }
     }
 
+    protected Object getConverter(Class clazz, String property) {
+        if (!noMapping.contains(clazz)) {
+            try {
+                Map mapping = (Map) mappings.get(clazz);
+
+                if (mapping == null) {
+                    mapping = buildConverterMapping(clazz);
+                } else {
+                    mapping = conditionalReload(clazz, mapping);
+                }
+
+                return mapping.get(property);
+            } catch (Throwable t) {
+                noMapping.add(clazz);
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Looks for a TypeConverter in the default mappings.
      *
      * @param className name of the class the TypeConverter must handle
      * @return a TypeConverter to handle the specified class or null if none can
-     * be found
+     *         be found
      */
     public TypeConverter lookup(String className) {
         if (unknownMappings.contains(className)) {
@@ -214,7 +218,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      *
      * @param clazz the class the TypeConverter must handle
      * @return a TypeConverter to handle the specified class or null if none can
-     * be found
+     *         be found
      */
     public TypeConverter lookup(Class clazz) {
         return lookup(clazz.getName());
@@ -312,7 +316,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      * on a key that already exists, the converter is ignored.
      *
      * @param mapping an existing map to add new converter mappings to
-     * @param clazz class to look for converter mappings for
+     * @param clazz   class to look for converter mappings for
      */
     private void addConverterMapping(Map mapping, Class clazz) {
         try {
@@ -335,7 +339,7 @@ public class XWorkConverter extends DefaultTypeConverter {
                     if (!key.startsWith("Collection_")) {
                         mapping.put(key, createTypeConverter((String) entry.getValue()));
                     } else {
-                        mapping.put(key, entry.getValue());
+                        mapping.put(key, Thread.currentThread().getContextClassLoader().loadClass((String) entry.getValue()));
                     }
                 }
             }
@@ -361,7 +365,7 @@ public class XWorkConverter extends DefaultTypeConverter {
 
         while (!curClazz.equals(Object.class)) {
             // add current class' mappings
-            addConverterMapping(mapping, clazz);
+            addConverterMapping(mapping, curClazz);
 
             // check interfaces' mappings
             Class[] interfaces = curClazz.getInterfaces();
@@ -406,7 +410,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         props.load(is);
 
         for (Iterator iterator = props.entrySet().iterator();
-                iterator.hasNext();) {
+             iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String key = (String) entry.getKey();
 
@@ -424,7 +428,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      *
      * @param clazz the class the TypeConverter must handle
      * @return a TypeConverter to handle the specified class or null if none can
-     * be found
+     *         be found
      */
     private TypeConverter lookupSuper(Class clazz) {
         TypeConverter result = null;

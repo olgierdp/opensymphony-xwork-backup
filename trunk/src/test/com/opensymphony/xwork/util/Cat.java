@@ -4,10 +4,10 @@
  */
 package com.opensymphony.xwork.util;
 
+import java.util.List;
+
 
 /**
- *
- *
  * @author <a href="mailto:plightbo@cisco.com">Pat Lightbody</a>
  * @author $Author$
  * @version $Revision$
@@ -21,6 +21,7 @@ public class Cat {
 
     Foo foo;
     String name;
+    List kittens;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -38,5 +39,13 @@ public class Cat {
 
     public String getName() {
         return name;
+    }
+
+    public List getKittens() {
+        return kittens;
+    }
+
+    public void setKittens(List kittens) {
+        this.kittens = kittens;
     }
 }
