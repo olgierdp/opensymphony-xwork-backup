@@ -13,11 +13,13 @@ import java.util.Map;
 
 
 /**
- * A simple map that when requested a key that it doesn't yet hold will
- * create an empty beans using ObjectFactory's
+ * A simple map that guarantees that retrieving objects will never return null and insertions will
+ * perform type conversion if necessary.  Empty beans will be created for any key that would
+ * normally returned null using ObjectFactory's
  * {@link ObjectFactory#buildBean(java.lang.Class) buildBean} method.
  *
  * @author Patrick Lightbody
+ * @author Mark Woon
  */
 public class XWorkMap extends HashMap {
     //~ Instance fields ////////////////////////////////////////////////////////
