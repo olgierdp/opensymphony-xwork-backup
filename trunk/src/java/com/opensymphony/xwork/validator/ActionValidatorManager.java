@@ -4,27 +4,20 @@
  */
 package com.opensymphony.xwork.validator;
 
-import com.opensymphony.util.FileManager;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import com.opensymphony.util.FileManager;
 
 
 /**
- * ActionValidatorManager
+ * This is the entry point into XWork's rule-based validation framework.  Validation rules are
+ * specified in XML configuration files named "className-contextName-validation.xml" where
+ * className is the name of the class the configuration is for and -contextName is optional
+ * (contextName is an arbitrary key that is used to look up additional validation rules for a
+ * specific context).
  *
  * @author Jason Carreira
  * @author Mark Woon
@@ -46,10 +39,11 @@ public class ActionValidatorManager {
         final String validatorKey = buildValidatorKey(clazz, context);
 
         if (validatorCache.containsKey(validatorKey)) {
-            conditionalReload(clazz, context);
+            if (FileManager.isReloadingConfigs()) {
+                validatorCache.put(validatorKey, buildValidators(clazz, context, true, null));
+            }
         } else {
-            List validators = buildValidators(clazz, context, false);
-            validatorCache.put(validatorKey, validators);
+            validatorCache.put(validatorKey, buildValidators(clazz, context, false, null));
         }
 
         return (List) validatorCache.get(validatorKey);
@@ -181,32 +175,48 @@ public class ActionValidatorManager {
      *  This method will look for the following config files:
      *
      *   Animal
-     *   Animal-concept
+     *   Animal-context
      *   AnimalImpl
      *   AnimalImpl-context
      *   Quadraped
-     *   Quadraped-concept
+     *   Quadraped-context
      *   QuadrapedImpl
      *   QuadrapedImpl-context
      *   Dog
      *   Dog-context
+     *
+     *
+     * @param clazz the Class to look up validators for
+     * @param context the context to use when looking up validators
+     * @param checkFile true if the validation config file should be checked to see if it has been
+     * updated
+     * @param checked the set of previously checked class-contexts, null if none have been checked
      */
-    private static List buildValidators(Class clazz, String context, boolean checkFile) {
+    private static List buildValidators(Class clazz, String context, boolean checkFile, Set checked) {
         List validators = new ArrayList();
 
+        if (checked == null) {
+            checked = new TreeSet();
+        } else if (checked.contains(clazz.getName())) {
+            return validators;
+        }
         if (!clazz.equals(Object.class)) {
-            validators.addAll(buildValidators(clazz.getSuperclass(), context, checkFile));
+            validators.addAll(buildValidators(clazz.getSuperclass(), context, checkFile, checked));
         }
 
         // look for validators for implemented interfaces
         Class[] interfaces = clazz.getInterfaces();
 
         for (int x = 0; x < interfaces.length; x++) {
-            validators.addAll(buildClassValidators(interfaces[x], checkFile));
+            if (checked.contains(interfaces[x].getName())) {
+                continue;
+            }
 
+            validators.addAll(buildClassValidators(interfaces[x], checkFile));
             if (context != null) {
                 validators.addAll(buildAliasValidators(interfaces[x], context, checkFile));
             }
+            checked.add(interfaces[x].getName());
         }
 
         validators.addAll(buildClassValidators(clazz, checkFile));
@@ -214,15 +224,9 @@ public class ActionValidatorManager {
         if (context != null) {
             validators.addAll(buildAliasValidators(clazz, context, checkFile));
         }
+        checked.add(clazz.getName());
 
         return validators;
-    }
-
-    private static void conditionalReload(Class clazz, String context) {
-        if (FileManager.isReloadingConfigs()) {
-            final String actionName = buildValidatorKey(clazz, context);
-            validatorCache.put(actionName, buildValidators(clazz, context, true));
-        }
     }
 
     private static List loadFile(String fileName, Class clazz, boolean checkFile) {
