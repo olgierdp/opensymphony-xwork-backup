@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<constraint-set>
+
+	<constrain name="header">
+		<left>
+			<toAttribute reference="_container" attribute="left" offset="0" />
+		</left>
+		<right>
+			<toAttribute reference="_container" attribute="right" offset="0" />
+		</right>
+		<top>
+			<toAttribute reference="_container" attribute="top" offset="0" />
+		</top>
+		<bottom>
+			<toAttribute reference="_container" attribute="top" offset="80" />
+		</bottom>
+	</constrain>
+
+	<constrain name="license">
+		<left>
+			<toAttribute reference="_container" attribute="left" offset="10" />
+		</left>
+		<top>
+			<toAttribute reference="header" attribute="bottom" offset="10" />
+		</top>
+		<right>
+			<toAttribute reference="_container" attribute="right" offset="-10" />
+		</right>
+		<bottom>
+			<toAttribute reference="accept" attribute="top" offset="-10" />
+		</bottom>
+	</constrain>
+
+	<constrain name="accept">
+		<left>
+			<toAttribute reference="_container" attribute="left" offset="10" />
+		</left>
+		<bottom>
+			<toAttribute reference="deny" attribute="top" offset="-5" />
+		</bottom>
+	</constrain>
+
+	<constrain name="deny">
+		<left>
+			<toAttribute reference="_container" attribute="left" offset="10" />
+		</left>
+		<bottom>
+			<toAttribute reference="ok" attribute="top" offset="-10" />
+		</bottom>
+	</constrain>
+
+	<constrain name="ok">
+		<top>
+			<toAttribute reference="_container" attribute="bottom" offset="-34" />
+		</top>
+		<right>
+			<toAttribute reference="cancel" attribute="left" offset="-10" />
+		</right>
+		<bottom>
+			<toAttribute reference="_container" attribute="bottom" offset="-10" />
+		</bottom>
+		<left>
+			<toAttribute reference="cancel" attribute="left" offset="-85" />
+		</left>
+	</constrain>
+
+	<constrain name="cancel">
+		<top>
+			<toAttribute reference="_container" attribute="bottom" offset="-34" />
+		</top>
+		<left>
+			<toAttribute reference="_container" attribute="right" offset="-85" />
+		</left>
+		<right>
+			<toAttribute reference="_container" attribute="right" offset="-10" />
+		</right>
+		<bottom>
+			<toAttribute reference="_container" attribute="bottom" offset="-10" />
+		</bottom>
+	</constrain>
+
+</constraint-set>
