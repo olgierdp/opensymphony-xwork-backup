@@ -16,6 +16,9 @@ import ognl.TypeConverter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Member;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -61,7 +64,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 }
 
                 // let's try to convert the first element only
-                result = this.convertValue(context, o, member, s, value, toType);
+                result = convertValue(context, o, member, s, value, toType);
             } else {
                 result = super.convertValue(context, value, toType);
             }
@@ -203,13 +206,25 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
     private Object doConvertToNumber(Map context, Object value, Class toType) {
         if (value instanceof String) {
-            NumberFormat numFormat = NumberFormat.getInstance(getLocale(context));
+            if (toType == BigDecimal.class) {
+                return new BigDecimal((String) value);
+            } else if (toType == BigInteger.class) {
+                return new BigInteger((String) value);
+            } else {
+                NumberFormat numFormat = NumberFormat.getInstance(getLocale(context));
 
-            try {
-                // convert it to a Number
-                value = super.convertValue(context, numFormat.parse((String) value), toType);
-            } catch (ParseException ex) {
-                // ignore parse failure and hope default behavior works
+                try {
+                    // convert it to a Number
+                    value = super.convertValue(context, numFormat.parse((String) value), toType);
+                } catch (ParseException ex) {
+                    // ignore parse failure and hope default behavior works
+                }
+            }
+        } else if (value instanceof Object[]) {
+            Object[] objArray = (Object[]) value;
+
+            if (objArray.length == 1) {
+                return doConvertToNumber(context, objArray[0], toType);
             }
         }
 

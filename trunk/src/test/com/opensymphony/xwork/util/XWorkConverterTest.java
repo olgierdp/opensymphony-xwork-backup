@@ -58,12 +58,12 @@ public class XWorkConverterTest extends TestCase {
         OgnlValueStack stack = new OgnlValueStack();
         stack.push(action);
 
-        Map context = stack.getContext();
-        context.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-        context.put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, "bean.birth");
+        Map ognlStackContext = stack.getContext();
+        ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        ognlStackContext.put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, "bean.birth");
 
         String[] value = new String[] {"invalid date"};
-        assertEquals("Conversion should have failed.", null, converter.convertValue(context, action.getBean(), null, "birth", value, Date.class));
+        assertEquals("Conversion should have failed.", null, converter.convertValue(ognlStackContext, action.getBean(), null, "birth", value, Date.class));
         stack.pop();
 
         Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
@@ -79,14 +79,14 @@ public class XWorkConverterTest extends TestCase {
         OgnlValueStack stack = new OgnlValueStack();
         stack.push(action);
 
-        Map context = stack.getContext();
-        context.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        Map ognlStackContext = stack.getContext();
+        ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         String[] value = new String[] {"invalid date"};
-        assertEquals("Conversion should have failed.", null, converter.convertValue(context, action, null, "date", value, Date.class));
+        assertEquals("Conversion should have failed.", null, converter.convertValue(ognlStackContext, action, null, "date", value, Date.class));
         stack.pop();
 
-        Map conversionErrors = (Map) context.get(ActionContext.CONVERSION_ERRORS);
+        Map conversionErrors = (Map) ognlStackContext.get(ActionContext.CONVERSION_ERRORS);
         assertNotNull(conversionErrors);
         assertEquals(1, conversionErrors.size());
         assertNotNull(conversionErrors.get("date"));
@@ -99,15 +99,15 @@ public class XWorkConverterTest extends TestCase {
         stack.push(action);
         stack.push(action.getModel());
 
-        Map context = stack.getContext();
-        context.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        Map ognlStackContext = stack.getContext();
+        ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         String[] value = new String[] {"invalid date"};
-        assertEquals("Conversion should have failed.", null, converter.convertValue(context, action, null, "birth", value, Date.class));
+        assertEquals("Conversion should have failed.", null, converter.convertValue(ognlStackContext, action, null, "birth", value, Date.class));
         stack.pop();
         stack.pop();
 
-        Map conversionErrors = (Map) context.get(ActionContext.CONVERSION_ERRORS);
+        Map conversionErrors = (Map) ognlStackContext.get(ActionContext.CONVERSION_ERRORS);
         assertNotNull(conversionErrors);
         assertEquals(1, conversionErrors.size());
         assertNotNull(conversionErrors.get("birth"));
@@ -135,11 +135,11 @@ public class XWorkConverterTest extends TestCase {
         stack.push(action);
         stack.push(action.getModel());
 
-        Map context = stack.getContext();
-        context.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        Map ognlStackContext = stack.getContext();
+        ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         String value = "asdf:123";
-        Object o = converter.convertValue(context, action.getModel(), null, "barObj", value, Bar.class);
+        Object o = converter.convertValue(ognlStackContext, action.getModel(), null, "barObj", value, Bar.class);
         assertNotNull(o);
         assertTrue(o instanceof Bar);
 
@@ -156,6 +156,19 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(dateString, converter.convertValue(context, null, null, null, date, String.class));
     }
 
+    public void testNumericConversion() {
+        String[] value = new String[] {"12345"};
+        assertEquals(new Integer(12345), converter.convertValue(context, null, null, null, value, Integer.class));
+        assertEquals(new Long(12345), converter.convertValue(context, null, null, null, value, Long.class));
+        value[0] = "123.45";
+        assertEquals(new Float(123.45), converter.convertValue(context, null, null, null, value, Float.class));
+        assertEquals(new Double(123.45), converter.convertValue(context, null, null, null, value, Double.class));
+        value[0] = "1234567890123456789012345678901234567890";
+        assertEquals(new BigInteger(value[0]), converter.convertValue(context, null, null, null, value, BigInteger.class));
+        value[0] = "1234567890123456789.012345678901234567890";
+        assertEquals(new BigDecimal(value[0]), converter.convertValue(context, null, null, null, value, BigDecimal.class));
+    }
+
     public void testPrimitiveToString() {
         Locale locale = Locale.GERMANY;
         NumberFormat nf = NumberFormat.getInstance(locale);
@@ -169,6 +182,7 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(longValue, converter.convertValue(context, null, null, null, origValue, Long.class));
 
         origValue = "123456.789";
+
         Float floatValue = new Float(origValue);
         formattedValue = nf.format(new Float(origValue));
         assertEquals(formattedValue, converter.convertValue(context, null, null, null, new Float(origValue), String.class));
@@ -176,7 +190,7 @@ public class XWorkConverterTest extends TestCase {
     }
 
     public void testStringArrayToCollection() {
-        ArrayList list = new ArrayList();
+        List list = new ArrayList();
         list.add("foo");
         list.add("bar");
         list.add("baz");
@@ -186,7 +200,7 @@ public class XWorkConverterTest extends TestCase {
     }
 
     public void testStringArrayToList() {
-        ArrayList list = new ArrayList();
+        List list = new ArrayList();
         list.add("foo");
         list.add("bar");
         list.add("baz");
@@ -262,7 +276,7 @@ public class XWorkConverterTest extends TestCase {
     }
 
     public void testStringArrayToSet() {
-        HashSet list = new HashSet();
+        Set list = new HashSet();
         list.add("foo");
         list.add("bar");
         list.add("baz");
