@@ -34,6 +34,7 @@ public class OgnlUtil {
 
     private static final Log log = LogFactory.getLog(OgnlUtil.class);
     private static HashMap expressions = new HashMap();
+    private static HashMap beanInfoCache = new HashMap();
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -219,8 +220,8 @@ public class OgnlUtil {
         BeanInfo beanInfoTo;
 
         try {
-            beanInfoFrom = Introspector.getBeanInfo(from.getClass(), Object.class);
-            beanInfoTo = Introspector.getBeanInfo(to.getClass(), Object.class);
+            beanInfoFrom = getBeanInfo(from);
+            beanInfoTo = getBeanInfo(to);
         } catch (IntrospectionException e) {
             log.error("An error occured", e);
 
@@ -253,6 +254,16 @@ public class OgnlUtil {
                 }
             }
         }
+    }
+
+    private static BeanInfo getBeanInfo(Object from) throws IntrospectionException {
+        BeanInfo beanInfo;
+        beanInfo = (BeanInfo) beanInfoCache.get(from.getClass());
+        if (beanInfo == null) {
+            beanInfo = Introspector.getBeanInfo(from.getClass(), Object.class);
+            beanInfoCache.put(from.getClass(), beanInfo);
+        }
+        return beanInfo;
     }
 
     static void internalSetProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
