@@ -304,7 +304,10 @@
             </filterset>
         </copy>
 
-        <zip zipfile="${build}/${name}-${version}.zip" basedir="${build.dist}"/>
+        <zip zipfile="${build}/${name}-${version}.zip" basedir="${build.dist}">
+            <exclude name="docs/clover/**/*"/>
+            <exclude name="docs/junit/**/*"/>
+        </zip>
     </target>
 
 </project>
