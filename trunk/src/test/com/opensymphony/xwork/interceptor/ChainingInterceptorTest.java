@@ -2,13 +2,11 @@ package com.opensymphony.xwork.interceptor;
 
 import junit.framework.TestCase;
 import com.opensymphony.xwork.util.OgnlValueStack;
-import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.TestBean;
-import com.opensymphony.xwork.Action;
-import com.opensymphony.xwork.SimpleAction;
+import com.opensymphony.xwork.*;
 import com.mockobjects.dynamic.Mock;
 
 import java.util.Date;
+import java.util.HashMap;
 
 
 /**
@@ -28,6 +26,7 @@ public class ChainingInterceptorTest extends TestCase {
         mockInvocation = new Mock(ActionInvocation.class);
         mockInvocation.expectAndReturn("getStack",stack);
         mockInvocation.expectAndReturn("invoke",Action.SUCCESS);
+        mockInvocation.expectAndReturn("getInvocationContext", new ActionContext(new HashMap()));
         invocation = (ActionInvocation) mockInvocation.proxy();
         interceptor = new ChainingInterceptor();
     }
