@@ -6,7 +6,6 @@ package com.opensymphony.xwork.validator.validators;
 
 import com.opensymphony.util.TextUtils;
 
-import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.validator.ValidationException;
 
 
@@ -19,12 +18,12 @@ import com.opensymphony.xwork.validator.ValidationException;
 public class EmailValidator extends FieldValidatorSupport {
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public void validate(Action action) throws ValidationException {
+    public void validate(Object object) throws ValidationException {
         String fieldName = getFieldName();
-        Object value = this.getFieldValue(fieldName, action);
+        Object value = this.getFieldValue(fieldName, object);
 
         if (!(value instanceof String) || !TextUtils.verifyEmail((String) value)) {
-            addFieldError(fieldName, action);
+            addFieldError(fieldName, object);
         }
     }
 }

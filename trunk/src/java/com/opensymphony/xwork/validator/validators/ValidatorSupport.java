@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork.validator.validators;
 
-import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.LocaleAware;
 import com.opensymphony.xwork.ValidationAware;
@@ -44,12 +43,12 @@ public abstract class ValidatorSupport implements Validator {
         return defaultMessage;
     }
 
-    public String getMessage(Action action) {
+    public String getMessage(Object object) {
         String message;
 
-        if ((messageKey != null) && (action instanceof LocaleAware)) {
+        if ((messageKey != null) && (object instanceof LocaleAware)) {
             try {
-                LocaleAware localeAware = (LocaleAware) action;
+                LocaleAware localeAware = (LocaleAware) object;
                 message = localeAware.getText(messageKey);
             } catch (MissingResourceException e) {
                 message = defaultMessage;
@@ -74,9 +73,9 @@ public abstract class ValidatorSupport implements Validator {
         return messageKey;
     }
 
-    protected Object getFieldValue(String name, Action action) throws ValidationException {
+    protected Object getFieldValue(String name, Object object) throws ValidationException {
         try {
-            return Ognl.getValue(name, action);
+            return Ognl.getValue(name, object);
         } catch (OgnlException e) {
             final String msg = "Caught exception while getting value for field " + name;
             log.error(msg, e);
@@ -84,21 +83,21 @@ public abstract class ValidatorSupport implements Validator {
         }
     }
 
-    protected void addActionError(Action action) {
-        if (action instanceof ValidationAware) {
-            ValidationAware validationAware = (ValidationAware) action;
-            validationAware.addActionError(getMessage(action));
+    protected void addActionError(Object object) {
+        if (object instanceof ValidationAware) {
+            ValidationAware validationAware = (ValidationAware) object;
+            validationAware.addActionError(getMessage(object));
         } else {
-            log.error("Validation error: " + getMessage(action));
+            log.error("Validation error: " + getMessage(object));
         }
     }
 
-    protected void addFieldError(String propertyName, Action action) {
-        if (action instanceof ValidationAware) {
-            ValidationAware validationAction = (ValidationAware) action;
-            validationAction.addFieldError(propertyName, getMessage(action));
+    protected void addFieldError(String propertyName, Object object) {
+        if (object instanceof ValidationAware) {
+            ValidationAware validationAction = (ValidationAware) object;
+            validationAction.addFieldError(propertyName, getMessage(object));
         } else {
-            log.error("Validation error for " + propertyName + ":" + getMessage(action));
+            log.error("Validation error for " + propertyName + ":" + getMessage(object));
         }
     }
 }

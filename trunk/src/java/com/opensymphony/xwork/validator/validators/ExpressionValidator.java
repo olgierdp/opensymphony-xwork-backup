@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork.validator.validators;
 
-import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.ValidationException;
@@ -30,7 +29,7 @@ public class ExpressionValidator extends ValidatorSupport {
         return expression;
     }
 
-    public void validate(Action action) throws ValidationException {
+    public void validate(Object object) throws ValidationException {
         Boolean answer = Boolean.FALSE;
         OgnlValueStack stack = ActionContext.getContext().getValueStack();
         Object obj = stack.findValue(expression);
@@ -42,7 +41,7 @@ public class ExpressionValidator extends ValidatorSupport {
         }
 
         if (!answer.booleanValue()) {
-            addActionError(action);
+            addActionError(object);
         }
     }
 }

@@ -4,8 +4,6 @@
  */
 package com.opensymphony.xwork.validator;
 
-import com.opensymphony.xwork.Action;
-
 
 /**
  * Validator
@@ -19,11 +17,11 @@ public interface Validator {
 
     String getDefaultMessage();
 
-    String getMessage(Action action);
+    String getMessage(Object object);
 
     void setMessageKey(String key);
 
     String getMessageKey();
 
-    void validate(Action action) throws ValidationException;
+    void validate(Object object) throws ValidationException;
 }

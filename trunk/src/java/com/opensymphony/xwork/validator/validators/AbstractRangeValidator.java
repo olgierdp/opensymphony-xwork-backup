@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork.validator.validators;
 
-import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.validator.ValidationException;
 
 
@@ -17,8 +16,8 @@ import com.opensymphony.xwork.validator.ValidationException;
 public abstract class AbstractRangeValidator extends FieldValidatorSupport {
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public void validate(Action action) throws ValidationException {
-        Comparable value = (Comparable) this.getFieldValue(getFieldName(), action);
+    public void validate(Object object) throws ValidationException {
+        Comparable value = (Comparable) this.getFieldValue(getFieldName(), object);
 
         // if there is no value - don't do comparison
         // if a value is required, a required validator should be added to the field
@@ -28,12 +27,12 @@ public abstract class AbstractRangeValidator extends FieldValidatorSupport {
 
         // only check for a minimum value if the min parameter is set
         if ((getMinComparatorValue() != null) && (value.compareTo(getMinComparatorValue()) < 0)) {
-            addFieldError(getFieldName(), action);
+            addFieldError(getFieldName(), object);
         }
 
         // only check for a maximum value if the max parameter is set
         if ((getMaxComparatorValue() != null) && (value.compareTo(getMaxComparatorValue()) > 0)) {
-            addFieldError(getFieldName(), action);
+            addFieldError(getFieldName(), object);
         }
     }
 

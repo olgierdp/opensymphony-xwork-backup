@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork.validator.validators;
 
-import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.ValidationException;
@@ -31,7 +30,7 @@ public class FieldExpressionValidator extends FieldValidatorSupport {
         return expression;
     }
 
-    public void validate(Action action) throws ValidationException {
+    public void validate(Object object) throws ValidationException {
         String fieldName = getFieldName();
 
         Boolean answer = Boolean.FALSE;
@@ -45,7 +44,7 @@ public class FieldExpressionValidator extends FieldValidatorSupport {
         }
 
         if (!answer.booleanValue()) {
-            addFieldError(fieldName, action);
+            addFieldError(fieldName, object);
         }
     }
 }
