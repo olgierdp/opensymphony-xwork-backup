@@ -505,6 +505,12 @@ public class LocalizedTextUtil {
         }
     }
 
+    public static void reset() {
+        clearDefaultResourceBundles();
+        misses.clear();
+        messageFormats.clear();
+    }
+
     static class MessageFormatKey {
         String pattern;
         Locale locale;
