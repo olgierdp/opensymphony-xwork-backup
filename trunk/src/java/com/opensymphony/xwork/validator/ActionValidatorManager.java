@@ -26,17 +26,21 @@ import java.util.*;
  * @author Mark Woon
  */
 public class ActionValidatorManager {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
+    /** The file suffix for any validation file. */
     protected static final String VALIDATION_CONFIG_SUFFIX = "-validation.xml";
+
     private static final Map validatorCache = Collections.synchronizedMap(new HashMap());
     private static final Map validatorFileCache = Collections.synchronizedMap(new HashMap());
     private static final Log LOG = LogFactory.getLog(ActionValidatorManager.class);
 
-    //~ Methods ////////////////////////////////////////////////////////////////
-
     /**
-     * Primary method for validator lookup.
+     * Returns a list of validators for the given class and context. This is the primary
+     * lookup method for validators.
+     *
+     * @param clazz the class to lookup.
+     * @param context the context of the action class - can be <tt>null</tt>.
+     * @return a list of all validators for the given class and context.
      */
     public static synchronized List getValidators(Class clazz, String context) {
         final String validatorKey = buildValidatorKey(clazz, context);
@@ -52,11 +56,26 @@ public class ActionValidatorManager {
         return (List) validatorCache.get(validatorKey);
     }
 
+    /**
+     * Validates the given object using action and its context.
+     *
+     * @param object the action to validate.
+     * @param context the action's context.
+     * @throws ValidationException if an error happens when validating the action.
+     */
     public static void validate(Object object, String context) throws ValidationException {
         ValidatorContext validatorContext = new DelegatingValidatorContext(object);
         validate(object, context, validatorContext);
     }
 
+    /**
+     * Validates an action give its context and a validation context.
+     *
+     * @param object the action to validate.
+     * @param context the action's context.
+     * @param validatorContext
+     * @throws ValidationException if an error happens when validating the action.
+     */
     public static void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException {
         List validators = getValidators(object.getClass(), context);
         Set shortcircuitedFields = null;
@@ -142,11 +161,17 @@ public class ActionValidatorManager {
         }
     }
 
+    /**
+     * Builds a key for validators - used when caching validators.
+     *
+     * @param clazz the action.
+     * @param context the action's context.
+     * @return a validator key which is the class name plus context.
+     */
     protected static String buildValidatorKey(Class clazz, String context) {
         StringBuffer sb = new StringBuffer(clazz.getName());
         sb.append("/");
         sb.append(context);
-
         return sb.toString();
     }
 
@@ -163,13 +188,13 @@ public class ActionValidatorManager {
     }
 
     /**
-     * This method 'collects' all the validators for a given action invocation.
+     * <p>This method 'collects' all the validators for a given action invocation.</p>
      *
-     * It will traverse up the class hierarchy looking for validators for every super class
+     * <p>It will traverse up the class hierarchy looking for validators for every super class
      * and directly implemented interface of the current action, as well as adding validators for
-     * any alias of this invocation. Nifty!
+     * any alias of this invocation. Nifty!</p>
      *
-     * Given the following class structure:
+     * <p>Given the following class structure:
      * <pre>
      *   interface Thing;
      *   interface Animal extends Thing;
@@ -177,9 +202,9 @@ public class ActionValidatorManager {
      *   class AnimalImpl implements Animal;
      *   class QuadrapedImpl extends AnimalImpl implements Quadraped;
      *   class Dog extends QuadrapedImpl;
-     * </pre>
+     * </pre></p>
      *
-     * This method will look for the following config files for Dog:
+     * <p>This method will look for the following config files for Dog:
      * <pre>
      *   Animal
      *   Animal-context
@@ -191,16 +216,17 @@ public class ActionValidatorManager {
      *   QuadrapedImpl-context
      *   Dog
      *   Dog-context
-     * </pre>
+     * </pre></p>
      *
-     * Note that the validation rules for Thing is never looked for because no class in the
-     * hierarchy directly implements Thing.
+     * <p>Note that the validation rules for Thing is never looked for because no class in the
+     * hierarchy directly implements Thing.</p>
      *
-     * @param clazz the Class to look up validators for
-     * @param context the context to use when looking up validators
+     * @param clazz the Class to look up validators for.
+     * @param context the context to use when looking up validators.
      * @param checkFile true if the validation config file should be checked to see if it has been
-     * updated
+     *      updated.
      * @param checked the set of previously checked class-contexts, null if none have been checked
+     * @return a list of validators for the given class and context.
      */
     private static List buildValidators(Class clazz, String context, boolean checkFile, Set checked) {
         List validators = new ArrayList();
