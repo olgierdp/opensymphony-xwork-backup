@@ -31,7 +31,6 @@ public class DefaultActionProxy implements ActionProxy {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     ActionConfig config;
-    transient ActionContext lastContext;
     ActionInvocation invocation;
     Map extraContext;
     String actionName;
@@ -100,10 +99,6 @@ public class DefaultActionProxy implements ActionProxy {
 
     public ActionInvocation getInvocation() {
         return invocation;
-    }
-
-    public ActionContext getLastContext() {
-        return lastContext;
     }
 
     public String getNamespace() {

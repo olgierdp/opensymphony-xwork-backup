@@ -30,8 +30,6 @@ public interface ActionProxy extends Serializable {
 
     ActionInvocation getInvocation();
 
-    ActionContext getLastContext();
-
     String getNamespace();
 
     String execute() throws Exception;
