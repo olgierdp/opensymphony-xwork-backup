@@ -18,7 +18,6 @@ import org.xml.sax.SAXParseException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,54 +38,42 @@ public class ValidatorFileParser {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    /**
-     * Gets a document builder that looks in the classpath for the DTD's to validate against and provides more detailed
-     * error messages.
-     */
-    private static DocumentBuilder getDocumentBuilder(final String resourceName) throws ParserConfigurationException {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setValidating(true);
-        dbf.setNamespaceAware(true);
-
-        DocumentBuilder builder = dbf.newDocumentBuilder();
-        builder.setEntityResolver(new EntityResolver() {
-            public InputSource resolveEntity(String publicId, String systemId) {
-                ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
-                if ("-//OpenSymphony Group//XWork Validator 1.0//EN".equals(publicId)) {
-                    return new InputSource(loader.getResourceAsStream("xwork-validator-1.0.dtd"));
-                } else if ("-//OpenSymphony Group//XWork Validator 1.0.2//EN".equals(publicId)) {
-                    return new InputSource(loader.getResourceAsStream("xwork-validator-1.0.2.dtd"));
-                }
-
-                return null;
-            }
-        });
-        builder.setErrorHandler(new ErrorHandler() {
-            private String resource = resourceName;
-
-            public void warning(SAXParseException exception) {
-                log.warn(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + " of '" + resource + "')");
-            }
-
-            public void error(SAXParseException exception) {
-                log.error(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + " of '" + resource + "')");
-            }
-
-            public void fatalError(SAXParseException exception) {
-                log.fatal(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + " of '" + resource + "')");
-            }
-        });
-        return builder;
-    }
-
-
-    public static List parseActionValidatorConfigs(InputStream is, String resourceName) {
+    public static List parseActionValidatorConfigs(InputStream is, final String resourceName) {
         List validatorCfgs = new ArrayList();
         Document doc = null;
 
         try {
-            DocumentBuilder builder = getDocumentBuilder(resourceName);
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setValidating(true);
+            dbf.setNamespaceAware(true);
+
+            DocumentBuilder builder = dbf.newDocumentBuilder();
+            builder.setEntityResolver(new EntityResolver() {
+                public InputSource resolveEntity(String publicId, String systemId) {
+                    ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+                    if ("-//OpenSymphony Group//XWork Validator 1.0//EN".equals(publicId)) {
+                        return new InputSource(loader.getResourceAsStream("xwork-validator-1.0.dtd"));
+                    } else if ("-//OpenSymphony Group//XWork Validator 1.0.2//EN".equals(publicId)) {
+                        return new InputSource(loader.getResourceAsStream("xwork-validator-1.0.2.dtd"));
+                    }
+
+                    return null;
+                }
+            });
+            builder.setErrorHandler(new ErrorHandler() {
+                public void warning(SAXParseException exception) {
+                    log.warn(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + " of '" + resourceName + "')");
+                }
+
+                public void error(SAXParseException exception) {
+                    log.error(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + " of '" + resourceName + "')");
+                }
+
+                public void fatalError(SAXParseException exception) {
+                    log.fatal(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + " of '" + resourceName + "')");
+                }
+            });
             doc = builder.parse(is);
         } catch (Exception e) {
             log.fatal("Caught exception while attempting to load validation configuration file '" + resourceName + "'.", e);
@@ -114,7 +101,8 @@ public class ValidatorFileParser {
 
     public static void parseValidatorDefinitions(InputStream is) {
         try {
-            DocumentBuilder builder = getDocumentBuilder("validator definitions");
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = dbf.newDocumentBuilder();
             Document doc = builder.parse(is);
             NodeList nodes = doc.getElementsByTagName("validator");
 
