@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork;
 
+import com.opensymphony.xwork.interceptor.ChainingInterceptor;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -82,6 +84,7 @@ public class ActionChainResult implements Result {
         extraContext.put(ActionContext.VALUE_STACK, ActionContext.getContext().getValueStack());
         extraContext.put(ActionContext.PARAMETERS, ActionContext.getContext().getParameters());
         extraContext.put("com.opensymphony.xwork.interceptor.component.ComponentManager", ActionContext.getContext().get("com.opensymphony.xwork.interceptor.component.ComponentManager"));
+        extraContext.put(ChainingInterceptor.ACTION_CONTEXT_CHAIN_DEPTH, ActionContext.getContext().get(ChainingInterceptor.ACTION_CONTEXT_CHAIN_DEPTH));
 
         if (log.isDebugEnabled()) {
             log.debug("Chaining to action " + actionName);

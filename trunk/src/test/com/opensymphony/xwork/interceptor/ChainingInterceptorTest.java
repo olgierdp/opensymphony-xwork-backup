@@ -5,8 +5,10 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.mockobjects.dynamic.Mock;
+
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.util.OgnlValueStack;
+
 import junit.framework.TestCase;
 
 import java.util.Date;
@@ -44,6 +46,28 @@ public class ChainingInterceptorTest extends TestCase {
         assertTrue(action2.getActionErrors().contains("bar"));
     }
 
+    public void testNotToManyChains() throws Exception {
+        int max = 5;
+        interceptor.setMaxChainDepth(max);
+
+        TestBean bean = new TestBean();
+        TestBeanAction action = new TestBeanAction();
+        mockInvocation.matchAndReturn("getAction", action);
+        bean.setBirth(new Date());
+        bean.setName("foo");
+        bean.setCount(1);
+        stack.push(bean);
+        stack.push(action);
+
+        try {
+            for (int i = 0; i < max; i++) {
+                interceptor.intercept(invocation);
+            }
+        } catch (Exception e) {
+            fail("should have not aborted chain");
+        }
+    }
+
     public void testPropertiesChained() throws Exception {
         TestBean bean = new TestBean();
         TestBeanAction action = new TestBeanAction();
@@ -59,13 +83,36 @@ public class ChainingInterceptorTest extends TestCase {
         assertEquals(bean.getCount(), action.getCount());
     }
 
+    public void testToManyChains() throws Exception {
+        int max = 5;
+        interceptor.setMaxChainDepth(max);
+
+        TestBean bean = new TestBean();
+        TestBeanAction action = new TestBeanAction();
+        mockInvocation.matchAndReturn("getAction", action);
+        bean.setBirth(new Date());
+        bean.setName("foo");
+        bean.setCount(1);
+        stack.push(bean);
+        stack.push(action);
+
+        try {
+            for (int i = 0; i < (max + 1); i++) {
+                interceptor.intercept(invocation);
+            }
+
+            fail("should have aborted recursive chain");
+        } catch (Exception e) {
+        }
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         stack = new OgnlValueStack();
         mockInvocation = new Mock(ActionInvocation.class);
-        mockInvocation.expectAndReturn("getStack", stack);
-        mockInvocation.expectAndReturn("invoke", Action.SUCCESS);
-        mockInvocation.expectAndReturn("getInvocationContext", new ActionContext(new HashMap()));
+        mockInvocation.matchAndReturn("getStack", stack);
+        mockInvocation.matchAndReturn("invoke", Action.SUCCESS);
+        mockInvocation.matchAndReturn("getInvocationContext", new ActionContext(new HashMap()));
         invocation = (ActionInvocation) mockInvocation.proxy();
         interceptor = new ChainingInterceptor();
     }
