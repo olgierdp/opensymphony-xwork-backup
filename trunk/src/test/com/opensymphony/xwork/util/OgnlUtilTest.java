@@ -81,7 +81,7 @@ public class OgnlUtilTest extends TestCase {
 
         Owner owner = new Owner();
         Map context = Ognl.createDefaultContext(owner);
-        HashMap props = new HashMap();
+        Map props = new HashMap();
         props.put("dog.name", dogName);
 
         OgnlUtil.setProperties(props, owner, context);
@@ -99,7 +99,7 @@ public class OgnlUtilTest extends TestCase {
         EmailAction action = new EmailAction();
         Map context = Ognl.createDefaultContext(action);
 
-        HashMap props = new HashMap();
+        Map props = new HashMap();
         props.put("email[0].address", "addr1");
         props.put("email[1].address", "addr2");
         props.put("email[2].address", "addr3");
@@ -168,7 +168,7 @@ public class OgnlUtilTest extends TestCase {
 
         Map context = Ognl.createDefaultContext(foo);
 
-        HashMap props = new HashMap();
+        Map props = new HashMap();
         props.put("bar.title", "i am barbaz");
         OgnlUtil.setProperties(props, foo, context);
 
@@ -207,11 +207,36 @@ public class OgnlUtilTest extends TestCase {
         Foo foo = new Foo();
         Map context = Ognl.createDefaultContext(foo);
 
-        HashMap props = new HashMap();
+        Map props = new HashMap();
         props.put("aLong", "123a");
 
         OgnlUtil.setProperties(props, foo, context);
         assertEquals(0, foo.getALong());
+    }
+
+    /**
+     * Test that type conversion is performed on indexed collection properties.
+     */
+    public void testSetIndexedValue() {
+        OgnlValueStack stack = new OgnlValueStack();
+        Map stackContext = stack.getContext();
+        stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+        stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+        stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+
+        User user = new User();
+        stack.push(user);
+
+        // indexed string w/ existing array
+        user.setList(new ArrayList());
+        user.getList().add("");
+
+        String[] foo = new String[] {"asdf"};
+        stack.setValue("list[0]", foo);
+        assertNotNull(user.getList());
+        assertEquals(1, user.getList().size());
+        assertEquals(String.class, user.getList().get(0).getClass());
+        assertEquals("asdf", user.getList().get(0));
     }
 
     public void testSetPropertiesBoolean() {
@@ -219,7 +244,7 @@ public class OgnlUtilTest extends TestCase {
 
         Map context = Ognl.createDefaultContext(foo);
 
-        HashMap props = new HashMap();
+        Map props = new HashMap();
         props.put("useful", "true");
         OgnlUtil.setProperties(props, foo, context);
 
@@ -240,7 +265,7 @@ public class OgnlUtilTest extends TestCase {
 
         Map context = Ognl.createDefaultContext(foo);
 
-        HashMap props = new HashMap();
+        Map props = new HashMap();
         props.put("birthday", "02/12/1982");
         OgnlUtil.setProperties(props, foo, context);
 
@@ -259,7 +284,7 @@ public class OgnlUtilTest extends TestCase {
 
         Map context = Ognl.createDefaultContext(foo);
 
-        HashMap props = new HashMap();
+        Map props = new HashMap();
         props.put("number", "2");
         OgnlUtil.setProperties(props, foo, context);
 
@@ -271,7 +296,7 @@ public class OgnlUtilTest extends TestCase {
 
         Map context = Ognl.createDefaultContext(foo);
 
-        HashMap props = new HashMap();
+        Map props = new HashMap();
         props.put("points", new String[] {"1", "2"});
         OgnlUtil.setProperties(props, foo, context);
 
@@ -286,7 +311,7 @@ public class OgnlUtilTest extends TestCase {
 
         Map context = Ognl.createDefaultContext(foo);
 
-        HashMap props = new HashMap();
+        Map props = new HashMap();
         props.put("title", "this is a title");
         OgnlUtil.setProperties(props, foo, context);
 
@@ -306,7 +331,7 @@ public class OgnlUtilTest extends TestCase {
 
         Map context = Ognl.createDefaultContext(foo);
 
-        HashMap props = new HashMap();
+        Map props = new HashMap();
         props.put("aLong", "123");
 
         OgnlUtil.setProperties(props, foo, context);
@@ -389,30 +414,5 @@ public class OgnlUtilTest extends TestCase {
 
             return super.get(index);
         }
-    }
-
-    /**
-     * Test that type conversion is performed on indexed collection properties.
-     */
-    public void testSetIndexedValue() {
-        OgnlValueStack stack = new OgnlValueStack();
-        Map stackContext = stack.getContext();
-        stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-        stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
-        stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-
-        User user = new User();
-        stack.push(user);
-
-        // indexed string w/ existing array
-        user.setList(new ArrayList());
-        user.getList().add("");
-
-        String[] foo = new String[] {"asdf"};
-        stack.setValue("list[0]", foo);
-        assertNotNull(user.getList());
-        assertEquals(1, user.getList().size());
-        assertEquals(String.class, user.getList().get(0).getClass());
-        assertEquals("asdf", user.getList().get(0));
     }
 }
