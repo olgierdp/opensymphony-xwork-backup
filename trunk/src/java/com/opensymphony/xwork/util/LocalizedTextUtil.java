@@ -109,22 +109,15 @@ public class LocalizedTextUtil {
     }
 
     public static ResourceBundle findResourceBundle(String aBundleName, Locale locale) {
-        MissingResourceException e = null;
         try {
             if (!misses.contains(aBundleName)) {
                 return ResourceBundle.getBundle(aBundleName, locale, Thread.currentThread().getContextClassLoader());
             }
         } catch (MissingResourceException ex) {
-            e = ex;
             misses.add(aBundleName);
         }
 
-
-        if (e == null) {
-            e = new MissingResourceException("Unable to find bundle " + aBundleName, LocalizedTextUtil.class.getName(), "");
-        }
-
-        throw e;
+        return null;
     }
 
     /**
@@ -415,16 +408,18 @@ public class LocalizedTextUtil {
      * Gets the message from the named resource bundle.
      */
     private static String getMessage(String bundleName, Locale locale, String key, OgnlValueStack valueStack, Object[] args) {
+        ResourceBundle bundle = findResourceBundle(bundleName, locale);
+        if (bundle == null) {
+            return null;
+        }
+
+        reloadBundles(bundle);
+
         try {
-            ResourceBundle bundle = findResourceBundle(bundleName, locale);
-            reloadBundles(bundle);
-
             String message = TextParseUtil.translateVariables(bundle.getString(key), valueStack);
-
             MessageFormat mf = buildMessageFormat(message, locale);
-
             return mf.format(args);
-        } catch (MissingResourceException ex) {
+        } catch (MissingResourceException e) {
             return null;
         }
     }
