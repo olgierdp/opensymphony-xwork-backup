@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -73,6 +74,10 @@ public class DelegatingValidatorContext implements ValidatorContext {
 
     public String getText(String aTextName, String defaultValue) {
         return localeAware.getText(aTextName, defaultValue);
+    }
+
+    public String getText(String aTextName, List args) {
+        return localeAware.getText(aTextName, args);
     }
 
     public ResourceBundle getTexts(String aBundleName) {

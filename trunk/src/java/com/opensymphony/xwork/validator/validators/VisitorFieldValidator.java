@@ -48,7 +48,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
 
             for (Iterator iterator = coll.iterator(); iterator.hasNext();) {
                 Object o = iterator.next();
-                ValidatorContext validatorContext = new AppendingValidatorContext(getValidatorContext(), getMessage(o));
+                ValidatorContext validatorContext = new AppendingValidatorContext(getValidatorContext(), fieldName, getMessage(o));
                 ActionValidatorManager.validate(o, visitorContext, validatorContext);
             }
         } else if (value instanceof Object[]) {
@@ -56,11 +56,11 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
 
             for (int i = 0; i < array.length; i++) {
                 Object o = array[i];
-                ValidatorContext validatorContext = new AppendingValidatorContext(getValidatorContext(), getMessage(o));
+                ValidatorContext validatorContext = new AppendingValidatorContext(getValidatorContext(), fieldName, getMessage(o));
                 ActionValidatorManager.validate(o, visitorContext, validatorContext);
             }
         } else {
-            ValidatorContext validatorContext = new AppendingValidatorContext(getValidatorContext(), getMessage(value));
+            ValidatorContext validatorContext = new AppendingValidatorContext(getValidatorContext(), fieldName, getMessage(value));
             ActionValidatorManager.validate(value, visitorContext, validatorContext);
         }
     }
@@ -68,19 +68,21 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
     //~ Inner Classes //////////////////////////////////////////////////////////
 
     private class AppendingValidatorContext extends DelegatingValidatorContext {
+        String field;
         String message;
 
-        public AppendingValidatorContext(Object object, String message) {
+        public AppendingValidatorContext(Object object, String field, String message) {
             super(object);
+            this.field = field;
             this.message = message;
         }
 
         public void addActionError(String anErrorMessage) {
-            super.addActionError(message + anErrorMessage);
+            super.addFieldError(field, message + anErrorMessage);
         }
 
         public void addFieldError(String fieldName, String errorMessage) {
-            super.addFieldError(fieldName, message + errorMessage);
+            super.addFieldError(field + "." + fieldName, message + errorMessage);
         }
     }
 }

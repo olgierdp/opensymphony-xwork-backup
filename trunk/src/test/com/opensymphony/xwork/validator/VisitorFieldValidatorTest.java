@@ -47,12 +47,12 @@ public class VisitorFieldValidatorTest extends TestCase {
 
         Map fieldErrors = action.getFieldErrors();
         assertEquals(2, fieldErrors.size());
-        assertTrue(fieldErrors.containsKey("name"));
+        assertTrue(fieldErrors.containsKey("testBeanArray.name"));
 
         //the error from the action should be there too
         assertTrue(fieldErrors.containsKey("context"));
 
-        List errors = (List) fieldErrors.get("name");
+        List errors = (List) fieldErrors.get("testBeanArray.name");
         assertEquals(4, errors.size());
     }
 
@@ -66,12 +66,12 @@ public class VisitorFieldValidatorTest extends TestCase {
 
         Map fieldErrors = action.getFieldErrors();
         assertEquals(2, fieldErrors.size());
-        assertTrue(fieldErrors.containsKey("name"));
+        assertTrue(fieldErrors.containsKey("testBeanList.name"));
 
         //the error from the action should be there too
         assertTrue(fieldErrors.containsKey("context"));
 
-        List errors = (List) fieldErrors.get("name");
+        List errors = (List) fieldErrors.get("testBeanList.name");
         assertEquals(4, errors.size());
     }
 
@@ -81,9 +81,9 @@ public class VisitorFieldValidatorTest extends TestCase {
 
         Map fieldErrors = action.getFieldErrors();
         assertEquals(3, fieldErrors.size());
-        assertTrue(fieldErrors.containsKey("count"));
-        assertTrue(fieldErrors.containsKey("name"));
-        assertTrue(!fieldErrors.containsKey("birth"));
+        assertTrue(fieldErrors.containsKey("bean.count"));
+        assertTrue(fieldErrors.containsKey("bean.name"));
+        assertTrue(!fieldErrors.containsKey("bean.birth"));
 
         //the error from the action should be there too
         assertTrue(fieldErrors.containsKey("context"));
@@ -96,9 +96,9 @@ public class VisitorFieldValidatorTest extends TestCase {
 
         Map fieldErrors = action.getFieldErrors();
         assertEquals(3, fieldErrors.size());
-        assertTrue(!fieldErrors.containsKey("count"));
-        assertTrue(fieldErrors.containsKey("name"));
-        assertTrue(fieldErrors.containsKey("birth"));
+        assertTrue(!fieldErrors.containsKey("bean.count"));
+        assertTrue(fieldErrors.containsKey("bean.name"));
+        assertTrue(fieldErrors.containsKey("bean.birth"));
 
         //the error from the action should be there too
         assertTrue(fieldErrors.containsKey("context"));
