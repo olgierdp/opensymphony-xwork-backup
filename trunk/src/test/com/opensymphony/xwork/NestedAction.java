@@ -38,7 +38,8 @@ public class NestedAction implements Action {
 
     public String noStack() {
         OgnlValueStack stack = ActionContext.getContext().getValueStack();
-        Assert.assertEquals(1, stack.size());
+        // Action + DefaultTextProvider on the stack
+        Assert.assertEquals(2, stack.size());
         Assert.assertNull(stack.findValue(ActionNestingTest.KEY));
         Assert.assertEquals(ActionNestingTest.NESTED_VALUE, stack.findValue(ActionNestingTest.NESTED_KEY));
 
@@ -47,7 +48,8 @@ public class NestedAction implements Action {
 
     public String stack() {
         OgnlValueStack stack = ActionContext.getContext().getValueStack();
-        Assert.assertEquals(2, stack.size());
+        //DefaultTextProvider, NestedActionTest pushed on by the test, and the NestedAction
+        Assert.assertEquals(3, stack.size());
         Assert.assertNotNull(stack.findValue(ActionNestingTest.KEY));
         Assert.assertEquals(ActionContext.getContext().getValueStack().findValue(ActionNestingTest.KEY), ActionNestingTest.VALUE);
         Assert.assertEquals(ActionNestingTest.NESTED_VALUE, stack.findValue(ActionNestingTest.NESTED_KEY));

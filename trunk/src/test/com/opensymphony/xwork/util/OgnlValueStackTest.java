@@ -7,6 +7,7 @@ package com.opensymphony.xwork.util;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.TestBean;
+import com.opensymphony.xwork.DefaultTextProvider;
 
 import junit.framework.TestCase;
 
@@ -496,10 +497,10 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals("Jack", vs.findValue("top.name"));
     }
 
-    public void testTopNull() {
+    public void testTopIsDefaultTextProvider() {
         OgnlValueStack vs = new OgnlValueStack();
 
-        assertNull(vs.findValue("top"));
+        assertEquals(DefaultTextProvider.INSTANCE, vs.findValue("top"));
     }
 
     public void testTwoDogs() {

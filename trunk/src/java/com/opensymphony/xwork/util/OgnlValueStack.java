@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.DefaultTextProvider;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
@@ -54,6 +55,7 @@ public class OgnlValueStack implements Serializable {
 
     public OgnlValueStack() {
         setRoot(new CompoundRoot());
+        push(DefaultTextProvider.INSTANCE);
     }
 
     public OgnlValueStack(OgnlValueStack vs) {

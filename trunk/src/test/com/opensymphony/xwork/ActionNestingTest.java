@@ -11,11 +11,10 @@ import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.util.OgnlValueStack;
-
 import junit.framework.TestCase;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 
 
 /**
@@ -74,41 +73,31 @@ public class ActionNestingTest extends TestCase {
         assertEquals(context, ActionContext.getContext());
     }
 
-    public void testNestedNoValueStack() {
+    public void testNestedNoValueStack() throws Exception {
         OgnlValueStack stack = ActionContext.getContext().getValueStack();
         assertEquals(VALUE, stack.findValue(KEY));
 
-        try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(NAMESPACE, NO_STACK_ACTION_NAME, null);
-            proxy.execute();
-            stack = ActionContext.getContext().getValueStack();
-            assertEquals(stack.findValue(KEY), VALUE);
-            assertNull(stack.findValue(NESTED_KEY));
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
+         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(NAMESPACE, NO_STACK_ACTION_NAME, null);
+        proxy.execute();
+        stack = ActionContext.getContext().getValueStack();
+        assertEquals(stack.findValue(KEY), VALUE);
+        assertNull(stack.findValue(NESTED_KEY));
     }
 
-    public void testNestedValueStack() {
+    public void testNestedValueStack() throws Exception {
         OgnlValueStack stack = ActionContext.getContext().getValueStack();
         assertEquals(VALUE, stack.findValue(KEY));
 
-        try {
-            HashMap extraContext = new HashMap();
-            extraContext.put(ActionContext.VALUE_STACK, stack);
+        HashMap extraContext = new HashMap();
+        extraContext.put(ActionContext.VALUE_STACK, stack);
 
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(NAMESPACE, STACK_ACTION_NAME, extraContext);
-            proxy.execute();
-            assertEquals(context, ActionContext.getContext());
-            assertEquals(stack, ActionContext.getContext().getValueStack());
-            assertEquals(VALUE, stack.findValue(KEY));
-            assertEquals(NESTED_VALUE, stack.findValue(NESTED_KEY));
-            assertEquals(2, stack.size());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(NAMESPACE, STACK_ACTION_NAME, extraContext);
+        proxy.execute();
+        assertEquals(context, ActionContext.getContext());
+        assertEquals(stack, ActionContext.getContext().getValueStack());
+        assertEquals(VALUE, stack.findValue(KEY));
+        assertEquals(NESTED_VALUE, stack.findValue(NESTED_KEY));
+        assertEquals(3, stack.size());
     }
 
     //~ Inner Classes //////////////////////////////////////////////////////////
