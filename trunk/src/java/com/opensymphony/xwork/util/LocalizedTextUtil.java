@@ -4,7 +4,9 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.xwork.ModelDriven;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -105,6 +107,9 @@ public class LocalizedTextUtil {
      * </li>
      * <li>If the message text is not found, each parent class of the action is used as above until
      * java.lang.Object is found.<li>
+     * <li>If the message text has still not been found and the action is {@link ModelDriven},
+     * the class hierarchy of the model will be traversed (interface and parent classes) and
+     * used as above until java.lang.Object is found.</li>
      * <li>If the message text has still not been found, findDefaultText(aTextName, locale) is called to
      * search the default message bundles</li>
      * <li>If the text has still not been found, the provided defaultMessage is returned.<li>
@@ -117,19 +122,57 @@ public class LocalizedTextUtil {
      * @return
      */
     public static String findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args) {
-        OgnlValueStack valueStack = ActionContext.getContext().getValueStack();
+        ActionContext context = ActionContext.getContext();
+        OgnlValueStack valueStack = context.getValueStack();
+
+        // search up class hierarchy
+        Class clazz = aClass;
 
         do {
             try {
-                ResourceBundle bundle = findResourceBundle(aClass.getName(), locale);
-
+                ResourceBundle bundle = findResourceBundle(clazz.getName(), locale);
                 String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
 
                 return MessageFormat.format(message, args);
             } catch (MissingResourceException ex) {
-                aClass = aClass.getSuperclass();
+                clazz = clazz.getSuperclass();
             }
-        } while (!aClass.equals(Object.class));
+        } while (!clazz.equals(Object.class));
+
+        if (ModelDriven.class.isAssignableFrom(aClass)) {
+            Action action = context.getActionInvocation().getAction();
+
+            // make sure action is ModelDriven
+            if (action instanceof ModelDriven) {
+                clazz = ((ModelDriven) action).getModel().getClass();
+
+                while (!clazz.equals((Object.class))) {
+                    // look for resource bundle for implemented interfaces
+                    Class[] interfaces = clazz.getInterfaces();
+
+                    for (int x = 0; x < interfaces.length; x++) {
+                        try {
+                            ResourceBundle bundle = findResourceBundle(interfaces[x].getName(), locale);
+                            String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
+
+                            return MessageFormat.format(message, args);
+                        } catch (MissingResourceException ex) {
+                        }
+                    }
+
+                    // search up model class hierarchy
+                    try {
+                        ResourceBundle bundle = findResourceBundle(clazz.getName(), locale);
+                        String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
+
+                        return MessageFormat.format(message, args);
+                    } catch (MissingResourceException ex) {
+                    }
+
+                    clazz = clazz.getSuperclass();
+                }
+            }
+        }
 
         return getDefaultText(aTextName, locale, valueStack, args, defaultMessage);
     }

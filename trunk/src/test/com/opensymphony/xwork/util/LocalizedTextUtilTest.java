@@ -4,9 +4,14 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.mockobjects.dynamic.Mock;
+
+import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.XWorkMessages;
 import com.opensymphony.xwork.config.ConfigurationManager;
+import com.opensymphony.xwork.test.ModelDrivenAction2;
 
 import junit.framework.TestCase;
 
@@ -24,7 +29,7 @@ public class LocalizedTextUtilTest extends TestCase {
 
     public void testAddDefaultResourceBundle() {
         try {
-            String message = LocalizedTextUtil.findDefaultText("foo.range", Locale.getDefault());
+            LocalizedTextUtil.findDefaultText("foo.range", Locale.getDefault());
             fail("Found message when it should not be available.");
         } catch (MissingResourceException e) {
         }
@@ -67,6 +72,21 @@ public class LocalizedTextUtilTest extends TestCase {
         } catch (MissingResourceException e) {
             e.printStackTrace();
             fail();
+        }
+    }
+
+    public void testFindText() {
+        try {
+            Action action = new ModelDrivenAction2();
+            Mock mockActionInvocation = new Mock(ActionInvocation.class);
+            mockActionInvocation.expectAndReturn("getAction", action);
+            ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
+
+            String message = LocalizedTextUtil.findText(ModelDrivenAction2.class, "test.foo", Locale.getDefault());
+            assertEquals("Foo!", message);
+        } catch (MissingResourceException ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage());
         }
     }
 

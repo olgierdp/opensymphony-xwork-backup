@@ -37,6 +37,9 @@ public class ActionValidatorManager {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    /**
+     * Primary method for validator lookup.
+     */
     public static synchronized List getValidators(Class clazz, String context) {
         final String validatorKey = buildValidatorKey(clazz, context);
 
@@ -101,17 +104,32 @@ public class ActionValidatorManager {
     * This method 'collects' all the validators for a given action invocation.
     *
     * It will traverse up the class hierarchy looking for validators for every super class
-    * of the current action, as well as adding validators for any alias of this invocation. Nifty!
+    * and interface of the current action, as well as adding validators for any alias of
+    * this invocation. Nifty!
     */
     private static List buildValidators(Class clazz, String context, boolean checkFile) {
         List validators = new ArrayList();
 
-        // validators for the action class validators.addAll(buildClassValidators(actionClass, checkFile)); validators.addAll(buildAliasValidators(actionClass, invocation, checkFile));
-        // looking for validators for every super class
-        Class anActionClass = clazz;
-        anActionClass = anActionClass.getSuperclass();
+        // look for validators for implemented interfaces
+        Class[] interfaces = clazz.getInterfaces();
+
+        for (int x = 0; x < interfaces.length; x++) {
+            validators.addAll(buildClassValidators(interfaces[x], checkFile));
+        }
+
+        // looking for validators in class hierarchy
+        Class anActionClass = clazz.getSuperclass();
 
         while (!anActionClass.equals(Object.class)) {
+            // look for validators for implemented interfaces
+            interfaces = anActionClass.getInterfaces();
+
+            for (int x = 0; x < interfaces.length; x++) {
+                validators.addAll(buildClassValidators(interfaces[x], checkFile));
+                validators.addAll(buildAliasValidators(interfaces[x], context, checkFile));
+            }
+
+            // search up class hierarchy
             validators.addAll(buildClassValidators(anActionClass, checkFile));
             anActionClass = anActionClass.getSuperclass();
         }

@@ -9,6 +9,7 @@ import com.opensymphony.xwork.ModelDrivenAction;
 import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.config.ConfigurationManager;
+import com.opensymphony.xwork.test.ModelDrivenAction2;
 
 import junit.framework.TestCase;
 
@@ -125,6 +126,24 @@ public class XWorkConverterTest extends TestCase {
         message = XWorkConverter.getConversionErrorMessage("foo", stack);
         assertNotNull(message);
         assertEquals("Invalid field value for field \"foo\".", message);
+    }
+
+    public void testFindConversionMappingForInterface() {
+        ModelDrivenAction2 action = new ModelDrivenAction2();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(action);
+        stack.push(action.getModel());
+
+        Map context = stack.getContext();
+        context.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+
+        String value = "asdf:123";
+        Object o = converter.convertValue(context, action.getModel(), null, "barObj", value, Bar.class);
+        assertNotNull(o);
+        assertTrue(o instanceof Bar);
+
+        Bar b = (Bar) o;
+        assertEquals(value, b.getTitle() + ":" + b.getSomethingElse());
     }
 
     public void testLocalizedDateConversion() throws Exception {

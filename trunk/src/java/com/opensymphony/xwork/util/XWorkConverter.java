@@ -102,9 +102,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         // allow this method to be called without any context
         // i.e. it can be called with as little as "Object value" and "Class toClass"
         if (target != null) {
-            Class clazz = null;
-
-            clazz = target.getClass();
+            Class clazz = target.getClass();
 
             Object[] classProp = null;
 
@@ -174,6 +172,13 @@ public class XWorkConverter extends DefaultTypeConverter {
         }
     }
 
+    /**
+     * Looks for a TypeConverter in the default mappings.
+     *
+     * @param className name of the class the TypeConverter must handle
+     * @return a TypeConverter to handle the specified class or null if none can
+     * be found
+     */
     public TypeConverter lookup(String className) {
         if (unknownMappings.contains(className)) {
             return null;
@@ -204,6 +209,13 @@ public class XWorkConverter extends DefaultTypeConverter {
         return result;
     }
 
+    /**
+     * Looks for a TypeConverter in the default mappings.
+     *
+     * @param clazz the class the TypeConverter must handle
+     * @return a TypeConverter to handle the specified class or null if none can
+     * be found
+     */
     public TypeConverter lookup(Class clazz) {
         return lookup(clazz.getName());
     }
@@ -294,28 +306,74 @@ public class XWorkConverter extends DefaultTypeConverter {
         return null;
     }
 
+    /**
+     * Looks for converter mappings for the specified class and adds it to an
+     * existing map.  Only new converters are added.  If a converter is defined
+     * on a key that already exists, the converter is ignored.
+     *
+     * @param mapping an existing map to add new converter mappings to
+     * @param clazz class to look for converter mappings for
+     */
+    private void addConverterMapping(Map mapping, Class clazz) {
+        try {
+            InputStream is = FileManager.loadFile(buildConverterFilename(clazz), clazz);
+
+            if (is != null) {
+                Properties prop = new Properties();
+                prop.load(is);
+
+                Iterator it = prop.entrySet().iterator();
+
+                while (it.hasNext()) {
+                    Map.Entry entry = (Map.Entry) it.next();
+                    String key = (String) entry.getKey();
+
+                    if (mapping.containsKey(key)) {
+                        break;
+                    }
+
+                    if (!key.startsWith("Collection_")) {
+                        mapping.put(key, createTypeConverter((String) entry.getValue()));
+                    } else {
+                        mapping.put(key, entry.getValue());
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            LOG.error("Problem loading properties for " + clazz.getName(), ex);
+        }
+    }
+
+    /**
+     * Looks for converter mappings for the specified class, traversing up its
+     * class hierarchy and interfaces and adding any additional mappings it may
+     * find.  Mappings lower in the hierarchy have priority over those higher
+     * in the hierarcy.
+     *
+     * @param clazz the class to look for converter mappings for
+     * @return the converter mappings
+     */
     private Map buildConverterMapping(Class clazz) throws Exception {
         Map mapping = new HashMap();
 
-        String resource = buildConverterFilename(clazz);
-        InputStream is = FileManager.loadFile(resource, clazz);
+        // check for conversion mapping associated with super classes and any implemented interfaces
+        Class curClazz = clazz;
 
-        if (is != null) {
-            Properties props = new Properties();
-            props.load(is);
-            mapping.putAll(props);
+        while (!curClazz.equals(Object.class)) {
+            // add current class' mappings
+            addConverterMapping(mapping, clazz);
 
-            for (Iterator iterator = mapping.entrySet().iterator();
-                    iterator.hasNext();) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                String propName = (String) entry.getKey();
-                String className = (String) entry.getValue();
+            // check interfaces' mappings
+            Class[] interfaces = curClazz.getInterfaces();
 
-                if (!propName.startsWith("Collection_")) {
-                    entry.setValue(createTypeConverter(className));
-                }
+            for (int x = 0; x < interfaces.length; x++) {
+                addConverterMapping(mapping, interfaces[x]);
             }
 
+            curClazz = curClazz.getSuperclass();
+        }
+
+        if (mapping.size() > 0) {
             mappings.put(clazz, mapping);
         } else {
             noMapping.add(clazz);
@@ -360,6 +418,14 @@ public class XWorkConverter extends DefaultTypeConverter {
         }
     }
 
+    /**
+     * Recurses through a class' interfaces and class hierarchy looking for a
+     * TypeConverter in the default mapping that can handle the specified class.
+     *
+     * @param clazz the class the TypeConverter must handle
+     * @return a TypeConverter to handle the specified class or null if none can
+     * be found
+     */
     private TypeConverter lookupSuper(Class clazz) {
         TypeConverter result = null;
 
