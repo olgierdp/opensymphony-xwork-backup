@@ -17,6 +17,7 @@ import ognl.OgnlException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -124,6 +125,15 @@ public class XWorkConverterTest extends TestCase {
         message = XWorkConverter.getConversionErrorMessage("foo", stack);
         assertNotNull(message);
         assertEquals("Invalid field value for field \"foo\".", message);
+    }
+
+    public void testLocalizedDateConversion() throws Exception {
+        Date date = new Date(System.currentTimeMillis());
+        Locale locale = Locale.GERMANY;
+        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+        String dateString = df.format(date);
+        context.put(ActionContext.LOCALE, locale);
+        assertEquals(dateString, converter.convertValue(context, null, null, null, date, String.class));
     }
 
     public void testStringArrayToCollection() {

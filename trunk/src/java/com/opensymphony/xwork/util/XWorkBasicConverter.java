@@ -73,6 +73,16 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return result;
     }
 
+    private Locale getLocale(Map context) {
+        Locale locale = (Locale) context.get(ActionContext.LOCALE);
+
+        if (locale == null) {
+            locale = Locale.getDefault();
+        }
+
+        return locale;
+    }
+
     private Object doConvertToArray(Map context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;
         Class componentType = toType.getComponentType();
@@ -125,11 +135,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
         if (value instanceof String) {
             String sa = (String) value;
-            Locale locale = (Locale) context.get(ActionContext.LOCALE);
-
-            if (locale == null) {
-                locale = Locale.getDefault();
-            }
+            Locale locale = getLocale(context);
 
             DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
 
@@ -221,8 +227,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
             result = TextUtils.join(", ", intArray);
         } else if (value instanceof Date) {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-            result = sdf.format(value);
+            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, getLocale(context));
+            result = df.format(value);
         } else if (value instanceof String[]) {
             result = TextUtils.join(", ", (String[]) value);
         }
