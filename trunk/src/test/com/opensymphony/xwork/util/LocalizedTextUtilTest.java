@@ -10,6 +10,7 @@ import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.test.ModelDrivenAction2;
 import com.opensymphony.xwork.test.TestBean2;
+import com.opensymphony.xwork.test.subtest.NullModelDrivenAction;
 
 import junit.framework.TestCase;
 
@@ -172,6 +173,26 @@ public class LocalizedTextUtilTest extends TestCase {
             ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
 
             String message = LocalizedTextUtil.findText(ModelDrivenAction2.class, "package.properties", Locale.getDefault());
+            assertEquals("It works!", message);
+        } catch (MissingResourceException ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage());
+        }
+    }
+
+    /**
+     * Regression test for XW-266, make sure null models don't throw an NPE.
+     * Also tests that hierarchy is traversed for package.properties.
+     */
+    public void testFindTestInPackageInHierarchyWithNullModel() {
+        try {
+            ModelDriven action = new NullModelDrivenAction();
+
+            Mock mockActionInvocation = new Mock(ActionInvocation.class);
+            mockActionInvocation.expectAndReturn("getAction", action);
+            ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
+
+            String message = LocalizedTextUtil.findText(NullModelDrivenAction.class, "package.properties", Locale.getDefault());
             assertEquals("It works!", message);
         } catch (MissingResourceException ex) {
             ex.printStackTrace();

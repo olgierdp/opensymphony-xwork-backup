@@ -244,10 +244,12 @@ public class LocalizedTextUtil {
             // ActionInvocation may be null if we're being run from a Sitemesh filter, so we won't get model texts if this is null
             if (actionInvocation != null) {
                 Action action = actionInvocation.getAction();
-                msg = findMessage(((ModelDriven) action).getModel().getClass(), aTextName, indexedTextName, locale, args, null, valueStack);
-
-                if (msg != null) {
-                    return msg;
+                Object model = ((ModelDriven) action).getModel();
+                if (model != null) {
+                    msg = findMessage(model.getClass(), aTextName, indexedTextName, locale, args, null, valueStack);
+                    if (msg != null) {
+                        return msg;
+                    }
                 }
             }
         }
@@ -257,18 +259,26 @@ public class LocalizedTextUtil {
              (clazz != null) && !clazz.equals(Object.class);
              clazz = clazz.getSuperclass()) {
             if (clazz.getPackage() != null) {
-                String packageName = clazz.getPackage().getName() + ".package";
-                msg = getMessage(packageName, locale, aTextName, valueStack, args);
-
-                if (msg != null) {
-                    return msg;
-                }
-
-                if (indexedTextName != null) {
-                    msg = getMessage(packageName, locale, indexedTextName, valueStack, args);
+                String basePackageName = clazz.getPackage().getName();
+                while (basePackageName != null) {
+                    String packageName = basePackageName + ".package";
+                    msg = getMessage(packageName, locale, aTextName, valueStack, args);
 
                     if (msg != null) {
                         return msg;
+                    }
+
+                    if (indexedTextName != null) {
+                        msg = getMessage(packageName, locale, indexedTextName, valueStack, args);
+
+                        if (msg != null) {
+                            return msg;
+                        }
+                    }
+                    if (basePackageName.lastIndexOf('.') != -1) {
+                        basePackageName = basePackageName.substring(0, basePackageName.lastIndexOf('.'));
+                    } else {
+                        basePackageName = null;
                     }
                 }
             }
