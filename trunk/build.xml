@@ -175,6 +175,9 @@
 
     <target name="dist" depends="jar, docs">
         <copy file="${build}/${name}-${version}.jar" todir="${build.dist}"/>
+        <copy todir="${build.dist}/src">
+            <fileset dir="${src.java}"/>
+        </copy>
         <zip zipfile="${build}/${name}-${version}.zip" basedir="${build.dist}"/>
     </target>
 
