@@ -28,8 +28,9 @@ public class ChainingInterceptor extends AroundInterceptor {
     protected void before(ActionInvocation invocation) throws Exception {
         OgnlValueStack stack = invocation.getStack();
         CompoundRoot root = stack.getRoot();
-
-        for (Iterator iterator = root.iterator(); iterator.hasNext();) {
+		Iterator iterator = root.iterator();
+		iterator.next();
+        while(iterator.hasNext()) {
             Object o = iterator.next();
             OgnlUtil.copy(o, invocation.getAction(), ActionContext.getContext().getContextMap());
         }
