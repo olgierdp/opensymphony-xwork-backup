@@ -1,8 +1,9 @@
 <p>
-<h3>About</h3>
+<h3>XWork</h3>
+<a href="/xwork">Home</a><br/>
 <a href="https://xwork.dev.java.net/files/documents/709/5325/xwork-1.0.1.zip">Download</a><br>
-<a href="wikidocs/Documentation.html">Documentation</a><br>
-<a href="api/">API Documentation</a><br>
+<a href="/xwork/wikidocs/Documentation.html">Documentation</a><br>
+<a href="/xwork.api/">API Documentation</a><br>
 </p>
 <h3>Services</h3>
 <b>JIRA</b><br>

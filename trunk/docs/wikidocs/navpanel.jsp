@@ -1,1 +1,1 @@
-<%@ include file="../navpanel.jsp" %> 
+<jsp:include page="../navpanel.jsp" /> 
