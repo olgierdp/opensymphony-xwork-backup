@@ -55,6 +55,7 @@ public class XWorkConverterTest extends TestCase {
         OgnlValueStack stack = new OgnlValueStack();
         stack.push(action);
         ActionContext.setContext(new ActionContext(stack.getContext()));
+        ActionContext.getContext().put("report.conversion.errors", Boolean.TRUE);
         assertNull("Conversion should have failed.", converter.convertValue(context, action, null, "date", new String[] {
                     "invalid date"
                 }, Date.class));
@@ -70,6 +71,7 @@ public class XWorkConverterTest extends TestCase {
         stack.push(action);
         stack.push(action.getModel());
         ActionContext.setContext(new ActionContext(stack.getContext()));
+        ActionContext.getContext().put("report.conversion.errors", Boolean.TRUE);
         assertNull("Conversion should have failed.", converter.convertValue(context, action, null, "birth", new String[] {
                     "invalid date"
                 }, Date.class));

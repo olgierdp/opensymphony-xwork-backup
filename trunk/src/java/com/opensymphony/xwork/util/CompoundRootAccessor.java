@@ -59,7 +59,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
             return root.cutStack(index.intValue());
         } else if (name instanceof String) {
-            if ("that".equals(name)) {
+            if ("top".equals(name)) {
                 if (root.size() > 0) {
                     return root.get(0);
                 } else {

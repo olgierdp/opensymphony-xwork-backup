@@ -184,7 +184,7 @@ public class OgnlValueStackTest extends TestCase {
         assertNull(vs.findValue("@com.nothing.here.Nothing@BLAH"));
     }
 
-    public void testThat() {
+    public void testTop() {
         OgnlValueStack vs = new OgnlValueStack();
 
         Dog dog1 = new Dog();
@@ -197,14 +197,14 @@ public class OgnlValueStackTest extends TestCase {
         vs.push(dog1);
         vs.push(dog2);
 
-        assertEquals(dog2, vs.findValue("that"));
-        assertEquals("Jack", vs.findValue("that.name"));
+        assertEquals(dog2, vs.findValue("top"));
+        assertEquals("Jack", vs.findValue("top.name"));
     }
 
     public void testThatNull() {
         OgnlValueStack vs = new OgnlValueStack();
 
-        assertNull(vs.findValue("that"));
+        assertNull(vs.findValue("top"));
     }
 
     public void testTwoDogs() {

@@ -10,6 +10,7 @@ import com.opensymphony.xwork.ActionProxyFactory;
 import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.ValidationAware;
 import com.opensymphony.xwork.ValidationAwareSupport;
+import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 
@@ -99,6 +100,9 @@ public class ExpressionValidatorTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
+        OgnlValueStack stack = new OgnlValueStack();
+        ActionContext.setContext(new ActionContext(stack.getContext()));
+
         ConfigurationManager.clearConfigurationProviders();
         ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
         ConfigurationManager.getConfiguration().reload();
