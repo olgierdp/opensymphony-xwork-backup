@@ -205,7 +205,15 @@ public class ActionValidatorManager {
         }
 
         if (!clazz.equals(Object.class)) {
-            validators.addAll(buildValidators(clazz.getSuperclass(), context, checkFile, checked));
+            if (!clazz.isInterface()) {
+                validators.addAll(buildValidators(clazz.getSuperclass(), context, checkFile, checked));
+            } else {
+                Class[] interfaces = clazz.getInterfaces();
+
+                for (int x = 0; x < interfaces.length; x++) {
+                    validators.addAll(buildValidators(interfaces[x], context, checkFile, checked));
+                }
+            }
         }
 
         // look for validators for implemented interfaces
