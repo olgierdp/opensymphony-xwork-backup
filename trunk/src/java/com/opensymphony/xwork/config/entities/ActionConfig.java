@@ -6,6 +6,8 @@ package com.opensymphony.xwork.config.entities;
 
 import com.opensymphony.xwork.interceptor.Interceptor;
 
+import java.io.Serializable;
+
 import java.lang.reflect.Method;
 
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ import java.util.Map;
  * @author $Author$
  * @version $Revision$
  */
-public class ActionConfig implements InterceptorListHolder, Parameterizable {
+public class ActionConfig implements InterceptorListHolder, Parameterizable, Serializable {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     protected List interceptors;

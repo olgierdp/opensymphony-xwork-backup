@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork.util;
 
+import java.io.Serializable;
+
 
 /**
  *
@@ -12,7 +14,7 @@ package com.opensymphony.xwork.util;
  * @author $Author$
  * @version $Revision$
  */
-public class Dog {
+public class Dog implements Serializable {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String SCIENTIFIC_NAME = "Canine";

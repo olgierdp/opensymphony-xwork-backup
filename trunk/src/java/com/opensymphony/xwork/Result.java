@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork;
 
+import java.io.Serializable;
+
 
 /**
  * All results (except for NONE) of an Action are mapped to a View implementation.
@@ -18,7 +20,7 @@ package com.opensymphony.xwork;
  * @author $Author$
  * @version $Revision$
  */
-public interface Result {
+public interface Result extends Serializable {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**

@@ -6,6 +6,12 @@ package com.opensymphony.xwork.util;
 
 import junit.framework.TestCase;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import java.math.BigDecimal;
 
 
@@ -126,6 +132,29 @@ public class OgnlValueStackTest extends TestCase {
 
         assertEquals("Jack", vs.findValue("name"));
         assertEquals("Rover", vs.findValue("[1].name"));
+    }
+
+    public void testSerializable() throws IOException, ClassNotFoundException {
+        OgnlValueStack vs = new OgnlValueStack();
+
+        Dog dog = new Dog();
+        dog.setAge(12);
+        dog.setName("Rover");
+
+        vs.push(dog);
+        assertEquals("Rover", vs.findValue("name", String.class));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+
+        oos.writeObject(vs);
+        oos.flush();
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+
+        OgnlValueStack newVs = (OgnlValueStack) ois.readObject();
+        assertEquals("Rover", newVs.findValue("name", String.class));
     }
 
     public void testSettingDogGender() {

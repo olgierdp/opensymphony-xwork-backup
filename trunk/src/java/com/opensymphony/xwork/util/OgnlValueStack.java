@@ -12,6 +12,10 @@ import ognl.Ognl;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 
+import java.io.IOException;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+
 import java.util.Map;
 
 
@@ -21,7 +25,7 @@ import java.util.Map;
  * @author $Author$
  * @version $Revision$
  */
-public class OgnlValueStack {
+public class OgnlValueStack implements Serializable {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String VALUE_STACK = "com.opensymphony.xwork.util.OgnlValueStack.ValueStack";
@@ -36,15 +40,12 @@ public class OgnlValueStack {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     CompoundRoot root;
-    Map context;
+    transient Map context;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
     public OgnlValueStack() {
-        this.root = new CompoundRoot();
-        this.context = Ognl.createDefaultContext(this.root, accessor, XWorkConverter.getInstance());
-        context.put(VALUE_STACK, this);
-        Ognl.setClassResolver(context, accessor);
+        setRoot(new CompoundRoot());
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -99,5 +100,19 @@ public class OgnlValueStack {
 
     public int size() {
         return root.size();
+    }
+
+    private void setRoot(CompoundRoot compoundRoot) {
+        this.root = compoundRoot;
+        this.context = Ognl.createDefaultContext(this.root, accessor, XWorkConverter.getInstance());
+        context.put(VALUE_STACK, this);
+        Ognl.setClassResolver(context, accessor);
+    }
+
+    private Object readResolve() throws ObjectStreamException {
+        OgnlValueStack aStack = new OgnlValueStack();
+        aStack.setRoot(this.root);
+
+        return aStack;
     }
 }

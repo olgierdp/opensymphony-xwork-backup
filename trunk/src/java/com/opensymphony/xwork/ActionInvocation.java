@@ -6,13 +6,15 @@ package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.util.OgnlValueStack;
 
+import java.io.Serializable;
+
 
 /**
  * ActionInvocation
  * @author Jason Carreira
  * Created Jun 9, 2003 11:37:27 AM
  */
-public interface ActionInvocation {
+public interface ActionInvocation extends Serializable {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     Action getAction();
