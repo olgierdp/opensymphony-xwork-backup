@@ -181,7 +181,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/core/ognl-2.6.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/core/ognl-2.6.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
