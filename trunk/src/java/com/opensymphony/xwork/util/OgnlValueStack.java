@@ -16,6 +16,9 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  *
@@ -29,6 +32,7 @@ public class OgnlValueStack implements Serializable {
     public static final String VALUE_STACK = "com.opensymphony.xwork.util.OgnlValueStack.ValueStack";
     public static final String REPORT_ERRORS_ON_NO_PROP = "com.opensymphony.xwork.util.OgnlValueStack.ReportErrorsOnNoProp";
     private static CompoundRootAccessor accessor;
+    private static Log LOG = LogFactory.getLog(OgnlValueStack.class);
 
     static {
         accessor = new CompoundRootAccessor();
@@ -102,6 +106,9 @@ public class OgnlValueStack implements Serializable {
             return Ognl.getValue(OgnlUtil.compile(expr), context, root);
         } catch (OgnlException e) {
             return null;
+        } catch (Exception e) {
+            LOG.warn("Caught an exception while evaluating expression '" + expr + "' against value stack", e);
+            return null;
         }
     }
 
@@ -113,6 +120,9 @@ public class OgnlValueStack implements Serializable {
 
             return Ognl.getValue(OgnlUtil.compile(expr), context, root, asType);
         } catch (OgnlException e) {
+            return null;
+        } catch (Exception e) {
+            LOG.warn("Caught an exception while evaluating expression '" + expr + "' against value stack", e);
             return null;
         }
     }

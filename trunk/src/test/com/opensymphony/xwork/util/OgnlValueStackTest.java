@@ -68,6 +68,11 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals("OK", stack.findValue("exceptionMethod()"));
     }
 
+    public void testCallMethodOnNullObject() {
+        OgnlValueStack stack = new OgnlValueStack();
+        assertNull(stack.findValue("foo.size()"));
+    }
+
     public void testCallMethodWithNullArg() {
         SimpleAction action = new SimpleAction();
         OgnlValueStack stack = new OgnlValueStack();
