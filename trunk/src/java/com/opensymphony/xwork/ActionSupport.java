@@ -106,7 +106,7 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
         return SUCCESS;
     }
 
-    public String doDefault() {
+    public String doDefault() throws Exception {
         return SUCCESS;
     }
 
