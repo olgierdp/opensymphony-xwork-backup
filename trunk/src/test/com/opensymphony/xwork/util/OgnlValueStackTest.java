@@ -392,6 +392,26 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals(false, dog.isMale());
     }
 
+    public void testMismatchedGettersAndSettersCauseExceptionInSet() {
+        OgnlValueStack vs = new OgnlValueStack();
+
+        BadJavaBean bean = new BadJavaBean();
+        vs.push(bean);
+
+        try {
+            vs.setValue("count","1");
+            fail("Expected an exception for mismatched getter and setter");
+        } catch (RuntimeException e) {
+            //expected
+        }
+        try {
+            vs.setValue("count2","a");
+            fail("Expected an exception for mismatched getter and setter");
+        } catch (RuntimeException e) {
+            //expected
+        }
+    }
+
     public void testStatics() {
         OgnlValueStack vs = new OgnlValueStack();
 
@@ -452,5 +472,26 @@ public class OgnlValueStackTest extends TestCase {
 
         assertEquals(dog2, vs.pop());
         assertEquals("Rover", vs.findValue("name"));
+    }
+
+    class BadJavaBean {
+        private int count;
+        private int count2;
+
+        public String getCount() {
+            return "" + count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+        public int getCount2() {
+            return count2;
+        }
+
+        public void setCount2(String count2) {
+            this.count2 = Integer.parseInt(count2);
+        }
     }
 }
