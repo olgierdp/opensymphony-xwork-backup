@@ -9,3 +9,4 @@ maven.log
 .project
 .classpath
 bin
+build-*.xml
