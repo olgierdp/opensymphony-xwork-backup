@@ -36,11 +36,7 @@ import org.xml.sax.SAXParseException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -60,7 +56,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private Configuration configuration;
-    private List includedFileNames = new ArrayList();
+    private Set includedFileNames = new HashSet();
     private String configFileName = "xwork.xml";
 
     //~ Constructors ///////////////////////////////////////////////////////////
@@ -445,49 +441,52 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     //        }
     //    }
     private void loadConfigurationFile(String fileName, DocumentBuilder db) {
-        Document doc = null;
-        InputStream is = null;
+        if (!includedFileNames.contains(fileName)) {
+            includedFileNames.add(fileName);
 
-        try {
-            is = getInputStream(fileName);
+            Document doc = null;
+            InputStream is = null;
 
-            if (is == null) {
-                throw new Exception("Could not open file " + fileName);
-            }
+            try {
+                is = getInputStream(fileName);
 
-            doc = db.parse(is);
-        } catch (Exception e) {
-            final String s = "Caught exception while loading file " + fileName;
-            LOG.error(s, e);
-            throw new ConfigurationException(s, e);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    LOG.error("Unable to close input stream", e);
+                if (is == null) {
+                    throw new Exception("Could not open file " + fileName);
+                }
+
+                doc = db.parse(is);
+            } catch (Exception e) {
+                final String s = "Caught exception while loading file " + fileName;
+                LOG.error(s, e);
+                throw new ConfigurationException(s, e);
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        LOG.error("Unable to close input stream", e);
+                    }
                 }
             }
-        }
 
-        Element rootElement = doc.getDocumentElement();
-        NodeList children = rootElement.getChildNodes();
-        int childSize = children.getLength();
+            Element rootElement = doc.getDocumentElement();
+            NodeList children = rootElement.getChildNodes();
+            int childSize = children.getLength();
 
-        for (int i = 0; i < childSize; i++) {
-            Node childNode = children.item(i);
+            for (int i = 0; i < childSize; i++) {
+                Node childNode = children.item(i);
 
-            if (childNode instanceof Element) {
-                Element child = (Element) childNode;
+                if (childNode instanceof Element) {
+                    Element child = (Element) childNode;
 
-                final String nodeName = child.getNodeName();
+                    final String nodeName = child.getNodeName();
 
-                if (nodeName.equals("package")) {
-                    addPackage(child);
-                } else if (nodeName.equals("include")) {
-                    String includeFileName = child.getAttribute("file");
-                    includedFileNames.add(includeFileName);
-                    loadConfigurationFile(includeFileName, db);
+                    if (nodeName.equals("package")) {
+                        addPackage(child);
+                    } else if (nodeName.equals("include")) {
+                        String includeFileName = child.getAttribute("file");
+                        loadConfigurationFile(includeFileName, db);
+                    }
                 }
             }
         }
