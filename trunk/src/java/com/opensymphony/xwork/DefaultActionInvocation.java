@@ -9,14 +9,12 @@ import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.interceptor.PreResultListener;
 import com.opensymphony.xwork.util.OgnlValueStack;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +23,7 @@ import java.util.Map;
 
 /**
  * The Default ActionInvocation implementation
+ *
  * @author $Author$
  * @version $Revision$
  * @see com.opensymphony.xwork.DefaultActionProxy
@@ -40,13 +39,13 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected ActionProxy proxy;
     protected List preResultListeners;
     protected Map extraContext;
-    ActionContext invocationContext;
-    Iterator interceptors;
-    OgnlValueStack stack;
-    Result result;
-    String resultCode;
-    boolean executed = false;
-    boolean pushAction = true;
+    protected ActionContext invocationContext;
+    protected Iterator interceptors;
+    protected OgnlValueStack stack;
+    protected Result result;
+    protected String resultCode;
+    protected boolean executed = false;
+    protected boolean pushAction = true;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
@@ -164,11 +163,7 @@ public class DefaultActionInvocation implements ActionInvocation {
             Interceptor interceptor = (Interceptor) interceptors.next();
             resultCode = interceptor.intercept(this);
         } else {
-            if (proxy.getConfig().getMethodName() == null) {
-                resultCode = getAction().execute();
-            } else {
-                resultCode = invokeAction(getAction(), proxy.getConfig());
-            }
+            resultCode = invokeAction(getAction(), proxy.getConfig());
         }
 
         // this is needed because the result will be executed, then control will return to the Interceptor, which will
@@ -176,7 +171,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         if (!executed) {
             if (preResultListeners != null) {
                 for (Iterator iterator = preResultListeners.iterator();
-                        iterator.hasNext();) {
+                     iterator.hasNext();) {
                     PreResultListener listener = (PreResultListener) iterator.next();
                     listener.beforeResult(this, resultCode);
                 }
@@ -283,34 +278,38 @@ public class DefaultActionInvocation implements ActionInvocation {
         interceptors = interceptorList.iterator();
     }
 
-    private String invokeAction(Action action, ActionConfig actionConfig) throws Exception {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Executing action method = " + actionConfig.getMethodName());
-        }
-
-        try {
-            Method method = actionConfig.getMethod(action.getClass());
-
-            if (action instanceof Proxy) {
-                try {
-                    return (String) Proxy.getInvocationHandler(action).invoke(action, method, new Object[0]);
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                    throw new Exception("Error invoking on proxy: " + throwable.getMessage());
-                }
-            } else {
-                return (String) method.invoke(action, new Object[0]);
+    protected String invokeAction(Action action, ActionConfig actionConfig) throws Exception {
+        if (proxy.getConfig().getMethodName() == null) {
+            return getAction().execute();
+        } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Executing action method = " + actionConfig.getMethodName());
             }
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Method '" + actionConfig.getMethodName() + "()' is not defined in action '" + getAction().getClass() + "'");
-        } catch (InvocationTargetException e) {
-            // We try to return the source exception.
-            Throwable t = e.getTargetException();
 
-            if (t instanceof Exception) {
-                throw (Exception) t;
-            } else {
-                throw e;
+            try {
+                Method method = actionConfig.getMethod(action.getClass());
+
+                if (action instanceof Proxy) {
+                    try {
+                        return (String) Proxy.getInvocationHandler(action).invoke(action, method, new Object[0]);
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                        throw new Exception("Error invoking on proxy: " + throwable.getMessage());
+                    }
+                } else {
+                    return (String) method.invoke(action, new Object[0]);
+                }
+            } catch (NoSuchMethodException e) {
+                throw new IllegalArgumentException("Method '" + actionConfig.getMethodName() + "()' is not defined in action '" + getAction().getClass() + "'");
+            } catch (InvocationTargetException e) {
+                // We try to return the source exception.
+                Throwable t = e.getTargetException();
+
+                if (t instanceof Exception) {
+                    throw (Exception) t;
+                } else {
+                    throw e;
+                }
             }
         }
     }
