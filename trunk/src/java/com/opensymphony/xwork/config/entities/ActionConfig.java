@@ -7,7 +7,9 @@ package com.opensymphony.xwork.config.entities;
 import com.opensymphony.xwork.interceptor.Interceptor;
 
 import java.io.Serializable;
+
 import java.lang.reflect.Method;
+
 import java.util.*;
 
 
@@ -100,7 +102,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
         if (methodName != null) {
             method = clazz.getMethod(methodName, new Class[0]);
         } else // return default execute() method if method name is not specified
-        {
+         {
             method = clazz.getMethod("execute", new Class[0]);
         }
 

@@ -22,15 +22,15 @@ public class Foo {
     Bar bar;
     Date birthday;
     Foo child;
+    List cats;
+    List strings;
+    Map catMap;
     String title;
     long[] points;
     Foo[] relatives;
     boolean useful;
     int number;
     long aLong;
-    List cats;
-    Map catMap;
-    List strings;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -56,6 +56,22 @@ public class Foo {
 
     public Date getBirthday() {
         return birthday;
+    }
+
+    public void setCatMap(Map catMap) {
+        this.catMap = catMap;
+    }
+
+    public Map getCatMap() {
+        return catMap;
+    }
+
+    public void setCats(List cats) {
+        this.cats = cats;
+    }
+
+    public List getCats() {
+        return cats;
     }
 
     public void setChild(Foo child) {
@@ -90,6 +106,14 @@ public class Foo {
         return relatives;
     }
 
+    public void setStrings(List strings) {
+        this.strings = strings;
+    }
+
+    public List getStrings() {
+        return strings;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -104,29 +128,5 @@ public class Foo {
 
     public boolean isUseful() {
         return useful;
-    }
-
-    public List getCats() {
-        return cats;
-    }
-
-    public void setCats(List cats) {
-        this.cats = cats;
-    }
-
-    public Map getCatMap() {
-        return catMap;
-    }
-
-    public void setCatMap(Map catMap) {
-        this.catMap = catMap;
-    }
-
-    public List getStrings() {
-        return strings;
-    }
-
-    public void setStrings(List strings) {
-        this.strings = strings;
     }
 }

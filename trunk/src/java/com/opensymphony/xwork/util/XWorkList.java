@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.ObjectFactory;
+
 import java.util.AbstractList;
 import java.util.ArrayList;
 
@@ -29,7 +31,7 @@ public class XWorkList extends ArrayList {
     public synchronized Object get(int index) {
         while (index >= this.size()) {
             try {
-                this.add(clazz.newInstance());
+                this.add(ObjectFactory.getObjectFactory().buildBean(clazz));
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException(e.getMessage());

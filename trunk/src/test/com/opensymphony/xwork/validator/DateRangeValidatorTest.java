@@ -12,10 +12,10 @@ import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 
 import junit.framework.TestCase;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -25,9 +25,11 @@ import java.util.Locale;
  *         Created Feb 9, 2003 1:25:42 AM
  */
 public class DateRangeValidatorTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
+    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Locale origLocale;
+
+    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Tests whether the date range validation is working. Should produce an validation error,
@@ -47,7 +49,6 @@ public class DateRangeValidatorTest extends TestCase {
 
         String errorMessage = (String) errorMessages.get(0);
         assertNotNull(errorMessage);
-
     }
 
     protected void setUp() throws Exception {
@@ -61,5 +62,4 @@ public class DateRangeValidatorTest extends TestCase {
     protected void tearDown() throws Exception {
         Locale.setDefault(origLocale);
     }
-
 }

@@ -5,8 +5,10 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.mockobjects.dynamic.Mock;
+
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.util.OgnlValueStack;
+
 import junit.framework.TestCase;
 
 import java.util.Date;

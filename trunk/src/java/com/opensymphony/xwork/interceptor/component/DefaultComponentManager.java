@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork.interceptor.component;
 
+import com.opensymphony.xwork.ObjectFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -131,7 +133,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
                     Object newResource = newDcm.resourceInstances.get(depResource);
 
                     if (newResource == null) {
-                        newResource = depResource.newInstance();
+                        newResource = ObjectFactory.getObjectFactory().buildBean(depResource);
                     }
 
                     Class enabler = loadResource(newResource, newDcm);
