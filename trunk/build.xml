@@ -1,4 +1,5 @@
-<project default="jar" basedir=".">
+<project name="xwork" default="jar" basedir=".">
+
     <path id="cp">
         <fileset dir="lib">
             <include name="**/*.jar"/>
