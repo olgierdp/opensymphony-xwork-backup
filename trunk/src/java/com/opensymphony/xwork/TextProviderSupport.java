@@ -50,11 +50,7 @@ public class TextProviderSupport implements TextProvider {
     * @return     value of named text
     */
     public String getText(String aTextName) {
-        if (clazz != null) {
-            return LocalizedTextUtil.findText(clazz, aTextName, getLocale());
-        }
-
-        return LocalizedTextUtil.findText(bundle, aTextName, getLocale());
+        return getText(aTextName,aTextName,null);
     }
 
     /**
@@ -70,11 +66,7 @@ public class TextProviderSupport implements TextProvider {
      * @return     value of named text
      */
     public String getText(String aTextName, String defaultValue) {
-        if (clazz != null) {
-            return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), defaultValue, new Object[0]);
-        }
-
-        return LocalizedTextUtil.findText(bundle, aTextName, getLocale(), defaultValue, new Object[0]);
+        return getText(aTextName,defaultValue,null);
     }
 
     /**
@@ -90,11 +82,7 @@ public class TextProviderSupport implements TextProvider {
      * @return     value of named text
      */
     public String getText(String aTextName, List args) {
-        if (clazz != null) {
-            return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), aTextName, args.toArray());
-        }
-
-        return LocalizedTextUtil.findText(bundle, aTextName, getLocale(), aTextName, args.toArray());
+        return getText(aTextName,aTextName,args);
     }
 
     /**
@@ -112,9 +100,8 @@ public class TextProviderSupport implements TextProvider {
      */
     public String getText(String aTextName, String defaultValue, List args) {
         Object[] argsArray = ((args != null) ? args.toArray() : null);
-
         if (clazz != null) {
-            return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), defaultValue, argsArray);
+            return LocalizedTextUtil.findText(clazz,aTextName, getLocale(), defaultValue, argsArray);
         } else {
             return LocalizedTextUtil.findText(bundle, aTextName, getLocale(), defaultValue, argsArray);
         }
@@ -134,11 +121,14 @@ public class TextProviderSupport implements TextProvider {
      */
     public String getText(String aTextName, String defaultValue, List args, OgnlValueStack stack) {
         Object[] argsArray = ((args != null) ? args.toArray() : null);
-
+        Locale locale = (Locale) stack.getContext().get(ActionContext.LOCALE);
+        if (locale == null) {
+            locale = getLocale();
+        }
         if (clazz != null) {
-            return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), defaultValue, argsArray, stack);
+            return LocalizedTextUtil.findText(clazz, aTextName, locale, defaultValue, argsArray, stack);
         } else {
-            return LocalizedTextUtil.findText(bundle, aTextName, getLocale(), defaultValue, argsArray, stack);
+            return LocalizedTextUtil.findText(bundle, aTextName, locale, defaultValue, argsArray, stack);
         }
     }
 
