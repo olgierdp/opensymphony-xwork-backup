@@ -11,25 +11,18 @@ import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.test.ModelDrivenAction2;
 import com.opensymphony.xwork.test.User;
-
 import junit.framework.TestCase;
-
 import ognl.OgnlException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
 import java.text.DateFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.util.*;
 
 
 /**
- *
- *
  * @author $Author$
  * @version $Revision$
  */
@@ -42,7 +35,7 @@ public class XWorkConverterTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testArrayToNumberConversion() {
-        String[] value = new String[] {"12345"};
+        String[] value = new String[]{"12345"};
         assertEquals(new Integer(12345), converter.convertValue(context, null, null, null, value, Integer.class));
         assertEquals(new Long(12345), converter.convertValue(context, null, null, null, value, Long.class));
         value[0] = "123.45";
@@ -76,7 +69,7 @@ public class XWorkConverterTest extends TestCase {
         ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         ognlStackContext.put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, "bean.birth");
 
-        String[] value = new String[] {"invalid date"};
+        String[] value = new String[]{"invalid date"};
         assertEquals("Conversion should have failed.", null, converter.convertValue(ognlStackContext, action.getBean(), null, "birth", value, Date.class));
         stack.pop();
 
@@ -96,7 +89,7 @@ public class XWorkConverterTest extends TestCase {
         Map ognlStackContext = stack.getContext();
         ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
-        String[] value = new String[] {"invalid date"};
+        String[] value = new String[]{"invalid date"};
         assertEquals("Conversion should have failed.", null, converter.convertValue(ognlStackContext, action, null, "date", value, Date.class));
         stack.pop();
 
@@ -116,7 +109,7 @@ public class XWorkConverterTest extends TestCase {
         Map ognlStackContext = stack.getContext();
         ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
-        String[] value = new String[] {"invalid date"};
+        String[] value = new String[]{"invalid date"};
         assertEquals("Conversion should have failed.", null, converter.convertValue(ognlStackContext, action, null, "birth", value, Date.class));
         stack.pop();
         stack.pop();
@@ -175,9 +168,9 @@ public class XWorkConverterTest extends TestCase {
         list.add("foo");
         list.add("bar");
         list.add("baz");
-        assertEquals(list, converter.convertValue(context, null, null, null, new String[] {
-                    "foo", "bar", "baz"
-                }, Collection.class));
+        assertEquals(list, converter.convertValue(context, null, null, null, new String[]{
+            "foo", "bar", "baz"
+        }, Collection.class));
     }
 
     public void testStringArrayToList() {
@@ -185,75 +178,75 @@ public class XWorkConverterTest extends TestCase {
         list.add("foo");
         list.add("bar");
         list.add("baz");
-        assertEquals(list, converter.convertValue(context, null, null, null, new String[] {
-                    "foo", "bar", "baz"
-                }, List.class));
+        assertEquals(list, converter.convertValue(context, null, null, null, new String[]{
+            "foo", "bar", "baz"
+        }, List.class));
     }
 
     public void testStringArrayToPrimitiveWrappers() {
-        Long[] longs = (Long[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, Long[].class);
+        Long[] longs = (Long[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, Long[].class);
         assertNotNull(longs);
-        assertTrue(Arrays.equals(new Long[] {new Long(123), new Long(456)}, longs));
+        assertTrue(Arrays.equals(new Long[]{new Long(123), new Long(456)}, longs));
 
-        Integer[] ints = (Integer[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, Integer[].class);
+        Integer[] ints = (Integer[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, Integer[].class);
         assertNotNull(ints);
-        assertTrue(Arrays.equals(new Integer[] {
-                    new Integer(123), new Integer(456)
-                }, ints));
+        assertTrue(Arrays.equals(new Integer[]{
+            new Integer(123), new Integer(456)
+        }, ints));
 
-        Double[] doubles = (Double[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, Double[].class);
+        Double[] doubles = (Double[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, Double[].class);
         assertNotNull(doubles);
-        assertTrue(Arrays.equals(new Double[] {new Double(123), new Double(456)}, doubles));
+        assertTrue(Arrays.equals(new Double[]{new Double(123), new Double(456)}, doubles));
 
-        Float[] floats = (Float[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, Float[].class);
+        Float[] floats = (Float[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, Float[].class);
         assertNotNull(floats);
-        assertTrue(Arrays.equals(new Float[] {new Float(123), new Float(456)}, floats));
+        assertTrue(Arrays.equals(new Float[]{new Float(123), new Float(456)}, floats));
 
-        Boolean[] booleans = (Boolean[]) converter.convertValue(context, null, null, null, new String[] {
-                "true", "false"
-            }, Boolean[].class);
+        Boolean[] booleans = (Boolean[]) converter.convertValue(context, null, null, null, new String[]{
+            "true", "false"
+        }, Boolean[].class);
         assertNotNull(booleans);
-        assertTrue(Arrays.equals(new Boolean[] {Boolean.TRUE, Boolean.FALSE}, booleans));
+        assertTrue(Arrays.equals(new Boolean[]{Boolean.TRUE, Boolean.FALSE}, booleans));
     }
 
     public void testStringArrayToPrimitives() throws OgnlException {
-        long[] longs = (long[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, long[].class);
+        long[] longs = (long[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, long[].class);
         assertNotNull(longs);
-        assertTrue(Arrays.equals(new long[] {123, 456}, longs));
+        assertTrue(Arrays.equals(new long[]{123, 456}, longs));
 
-        int[] ints = (int[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, int[].class);
+        int[] ints = (int[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, int[].class);
         assertNotNull(ints);
-        assertTrue(Arrays.equals(new int[] {123, 456}, ints));
+        assertTrue(Arrays.equals(new int[]{123, 456}, ints));
 
-        double[] doubles = (double[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, double[].class);
+        double[] doubles = (double[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, double[].class);
         assertNotNull(doubles);
-        assertTrue(Arrays.equals(new double[] {123, 456}, doubles));
+        assertTrue(Arrays.equals(new double[]{123, 456}, doubles));
 
-        float[] floats = (float[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, float[].class);
+        float[] floats = (float[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, float[].class);
         assertNotNull(floats);
-        assertTrue(Arrays.equals(new float[] {123, 456}, floats));
+        assertTrue(Arrays.equals(new float[]{123, 456}, floats));
 
-        boolean[] booleans = (boolean[]) converter.convertValue(context, null, null, null, new String[] {
-                "true", "false"
-            }, boolean[].class);
+        boolean[] booleans = (boolean[]) converter.convertValue(context, null, null, null, new String[]{
+            "true", "false"
+        }, boolean[].class);
         assertNotNull(booleans);
-        assertTrue(Arrays.equals(new boolean[] {true, false}, booleans));
+        assertTrue(Arrays.equals(new boolean[]{true, false}, booleans));
     }
 
     public void testStringArrayToSet() {
@@ -261,9 +254,9 @@ public class XWorkConverterTest extends TestCase {
         list.add("foo");
         list.add("bar");
         list.add("baz");
-        assertEquals(list, converter.convertValue(context, null, null, null, new String[] {
-                    "foo", "bar", "bar", "baz"
-                }, Set.class));
+        assertEquals(list, converter.convertValue(context, null, null, null, new String[]{
+            "foo", "bar", "bar", "baz"
+        }, Set.class));
     }
 
     public void testStringToCollectionConversion() {
@@ -313,6 +306,25 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(new Boolean(true), converter.convertValue(context, null, null, null, "true", boolean.class));
         assertEquals(new BigDecimal(123.5), converter.convertValue(context, null, null, null, "123.5", BigDecimal.class));
         assertEquals(new BigInteger("123"), converter.convertValue(context, null, null, null, "123", BigInteger.class));
+    }
+
+    public void testOgnlValueStackWithTypeParameter() {
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(new Foo1());
+        Bar1 bar = (Bar1) stack.findValue("bar", Bar1.class);
+        assertNotNull(bar);
+    }
+
+    public static class Foo1 {
+        public Bar1 getBar() {
+            return new Bar1Impl();
+        }
+    }
+
+    public interface Bar1 {
+    }
+
+    public static class Bar1Impl implements Bar1 {
     }
 
     protected void setUp() throws Exception {

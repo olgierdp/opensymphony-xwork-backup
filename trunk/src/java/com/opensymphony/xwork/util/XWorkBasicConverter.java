@@ -32,7 +32,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     public Object convertValue(Map context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;
 
-        if (value.getClass().isAssignableFrom(toType)) {
+        if (toType.isAssignableFrom(value.getClass())) {
             // no need to convert at all, right?
             return value;
         }
