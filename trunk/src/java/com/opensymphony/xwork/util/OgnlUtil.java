@@ -36,13 +36,25 @@ public class OgnlUtil {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
- * Sets the object's properties using the default type converter.
- *
- * @param props the properties being set
- * @param o the object
- * @param context the action context
- */
+     * Sets the object's properties using the default type converter, defaulting to not throw exceptions for problems setting the properties.
+     *
+     * @param props the properties being set
+     * @param o the object
+     * @param context the action context
+     */
     public static void setProperties(Map props, Object o, Map context) {
+        setProperties(props, o, context, false);
+    }
+
+    /**
+     * Sets the object's properties using the default type converter.
+     *
+     * @param props the properties being set
+     * @param o the object
+     * @param context the action context
+     * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for problems setting the properties
+     */
+    public static void setProperties(Map props, Object o, Map context, boolean throwPropertyExceptions) {
         if (props == null) {
             return;
         }
@@ -57,36 +69,58 @@ public class OgnlUtil {
             Map.Entry entry = (Map.Entry) iterator.next();
             String expression = (String) entry.getKey();
 
-            internalSetProperty(expression, entry.getValue(), o, context);
+            internalSetProperty(expression, entry.getValue(), o, context, throwPropertyExceptions);
         }
 
         Ognl.setRoot(context, oldRoot);
     }
 
     /**
- * Sets the properties on the object using the default context
- * @param properties
- * @param o
- */
+     * Sets the properties on the object using the default context, defaulting to not throwing exceptions for problems setting the properties.
+     * @param properties
+     * @param o
+     */
     public static void setProperties(Map properties, Object o) {
-        Map context = Ognl.createDefaultContext(o);
-        setProperties(properties, o, context);
+        setProperties(properties, o, false);
     }
 
     /**
- * Sets the named property to the supplied value on the Object
- * @param name the name of the property to be set
- * @param value the value to set into the named property
- * @param o the object upon which to set the property
- * @param context the context which may include the TypeConverter
- */
+     * Sets the properties on the object using the default context
+     * @param properties the property map to set on the object
+     * @param o the object to set the properties into
+     * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for problems setting the properties
+     */
+    public static void setProperties(Map properties, Object o, boolean throwPropertyExceptions) {
+        Map context = Ognl.createDefaultContext(o);
+        setProperties(properties, o, context, throwPropertyExceptions);
+    }
+
+    /**
+     * Sets the named property to the supplied value on the Object, defaults to not throwing property exceptions
+     * @param name the name of the property to be set
+     * @param value the value to set into the named property
+     * @param o the object upon which to set the property
+     * @param context the context which may include the TypeConverter
+     */
     public static void setProperty(String name, Object value, Object o, Map context) {
+        setProperty(name, value, o, context, false);
+    }
+
+    /**
+     * Sets the named property to the supplied value on the Object
+     * @param name the name of the property to be set
+     * @param value the value to set into the named property
+     * @param o the object upon which to set the property
+     * @param context the context which may include the TypeConverter
+     * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for problems setting the property
+     */
+    public static void setProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
         Ognl.setTypeConverter(context, XWorkConverter.getInstance());
 
         Object oldRoot = Ognl.getRoot(context);
         Ognl.setRoot(context, o);
 
-        internalSetProperty(name, value, o, context);
+        internalSetProperty(name, value, o, context, throwPropertyExceptions);
 
         Ognl.setRoot(context, oldRoot);
     }
@@ -105,13 +139,13 @@ public class OgnlUtil {
     }
 
     /**
- * Copies the properties in the object "from" and sets them in the object "to"
- * using specified type converter, or {@link com.opensymphony.xwork.util.XWorkConverter} if none is specified.
- *
- * @param from the source object
- * @param to the target object
- * @param context the action context we're running under
- */
+     * Copies the properties in the object "from" and sets them in the object "to"
+     * using specified type converter, or {@link com.opensymphony.xwork.util.XWorkConverter} if none is specified.
+     *
+     * @param from the source object
+     * @param to the target object
+     * @param context the action context we're running under
+     */
     public static void copy(Object from, Object to, Map context) {
         Map contextFrom = Ognl.createDefaultContext(from);
         Ognl.setTypeConverter(contextFrom, XWorkConverter.getInstance());
@@ -144,18 +178,19 @@ public class OgnlUtil {
         }
     }
 
-    static void internalSetProperty(String name, Object value, Object o, Map context) {
+    static void internalSetProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
         try {
             Ognl.setValue(compile(name), context, o, value);
         } catch (OgnlException e) {
             Throwable reason = e.getReason();
             String msg = "Caught OgnlException while setting property '" + name + "' on type '" + o.getClass().getName() + "'.";
+            Throwable exception = (reason == null) ? e : reason;
 
-            if (reason != null) {
-                log.warn(msg, reason);
+            if (throwPropertyExceptions) {
+                log.error(msg, exception);
+                throw new RuntimeException(msg);
             } else {
-                //this happens a lot more often
-                log.debug(msg, e);
+                log.warn(msg, exception);
             }
         }
     }

@@ -174,6 +174,34 @@ public class OgnlUtilTest extends TestCase {
         assertEquals(foo.getBar().getTitle(), "i am barbaz");
     }
 
+    public void testExceptionForUnmatchedGetterAndSetterWithThrowPropertyException() {
+        Map props = new HashMap();
+        props.put("myIntegerProperty", new Integer(1234));
+
+        TestObject testObject = new TestObject();
+
+        try {
+            OgnlUtil.setProperties(props, testObject, true);
+            fail("should rise IllegalAccessException because of Wrong getter method");
+        } catch (Exception e) {
+            //expected
+        }
+    }
+
+    public void testExceptionForWrongPropertyNameWithThrowPropertyException() {
+        Map props = new HashMap();
+        props.put("myStringProperty", "testString");
+
+        TestObject testObject = new TestObject();
+
+        try {
+            OgnlUtil.setProperties(props, testObject, true);
+            fail("Should rise NoSuchPropertyException because of wrong property name");
+        } catch (Exception e) {
+            //expected
+        }
+    }
+
     public void testOgnlHandlesCrapAtTheEndOfANumber() {
         Foo foo = new Foo();
         Map context = Ognl.createDefaultContext(foo);
@@ -297,6 +325,36 @@ public class OgnlUtilTest extends TestCase {
 
         public String toString() {
             return address;
+        }
+    }
+
+    static class TestObject {
+        private Integer myIntegerProperty;
+        private Long myLongProperty;
+        private String myStrProperty;
+
+        public void setMyIntegerProperty(Integer myIntegerProperty) {
+            this.myIntegerProperty = myIntegerProperty;
+        }
+
+        public String getMyIntegerProperty() {
+            return myIntegerProperty.toString();
+        }
+
+        public void setMyLongProperty(Long myLongProperty) {
+            this.myLongProperty = myLongProperty;
+        }
+
+        public Long getMyLongProperty() {
+            return myLongProperty;
+        }
+
+        public void setMyStrProperty(String myStrProperty) {
+            this.myStrProperty = myStrProperty;
+        }
+
+        public String getMyStrProperty() {
+            return myStrProperty;
         }
     }
 
