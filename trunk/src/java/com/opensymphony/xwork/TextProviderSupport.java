@@ -14,11 +14,11 @@ import java.util.ResourceBundle;
 
 
 /**
- * TextProviderSupport
+ * Default TextProvider implementation.
+ *
  * @author Jason Carreira
- * Created Aug 3, 2003 12:21:12 AM
  */
-public class TextProviderSupport implements TextProvider, Serializable {
+public class TextProviderSupport implements TextProvider {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private Class clazz;
