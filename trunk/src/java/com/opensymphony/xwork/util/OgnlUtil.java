@@ -97,14 +97,8 @@ public class OgnlUtil {
         o = expressions.get(expression);
 
         if (o == null) {
-            synchronized (expressions) {
-                o = expressions.get(expression);
-
-                if (o == null) {
-                    o = Ognl.parseExpression(expression);
-                    expressions.put(expression, o);
-                }
-            }
+            o = Ognl.parseExpression(expression);
+            expressions.put(expression, o);
         }
 
         return o;
