@@ -79,13 +79,13 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     /**
-    * If the DefaultActionInvocation has been executed before and the Result is an instance of ActionChainResult, this method
-    * will walk down the chain of ActionChainResults until it finds a non-chain result, which will be returned. If the
-    * DefaultActionInvocation's result has not been executed before, the Result instance will be created and populated with
-    * the result params.
-    * @return a Result instance
-    * @throws Exception
-    */
+     * If the DefaultActionInvocation has been executed before and the Result is an instance of ActionChainResult, this method
+     * will walk down the chain of ActionChainResults until it finds a non-chain result, which will be returned. If the
+     * DefaultActionInvocation's result has not been executed before, the Result instance will be created and populated with
+     * the result params.
+     * @return a Result instance
+     * @throws Exception
+     */
     public Result getResult() throws Exception {
         if (result != null) {
             Result returnResult = result;
@@ -172,7 +172,21 @@ public class DefaultActionInvocation implements ActionInvocation {
         try {
             action = (Action) proxy.getConfig().getClazz().newInstance();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Unknown action name: " + e.getMessage());
+            String gripe = "";
+            if (proxy == null) {
+                gripe = "Whoa!  No ActionProxy instance found in current ActionInvocation.  This is bad ... very bad";
+            } else if (proxy.getConfig() == null) {
+                gripe = "Sheesh.  Where'd that ActionProxy get to?  I can't find it in the current ActionInvocation!?";
+            } else if (proxy.getConfig().getClazz() == null) {
+                gripe = "No Action defined for '" + proxy.getActionName() + "' in namespace '" + proxy.getNamespace() + "'";
+            } else {
+                gripe = "Unable to instantiate Action, " + proxy.getConfig().getClazz().getName() +
+                        ",  defined for '" + proxy.getActionName() +
+                        "' in namespace '" + proxy.getNamespace() + "'";
+            }
+
+            gripe += " -- " + e.getMessage();
+            throw new IllegalArgumentException(gripe);
         }
     }
 
@@ -212,8 +226,8 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     /**
-    * Uses getResult to get the final Result and executes it
-    */
+     * Uses getResult to get the final Result and executes it
+     */
     private void executeResult() throws Exception {
         Result aResult = getResult();
 
