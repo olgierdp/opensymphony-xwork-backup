@@ -6,6 +6,7 @@ package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.util.OgnlValueStack;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ public class ActionContext {
     public static final String LOCALE = "com.opensymphony.xwork.ActionContext.locale";
     public static final String TYPE_CONVERTER = "com.opensymphony.xwork.ActionContext.typeConverter";
     public static final String ACTION_INVOCATION = "com.opensymphony.xwork.ActionContext.actionInvocation";
+    public static final String CONVERSION_ERRORS = "com.opensymphony.xwork.ActionContext.conversionErrors";
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
@@ -85,6 +87,21 @@ public class ActionContext {
 
     public Map getContextMap() {
         return context;
+    }
+
+    public void setConversionErrors(Map conversionErrors) {
+        put(CONVERSION_ERRORS, conversionErrors);
+    }
+
+    public Map getConversionErrors() {
+        Map errors = (Map) get(CONVERSION_ERRORS);
+
+        if (errors == null) {
+            errors = new HashMap();
+            setConversionErrors(errors);
+        }
+
+        return errors;
     }
 
     /**

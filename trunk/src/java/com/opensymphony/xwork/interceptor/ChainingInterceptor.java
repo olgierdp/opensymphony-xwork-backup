@@ -4,16 +4,15 @@
  */
 package com.opensymphony.xwork.interceptor;
 
-import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.util.CompoundRoot;
 import com.opensymphony.xwork.util.OgnlUtil;
 import com.opensymphony.xwork.util.OgnlValueStack;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Collections;
-import java.util.ArrayList;
 
 
 /**
@@ -31,10 +30,12 @@ public class ChainingInterceptor extends AroundInterceptor {
     protected void before(ActionInvocation invocation) throws Exception {
         OgnlValueStack stack = invocation.getStack();
         CompoundRoot root = stack.getRoot();
+
         if (root.size() > 1) {
             List list = new ArrayList(root);
             list.remove(0);
             Collections.reverse(list);
+
             Iterator iterator = list.iterator();
 
             while (iterator.hasNext()) {

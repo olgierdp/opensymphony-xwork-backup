@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.util.FileManager;
+
 import com.opensymphony.xwork.ActionContext;
 
 import ognl.*;
@@ -33,7 +34,6 @@ public class XWorkConverter extends DefaultTypeConverter {
 
     private static XWorkConverter instance;
     private static final Log LOG = LogFactory.getLog(XWorkConverter.class);
-
     public static final String REPORT_CONVERSION_ERRORS = "report.conversion.errors";
     public static final String CONVERSION_PROPERTY_FULLNAME = "conversion.property.fullName";
 
@@ -59,6 +59,18 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
+
+    public static String getConversionErrorMessage(String propertyName, OgnlValueStack stack) {
+        String defaultMessage = "Invalid field value for field \"" + propertyName + "\".";
+        String getTextExpression = "getText('invalid.fieldvalue." + propertyName + "','" + defaultMessage + "')";
+        String message = (String) stack.findValue(getTextExpression);
+
+        if (message == null) {
+            message = defaultMessage;
+        }
+
+        return message;
+    }
 
     public static XWorkConverter getInstance() {
         if (instance == null) {
@@ -93,15 +105,14 @@ public class XWorkConverter extends DefaultTypeConverter {
             if ((target instanceof CompoundRoot) && (context != null)) {
                 OgnlContext ognlContext = (OgnlContext) context;
                 Evaluation eval = ognlContext.getCurrentEvaluation();
+
                 if (eval == null) {
                     eval = ognlContext.getLastEvaluation();
                 }
 
-                if (eval != null && eval.getLastChild() != null) {
+                if ((eval != null) && (eval.getLastChild() != null)) {
                     // since we changed what the source was (tricked Ognl essentially)
-                    if (eval.getLastChild().getLastChild() != null
-                            && eval.getLastChild().getLastChild().getSource() != null
-                            && eval.getLastChild().getLastChild().getSource().getClass() != CompoundRoot.class) {
+                    if ((eval.getLastChild().getLastChild() != null) && (eval.getLastChild().getLastChild().getSource() != null) && (eval.getLastChild().getLastChild().getSource().getClass() != CompoundRoot.class)) {
                         clazz = eval.getLastChild().getLastChild().getSource().getClass();
                     } else {
                         clazz = eval.getLastChild().getSource().getClass();
@@ -122,7 +133,6 @@ public class XWorkConverter extends DefaultTypeConverter {
 
                     if (mapping == null) {
                         mapping = buildConverterMapping(clazz);
-
                     } else {
                         mapping = conditionalReload(clazz, mapping);
                     }
@@ -135,7 +145,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         }
 
         if (tc == null) {
-            if (toClass.equals(String.class) && value != null && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class))) {
+            if (toClass.equals(String.class) && (value != null) && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class))) {
                 // when converting to a string, use the source target's class's converter
                 tc = lookup(value.getClass());
             } else {
@@ -173,6 +183,57 @@ public class XWorkConverter extends DefaultTypeConverter {
         }
     }
 
+    public TypeConverter lookup(String className) {
+        TypeConverter result = (TypeConverter) defaultMappings.get(className);
+
+        //Looks for super classes
+        if (result == null) {
+            Class clazz = null;
+
+            try {
+                clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+            } catch (ClassNotFoundException cnfe) {
+            }
+
+            result = lookupSuper(clazz);
+
+            if (result != null) {
+                //Register now, the next lookup will be faster
+                registerConverter(className, result);
+            }
+        }
+
+        return result;
+    }
+
+    public TypeConverter lookup(Class clazz) {
+        return lookup(clazz.getName());
+    }
+
+    public void registerConverter(String className, TypeConverter converter) {
+        defaultMappings.put(className, converter);
+    }
+
+    protected void handleConversionException(Map context, String property, Object value, Object object) {
+        if ((context.get(REPORT_CONVERSION_ERRORS) == Boolean.TRUE)) {
+            String realProperty = property;
+            String fullName = (String) context.get(CONVERSION_PROPERTY_FULLNAME);
+
+            if (fullName != null) {
+                realProperty = fullName;
+            }
+
+            Map conversionErrors = (Map) context.get(ActionContext.CONVERSION_ERRORS);
+
+            if (conversionErrors == null) {
+                conversionErrors = new HashMap();
+                context.put(ActionContext.CONVERSION_ERRORS, conversionErrors);
+            }
+
+            conversionErrors.put(realProperty, value);
+        }
+    }
+
     private Object acceptableErrorValue(Class toClass) {
         if (!toClass.isPrimitive()) {
             return null;
@@ -199,11 +260,18 @@ public class XWorkConverter extends DefaultTypeConverter {
         return null;
     }
 
+    private String buildConverterFilename(Class clazz) {
+        String className = clazz.getName();
+        String resource = className.replace('.', '/') + "-conversion.properties";
+
+        return resource;
+    }
+
     private Map buildConverterMapping(Class clazz) throws Exception {
         Map mapping = new HashMap();
 
         String resource = buildConverterFilename(clazz);
-        InputStream is = FileManager.loadFile(resource,clazz);
+        InputStream is = FileManager.loadFile(resource, clazz);
 
         if (is != null) {
             Properties props = new Properties();
@@ -211,112 +279,29 @@ public class XWorkConverter extends DefaultTypeConverter {
             mapping.putAll(props);
 
             for (Iterator iterator = mapping.entrySet().iterator();
-                 iterator.hasNext();) {
+                    iterator.hasNext();) {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 entry.setValue(createTypeConverter((String) entry.getValue()));
             }
+
             mappings.put(clazz, mapping);
         } else {
             noMapping.add(clazz);
         }
-        return mapping;
-    }
 
-    private String buildConverterFilename(Class clazz) {
-        String className = clazz.getName();
-        String resource = className.replace('.', '/') + "-conversion.properties";
-        return resource;
+        return mapping;
     }
 
     private Map conditionalReload(Class clazz, Map oldValues) throws Exception {
         Map mapping = oldValues;
+
         if (FileManager.isReloadingConfigs()) {
             if (FileManager.fileNeedsReloading(buildConverterFilename(clazz))) {
                 mapping = buildConverterMapping(clazz);
             }
         }
+
         return mapping;
-    }
-
-    public TypeConverter lookup(String className) {
-        TypeConverter result = (TypeConverter) defaultMappings.get(className);
-
-        //Looks for super classes
-        if (result == null) {
-            Class clazz = null;
-            try {
-                clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
-            } catch (ClassNotFoundException cnfe) {
-            }
-
-            result = lookupSuper(clazz);
-
-            if (result != null) {
-                //Register now, the next lookup will be faster
-                registerConverter(className, result);
-            }
-        }
-        return result;
-    }
-
-    private TypeConverter lookupSuper(Class clazz) {
-
-        TypeConverter result = null;
-
-        if (clazz != null) {
-            result = (TypeConverter) defaultMappings.get(clazz.getName());
-
-            if (result == null) {
-                // Looks for direct interfaces (depth = 1 )
-                Class[] interfaces = clazz.getInterfaces();
-                for (int i = 0; i < interfaces.length; i++) {
-                    if (defaultMappings.containsKey(interfaces[i].getName())) {
-                        result = (TypeConverter) defaultMappings.get(interfaces[i].getName());
-                    }
-                    break;
-                }
-
-                if (result == null) {
-                    // Looks for the superclass
-                    // If 'clazz' is the Object class, an interface, a primitive type or void then clazz.getSuperClass() returns null 
-                    result = lookupSuper(clazz.getSuperclass());
-                }
-            }
-
-        }
-
-        return result;
-    }
-
-    public TypeConverter lookup(Class clazz) {
-        return lookup(clazz.getName());
-    }
-
-    public void registerConverter(String className, TypeConverter converter) {
-        defaultMappings.put(className, converter);
-    }
-
-    protected void handleConversionException(Map context, String property, Object value, Object object) {
-        if (context.get(REPORT_CONVERSION_ERRORS) == Boolean.TRUE) {
-            String realProperty = property;
-            String fullName = (String) context.get(CONVERSION_PROPERTY_FULLNAME);
-            if (fullName != null) {
-                realProperty = fullName;
-            }
-
-            String defaultMessage = "Invalid field value for field \"" + realProperty + "\".";
-            OgnlValueStack stack = (OgnlValueStack) context.get(ActionContext.VALUE_STACK);
-
-            String getTextExpression = "getText('invalid.fieldvalue." + realProperty + "','" + defaultMessage + "')";
-            String message = (String) stack.findValue(getTextExpression);
-
-            if (message == null) {
-                message = defaultMessage;
-            }
-
-            String addFieldErrorExpression = "addFieldError('" + realProperty + "','" + message + "')";
-            stack.findValue(addFieldErrorExpression);
-        }
     }
 
     private TypeConverter createTypeConverter(String className) throws Exception, InstantiationException {
@@ -331,7 +316,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         props.load(is);
 
         for (Iterator iterator = props.entrySet().iterator();
-             iterator.hasNext();) {
+                iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String key = (String) entry.getKey();
 
@@ -341,5 +326,34 @@ public class XWorkConverter extends DefaultTypeConverter {
                 LOG.error("Conversion registration error", e);
             }
         }
+    }
+
+    private TypeConverter lookupSuper(Class clazz) {
+        TypeConverter result = null;
+
+        if (clazz != null) {
+            result = (TypeConverter) defaultMappings.get(clazz.getName());
+
+            if (result == null) {
+                // Looks for direct interfaces (depth = 1 )
+                Class[] interfaces = clazz.getInterfaces();
+
+                for (int i = 0; i < interfaces.length; i++) {
+                    if (defaultMappings.containsKey(interfaces[i].getName())) {
+                        result = (TypeConverter) defaultMappings.get(interfaces[i].getName());
+                    }
+
+                    break;
+                }
+
+                if (result == null) {
+                    // Looks for the superclass
+                    // If 'clazz' is the Object class, an interface, a primitive type or void then clazz.getSuperClass() returns null 
+                    result = lookupSuper(clazz.getSuperclass());
+                }
+            }
+        }
+
+        return result;
     }
 }

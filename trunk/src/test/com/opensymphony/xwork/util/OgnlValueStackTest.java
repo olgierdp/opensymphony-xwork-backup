@@ -4,14 +4,17 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.xwork.SimpleAction;
+
 import junit.framework.TestCase;
 
 import java.io.*;
+
 import java.math.BigDecimal;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.opensymphony.xwork.SimpleAction;
 
 
 /**
@@ -36,7 +39,7 @@ public class OgnlValueStackTest extends TestCase {
         Dog dog = new Dog();
         dog.setAge(12);
         dog.setName("Rover");
-        dog.setChildAges(new int[]{1, 2});
+        dog.setChildAges(new int[] {1, 2});
 
         vs.push(dog);
         assertEquals("1, 2", vs.findValue("childAges", String.class));
@@ -53,6 +56,30 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals("Rover", vs.findValue("name", String.class));
     }
 
+    public void testCallMethodThatThrowsExceptionTwice() {
+        SimpleAction action = new SimpleAction();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(action);
+
+        action.setThrowException(true);
+        assertNull(stack.findValue("exceptionMethod1()"));
+        action.setThrowException(false);
+        assertEquals("OK", stack.findValue("exceptionMethod()"));
+    }
+
+    public void testCallMethodWithNullArg() {
+        SimpleAction action = new SimpleAction();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(action);
+
+        stack.findValue("setName(blah)");
+        assertNull(action.getName());
+
+        action.setBlah("blah");
+        stack.findValue("setName(blah)");
+        assertEquals("blah", action.getName());
+    }
+
     public void testDeepProperties() {
         OgnlValueStack vs = new OgnlValueStack();
 
@@ -62,7 +89,7 @@ public class OgnlValueStackTest extends TestCase {
         Dog dog = new Dog();
         dog.setAge(12);
         dog.setName("Rover");
-        dog.setChildAges(new int[]{1, 2});
+        dog.setChildAges(new int[] {1, 2});
         dog.setHates(cat);
 
         vs.push(dog);
@@ -111,6 +138,103 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals("blah:123", vs.findValue("bar", String.class));
     }
 
+    public void testGetBarAsString() {
+        Foo foo = new Foo();
+        Bar bar = new Bar();
+        bar.setTitle("bar");
+        bar.setSomethingElse(123);
+        foo.setBar(bar);
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        String output = (String) vs.findValue("bar", String.class);
+        assertEquals("bar:123", output);
+    }
+
+    public void testGetComplexBarAsString() {
+        // children foo->foo->foo
+        Foo foo = new Foo();
+        Foo foo2 = new Foo();
+        foo.setChild(foo2);
+
+        Foo foo3 = new Foo();
+        foo2.setChild(foo3);
+
+        // relatives
+        Foo fooA = new Foo();
+        foo.setRelatives(new Foo[] {fooA});
+
+        Foo fooB = new Foo();
+        foo2.setRelatives(new Foo[] {fooB});
+
+        Foo fooC = new Foo();
+        foo3.setRelatives(new Foo[] {fooC});
+
+        // the bar
+        Bar bar = new Bar();
+        bar.setTitle("bar");
+        bar.setSomethingElse(123);
+
+        // now place the bar all over
+        foo.setBar(bar);
+        foo2.setBar(bar);
+        foo3.setBar(bar);
+        fooA.setBar(bar);
+        fooB.setBar(bar);
+        fooC.setBar(bar);
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        vs.getContext().put("foo", foo);
+
+        assertEquals("bar:123", vs.findValue("#foo.bar", String.class));
+        assertEquals("bar:123", vs.findValue("bar", String.class));
+        assertEquals("bar:123", vs.findValue("child.bar", String.class));
+        assertEquals("bar:123", vs.findValue("child.child.bar", String.class));
+        assertEquals("bar:123", vs.findValue("relatives[0].bar", String.class));
+        assertEquals("bar:123", vs.findValue("child.relatives[0].bar", String.class));
+        assertEquals("bar:123", vs.findValue("child.child.relatives[0].bar", String.class));
+
+        vs.push(vs.findValue("child"));
+        assertEquals("bar:123", vs.findValue("bar", String.class));
+        assertEquals("bar:123", vs.findValue("child.bar", String.class));
+        assertEquals("bar:123", vs.findValue("relatives[0].bar", String.class));
+        assertEquals("bar:123", vs.findValue("child.relatives[0].bar", String.class));
+    }
+
+    public void testGetNullValue() {
+        Dog dog = new Dog();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(dog);
+        assertNull(stack.findValue("name"));
+    }
+
+    public void testMapEntriesAvailableByKey() {
+        Foo foo = new Foo();
+        String title = "a title";
+        foo.setTitle(title);
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        Map map = new HashMap();
+        String a_key = "a";
+        String a_value = "A";
+        map.put(a_key, a_value);
+
+        String b_key = "b";
+        String b_value = "B";
+        map.put(b_key, b_value);
+
+        vs.push(map);
+
+        assertEquals(title, vs.findValue("title"));
+        assertEquals(a_value, vs.findValue(a_key));
+        assertEquals(b_value, vs.findValue(b_key));
+    }
+
     public void testMethodCalls() {
         OgnlValueStack vs = new OgnlValueStack();
 
@@ -138,8 +262,57 @@ public class OgnlValueStackTest extends TestCase {
 
         assertEquals("Jack", vs.findValue("name"));
         assertEquals("Rover", vs.findValue("[1].name"));
+
         //hates will be null
-        assertEquals(Boolean.TRUE,vs.findValue("nullSafeMethod(hates)"));
+        assertEquals(Boolean.TRUE, vs.findValue("nullSafeMethod(hates)"));
+    }
+
+    public void testNullEntry() {
+        OgnlValueStack vs = new OgnlValueStack();
+
+        Dog dog = new Dog();
+        dog.setName("Rover");
+
+        vs.push(dog);
+        assertEquals("Rover", vs.findValue("name", String.class));
+
+        vs.push(null);
+        assertEquals("Rover", vs.findValue("name", String.class));
+    }
+
+    public void testNullMethod() {
+        Dog dog = new Dog();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(dog);
+        assertNull(stack.findValue("nullMethod()"));
+        assertNull(stack.findValue("@com.opensymphony.xwork.util.OgnlValueStackTest@staticNullMethod()"));
+    }
+
+    public void testPetSoarBug() {
+        Cat cat = new Cat();
+        cat.setFoo(new Foo());
+
+        Bar bar = new Bar();
+        bar.setTitle("bar");
+        bar.setSomethingElse(123);
+        cat.getFoo().setBar(bar);
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(cat);
+
+        assertEquals("bar:123", vs.findValue("foo.bar", String.class));
+    }
+
+    public void testPrimitiveSettingWithInvalidValueAddsFieldError() {
+        SimpleAction action = new SimpleAction();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        stack.push(action);
+        stack.setValue("bar", "3x");
+
+        Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
+        assertTrue(conversionErrors.containsKey("bar"));
+        assertEquals(0, action.getBar());
     }
 
     public void testSerializable() throws IOException, ClassNotFoundException {
@@ -163,6 +336,49 @@ public class OgnlValueStackTest extends TestCase {
 
         OgnlValueStack newVs = (OgnlValueStack) ois.readObject();
         assertEquals("Rover", newVs.findValue("name", String.class));
+    }
+
+    public void testSetBarAsString() {
+        Foo foo = new Foo();
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        vs.setValue("bar", "bar:123");
+
+        assertEquals("bar", foo.getBar().getTitle());
+        assertEquals(123, foo.getBar().getSomethingElse());
+    }
+
+    public void testSetDeepBarAsString() {
+        Foo foo = new Foo();
+        Foo foo2 = new Foo();
+        foo.setChild(foo2);
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        vs.setValue("child.bar", "bar:123");
+
+        assertEquals("bar", foo.getChild().getBar().getTitle());
+        assertEquals(123, foo.getChild().getBar().getSomethingElse());
+    }
+
+    public void testSetReallyDeepBarAsString() {
+        Foo foo = new Foo();
+        Foo foo2 = new Foo();
+        foo.setChild(foo2);
+
+        Foo foo3 = new Foo();
+        foo2.setChild(foo3);
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        vs.setValue("child.child.bar", "bar:123");
+
+        assertEquals("bar", foo.getChild().getChild().getBar().getTitle());
+        assertEquals(123, foo.getChild().getChild().getBar().getSomethingElse());
     }
 
     public void testSettingDogGender() {
@@ -237,210 +453,4 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals(dog2, vs.pop());
         assertEquals("Rover", vs.findValue("name"));
     }
-
-
-	public void testSetBarAsString() {
-        Foo foo = new Foo();
-
-        OgnlValueStack vs = new OgnlValueStack();
-        vs.push(foo);
-
-        vs.setValue("bar", "bar:123");
-
-        assertEquals("bar", foo.getBar().getTitle());
-        assertEquals(123, foo.getBar().getSomethingElse());
-    }
-
-    public void testSetDeepBarAsString() {
-        Foo foo = new Foo();
-        Foo foo2 = new Foo();
-        foo.setChild(foo2);
-
-        OgnlValueStack vs = new OgnlValueStack();
-        vs.push(foo);
-
-        vs.setValue("child.bar", "bar:123");
-
-        assertEquals("bar", foo.getChild().getBar().getTitle());
-        assertEquals(123, foo.getChild().getBar().getSomethingElse());
-    }
-
-    public void testSetReallyDeepBarAsString() {
-        Foo foo = new Foo();
-        Foo foo2 = new Foo();
-        foo.setChild(foo2);
-        Foo foo3 = new Foo();
-        foo2.setChild(foo3);
-
-        OgnlValueStack vs = new OgnlValueStack();
-        vs.push(foo);
-
-        vs.setValue("child.child.bar", "bar:123");
-
-        assertEquals("bar", foo.getChild().getChild().getBar().getTitle());
-        assertEquals(123, foo.getChild().getChild().getBar().getSomethingElse());
-    }
-
-    public void testGetBarAsString() {
-        Foo foo = new Foo();
-        Bar bar = new Bar();
-        bar.setTitle("bar");
-        bar.setSomethingElse(123);
-        foo.setBar(bar);
-
-        OgnlValueStack vs = new OgnlValueStack();
-        vs.push(foo);
-
-        String output = (String) vs.findValue("bar", String.class);
-        assertEquals("bar:123", output);
-    }
-
-    public void testGetComplexBarAsString() {
-        // children foo->foo->foo
-        Foo foo = new Foo();
-        Foo foo2 = new Foo();
-        foo.setChild(foo2);
-        Foo foo3 = new Foo();
-        foo2.setChild(foo3);
-
-        // relatives
-        Foo fooA = new Foo();
-        foo.setRelatives(new Foo[]{fooA});
-        Foo fooB = new Foo();
-        foo2.setRelatives(new Foo[]{fooB});
-        Foo fooC = new Foo();
-        foo3.setRelatives(new Foo[]{fooC});
-
-        // the bar
-        Bar bar = new Bar();
-        bar.setTitle("bar");
-        bar.setSomethingElse(123);
-
-        // now place the bar all over
-        foo.setBar(bar);
-        foo2.setBar(bar);
-        foo3.setBar(bar);
-        fooA.setBar(bar);
-        fooB.setBar(bar);
-        fooC.setBar(bar);
-
-        OgnlValueStack vs = new OgnlValueStack();
-        vs.push(foo);
-
-        vs.getContext().put("foo", foo);
-
-        assertEquals("bar:123", vs.findValue("#foo.bar", String.class));
-        assertEquals("bar:123", vs.findValue("bar", String.class));
-        assertEquals("bar:123", vs.findValue("child.bar", String.class));
-        assertEquals("bar:123", vs.findValue("child.child.bar", String.class));
-        assertEquals("bar:123", vs.findValue("relatives[0].bar", String.class));
-        assertEquals("bar:123", vs.findValue("child.relatives[0].bar", String.class));
-        assertEquals("bar:123", vs.findValue("child.child.relatives[0].bar", String.class));
-
-        vs.push(vs.findValue("child"));
-        assertEquals("bar:123", vs.findValue("bar", String.class));
-        assertEquals("bar:123", vs.findValue("child.bar", String.class));
-        assertEquals("bar:123", vs.findValue("relatives[0].bar", String.class));
-        assertEquals("bar:123", vs.findValue("child.relatives[0].bar", String.class));
-    }
-
-    public void testPetSoarBug() {
-        Cat cat = new Cat();
-        cat.setFoo(new Foo());
-        Bar bar = new Bar();
-        bar.setTitle("bar");
-        bar.setSomethingElse(123);
-        cat.getFoo().setBar(bar);
-
-        OgnlValueStack vs = new OgnlValueStack();
-        vs.push(cat);
-
-        assertEquals("bar:123", vs.findValue("foo.bar", String.class));
-    }
-
-    public void testMapEntriesAvailableByKey() {
-        Foo foo = new Foo();
-        String title = "a title";
-        foo.setTitle(title);
-        OgnlValueStack vs = new OgnlValueStack();
-        vs.push(foo);
-
-        Map map = new HashMap();
-        String a_key = "a";
-        String a_value = "A";
-        map.put(a_key, a_value);
-        String b_key = "b";
-        String b_value = "B";
-        map.put(b_key, b_value);
-
-        vs.push(map);
-
-        assertEquals(title, vs.findValue("title"));
-        assertEquals(a_value, vs.findValue(a_key));
-        assertEquals(b_value, vs.findValue(b_key));
-    }
-
-    public void testNullEntry() {
-        OgnlValueStack vs = new OgnlValueStack();
-
-        Dog dog = new Dog();
-        dog.setName("Rover");
-
-        vs.push(dog);
-        assertEquals("Rover", vs.findValue("name", String.class));
-
-        vs.push(null);
-        assertEquals("Rover", vs.findValue("name", String.class));
-    }
-
-    public void testPrimitiveSettingWithInvalidValueAddsFieldError() {
-        SimpleAction action = new SimpleAction();
-        OgnlValueStack stack = new OgnlValueStack();
-        stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS,Boolean.TRUE);
-        stack.push(action);
-        stack.setValue("bar","3x");
-
-        assertTrue(action.getFieldErrors().containsKey("bar"));
-        assertEquals(0, action.getBar());
-    }
-
-    public void testCallMethodThatThrowsExceptionTwice() {
-        SimpleAction action = new SimpleAction();
-        OgnlValueStack stack = new OgnlValueStack();
-        stack.push(action);
-
-        action.setThrowException(true);
-        assertNull(stack.findValue("exceptionMethod1()"));
-        action.setThrowException(false);
-        assertEquals("OK", stack.findValue("exceptionMethod()"));
-    }
-
-    public void testCallMethodWithNullArg() {
-        SimpleAction action = new SimpleAction();
-        OgnlValueStack stack = new OgnlValueStack();
-        stack.push(action);
-
-        stack.findValue("setName(blah)");
-        assertNull(action.getName());
-
-        action.setBlah("blah");
-        stack.findValue("setName(blah)");
-        assertEquals("blah", action.getName());
-    }
-
-    public void testGetNullValue() {
-        Dog dog = new Dog();
-        OgnlValueStack stack = new OgnlValueStack();
-        stack.push(dog);
-        assertNull(stack.findValue("name"));
-    }
-
-    public void testNullMethod() {
-        Dog dog = new Dog();
-        OgnlValueStack stack = new OgnlValueStack();
-        stack.push(dog);
-        assertNull(stack.findValue("nullMethod()"));
-        assertNull(stack.findValue("@com.opensymphony.xwork.util.OgnlValueStackTest@staticNullMethod()"));
-    }
-
 }

@@ -14,7 +14,6 @@ import junit.framework.TestCase;
 
 import ognl.Ognl;
 import ognl.OgnlException;
-import ognl.OgnlRuntime;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -60,13 +59,15 @@ public class XWorkConverterTest extends TestCase {
         Map context = stack.getContext();
         context.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         context.put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, "bean.birth");
-        assertEquals("Conversion should have failed.", null, converter.convertValue(context, action.getBean(), null, "birth", new String[] {
-                    "invalid date"
-                }, Date.class));
+
+        String[] value = new String[] {"invalid date"};
+        assertEquals("Conversion should have failed.", null, converter.convertValue(context, action.getBean(), null, "birth", value, Date.class));
         stack.pop();
-        assertTrue(action.hasFieldErrors());
-        assertNotNull(action.getFieldErrors().get("bean.birth"));
-        assertEquals("Invalid field value for field \"bean.birth\".", ((List) action.getFieldErrors().get("bean.birth")).get(0));
+
+        Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
+        assertNotNull(conversionErrors);
+        assertTrue(conversionErrors.size() == 1);
+        assertEquals(value, conversionErrors.get("bean.birth"));
     }
 
     public void testFieldErrorMessageAddedWhenConversionFails() {
@@ -78,13 +79,16 @@ public class XWorkConverterTest extends TestCase {
 
         Map context = stack.getContext();
         context.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-        assertEquals("Conversion should have failed.", null, converter.convertValue(context, action, null, "date", new String[] {
-                    "invalid date"
-                }, Date.class));
+
+        String[] value = new String[] {"invalid date"};
+        assertEquals("Conversion should have failed.", null, converter.convertValue(context, action, null, "date", value, Date.class));
         stack.pop();
-        assertTrue(action.hasFieldErrors());
-        assertNotNull(action.getFieldErrors().get("date"));
-        assertEquals("Invalid field value for field \"date\".", ((List) action.getFieldErrors().get("date")).get(0));
+
+        Map conversionErrors = (Map) context.get(ActionContext.CONVERSION_ERRORS);
+        assertNotNull(conversionErrors);
+        assertEquals(1, conversionErrors.size());
+        assertNotNull(conversionErrors.get("date"));
+        assertEquals(value, conversionErrors.get("date"));
     }
 
     public void testFieldErrorMessageAddedWhenConversionFailsOnModelDriven() {
@@ -95,14 +99,32 @@ public class XWorkConverterTest extends TestCase {
 
         Map context = stack.getContext();
         context.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-        assertEquals("Conversion should have failed.", null, converter.convertValue(context, action, null, "birth", new String[] {
-                    "invalid date"
-                }, Date.class));
+
+        String[] value = new String[] {"invalid date"};
+        assertEquals("Conversion should have failed.", null, converter.convertValue(context, action, null, "birth", value, Date.class));
         stack.pop();
         stack.pop();
-        assertTrue(action.hasFieldErrors());
-        assertNotNull(action.getFieldErrors().get("birth"));
-        assertEquals("Invalid date for birth.", ((List) action.getFieldErrors().get("birth")).get(0));
+
+        Map conversionErrors = (Map) context.get(ActionContext.CONVERSION_ERRORS);
+        assertNotNull(conversionErrors);
+        assertEquals(1, conversionErrors.size());
+        assertNotNull(conversionErrors.get("birth"));
+        assertEquals(value, conversionErrors.get("birth"));
+    }
+
+    public void testFindConversionErrorMessage() {
+        ModelDrivenAction action = new ModelDrivenAction();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(action);
+        stack.push(action.getModel());
+
+        String message = XWorkConverter.getConversionErrorMessage("birth", stack);
+        assertNotNull(message);
+        assertEquals("Invalid date for birth.", message);
+
+        message = XWorkConverter.getConversionErrorMessage("foo", stack);
+        assertNotNull(message);
+        assertEquals("Invalid field value for field \"foo\".", message);
     }
 
     public void testStringArrayToCollection() {
