@@ -5,14 +5,16 @@
 package com.opensymphony.xwork.util;
 
 import ognl.*;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.beans.IntrospectionException;
+
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Arrays;
 
 
 /**
@@ -25,10 +27,9 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
     //~ Static fields/initializers /////////////////////////////////////////////
 
     private final static Log log = LogFactory.getLog(CompoundRootAccessor.class);
+    private static Map invalidMethods = new HashMap();
 
     //~ Methods ////////////////////////////////////////////////////////////////
-
-    private static Map invalidMethods = new HashMap();
 
     public void setProperty(Map context, Object target, Object name, Object value) throws OgnlException {
         CompoundRoot root = (CompoundRoot) target;
@@ -56,6 +57,10 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
             } catch (IntrospectionException e) {
             }
         }
+
+        final String msg = "No object in the CompoundRoot has a property named '" + name + "'.";
+        log.error(msg);
+        throw new RuntimeException(msg);
     }
 
     public Object getProperty(Map context, Object target, Object name) throws OgnlException {
@@ -121,11 +126,12 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
             Class[] argTypes = getArgTypes(objects);
 
             CompoundRootAccessor.MethodCall mc = null;
+
             if (argTypes != null) {
                 mc = new CompoundRootAccessor.MethodCall(clazz, name, argTypes);
             }
 
-            if (argTypes == null || !invalidMethods.containsKey(mc)) {
+            if ((argTypes == null) || !invalidMethods.containsKey(mc)) {
                 try {
                     Object value = OgnlRuntime.callMethod((OgnlContext) context, o, name, name, objects);
 
@@ -135,7 +141,8 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 } catch (OgnlException e) {
                     // try the next one
                     Throwable reason = e.getReason();
-                    if (mc != null && reason != null && reason.getClass() == NoSuchMethodException.class) {
+
+                    if ((mc != null) && (reason != null) && (reason.getClass() == NoSuchMethodException.class)) {
                         invalidMethods.put(mc, Boolean.TRUE);
                     } else if (reason != null) {
                         throw new MethodFailedException(o, name, e.getReason());
@@ -145,20 +152,6 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         }
 
         return null;
-    }
-
-    private Class[] getArgTypes(Object[] args) {
-        if (args == null) {
-            return new Class[0];
-        }
-
-        Class[] classes = new Class[args.length];
-        for (int i = 0; i < args.length; i++) {
-            Object arg = args[i];
-            classes[i] = (arg != null) ? arg.getClass() : Object.class;
-        }
-
-        return classes;
     }
 
     public Object callStaticMethod(Map transientVars, Class aClass, String s, Object[] objects) throws MethodFailedException {
@@ -189,6 +182,23 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         return Thread.currentThread().getContextClassLoader().loadClass(className);
     }
 
+    private Class[] getArgTypes(Object[] args) {
+        if (args == null) {
+            return new Class[0];
+        }
+
+        Class[] classes = new Class[args.length];
+
+        for (int i = 0; i < args.length; i++) {
+            Object arg = args[i];
+            classes[i] = (arg != null) ? arg.getClass() : Object.class;
+        }
+
+        return classes;
+    }
+
+    //~ Inner Classes //////////////////////////////////////////////////////////
+
     static class MethodCall {
         Class clazz;
         String name;
@@ -207,13 +217,14 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
             }
         }
 
-        public int hashCode() {
-            return hash;
-        }
-
         public boolean equals(Object obj) {
             MethodCall mc = (CompoundRootAccessor.MethodCall) obj;
+
             return (mc.clazz.equals(clazz) && mc.name.equals(name) && Arrays.equals(mc.args, args));
+        }
+
+        public int hashCode() {
+            return hash;
         }
     }
 }
