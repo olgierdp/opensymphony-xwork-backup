@@ -45,9 +45,9 @@ public interface ActionInvocation extends Serializable {
     ActionProxy getProxy();
 
     /**
-    * If the DefaultActionInvocation has been executed before and the Result is an instance of ActionChainResult, this method
+    * If the ActionInvocation has been executed before and the Result is an instance of ActionChainResult, this method
     * will walk down the chain of ActionChainResults until it finds a non-chain result, which will be returned. If the
-    * DefaultActionInvocation's result has not been executed before, the Result instance will be created and populated with
+    * ActionInvocation's result has not been executed before, the Result instance will be created and populated with
     * the result params.
     * @return a Result instance
     */

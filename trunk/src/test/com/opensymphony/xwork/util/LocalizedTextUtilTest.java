@@ -215,8 +215,8 @@ public class LocalizedTextUtilTest extends TestCase {
         LocalizedTextUtil.addDefaultResourceBundle("com/opensymphony/xwork/util/LocalizedTextUtilTest");
         Object[] params = new Object[] {new Date()};
         String usDate = LocalizedTextUtil.findDefaultText("test.format.date",Locale.US,params);
-        String frenchDate = LocalizedTextUtil.findDefaultText("test.format.date",Locale.FRANCE,params);
-        assertFalse(usDate.equals(frenchDate));
+        String germanDate = LocalizedTextUtil.findDefaultText("test.format.date",Locale.GERMANY,params);
+        assertFalse(usDate.equals(germanDate));
     }
 
     protected void setUp() throws Exception {
