@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>Visitor Field Validators</title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+
+				    <p class="paragraph">The VisitorFieldValidator allows you to forward validation to object properties of your action using the objects own validation files. This allows you to use the ModelDriven development pattern and manage your validations for your models in one place, where they belong, next to your model classes. The VisitorFieldValidator can handle either simple Object properties, Collections of Objects, or Arrays.</p><h2 class="heading2"> Applying the VisitorFieldValidator</h2><p class="paragraph">The VisitorFieldValidator is applied like any other field validator in a validation.xml file (see <a href="Validation Framework.html">XW:Validation Framework</a>).</p><div class="code"><pre>&lt;field name=&quot;bean&quot;&gt;&#10;    &lt;field&#45;validator type=&quot;visitor&quot;&gt;&#10;        &lt;param name=&quot;context&quot;&gt;anotherContext&lt;/param&gt;&#10;        &lt;param name=&quot;appendPrefix&quot;&gt;<span class="java&#45;keyword">false</span>&lt;/param&gt;&#10;        &lt;message&gt;bean&#58; &lt;/message&gt;&#10;    &lt;/field&#45;validator&gt;&#10;&lt;/field&gt;</pre></div><p class="paragraph">The <b class="strong">context</b> attribute determines the context to use for validating the Object property. If not defined, the context of the Action validation is propogated to the Object property validation.  In the case of Action validation, this context is the Action alias. Here we see the context being overridden in the validator mapping, so the action alias context will not be propogated.</p>The <b class="strong">appendPrefix</b> attribute determines whether the field name of this field validator should be prepended to the field name of the visited field to determine the full field name when an error occurs.  The default value is true.  For example, suppose that the bean being validated with the VisitorFieldValidator in this case has a name property.  If <b class="strong">appendPrefix</b> is true, then the field error will be stored under the field &quot;bean.name&quot;.  If <b class="strong">appendPrefix</b> is false, then the field error will be stored under the field &quot;name&quot;.<p class="paragraph">The <b class="strong">message</b> for the VisitorFieldValidator gives a String which will be appended in front of validation messages added by the validations for the Object message.</p>
+
+				    
+			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
