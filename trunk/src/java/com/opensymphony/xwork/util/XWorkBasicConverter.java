@@ -5,24 +5,19 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.util.TextUtils;
-
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.XworkException;
-
 import ognl.DefaultTypeConverter;
 import ognl.Ognl;
 import ognl.TypeConverter;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Member;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-
 import java.util.*;
 
 
@@ -36,6 +31,11 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
     public Object convertValue(Map context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;
+
+        if (value.getClass().isAssignableFrom(toType)) {
+            // no need to convert at all, right?
+            return value;
+        }
 
         if (toType == String.class) {
             result = doConvertToString(context, value);
@@ -86,9 +86,9 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     /**
      * Creates a Collection of the specified type.
      *
-     * @param toType the type of Collection to create
+     * @param toType     the type of Collection to create
      * @param memberType the type of object elements in this collection must be
-     * @param size the initial size of the collection (ignored if 0 or less)
+     * @param size       the initial size of the collection (ignored if 0 or less)
      * @return a Collection of the specified type
      */
     private Collection createCollection(Class toType, Class memberType, int size) {
