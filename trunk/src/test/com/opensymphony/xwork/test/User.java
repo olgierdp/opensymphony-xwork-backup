@@ -17,60 +17,60 @@ import java.util.Map;
 public class User implements UserMarker {
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    private Collection m_collection;
-    private List m_list;
-    private Map m_map;
-    private String m_email;
-    private String m_email2;
-    private String m_name;
+    private Collection collection;
+    private List list;
+    private Map map;
+    private String email;
+    private String email2;
+    private String name;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setCollection(Collection collection) {
-        m_collection = collection;
+        this.collection = collection;
     }
 
     public Collection getCollection() {
-        return m_collection;
+        return collection;
     }
 
     public void setEmail(String email) {
-        m_email = email;
+        this.email = email;
     }
 
     public String getEmail() {
-        return m_email;
+        return email;
     }
 
     public void setEmail2(String email) {
-        m_email2 = email;
+        email2 = email;
     }
 
     public String getEmail2() {
-        return m_email2;
+        return email2;
     }
 
     public void setList(List l) {
-        m_list = l;
+        list = l;
     }
 
     public List getList() {
-        return m_list;
+        return list;
     }
 
     public void setMap(Map m) {
-        m_map = m;
+        map = m;
     }
 
     public Map getMap() {
-        return m_map;
+        return map;
     }
 
     public void setName(String name) {
-        m_name = name;
+        this.name = name;
     }
 
     public String getName() {
-        return m_name;
+        return name;
     }
 }

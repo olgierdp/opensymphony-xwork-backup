@@ -4,11 +4,7 @@
  */
 package com.opensymphony.xwork.validator;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -20,9 +16,9 @@ import java.util.Map;
 public class GenericValidatorContext extends DelegatingValidatorContext {
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    private Collection m_actionErrors;
-    private Collection m_actionMessages;
-    private Map m_fieldErrors;
+    private Collection actionErrors;
+    private Collection actionMessages;
+    private Map fieldErrors;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
@@ -33,7 +29,7 @@ public class GenericValidatorContext extends DelegatingValidatorContext {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public synchronized void setActionErrors(Collection errorMessages) {
-        this.m_actionErrors = errorMessages;
+        this.actionErrors = errorMessages;
     }
 
     public synchronized Collection getActionErrors() {
@@ -41,7 +37,7 @@ public class GenericValidatorContext extends DelegatingValidatorContext {
     }
 
     public synchronized void setActionMessages(Collection messages) {
-        this.m_actionMessages = messages;
+        this.actionMessages = messages;
     }
 
     public synchronized Collection getActionMessages() {
@@ -49,7 +45,7 @@ public class GenericValidatorContext extends DelegatingValidatorContext {
     }
 
     public synchronized void setFieldErrors(Map errorMap) {
-        this.m_fieldErrors = errorMap;
+        this.fieldErrors = errorMap;
     }
 
     /**
@@ -85,7 +81,7 @@ public class GenericValidatorContext extends DelegatingValidatorContext {
     }
 
     public synchronized boolean hasActionErrors() {
-        return (m_actionErrors != null) && !m_actionErrors.isEmpty();
+        return (actionErrors != null) && !actionErrors.isEmpty();
     }
 
     /**
@@ -98,30 +94,30 @@ public class GenericValidatorContext extends DelegatingValidatorContext {
     }
 
     public synchronized boolean hasFieldErrors() {
-        return (m_fieldErrors != null) && !m_fieldErrors.isEmpty();
+        return (fieldErrors != null) && !fieldErrors.isEmpty();
     }
 
     private Collection internalGetActionErrors() {
-        if (m_actionErrors == null) {
-            m_actionErrors = new ArrayList();
+        if (actionErrors == null) {
+            actionErrors = new ArrayList();
         }
 
-        return m_actionErrors;
+        return actionErrors;
     }
 
     private Collection internalGetActionMessages() {
-        if (m_actionMessages == null) {
-            m_actionMessages = new ArrayList();
+        if (actionMessages == null) {
+            actionMessages = new ArrayList();
         }
 
-        return m_actionMessages;
+        return actionMessages;
     }
 
     private Map internalGetFieldErrors() {
-        if (m_fieldErrors == null) {
-            m_fieldErrors = new HashMap();
+        if (fieldErrors == null) {
+            fieldErrors = new HashMap();
         }
 
-        return m_fieldErrors;
+        return fieldErrors;
     }
 }

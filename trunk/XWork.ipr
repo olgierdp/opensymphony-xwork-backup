@@ -17,60 +17,7 @@
   </component>
   <component name="CodeStyleSettingsManager">
     <option name="PER_PROJECT_SETTINGS">
-      <value>
-        <option name="JAVA_INDENT_OPTIONS">
-          <value>
-            <option name="INDENT_SIZE" value="4" />
-            <option name="CONTINUATION_INDENT_SIZE" value="4" />
-            <option name="TAB_SIZE" value="4" />
-            <option name="USE_TAB_CHARACTER" value="false" />
-            <option name="SMART_TABS" value="false" />
-          </value>
-        </option>
-        <option name="JSP_INDENT_OPTIONS">
-          <value>
-            <option name="INDENT_SIZE" value="2" />
-            <option name="CONTINUATION_INDENT_SIZE" value="4" />
-            <option name="TAB_SIZE" value="2" />
-            <option name="USE_TAB_CHARACTER" value="false" />
-            <option name="SMART_TABS" value="false" />
-          </value>
-        </option>
-        <option name="XML_INDENT_OPTIONS">
-          <value>
-            <option name="INDENT_SIZE" value="2" />
-            <option name="CONTINUATION_INDENT_SIZE" value="4" />
-            <option name="TAB_SIZE" value="2" />
-            <option name="USE_TAB_CHARACTER" value="false" />
-            <option name="SMART_TABS" value="false" />
-          </value>
-        </option>
-        <option name="OTHER_INDENT_OPTIONS">
-          <value>
-            <option name="INDENT_SIZE" value="2" />
-            <option name="CONTINUATION_INDENT_SIZE" value="4" />
-            <option name="TAB_SIZE" value="2" />
-            <option name="USE_TAB_CHARACTER" value="false" />
-            <option name="SMART_TABS" value="false" />
-          </value>
-        </option>
-        <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
-        <option name="BLANK_LINES_AFTER_IMPORTS" value="2" />
-        <option name="SPACE_AFTER_TYPE_CAST" value="false" />
-        <option name="FIELD_NAME_PREFIX" value="m_" />
-        <option name="STATIC_FIELD_NAME_PREFIX" value="s_" />
-        <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="8" />
-        <option name="IMPORT_LAYOUT_TABLE">
-          <value>
-            <package name="java" withSubpackages="true" />
-            <package name="javax" withSubpackages="true" />
-            <package name="gnu.trove" withSubpackages="true" />
-            <package name="org.apache" withSubpackages="true" />
-            <package name="net.sf.hibernate" withSubpackages="true" />
-            <package name="" withSubpackages="true" />
-          </value>
-        </option>
-      </value>
+      <value />
     </option>
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />
   </component>

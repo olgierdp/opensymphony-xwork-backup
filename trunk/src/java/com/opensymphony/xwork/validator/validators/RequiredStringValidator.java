@@ -15,16 +15,16 @@ import com.opensymphony.xwork.validator.ValidationException;
 public class RequiredStringValidator extends FieldValidatorSupport {
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    private boolean m_doTrim = true;
+    private boolean doTrim = true;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setTrim(boolean trim) {
-        m_doTrim = trim;
+        doTrim = trim;
     }
 
     public boolean getTrim() {
-        return m_doTrim;
+        return doTrim;
     }
 
     public void validate(Object object) throws ValidationException {
@@ -36,7 +36,7 @@ public class RequiredStringValidator extends FieldValidatorSupport {
         } else {
             String s = (String) value;
 
-            if (m_doTrim) {
+            if (doTrim) {
                 s = s.trim();
             }
 

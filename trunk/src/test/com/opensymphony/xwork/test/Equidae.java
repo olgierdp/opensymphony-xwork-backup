@@ -11,33 +11,33 @@ package com.opensymphony.xwork.test;
 public class Equidae {
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    private String m_cow;
-    private String m_donkey;
-    private String m_horse;
+    private String cow;
+    private String donkey;
+    private String horse;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setCow(String cow) {
-        m_cow = cow;
+        this.cow = cow;
     }
 
     public String getCow() {
-        return m_cow;
+        return cow;
     }
 
     public void setDonkey(String donkey) {
-        m_donkey = donkey;
+        this.donkey = donkey;
     }
 
     public String getDonkey() {
-        return m_donkey;
+        return donkey;
     }
 
     public void setHorse(String horse) {
-        m_horse = horse;
+        this.horse = horse;
     }
 
     public String getHorse() {
-        return m_horse;
+        return horse;
     }
 }

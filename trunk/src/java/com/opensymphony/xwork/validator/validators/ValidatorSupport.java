@@ -11,7 +11,6 @@ import com.opensymphony.xwork.validator.ShortCircuitableValidator;
 import com.opensymphony.xwork.validator.ValidationException;
 import com.opensymphony.xwork.validator.Validator;
 import com.opensymphony.xwork.validator.ValidatorContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -28,7 +27,7 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
     protected String defaultMessage = "";
     protected String messageKey = null;
     private ValidatorContext validatorContext;
-    private boolean m_shortCircuit;
+    private boolean shortCircuit;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -82,11 +81,11 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
     }
 
     public void setShortCircuit(boolean shortcircuit) {
-        m_shortCircuit = shortcircuit;
+        shortCircuit = shortcircuit;
     }
 
     public boolean isShortCircuit() {
-        return m_shortCircuit;
+        return shortCircuit;
     }
 
     public void setValidatorContext(ValidatorContext validatorContext) {
