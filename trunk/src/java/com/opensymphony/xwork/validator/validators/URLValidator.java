@@ -5,7 +5,6 @@
 package com.opensymphony.xwork.validator.validators;
 
 import com.opensymphony.util.TextUtils;
-
 import com.opensymphony.xwork.validator.ValidationException;
 
 
@@ -28,7 +27,7 @@ public class URLValidator extends FieldValidatorSupport {
             return;
         }
 
-        if (!(value instanceof String) || !TextUtils.verifyUrl((String) value)) {
+        if (!(value.getClass().equals(String.class)) || !TextUtils.verifyUrl((String) value)) {
             addFieldError(fieldName, object);
         }
     }
