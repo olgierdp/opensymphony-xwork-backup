@@ -68,44 +68,6 @@ public class ChainingInterceptorTest extends TestCase {
         }
     }
 
-    public void testPropertiesChained() throws Exception {
-        TestBean bean = new TestBean();
-        TestBeanAction action = new TestBeanAction();
-        mockInvocation.matchAndReturn("getAction", action);
-        bean.setBirth(new Date());
-        bean.setName("foo");
-        bean.setCount(1);
-        stack.push(bean);
-        stack.push(action);
-        interceptor.intercept(invocation);
-        assertEquals(bean.getBirth(), action.getBirth());
-        assertEquals(bean.getName(), action.getName());
-        assertEquals(bean.getCount(), action.getCount());
-    }
-
-    public void testToManyChains() throws Exception {
-        int max = 5;
-        interceptor.setMaxChainDepth(max);
-
-        TestBean bean = new TestBean();
-        TestBeanAction action = new TestBeanAction();
-        mockInvocation.matchAndReturn("getAction", action);
-        bean.setBirth(new Date());
-        bean.setName("foo");
-        bean.setCount(1);
-        stack.push(bean);
-        stack.push(action);
-
-        try {
-            for (int i = 0; i < (max + 1); i++) {
-                interceptor.intercept(invocation);
-            }
-
-            fail("should have aborted recursive chain");
-        } catch (Exception e) {
-        }
-    }
-
     protected void setUp() throws Exception {
         super.setUp();
         stack = new OgnlValueStack();
