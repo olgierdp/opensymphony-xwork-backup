@@ -11,10 +11,7 @@ import com.opensymphony.xwork.util.OgnlValueStack;
 
 import junit.framework.TestCase;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -26,10 +23,14 @@ public class VisitorFieldValidatorTest extends TestCase {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     protected VisitorValidatorTestAction action;
+    private Locale origLocale;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setUp() {
+        origLocale = Locale.getDefault();
+        Locale.setDefault(Locale.US);
+
         action = new VisitorValidatorTestAction();
 
         TestBean bean = action.getBean();
@@ -140,6 +141,7 @@ public class VisitorFieldValidatorTest extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
         ActionContext.setContext(null);
+        Locale.setDefault(origLocale);
     }
 
     private void validate(String context) throws ValidationException {

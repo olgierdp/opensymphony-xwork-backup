@@ -14,37 +14,52 @@ import junit.framework.TestCase;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
+import java.util.Locale;
 
 
 /**
  * DateRangeValidatorTest
+ *
  * @author Jason Carreira
- * Created Feb 9, 2003 1:25:42 AM
+ *         Created Feb 9, 2003 1:25:42 AM
  */
 public class DateRangeValidatorTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public void testRangeValidation() {
-        try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, null);
-            proxy.execute();
-            assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
+    private Locale origLocale;
 
-            Map errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
-            List errorMessages = (List) errors.get("date");
-            assertEquals(1, errorMessages.size());
+    /**
+     * Tests whether the date range validation is working. Should produce an validation error,
+     * because the action config sets date to 12/20/2002 while expected range is Dec 22-25.
+     */
+    public void testRangeValidation() throws Exception {
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, null);
+        proxy.execute();
+        assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
-            String errorMessage = (String) errorMessages.get(0);
-            assertNotNull(errorMessage);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
+        Map errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
+        Iterator it = errors.entrySet().iterator();
+
+        List errorMessages = (List) errors.get("date");
+        assertNotNull("Expected date range validation error message.", errorMessages);
+        assertEquals(1, errorMessages.size());
+
+        String errorMessage = (String) errorMessages.get(0);
+        assertNotNull(errorMessage);
+
     }
 
     protected void setUp() throws Exception {
+        origLocale = Locale.getDefault();
+        Locale.setDefault(Locale.US);
         ConfigurationManager.clearConfigurationProviders();
         ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
         ConfigurationManager.getConfiguration().reload();
     }
+
+    protected void tearDown() throws Exception {
+        Locale.setDefault(origLocale);
+    }
+
 }

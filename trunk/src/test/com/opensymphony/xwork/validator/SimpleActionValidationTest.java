@@ -17,13 +17,15 @@ import java.util.*;
 
 /**
  * SimpleActionValidationTest
- *
+ * <p/>
  * Created : Jan 20, 2003 11:04:25 PM
  *
  * @author Jason Carreira
  */
 public class SimpleActionValidationTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
+
+    private Locale origLocale;
 
     public void testAliasValidation() {
         HashMap params = new HashMap();
@@ -179,8 +181,16 @@ public class SimpleActionValidationTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
+        origLocale = Locale.getDefault();
+        Locale.setDefault(Locale.US);
+
         ConfigurationManager.destroyConfiguration();
         ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
         ConfigurationManager.getConfiguration().reload();
     }
+
+    protected void tearDown() throws Exception {
+        Locale.setDefault(origLocale);
+    }
+
 }

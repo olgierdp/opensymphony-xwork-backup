@@ -232,6 +232,9 @@ public class OgnlUtilTest extends TestCase {
     }
 
     public void testSetPropertiesDate() {
+        Locale orig = Locale.getDefault();
+        Locale.setDefault(Locale.US);
+
         Foo foo = new Foo();
 
         Map context = Ognl.createDefaultContext(foo);
@@ -247,6 +250,7 @@ public class OgnlUtilTest extends TestCase {
         cal.set(Calendar.YEAR, 1982);
 
         assertEquals(cal.getTime(), foo.getBirthday());
+        Locale.setDefault(orig);
     }
 
     public void testSetPropertiesInt() {

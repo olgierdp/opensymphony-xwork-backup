@@ -41,14 +41,14 @@ public class MockConfigurationProvider implements ConfigurationProvider {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-    * Allows the configuration to clean up any resources used
-    */
+     * Allows the configuration to clean up any resources used
+     */
     public void destroy() {
     }
 
     /**
-    * Initializes the configuration object.
-    */
+     * Initializes the configuration object.
+     */
     public void init(Configuration configurationManager) {
         PackageConfig defaultPackageContext = new PackageConfig();
         HashMap params = new HashMap();
@@ -91,7 +91,11 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         interceptors.add(new ParametersInterceptor());
         interceptors.add(new ValidationInterceptor());
 
-        ActionConfig validationActionConfig = new ActionConfig(null, SimpleAction.class, null, results, interceptors);
+        //Explicitly set an out-of-range date for DateRangeValidatorTest
+        params = new HashMap();
+        params.put("date", new java.util.Date(2002 - 1900, 11, 20));
+
+        ActionConfig validationActionConfig = new ActionConfig(null, SimpleAction.class, params, results, interceptors);
         defaultPackageContext.addActionConfig(VALIDATION_ACTION_NAME, validationActionConfig);
         defaultPackageContext.addActionConfig(VALIDATION_ALIAS_NAME, validationActionConfig);
         defaultPackageContext.addActionConfig(VALIDATION_SUBPROPERTY_NAME, validationActionConfig);
@@ -105,6 +109,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
 
     /**
      * Tells whether the ConfigurationProvider should reload its configuration
+     *
      * @return
      */
     public boolean needsReload() {
