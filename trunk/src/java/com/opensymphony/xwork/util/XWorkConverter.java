@@ -4,18 +4,25 @@
  */
 package com.opensymphony.xwork.util;
 
-import com.opensymphony.xwork.LocaleAware;
-import com.opensymphony.xwork.ValidationAware;
+import com.opensymphony.xwork.ActionContext;
+
 import ognl.DefaultTypeConverter;
 import ognl.Evaluation;
 import ognl.OgnlContext;
 import ognl.TypeConverter;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
+
 import java.lang.reflect.Member;
-import java.util.*;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 
 
 /**
@@ -96,6 +103,7 @@ public class XWorkConverter extends DefaultTypeConverter {
 
                     // ugly hack getting the property, but it works
                     property = eval.getNode().jjtGetChild(eval.getNode().jjtGetNumChildren() - 1).toString();
+
                     if (property.startsWith("\"") && property.endsWith("\"")) {
                         property = property.substring(1, property.length() - 1);
                     }
@@ -120,7 +128,7 @@ public class XWorkConverter extends DefaultTypeConverter {
                             mapping.putAll(props);
 
                             for (Iterator iterator = mapping.entrySet().iterator();
-                                 iterator.hasNext();) {
+                                    iterator.hasNext();) {
                                 Map.Entry entry = (Map.Entry) iterator.next();
                                 entry.setValue(createTypeConverter((String) entry.getValue()));
                             }
@@ -153,13 +161,7 @@ public class XWorkConverter extends DefaultTypeConverter {
 
         if (tc != null) {
             try {
-                Object returnVal = tc.convertValue(context, target, member, property, value, toClass);
-
-                if (returnVal == null) {
-                    handleConversionException(property, value, target);
-                }
-
-                return returnVal;
+                return tc.convertValue(context, target, member, property, value, toClass);
             } catch (Exception e) {
                 handleConversionException(property, value, target);
 
@@ -169,13 +171,7 @@ public class XWorkConverter extends DefaultTypeConverter {
 
         if (defaultTypeConverter != null) {
             try {
-                Object returnVal = defaultTypeConverter.convertValue(context, target, member, property, value, toClass);
-
-                if (returnVal == null) {
-                    handleConversionException(property, value, target);
-                }
-
-                return returnVal;
+                return defaultTypeConverter.convertValue(context, target, member, property, value, toClass);
             } catch (Exception e) {
                 handleConversionException(property, value, target);
 
@@ -183,13 +179,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             }
         } else {
             try {
-                Object returnVal = super.convertValue(context, target, member, property, value, toClass);
-
-                if (returnVal == null) {
-                    handleConversionException(property, value, target);
-                }
-
-                return returnVal;
+                return super.convertValue(context, target, member, property, value, toClass);
             } catch (Exception e) {
                 handleConversionException(property, value, target);
 
@@ -211,21 +201,18 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     protected void handleConversionException(String property, Object value, Object object) {
-        String defaultMessage = "Invalid field value for field " + property + ": " + value;
+        String defaultMessage = "Invalid field value for field \"" + property + "\".";
+        OgnlValueStack stack = ActionContext.getContext().getValueStack();
 
-        if ((object != null) && (object instanceof ValidationAware)) {
-            String message;
+        String getTextExpression = "getText('invalid.fieldvalue." + property + "','" + defaultMessage + "')";
+        String message = (String) stack.findValue(getTextExpression);
 
-            if (object instanceof LocaleAware) {
-                message = ((LocaleAware) object).getText("invalid.fieldvalue." + property, defaultMessage);
-            } else {
-                message = defaultMessage;
-            }
-
-            ((ValidationAware) object).addFieldError(property, message);
-        } else {
-            LOG.warn(defaultMessage);
+        if (message == null) {
+            message = defaultMessage;
         }
+
+        String addFieldErrorExpression = "addFieldError('" + property + "','" + message + "')";
+        stack.findValue(addFieldErrorExpression);
     }
 
     private TypeConverter createTypeConverter(String className) throws Exception, InstantiationException {
@@ -240,7 +227,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         props.load(is);
 
         for (Iterator iterator = props.entrySet().iterator();
-             iterator.hasNext();) {
+                iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String key = (String) entry.getKey();
 

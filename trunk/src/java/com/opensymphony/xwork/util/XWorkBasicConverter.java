@@ -2,14 +2,17 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.xwork;
+package com.opensymphony.xwork.util;
 
 import com.opensymphony.util.TextUtils;
+
 import ognl.DefaultTypeConverter;
 
 import java.lang.reflect.Member;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.*;
 
 
@@ -64,7 +67,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = doConvertToClass(context, value);
         } else {
             if ((toType == String[].class) && (value instanceof String)) {
-                result = new String[]{(String) value};
+                result = new String[] {(String) value};
             }
         }
 
@@ -77,10 +80,14 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 }
 
                 // let's try to convert the first element only
-                result = convertValue(context, value, toType);
+                result = this.convertValue(context, o, member, s, value, toType);
             } else {
                 result = super.convertValue(context, value, toType);
             }
+        }
+
+        if (result == null) {
+            throw new TypeConversionException("Unable to convert value '" + value + "' to type " + toType.getName());
         }
 
         return result;
