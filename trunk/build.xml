@@ -249,24 +249,20 @@
         </copy>
 
         <copy todir="${build.dist}/src">
-            <fileset dir="${src.java}"/>
+            <fileset dir="${src}"/>
+        </copy>
+
+        <mkdir dir="${build.dist}/lib"/>
+        <copy todir="${build.dist}/lib">
+            <fileset dir="${lib}"/>
         </copy>
 
         <copy todir="${build.dist}">
-            <fileset dir="${src.etc}">
-                <include name="*.dtd"/>
-            </fileset>
+           <fileset dir="${basedir}">
+              <include name="build.*"/>
+           </fileset>
         </copy>
-
-        <mkdir dir="${build.dist}/lib/core"/>
-        <copy todir="${build.dist}/lib/core">
-            <fileset dir="${lib.core}"/>
-        </copy>
-        <mkdir dir="${build.dist}/lib/editor"/>
-        <copy todir="${build.dist}/lib/editor">
-            <fileset dir="${lib.editor}"/>
-        </copy>
-
+        
         <zip zipfile="${build}/${name}-${version}.zip" basedir="${build.dist}"/>
     </target>
 
