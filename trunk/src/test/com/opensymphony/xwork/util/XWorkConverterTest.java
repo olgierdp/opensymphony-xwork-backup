@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -155,6 +156,25 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(dateString, converter.convertValue(context, null, null, null, date, String.class));
     }
 
+    public void testPrimitiveToString() {
+        Locale locale = Locale.GERMANY;
+        NumberFormat nf = NumberFormat.getInstance(locale);
+        context.put(ActionContext.LOCALE, locale);
+
+        String origValue = "123456789";
+        Long longValue = new Long(origValue);
+        String formattedValue = nf.format(new Long(origValue));
+        assertEquals(formattedValue, converter.convertValue(context, null, null, null, new Long(origValue), String.class));
+        assertEquals(longValue, converter.convertValue(context, null, null, null, formattedValue, Long.class));
+        assertEquals(longValue, converter.convertValue(context, null, null, null, origValue, Long.class));
+
+        origValue = "123456.789";
+        Float floatValue = new Float(origValue);
+        formattedValue = nf.format(new Float(origValue));
+        assertEquals(formattedValue, converter.convertValue(context, null, null, null, new Float(origValue), String.class));
+        assertEquals(floatValue, converter.convertValue(context, null, null, null, formattedValue, Float.class));
+    }
+
     public void testStringArrayToCollection() {
         ArrayList list = new ArrayList();
         list.add("foo");
@@ -257,9 +277,7 @@ public class XWorkConverterTest extends TestCase {
         // because the Foo-conversion.properties file is only used when converting a property of Foo
         converter.registerConverter(Bar.class.getName(), new FooBarConverter());
 
-        Bar bar = null;
-
-        bar = (Bar) converter.convertValue(null, null, null, null, "blah:123", Bar.class);
+        Bar bar = (Bar) converter.convertValue(null, null, null, null, "blah:123", Bar.class);
         assertNotNull("conversion failed", bar);
         assertEquals(123, bar.getSomethingElse());
         assertEquals("blah", bar.getTitle());

@@ -17,6 +17,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Member;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 
 import java.util.*;
@@ -45,6 +46,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = doConvertToDate(context, value);
         } else if (Collection.class.isAssignableFrom(toType)) {
             result = doConvertToCollection(context, o, member, s, value, toType);
+        } else if (Number.class.isAssignableFrom(toType)) {
+            result = doConvertToNumber(context, value, toType);
         } else if (toType == Class.class) {
             result = doConvertToClass(value);
         }
@@ -130,7 +133,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         Class memberType = String.class;
 
         if (o != null) {
-            memberType = (Class) XWorkConverter.getInstance().getConverter(o.getClass(), "Collection_" + prop);
+            memberType = (Class) XWorkConverter.getInstance().getConverter(o.getClass(), XWorkConverter.CONVERSION_COLLECTION_PREFIX + prop);
 
             if (memberType == null) {
                 memberType = String.class;
@@ -198,6 +201,22 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return result;
     }
 
+    private Object doConvertToNumber(Map context, Object value, Class toType) {
+        if (value instanceof String) {
+            NumberFormat numFormat = NumberFormat.getInstance(getLocale(context));
+
+            try {
+                // convert it to a Number
+                value = super.convertValue(context, numFormat.parse((String) value), toType);
+            } catch (ParseException ex) {
+                // ignore parse failure and hope default behavior works
+            }
+        }
+
+        // pass it through DefaultTypeConverter
+        return super.convertValue(context, value, toType);
+    }
+
     private String doConvertToString(Map context, Object value) {
         String result = null;
 
@@ -242,6 +261,9 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = df.format(value);
         } else if (value instanceof String[]) {
             result = TextUtils.join(", ", (String[]) value);
+        } else if (Number.class.isAssignableFrom(value.getClass())) {
+            NumberFormat numFormat = NumberFormat.getInstance(getLocale(context));
+            result = numFormat.format(value);
         }
 
         return result;
