@@ -29,19 +29,19 @@ public class InstantiatingNullHandler implements NullHandler {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
- * this is very ugly!  however, it gets the job done.  if the state is set to on, then the InstantiatingNullHandler
- * will create a new object if the requested property does not already exist.  the intended paradigm is
- *
- * <pre>
- * try {
- *    InstantiatingNullHandler.setState(true);
- *    // call Ognl setters
- * } finally {
- *    InstantiatingNullHandler.setState(false);
- * }
- * </pre>
- * @param on indicates whether or not new objects should be created
- */
+     * this is very ugly!  however, it gets the job done.  if the state is set to on, then the InstantiatingNullHandler
+     * will create a new object if the requested property does not already exist.  the intended paradigm is
+     *
+     * <pre>
+     * try {
+     *    InstantiatingNullHandler.setState(true);
+     *    // call Ognl setters
+     * } finally {
+     *    InstantiatingNullHandler.setState(false);
+     * }
+     * </pre>
+     * @param on indicates whether or not new objects should be created
+     */
     public static void setState(boolean on) {
         if (on) {
             state.set(Boolean.TRUE);
@@ -55,12 +55,12 @@ public class InstantiatingNullHandler implements NullHandler {
     }
 
     /**
- * @see NullHandler#nullPropertyValue(Map, Object, Object) for additional documentation
- * @param context
- * @param target
- * @param property
- * @return
- */
+     * @see NullHandler#nullPropertyValue(Map, Object, Object) for additional documentation
+     * @param context
+     * @param target
+     * @param property
+     * @return
+     */
     public Object nullPropertyValue(Map context, Object target, Object property) {
         if (state.get() == null) {
             return null;
@@ -74,8 +74,8 @@ public class InstantiatingNullHandler implements NullHandler {
         Method method = getMethod(methodMap, property.toString(), target);
 
         /**
- * if we didn't find any single parameter setters for this method, then there's nothing we can do.
- */
+         * if we didn't find any single parameter setters for this method, then there's nothing we can do.
+         */
         if (method == null) {
             return null;
         }
@@ -83,7 +83,7 @@ public class InstantiatingNullHandler implements NullHandler {
         try {
             Class clazz = method.getParameterTypes()[0];
             Object param = clazz.newInstance();
-            method.invoke(target, new Object[] {param});
+            method.invoke(target, new Object[]{param});
 
             return param;
         } catch (Exception e) {
@@ -94,13 +94,13 @@ public class InstantiatingNullHandler implements NullHandler {
     }
 
     /**
- * Attempt to find the setter associated with the provided instance and propertyName.  If we do find it, place that
- * Method into the methodMap keyed by property name
- * @param methodMap
- * @param propertyName the name of the property we're looking up
- * @param instance of instance of the Class we're attempting to find the setter for
- * @return
- */
+     * Attempt to find the setter associated with the provided instance and propertyName.  If we do find it, place that
+     * Method into the methodMap keyed by property name
+     * @param methodMap
+     * @param propertyName the name of the property we're looking up
+     * @param instance of instance of the Class we're attempting to find the setter for
+     * @return
+     */
     private Method getMethod(Map methodMap, String propertyName, Object instance) {
         synchronized (methodMap) {
             Method method = (Method) methodMap.get(propertyName);
@@ -128,10 +128,10 @@ public class InstantiatingNullHandler implements NullHandler {
     }
 
     /**
- * returns the Map associated with a given Class of Objects
- * @param instance an instance of the Class we're interested in
- * @return a Map of Method instances keyed by property name
- */
+     * returns the Map associated with a given Class of Objects
+     * @param instance an instance of the Class we're interested in
+     * @return a Map of Method instances keyed by property name
+     */
     private Map getMethodMap(Object instance) {
         synchronized (clazzMap) {
             Map methodMap = (Map) clazzMap.get(instance.getClass());
