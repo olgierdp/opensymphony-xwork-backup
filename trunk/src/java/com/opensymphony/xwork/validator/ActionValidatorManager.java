@@ -126,7 +126,6 @@ public class ActionValidatorManager {
 
             for (int x = 0; x < interfaces.length; x++) {
                 validators.addAll(buildClassValidators(interfaces[x], checkFile));
-                validators.addAll(buildAliasValidators(interfaces[x], context, checkFile));
             }
 
             // search up class hierarchy
