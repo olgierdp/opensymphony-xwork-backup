@@ -270,8 +270,7 @@
         <tstamp/>
         <copy filtering="on" todir="${build.dist}">
             <fileset dir=".">
-                <include name="README.html"/>
-                <include name="changes.html"/> 
+                <include name="*.html"/>
             </fileset>
             <filterset>
                 <filter token="version" value="${version}"/>
