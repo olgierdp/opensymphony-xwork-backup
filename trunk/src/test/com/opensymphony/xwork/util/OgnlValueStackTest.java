@@ -6,6 +6,7 @@ package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.SimpleAction;
+import com.opensymphony.xwork.TestBean;
 
 import junit.framework.TestCase;
 
@@ -353,6 +354,16 @@ public class OgnlValueStackTest extends TestCase {
         Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
         assertTrue(conversionErrors.containsKey("bar"));
         assertEquals(0, action.getBar());
+    }
+
+    public void testTypeConversionError() {
+        TestBean bean = new TestBean();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(bean);
+        stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        stack.setValue("count","a");
+        Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
+        assertTrue(conversionErrors.containsKey("count"));
     }
 
     public void testSerializable() throws IOException, ClassNotFoundException {
