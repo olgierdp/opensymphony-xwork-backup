@@ -40,6 +40,20 @@ public interface LocaleAware {
     String getText(String aTextName);
 
     /**
+     * Get a text from the resource bundles associated with this action.
+     * The resource bundles are searched, starting with the one associated
+     * with this particular action, and testing all its superclasses' bundles.
+     * It will stop once a bundle is found that contains the given text. This gives
+     * a cascading style that allow global texts to be defined for an application base
+     * class. If no text is found for this text name, the default value is returned.
+     *
+     * @param   aTextName  name of text to be found
+     * @param   defaultValue the default value which will be returned if no text is found
+     * @return     value of named text
+     */
+    String getText(String aTextName, String defaultValue);
+
+    /**
     * Get the named bundle.
     *
     * You can override the getLocale() methodName to change the behaviour of how

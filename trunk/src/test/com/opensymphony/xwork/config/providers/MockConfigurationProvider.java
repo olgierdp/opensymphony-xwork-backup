@@ -5,7 +5,6 @@
 package com.opensymphony.xwork.config.providers;
 
 import com.opensymphony.xwork.ActionChainResult;
-import com.opensymphony.xwork.ModelDrivenAction;
 import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.config.ConfigurationProvider;

@@ -132,5 +132,6 @@ public class DefaultActionProxy implements ActionProxy {
 
         // this will set up a new ActionContext on the ThreadLocal
         invocation = ActionProxyFactory.getFactory().createActionInvocation(this, extraContext);
+        ActionContext.getContext().setName(actionName);
     }
 }

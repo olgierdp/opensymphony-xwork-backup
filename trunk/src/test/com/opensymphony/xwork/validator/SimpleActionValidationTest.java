@@ -14,6 +14,7 @@ import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import junit.framework.TestCase;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -56,10 +57,16 @@ public class SimpleActionValidationTest extends TestCase {
             Map errors = validationAware.getFieldErrors();
             assertTrue(errors.containsKey("baz"));
 
-            String message = (String) errors.get("baz");
+            List bazErrors = (List) errors.get("baz");
+            assertEquals(1, bazErrors.size());
+
+            String message = (String) bazErrors.get(0);
             assertEquals("baz out of range.", message);
             assertTrue(errors.containsKey("bar"));
-            message = (String) errors.get("bar");
+
+            List barErrors = (List) errors.get("bar");
+            assertEquals(1, barErrors.size());
+            message = (String) barErrors.get(0);
             assertEquals("bar must be between 6 and 10, current value is 42.", message);
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,7 +87,10 @@ public class SimpleActionValidationTest extends TestCase {
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
             Map errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
-            String errorMessage = (String) errors.get("foo");
+            List fooErrors = (List) errors.get("foo");
+            assertEquals(1, fooErrors.size());
+
+            String errorMessage = (String) fooErrors.get(0);
             assertNotNull(errorMessage);
             assertEquals("Foo Range Message", errorMessage);
         } catch (Exception e) {
@@ -104,7 +114,10 @@ public class SimpleActionValidationTest extends TestCase {
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
             Map errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
-            String errorMessage = (String) errors.get("bar");
+            List barErrors = (List) errors.get("bar");
+            assertEquals(1, barErrors.size());
+
+            String errorMessage = (String) barErrors.get(0);
             assertNotNull(errorMessage);
             assertEquals("bar must be between 6 and 10, current value is 42.", errorMessage);
         } catch (Exception e) {

@@ -12,6 +12,7 @@ import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 
 import junit.framework.TestCase;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -30,7 +31,10 @@ public class DateRangeValidatorTest extends TestCase {
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
             Map errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
-            String errorMessage = (String) errors.get("date");
+            List errorMessages = (List) errors.get("date");
+            assertEquals(1, errorMessages.size());
+
+            String errorMessage = (String) errorMessages.get(0);
             assertNotNull(errorMessage);
         } catch (Exception e) {
             e.printStackTrace();

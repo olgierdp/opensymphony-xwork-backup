@@ -6,11 +6,15 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.util.FileManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +32,7 @@ public class ActionValidatorManager {
     protected static final String VALIDATION_CONFIG_SUFFIX = "-validation.xml";
     private static final Map validatorCache = Collections.synchronizedMap(new HashMap());
     private static final Map validatorFileCache = Collections.synchronizedMap(new HashMap());
+    private static final Log LOG = LogFactory.getLog(ActionValidatorManager.class);
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -42,6 +47,26 @@ public class ActionValidatorManager {
         }
 
         return (List) validatorCache.get(validatorKey);
+    }
+
+    public static void validate(Object object, String context) throws ValidationException {
+        ValidatorContext validatorContext = new DelegatingValidatorContext(object);
+        validate(object, context, validatorContext);
+    }
+
+    public static void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException {
+        List validators = getValidators(object.getClass(), context);
+
+        for (Iterator iterator = validators.iterator(); iterator.hasNext();) {
+            Validator validator = (Validator) iterator.next();
+            validator.setValidatorContext(validatorContext);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Running validator: " + validator + " for object " + object);
+            }
+
+            validator.validate(object);
+        }
     }
 
     protected static String buildValidatorKey(Class clazz, String context) {

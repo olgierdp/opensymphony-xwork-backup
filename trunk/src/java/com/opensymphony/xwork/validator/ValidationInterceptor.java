@@ -26,21 +26,13 @@ public class ValidationInterceptor extends AroundInterceptor {
     }
 
     protected void before(ActionInvocation invocation) throws Exception {
-        List validators = ActionValidatorManager.getValidators(invocation.getAction().getClass(), invocation.getProxy().getActionName());
         Action action = invocation.getAction();
+        String context = invocation.getProxy().getActionName();
 
         if (log.isDebugEnabled()) {
-            log.debug("Validating " + invocation.getProxy().getNamespace() + invocation.getProxy().getActionName() + " with " + validators.size() + " validators.");
+            log.debug("Validating " + invocation.getProxy().getNamespace() + invocation.getProxy().getActionName() + ".");
         }
 
-        for (Iterator iterator = validators.iterator(); iterator.hasNext();) {
-            Validator validator = (Validator) iterator.next();
-
-            if (log.isDebugEnabled()) {
-                log.debug("Running validator: " + validator);
-            }
-
-            validator.validate(action);
-        }
+        ActionValidatorManager.validate(action, context);
     }
 }

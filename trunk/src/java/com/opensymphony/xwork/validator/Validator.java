@@ -23,5 +23,19 @@ public interface Validator {
 
     String getMessageKey();
 
+    /**
+     * This method will be called before validate with a non-null ValidatorContext.
+     * @param validatorContext
+     */
+    void setValidatorContext(ValidatorContext validatorContext);
+
+    ValidatorContext getValidatorContext();
+
+    /**
+     * The validation implementation must guarantee that setValidatorContext will
+     * be called with a non-null ValidatorContext before validate is called.
+     * @param object
+     * @throws ValidationException
+     */
     void validate(Object object) throws ValidationException;
 }

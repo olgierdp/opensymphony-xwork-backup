@@ -5,20 +5,17 @@
 package com.opensymphony.xwork.validator.validators;
 
 import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.LocaleAware;
-import com.opensymphony.xwork.ValidationAware;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.TextParseUtil;
 import com.opensymphony.xwork.validator.ValidationException;
 import com.opensymphony.xwork.validator.Validator;
+import com.opensymphony.xwork.validator.ValidatorContext;
 
 import ognl.Ognl;
 import ognl.OgnlException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.MissingResourceException;
 
 
 /**
@@ -32,6 +29,7 @@ public abstract class ValidatorSupport implements Validator {
     protected final Log log = LogFactory.getLog(this.getClass());
     private String defaultMessage = "";
     private String messageKey = null;
+    private ValidatorContext validatorContext;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -46,13 +44,8 @@ public abstract class ValidatorSupport implements Validator {
     public String getMessage(Object object) {
         String message;
 
-        if ((messageKey != null) && (object instanceof LocaleAware)) {
-            try {
-                LocaleAware localeAware = (LocaleAware) object;
-                message = localeAware.getText(messageKey);
-            } catch (MissingResourceException e) {
-                message = defaultMessage;
-            }
+        if (messageKey != null) {
+            message = validatorContext.getText(messageKey, defaultMessage);
         } else {
             message = defaultMessage;
         }
@@ -73,6 +66,14 @@ public abstract class ValidatorSupport implements Validator {
         return messageKey;
     }
 
+    public void setValidatorContext(ValidatorContext validatorContext) {
+        this.validatorContext = validatorContext;
+    }
+
+    public ValidatorContext getValidatorContext() {
+        return validatorContext;
+    }
+
     protected Object getFieldValue(String name, Object object) throws ValidationException {
         try {
             return Ognl.getValue(name, object);
@@ -84,20 +85,10 @@ public abstract class ValidatorSupport implements Validator {
     }
 
     protected void addActionError(Object object) {
-        if (object instanceof ValidationAware) {
-            ValidationAware validationAware = (ValidationAware) object;
-            validationAware.addActionError(getMessage(object));
-        } else {
-            log.error("Validation error: " + getMessage(object));
-        }
+        validatorContext.addActionError(getMessage(object));
     }
 
     protected void addFieldError(String propertyName, Object object) {
-        if (object instanceof ValidationAware) {
-            ValidationAware validationAction = (ValidationAware) object;
-            validationAction.addFieldError(propertyName, getMessage(object));
-        } else {
-            log.error("Validation error for " + propertyName + ":" + getMessage(object));
-        }
+        validatorContext.addFieldError(propertyName, getMessage(object));
     }
 }

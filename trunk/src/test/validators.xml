@@ -7,4 +7,5 @@
     <validator name="fieldexpression" class="com.opensymphony.xwork.validator.validators.FieldExpressionValidator"/>
     <validator name="email" class="com.opensymphony.xwork.validator.validators.EmailValidator"/>
     <validator name="url" class="com.opensymphony.xwork.validator.validators.URLValidator"/>
+    <validator name="visitor" class="com.opensymphony.xwork.validator.validators.VisitorFieldValidator"/>
 </validators>
