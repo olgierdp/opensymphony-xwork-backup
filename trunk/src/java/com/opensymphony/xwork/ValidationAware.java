@@ -25,7 +25,8 @@ public interface ValidationAware extends Serializable {
     void setActionErrors(Collection errorMessages);
 
     /**
-    * Get the Collection of Action level error messages for this action
+    * Get the Collection of Action level error messages for this action. Error messages should not be added directly
+    * here, as implementations are free to return a new Collection or an Unmodifiable Collection.
     *
     * @return Collection of String error messages
     */
@@ -38,7 +39,8 @@ public interface ValidationAware extends Serializable {
     void setFieldErrors(Map errorMap);
 
     /**
-    * Get the field specific errors associated with this action.
+    * Get the field specific errors associated with this action. Error messages should not be added directly
+    * here, as implementations are free to return a new Collection or an Unmodifiable Collection.
     *
     * @return Map with errors mapped from fieldname (String) to Collection of String error messages
     */
