@@ -18,6 +18,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -208,52 +209,79 @@ public class OgnlUtil {
      * @param from the source object
      * @param to the target object
      * @param context the action context we're running under
+     * @param exclusions collection of method names to excluded from copying ( can be null)
+     * @param inclusions collection of method names to included copying  (can be null) 
+     *  note if exclusions AND inclusions are supplied and not null nothing will get copied.
+     * 
      */
-    public static void copy(Object from, Object to, Map context) {
+    public static void copy(Object from, Object to, Map context,  Collection exclusions, Collection inclusions) {
         Map contextFrom = Ognl.createDefaultContext(from);
         Ognl.setTypeConverter(contextFrom, XWorkConverter.getInstance());
-
         Map contextTo = Ognl.createDefaultContext(to);
         Ognl.setTypeConverter(contextTo, XWorkConverter.getInstance());
-
+        
         BeanInfo beanInfoFrom;
         BeanInfo beanInfoTo;
-
+        
         try {
             beanInfoFrom = getBeanInfo(from);
             beanInfoTo = getBeanInfo(to);
         } catch (IntrospectionException e) {
             log.error("An error occured", e);
-
+            
             return;
         }
-
+        
         PropertyDescriptor[] fromPds = beanInfoFrom.getPropertyDescriptors();
         PropertyDescriptor[] toPds = beanInfoTo.getPropertyDescriptors();
         Map toPdHash = new HashMap();
-
+        
         for (int i = 0; i < toPds.length; i++) {
             PropertyDescriptor toPd = toPds[i];
             toPdHash.put(toPd.getName(), toPd);
         }
-
+        
         for (int i = 0; i < fromPds.length; i++) {
             PropertyDescriptor fromPd = fromPds[i];
-
-            if (fromPd.getReadMethod() != null) {
-                PropertyDescriptor toPd = (PropertyDescriptor) toPdHash.get(fromPd.getName());
-
-                if ((toPd != null) && (toPd.getWriteMethod() != null)) {
-                    try {
-                        Object expr = OgnlUtil.compile(fromPd.getName());
-                        Object value = Ognl.getValue(expr, contextFrom, from);
-                        Ognl.setValue(expr, contextTo, to, value);
-                    } catch (OgnlException e) {
-                        // ignore, this is OK
+            if (fromPd.getReadMethod() != null ) {
+                boolean copy = true;
+                if (exclusions != null && exclusions.contains(fromPd.getName())  ) {
+                        copy = false;
+                } else if (inclusions != null && !inclusions.contains(fromPd.getName())) {
+                        copy = false;
+                } 
+                
+                if (copy == true ){
+                    PropertyDescriptor toPd = (PropertyDescriptor) toPdHash.get(fromPd.getName());
+                    if ((toPd != null) && (toPd.getWriteMethod() != null)) {
+                        try {
+                            Object expr = OgnlUtil.compile(fromPd.getName());
+                            Object value = Ognl.getValue(expr, contextFrom, from);
+                            Ognl.setValue(expr, contextTo, to, value);
+                        } catch (OgnlException e) {
+                            // ignore, this is OK
+                        }
                     }
+                    
                 }
+                
             }
+            
         }
+    }
+    
+    
+    /**
+     * Copies the properties in the object "from" and sets them in the object "to"
+     * using specified type converter, or {@link com.opensymphony.xwork.util.XWorkConverter} if none
+     * is specified.
+     *
+     * @param from the source object
+     * @param to the target object
+     * @param context the action context we're running under
+     */
+    public static void copy(Object from, Object to, Map context) {
+        OgnlUtil.copy(from, to, context, null, null);
     }
 
     private static BeanInfo getBeanInfo(Object from) throws IntrospectionException {
