@@ -158,7 +158,10 @@ public class LocalizedTextUtil {
         ActionContext context = ActionContext.getContext();
         OgnlValueStack valueStack = context.getValueStack();
         String indexedTextName = null;
-
+        if (aTextName == null) {
+            LOG.warn("Trying to find text with null key!");
+            aTextName = "";
+        }
         // calculate indexedTextName (collection[*]) if applicable
         if (aTextName.indexOf("[") != -1) {
             int i = -1;

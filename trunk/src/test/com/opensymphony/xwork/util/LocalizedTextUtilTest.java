@@ -49,6 +49,10 @@ public class LocalizedTextUtilTest extends TestCase {
         }
     }
 
+    public void testNullKeys() {
+        LocalizedTextUtil.findText(this.getClass(),null,Locale.getDefault());
+    }
+
     public void testActionGetTextXXX() {
         try {
             LocalizedTextUtil.addDefaultResourceBundle("com/opensymphony/xwork/util/FindMe");
