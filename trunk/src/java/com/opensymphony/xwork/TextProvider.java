@@ -10,7 +10,20 @@ import java.util.ResourceBundle;
 
 
 /**
- * TextProvider
+ * Provides access to {@link ResourceBundle}s and their underlying text messages.
+ * Implementing classes can delegate {@link TextProviderSupport}. Messages will be
+ * searched in multiple resource bundles, starting with the one associated with
+ * this particular class (action in most cases), continuing to try the message
+ * bundle associated with each superclass as well. It will stop once a bundle is
+ * found that contains the given text. This gives a cascading style that allow
+ * global texts to be defined for an application base class.
+ *
+ * You can override {@link LocaleProvider#getLocale()} to change the behaviour of how
+ * to choose locale for the bundles that are returned. Typically you would
+ * use the {@link LocaleProvider} interface to get the users configured locale.
+ *
+ * @see LocaleProvider
+ * @see TextProviderSupport
  * @author Jason Carreira
  * Created Feb 10, 2003 9:55:48 AM
  */
@@ -18,80 +31,54 @@ public interface TextProvider {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-     * Get a text from the resource bundles associated with this action.
-     * The resource bundles are searched, starting with the one associated
-     * with this particular action, and testing all its superclasses' bundles.
-     * It will stop once a bundle is found that contains the given text. This gives
-     * a cascading style that allow global texts to be defined for an application base
-     * class.
+     * Gets a message based on a message key, or null if no message is found.
      *
-     * @param   aTextName  name of text to be found
-     * @return     value of named text
+     * @param key the resource bundle key that is to be searched for
+     * @return the message as found in the resource bundle, or null if none is found.
      */
-    String getText(String aTextName);
+    String getText(String key);
 
     /**
-     * Get a text from the resource bundles associated with this action.
-     * The resource bundles are searched, starting with the one associated
-     * with this particular action, and testing all its superclasses' bundles.
-     * It will stop once a bundle is found that contains the given text. This gives
-     * a cascading style that allow global texts to be defined for an application base
-     * class. If no text is found for this text name, the default value is returned.
+     * Gets a message based on a key, or, if the message is not found, a supplied
+     * default value is returned.
      *
-     * @param   aTextName  name of text to be found
-     * @param   defaultValue the default value which will be returned if no text is found
-     * @return     value of named text
+     * @param key the resource bundle key that is to be searched for
+     * @param defaultValue the default value which will be returned if no message is found
+     * @return the message as found in the resource bundle, or defaultValue if none is found
      */
-    String getText(String aTextName, String defaultValue);
+    String getText(String key, String defaultValue);
 
     /**
-     * Get a text from the resource bundles associated with this action.
-     * The resource bundles are searched, starting with the one associated
-     * with this particular action, and testing all its superclasses' bundles.
-     * It will stop once a bundle is found that contains the given text. This gives
-     * a cascading style that allow global texts to be defined for an application base
-     * class. If no text is found for this text name, the default value is returned.
+     * Gets a message based on a key using the supplied args, as defined in
+     * {@link java.text.MessageFormat}, or null if no message is found.
      *
-     * @param   aTextName  name of text to be found
-     * @param   args a List of args to be used in a MessageFormat message
-     * @return     value of named text
+     * @param key the resource bundle key that is to be searched for
+     * @param args a list args to be used in a {@link java.text.MessageFormat} message
+     * @return the message as found in the resource bundle, or null if none is found.
      */
-    String getText(String aTextName, List args);
+    String getText(String key, List args);
 
     /**
-     * Get a text from the resource bundles associated with this action.
-     * The resource bundles are searched, starting with the one associated
-     * with this particular action, and testing all its superclasses' bundles.
-     * It will stop once a bundle is found that contains the given text. This gives
-     * a cascading style that allow global texts to be defined for an application base
-     * class. If no text is found for this text name, the default value is returned.
+     * Gets a message based on a key using the supplied args, as defined in
+     * {@link java.text.MessageFormat}, or, if the message is not found, a supplied
+     * default value is returned.
      *
-     * @param   aTextName  name of text to be found
-     * @param   defaultValue the default value which will be returned if no text is found
-     * @param   args a List of args to be used in a MessageFormat message
-     * @return     value of named text
+     * @param key the resource bundle key that is to be searched for
+     * @param defaultValue the default value which will be returned if no message is found
+     * @param args a list args to be used in a {@link java.text.MessageFormat} message
+     * @return the message as found in the resource bundle, or defaultValue if none is found
      */
-    String getText(String aTextName, String defaultValue, List args);
+    String getText(String key, String defaultValue, List args);
 
     /**
-    * Get the named bundle.
+    * Get the named bundle, such as "com/acme/Foo".
     *
-    * You can override the getLocale() methodName to change the behaviour of how
-    * to choose locale for the bundles that are returned. Typically you would
-    * use the TextProvider interface to get the users configured locale, or use
-    * your own methodName to allow the user to select the locale and store it in
-    * the session (by using the SessionAware interface).
-    *
-    * @param   aBundleName  bundle name
-    * @return     a resource bundle
+    * @param bundleName the name of the resource bundle, such as "com/acme/Foo"
     */
-    ResourceBundle getTexts(String aBundleName);
+    ResourceBundle getTexts(String bundleName);
 
     /**
-    * Get the resource bundle associated with this action.
-    * This will be based on the actual subclass that is used.
-    *
-    * @return     resouce bundle
+    * Get the resource bundle associated with the implementing class (usually an action).
     */
     ResourceBundle getTexts();
 }
