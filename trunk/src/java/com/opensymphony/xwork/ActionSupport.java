@@ -147,6 +147,6 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
      * A default implementation that validates nothing.
      * Subclasses should override this method to provide validations.
      */
-    public void validate() {
+    public void validate() throws Exception {
     }
 }
