@@ -293,12 +293,16 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
                 HashMap params = XmlHelper.getParams(resultElement);
 
-                if (params.size() == 0) // maybe we just have a body - therefore a default location parameter
+                if (params.size() == 0) // maybe we just have a body - therefore a default parameter
                  {
-                    // if <result ...>something</result> then we add a location parameter of 'something' as this is the most used result param
+                    // if <result ...>something</result> then we add a parameter of 'something' as this is the most used result param
                     if ((resultElement.getChildNodes().getLength() == 1) && (resultElement.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE)) {
                         params = new HashMap();
-                        params.put("location", resultElement.getChildNodes().item(0).getNodeValue());
+                        try {
+                            String paramName = (String) resultClass.getField("DEFAULT_PARAM").get(null);
+                            params.put(paramName, resultElement.getChildNodes().item(0).getNodeValue());
+                        } catch (Throwable t) {
+                        }
                     }
                 }
 

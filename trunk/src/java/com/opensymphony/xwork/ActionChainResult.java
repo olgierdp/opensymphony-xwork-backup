@@ -24,6 +24,7 @@ public class ActionChainResult implements Result {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log log = LogFactory.getLog(ActionChainResult.class);
+    public static final String DEFAULT_PARAM = "actionName";
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
