@@ -5,6 +5,12 @@
         </fileset>
     </path>
 
+    <path id="editor.classpath">
+        <fileset dir="lib/editor">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+    
     <path id="jalopy.classpath">
         <fileset dir="lib/build/jalopy">
             <include name="*.jar"/>
@@ -17,18 +23,21 @@
     <property name="lib.core" value="${lib}/core"/>
     <property name="lib.build" value="${lib}/build"/>
     <property name="lib.optional" value="${lib}/optional"/>
-
+    <property name="lib.editor" value="${lib}/editor"/>
+   
     <property name="src" value="src"/>
     <property name="src.java" value="${src}/java"/>
     <property name="src.test" value="${src}/test"/>
     <property name="src.etc" value="${src}/etc"/>
-
+    <property name="src.editor" value="${src}/editor"/>
+   
     <property name="build" value="build"/>
     <property name="build.test" value="${build}/test"/>
     <property name="build.java-test" value="${build}/java-test"/>
     <property name="build.java" value="${build}/java"/>
     <property name="build.clover" value="${build}/clover"/>
     <property name="build.dist" value="${build}/dist"/>
+    <property name="build.editor" value="${build}/editor"/>
 
     <property name="clover.initstring" value="${build.clover}/coverage.db"/>
 
@@ -39,7 +48,7 @@
     </target>
 
     <target name="java">
-        <mkdir dir="${build.java}"/>
+		  <mkdir dir="${build.java}"/>
         <javac srcdir="${src.java}" destdir="${build.java}" classpathref="cp" debug="on"/>
         <copy filtering="no" todir="${build.java}">
             <fileset dir="${src.java}">
@@ -124,6 +133,45 @@
         <jar basedir="${build.java}" jarfile="${build}/${name}-${version}.jar"/>
     </target>
 
+    <target name="editor-java">
+        <mkdir dir="${build.editor}"/>
+        <mkdir dir="${build.editor}/META-INF"/>
+        <javac srcdir="${src.editor}" destdir="${build.editor}" includes="com/opensymphony/xworkeditor/**" classpathref="editor.classpath" debug="on"/>
+        <copy filtering="no" todir="${build.editor}">
+            <fileset dir="${src.editor}">
+                <exclude name="**/*.java"/>
+                <exclude name="**/package.html"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="create-xelements">
+        <taskdef name="xelements" classname="com.xe.xface.ant.XElementsTask" classpathref="editor.classpath"/>
+        <xelements dest="${build.editor}/META-INF">
+            <fileset dir="${src.editor}">
+                <include name="**/*.java"/>
+			    </fileset>
+		  </xelements>
+    </target>
+	    
+    <target name="editor-jar" depends="editor-java,create-xelements">
+        <mkdir dir="${build}"/>
+
+        <copy todir="${build.editor}" file="${src.etc}/xwork-1.0.dtd"/>
+
+        <dirname property="lib.dir" file="${lib.editor}"/>
+        <pathconvert pathsep=" " refid="editor.classpath" property="editor.jar.classpath">
+            <map from="${lib.dir}${file.separator}" to="..${file.separator}lib${file.separator}"/>
+        </pathconvert>
+
+        <jar basedir="${build.editor}" jarfile="${build}/${name}-editor-${version}.jar">
+            <manifest>
+                <attribute name="Main-Class" value="com.opensymphony.xworkeditor.Application"/>
+                <attribute name="Class-Path" value="${editor.jar.classpath}"/>
+            </manifest>        
+        </jar>
+    </target>
+    
     <target name="javadocs">
         <mkdir dir="${build.dist}/docs/api"/>
         <javadoc sourcepath="${src.java}"
@@ -173,7 +221,7 @@
         </copy>
     </target>
 
-    <target name="dist" depends="jar, docs">
+    <target name="dist" depends="jar, editor-jar, docs">
         <copy file="${build}/${name}-${version}.jar" todir="${build.dist}"/>
         <copy todir="${build.dist}/src">
             <fileset dir="${src.java}"/>
