@@ -115,11 +115,12 @@ public class DefaultActionProxy implements ActionProxy {
         ActionContext.setContext(invocation.getInvocationContext());
 
         String retCode = null;
-        retCode = invocation.invoke();
 
-        // save the context before overwriting it
-        lastContext = ActionContext.getContext();
-        ActionContext.setContext(nestedContext);
+        try {
+            retCode = invocation.invoke();
+        } finally {
+            ActionContext.setContext(nestedContext);
+        }
 
         return retCode;
     }
