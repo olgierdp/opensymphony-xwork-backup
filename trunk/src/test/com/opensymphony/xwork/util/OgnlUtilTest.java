@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.XworkException;
+
 import junit.framework.TestCase;
 
 import ognl.NullHandler;
@@ -318,7 +320,7 @@ public class OgnlUtilTest extends TestCase {
                 try {
                     this.add(clazz.newInstance());
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    throw new XworkException(e);
                 }
             }
 
