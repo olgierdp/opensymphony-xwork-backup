@@ -8,6 +8,7 @@ import com.opensymphony.util.FileManager;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ObjectFactory;
+import com.opensymphony.xwork.XWorkMessages;
 
 import ognl.DefaultTypeConverter;
 import ognl.Evaluation;
@@ -64,7 +65,9 @@ public class XWorkConverter extends DefaultTypeConverter {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public static String getConversionErrorMessage(String propertyName, OgnlValueStack stack) {
-        String defaultMessage = "Invalid field value for field \"" + propertyName + "\".";
+        String defaultMessage = LocalizedTextUtil.findDefaultText(XWorkMessages.DEFAULT_INVALID_FIELDVALUE, ActionContext.getContext().getLocale(), new Object[] {
+                propertyName
+            });
         String getTextExpression = "getText('" + CONVERSION_ERROR_PROPERTY_PREFIX + propertyName + "','" + defaultMessage + "')";
         String message = (String) stack.findValue(getTextExpression);
 
