@@ -6,6 +6,7 @@ package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
+import com.opensymphony.xwork.util.InstantiatingNullHandler;
 import com.opensymphony.xwork.util.OgnlValueStack;
 
 import java.util.Iterator;
@@ -13,8 +14,6 @@ import java.util.Map;
 
 
 /**
- *
- *
  * @author $Author$
  * @version $Revision$
  */
@@ -31,14 +30,20 @@ public class ParametersInterceptor extends AroundInterceptor {
             log.debug("Setting params " + parameters);
         }
 
-        if (parameters != null) {
-            final OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        try {
+            InstantiatingNullHandler.setState(true);
 
-            for (Iterator iterator = parameters.entrySet().iterator();
-                    iterator.hasNext();) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                stack.setValue(entry.getKey().toString(), entry.getValue());
+            if (parameters != null) {
+                final OgnlValueStack stack = ActionContext.getContext().getValueStack();
+
+                for (Iterator iterator = parameters.entrySet().iterator();
+                        iterator.hasNext();) {
+                    Map.Entry entry = (Map.Entry) iterator.next();
+                    stack.setValue(entry.getKey().toString(), entry.getValue());
+                }
             }
+        } finally {
+            InstantiatingNullHandler.setState(false);
         }
     }
 }
