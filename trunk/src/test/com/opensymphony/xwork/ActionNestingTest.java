@@ -5,7 +5,6 @@
 package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.config.Configuration;
-import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.entities.ActionConfig;
@@ -13,14 +12,15 @@ import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import junit.framework.TestCase;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
  * ActionNestingTest
+ *
  * @author Jason Carreira
- * Created Mar 5, 2003 2:02:01 PM
+ *         Created Mar 5, 2003 2:02:01 PM
  */
 public class ActionNestingTest extends TestCase {
     //~ Static fields/initializers /////////////////////////////////////////////
@@ -44,7 +44,8 @@ public class ActionNestingTest extends TestCase {
         return VALUE;
     }
 
-    public void setUp() throws ConfigurationException {
+    public void setUp() throws Exception {
+        super.setUp();
         ConfigurationManager.addConfigurationProvider(new NestedTestConfigurationProvider());
         ConfigurationManager.getConfiguration().reload();
 
@@ -59,17 +60,17 @@ public class ActionNestingTest extends TestCase {
         ActionContext.setContext(context);
     }
 
-    public void testNestedContext() {
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        ConfigurationManager.clearConfigurationProviders();
+        ConfigurationManager.destroyConfiguration();
+        ActionContext.setContext(null);
+    }
+
+    public void testNestedContext() throws Exception {
         assertEquals(context, ActionContext.getContext());
-
-        try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(NAMESPACE, SIMPLE_ACTION_NAME, null);
-            proxy.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
-
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(NAMESPACE, SIMPLE_ACTION_NAME, null);
+        proxy.execute();
         assertEquals(context, ActionContext.getContext());
     }
 
@@ -77,7 +78,7 @@ public class ActionNestingTest extends TestCase {
         OgnlValueStack stack = ActionContext.getContext().getValueStack();
         assertEquals(VALUE, stack.findValue(KEY));
 
-         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(NAMESPACE, NO_STACK_ACTION_NAME, null);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(NAMESPACE, NO_STACK_ACTION_NAME, null);
         proxy.execute();
         stack = ActionContext.getContext().getValueStack();
         assertEquals(stack.findValue(KEY), VALUE);
@@ -107,8 +108,8 @@ public class ActionNestingTest extends TestCase {
         }
 
         /**
-        * Initializes the configuration object.
-        */
+         * Initializes the configuration object.
+         */
         public void init(Configuration configurationManager) {
             PackageConfig packageContext = new PackageConfig();
             ActionConfig config = new ActionConfig(null, SimpleAction.class, null, null, null);
@@ -122,9 +123,10 @@ public class ActionNestingTest extends TestCase {
         }
 
         /**
-        * Tells whether the ConfigurationProvider should reload its configuration
-        * @return
-        */
+         * Tells whether the ConfigurationProvider should reload its configuration
+         *
+         * @return
+         */
         public boolean needsReload() {
             return false;
         }
