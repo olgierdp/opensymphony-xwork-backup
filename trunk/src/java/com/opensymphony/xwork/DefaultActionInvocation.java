@@ -38,6 +38,7 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     protected Action action;
     protected ActionProxy proxy;
+    protected List preResultListeners;
     protected Map extraContext;
     ActionContext invocationContext;
     Iterator interceptors;
@@ -143,6 +144,20 @@ public class DefaultActionInvocation implements ActionInvocation {
         return stack;
     }
 
+    /**
+     * Register a com.opensymphony.xwork.PreResultListener to be notified after the Action is executed and before the
+     * Result is executed. The ActionInvocation implementation must guarantee that listeners will be called in the order
+     * in which they are registered. Listener registration and execution does not need to be thread-safe.
+     * @param listener
+     */
+    public void addPreResultListener(PreResultListener listener) {
+        if (preResultListeners == null) {
+            preResultListeners = new ArrayList(1);
+        }
+
+        preResultListeners.add(listener);
+    }
+
     public String invoke() throws Exception {
         if (executed) {
             throw new IllegalStateException("Action has already executed");
@@ -156,6 +171,14 @@ public class DefaultActionInvocation implements ActionInvocation {
                 resultCode = getAction().execute();
             } else {
                 resultCode = invokeAction(getAction(), proxy.getConfig());
+            }
+        }
+
+        if (preResultListeners != null) {
+            for (Iterator iterator = preResultListeners.iterator();
+                    iterator.hasNext();) {
+                PreResultListener listener = (PreResultListener) iterator.next();
+                listener.beforeResult(this, resultCode);
             }
         }
 

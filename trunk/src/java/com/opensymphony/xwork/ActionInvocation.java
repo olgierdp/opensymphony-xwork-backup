@@ -54,6 +54,14 @@ public interface ActionInvocation extends Serializable {
     OgnlValueStack getStack();
 
     /**
+     * Register a com.opensymphony.xwork.PreResultListener to be notified after the Action is executed and before the
+     * Result is executed. The ActionInvocation implementation must guarantee that listeners will be called in the order
+     * in which they are registered. Listener registration and execution does not need to be thread-safe.
+     * @param listener
+     */
+    void addPreResultListener(PreResultListener listener);
+
+    /**
      * Invokes the next step in processing this ActionInvocation. If there are more
      * Interceptors, this will call the next one. If Interceptors choose not to short-circuit
      * ActionInvocation processing and return their own return code, they will call
