@@ -6,6 +6,8 @@
     </path>
 
     <path id="editor.classpath">
+        <path refid="cp"/>
+
         <fileset dir="lib/editor">
             <include name="*.jar"/>
         </fileset>
@@ -171,9 +173,9 @@
 
         <dirname property="lib.dir" file="${lib.editor}"/>
         <pathconvert pathsep=" " refid="editor.classpath" property="editor.jar.classpath">
-            <map from="${lib.dir}${file.separator}" to="..${file.separator}lib${file.separator}"/>
+            <map from="${lib.dir}${file.separator}" to="lib${file.separator}"/>
         </pathconvert>
-
+        
         <jar basedir="${build.editor}" jarfile="${build}/${name}-editor-${version}.jar">
             <manifest>
                 <attribute name="Main-Class" value="com.opensymphony.xworkeditor.Application"/>
@@ -233,9 +235,27 @@
 
     <target name="dist" depends="jar, editor-jar, docs">
         <copy file="${build}/${name}-${version}.jar" todir="${build.dist}"/>
+        <copy file="${build}/${name}-editor-${version}.jar" todir="${build.dist}"/>
+
         <copy todir="${build.dist}/src">
             <fileset dir="${src.java}"/>
         </copy>
+
+        <copy todir="${build.dist}">
+            <fileset dir="${src.etc}">
+                <include name="*.dtd"/>
+            </fileset>
+        </copy>
+
+        <mkdir dir="${build.dist}/lib/core"/>
+        <copy todir="${build.dist}/lib/core">
+            <fileset dir="${lib.core}"/>
+        </copy>
+        <mkdir dir="${build.dist}/lib/editor"/>
+        <copy todir="${build.dist}/lib/editor">
+            <fileset dir="${lib.editor}"/>
+        </copy>
+
         <zip zipfile="${build}/${name}-${version}.zip" basedir="${build.dist}"/>
     </target>
 
