@@ -71,7 +71,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 Object o = iterator.next();
 
                 try {
-                    if (OgnlRuntime.hasGetProperty(ognlContext, o, name)) {
+                    if ((OgnlRuntime.hasGetProperty(ognlContext, o, name)) || ((o instanceof Map) && ((Map)o).containsKey(name))) {
                         Object value = OgnlRuntime.getProperty(ognlContext, o, name);
 
                         //Ognl.getValue(OgnlUtil.compile((String) name), context, o);
