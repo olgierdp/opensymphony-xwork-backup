@@ -8,6 +8,7 @@ import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.util.InstantiatingNullHandler;
 import com.opensymphony.xwork.util.OgnlValueStack;
+import com.opensymphony.xwork.util.XWorkConverter;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class ParametersInterceptor extends AroundInterceptor {
 
         try {
             InstantiatingNullHandler.setState(true);
-            invocation.getInvocationContext().put("report.conversion.errors", Boolean.TRUE);
+            invocation.getInvocationContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
             if (parameters != null) {
                 final OgnlValueStack stack = ActionContext.getContext().getValueStack();
@@ -44,7 +45,7 @@ public class ParametersInterceptor extends AroundInterceptor {
                 }
             }
         } finally {
-            invocation.getInvocationContext().put("report.conversion.errors", Boolean.FALSE);
+            invocation.getInvocationContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.FALSE);
             InstantiatingNullHandler.setState(false);
         }
     }

@@ -65,9 +65,12 @@ public class OgnlValueStack implements Serializable {
 
     public void setValue(String expr, Object value) {
         try {
+            getContext().put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, expr);
             Ognl.setValue(OgnlUtil.compile(expr), context, root, value);
         } catch (OgnlException e) {
             // ignore
+        } finally {
+            getContext().remove(XWorkConverter.CONVERSION_PROPERTY_FULLNAME);
         }
     }
 

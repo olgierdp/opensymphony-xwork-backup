@@ -7,6 +7,7 @@ package com.opensymphony.xwork.util;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ModelDrivenAction;
 import com.opensymphony.xwork.SimpleAction;
+import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.config.ConfigurationManager;
 
 import junit.framework.TestCase;
@@ -55,8 +56,8 @@ public class XWorkConverterTest extends TestCase {
 
         OgnlValueStack stack = new OgnlValueStack();
         stack.push(action);
-        ActionContext.setContext(new ActionContext(stack.getContext()));
-        ActionContext.getContext().put("report.conversion.errors", Boolean.TRUE);
+        Map context = stack.getContext();
+        context.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         assertEquals("Conversion should have failed.",
                 null,
                 converter.convertValue(context, action, null, "date", new String[]{
@@ -68,13 +69,33 @@ public class XWorkConverterTest extends TestCase {
         assertEquals("Invalid field value for field \"date\".", ((List) action.getFieldErrors().get("date")).get(0));
     }
 
+    public void testFieldErrorMessageAddedForComplexProperty() {
+        SimpleAction action = new SimpleAction();
+        action.setBean(new TestBean());
+
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(action);
+        Map context = stack.getContext();
+        context.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        context.put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, "bean.birth");
+        assertEquals("Conversion should have failed.",
+                null,
+                converter.convertValue(context, action.getBean(), null, "birth", new String[]{
+                    "invalid date"
+                }, Date.class));
+        stack.pop();
+        assertTrue(action.hasFieldErrors());
+        assertNotNull(action.getFieldErrors().get("bean.birth"));
+        assertEquals("Invalid field value for field \"bean.birth\".", ((List) action.getFieldErrors().get("bean.birth")).get(0));
+    }
+
     public void testFieldErrorMessageAddedWhenConversionFailsOnModelDriven() {
         ModelDrivenAction action = new ModelDrivenAction();
         OgnlValueStack stack = new OgnlValueStack();
         stack.push(action);
         stack.push(action.getModel());
-        ActionContext.setContext(new ActionContext(stack.getContext()));
-        ActionContext.getContext().put("report.conversion.errors", Boolean.TRUE);
+        Map context = stack.getContext();
+        context.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         assertEquals("Conversion should have failed.",
                 null,
                 converter.convertValue(context, action, null, "birth", new String[]{

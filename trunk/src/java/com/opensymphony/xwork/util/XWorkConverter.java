@@ -4,8 +4,8 @@
  */
 package com.opensymphony.xwork.util;
 
-import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.util.FileManager;
+import com.opensymphony.xwork.ActionContext;
 
 import ognl.*;
 
@@ -33,6 +33,9 @@ public class XWorkConverter extends DefaultTypeConverter {
 
     private static XWorkConverter instance;
     private static final Log LOG = LogFactory.getLog(XWorkConverter.class);
+
+    public static final String REPORT_CONVERSION_ERRORS = "report.conversion.errors";
+    public static final String CONVERSION_PROPERTY_FULLNAME = "conversion.property.fullName";
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
@@ -145,7 +148,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             try {
                 return tc.convertValue(context, target, member, property, value, toClass);
             } catch (Exception e) {
-                handleConversionException(property, value, target);
+                handleConversionException(context, property, value, target);
 
                 return null;
             }
@@ -155,7 +158,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             try {
                 return defaultTypeConverter.convertValue(context, target, member, property, value, toClass);
             } catch (Exception e) {
-                handleConversionException(property, value, target);
+                handleConversionException(context, property, value, target);
 
                 return null;
             }
@@ -163,7 +166,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             try {
                 return super.convertValue(context, target, member, property, value, toClass);
             } catch (Exception e) {
-                handleConversionException(property, value, target);
+                handleConversionException(context, property, value, target);
 
                 return null;
             }
@@ -267,19 +270,25 @@ public class XWorkConverter extends DefaultTypeConverter {
         defaultMappings.put(className, converter);
     }
 
-    protected void handleConversionException(String property, Object value, Object object) {
-        if (ActionContext.getContext().get("report.conversion.errors") == Boolean.TRUE) {
-            String defaultMessage = "Invalid field value for field \"" + property + "\".";
-            OgnlValueStack stack = ActionContext.getContext().getValueStack();
+    protected void handleConversionException(Map context, String property, Object value, Object object) {
+        if (context.get(REPORT_CONVERSION_ERRORS) == Boolean.TRUE) {
+            String realProperty = property;
+            String fullName = (String) context.get(CONVERSION_PROPERTY_FULLNAME);
+            if (fullName != null) {
+                realProperty = fullName;
+            }
 
-            String getTextExpression = "getText('invalid.fieldvalue." + property + "','" + defaultMessage + "')";
+            String defaultMessage = "Invalid field value for field \"" + realProperty + "\".";
+            OgnlValueStack stack = (OgnlValueStack) context.get(ActionContext.VALUE_STACK);
+
+            String getTextExpression = "getText('invalid.fieldvalue." + realProperty + "','" + defaultMessage + "')";
             String message = (String) stack.findValue(getTextExpression);
 
             if (message == null) {
                 message = defaultMessage;
             }
 
-            String addFieldErrorExpression = "addFieldError('" + property + "','" + message + "')";
+            String addFieldErrorExpression = "addFieldError('" + realProperty + "','" + message + "')";
             stack.findValue(addFieldErrorExpression);
         }
     }
