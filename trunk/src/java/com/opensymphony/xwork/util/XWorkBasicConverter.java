@@ -24,10 +24,21 @@ import java.util.*;
  * @version $Revision$
  */
 public class XWorkBasicConverter extends DefaultTypeConverter {
+    //~ Static fields/initializers /////////////////////////////////////////////
+
+    private static final Object OK_NULL_RESULT = new Object();
+
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public Object convertValue(Map context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;
+
+        //short circuit conversion for empty strings... these are not conversion errors
+        if ("".equals(value)) {
+            result = (String.class.equals(toType)) ? "" : OK_NULL_RESULT;
+
+            return result;
+        }
 
         if (toType == String.class) {
             result = doConvertToString(context, value);
@@ -88,6 +99,10 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
         if (result == null) {
             throw new TypeConversionException("Unable to convert value '" + value + "' to type " + toType.getName());
+        }
+
+        if (result == OK_NULL_RESULT) {
+            return null;
         }
 
         return result;
