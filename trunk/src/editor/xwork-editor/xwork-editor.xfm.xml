@@ -28,16 +28,9 @@
 		The dialog to choose which file to open
    -->
 	<xface:dialog id="choose_document" type="open_file">
-
 		<xface:show-adapter element="../../license/ok" event="ACTION"/>
-
 		<xwork-editor:on-choose-document-ok-adapter />
-
-		<xface:action id="docancel">
-			<xface:action-adapter element="../.." event="CANCEL"/>
-			<xprocess:exit/>
-		</xface:action>
-
+		<xface:exit-adapter element=".." event="CANCEL" />
 	</xface:dialog>
 
 	<xwork-editor:on-startup-adapter />

@@ -8,18 +8,18 @@
 	<xwork-editor:save-changes-adapter />
 
 	<!-- exit when no is pressed -->
-	<xface:action>
+	<xprocess:action>
 		<xface:action-adapter element="../.." event="NO"/>
 		<xprocess:exit/>
-	</xface:action>
+	</xprocess:action>
 
 	<!-- show the main window again when cancel is pressed -->
-	<xface:action>
+	<xprocess:action>
 		<xface:action-adapter element="../.." event="CANCEL"/>
 		<xprocess:show>
 			<xface:param id="object">../../..</xface:param>
 		</xprocess:show>
-	</xface:action>
+	</xprocess:action>
 
 	<!-- Show the dialog when the main window is closed -->
 	<xface:show-adapter element="../.." event="CLOSE" />

@@ -78,7 +78,7 @@
 						</xface:column>
 					</xface:list>
 
-					<xface:action>
+					<xprocess:action>
 						<xface:action-adapter element="../../../../model" event="MODEL_DATA_UPDATED"/>
 						<xface:action-adapter element="../.." event="SHOW" />
 						<xprocess:script>
@@ -95,7 +95,7 @@
 								vModel.setXpath(vXPath);
 							]]></xface:param>
 						</xprocess:script>
-					</xface:action>
+					</xprocess:action>
 
 				</xface:tab>
 			</xface:tab-panel>

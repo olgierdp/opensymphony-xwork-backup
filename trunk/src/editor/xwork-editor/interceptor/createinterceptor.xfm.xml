@@ -34,17 +34,17 @@
 	<xface:show-adapter element="../../split/left/toolbar/create_interceptor" event="ACTION" />
 
 	<!-- Clear the inputs when the window is shown -->
-	<xface:action>
+	<xprocess:action>
 		<xface:action-adapter element="../.." event="SHOW" />
 		<xprocess:script>
 			<xface:param id="script"><![CDATA[
 				parent.findElement("../inputs/name").setValue("");
 			]]></xface:param>
 		</xprocess:script>
-	</xface:action>
+	</xprocess:action>
 
 	<!-- Create the package when the OK button is pressed -->
-	<xface:action>
+	<xprocess:action>
 		<xface:action-adapter element="../../ok" event="ACTION" />
 		<xprocess:script>
 			<xface:param id="script"><![CDATA[
@@ -103,6 +103,6 @@
 			]]></xface:param>
 		</xprocess:script>
 		<xprocess:hide object="../.." />
-	</xface:action>
+	</xprocess:action>
 
 </xface:window>

@@ -25,13 +25,13 @@
 	<xface:button id="cancel" label="cancel" />
 
 	<!-- Exit the application when cancel is pressed -->
-	<xface:action>
+	<xprocess:action>
 		<xface:action-adapter element="../../cancel" event="ACTION" />
 		<xprocess:exit />
-	</xface:action>
+	</xprocess:action>
 
 	<!-- Create the package when the OK button is pressed -->
-	<xface:action>
+	<xprocess:action>
 		<xface:action-adapter element="../../ok" event="ACTION" />
 		<xprocess:script>
 			<xface:param id="script"><![CDATA[
@@ -39,9 +39,9 @@
 			]]></xface:param>
 		</xprocess:script>
 		<xprocess:hide object="../.." />
-	</xface:action>
+	</xprocess:action>
 
-	<xface:action>
+	<xprocess:action>
 		<xface:action-adapter element="../../accept" event="ACTION" />
 		<xface:action-adapter element="../../deny" event="ACTION" />
 		<xprocess:script>
@@ -56,6 +56,6 @@
 				}
 			]]></xface:param>
 		</xprocess:script>
-	</xface:action>
+	</xprocess:action>
 
 </xface:window>
