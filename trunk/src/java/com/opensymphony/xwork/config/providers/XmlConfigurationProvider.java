@@ -146,9 +146,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     }
 
     protected InputStream getInputStream(String fileName) {
-        InputStream is = FileManager.loadFile(fileName, this.getClass());
-
-        return is;
+        return FileManager.loadFile(fileName, this.getClass());
     }
 
     protected void addAction(Element actionElement, PackageConfig packageContext) throws ConfigurationException {
@@ -252,7 +250,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     packageContext.setDefaultResultType(name);
                 }
             } catch (ClassNotFoundException e) {
-                LOG.error("Result class [" + className + "] doesn't exist, ignoring");
+                LOG.error("Result class [" + className + "] doesn't exist (ClassNotFoundException), ignoring");
+            } catch (NoClassDefFoundError e) {
+                LOG.error("Result class [" + className + "] doesn't exist (NoClassDefFoundError), ignoring");
             }
         }
     }
