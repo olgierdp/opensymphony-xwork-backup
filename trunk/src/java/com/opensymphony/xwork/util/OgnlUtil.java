@@ -4,12 +4,7 @@
  */
 package com.opensymphony.xwork.util;
 
-import ognl.Ognl;
-import ognl.OgnlContext;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
-import ognl.TypeConverter;
-
+import ognl.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -17,7 +12,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -219,21 +214,19 @@ public class OgnlUtil {
         Ognl.setTypeConverter(contextFrom, XWorkConverter.getInstance());
         Map contextTo = Ognl.createDefaultContext(to);
         Ognl.setTypeConverter(contextTo, XWorkConverter.getInstance());
-        
-        BeanInfo beanInfoFrom;
-        BeanInfo beanInfoTo;
-        
+
+        PropertyDescriptor[] fromPds;
+        PropertyDescriptor[] toPds;
+
         try {
-            beanInfoFrom = getBeanInfo(from);
-            beanInfoTo = getBeanInfo(to);
+            fromPds = getPropertyDescriptors(from);
+            toPds = getPropertyDescriptors(to);
         } catch (IntrospectionException e) {
             log.error("An error occured", e);
             
             return;
         }
-        
-        PropertyDescriptor[] fromPds = beanInfoFrom.getPropertyDescriptors();
-        PropertyDescriptor[] toPds = beanInfoTo.getPropertyDescriptors();
+
         Map toPdHash = new HashMap();
         
         for (int i = 0; i < toPds.length; i++) {
@@ -284,7 +277,31 @@ public class OgnlUtil {
         OgnlUtil.copy(from, to, context, null, null);
     }
 
-    private static BeanInfo getBeanInfo(Object from) throws IntrospectionException {
+    public static PropertyDescriptor[] getPropertyDescriptors(Object source) throws IntrospectionException {
+        BeanInfo beanInfo = getBeanInfo(source);
+        return beanInfo.getPropertyDescriptors();
+    }
+
+    public static Map getBeanMap(Object source) throws IntrospectionException, OgnlException {
+        Map beanMap = new HashMap();
+        Map sourceMap = Ognl.createDefaultContext(source);
+        PropertyDescriptor[] propertyDescriptors = getPropertyDescriptors(source);
+        for (int i = 0; i < propertyDescriptors.length; i++) {
+            PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
+            String propertyName = propertyDescriptor.getDisplayName();
+            Method readMethod = propertyDescriptor.getReadMethod();
+            if (readMethod != null) {
+                Object expr = OgnlUtil.compile(propertyName);
+                Object value = Ognl.getValue(expr, sourceMap, source);
+                beanMap.put(propertyName,value);
+            } else {
+                beanMap.put(propertyName, "There is no read method for " + propertyName);
+            }
+        }
+        return beanMap;
+    }
+
+    public static BeanInfo getBeanInfo(Object from) throws IntrospectionException {
         BeanInfo beanInfo;
         beanInfo = (BeanInfo) beanInfoCache.get(from.getClass());
         if (beanInfo == null) {
