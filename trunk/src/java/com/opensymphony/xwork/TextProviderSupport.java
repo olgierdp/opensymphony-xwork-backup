@@ -9,6 +9,7 @@ import com.opensymphony.xwork.util.LocalizedTextUtil;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.io.Serializable;
 
 
 /**
@@ -16,7 +17,7 @@ import java.util.ResourceBundle;
  * @author Jason Carreira
  * Created Aug 3, 2003 12:21:12 AM
  */
-public class TextProviderSupport implements TextProvider {
+public class TextProviderSupport implements TextProvider, Serializable {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private Class clazz;
