@@ -36,13 +36,15 @@ public class SetPropertiesTest extends TestCase
 		props.put("id", "");
 
 		OgnlUtil.setProperties(props, bar, context);
-		assertNull(bar.getId());
+        assertNotNull(bar.getId());
+        assertEquals(0, bar.getId().longValue());
 
 		props.put("id", new String[] {""});
 
 		bar.setId(null);
 		OgnlUtil.setProperties(props, bar, context);
-		assertNull(bar.getId());
+        assertNotNull(bar.getId());
+        assertEquals(0, bar.getId().longValue());
 	}
 
 	public void testValueStackSetValueEmptyStringAsLong() {
@@ -52,10 +54,14 @@ public class SetPropertiesTest extends TestCase
 		vs.push(bar);
 
 		vs.setValue("id", "");
-		assertNull(bar.getId());
+        assertNotNull(bar.getId());
+        assertEquals(0, bar.getId().longValue());
+
+        bar.setId(null);
 
 		vs.setValue("id", new String[]{""});
-		assertNull(bar.getId());
+        assertNotNull(bar.getId());
+        assertEquals(0, bar.getId().longValue());
 	}
 
 }

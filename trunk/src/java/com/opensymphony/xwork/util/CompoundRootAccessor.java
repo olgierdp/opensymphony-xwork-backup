@@ -84,6 +84,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
                         //Ognl.getValue(OgnlUtil.compile((String) name), context, o);
                         Evaluation currentEvaluation = ognlContext.getCurrentEvaluation();
+
                         SimpleNode node = currentEvaluation.getNode();
                         currentEvaluation.setSource(o);
                         ognlContext.pushEvaluation(new Evaluation(node, o));

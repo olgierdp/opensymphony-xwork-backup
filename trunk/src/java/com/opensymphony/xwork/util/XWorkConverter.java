@@ -6,10 +6,7 @@ package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.ActionContext;
 
-import ognl.DefaultTypeConverter;
-import ognl.Evaluation;
-import ognl.OgnlContext;
-import ognl.TypeConverter;
+import ognl.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

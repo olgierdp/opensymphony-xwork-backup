@@ -12,6 +12,8 @@ import ognl.OgnlRuntime;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Iterator;
+import java.util.Enumeration;
 
 
 /**
@@ -29,6 +31,8 @@ public class OgnlValueStack implements Serializable {
     static {
         accessor = new CompoundRootAccessor();
         OgnlRuntime.setPropertyAccessor(CompoundRoot.class, accessor);
+        OgnlRuntime.setPropertyAccessor(Iterator.class, new XWorkIteratorPropertyAccessor());
+        OgnlRuntime.setPropertyAccessor(Enumeration.class, new XWorkEnumerationAcccessor());
         OgnlRuntime.setMethodAccessor(CompoundRoot.class, accessor);
         OgnlRuntime.setNullHandler(Object.class, new InstantiatingNullHandler());
     }
