@@ -287,7 +287,7 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     private String invokeAction(Action action, ActionConfig actionConfig) throws Exception {
-        LOG.info("Executing action method = " + actionConfig.getMethodName());
+        LOG.debug("Executing action method = " + actionConfig.getMethodName());
 
         try {
             Method method = actionConfig.getMethod();
