@@ -23,6 +23,13 @@ import com.opensymphony.xwork.SimpleAction;
 public class OgnlValueStackTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    /**
+     * @return null
+     */
+    public static Integer staticNullMethod() {
+        return null;
+    }
+
     public void testArrayAsString() {
         OgnlValueStack vs = new OgnlValueStack();
 
@@ -205,7 +212,7 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals("Jack", vs.findValue("top.name"));
     }
 
-    public void testThatNull() {
+    public void testTopNull() {
         OgnlValueStack vs = new OgnlValueStack();
 
         assertNull(vs.findValue("top"));
@@ -419,6 +426,21 @@ public class OgnlValueStackTest extends TestCase {
         action.setBlah("blah");
         stack.findValue("setName(blah)");
         assertEquals("blah", action.getName());
+    }
+
+    public void testGetNullValue() {
+        Dog dog = new Dog();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(dog);
+        assertNull(stack.findValue("name"));
+    }
+
+    public void testNullMethod() {
+        Dog dog = new Dog();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(dog);
+        assertNull(stack.findValue("nullMethod()"));
+        assertNull(stack.findValue("@com.opensymphony.xwork.util.OgnlValueStackTest@staticNullMethod()"));
     }
 
 }
