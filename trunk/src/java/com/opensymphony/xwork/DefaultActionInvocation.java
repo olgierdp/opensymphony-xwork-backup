@@ -7,6 +7,7 @@ package com.opensymphony.xwork;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.interceptor.Interceptor;
+import com.opensymphony.xwork.interceptor.PreResultListener;
 import com.opensymphony.xwork.util.OgnlUtil;
 import com.opensymphony.xwork.util.OgnlValueStack;
 
@@ -145,7 +146,7 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     /**
-     * Register a com.opensymphony.xwork.PreResultListener to be notified after the Action is executed and before the
+     * Register a com.opensymphony.xwork.interceptor.PreResultListener to be notified after the Action is executed and before the
      * Result is executed. The ActionInvocation implementation must guarantee that listeners will be called in the order
      * in which they are registered. Listener registration and execution does not need to be thread-safe.
      * @param listener

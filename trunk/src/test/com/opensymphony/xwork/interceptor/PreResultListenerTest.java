@@ -2,11 +2,12 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.xwork;
+package com.opensymphony.xwork.interceptor;
 
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
 
+import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationManager;
@@ -32,7 +33,7 @@ public class PreResultListenerTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testPreResultListenersAreCalled() throws Exception {
-        ActionProxy proxy = new DefaultActionProxy("package", "action", new HashMap(), false);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("package", "action", new HashMap(), false);
         ActionInvocation invocation = proxy.getInvocation();
         Mock preResultListenerMock1 = new Mock(PreResultListener.class);
         preResultListenerMock1.expect("beforeResult", C.args(C.eq(invocation), C.eq(Action.SUCCESS)));
@@ -42,7 +43,7 @@ public class PreResultListenerTest extends TestCase {
     }
 
     public void testPreResultListenersAreCalledInOrder() throws Exception {
-        ActionProxy proxy = new DefaultActionProxy("package", "action", new HashMap(), false);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("package", "action", new HashMap(), false);
         ActionInvocation invocation = proxy.getInvocation();
         CountPreResultListener listener1 = new CountPreResultListener();
         CountPreResultListener listener2 = new CountPreResultListener();
@@ -62,8 +63,8 @@ public class PreResultListenerTest extends TestCase {
                 }
 
                 /**
-                 * Initializes the configuration object.
-                 */
+* Initializes the configuration object.
+*/
                 public void init(Configuration configuration) throws ConfigurationException {
                     PackageConfig packageConfig = new PackageConfig("package");
                     ActionConfig actionConfig = new ActionConfig(null, SimpleFooAction.class, null, null, null);
@@ -72,9 +73,9 @@ public class PreResultListenerTest extends TestCase {
                 }
 
                 /**
-                 * Tells whether the ConfigurationProvider should reload its configuration
-                 * @return
-                 */
+* Tells whether the ConfigurationProvider should reload its configuration
+* @return
+*/
                 public boolean needsReload() {
                     return false;
                 }
