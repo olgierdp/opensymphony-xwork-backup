@@ -130,8 +130,18 @@
             <fileset dir="${src.etc}" includes="*.dtd"/>
         </copy>
 
-        <jar basedir="${build.java}" jarfile="${build}/${name}-${version}.jar"/>
-        <jar basedir="${src.java}" jarfile="${build}/${name}-${version}-src.jar"/>
+        <jar basedir="${build.java}" jarfile="${build}/${name}-${version}.jar">
+            <manifest>
+                <attribute name="Implementation-Title" value="${fullname}" />
+                <attribute name="Implementation-Version" value="${version}" />
+            </manifest>
+        </jar>
+        <jar basedir="${src.java}" jarfile="${build}/${name}-${version}-src.jar">
+            <manifest>
+                <attribute name="Implementation-Title" value="${fullname}" />
+                <attribute name="Implementation-Version" value="${version}" />
+            </manifest>
+        </jar>
     </target>
 
     <target name="check-jdk14">
