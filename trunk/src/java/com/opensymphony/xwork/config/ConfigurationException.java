@@ -4,27 +4,24 @@
  */
 package com.opensymphony.xwork.config;
 
+import com.opensymphony.xwork.XworkException;
+
 
 /**
  * ConfigurationException
  * @author Jason Carreira
  * Created Feb 24, 2003 8:15:08 AM
  */
-public class ConfigurationException extends Exception {
-    //~ Instance fields ////////////////////////////////////////////////////////
-
-    private Throwable throwable;
-
-    //~ Constructors ///////////////////////////////////////////////////////////
-
+public class ConfigurationException extends XworkException {
     /**
-     * Constructs an <code>Exception</code> with no specified detail message.
+     * Constructs a <code>ConfigurationException</code> with no detail  message.
      */
     public ConfigurationException() {
     }
 
     /**
-     * Constructs an <code>Exception</code> with the specified detail message.
+     * Constructs a <code>ConfigurationException</code> with the specified
+     * detail message.
      *
      * @param   s   the detail message.
      */
@@ -33,37 +30,19 @@ public class ConfigurationException extends Exception {
     }
 
     /**
-     * Constructs an <code>Exception</code> with no specified detail message.
+     * Constructs a <code>ConfigurationException</code> with no detail  message.
      */
-    public ConfigurationException(Throwable throwable) {
-        this.throwable = throwable;
+    public ConfigurationException(Throwable cause) {
+        super(cause);
     }
 
     /**
-     * Constructs an <code>Exception</code> with the specified detail message.
+     * Constructs a <code>ConfigurationException</code> with the specified
+     * detail message.
      *
      * @param   s   the detail message.
      */
-    public ConfigurationException(String s, Throwable throwable) {
-        super(s);
-        this.throwable = throwable;
-    }
-
-    //~ Methods ////////////////////////////////////////////////////////////////
-
-    public void setThrowable(Throwable throwable) {
-        this.throwable = throwable;
-    }
-
-    public Throwable getThrowable() {
-        return throwable;
-    }
-
-    public String toString() {
-        if (throwable == null) {
-            return super.toString();
-        }
-
-        return super.toString() + " with nested exception " + throwable;
+    public ConfigurationException(String s, Throwable cause) {
+        super(s, cause);
     }
 }

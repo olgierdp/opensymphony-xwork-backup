@@ -35,6 +35,9 @@ public interface Configuration {
 
     void addPackageConfig(String name, PackageConfig packageConfig);
 
+    /**
+     * @throws ConfigurationException
+     */
     void buildRuntimeConfiguration() throws ConfigurationException;
 
     /**
@@ -42,6 +45,9 @@ public interface Configuration {
      */
     void destroy();
 
+    /**
+     * @throws ConfigurationException
+     */
     void reload() throws ConfigurationException;
 
     void removePackageConfig(String name);

@@ -7,7 +7,6 @@ package com.opensymphony.xwork.config.providers;
 import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.util.FileManager;
 import com.opensymphony.util.TextUtils;
-
 import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationProvider;
@@ -18,32 +17,27 @@ import com.opensymphony.xwork.config.entities.InterceptorStackConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.config.entities.ResultTypeConfig;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 
 /**
@@ -77,14 +71,18 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     public void destroy() {
     }
 
-    public void init(Configuration configuration) throws ConfigurationException {
+    public void init(Configuration configuration) {
         this.configuration = configuration;
         includedFileNames.clear();
 
         DocumentBuilder db;
 
         try {
-            db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setValidating(true);
+            dbf.setNamespaceAware(true);
+
+            DocumentBuilder builder = dbf.newDocumentBuilder();
             db.setEntityResolver(new EntityResolver() {
                     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
                         if ("-//OpenSymphony Group//XWork 1.0//EN".equals(publicId)) {
@@ -96,22 +94,22 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 });
             db.setErrorHandler(new ErrorHandler() {
                     public void warning(SAXParseException exception) throws SAXException {
-                        LOG.warn(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
                     }
 
                     public void error(SAXParseException exception) throws SAXException {
                         LOG.error(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
+                        throw exception;
                     }
 
                     public void fatalError(SAXParseException exception) throws SAXException {
                         LOG.fatal(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
+                        throw exception;
                     }
                 });
             loadConfigurationFile(configFileName, db);
         } catch (Exception e) {
-            LOG.fatal("Could not load XWork configuration file, failing", e);
-
-            return;
+            LOG.fatal("Could not load XWork configuration file, failing");
+            throw new ConfigurationException("Error loading configuration file " + configFileName, e);
         }
     }
 
@@ -407,7 +405,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     //            addPackage(packageElement);
     //        }
     //    }
-    private void loadConfigurationFile(String fileName, DocumentBuilder db) throws Exception {
+    private void loadConfigurationFile(String fileName, DocumentBuilder db) {
         Document doc = null;
         InputStream is = null;
 
@@ -420,7 +418,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
             doc = db.parse(is);
         } catch (Exception e) {
-            LOG.error("Caught exception while loading file " + fileName, e);
+            final String s = "Caught exception while loading file " + fileName;
+            LOG.error(s, e);
+            throw new ConfigurationException(s,e);
         } finally {
             if (is != null) {
                 try {

@@ -120,13 +120,8 @@ public class ConfigurationManager {
                 }
             }
 
-            // @todo if a configure does need to be reloaded, it seems reasonable to limit the reload to only that which needs it
             if (reload) {
-                try {
-                    configurationInstance.reload();
-                } catch (ConfigurationException e) {
-                    LOG.error("Caught an exception while reloading the Configuration.", e);
-                }
+                configurationInstance.reload();
             }
         }
     }

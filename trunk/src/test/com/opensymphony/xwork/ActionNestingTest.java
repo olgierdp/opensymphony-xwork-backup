@@ -120,7 +120,7 @@ public class ActionNestingTest extends TestCase {
         /**
         * Initializes the configuration object.
         */
-        public void init(Configuration configurationManager) throws ConfigurationException {
+        public void init(Configuration configurationManager) {
             PackageConfig packageContext = new PackageConfig();
             ActionConfig config = new ActionConfig(null, SimpleAction.class, null, null, null);
             packageContext.addActionConfig(SIMPLE_ACTION_NAME, config);

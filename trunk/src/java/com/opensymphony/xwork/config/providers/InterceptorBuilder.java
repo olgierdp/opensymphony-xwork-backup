@@ -43,6 +43,7 @@ public class InterceptorBuilder {
     * @throws com.opensymphony.xwork.config.ConfigurationException
     */
     public static Interceptor buildInterceptor(Class interceptorClass, Map params) throws ConfigurationException {
+        String message;
         try {
             Interceptor interceptor = (Interceptor) interceptorClass.newInstance();
             OgnlUtil.setProperties(params, interceptor);
@@ -50,16 +51,15 @@ public class InterceptorBuilder {
 
             return interceptor;
         } catch (InstantiationException e) {
-            LOG.error("Unable to instantiate an instance of Interceptor class [" + interceptorClass.getName() + "].");
+            message = "Unable to instantiate an instance of Interceptor class [" + interceptorClass.getName() + "].";
         } catch (IllegalAccessException e) {
-            LOG.error("IllegalAccessException while attempting to instantiate an instance of Interceptor class [" + interceptorClass.getName() + "].");
+            message = "IllegalAccessException while attempting to instantiate an instance of Interceptor class [" + interceptorClass.getName() + "].";
         } catch (ClassCastException e) {
-            LOG.error("Class [" + interceptorClass.getName() + "] does not implement com.opensymphony.xwork.interceptor.Interceptor");
+            message = "Class [" + interceptorClass.getName() + "] does not implement com.opensymphony.xwork.interceptor.Interceptor";
         } catch (Exception e) {
             throw new ConfigurationException("Caught Exception while registering Interceptor class " + interceptorClass.getName(), e);
         }
-
-        return null;
+        throw new ConfigurationException(message);
     }
 
     /**
@@ -92,7 +92,7 @@ public class InterceptorBuilder {
 
                 result.addAll(stackConfig.getInterceptors());
             } else {
-                LOG.error("Got unexpected type for interceptor " + refName);
+                LOG.error("Got unexpected type for interceptor " + refName + ". Got " + referencedConfig);
             }
         }
 
