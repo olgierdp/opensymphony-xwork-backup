@@ -39,6 +39,7 @@ public class XmlHelper {
 
                 if (paramElement.getChildNodes().item(0) != null) {
                     String paramValue = paramElement.getChildNodes().item(0).getNodeValue();
+                    if (paramValue != null) paramValue = paramValue.trim();
                     params.put(paramName, paramValue);
                 }
             }

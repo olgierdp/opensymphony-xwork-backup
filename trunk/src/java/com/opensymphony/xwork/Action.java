@@ -4,9 +4,6 @@
  */
 package com.opensymphony.xwork;
 
-import java.io.Serializable;
-
-
 /**
  * All Actions must minimally implement this interface, which exposes
  * the execute() method.
@@ -14,7 +11,7 @@ import java.io.Serializable;
  * @author $Author$
  * @version $Revision$
  */
-public interface Action extends Serializable {
+public interface Action {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     /**

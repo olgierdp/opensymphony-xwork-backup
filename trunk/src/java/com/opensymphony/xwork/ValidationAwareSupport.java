@@ -4,8 +4,8 @@
  */
 package com.opensymphony.xwork;
 
+import java.io.Serializable;
 import java.util.*;
-
 
 /**
  * Provides a default implementation of ValidationAware. Returns new collections for
@@ -13,7 +13,7 @@ import java.util.*;
  *
  * @author Jason Carreira
  */
-public class ValidationAwareSupport implements ValidationAware {
+public class ValidationAwareSupport implements ValidationAware, Serializable {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private Collection actionErrors;

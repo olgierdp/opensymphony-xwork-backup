@@ -5,9 +5,6 @@
 package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.config.entities.ActionConfig;
-import com.opensymphony.xwork.util.OgnlValueStack;
-
-import java.io.Serializable;
 
 
 /**
@@ -17,7 +14,7 @@ import java.io.Serializable;
  * @author Jason Carreira
  * Created Jun 9, 2003 11:27:55 AM
  */
-public interface ActionProxy extends Serializable {
+public interface ActionProxy {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**

@@ -16,7 +16,7 @@ import java.util.*;
  * Provides a default implementation for the most common actions.
  * See the documentation for all the interfaces this class implements for more detailed information.
  */
-public class ActionSupport implements Action, Serializable, Validateable, ValidationAware, TextProvider, LocaleProvider {
+public class ActionSupport implements Action, Validateable, ValidationAware, TextProvider, LocaleProvider, Serializable {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     protected transient static final Log LOG = LogFactory.getLog(ActionSupport.class);

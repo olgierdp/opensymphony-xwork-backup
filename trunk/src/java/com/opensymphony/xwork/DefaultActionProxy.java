@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.Locale;
 import java.util.Map;
+import java.io.Serializable;
 
 
 /**
@@ -22,7 +23,7 @@ import java.util.Map;
  * @author $Author$
  * @version $Revision$
  */
-public class DefaultActionProxy implements ActionProxy {
+public class DefaultActionProxy implements ActionProxy, Serializable {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log LOG = LogFactory.getLog(DefaultActionProxy.class);

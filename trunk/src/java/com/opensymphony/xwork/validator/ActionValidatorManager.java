@@ -296,7 +296,7 @@ public class ActionValidatorManager {
                     try {
                         is.close();
                     } catch (IOException e) {
-                        LOG.error("Unable to close input stream", e);
+                        LOG.error("Unable to close input stream for " + fileName, e);
                     }
                 }
             }
