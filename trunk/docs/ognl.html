@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <title>OpenSymphony Wiki :: Xwork Documentation</title>
+  <title>OpenSymphony Wiki (Offline Version) :: Xwork Documentation</title>
   <link type="text/css" href="main.css" rel="STYLESHEET"/>
 </head>
 <body>
@@ -20,23 +20,23 @@
  <div class="snip-attachments"></div>
  
  OGNL is the Object Graph Navigation Language - see <span class="nobr"><img src="http://wiki.opensymphony.com/images/external-link.png" alt="&gt;&gt;" border="0"/><a href="http://www.ognl.org">&#104;ttp://www.ognl.org</a></span> for the full documentation of OGNL. In this document we will only show the additional language features that are provided on top of the base OGNL EL. 
-<h3 class="heading-1">XWork-specific language features
-</h3>
+<h3 class="heading-1">XWork-specific language features</h3>
 The biggest addition that XWork provides on top of OGNL is the support for the ValueStack. While OGNL operates under the assumption there is only one "root", XWork's ValueStack concept requires there be many "roots".<p class="paragraph"/>For example, suppose we are using standard OGNL (not using XWork) and there are two objects in the OgnlContext map: "foo" -&#62; foo and "bar" -&#62; bar and that the foo object is also configured to be the single *root* object. The following code illustrates how OGNL deals with these three situations:<p class="paragraph"/><div class="code"><pre>#foo.blah // returns foo.getBlah()
 #bar.blah // returns bar.getBlah()
 blah      // returns foo.getBlah() because foo is the root</pre></div><p class="paragraph"/>What this means is that OGNL allows many objects in the context, but unless the object you are trying to access is the root, it must be prepended with a namespaces such as @bar. Now let's talk about how XWork is a little different...<p class="paragraph"/>In XWork, the entire ValueStack is the root object in the context. But rather than having your expressions get the object you want from the stack and then get properties from that (ie: peek().blah), XWork has a special OGNL PropertyAccessor that will automatically look at the all entries in the stack (from the top down) until it finds an object with the property you are looking for.<p class="paragraph"/>For example, suppose the stack contains two objects: Animal and Person. Both objects have a "name" property, Animal has a "species" property, and Person has a "salary" property. Animal is on the top of the stack, and Person is below it. The follow code fragments help you get an idea of what is going on here:<p class="paragraph"/><div class="code"><pre>species    // call to animal.getSpecies()
 salary     // call to person.getSalary()
 name       // call to animal.getName() because animal is on the top</pre></div><p class="paragraph"/>In the last example, there was a tie and so the animal's name was returned. Usually this is the desired effect, but sometimes you want the property of a lower-level object. To do this, XWork has added support for indexes on the ValueStack. All you have to do is:<p class="paragraph"/><div class="code"><pre>&#91;0&#93;.name   // call to animal.getName()
 &#91;1&#93;.name   // call to person.getName()</pre></div>
-<h3 class="heading-1">Accessing static properties
-</h3><p class="paragraph"/>OGNL supports accessing static properties as well as static methods. As the OGNL docs point out, you can explicetly call statics by doing the following:<p class="paragraph"/><div class="code"><pre>@some.package.ClassName@FOO_PROPERTY
+<h3 class="heading-1">Accessing static properties</h3><p class="paragraph"/>OGNL supports accessing static properties as well as static methods. As the OGNL docs point out, you can explicetly call statics by doing the following:<p class="paragraph"/><div class="code"><pre>@some.package.ClassName@FOO_PROPERTY
 @some.package.ClassName@someMethod()</pre></div><p class="paragraph"/>However, XWork allows you to avoid having to specify the full package name and call static properties and methods of your action classes using the "vs" prefix:<p class="paragraph"/><div class="code"><pre>@vs@FOO_PROPERTY
 @vs@someMethod()<p class="paragraph"/>@vs1@FOO_PROPERTY
 @vs1@someMethod()<p class="paragraph"/>@vs2@BAR_PROPERTY
 @vs2@someOtherMethod()</pre></div><p class="paragraph"/>The important thing to note here is that if the class name you specify is just "vs", the class for the object on the top of the stack is used. If you specify a number after the "vs" string, an object's class deeper in the stack is used instead.
-<h3 class="heading-1">Differences from the WebWork 1.x EL
-</h3>
-Besides the examples and descriptions given above, there are a few major changes in the EL since WebWork 1.x. The biggest one is that properties are no longer accessed with a forward slash (/) but with a dot (.). Also, rather than using ".." to traverse down the stack, we now use "&#91;n&#93;" where n is some positive number. Lastly, in WebWork 1.x one could access special named objects (the request scope attributes to be exact) by using "@foo", but now special variables are accessed using "#foo". However, it is important to note that "#foo" does NOT access the request attributes. Because XWork is not built only for the web, there is no concept of "request attributes", and thus "#foo" is merely a request to another object in the OgnlContext other than the root.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th>Old Expression</th><th>New Expression</th></tr><tr class="table-odd"><td>foo/blah</td><td>foo.blah</td></tr><tr class="table-even"><td>foo/someMethod()</td><td>foo.someMethod()</td></tr><tr class="table-odd"><td>../bar/blah</td><td>&#91;1&#93;.bar.blah</td></tr><tr class="table-even"><td>@baz</td><td>not directly supported, but #baz is similar</td></tr><tr class="table-odd"><td>.</td><td>that</td></tr></table>
+<h3 class="heading-1">Differences from the WebWork 1.x EL</h3>
+Besides the examples and descriptions given above, there are a few major changes in the EL since WebWork 1.x. The biggest one is that properties are no longer accessed with a forward slash (/) but with a dot (.). Also, rather than using ".." to traverse down the stack, we now use "&#91;n&#93;" where n is some positive number. Lastly, in WebWork 1.x one could access special named objects (the request scope attributes to be exact) by using "@foo", but now special variables are accessed using "#foo". However, it is important to note that "#foo" does NOT access the request attributes. Because XWork is not built only for the web, there is no concept of "request attributes", and thus "#foo" is merely a request to another object in the OgnlContext other than the root.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th>Old Expression</th><th>New Expression</th></tr><tr class="table-odd"><td>foo/blah</td><td>foo.blah</td></tr><tr class="table-even"><td>foo/someMethod()</td><td>foo.someMethod()</td></tr><tr class="table-odd"><td>../bar/blah</td><td>&#91;1&#93;.bar.blah</td></tr><tr class="table-even"><td>@baz</td><td>not directly supported, but #baz is similar</td></tr><tr class="table-odd"><td>.</td><td>top or &#91;0&#93;</td></tr></table>
+<h3 class="heading-1">WebWork-specific named objects</h3>
+<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th>name</th><th>value</th></tr><tr class="table-odd"><td>parameters&#91;'foo']</td><td>request attribute 'foo'</td></tr><tr class="table-even"><td>request&#91;'foo']</td><td>same as parameters&#91;'foo']</td></tr><tr class="table-odd"><td>session&#91;'foo']</td><td>session attribute 'foo'</td></tr><tr class="table-even"><td>application&#91;'foo']</td><td>ServletContext attributes 'foo'</td></tr></table>
+
   </div>
 </body>
 </html>

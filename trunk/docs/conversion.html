@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <title>OpenSymphony Wiki :: Xwork Documentation</title>
+  <title>OpenSymphony Wiki (Offline Version) :: Xwork Documentation</title>
   <link type="text/css" href="main.css" rel="STYLESHEET"/>
 </head>
 <body>
@@ -35,7 +35,7 @@
   <span class="java&#45;keyword">public</span> void setContact1(Contact contact) &#123; <span class="java&#45;keyword">this</span>.contact1 = contact; &#125;
   <span class="java&#45;keyword">public</span> void setContact2(Contact contact) &#123; <span class="java&#45;keyword">this</span>.contact2 = contact; &#125;<p class="paragraph"/>  <span class="java&#45;keyword">public</span> <span class="java&#45;object">String</span> execute() &#123; &#8230; &#125;
 &#125;</pre></div><p class="paragraph"/>What we're expecting from the UI is for contact to be "1", the primary key of the contact.  We want the type converter to convert the string "1" to the Contact with a contactId of 1.  Likewise, we'd like the converter to be able to reverse the operation.  When displayed, a Contact object should print out its contactId as a String.<p class="paragraph"/>The first step is to create our custom TypeConverter:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">public</span> class ContactConverter <span class="java&#45;keyword">extends</span> DefaultTypeConverter &#123;
-  <span class="java&#45;keyword">public</span> <span class="java&#45;object">Object</span> convertValue(Map contact, <span class="java&#45;object">Object</span> value, <span class="java&#45;object">Class</span> toType) &#123;
+  <span class="java&#45;keyword">public</span> <span class="java&#45;object">Object</span> convertValue(Map ognlContext, <span class="java&#45;object">Object</span> value, <span class="java&#45;object">Class</span> toType) &#123;
     <span class="java&#45;keyword">if</span>( toType == <span class="java&#45;object">String</span>.class ) &#123;
       Contact contact = (Contact)value;
       <span class="java&#45;keyword">return</span> <span class="java&#45;keyword">new</span> <span class="java&#45;object">String</span>(contact.getContactId());
@@ -47,7 +47,7 @@
     &#125;
   &#125;
 &#125;</pre></div><p class="paragraph"/>The next part is to bind our ContactConverter to the previous AddContactAction.  I'll bind the ContactConverter to the AddContactAction by creating a file called AddContactAction-conversion.properties that's in the same directory as the AddContactAction class.<p class="paragraph"/>I would then populate the properties file as follows:<p class="paragraph"/><div class="code"><pre>contact1 = com.acme.ContactConverter
-contact2 = com.acme.ContactConverter</pre></div><p class="paragraph"/>Now, when XWork attempts to populate your object from parameters, you'll be given the actual instances of Contact from your database.<p class="paragraph"/>Having said all that, I can't really recommend doing database lookups here as a best practice.  In fact, I'd say it's not such a good idea, but it does illustrate type converters well :)  Any exception thrown here would be buried deep in the bowels of XWork code.<p class="paragraph"/>
+contact2 = com.acme.ContactConverter</pre></div><p class="paragraph"/>Now, when XWork attempts to populate your object from parameters, you'll be given the actual instances of Contact from your database.<p class="paragraph"/>Having said all that, I can't really recommend doing database lookups here as a best practice.  In fact, I'd say it's not such a good idea, but it does illustrate type converters well :)  Any exception thrown here will be handled as described in <a href="conversionerrorhandling.html">Type Conversion Error Handling</a><p class="paragraph"/>
   </div>
 </body>
 </html>
