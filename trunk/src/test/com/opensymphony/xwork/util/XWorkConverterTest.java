@@ -4,17 +4,17 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.SimpleAction;
+
 import junit.framework.TestCase;
 
 import ognl.Ognl;
 import ognl.OgnlException;
-import ognl.TypeConverter;
-
-import java.lang.reflect.Member;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +34,18 @@ public class XWorkConverterTest extends TestCase {
     XWorkConverter converter;
 
     //~ Methods ////////////////////////////////////////////////////////////////
+
+    public void testFieldErrorMessageAddedWhenConversionFails() {
+        SimpleAction action = new SimpleAction();
+        action.setDate(null);
+
+        //        context = Ognl.createDefaultContext(action);
+        assertNull("Conversion should have failed.", converter.convertValue(context, action, null, "date", new String[] {
+                    "invalid date"
+                }, Date.class));
+        assertTrue(action.hasFieldErrors());
+        assertNotNull(action.getFieldErrors().get("date"));
+    }
 
     public void testStringArrayToCollection() {
         ArrayList list = new ArrayList();

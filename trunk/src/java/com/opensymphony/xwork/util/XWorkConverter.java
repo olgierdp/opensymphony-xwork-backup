@@ -4,6 +4,9 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.LocaleAware;
+import com.opensymphony.xwork.ValidationAware;
+
 import ognl.DefaultTypeConverter;
 import ognl.Evaluation;
 import ognl.OgnlContext;
@@ -73,41 +76,44 @@ public class XWorkConverter extends DefaultTypeConverter {
         this.defaultTypeConverter = defaultTypeConverter;
     }
 
-    public Object convertValue(Map context, Object object, Member member, String property, Object value, Class toClass) {
+    public Object convertValue(Map context, Object target, Member member, String property, Object value, Class toClass) {
         if (value == null) {
             return null;
         }
 
+        //
+        // Process the conversion using the default mappings, if one exists
+        //
+        TypeConverter tc = null;
+
         // allow this method to be called without any context
         // i.e. it can be called with as little as "Object value" and "Class toClass"
-        if ((context != null) && (object != null)) {
+        if (target != null) {
             Class clazz = null;
 
-            OgnlContext ognlContext = (OgnlContext) context;
-            Evaluation eval = ognlContext.getCurrentEvaluation();
+            clazz = target.getClass();
 
-            if (eval == null) {
-                eval = ognlContext.getLastEvaluation();
+            // this is to handle weird issues with setValue with a different type
+            if ((target instanceof CompoundRoot) && (context != null)) {
+                OgnlContext ognlContext = (OgnlContext) context;
+                Evaluation eval = ognlContext.getCurrentEvaluation();
 
-                // since the upgrade to ognl-2.6.3.jar, eval is null here
-                // and this null check was being caoucht by an outer try/catch which ignored it !
-                if (eval != null) {
-                    clazz = eval.getResult().getClass();
-                    property = (String) eval.getLastChild().getResult();
+                if (eval == null) {
+                    eval = ognlContext.getLastEvaluation();
+
+                    // since the upgrade to ognl-2.6.3.jar, eval is null here
+                    // and this null check was being caoucht by an outer try/catch which ignored it !
+                    if (eval != null) {
+                        clazz = eval.getResult().getClass();
+                        property = (String) eval.getLastChild().getResult();
+                    }
+                } else {
+                    clazz = eval.getLastChild().getSource().getClass();
+                    property = (String) eval.getFirstChild().getResult();
                 }
-            } else {
-                clazz = eval.getLastChild().getSource().getClass();
-                property = (String) eval.getFirstChild().getResult();
             }
 
-            //	
-            //
-            // I refactored this bit, as when runtime exceptions were occuring within a custom TypeConverter
-            // the clazz was being added to noMappings.
-            //
             if (!noMapping.contains(clazz)) {
-                TypeConverter tc = null;
-
                 try {
                     Map mapping = (Map) mappings.get(clazz);
 
@@ -119,14 +125,18 @@ public class XWorkConverter extends DefaultTypeConverter {
                         String resource = className.replace('.', '/') + "-conversion.properties";
                         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
 
-                        Properties props = new Properties();
-                        props.load(is);
-                        mapping.putAll(props);
+                        if (is != null) {
+                            Properties props = new Properties();
+                            props.load(is);
+                            mapping.putAll(props);
 
-                        for (Iterator iterator = mapping.entrySet().iterator();
-                                iterator.hasNext();) {
-                            Map.Entry entry = (Map.Entry) iterator.next();
-                            entry.setValue(createTypeConverter((String) entry.getValue()));
+                            for (Iterator iterator = mapping.entrySet().iterator();
+                                    iterator.hasNext();) {
+                                Map.Entry entry = (Map.Entry) iterator.next();
+                                entry.setValue(createTypeConverter((String) entry.getValue()));
+                            }
+                        } else {
+                            noMapping.add(clazz);
                         }
                     }
 
@@ -134,47 +144,68 @@ public class XWorkConverter extends DefaultTypeConverter {
                 } catch (Throwable t) {
                     noMapping.add(clazz);
                 }
-
-                if (tc != null) {
-                    return tc.convertValue(context, object, member, property, value, toClass);
-                }
             }
         }
 
-        //
-        // Process the conversion using the default mappings, if one exists
-        //
-        TypeConverter tc = null;
-
-        if (toClass.equals(String.class) && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class))) {
-            // when converting to a string, use the source object's class's converter
-            if (defaultMappings.containsKey(value.getClass().getName())) {
-                tc = (TypeConverter) defaultMappings.get(value.getClass().getName());
-            }
-        } else {
-            // when converting from a string, use the toClass's converter
-            if (defaultMappings.containsKey(toClass.getName())) {
-                //	converting from String
-                tc = (TypeConverter) defaultMappings.get(toClass.getName());
+        if (tc == null) {
+            if (toClass.equals(String.class) && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class))) {
+                // when converting to a string, use the source target's class's converter
+                if (defaultMappings.containsKey(value.getClass().getName())) {
+                    tc = (TypeConverter) defaultMappings.get(value.getClass().getName());
+                }
+            } else {
+                // when converting from a string, use the toClass's converter
+                if (defaultMappings.containsKey(toClass.getName())) {
+                    //	converting from String
+                    tc = (TypeConverter) defaultMappings.get(toClass.getName());
+                }
             }
         }
 
         if (tc != null) {
             try {
-                return tc.convertValue(context, object, member, property, value, toClass);
-            } catch (Exception e) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.error("Conversion failed", e);
+                Object returnVal = tc.convertValue(context, target, member, property, value, toClass);
+
+                if (returnVal == null) {
+                    handleConversionException(property, value, target);
                 }
+
+                return returnVal;
+            } catch (Exception e) {
+                handleConversionException(property, value, target);
 
                 return null;
             }
         }
 
         if (defaultTypeConverter != null) {
-            return defaultTypeConverter.convertValue(context, object, member, property, value, toClass);
+            try {
+                Object returnVal = defaultTypeConverter.convertValue(context, target, member, property, value, toClass);
+
+                if (returnVal == null) {
+                    handleConversionException(property, value, target);
+                }
+
+                return returnVal;
+            } catch (Exception e) {
+                handleConversionException(property, value, target);
+
+                return null;
+            }
         } else {
-            return super.convertValue(context, object, member, property, value, toClass);
+            try {
+                Object returnVal = super.convertValue(context, target, member, property, value, toClass);
+
+                if (returnVal == null) {
+                    handleConversionException(property, value, target);
+                }
+
+                return returnVal;
+            } catch (Exception e) {
+                handleConversionException(property, value, target);
+
+                return null;
+            }
         }
     }
 
@@ -188,6 +219,24 @@ public class XWorkConverter extends DefaultTypeConverter {
 
     public void registerConverter(String className, TypeConverter converter) {
         defaultMappings.put(className, converter);
+    }
+
+    protected void handleConversionException(String property, Object value, Object object) {
+        String defaultMessage = "Invalid field value for field " + property + ": " + value;
+
+        if ((object != null) && (object instanceof ValidationAware)) {
+            String message;
+
+            if (object instanceof LocaleAware) {
+                message = ((LocaleAware) object).getText("invalid.fieldvalue." + property, defaultMessage);
+            } else {
+                message = defaultMessage;
+            }
+
+            ((ValidationAware) object).addFieldError(property, message);
+        } else {
+            LOG.warn(defaultMessage);
+        }
     }
 
     private TypeConverter createTypeConverter(String className) throws Exception, InstantiationException {

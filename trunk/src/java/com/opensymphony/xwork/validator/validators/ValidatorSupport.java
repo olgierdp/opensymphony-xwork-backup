@@ -52,8 +52,9 @@ public abstract class ValidatorSupport implements Validator {
             message = validatorContext.getText(messageKey, defaultMessage);
         } else {
             message = defaultMessage;
-            message = TextParseUtil.translateVariables(message, stack);
         }
+
+        message = TextParseUtil.translateVariables(message, stack);
 
         stack.pop();
 
