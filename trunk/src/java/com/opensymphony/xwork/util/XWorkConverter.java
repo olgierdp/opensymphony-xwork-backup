@@ -206,18 +206,20 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     protected void handleConversionException(String property, Object value, Object object) {
-        String defaultMessage = "Invalid field value for field \"" + property + "\".";
-        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        if (ActionContext.getContext().get("report.conversion.errors") == Boolean.TRUE) {
+            String defaultMessage = "Invalid field value for field \"" + property + "\".";
+            OgnlValueStack stack = ActionContext.getContext().getValueStack();
 
-        String getTextExpression = "getText('invalid.fieldvalue." + property + "','" + defaultMessage + "')";
-        String message = (String) stack.findValue(getTextExpression);
+            String getTextExpression = "getText('invalid.fieldvalue." + property + "','" + defaultMessage + "')";
+            String message = (String) stack.findValue(getTextExpression);
 
-        if (message == null) {
-            message = defaultMessage;
+            if (message == null) {
+                message = defaultMessage;
+            }
+
+            String addFieldErrorExpression = "addFieldError('" + property + "','" + message + "')";
+            stack.findValue(addFieldErrorExpression);
         }
-
-        String addFieldErrorExpression = "addFieldError('" + property + "','" + message + "')";
-        stack.findValue(addFieldErrorExpression);
     }
 
     private TypeConverter createTypeConverter(String className) throws Exception, InstantiationException {

@@ -32,6 +32,7 @@ public class ParametersInterceptor extends AroundInterceptor {
 
         try {
             InstantiatingNullHandler.setState(true);
+            invocation.getInvocationContext().put("report.conversion.errors", Boolean.TRUE);
 
             if (parameters != null) {
                 final OgnlValueStack stack = ActionContext.getContext().getValueStack();
@@ -43,6 +44,7 @@ public class ParametersInterceptor extends AroundInterceptor {
                 }
             }
         } finally {
+            invocation.getInvocationContext().put("report.conversion.errors", Boolean.FALSE);
             InstantiatingNullHandler.setState(false);
         }
     }
