@@ -403,7 +403,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
                         try {
                             String paramName = (String) resultClass.getField("DEFAULT_PARAM").get(null);
-                            params.put(paramName, resultElement.getChildNodes().item(0).getNodeValue());
+                            String paramValue = resultElement.getChildNodes().item(0).getNodeValue();
+                            if (paramValue != null) paramValue = paramValue.trim();
+                            params.put(paramName, paramValue);
                         } catch (Throwable t) {
                         }
                     }
