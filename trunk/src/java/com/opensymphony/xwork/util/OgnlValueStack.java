@@ -26,8 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * earliest, looking for a bean with a getter or setter for the given property or a method of the given name (depending
  * on the expression being evaluated).
  *
- * @author $Author$
- * @version $Revision$
+ * @author Patrick Lightbody
  */
 public class OgnlValueStack implements Serializable {
     //~ Static fields/initializers /////////////////////////////////////////////

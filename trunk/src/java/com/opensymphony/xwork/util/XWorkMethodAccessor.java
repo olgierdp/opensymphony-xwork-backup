@@ -11,9 +11,10 @@ import java.util.Map;
 
 
 /**
- * User: plightbo
- * Date: Dec 28, 2003
- * Time: 8:34:20 PM
+ * Allows methods to be executed under normal cirumstances, except when {@link #DENY_METHOD_EXECUTION}
+ * is in the action context with a value of true.  
+ *
+ * @author Patrick Lightbody
  */
 public class XWorkMethodAccessor extends ObjectMethodAccessor {
     //~ Static fields/initializers /////////////////////////////////////////////
@@ -23,10 +24,10 @@ public class XWorkMethodAccessor extends ObjectMethodAccessor {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public Object callMethod(Map context, Object object, String string, Object[] objects) throws MethodFailedException {
-        Boolean create = (Boolean) context.get(DENY_METHOD_EXECUTION);
-        boolean c = ((create == null) ? false : create.booleanValue());
+        Boolean exec = (Boolean) context.get(DENY_METHOD_EXECUTION);
+        boolean e = ((exec == null) ? false : exec.booleanValue());
 
-        if (!c) {
+        if (!e) {
             return super.callMethod(context, object, string, objects);
         } else {
             return null;
@@ -34,10 +35,10 @@ public class XWorkMethodAccessor extends ObjectMethodAccessor {
     }
 
     public Object callStaticMethod(Map context, Class aClass, String string, Object[] objects) throws MethodFailedException {
-        Boolean create = (Boolean) context.get(DENY_METHOD_EXECUTION);
-        boolean c = ((create == null) ? false : create.booleanValue());
+        Boolean exec = (Boolean) context.get(DENY_METHOD_EXECUTION);
+        boolean e = ((exec == null) ? false : exec.booleanValue());
 
-        if (!c) {
+        if (!e) {
             return super.callStaticMethod(context, aClass, string, objects);
         } else {
             return null;

@@ -10,9 +10,11 @@ import java.util.HashMap;
 
 
 /**
- * User: plightbo
- * Date: Jan 13, 2004
- * Time: 9:21:03 PM
+ * A simple map that when requested a key that it doesn't yet hold will
+ * create an empty beans using ObjectFactory's
+ * {@link ObjectFactory#buildBean(java.lang.Class) buildBean} method.
+ *
+ * @author Patrick Lightbody
  */
 public class XWorkMap extends HashMap {
     //~ Instance fields ////////////////////////////////////////////////////////
@@ -35,7 +37,6 @@ public class XWorkMap extends HashMap {
                 o = ObjectFactory.getObjectFactory().buildBean(clazz);
                 this.put(key, o);
             } catch (Exception e) {
-                e.printStackTrace();
                 throw new RuntimeException(e.getMessage());
             }
         }

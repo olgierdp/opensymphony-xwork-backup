@@ -8,7 +8,6 @@ import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.InterceptorConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
-import com.opensymphony.xwork.config.providers.InterceptorBuilder;
 import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.util.OgnlUtil;
 import com.opensymphony.xwork.validator.Validator;
@@ -21,8 +20,10 @@ import java.util.Map;
  * ObjectFactory is responsible for building the core framework objects. Users may register their own implementation of
  * the ObjectFactory to control instantiation of these Objects.
  *
+ * This default implemented uses the {@link #buildBean(java.lang.Class) buildBean} method to create all classes
+ * (interceptors, actions, results, etc). 
+ *
  * @author Jason Carreira
- * Date: Feb 26, 2004 9:02:57 PM
  */
 public class ObjectFactory {
     //~ Static fields/initializers /////////////////////////////////////////////
@@ -46,14 +47,14 @@ public class ObjectFactory {
 
     /**
      * Build an Action of the given type
-     * @param config
      */
     public Action buildAction(ActionConfig config) throws Exception {
-        return (Action) config.getClazz().newInstance();
+        return (Action) buildBean(config.getClazz());
     }
 
     /**
      * Build a generic Java object of the given type.
+     *
      * @param clazz the type of Object to build
      */
     public Object buildBean(Class clazz) throws Exception {
@@ -66,9 +67,9 @@ public class ObjectFactory {
      * the Interceptor config and the interceptor ref Map (the interceptor ref params take precedence), and that the
      * Interceptor.init() method is called on the Interceptor instance before it is returned.
      *
-     * @param interceptorConfig the InterceptorConfig from the configuration
+     * @param interceptorConfig    the InterceptorConfig from the configuration
      * @param interceptorRefParams a Map of params provided in the Interceptor reference in the Action mapping or
-     * InterceptorStack definition
+     *                             InterceptorStack definition
      */
     public Interceptor buildInterceptor(InterceptorConfig interceptorConfig, Map interceptorRefParams) throws ConfigurationException {
         Interceptor interceptor = null;
@@ -79,7 +80,7 @@ public class ObjectFactory {
         params.putAll(interceptorRefParams);
 
         try {
-            interceptor = (Interceptor) interceptorClass.newInstance();
+            interceptor = (Interceptor) buildBean(interceptorClass);
             OgnlUtil.setProperties(params, interceptor);
             interceptor.init();
 
@@ -99,15 +100,13 @@ public class ObjectFactory {
 
     /**
      * Build a Result using the type in the ResultConfig and set the parameters in the ResultConfig.
-     *
-     * @param resultConfig
      */
     public Result buildResult(ResultConfig resultConfig) throws Exception {
         Class resultClass = resultConfig.getClazz();
         Result result = null;
 
         if (resultClass != null) {
-            result = (Result) resultClass.newInstance();
+            result = (Result) buildBean(resultClass);
             OgnlUtil.setProperties(resultConfig.getParams(), result, ActionContext.getContext().getContextMap());
         }
 
@@ -116,11 +115,12 @@ public class ObjectFactory {
 
     /**
      * Build a Validator of the given type and set the parameters on it
-     * @param clazz the type of Validator to build
+     *
+     * @param clazz  the type of Validator to build
      * @param params property name -> value Map to set onto the Validator instance
      */
     public Validator buildValidator(Class clazz, Map params) throws Exception {
-        Validator validator = (Validator) clazz.newInstance();
+        Validator validator = (Validator) buildBean(clazz);
         OgnlUtil.setProperties(params, validator);
 
         return validator;

@@ -11,9 +11,11 @@ import java.util.ArrayList;
 
 
 /**
- * User: plightbo
- * Date: Jan 13, 2004
- * Time: 7:02:33 PM
+ * A simple list that when requested an index that it doesn't yet hold will
+ * create empty beans all the way up to and including that index using
+ * ObjectFactory's {@link ObjectFactory#buildBean(java.lang.Class) buildBean} method.
+ *
+ * @author Patrick Lightbody
  */
 public class XWorkList extends ArrayList {
     //~ Instance fields ////////////////////////////////////////////////////////
@@ -33,7 +35,6 @@ public class XWorkList extends ArrayList {
             try {
                 this.add(ObjectFactory.getObjectFactory().buildBean(clazz));
             } catch (Exception e) {
-                e.printStackTrace();
                 throw new RuntimeException(e.getMessage());
             }
         }

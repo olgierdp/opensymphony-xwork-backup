@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * AroundInterceptor
+ * An abstract interceptor that provides simple access to before/after callouts.
  *
  * @author Jason Carreira
  */
@@ -38,7 +38,15 @@ public abstract class AroundInterceptor implements Interceptor {
         return result;
     }
 
+    /**
+     * Called after the invocation has been executed.
+     *
+     * @param result the result value returned by the invocation
+     */
     protected abstract void after(ActionInvocation dispatcher, String result) throws Exception;
 
+    /**
+     * Called before the invocation has been executed. 
+     */
     protected abstract void before(ActionInvocation invocation) throws Exception;
 }

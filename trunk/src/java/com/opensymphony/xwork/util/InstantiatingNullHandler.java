@@ -5,27 +5,43 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.util.FileManager;
-
 import com.opensymphony.xwork.ObjectFactory;
-
-import ognl.*;
+import ognl.NullHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
-
 import java.lang.reflect.Method;
-
 import java.util.*;
 
 
 /**
+ * Normally does nothing, but if {@link #CREATE_NULL_OBJECTS} is in the action context
+ * with a value of true, then this class will attempt to create null objects when Ognl
+ * requests null objects be created.
  *
- * @author $Id$
- * @version $Revision$
+ * The following rules are used:
+ * <ul>
+ *  <li>If the null property is a simple bean with a no-arg constructor, it will simply be
+ *      created using ObjectFactory's {@link ObjectFactory#buildBean(java.lang.Class) buildBean} method.</li>
+ *  <li>If the property is declared <i>exactly</i> as a {@link Collection} or {@link List}, then this class
+ *      will look in the conversion property file (see {@link XWorkConverter}) for an entry
+ *      with a key of the form "Collection_[propertyName]". Using the value of this key as
+ *      the class type in which the collection will be holding, an {@link XWorkList} will be
+ *      created, allowing simple dynamic insertion.</li>
+ *  <li>If the property is declared as a {@link Map}, then the same rules are applied for
+ *      list, except that an {@link XWorkMap} will be created instead.</li>
+ * </ul>
+ *
+ * @author Matt Ho
+ * @author Patrick Lightbody
  */
 public class InstantiatingNullHandler implements NullHandler {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String CREATE_NULL_OBJECTS = "xwork.NullHandler.createNullObjects";
+
+    private static final Log LOG = LogFactory.getLog(InstantiatingNullHandler.class);
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
@@ -39,13 +55,6 @@ public class InstantiatingNullHandler implements NullHandler {
         return null;
     }
 
-    /**
-     * @see NullHandler#nullPropertyValue(Map, Object, Object) for additional documentation
-     * @param context
-     * @param target
-     * @param property
-     * @return
-     */
     public Object nullPropertyValue(Map context, Object target, Object property) {
         Boolean create = (Boolean) context.get(CREATE_NULL_OBJECTS);
         boolean c = ((create == null) ? false : create.booleanValue());
@@ -90,11 +99,11 @@ public class InstantiatingNullHandler implements NullHandler {
         try {
             Class clazz = method.getParameterTypes()[0];
             Object param = createObject(context, clazz, target, property.toString());
-            method.invoke(target, new Object[] {param});
+            method.invoke(target, new Object[]{param});
 
             return param;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Could not create and/or set value back on to object", e);
         }
 
         return null;
@@ -125,10 +134,9 @@ public class InstantiatingNullHandler implements NullHandler {
     /**
      * Attempt to find the setter associated with the provided instance and propertyName.  If we do find it, place that
      * Method into the methodMap keyed by property name
-     * @param methodMap
+     *
      * @param propertyName the name of the property we're looking up
      * @param instance of instance of the Class we're attempting to find the setter for
-     * @return
      */
     private Method getMethod(Map methodMap, String propertyName, Object instance) {
         synchronized (methodMap) {
@@ -158,6 +166,7 @@ public class InstantiatingNullHandler implements NullHandler {
 
     /**
      * returns the Map associated with a given Class of Objects
+     *
      * @param instance an instance of the Class we're interested in
      * @return a Map of Method instances keyed by property name
      */
@@ -186,7 +195,7 @@ public class InstantiatingNullHandler implements NullHandler {
             mapping.putAll(props);
 
             for (Iterator iterator = mapping.entrySet().iterator();
-                    iterator.hasNext();) {
+                 iterator.hasNext();) {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 String propName = (String) entry.getKey();
                 String className = (String) entry.getValue();
