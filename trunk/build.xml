@@ -14,12 +14,6 @@
         </fileset>
     </path>
 
-    <path id="jalopy.classpath">
-        <fileset dir="lib/build/jalopy">
-            <include name="*.jar"/>
-        </fileset>
-    </path>
-
     <property file="build.properties"/>
 
     <property name="lib" value="lib"/>
@@ -83,7 +77,7 @@
         </junit>
     </target>
 
-    <target name="test" depends="format, java">
+    <target name="test" depends="java">
         <taskdef resource="clovertasks"/>
         <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
 
@@ -126,27 +120,6 @@
                 </fileset>
             </batchtest>
         </junit>
-    </target>
-
-    <target name="format">
-        <taskdef name="jalopy" classname="de.hunsicker.jalopy.plugin.ant.AntPlugin">
-            <classpath refid="jalopy.classpath"/>
-        </taskdef>
-
-        <jalopy fileformat="unix"
-            convention="${basedir}/src/etc/jalopy.xml"
-            history="file"
-            historymethod="adler32"
-            loglevel="error"
-            threads="2"
-            classpathref="cp">
-            <fileset dir="${src.java}">
-                <include name="**/*.java"/>
-            </fileset>
-            <fileset dir="${src.test}">
-                <include name="**/*.java"/>
-            </fileset>
-        </jalopy>
     </target>
 
     <target name="jar" depends="java">
