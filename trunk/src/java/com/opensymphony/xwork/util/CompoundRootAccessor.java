@@ -75,14 +75,12 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                         Object value = OgnlRuntime.getProperty(ognlContext, o, name);
 
                         //Ognl.getValue(OgnlUtil.compile((String) name), context, o);
-                        if (value != null) {
-                            Evaluation currentEvaluation = ognlContext.getCurrentEvaluation();
-                            SimpleNode node = currentEvaluation.getNode();
-                            currentEvaluation.setSource(o);
-                            ognlContext.pushEvaluation(new Evaluation(node, o));
+                        Evaluation currentEvaluation = ognlContext.getCurrentEvaluation();
+                        SimpleNode node = currentEvaluation.getNode();
+                        currentEvaluation.setSource(o);
+                        ognlContext.pushEvaluation(new Evaluation(node, o));
 
-                            return value;
-                        }
+                        return value;
                     }
                 } catch (OgnlException e) {
                     if (e.getReason() != null) {

@@ -141,7 +141,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         }
 
         if (tc == null) {
-            if (toClass.equals(String.class) && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class))) {
+            if (toClass.equals(String.class) && value != null && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class))) {
                 // when converting to a string, use the source target's class's converter
                 if (defaultMappings.containsKey(value.getClass().getName())) {
                     tc = (TypeConverter) defaultMappings.get(value.getClass().getName());

@@ -39,7 +39,7 @@ public class ActionInvocationTest extends TestCase {
         try {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", "Foo", extraContext);
             proxy.execute();
-            assertEquals("this is blah", proxy.getInvocation().getStack().findValue("blah"));
+            assertEquals("this is blah", proxy.getInvocation().getStack().findValue("[1].blah"));
         } catch (Exception e) {
             e.printStackTrace();
             fail();

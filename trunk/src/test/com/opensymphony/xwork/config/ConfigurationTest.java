@@ -51,7 +51,7 @@ public class ConfigurationTest extends TestCase {
         try {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("/does/not/exist", "Foo", extraContext);
             proxy.execute();
-            assertEquals("this is blah", proxy.getInvocation().getStack().findValue("blah"));
+            assertEquals("this is blah", proxy.getInvocation().getStack().findValue("[1].blah"));
         } catch (Exception e) {
             e.printStackTrace();
             fail();

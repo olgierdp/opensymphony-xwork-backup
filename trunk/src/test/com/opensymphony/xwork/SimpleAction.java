@@ -20,6 +20,10 @@ public class SimpleAction extends ActionSupport {
 
     public static final String COMMAND_RETURN_CODE = "com.opensymphony.xwork.SimpleAction.CommandInvoked";
 
+    public SimpleAction() {
+        System.out.println("hi");
+    }
+
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private ArrayList someList = new ArrayList();
