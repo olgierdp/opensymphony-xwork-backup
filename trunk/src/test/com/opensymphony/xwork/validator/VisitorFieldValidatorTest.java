@@ -6,7 +6,6 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.TestBean;
-import com.opensymphony.xwork.VisitorValidatorTestAction;
 import com.opensymphony.xwork.util.OgnlValueStack;
 
 import junit.framework.TestCase;

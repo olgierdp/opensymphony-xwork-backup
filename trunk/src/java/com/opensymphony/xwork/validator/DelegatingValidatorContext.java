@@ -126,7 +126,7 @@ public class DelegatingValidatorContext implements ValidatorContext {
         }
     }
 
-    protected static TextProvider makeTextProvider(Object object, LocaleProvider localeProvider) {
+    public static TextProvider makeTextProvider(Object object, LocaleProvider localeProvider) {
         if (object instanceof TextProvider) {
             return (TextProvider) object;
         } else {

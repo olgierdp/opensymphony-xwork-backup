@@ -24,6 +24,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private String context;
+    private boolean appendPrefix = true;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -33,6 +34,14 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
 
     public String getContext() {
         return context;
+    }
+
+    public boolean isAppendPrefix() {
+        return appendPrefix;
+    }
+
+    public void setAppendPrefix(boolean appendPrefix) {
+        this.appendPrefix = appendPrefix;
     }
 
     public void validate(Object object) throws ValidationException {
@@ -73,8 +82,13 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
     private void validateObject(String fieldName, Object o, String visitorContext) throws ValidationException {
         OgnlValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(o);
-
-        ValidatorContext validatorContext = new AppendingValidatorContext(getValidatorContext(), o, fieldName, getMessage(o));
+        ValidatorContext validatorContext;
+        if (appendPrefix) {
+            validatorContext = new AppendingValidatorContext(getValidatorContext(), o, fieldName, getMessage(o), appendPrefix);
+        } else {
+            ValidatorContext parent = getValidatorContext();
+            validatorContext = new DelegatingValidatorContext(parent, DelegatingValidatorContext.makeTextProvider(o, parent), parent);
+        }
         ActionValidatorManager.validate(o, visitorContext, validatorContext);
         stack.pop();
     }
@@ -86,7 +100,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         String field;
         String message;
 
-        public AppendingValidatorContext(ValidatorContext parent, Object object, String field, String message) {
+        public AppendingValidatorContext(ValidatorContext parent, Object object, String field, String message, boolean appendPrefix) {
             super(parent, makeTextProvider(object, parent), parent);
 
             //            super(parent);

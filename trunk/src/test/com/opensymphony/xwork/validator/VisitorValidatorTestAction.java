@@ -2,7 +2,10 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.xwork;
+package com.opensymphony.xwork.validator;
+
+import com.opensymphony.xwork.ActionSupport;
+import com.opensymphony.xwork.TestBean;
 
 import java.util.ArrayList;
 import java.util.List;
