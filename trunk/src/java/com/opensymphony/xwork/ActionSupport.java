@@ -62,9 +62,12 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
         return localeAware.getText(aTextName, defaultValue);
     }
 
-    public String getText(String aTextName, List args)
-    {
+    public String getText(String aTextName, List args) {
         return localeAware.getText(aTextName, args);
+    }
+
+    public String getText(String aTextName, String defaultValue, List args) {
+        return localeAware.getText(aTextName, defaultValue, args);
     }
 
     public ResourceBundle getTexts(String aBundleName) {

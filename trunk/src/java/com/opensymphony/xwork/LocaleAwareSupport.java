@@ -72,8 +72,37 @@ public class LocaleAwareSupport implements LocaleAware {
         return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), defaultValue, new Object[0]);
     }
 
+    /**
+     * Get a text from the resource bundles associated with this action.
+     * The resource bundles are searched, starting with the one associated
+     * with this particular action, and testing all its superclasses' bundles.
+     * It will stop once a bundle is found that contains the given text. This gives
+     * a cascading style that allow global texts to be defined for an application base
+     * class. If no text is found for this text name, the default value is returned.
+     *
+     * @param   aTextName  name of text to be found
+     * @param   args a List of args to be used in a MessageFormat message
+     * @return     value of named text
+     */
     public String getText(String aTextName, List args) {
-        return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), aTextName, args.toArray(new Object[args.size()]));
+        return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), aTextName, args.toArray());
+    }
+
+    /**
+     * Get a text from the resource bundles associated with this action.
+     * The resource bundles are searched, starting with the one associated
+     * with this particular action, and testing all its superclasses' bundles.
+     * It will stop once a bundle is found that contains the given text. This gives
+     * a cascading style that allow global texts to be defined for an application base
+     * class. If no text is found for this text name, the default value is returned.
+     *
+     * @param   aTextName  name of text to be found
+     * @param   defaultValue the default value which will be returned if no text is found
+     * @param   args a List of args to be used in a MessageFormat message
+     * @return     value of named text
+     */
+    public String getText(String aTextName, String defaultValue, List args) {
+        return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), defaultValue, args.toArray());
     }
 
     /**
