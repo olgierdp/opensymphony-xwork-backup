@@ -7,10 +7,16 @@ package com.opensymphony.xwork.util;
 import junit.framework.TestCase;
 
 import ognl.Ognl;
+import ognl.OgnlRuntime;
+import ognl.NullHandler;
+import ognl.OgnlException;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 
 /**
@@ -185,5 +191,75 @@ public class OgnlUtilTest extends TestCase {
         foo.setaLong(0);
         OgnlUtil.setProperties(props, foo, context);
         assertEquals(123, foo.getaLong());
+    }
+
+    public void testOgnlHandlesCrapAtTheEndOfANumber() {
+        Foo foo= new Foo();
+        Map context = Ognl.createDefaultContext(foo);
+
+        HashMap props = new HashMap();
+        props.put("aLong", "123a");
+
+        OgnlUtil.setProperties(props, foo, context);
+        assertEquals(0, foo.getaLong());
+    }
+
+    public void testCanSetADependentObject() {
+        String dogName = "fido";
+
+        OgnlRuntime.setNullHandler(Owner.class, new NullHandler() {
+            public Object nullMethodResult(Map map, Object o, String s, Object[] objects) {
+                System.out.println("nullMethodResult");
+                return null;
+            }
+
+            public Object nullPropertyValue(Map map, Object o, Object o1) {
+                System.out.println("nullPropertyValue");
+                System.out.println("map -- " + map);
+                System.out.println("o   -- " + o);
+                System.out.println("o1  -- " + o1.getClass().getName());
+                String methodName = o1.toString();
+                String getter = "set" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
+                Method[] methods = o.getClass().getDeclaredMethods();
+                System.out.println(getter);
+                for (int i = 0; i < methods.length; i++) {
+                    String name = methods[i].getName();
+                    if( !getter.equals(name) || methods[i].getParameterTypes().length != 1 ) {
+                        continue;
+                    } else {
+                        Class clazz = methods[i].getParameterTypes()[0];
+                        try {
+                            Object param = clazz.newInstance();
+                            methods[i].invoke(o, new Object[]{param});
+                            return param;
+                        } catch (InstantiationException e) {
+                            e.printStackTrace();  //To change body of catch statement use Options | File Templates.
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();  //To change body of catch statement use Options | File Templates.
+                        } catch (IllegalArgumentException e) {
+                            e.printStackTrace();  //To change body of catch statement use Options | File Templates.
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();  //To change body of catch statement use Options | File Templates.
+                        }
+                    }
+                }
+                return null;
+            }
+        });
+
+        Owner owner = new Owner();
+        Map context = Ognl.createDefaultContext(owner);
+        HashMap props = new HashMap();
+        props.put("dog.name", dogName);
+
+        OgnlUtil.setProperties(props, owner, context);
+        assertNotNull("expected Ognl to create an instance of Dog", owner.getDog());
+        assertEquals(dogName, owner.getDog().getName());
+
+        try {
+            System.out.println("dog.name == " + Ognl.getValue("dog.name", new Owner()));
+        } catch (OgnlException e) {
+            e.printStackTrace();  //To change body of catch statement use Options | File Templates.
+        }
     }
 }
