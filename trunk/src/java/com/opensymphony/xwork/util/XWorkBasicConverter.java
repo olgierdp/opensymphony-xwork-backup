@@ -293,9 +293,6 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = df.format(value);
         } else if (value instanceof String[]) {
             result = TextUtils.join(", ", (String[]) value);
-        } else if (Number.class.isAssignableFrom(value.getClass())) {
-            NumberFormat numFormat = NumberFormat.getInstance(getLocale(context));
-            result = numFormat.format(value);
         }
 
         return result;

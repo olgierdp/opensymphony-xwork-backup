@@ -170,26 +170,6 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(dateString, converter.convertValue(context, null, null, null, date, String.class));
     }
 
-    public void testPrimitiveToString() {
-        Locale locale = Locale.GERMANY;
-        NumberFormat nf = NumberFormat.getInstance(locale);
-        context.put(ActionContext.LOCALE, locale);
-
-        String origValue = "123456789";
-        Long longValue = new Long(origValue);
-        String formattedValue = nf.format(new Long(origValue));
-        assertEquals(formattedValue, converter.convertValue(context, null, null, null, new Long(origValue), String.class));
-        assertEquals(longValue, converter.convertValue(context, null, null, null, formattedValue, Long.class));
-        assertEquals(longValue, converter.convertValue(context, null, null, null, origValue, Long.class));
-
-        origValue = "123456.789";
-
-        Float floatValue = new Float(origValue);
-        formattedValue = nf.format(new Float(origValue));
-        assertEquals(formattedValue, converter.convertValue(context, null, null, null, new Float(origValue), String.class));
-        assertEquals(floatValue, converter.convertValue(context, null, null, null, formattedValue, Float.class));
-    }
-
     public void testStringArrayToCollection() {
         List list = new ArrayList();
         list.add("foo");
