@@ -8,7 +8,8 @@ import java.util.*;
 
 
 /**
- * Provides a default implementation of ValidationAware.
+ * Provides a default implementation of ValidationAware. Returns new collections for
+ * errors and messages (defensive copy).
  *
  * @author Jason Carreira
  */
@@ -41,23 +42,14 @@ public class ValidationAwareSupport implements ValidationAware {
         this.fieldErrors = errorMap;
     }
 
-    /**
-     * Get the field specific errors.
-     *
-     * @return an unmodifiable Map with errors mapped from fieldname (String) to Collection of
-     * String error messages
-     */
     public synchronized Map getFieldErrors() {
-        return new HashMap(internalGetFieldErrors());
+        return new LinkedHashMap(internalGetFieldErrors());
     }
 
     public synchronized void addActionError(String anErrorMessage) {
         internalGetActionErrors().add(anErrorMessage);
     }
 
-    /**
-     * Add an Action level message to this Action
-     */
     public void addActionMessage(String aMessage) {
         internalGetActionMessages().add(aMessage);
     }
@@ -78,19 +70,10 @@ public class ValidationAwareSupport implements ValidationAware {
         return (actionErrors != null) && !actionErrors.isEmpty();
     }
 
-    /**
-     * Checks whether there are any Action-level messages.
-     *
-     * @return true if any Action-level messages have been registered
-     */
     public boolean hasActionMessages() {
         return (actionMessages != null) && !actionMessages.isEmpty();
     }
 
-    /**
-     * Note that this does not have the same meaning as in WW 1.x
-     * @return (hasActionErrors() || hasFieldErrors())
-     */
     public synchronized boolean hasErrors() {
         return (hasActionErrors() || hasFieldErrors());
     }
@@ -117,7 +100,7 @@ public class ValidationAwareSupport implements ValidationAware {
 
     private Map internalGetFieldErrors() {
         if (fieldErrors == null) {
-            fieldErrors = new HashMap();
+            fieldErrors = new LinkedHashMap();
         }
 
         return fieldErrors;
