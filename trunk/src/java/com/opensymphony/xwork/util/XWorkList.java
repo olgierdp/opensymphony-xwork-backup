@@ -4,20 +4,31 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ObjectFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
- * A simple list that guarantees that {@link #get(int)} and {@link #set(int, Object)} will always
- * work regardless of the current size of the list.  Empty beans will be created to fill the gap
- * between the current list size and the requested index using ObjectFactory's
- * {@link ObjectFactory#buildBean(java.lang.Class) buildBean} method.
+ * A simple list that guarantees that inserting and retrieving objects will always work regardless
+ * of the current size of the list.  Upon insertion, type conversion is also performed if necessary.
+ * Empty beans will be created to fill the gap between the current list size and the requested index
+ * using ObjectFactory's {@link ObjectFactory#buildBean(java.lang.Class) buildBean} method.
  *
  * @author Patrick Lightbody
  */
 public class XWorkList extends ArrayList {
+    //~ Static fields/initializers /////////////////////////////////////////////
+
+    private static final Log LOG = LogFactory.getLog(XWorkConverter.class);
+
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private Class clazz;
@@ -31,9 +42,122 @@ public class XWorkList extends ArrayList {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-     * Returns the element at the specified position in this list.  An object is guaranteed to be
-     * returned since it will create empty beans to fill the gap between the current list size and
-     * the requested index.
+     * Inserts the specified element at the specified position in this list. Shifts the element
+     * currently at that position (if any) and any subsequent elements to the right (adds one to
+     * their indices).
+     * <p />
+     * This method is guaranteed to work since it will create empty beans to fill the gap between
+     * the current list size and the requested index to enable the element to be set.  This method
+     * also performs any necessary type conversion.
+     *
+     * @param index   index at which the specified element is to be inserted.
+     * @param element element to be inserted.
+     */
+    public void add(int index, Object element) {
+        if (index >= this.size()) {
+            get(index);
+        }
+
+        if ((element != null) && !clazz.isAssignableFrom(element.getClass())) {
+            // convert to correct type
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Converting from " + element.getClass().getName() + " to " + clazz.getName());
+            }
+
+            Map context = ActionContext.getContext().getContextMap();
+            element = XWorkConverter.getInstance().convertValue(context, null, null, null, element, clazz);
+        }
+
+        super.add(index, element);
+    }
+
+    /**
+     * Appends the specified element to the end of this list.
+     * <p />
+     * This method performs any necessary type conversion.
+     *
+     * @param element element to be appended to this list.
+     * @return <tt>true</tt> (as per the general contract of Collection.add).
+     */
+    public boolean add(Object element) {
+        if ((element != null) && !clazz.isAssignableFrom(element.getClass())) {
+            // convert to correct type
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Converting from " + element.getClass().getName() + " to " + clazz.getName());
+            }
+
+            Map context = ActionContext.getContext().getContextMap();
+            element = XWorkConverter.getInstance().convertValue(context, null, null, null, element, clazz);
+        }
+
+        return super.add(element);
+    }
+
+    /**
+     * Appends all of the elements in the specified Collection to the end of this list, in the order
+     * that they are returned by the specified Collection's Iterator.  The behavior of this
+     * operation is undefined if the specified Collection is modified while the operation is in
+     * progress.  (This implies that the behavior of this call is undefined if the specified
+     * Collection is this list, and this list is nonempty.)
+     * <p />
+     * This method performs any necessary type conversion.
+     *
+     * @param c the elements to be inserted into this list.
+     * @return <tt>true</tt> if this list changed as a result of the call.
+     * @throws NullPointerException if the specified collection is null.
+     */
+    public boolean addAll(Collection c) {
+        if (c == null) {
+            throw new NullPointerException("Collection to add is null");
+        }
+
+        Iterator it = c.iterator();
+
+        while (it.hasNext()) {
+            add(it.next());
+        }
+
+        return true;
+    }
+
+    /**
+     * Inserts all of the elements in the specified Collection into this list, starting at the
+     * specified position.  Shifts the element currently at that position (if any) and any
+     * subsequent elements to the right (increases their indices).  The new elements will appear in
+     * the list in the order that they are returned by the specified Collection's iterator.
+     * <p />
+     * This method is guaranteed to work since it will create empty beans to fill the gap between
+     * the current list size and the requested index to enable the element to be set.  This method
+     * also performs any necessary type conversion.
+     *
+     * @param index index at which to insert first element from the specified collection.
+     * @param c     elements to be inserted into this list.
+     * @return <tt>true</tt> if this list changed as a result of the call.
+     */
+    public boolean addAll(int index, Collection c) {
+        if (c == null) {
+            throw new NullPointerException("Collection to add is null");
+        }
+
+        boolean trim = false;
+        if (index >= this.size()) {
+            trim = true;
+        }
+        for (Iterator it = c.iterator(); it.hasNext(); index++) {
+            add(index, it.next());
+        }
+        if (trim) {
+            remove(this.size() - 1);
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns the element at the specified position in this list.
+     * <p />
+     * An object is guaranteed to be returned since it will create empty beans to fill the gap
+     * between the current list size and the requested index.
      *
      * @param index index of element to return.
      * @return the element at the specified position in this list.
@@ -52,8 +176,10 @@ public class XWorkList extends ArrayList {
 
     /**
      * Replaces the element at the specified position in this list with the specified element.
+     * <p />
      * This method is guaranteed to work since it will create empty beans to fill the gap between
-     * the current list size and the requested index to enable the element to be set.
+     * the current list size and the requested index to enable the element to be set.  This method
+     * also performs any necessary type conversion.
      *
      * @param index index of element to replace.
      * @param element element to be stored at the specified position.
@@ -62,6 +188,16 @@ public class XWorkList extends ArrayList {
     public Object set(int index, Object element) {
         if (index >= this.size()) {
             get(index);
+        }
+
+        if ((element != null) && !clazz.isAssignableFrom(element.getClass())) {
+            // convert to correct type
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Converting from " + element.getClass().getName() + " to " + clazz.getName());
+            }
+
+            Map context = ActionContext.getContext().getContextMap();
+            element = XWorkConverter.getInstance().convertValue(context, null, null, null, element, clazz);
         }
 
         return super.set(index, element);
