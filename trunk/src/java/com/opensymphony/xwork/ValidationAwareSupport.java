@@ -30,7 +30,7 @@ public class ValidationAwareSupport implements ValidationAware {
     }
 
     public synchronized Collection getActionErrors() {
-        return Collections.unmodifiableCollection(internalGetActionErrors());
+        return new ArrayList(internalGetActionErrors());
     }
 
     public synchronized void setFieldErrors(Map errorMap) {
@@ -43,7 +43,7 @@ public class ValidationAwareSupport implements ValidationAware {
     * @return an unmodifiable Map with errors mapped from fieldname (String) to Collection of String error messages
     */
     public synchronized Map getFieldErrors() {
-        return Collections.unmodifiableMap(internalGetFieldErrors());
+        return new HashMap(internalGetFieldErrors());
     }
 
     public synchronized void addActionError(String anErrorMessage) {
