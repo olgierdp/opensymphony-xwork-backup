@@ -53,6 +53,7 @@ public class DefaultActionProxy implements ActionProxy {
         this.namespace = namespace;
         this.executeResult = executeResult;
         this.extraContext = extraContext;
+
         config = ConfigurationManager.getConfiguration().getRuntimeConfiguration().getActionConfig(namespace, actionName);
 
         if (config == null) {

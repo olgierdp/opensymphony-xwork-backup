@@ -88,7 +88,7 @@ public class DefaultConfiguration implements Configuration {
             provider.init(this);
         }
 
-        runtimeConfiguration = buildRuntimeConfiguration();
+        rebuildRuntimeConfiguration();
     }
 
     public void removePackageConfig(String name) {
@@ -101,6 +101,10 @@ public class DefaultConfiguration implements Configuration {
                 packageContext.removeParent(toBeRemoved);
             }
         }
+    }
+
+    public void rebuildRuntimeConfiguration() {
+        runtimeConfiguration = buildRuntimeConfiguration();
     }
 
     /**

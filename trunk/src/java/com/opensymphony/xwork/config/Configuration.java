@@ -45,5 +45,7 @@ public interface Configuration {
      */
     void reload() throws ConfigurationException;
 
+    public void rebuildRuntimeConfiguration();
+
     void removePackageConfig(String name);
 }

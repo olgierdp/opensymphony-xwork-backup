@@ -60,6 +60,10 @@ public class MockConfiguration implements Configuration {
         throw new UnsupportedOperationException();
     }
 
+    public void rebuildRuntimeConfiguration() {
+        throw new UnsupportedOperationException();
+    }
+
     public void removePackageConfig(String name) {
     }
 }

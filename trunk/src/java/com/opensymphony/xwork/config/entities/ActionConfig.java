@@ -100,7 +100,15 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
         }
 
         if (methodName != null) {
-            method = clazz.getMethod(methodName, new Class[0]);
+            try {
+                method = clazz.getMethod(methodName, new Class[0]);
+            } catch (NoSuchMethodException e) {
+                try {
+                    method = clazz.getMethod("do" + String.valueOf(methodName.charAt(0)).toUpperCase() + methodName.substring(1), new Class[0]);
+                } catch (NoSuchMethodException e1) {
+                    throw e;
+                }
+            }
         } else // return default execute() method if method name is not specified
          {
             method = clazz.getMethod("execute", new Class[0]);
