@@ -10,17 +10,18 @@ import com.opensymphony.xwork.ValidationAware;
 
 
 /**
- * ValidatorContext
+ * The context for validation. This interface extends others to provide methods for reporting
+ * errors and messages as well as looking up error messages in a resource bundle using a specific locale.
+ *
  * @author Jason Carreira
- * Created Aug 3, 2003 12:30:32 AM
  */
 public interface ValidatorContext extends ValidationAware, TextProvider, LocaleProvider {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-     * Translates a simple field name into a full field name in Ognl syntax
-     * @param fieldName
-     * @return
+     * Translates a simple field name into a full field name in OGNL syntax.
+     *
+     * @param fieldName the field name to lookup.
+     * @return the full field name in OGNL syntax.
      */
     String getFullFieldName(String fieldName);
 }
