@@ -32,6 +32,7 @@ public class LocalizedTextUtil {
     private static final List DEFAULT_RESOURCE_BUNDLES = Collections.synchronizedList(new ArrayList());
     private static final Log LOG = LogFactory.getLog(LocalizedTextUtil.class);
     private static boolean reloadBundles = false;
+    private static Collection misses = new HashSet();
 
     static {
         DEFAULT_RESOURCE_BUNDLES.add("com/opensymphony/xwork/xwork-messages");
@@ -103,7 +104,22 @@ public class LocalizedTextUtil {
     }
 
     public static ResourceBundle findResourceBundle(String aBundleName, Locale locale) {
-        return ResourceBundle.getBundle(aBundleName, locale, Thread.currentThread().getContextClassLoader());
+        MissingResourceException e = null;
+        try {
+            if (!misses.contains(aBundleName)) {
+                return ResourceBundle.getBundle(aBundleName, locale, Thread.currentThread().getContextClassLoader());
+            }
+        } catch (MissingResourceException ex) {
+            e = ex;
+            misses.add(aBundleName);
+        }
+
+
+        if (e == null) {
+            e = new MissingResourceException("Unable to find bundle " + aBundleName, LocalizedTextUtil.class.getName(), "");
+        }
+
+        throw e;
     }
 
     /**
