@@ -258,27 +258,22 @@ public class LocalizedTextUtil {
         for (Class clazz = aClass;
              (clazz != null) && !clazz.equals(Object.class);
              clazz = clazz.getSuperclass()) {
-            if (clazz.getPackage() != null) {
-                String basePackageName = clazz.getPackage().getName();
-                while (basePackageName != null) {
-                    String packageName = basePackageName + ".package";
-                    msg = getMessage(packageName, locale, aTextName, valueStack, args);
+
+            String basePackageName = clazz.getName();
+            while (basePackageName.lastIndexOf('.') != -1) {
+                basePackageName = basePackageName.substring(0, basePackageName.lastIndexOf('.'));
+                String packageName = basePackageName + ".package";
+                msg = getMessage(packageName, locale, aTextName, valueStack, args);
+
+                if (msg != null) {
+                    return msg;
+                }
+
+                if (indexedTextName != null) {
+                    msg = getMessage(packageName, locale, indexedTextName, valueStack, args);
 
                     if (msg != null) {
                         return msg;
-                    }
-
-                    if (indexedTextName != null) {
-                        msg = getMessage(packageName, locale, indexedTextName, valueStack, args);
-
-                        if (msg != null) {
-                            return msg;
-                        }
-                    }
-                    if (basePackageName.lastIndexOf('.') != -1) {
-                        basePackageName = basePackageName.substring(0, basePackageName.lastIndexOf('.'));
-                    } else {
-                        basePackageName = null;
                     }
                 }
             }
