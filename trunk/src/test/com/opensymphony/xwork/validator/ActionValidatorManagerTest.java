@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.SimpleAction;
+import com.opensymphony.xwork.test.DataAware2;
 import com.opensymphony.xwork.test.SimpleAction2;
 import com.opensymphony.xwork.test.SimpleAction3;
 import com.opensymphony.xwork.test.User;
@@ -44,6 +45,25 @@ public class ActionValidatorManagerTest extends TestCase {
     }
 
     public void testGetValidatorsForInterface() {
+        List validatorList = ActionValidatorManager.getValidators(DataAware2.class, alias);
+
+        // 3 in interface hierarchy, 2 from parent interface (1 default + 1 context)
+        assertEquals(3, validatorList.size());
+
+        final FieldValidator dataValidator1 = (FieldValidator) validatorList.get(0);
+        assertEquals("data", dataValidator1.getFieldName());
+        assertTrue(dataValidator1 instanceof RequiredFieldValidator);
+
+        final FieldValidator dataValidator2 = (FieldValidator) validatorList.get(1);
+        assertEquals("data", dataValidator2.getFieldName());
+        assertTrue(dataValidator2 instanceof RequiredStringValidator);
+
+        final FieldValidator blingValidator = (FieldValidator) validatorList.get(2);
+        assertEquals("bling", blingValidator.getFieldName());
+        assertTrue(blingValidator instanceof RequiredStringValidator);
+    }
+
+    public void testGetValidatorsFromInterface() {
         List validatorList = ActionValidatorManager.getValidators(SimpleAction3.class, alias);
 
         // 5 in the class hierarchy + 1 in the interface
