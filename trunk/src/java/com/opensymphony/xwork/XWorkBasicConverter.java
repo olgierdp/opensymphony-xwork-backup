@@ -5,14 +5,11 @@
 package com.opensymphony.xwork;
 
 import com.opensymphony.util.TextUtils;
-
 import ognl.DefaultTypeConverter;
 
 import java.lang.reflect.Member;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.util.*;
 
 
@@ -51,6 +48,10 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = doConvertToDoubleArray(context, value);
         } else if (toType == Double[].class) {
             result = doConvertToDoubleArray2(context, value);
+        } else if (toType == float[].class) {
+            result = doConvertToFloatArray(context, value);
+        } else if (toType == Float[].class) {
+            result = doConvertToFloatArray2(context, value);
         } else if (toType == Date.class) {
             result = doConvertToDate(context, value);
         } else if (toType == List.class) {
@@ -63,7 +64,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = doConvertToClass(context, value);
         } else {
             if ((toType == String[].class) && (value instanceof String)) {
-                result = new String[] {(String) value};
+                result = new String[]{(String) value};
             }
         }
 
@@ -185,6 +186,39 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             for (int i = 0; i < primitives.length; i++) {
                 double primitive = primitives[i];
                 result[i] = new Double(primitive);
+            }
+        }
+
+        return result;
+    }
+
+    private float[] doConvertToFloatArray(Map context, Object value) {
+        float[] result = null;
+
+        if (value instanceof String[]) {
+            String[] sa = (String[]) value;
+            float[] da = new float[sa.length];
+
+            for (int i = 0; i < sa.length; i++) {
+                da[i] = ((Float) super.convertValue(context, sa[i], Float.class)).floatValue();
+            }
+
+            result = da;
+        }
+
+        return result;
+    }
+
+    private Float[] doConvertToFloatArray2(Map context, Object value) {
+        float[] primitives = doConvertToFloatArray(context, value);
+        Float[] result = null;
+
+        if (primitives != null) {
+            result = new Float[primitives.length];
+
+            for (int i = 0; i < primitives.length; i++) {
+                float primitive = primitives[i];
+                result[i] = new Float(primitive);
             }
         }
 

@@ -5,7 +5,6 @@
 package com.opensymphony.xwork.util;
 
 import junit.framework.TestCase;
-
 import ognl.Ognl;
 import ognl.OgnlException;
 
@@ -31,9 +30,9 @@ public class XWorkConverterTest extends TestCase {
         list.add("foo");
         list.add("bar");
         list.add("baz");
-        assertEquals(list, converter.convertValue(context, null, null, null, new String[] {
-                    "foo", "bar", "baz"
-                }, Collection.class));
+        assertEquals(list, converter.convertValue(context, null, null, null, new String[]{
+            "foo", "bar", "baz"
+        }, Collection.class));
     }
 
     public void testStringArrayToList() {
@@ -41,63 +40,75 @@ public class XWorkConverterTest extends TestCase {
         list.add("foo");
         list.add("bar");
         list.add("baz");
-        assertEquals(list, converter.convertValue(context, null, null, null, new String[] {
-                    "foo", "bar", "baz"
-                }, List.class));
+        assertEquals(list, converter.convertValue(context, null, null, null, new String[]{
+            "foo", "bar", "baz"
+        }, List.class));
     }
 
     public void testStringArrayToPrimitiveWrappers() {
-        Long[] longs = (Long[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, Long[].class);
+        Long[] longs = (Long[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, Long[].class);
         assertNotNull(longs);
-        assertTrue(Arrays.equals(new Long[] {new Long(123), new Long(456)}, longs));
+        assertTrue(Arrays.equals(new Long[]{new Long(123), new Long(456)}, longs));
 
-        Integer[] ints = (Integer[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, Integer[].class);
+        Integer[] ints = (Integer[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, Integer[].class);
         assertNotNull(ints);
-        assertTrue(Arrays.equals(new Integer[] {
-                    new Integer(123), new Integer(456)
-                }, ints));
+        assertTrue(Arrays.equals(new Integer[]{
+            new Integer(123), new Integer(456)
+        }, ints));
 
-        Double[] doubles = (Double[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, Double[].class);
+        Double[] doubles = (Double[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, Double[].class);
         assertNotNull(doubles);
-        assertTrue(Arrays.equals(new Double[] {new Double(123), new Double(456)}, doubles));
+        assertTrue(Arrays.equals(new Double[]{new Double(123), new Double(456)}, doubles));
 
-        Boolean[] booleans = (Boolean[]) converter.convertValue(context, null, null, null, new String[] {
-                "true", "false"
-            }, Boolean[].class);
+        Float[] floats = (Float[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, Float[].class);
+        assertNotNull(floats);
+        assertTrue(Arrays.equals(new Float[]{new Float(123), new Float(456)}, floats));
+
+        Boolean[] booleans = (Boolean[]) converter.convertValue(context, null, null, null, new String[]{
+            "true", "false"
+        }, Boolean[].class);
         assertNotNull(booleans);
-        assertTrue(Arrays.equals(new Boolean[] {Boolean.TRUE, Boolean.FALSE}, booleans));
+        assertTrue(Arrays.equals(new Boolean[]{Boolean.TRUE, Boolean.FALSE}, booleans));
     }
 
     public void testStringArrayToPrimitives() throws OgnlException {
-        long[] longs = (long[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, long[].class);
+        long[] longs = (long[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, long[].class);
         assertNotNull(longs);
-        assertTrue(Arrays.equals(new long[] {123, 456}, longs));
+        assertTrue(Arrays.equals(new long[]{123, 456}, longs));
 
-        int[] ints = (int[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, int[].class);
+        int[] ints = (int[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, int[].class);
         assertNotNull(ints);
-        assertTrue(Arrays.equals(new int[] {123, 456}, ints));
+        assertTrue(Arrays.equals(new int[]{123, 456}, ints));
 
-        double[] doubles = (double[]) converter.convertValue(context, null, null, null, new String[] {
-                "123", "456"
-            }, double[].class);
+        double[] doubles = (double[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, double[].class);
         assertNotNull(doubles);
-        assertTrue(Arrays.equals(new double[] {123, 456}, doubles));
+        assertTrue(Arrays.equals(new double[]{123, 456}, doubles));
 
-        boolean[] booleans = (boolean[]) converter.convertValue(context, null, null, null, new String[] {
-                "true", "false"
-            }, boolean[].class);
+        float[] floats = (float[]) converter.convertValue(context, null, null, null, new String[]{
+            "123", "456"
+        }, float[].class);
+        assertNotNull(floats);
+        assertTrue(Arrays.equals(new float[]{123, 456}, floats));
+
+        boolean[] booleans = (boolean[]) converter.convertValue(context, null, null, null, new String[]{
+            "true", "false"
+        }, boolean[].class);
         assertNotNull(booleans);
-        assertTrue(Arrays.equals(new boolean[] {true, false}, booleans));
+        assertTrue(Arrays.equals(new boolean[]{true, false}, booleans));
     }
 
     public void testStringArrayToSet() {
@@ -105,15 +116,16 @@ public class XWorkConverterTest extends TestCase {
         list.add("foo");
         list.add("bar");
         list.add("baz");
-        assertEquals(list, converter.convertValue(context, null, null, null, new String[] {
-                    "foo", "bar", "bar", "baz"
-                }, Set.class));
+        assertEquals(list, converter.convertValue(context, null, null, null, new String[]{
+            "foo", "bar", "bar", "baz"
+        }, Set.class));
     }
 
     public void testStringToPrimitiveWrappers() {
         assertEquals(new Long(123), converter.convertValue(context, null, null, null, "123", Long.class));
         assertEquals(new Integer(123), converter.convertValue(context, null, null, null, "123", Integer.class));
         assertEquals(new Double(123.5), converter.convertValue(context, null, null, null, "123.5", Double.class));
+        assertEquals(new Float(123.5), converter.convertValue(context, null, null, null, "123.5", float.class));
         assertEquals(new Boolean(false), converter.convertValue(context, null, null, null, "false", Boolean.class));
         assertEquals(new Boolean(true), converter.convertValue(context, null, null, null, "true", Boolean.class));
     }
@@ -122,6 +134,7 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(new Long(123), converter.convertValue(context, null, null, null, "123", long.class));
         assertEquals(new Integer(123), converter.convertValue(context, null, null, null, "123", int.class));
         assertEquals(new Double(123.5), converter.convertValue(context, null, null, null, "123.5", double.class));
+        assertEquals(new Float(123.5), converter.convertValue(context, null, null, null, "123.5", float.class));
         assertEquals(new Boolean(false), converter.convertValue(context, null, null, null, "false", boolean.class));
         assertEquals(new Boolean(true), converter.convertValue(context, null, null, null, "true", boolean.class));
     }
