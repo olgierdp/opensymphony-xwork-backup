@@ -10,6 +10,7 @@ import com.opensymphony.util.TextUtils;
 
 import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ObjectFactory;
+import com.opensymphony.xwork.ActionSupport;
 import com.opensymphony.xwork.config.*;
 import com.opensymphony.xwork.config.entities.*;
 
@@ -157,6 +158,11 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         //methodName should be null if it's not set
         methodName = (methodName.trim().length() > 0) ? methodName.trim() : null;
+
+        // if you don't specify a class on <action/>, it defaults to ActionSupport
+        if (!TextUtils.stringSet(className)) {
+            className = ActionSupport.class.getName();
+        }
 
         try {
             ActionConfig actionConfig = new ActionConfig(null, className, null, null, null);
@@ -364,6 +370,11 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             if (resultElement.getParentNode().equals(element)) {
                 String resultName = resultElement.getAttribute("name");
                 String resultType = resultElement.getAttribute("type");
+
+                // if you don't specify a name on <result/>, it defaults to "success"
+                if (!TextUtils.stringSet(resultName)) {
+                    resultName = Action.SUCCESS;
+                }
 
                 if (!TextUtils.stringSet(resultType)) {
                     resultType = packageContext.getFullDefaultResultType();
