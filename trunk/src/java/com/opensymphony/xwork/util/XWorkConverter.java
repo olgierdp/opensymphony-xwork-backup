@@ -42,7 +42,7 @@ public class XWorkConverter extends DefaultTypeConverter {
     HashMap defaultMappings = new HashMap();
     HashMap mappings = new HashMap();
     HashSet noMapping = new HashSet();
-    TypeConverter defaultTypeConverter = null;
+    TypeConverter defaultTypeConverter = new XWorkBasicConverter();
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
