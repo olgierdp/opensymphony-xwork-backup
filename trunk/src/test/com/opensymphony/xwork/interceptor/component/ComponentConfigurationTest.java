@@ -57,14 +57,19 @@ public class ComponentConfigurationTest extends TestCase {
             enablers.add(enablerType);
         }
 
-        public void addResource(Class resource) {
-        }
-
         public void dispose() {
         }
 
         public void initializeObject(Object component) {
             initialized.add(component);
+        }
+
+        public void registerInstance(Class componentType, Object instance) {
+
+        }
+
+        public Object getComponentInstance(Class componentType) {
+            return null; 
         }
     }
 }

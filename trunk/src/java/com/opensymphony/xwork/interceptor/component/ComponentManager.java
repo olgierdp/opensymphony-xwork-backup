@@ -26,4 +26,8 @@ public interface ComponentManager {
     void dispose();
 
     void initializeObject(Object obj);
+
+    void registerInstance(Class componentType, Object instance);
+
+    Object getComponentInstance(Class componentType);
 }

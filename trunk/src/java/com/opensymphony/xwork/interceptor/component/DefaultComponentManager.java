@@ -103,6 +103,46 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         //        }
     }
 
+    public void registerInstance(Class componentType, Object instance) {
+        if (!componentType.isInstance(instance)) {
+            throw new IllegalArgumentException("The object " + instance + " is not an instance of " + componentType.getName());
+        }
+
+        loadResource(instance, componentType, this);
+    }
+
+    public Object getComponentInstance(Class componentType) {
+        DefaultComponentManager dcm = this;
+
+        // loop all the DCMs and get the one that holds this enabler
+        Class enablerType = null;
+
+        while (dcm != null) {
+            enablerType = (Class) dcm.enablers2.get(componentType);
+
+            if (enablerType != null) {
+                break;
+            }
+
+            dcm = dcm.fallback;
+        }
+
+        if (enablerType == null) {
+            // this is an unknown component type, return null
+            return null;
+        }
+
+        try {
+            ResourceEnablerPair pair = setupAndOptionallyCreateResource(dcm, componentType);
+
+            return pair.resource;
+        } catch (Exception e) {
+            String message = "Could not load resource of type " + componentType;
+            log.error(message, e);
+            throw new RuntimeException(message);
+        }
+    }
+
     private Map getResourceDependencies(Class resourceClass) {
         List interfaces = new ArrayList();
         addAllInterfaces(resourceClass, interfaces);
