@@ -19,24 +19,24 @@
         </interceptors>
 
         <action name="action1" class="com.opensymphony.xwork.SimpleAction">
-            <interceptor-ref name="params"/>
             <result name="success" type="chain"/>
+            <interceptor-ref name="params"/>
         </action>
     </package>
 
 
     <package name="namespace2" extends="namespace1" namespace="/namespace2">
         <action name="action2" class="com.opensymphony.xwork.SimpleAction">
-            <interceptor-ref name="params"/>
             <result name="success" type="chain"/>
+            <interceptor-ref name="params"/>
         </action>
     </package>
 
     <package name="namespace3" extends="namespace2" namespace="/namespace3">
         <action name="action3" class="com.opensymphony.xwork.SimpleAction">
+            <result name="success" type="chain"/>
             <interceptor-ref name="params"/>
             <interceptor-ref name="static-params"/>
-            <result name="success" type="chain"/>
         </action>
     </package>
 

@@ -1,4 +1,9 @@
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork;
+
 
 /**
  * XworkException
@@ -6,7 +11,11 @@ package com.opensymphony.xwork;
  * Created Sep 7, 2003 12:15:03 AM
  */
 public class XworkException extends RuntimeException {
+    //~ Instance fields ////////////////////////////////////////////////////////
+
     Throwable throwable;
+
+    //~ Constructors ///////////////////////////////////////////////////////////
 
     /**
      * Constructs a <code>XworkException</code> with no detail  message.
@@ -41,6 +50,8 @@ public class XworkException extends RuntimeException {
         super(s);
         this.throwable = cause;
     }
+
+    //~ Methods ////////////////////////////////////////////////////////////////
 
     public Throwable getThrowable() {
         return throwable;

@@ -18,7 +18,7 @@
     default (true|false) "false"
 >
 
-<!ELEMENT interceptors (interceptor*, interceptor-stack*)>
+<!ELEMENT interceptors (interceptor|interceptor-stack)+>
 
 <!ELEMENT interceptor (param*)>
 <!ATTLIST interceptor
@@ -43,7 +43,7 @@
 
 <!ELEMENT global-results (result+)>
 
-<!ELEMENT action (param*, result*, interceptor-ref*)>
+<!ELEMENT action (param|result|interceptor-ref)*>
 <!ATTLIST action
 name CDATA #REQUIRED
     class CDATA #REQUIRED
@@ -56,7 +56,7 @@ name CDATA #REQUIRED
     name CDATA #REQUIRED
 >
 
-<!ELEMENT result (param*)>
+<!ELEMENT result (#PCDATA|param)*>
 <!ATTLIST result
     name CDATA #REQUIRED
     type CDATA #IMPLIED

@@ -44,6 +44,7 @@ public class InterceptorBuilder {
     */
     public static Interceptor buildInterceptor(Class interceptorClass, Map params) throws ConfigurationException {
         String message;
+
         try {
             Interceptor interceptor = (Interceptor) interceptorClass.newInstance();
             OgnlUtil.setProperties(params, interceptor);
@@ -59,6 +60,7 @@ public class InterceptorBuilder {
         } catch (Exception e) {
             throw new ConfigurationException("Caught Exception while registering Interceptor class " + interceptorClass.getName(), e);
         }
+
         throw new ConfigurationException(message);
     }
 

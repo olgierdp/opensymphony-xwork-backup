@@ -7,6 +7,7 @@ package com.opensymphony.xwork.config.providers;
 import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.util.FileManager;
 import com.opensymphony.util.TextUtils;
+
 import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationProvider;
@@ -17,27 +18,32 @@ import com.opensymphony.xwork.config.entities.InterceptorStackConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.config.entities.ResultTypeConfig;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 
 /**
@@ -82,7 +88,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             dbf.setValidating(true);
             dbf.setNamespaceAware(true);
 
-            DocumentBuilder builder = dbf.newDocumentBuilder();
+            db = dbf.newDocumentBuilder();
             db.setEntityResolver(new EntityResolver() {
                     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
                         if ("-//OpenSymphony Group//XWork 1.0//EN".equals(publicId)) {
@@ -420,7 +426,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         } catch (Exception e) {
             final String s = "Caught exception while loading file " + fileName;
             LOG.error(s, e);
-            throw new ConfigurationException(s,e);
+            throw new ConfigurationException(s, e);
         } finally {
             if (is != null) {
                 try {
