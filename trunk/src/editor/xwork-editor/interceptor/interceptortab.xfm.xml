@@ -1,0 +1,113 @@
+<xface:tab
+	xmlns:xface="http://www.xesoft.com/xmlns/xface"
+	xmlns:xprocess="http://www.xesoft.com/xmlns/xprocess"
+	id="interceptors">
+
+	<xface:split-panel id="split" weight="30">
+		<xface:panel id="left">
+
+			<xface:relative-layout constraints="/xwork-editor/xwork-panel-right2.layout.xml"/>
+
+			<xface:toolbar id="toolbar">
+				<xface:toolbar-button id="create_interceptor" image="xwork-editor/images/add_interceptor.gif"/>
+				<xface:toolbar-button id="delete_interceptor" image="xwork-editor/images/delete.gif">
+					<xface:selected-list-enabled-adapter element="../../../table" selection="both"/>
+				</xface:toolbar-button>
+			</xface:toolbar>
+
+			<xface:table id="table">
+				<xface:xml-tablemodel id="model" xpath="interceptor"/>
+				<xface:column id="name" property="@name"/>
+			</xface:table>
+
+		</xface:panel>
+		<xface:panel id="right">
+
+			<xface:xml-datamodel id="model">
+				<xface:adapter modelProperty="@name" element="../../header/name" elementProperty="value"/>
+				<xface:adapter modelProperty="@class" element="../../header/class" elementProperty="value"/>
+
+				<xface:adapter element="../../tabpanel/params/table/model" elementProperty="data"/>
+				<xface:selected-table-item-adapter element="../../../left/table"/>
+			</xface:xml-datamodel>
+
+			<xface:selected-list-enabled-adapter element="../../left/table" selection="both"/>
+
+			<xface:relative-layout constraints="/xwork-editor/xwork-panel-right3.layout.xml"/>
+
+			<xface:panel id="header">
+
+				<xface:input-panel-layout/>
+
+				<xface:label id="label_name" label="name"/>
+				<xface:text-input id="name" editable="false"/>
+				<xface:label id="label_class" label="class"/>
+				<xface:text-input id="class" editable="false"/>
+			</xface:panel>
+
+			<xface:tab-panel id="tabpanel">
+				<xface:include src="/xwork-editor/parameter/parametertab.xfm.xml" />
+				<xface:tab id="usages">
+
+					<xface:inset-layout constraints="list,5,5,5,5" />
+
+					<xface:list id="list">
+						<xface:xml-tablemodel id="model" xpath="xxxxxxx" />
+						<xface:column id="name" property="@name">
+							<xface:script-decision id="imageDecision">
+								<xface:param id="script"><![CDATA[
+									function chooseParameterImage(aObject)
+									{
+										var vName = aObject.getLocalName();
+
+										if (vName.equals("interceptor-stack"))
+										{
+											return "xwork-editor/images/interceptor_stack.gif";
+										}
+										else if (vName.equals("action"))
+										{
+											return "xwork-editor/images/action.gif";
+										}
+
+										return null;
+									}
+
+									chooseParameterImage(object);
+							]]></xface:param>
+							</xface:script-decision>
+						</xface:column>
+					</xface:list>
+
+					<xface:action>
+						<xface:action-adapter element="../../../../model" event="MODEL_DATA_UPDATED"/>
+						<xface:action-adapter element="../.." event="SHOW" />
+						<xprocess:script>
+							<xface:param id="script"><![CDATA[
+								var vName = parent.findElement("../../../header/name").getValue();
+								var vPackageModel = parent.findElement("../../../../../../../model");
+								var vPackageRoot = vPackageModel.getData();
+
+								var vModel = parent.findElement("../list/model");
+								vModel.setData(vPackageRoot);
+
+								var vXPath = "descendant::node()/interceptor-ref[@name='"+vName+"']/parent::*"
+
+								vModel.setXpath(vXPath);
+							]]></xface:param>
+						</xprocess:script>
+					</xface:action>
+
+				</xface:tab>
+			</xface:tab-panel>
+
+		</xface:panel>
+
+	</xface:split-panel>
+
+	<!--
+		Panel Includes
+   -->
+	<xface:include src="createinterceptor.xfm.xml" />
+	<xface:include src="deleteinterceptor.xfm.xml" />
+
+</xface:tab>

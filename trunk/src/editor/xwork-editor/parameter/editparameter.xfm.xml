@@ -1,0 +1,95 @@
+<xface:window
+	xmlns:xface="http://www.xesoft.com/xmlns/xface"
+	xmlns:xprocess="http://www.xesoft.com/xmlns/xprocess"
+	id="edit_param"
+	width="400"
+	height="200"
+	location="center_on_screen"
+	modal="application"
+	resizable="false">
+
+	<xface:relative-layout constraints="/xwork-editor/edit.layout.xml" />
+
+	<xface:label id="label_message" label="edit_param_message" />
+
+	<xface:panel id="inputs">
+		<xface:input-panel-layout />
+
+		<xface:label id="label_name" label="name" />
+		<xface:text-input id="name" />
+
+		<xface:label id="label_value" label="value" />
+		<xface:text-input id="value" />
+
+	</xface:panel>
+
+	<xface:button id="ok" label="ok" />
+	<xface:button id="cancel" label="cancel" />
+
+	<!-- Hide the window when cancel is pressed -->
+	<xface:hide-adapter element="../cancel" event="ACTION" />
+
+	<!-- Show the window when add_package button is pressed -->
+	<xface:show-adapter element="../../table" event="DOUBLE_CLICK" />
+
+	<!-- Clear the inputs when the window is shown -->
+	<xface:action>
+		<xface:action-adapter element="../.." event="SHOW" />
+		<xprocess:script>
+			<xface:param id="script"><![CDATA[
+				var vTable = parent.findElement("../../table");
+				var vModel = vTable.getModel();
+				var vSelectedRow = vTable.getSelectedRow();
+				var vName = vModel.getPropertyAsString(vSelectedRow,"@name");
+				var vValue = vModel.getPropertyAsString(vSelectedRow,"text()");
+				parent.findElement("../inputs/name").setValue(vName);
+				parent.findElement("../inputs/value").setValue(vValue);
+			]]></xface:param>
+		</xprocess:script>
+	</xface:action>
+
+	<!-- Create the package when the OK button is pressed -->
+	<xface:action>
+		<xface:action-adapter element="../../ok" event="ACTION" />
+		<xprocess:script>
+			<xface:param id="script"><![CDATA[
+				var vTable = parent.findElement("../../table");
+				var vModel = vTable.getModel();
+				var vSelectedRow = vTable.getSelectedRow();
+				var vOriginalName = vModel.getPropertyAsString(vSelectedRow,"@name");
+				var vOriginalValue = vModel.getPropertyAsString(vSelectedRow,"text()");
+
+				var vName = parent.findElement("../inputs/name").getValue();
+				var vValue = parent.findElement("../inputs/value").getValue();
+
+				var vRoot = vModel.getData();
+				var vDocument = vRoot.getOwnerDocument();
+				var vElement = vModel.getObject(vSelectedRow);
+
+				/* First check to see that a real parameter name was entered */
+				if (vName.trim().length() == 0)
+				{
+					throw "A valid name was not entered";
+				}
+
+				/* Second check to see if the parameter name exists */
+				if (!vOriginalName.equals(vName))
+				{
+					var vExistingElement = Packages.com.xe.xface.xml.XPathGetter.getElement(vRoot,"param[@name='"+vName+"']");
+					if (vExistingElement != null)
+					{
+						throw "A parameter with the name '"+vName+"' already exists";
+					}
+
+					/* Change the name of the param */
+					vModel.setProperty(vSelectedRow,"@name",vName);
+				}
+
+				/* Set the value */
+				vModel.setProperty(vSelectedRow,"text()",vValue);
+			]]></xface:param>
+		</xprocess:script>
+		<xprocess:hide object="../.." />
+	</xface:action>
+
+</xface:window>

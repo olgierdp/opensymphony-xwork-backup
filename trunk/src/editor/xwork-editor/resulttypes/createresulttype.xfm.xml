@@ -1,0 +1,102 @@
+<xface:window
+	xmlns:xface="http://www.xesoft.com/xmlns/xface"
+	xmlns:xprocess="http://www.xesoft.com/xmlns/xprocess"
+	id="create_result_type"
+	width="400"
+	height="200"
+	location="center_on_screen"
+	modal="application"
+	resizable="false">
+
+	<xface:relative-layout constraints="/xwork-editor/edit.layout.xml" />
+
+	<xface:label id="label_message" label="create_result_type_message" />
+
+	<xface:panel id="inputs">
+		<xface:input-panel-layout />
+
+		<xface:label id="label_name" label="name" />
+		<xface:text-input id="name" />
+
+		<xface:label id="label_class" label="class" />
+		<xface:text-input id="class" />
+
+	</xface:panel>
+
+	<xface:button id="ok" label="ok" />
+	<xface:button id="cancel" label="cancel" />
+
+	<!-- Hide the window when cancel is pressed -->
+	<xface:hide-adapter element="../cancel" event="ACTION" />
+
+	<!-- Show the window when add_package button is pressed -->
+	<xface:show-adapter element="../../toolbar/create_result_type" event="ACTION" />
+
+	<!-- Clear the inputs when the window is shown -->
+	<xface:action>
+		<xface:action-adapter element="../.." event="SHOW" />
+		<xprocess:script>
+			<xface:param id="script"><![CDATA[
+				parent.findElement("../inputs/name").setValue("");
+				parent.findElement("../inputs/class").setValue("");
+			]]></xface:param>
+		</xprocess:script>
+	</xface:action>
+
+	<!-- Create the package when the OK button is pressed -->
+	<xface:action>
+		<xface:action-adapter element="../../ok" event="ACTION" />
+		<xprocess:script>
+			<xface:param id="script"><![CDATA[
+				var vName = parent.findElement("../inputs/name").getValue();
+				var vClass = parent.findElement("../inputs/class").getValue();
+				var vModel = parent.findElement("../../table/model");
+				var vRoot = vModel.getData();
+				var vDocument = null;
+
+				/* In some cases the result-types node will not exist, so we may need to create it */
+				if (vRoot == null)
+				{
+					var vPackagesTable = parent.findElement("../../../../../left/table");
+					var vPackagesModel = vPackagesTable.getModel();
+					var vPackageRoot = vPackagesModel.getObject(vPackagesTable.getSelectedRow());
+					vDocument = vPackageRoot.getOwnerDocument();
+					vRoot = vDocument.createElement("result-types");
+					vPackageRoot.appendChild(vRoot);
+					vModel.setData(vRoot);
+				}
+				else
+				{
+					vDocument = vRoot.getOwnerDocument();
+				}
+
+				/* First check to see that a real action name was entered */
+				if (vName.trim().length() == 0)
+				{
+					throw "A valid name was not entered";
+				}
+
+				/* First check to see that a real class was entered */
+				if (vClass.trim().length() == 0)
+				{
+					throw "A valid class name was not entered";
+				}
+
+				/* Second check to see if the interceptor (or interceptor stack) exists */
+				var vExistingElement = Packages.com.xe.xface.xml.XPathGetter.getElement(vRoot,"result-type[@name='"+vName+"']");
+				if (vExistingElement != null)
+				{
+					throw "An result type with the name '"+vName+"' already exists";
+				}
+
+				/* Now, create the element and add it to the model */
+				var vElement = vDocument.createElement("result-type");
+				vElement.setAttribute("name",vName);
+				vElement.setAttribute("class",vClass);
+				vModel.addObject(vElement);
+			]]></xface:param>
+		</xprocess:script>
+		<xprocess:hide object="../.." />
+	</xface:action>
+
+</xface:window>
