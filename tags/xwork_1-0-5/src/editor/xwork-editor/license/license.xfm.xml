@@ -1,0 +1,61 @@
+<xface:window
+	xmlns:xface="http://www.xesoft.com/xmlns/xface"
+	xmlns:xprocess="http://www.xesoft.com/xmlns/xprocess"
+	id="license"
+	bundle="xwork-editor/license/license"
+	width="600"
+	height="500"
+	location="center_on_screen"
+	modal="application"
+	resizable="false">
+
+	<xface:relative-layout constraints="license.layout.xml" />
+
+	<xface:header-panel id="header" />
+
+	<xface:text-area id="license" editable="false" fontFace="Courier" fontSize="12" fontStyle="PLAIN">
+		<xface:resource-dataloader path="license.txt" />
+	</xface:text-area>
+
+	<xface:button-group id="group"/>
+	<xface:radio-button id="accept" group="../group" />
+	<xface:radio-button id="deny" group="../group" selected="true" />
+
+	<xface:button id="ok" label="ok" enabled="false" />
+	<xface:button id="cancel" label="cancel" />
+
+	<!-- Exit the application when cancel is pressed -->
+	<xprocess:action>
+		<xface:action-adapter element="../../cancel" event="ACTION" />
+		<xprocess:exit />
+	</xprocess:action>
+
+	<!-- Create the package when the OK button is pressed -->
+	<xprocess:action>
+		<xface:action-adapter element="../../ok" event="ACTION" />
+		<xprocess:script>
+			<xface:param id="script"><![CDATA[
+				preferences.putBoolean("xwork-editor/accept_license",true);
+			]]></xface:param>
+		</xprocess:script>
+		<xprocess:hide object="../.." />
+	</xprocess:action>
+
+	<xprocess:action>
+		<xface:action-adapter element="../../accept" event="ACTION" />
+		<xface:action-adapter element="../../deny" event="ACTION" />
+		<xprocess:script>
+			<xface:param id="script"><![CDATA[
+				if (parent.findElement("../accept").isSelected())
+				{
+					parent.findElement("../ok").setEnabled(true);
+				}
+				else
+				{
+					parent.findElement("../ok").setEnabled(false);
+				}
+			]]></xface:param>
+		</xprocess:script>
+	</xprocess:action>
+
+</xface:window>
