@@ -8,7 +8,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.Serializable;
-
 import java.util.*;
 
 
@@ -37,6 +36,13 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
         return validationAware.getActionErrors();
     }
 
+    /**
+     * @deprecated Use {@link #getActionErrors()}.
+     */
+    public Collection getErrorMessages() {
+        return getActionErrors();
+    }
+
     public void setFieldErrors(Map errorMap) {
         validationAware.setFieldErrors(errorMap);
     }
@@ -46,6 +52,13 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
      */
     public Map getFieldErrors() {
         return validationAware.getFieldErrors();
+    }
+
+    /**
+     * @deprecated Use {@link #getFieldErrors()}.
+     */
+    public Map getErrors() {
+        return getFieldErrors();
     }
 
     public Locale getLocale() {
