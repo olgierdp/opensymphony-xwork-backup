@@ -52,6 +52,16 @@ public class ObjectFactory {
     }
 
     /**
+     * Allows for ObjectFactory implementations that support
+     * Actions without no-arg constructors.
+     *
+     * @return true if no-arg constructor is required, false otherwise
+     */
+    public boolean isNoArgConstructorRequired() {
+        return true;
+    }
+
+    /**
      * Utility method to obtain the class matched to className. Caches look ups so that subsequent
      * lookups will be faster.
      *
