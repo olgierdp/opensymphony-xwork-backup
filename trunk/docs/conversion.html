@@ -11,11 +11,12 @@
     <a href="index.html">XWork Documentation</a>
   </div>
     <div class="snip-title">
-      <h1 class="snip-name">Type Conversion
+	  <h1 class="snip-name">Type Conversion
   
   </h1>
   </div>
 <div id="snip-content" class="snip-content">
+
  <div class="snip-attachments"></div>
  
  Type conversion allows you to easily convert objects between on class to another.  As most of the conversion is for the web, this is usually to and from String classes.  The most common example is the conversion of date.  Let's suppose we have the following classs:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">public</span> class Foo <span class="java&#45;keyword">implements</span> Action &#123;
@@ -47,8 +48,6 @@
   &#125;
 &#125;</pre></div><p class="paragraph"/>The next part is to bind our ContactConverter to the previous AddContactAction.  I'll bind the ContactConverter to the AddContactAction by creating a file called AddContactAction-conversion.properties that's in the same directory as the AddContactAction class.<p class="paragraph"/>I would then populate the properties file as follows:<p class="paragraph"/><div class="code"><pre>contact1 = com.acme.ContactConverter
 contact2 = com.acme.ContactConverter</pre></div><p class="paragraph"/>Now, when XWork attempts to populate your object from parameters, you'll be given the actual instances of Contact from your database.<p class="paragraph"/>Having said all that, I can't really recommend doing database lookups here as a best practice.  In fact, I'd say it's not such a good idea, but it does illustrate type converters well :)  Any exception thrown here would be buried deep in the bowels of XWork code.<p class="paragraph"/>
-</div>
- 
-  
-  
-  </body></html>
+  </div>
+</body>
+</html>

@@ -11,14 +11,16 @@
     <a href="index.html">XWork Documentation</a>
   </div>
     <div class="snip-title">
-      <h1 class="snip-name">Using the VisitorFieldValidator
+	  <h1 class="snip-name">Using the VisitorFieldValidator
   
   </h1>
   </div>
 <div id="snip-content" class="snip-content">
+
  <div class="snip-attachments"></div>
  
- <h3 class="heading-1">What is the VisitorFieldValidator
+ see the <a href="validation.html">Xwork Validation Framework</a>
+<h3 class="heading-1">What is the VisitorFieldValidator
 </h3><p class="paragraph"/>The VisitorFieldValidator allows you to forward validation to object properties of your action using the objects own validation files. This allows you to use the ModelDriven development pattern and manage your validations for your models in one place, where they belong, next to your model classes. The VisitorFieldValidator can handle either simple Object properties, Collections of Objects, or Arrays.
 <h3 class="heading-1">Applying the VisitorFieldValidator
 </h3><p class="paragraph"/>The VisitorFieldValidator is applied like any other field validator in a validation.xml file (see <a href="validation.html">Xwork Validation Framework</a>).<p class="paragraph"/><div class="code"><pre>&#60;field name=<span class="java&#45;quote">"bean"</span>&#62;
@@ -27,8 +29,6 @@
         &#60;message&#62;bean: &#60;/message&#62;
     &#60;/field&#45;validator&#62;
 &#60;/field&#62;</pre></div><p class="paragraph"/><b class="bold">context</b> is the single parameter available to be set on the VisitorFieldValidator. If set, this sets the context to use for validating the Object property. If not set, the context of the Action validation is propogated to the Object property validation. In the case of Action validation, this context is the Action alias. Here we see the context being overridden in the validator mapping, so the action alias context will not be propogated.<p class="paragraph"/>The <b class="bold">message</b> for the VisitorFieldValidator gives a String which will be appended in front of validation messages added by the validations for the Object message.<p class="paragraph"/>
-</div>
- 
-  
-  
-  </body></html>
+  </div>
+</body>
+</html>

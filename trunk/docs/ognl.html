@@ -11,11 +11,12 @@
     <a href="index.html">XWork Documentation</a>
   </div>
     <div class="snip-title">
-      <h1 class="snip-name">Ognl
+	  <h1 class="snip-name">Ognl
   
   </h1>
   </div>
 <div id="snip-content" class="snip-content">
+
  <div class="snip-attachments"></div>
  
  OGNL is the Object Graph Navigation Language - see <span class="nobr"><img src="http://wiki.opensymphony.com/images/external-link.png" alt="&gt;&gt;" border="0"/><a href="http://www.ognl.org">&#104;ttp://www.ognl.org</a></span> for the full documentation of OGNL. In this document we will only show the additional language features that are provided on top of the base OGNL EL. 
@@ -35,9 +36,7 @@ name       // call to animal.getName() because animal is on the top</pre></div><
 @vs2@someOtherMethod()</pre></div><p class="paragraph"/>The important thing to note here is that if the class name you specify is just "vs", the class for the object on the top of the stack is used. If you specify a number after the "vs" string, an object's class deeper in the stack is used instead.
 <h3 class="heading-1">Differences from the WebWork 1.x EL
 </h3>
-Besides the examples and descriptions given above, there are a few major changes in the EL since WebWork 1.x. The biggest one is that properties are no longer accessed with a forward slash (/) but with a dot (.). Also, rather than using ".." to traverse down the stack, we now use "&#91;n&#93;" where n is some positive number. Lastly, in WebWork 1.x one could access special named objects (the request scope attributes to be exact) by using "@foo", but now special variables are accessed using "#foo". However, it is important to note that "#foo" does NOT access the request attributes. Because XWork is not built only for the web, there is no concept of "request attributes", and thus "#foo" is merely a request to another object in the OgnlContext other than the root.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th>Old Expression</th><th>New Expression</th></tr><tr class="table-odd"><td>foo/blah</td><td>foo.blah</td></tr><tr class="table-even"><td>foo/someMethod()</td><td>foo.someMethod()</td></tr><tr class="table-odd"><td>../bar/blah</td><td>&#91;1&#93;.bar.blah</td></tr><tr class="table-even"><td>@baz</td><td>not directly supported, but #baz is similar</td></tr></table>
-</div>
- 
-  
-  
-  </body></html>
+Besides the examples and descriptions given above, there are a few major changes in the EL since WebWork 1.x. The biggest one is that properties are no longer accessed with a forward slash (/) but with a dot (.). Also, rather than using ".." to traverse down the stack, we now use "&#91;n&#93;" where n is some positive number. Lastly, in WebWork 1.x one could access special named objects (the request scope attributes to be exact) by using "@foo", but now special variables are accessed using "#foo". However, it is important to note that "#foo" does NOT access the request attributes. Because XWork is not built only for the web, there is no concept of "request attributes", and thus "#foo" is merely a request to another object in the OgnlContext other than the root.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th>Old Expression</th><th>New Expression</th></tr><tr class="table-odd"><td>foo/blah</td><td>foo.blah</td></tr><tr class="table-even"><td>foo/someMethod()</td><td>foo.someMethod()</td></tr><tr class="table-odd"><td>../bar/blah</td><td>&#91;1&#93;.bar.blah</td></tr><tr class="table-even"><td>@baz</td><td>not directly supported, but #baz is similar</td></tr><tr class="table-odd"><td>.</td><td>that</td></tr></table>
+  </div>
+</body>
+</html>

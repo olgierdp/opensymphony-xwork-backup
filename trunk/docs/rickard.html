@@ -11,11 +11,12 @@
     <a href="index.html">XWork Documentation</a>
   </div>
     <div class="snip-title">
-      <h1 class="snip-name">RickardXWorkThoughts
+	  <h1 class="snip-name">RickardXWorkThoughts
   
   </h1>
   </div>
 <div id="snip-content" class="snip-content">
+
  <div class="snip-attachments"></div>
  
  <ul class="star">
@@ -33,8 +34,6 @@ the future) the following applies:
 <li>When rendering URL's, the parameters need to be namespace'd in order to allow several portlets to happily live together on a page. I.e. instead of having ?foo=bar one could have ?1.foo=bar&2.foo=bar. The XWork servlet dispatcher would then at execution filter out those parameters which does not apply to the action/component/portlet being executed, and only the remaining parameters are applied using the setX() initialization code. This requires the rendering code to use either a taglib (in JSP) or some JavaBean (in Velocity) which can do this encoding. I know that for *some* applications this will be overkill, but for those of use who are going beyond very simple web apps it is a definitive must.</li>
 </ul>
 
-</div>
- 
-  
-  
-  </body></html>
+  </div>
+</body>
+</html>
