@@ -11,6 +11,7 @@ import com.opensymphony.xwork.util.XWorkConverter;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.HashMap;
 
 
 /**
@@ -21,6 +22,8 @@ import java.util.Map;
 public class ConversionErrorInterceptor extends AroundInterceptor {
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    public static final String ORIGINAL_PROPERTY_OVERRIDE = "original.property.override";
+
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }
 
@@ -29,6 +32,7 @@ public class ConversionErrorInterceptor extends AroundInterceptor {
         Map conversionErrors = invocationContext.getConversionErrors();
         OgnlValueStack stack = invocationContext.getValueStack();
 
+        HashMap fakie = null;
         for (Iterator iterator = conversionErrors.entrySet().iterator();
                 iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
@@ -39,8 +43,30 @@ public class ConversionErrorInterceptor extends AroundInterceptor {
                 String message = XWorkConverter.getConversionErrorMessage(propertyName, stack);
                 String addFieldErrorExpression = "addFieldError('" + propertyName + "','" + message + "')";
                 stack.findValue(addFieldErrorExpression);
+
+                if (fakie == null) {
+                    fakie = new HashMap();
+                }
+                fakie.put(propertyName, getOverrideExpr(invocation, value));
             }
         }
+
+        if (fakie != null) {
+            // if there were some errors, put the original (fake) values in place right before the result
+            stack.getContext().put(ORIGINAL_PROPERTY_OVERRIDE, fakie);
+            invocation.addPreResultListener(new PreResultListener() {
+                public void beforeResult(ActionInvocation invocation, String resultCode) {
+                    Map fakie = (Map) invocation.getInvocationContext().get(ORIGINAL_PROPERTY_OVERRIDE);
+                    if (fakie != null) {
+                        invocation.getStack().setPropertyOverrides(fakie);
+                    }
+                }
+            });
+        }
+    }
+
+    protected Object getOverrideExpr(ActionInvocation invocation, Object value) {
+        return "'" + value + "'";
     }
 
     protected boolean shouldAddError(String propertyName, Object value) {

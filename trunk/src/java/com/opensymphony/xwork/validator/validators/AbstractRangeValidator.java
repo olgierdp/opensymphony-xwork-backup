@@ -17,7 +17,8 @@ public abstract class AbstractRangeValidator extends FieldValidatorSupport {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void validate(Object object) throws ValidationException {
-        Comparable value = (Comparable) this.getFieldValue(getFieldName(), object);
+        Object obj = getFieldValue(getFieldName(), object);
+        Comparable value = (Comparable) obj;
 
         // if there is no value - don't do comparison
         // if a value is required, a required validator should be added to the field

@@ -51,6 +51,7 @@ public class OgnlValueStack implements Serializable {
     CompoundRoot root;
     transient Map context;
     Class defaultType;
+    Map overrides;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
@@ -126,6 +127,10 @@ public class OgnlValueStack implements Serializable {
                 return null;
             }
 
+            if (overrides != null && overrides.containsKey(expr)) {
+                expr = (String) overrides.get(expr);
+            }
+
             if (defaultType != null) {
                 return findValue(expr, defaultType);
             }
@@ -149,6 +154,10 @@ public class OgnlValueStack implements Serializable {
         try {
             if (expr == null) {
                 return null;
+            }
+
+            if (overrides != null && overrides.containsKey(expr)) {
+                expr = (String) overrides.get(expr);
             }
 
             return Ognl.getValue(OgnlUtil.compile(expr), context, root, asType);
@@ -208,5 +217,9 @@ public class OgnlValueStack implements Serializable {
         aStack.setRoot(this.root);
 
         return aStack;
+    }
+
+    public void setPropertyOverrides(Map overrides) {
+        this.overrides = overrides;
     }
 }
