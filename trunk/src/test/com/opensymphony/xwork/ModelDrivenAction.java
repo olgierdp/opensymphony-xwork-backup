@@ -27,8 +27,8 @@ public class ModelDrivenAction extends ActionSupport implements ModelDriven {
     }
 
     /**
- * @return the model to be pushed onto the ValueStack after the Action itself
- */
+    * @return the model to be pushed onto the ValueStack after the Action itself
+    */
     public Object getModel() {
         return model;
     }

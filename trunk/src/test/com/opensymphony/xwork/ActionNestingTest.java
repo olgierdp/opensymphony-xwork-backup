@@ -118,8 +118,8 @@ public class ActionNestingTest extends TestCase {
         }
 
         /**
-* Initializes the configuration object.
-*/
+        * Initializes the configuration object.
+        */
         public void init(Configuration configurationManager) {
             PackageConfig packageContext = new PackageConfig();
             ActionConfig config = new ActionConfig(null, SimpleAction.class, null, null, null);
@@ -133,9 +133,9 @@ public class ActionNestingTest extends TestCase {
         }
 
         /**
-* Tells whether the ConfigurationProvider should reload its configuration
-* @return
-*/
+        * Tells whether the ConfigurationProvider should reload its configuration
+        * @return
+        */
         public boolean needsReload() {
             return false;
         }

@@ -6,6 +6,7 @@ package com.opensymphony.xwork;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,36 +25,33 @@ public class ValidationAwareSupport implements ValidationAware {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public void setActionErrors(Collection errorMessages) {
+    public synchronized void setActionErrors(Collection errorMessages) {
         this.actionErrors = errorMessages;
     }
 
-    public Collection getActionErrors() {
-        if (actionErrors == null) {
-            actionErrors = new ArrayList();
-        }
-
-        return actionErrors;
+    public synchronized Collection getActionErrors() {
+        return Collections.unmodifiableCollection(internalGetActionErrors());
     }
 
-    public void setFieldErrors(Map errorMap) {
+    public synchronized void setFieldErrors(Map errorMap) {
         this.fieldErrors = errorMap;
     }
 
-    public Map getFieldErrors() {
-        if (fieldErrors == null) {
-            fieldErrors = new HashMap();
-        }
-
-        return fieldErrors;
+    /**
+    * Get the field specific errors.
+    *
+    * @return an unmodifiable Map with errors mapped from fieldname (String) to Collection of String error messages
+    */
+    public synchronized Map getFieldErrors() {
+        return Collections.unmodifiableMap(internalGetFieldErrors());
     }
 
-    public void addActionError(String anErrorMessage) {
-        getActionErrors().add(anErrorMessage);
+    public synchronized void addActionError(String anErrorMessage) {
+        internalGetActionErrors().add(anErrorMessage);
     }
 
-    public void addFieldError(String fieldName, String errorMessage) {
-        final Map errors = getFieldErrors();
+    public synchronized void addFieldError(String fieldName, String errorMessage) {
+        final Map errors = internalGetFieldErrors();
         List thisFieldErrors = (List) errors.get(fieldName);
 
         if (thisFieldErrors == null) {
@@ -64,7 +62,7 @@ public class ValidationAwareSupport implements ValidationAware {
         thisFieldErrors.add(errorMessage);
     }
 
-    public boolean hasActionErrors() {
+    public synchronized boolean hasActionErrors() {
         return (actionErrors != null) && !actionErrors.isEmpty();
     }
 
@@ -72,11 +70,27 @@ public class ValidationAwareSupport implements ValidationAware {
     * Note that this does not have the same meaning as in WW 1.x
     * @return (hasActionErrors() || hasFieldErrors())
     */
-    public boolean hasErrors() {
+    public synchronized boolean hasErrors() {
         return (hasActionErrors() || hasFieldErrors());
     }
 
-    public boolean hasFieldErrors() {
+    public synchronized boolean hasFieldErrors() {
         return (fieldErrors != null) && !fieldErrors.isEmpty();
+    }
+
+    private Collection internalGetActionErrors() {
+        if (actionErrors == null) {
+            actionErrors = new ArrayList();
+        }
+
+        return actionErrors;
+    }
+
+    private Map internalGetFieldErrors() {
+        if (fieldErrors == null) {
+            fieldErrors = new HashMap();
+        }
+
+        return fieldErrors;
     }
 }
