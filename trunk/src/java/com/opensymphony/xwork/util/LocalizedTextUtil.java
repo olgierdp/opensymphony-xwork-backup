@@ -131,24 +131,25 @@ public class LocalizedTextUtil {
      * @return
      */
     public static String findText(Class aClass, String aTextName, Locale locale, String defaultMessage) {
+        OgnlValueStack valueStack = ActionContext.getContext().getValueStack();
         do {
             try {
                 ResourceBundle bundle = findResourceBundle(aClass.getName(), locale);
 
-                return bundle.getString(aTextName);
+                return TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
             } catch (MissingResourceException ex) {
                 aClass = aClass.getSuperclass();
             }
         } while (!aClass.equals(Object.class));
 
         try {
-            return findDefaultText(aTextName, locale);
+            return TextParseUtil.translateVariables(findDefaultText(aTextName, locale), valueStack);
         } catch (MissingResourceException ex) {
             //ignore
         }
 
         LOG.debug("Unable to find text for key " + aTextName);
 
-        return defaultMessage;
+        return TextParseUtil.translateVariables(defaultMessage, valueStack);
     }
 }
