@@ -189,9 +189,9 @@
             classpathref="cp"
             author="true"
             version="true"
-            windowTitle="${name} ${version} API"
-            doctitle="${name}"
-            footer="&lt;a href=&quot;http://www.opensymphony.com/&quot; target=&quot;_top&quot;&gt;XWork Project Page&lt;/a&gt;"
+            windowTitle="${fullname} API - ${version}"
+            doctitle="${fullname} API (${version})"
+            footer="&lt;a href=&quot;http://www.opensymphony.com/xwork&quot; target=&quot;_top&quot;&gt;XWork Project Page&lt;/a&gt;"
             use="true"
             verbose="false">
             <link href="http://java.sun.com/j2se/1.3/docs/api/"/>
@@ -280,6 +280,28 @@
         </zip>
     </target>
 
+    <target name="release">
+        <!-- update the navpanel.jsp to include the download link -->
+        <filter token="DOWNLOAD" value="${latest.download}"/>
+        <copy tofile="${docs}/navpanel.jsp" file="${docs}/navpanel-source.jsp" filtering="yes" overwrite="yes"/>
+
+        <cvs command="commit -m '${name} ${version} release' ${docs}/navpanel.jsp"/>
+        <cvs command="tag -F ${cvs.tag}"/>
+
+        <!-- update the website -->
+        <sshexec host="www.opensymphony.com"
+            username="${website.username}"
+            password="${website.password}"
+            trust="yes"
+            command="cd /opt/j2ee/opensymphony/${name};export JAVA_HOME='/usr/java/jdk';cvs update -P -d;/usr/java/ant-1.5.4/bin/ant docs;"/>
+
+
+        <!-- update the ibiblio repository -->
+        <scp password="${ibiblio.password}"
+            trust="yes"
+            todir="${ibiblio.username}@opensymphony.formicary.net:/home/rsync/repository/opensymphony/jars"
+            file="${build}/${name}-${version}.jar"/>
+    </target>
 </project>
 
 
