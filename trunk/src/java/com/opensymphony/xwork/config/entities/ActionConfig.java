@@ -4,14 +4,10 @@
  */
 package com.opensymphony.xwork.config.entities;
 
-import com.opensymphony.xwork.Action;
-import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.interceptor.Interceptor;
 
 import java.io.Serializable;
-
 import java.lang.reflect.Method;
-
 import java.util.*;
 
 
@@ -41,6 +37,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
     protected String className;
     protected String methodName;
     protected String packageName;
+    protected Class cachedClass;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
@@ -99,35 +96,31 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
      * Returns cached instance of the action method or null if method name was not specified
      *
      * @return cached instance of the action method or null if method name was not specified
+     * @param actionClass - passed in to check that the Action class hasn't changed since last time.
+     * This is really a hack to get around a problem with proxied Actions in Spring.
      */
-    public Method getMethod() throws NoSuchMethodException {
+    public Method getMethod(Class actionClass) throws NoSuchMethodException {
+        if (!actionClass.equals(cachedClass)) {
+            cachedClass = actionClass;
+            method = null;
+        }
         if (method != null) {
             return method;
         }
 
-        Class clazz;
-
-        try {
-            ActionConfig actionConfig = new ActionConfig(null, getClassName(), null, null, null);
-            Action action = ObjectFactory.getObjectFactory().buildAction(actionConfig);
-            clazz = action.getClass();
-        } catch (Exception e) { // TODO: Only doing this because buildAction() throws Exception
-            throw new NoSuchMethodException("Unable to load action: " + e.getMessage());
-        }
-
         if (methodName != null) {
             try {
-                method = clazz.getMethod(methodName, new Class[0]);
+                method = cachedClass.getMethod(methodName, new Class[0]);
             } catch (NoSuchMethodException e) {
                 try {
-                    method = clazz.getMethod("do" + String.valueOf(methodName.charAt(0)).toUpperCase() + methodName.substring(1), new Class[0]);
+                    method = cachedClass.getMethod("do" + String.valueOf(methodName.charAt(0)).toUpperCase() + methodName.substring(1), new Class[0]);
                 } catch (NoSuchMethodException e1) {
                     throw e;
                 }
             }
         } else // return default execute() method if method name is not specified
          {
-            method = clazz.getMethod("execute", new Class[0]);
+            method = cachedClass.getMethod("execute", new Class[0]);
         }
 
         return method;

@@ -289,7 +289,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         }
 
         try {
-            Method method = actionConfig.getMethod();
+            Method method = actionConfig.getMethod(action.getClass());
 
             if (action instanceof Proxy) {
                 try {
