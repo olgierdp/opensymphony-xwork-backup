@@ -15,7 +15,13 @@ import java.util.Collection;
 
 
 /**
- * VisitorFieldValidator
+ * The VisitorFieldValidator allows you to forward validation to object
+ * properties of your action using the object's own validation files.  This
+ * allows you to use the ModelDriven development pattern and manage your
+ * validations for your models in one place, where they belong, next to your
+ * model classes.  The VisitorFieldValidator can handle either simple Object
+ * properties, Collections of Objects, or Arrays.
+ *
  * @author Jason Carreira
  * Created Aug 2, 2003 10:27:48 PM
  */
@@ -111,10 +117,10 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         }
 
         /**
- * Translates a simple field name into a full field name in Ognl syntax
- * @param fieldName
- * @return
- */
+         * Translates a simple field name into a full field name in Ognl syntax
+         * @param fieldName
+         * @return
+         */
         public String getFullFieldName(String fieldName) {
             return field + "." + fieldName;
         }

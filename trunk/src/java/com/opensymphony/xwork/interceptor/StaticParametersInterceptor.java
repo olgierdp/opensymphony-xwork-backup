@@ -16,7 +16,13 @@ import java.util.Map;
 
 
 /**
- *
+ * Populates the Action with the static parameters defined in the Action
+ * configuration by treating the Action as a bean.  If the  Action is 
+ * {@link Parameterizable}, a map of the static parameters will be also be
+ * passed directly to the Action.
+ * <p>
+ * Parameters are defined with &lt;param&gt; elements within the Action
+ * configuration.
  *
  * @author $Author$
  * @version $Revision$

@@ -11,6 +11,13 @@ import com.opensymphony.xwork.util.OgnlValueStack;
 
 
 /**
+ * Watches for ModelDriven Actions and adds the model from the Action on to the
+ * value stack.
+ * <p>
+ * <b>Note:</b>  The ModelDrivenInterceptor must come before the both
+ * {@link StaticParametersInterceptor} and {@link ParametersInterceptor} if you
+ * want the parameters to be applied to the model.
+ *
  * @author $Author$
  * @version $Revision$
  */
@@ -21,7 +28,7 @@ public class ModelDrivenInterceptor extends AroundInterceptor {
     }
 
     protected void before(ActionInvocation invocation) throws Exception {
-        Action action = invocation.getProxy().getAction();
+        Action action = invocation.getAction();
 
         if (action instanceof ModelDriven) {
             ModelDriven modelDriven = (ModelDriven) action;
