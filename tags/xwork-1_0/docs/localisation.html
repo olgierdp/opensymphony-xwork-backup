@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>XWork Documentation</title>
+  <link type="text/css" href="main.css" rel="STYLESHEET"/>
+</head>
+<body>
+  <div id="page-logo">
+    <a href="index.html"><img src="logo.png" border="0"/></a>
+  </div>
+    <div class="snip-title">
+	  <h1 class="snip-name">Localization with XWork
+  
+  </h1>
+  </div>
+<div id="snip-content" class="snip-content">
+
+ <div class="snip-attachments"></div>
+ 
+ <h3 class="heading-1">ActionSupport.getText() and LocalizedTextUtil
+</h3><p class="paragraph"/>The implementation of com.opensymphony.xwork.LocaleAware in com.opensymphony.xwork.ActionSupport uses com.opensymphony.xwork.util.LocalizedTextUtil to find localized message texts for message keys. LocalizedTextUtil uses a system of defaults for finding resource bundle property files for searching for the message text. If LocalizedTextUtil.findText(Class aClass, String aTextName, Locale locale) is called (or LocalizedTextUtil.findText(Class aClass, String aTextName), which just uses the Locale from ActionContext.getContext.getLocale()), the following search order is used:
+<ol>
+<li>The class name is used with the call <div class="code"><pre>ResourceBundle.getBundle(aBundleName, locale, <span class="java&#45;object">Thread</span>.currentThread().getContextClassLoader())</pre></div></li>
+<li>If the message text is not found, each parent class of the action is used as above until java.lang.Object is found</li>
+<li>If the message text has still not been found, findDefaultText(aTextName, locale) is called to search the default message bundles</li>
+</ol><p class="paragraph"/>The findDefaultText(aTextName, locale) method searches named resource bundles which have been registered with LocalzedTextUtil in reverse order of their registration (i.e. the first resource bundle name registered is the last to be searched). By default, one default resource bundle name is registered with LocalizedTextUtil for search, "com/opensymphony/xwork/xwork-messages", which is bundled with the jar file to provide system-level message texts.
+
+  </div>
+</body>
+</html>

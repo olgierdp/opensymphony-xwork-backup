@@ -1,0 +1,256 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>XWork Documentation</title>
+  <link type="text/css" href="main.css" rel="STYLESHEET"/>
+</head>
+<body>
+  <div id="page-logo">
+    <a href="index.html"><img src="logo.png" border="0"/></a>
+  </div>
+    <div class="snip-title">
+	  <h1 class="snip-name">A WebWork2 Example of Xwork Validation
+  
+  </h1>
+  </div>
+<div id="snip-content" class="snip-content">
+
+ <div class="snip-attachments"></div>
+ 
+ Included in the <a href="http://wiki.opensymphony.com/space/WebWork2">WebWork2</a> example war file is an example of using the <a href="validation.html">Xwork Validation Framework</a> in WebWork2. This example consists of three links which all use the same Action Class and view pages (Velocity).
+<h3 class="heading-1">The sources
+</h3><p class="paragraph"/>First, I had to add the <b class="bold">validators.xml</b> file to the root of the source tree for the example app
+<div class="code"><pre>&#60;validators&#62;
+    &#60;validator name=<span class="xml&#45;quote">"required"</class> class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.RequiredFieldValidator"</class>/&#62;
+    &#60;validator name=<span class="xml&#45;quote">"requiredstring"</class> class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.RequiredStringValidator"</class>/&#62;
+    &#60;validator name=<span class="xml&#45;quote">"int"</class> class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.IntRangeFieldValidator"</class>/&#62;
+    &#60;validator name=<span class="xml&#45;quote">"date"</class> class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.DateRangeFieldValidator"</class>/&#62;
+    &#60;validator name=<span class="xml&#45;quote">"expression"</class> class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.ExpressionValidator"</class>/&#62;
+    &#60;validator name=<span class="xml&#45;quote">"fieldexpression"</class> class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.FieldExpressionValidator"</class>/&#62;
+    &#60;validator name=<span class="xml&#45;quote">"email"</class> class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.EmailValidator"</class>/&#62;
+    &#60;validator name=<span class="xml&#45;quote">"url"</class> class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.URLValidator"</class>/&#62;
+    &#60;validator name=<span class="xml&#45;quote">"visitor"</class> class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.VisitorFieldValidator"</class>/&#62;
+&#60;/validators&#62;</pre></div><p class="paragraph"/>The Action class used by all of the validation examples is <b class="bold">ValidatedAction</b>
+<div class="code"><pre><span class="java&#45;keyword">package</span> com.opensymphony.webwork.example;<p class="paragraph"/><span class="java&#45;keyword">import</span> com.opensymphony.xwork.ActionSupport;<p class="paragraph"/>/&#42;&#42;
+ &#42; ValidatedAction
+ &#42; @author Jason Carreira
+ &#42; Created Sep 12, 2003 9:23:38 PM
+ &#42;/
+<span class="java&#45;keyword">public</span> class ValidatedAction <span class="java&#45;keyword">extends</span> ActionSupport &#123;
+    <span class="java&#45;keyword">private</span> ValidatedBean bean = <span class="java&#45;keyword">new</span> ValidatedBean();
+    <span class="java&#45;keyword">private</span> <span class="java&#45;object">String</span> name;
+    <span class="java&#45;keyword">private</span> <span class="java&#45;object">String</span> validationAction = <span class="java&#45;quote">"basicValidation.action"</span>;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> ValidatedBean getBean() &#123;
+        <span class="java&#45;keyword">return</span> bean;
+    &#125;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> void setBean(ValidatedBean bean) &#123;
+        <span class="java&#45;keyword">this</span>.bean = bean;
+    &#125;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> <span class="java&#45;object">String</span> getName() &#123;
+        <span class="java&#45;keyword">return</span> name;
+    &#125;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> void setName(<span class="java&#45;object">String</span> name) &#123;
+        <span class="java&#45;keyword">this</span>.name = name;
+    &#125;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> <span class="java&#45;object">String</span> getValidationAction() &#123;
+        <span class="java&#45;keyword">return</span> validationAction;
+    &#125;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> void setValidationAction(<span class="java&#45;object">String</span> validationAction) &#123;
+        <span class="java&#45;keyword">this</span>.validationAction = validationAction;
+    &#125;
+&#125;</pre></div><p class="paragraph"/>
+The base validation file for the ValidatedAction is <b class="bold">ValidatedAction-validation.xml</b>
+<div class="code"><pre>&#60;!DOCTYPE validators PUBLIC <span class="xml&#45;quote">"&#45;//OpenSymphony Group//XWork Validator 1.0//EN"</class> <span class="xml&#45;quote">"http://www.opensymphony.com/xwork/xwork&#45;validator&#45;1.0.dtd"</class>&#62;
+&#60;validators&#62;
+    &#60;field name=<span class="xml&#45;quote">"name"</class>&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"requiredstring"</class>&#62;
+            &#60;message&#62;You must enter a name.&#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+    &#60;/field&#62;
+&#60;/validators&#62;</pre></div>
+This and all other validation files are placed in the same package as the classes to which they apply.<p class="paragraph"/>The form for this Action is <b class="bold">validationForm.vm</b>
+<div class="code"><pre>&#60;html&#62;
+&#60;head&#62;&#60;title&#62;Webwork Validation Example&#60;/title&#62;&#60;/head&#62;
+&#60;body&#62;
+#<span class="java&#45;keyword">if</span>( $actionErrors.size() &#62; 0 )
+&#60;p&#62;
+&#60;font color=<span class="java&#45;quote">"red"</span>&#62;
+&#60;b&#62;ERRORS:&#60;/b&#62;&#60;br&#62;
+&#60;ul&#62;
+#foreach( $error in $actionErrors )
+&#60;li&#62;$error&#60;/li&#62;
+#end
+&#60;/ul&#62;
+&#60;/font&#62;
+&#60;/p&#62;
+#end
+&#60;p&#62;
+&#60;form name=<span class="java&#45;quote">"myForm"</span> action=<span class="java&#45;quote">"$&#123;validationAction&#125;"</span> method=<span class="java&#45;quote">"POST"</span>&#62;
+&#60;input type=<span class="java&#45;quote">"hidden"</span> name=<span class="java&#45;quote">"validationAction"</span> value=<span class="java&#45;quote">"$&#123;validationAction&#125;"</span>/&#62;
+Action Properties:
+&#60;br&#62;
+&#60;table&#62;
+#tag( TextField <span class="java&#45;quote">"label=Name"</span> <span class="java&#45;quote">"name=name"</span> <span class="java&#45;quote">"value=name"</span> )
+&#60;/table&#62;
+Bean Properties:
+#<span class="java&#45;keyword">if</span>( $stack.findValue(<span class="java&#45;quote">"fieldErrors"</span>) )
+    #set( $beanErrors = $stack.findValue(<span class="java&#45;quote">"fieldErrors.get('bean')"</span>) )
+    #<span class="java&#45;keyword">if</span>( $beanErrors.size() &#62; 0 )
+    &#60;br&#62;
+    &#60;font color=<span class="java&#45;quote">"red"</span>&#62;
+    &#60;b&#62;Bean Errors:&#60;/b&#62;&#60;br&#62;
+    &#60;ul&#62;
+    #foreach( $beanError in $beanErrors )
+    &#60;li&#62;$beanError&#60;/li&#62;
+    #end
+    &#60;/ul&#62;
+    &#60;/font&#62;
+    #end
+#end
+&#60;table&#62;
+#tag( TextField <span class="java&#45;quote">"label=Bean.Text"</span> <span class="java&#45;quote">"name=bean.text"</span> <span class="java&#45;quote">"value=bean.text"</span> )&#60;br&#62;
+#tag( TextField <span class="java&#45;quote">"label=Bean.Date"</span> <span class="java&#45;quote">"name=bean.date"</span> <span class="java&#45;quote">"value=bean.date"</span> )&#60;br&#62;
+#tag( TextField <span class="java&#45;quote">"label=Bean.<span class="java&#45;object">Number</span>"</span> <span class="java&#45;quote">"name=bean.number"</span> <span class="java&#45;quote">"value=bean.number"</span> )&#60;br&#62;
+#tag( TextField <span class="java&#45;quote">"label=Bean.Number2"</span> <span class="java&#45;quote">"name=bean.number2"</span> <span class="java&#45;quote">"value=bean.number2"</span> )&#60;br&#62;
+&#60;/table&#62;
+&#60;input type=<span class="java&#45;quote">"submit"</span> value=<span class="java&#45;quote">"Test Validation"</span>/&#62;
+&#60;/form&#62;
+&#60;/body&#62;</pre></div><p class="paragraph"/>The success page for these examples is a very simple page, <b class="bold">valid.xml</b>
+<div class="code"><pre>&#60;html&#62;
+&#60;head&#62;&#60;title&#62;WebWork Validation Test: Valid&#60;/title&#62;&#60;/head&#62;
+&#60;body&#62;
+Input was valid!
+&#60;/body&#62;
+&#60;/html&#62;</pre></div><p class="paragraph"/>We'll look at any other example-specific configuration files as we get to them.
+<h3 class="heading-1"><a name="BasicValidation"/><a href="validationexample.html#BasicValidation" title="Permalink to BasicValidation"><img src="http://wiki.opensymphony.com/images/permalink.png" alt="" border="0"/></a> Basic Validation
+</h3><p class="paragraph"/>
+The BasicValidation example is defined in the example <b class="bold">xwork.xml</b> file like this
+<div class="code"><pre>&#60;action name=<span class="xml&#45;quote">"basicValidation"</class> class=<span class="xml&#45;quote">"com.opensymphony.webwork.example.ValidatedAction"</class>&#62;
+            &#60;interceptor&#45;ref name=<span class="xml&#45;quote">"validationWorkflowStack"</class>/&#62;<p class="paragraph"/>            &#60;result name=<span class="xml&#45;quote">"success"</class> type=<span class="xml&#45;quote">"dispatcher"</class>&#62;valid.vm&#60;/result&#62;
+            &#60;result name=<span class="xml&#45;quote">"input"</class> type=<span class="xml&#45;quote">"dispatcher"</class>&#62;validationForm.vm&#60;/result&#62;
+            &#60;result name=<span class="xml&#45;quote">"error"</class> type=<span class="xml&#45;quote">"dispatcher"</class>&#62;validationForm.vm&#60;/result&#62;
+        &#60;/action&#62;</pre></div><p class="paragraph"/>The <b class="bold">interceptor-ref</b> here, to <b class="bold">"validationWorkflowStack"</b>, is defined in webwork-default.xml (see <a href="http://wiki.opensymphony.com/space/Using+webwork-default.xml">Using webwork-default.xml</a>) and provides the parameter interceptors as well as the ValidationInterceptor (see <a href="validation.html">Xwork Validation Framework</a> and the DefaultWorkFlowInterceptor (see <a href="interceptors.html#DefaultWorkflow">Xwork Interceptors#DefaultWorkflow</a>). All of the parameters from the configuration file (there are none in this case) followed by the parameters from the request will be set onto the Action. Next, the validations will be run, and finally the DefaultWorkflow will be applied (see <a href="interceptors.html#DefaultWorkflow">Xwork Interceptors#DefaultWorkflow</a>).<p class="paragraph"/>This example is very simple, and the ValidatedAction-validation.xml file is the only set of Validations which will be applied. This means that the only validation done is that you enter some text for the name field. 
+<h3 class="heading-1"><a name="VisitorValidation"/><a href="validationexample.html#VisitorValidation" title="Permalink to VisitorValidation"><img src="http://wiki.opensymphony.com/images/permalink.png" alt="" border="0"/></a> Visitor Validation Example
+</h3><p class="paragraph"/>The <b class="bold">ValidatedAction</b> holds a reference to a plain Java bean, <b class="bold">ValidatedBean</b>:
+<div class="code"><pre><span class="java&#45;keyword">package</span> com.opensymphony.webwork.example;<p class="paragraph"/><span class="java&#45;keyword">import</span> java.util.Date;<p class="paragraph"/>/&#42;&#42;
+ &#42; ValidatedBean
+ &#42; @author Jason Carreira
+ &#42; Created Sep 12, 2003 9:24:18 PM
+ &#42;/
+<span class="java&#45;keyword">public</span> class ValidatedBean &#123;
+    <span class="java&#45;keyword">private</span> <span class="java&#45;object">String</span> text;
+    <span class="java&#45;keyword">private</span> Date date = <span class="java&#45;keyword">new</span> Date(<span class="java&#45;object">System</span>.currentTimeMillis());
+    <span class="java&#45;keyword">private</span> <span class="java&#45;object">int</span> number;
+    <span class="java&#45;keyword">private</span> <span class="java&#45;object">int</span> number2;
+    <span class="java&#45;keyword">public</span> <span class="java&#45;keyword">static</span> <span class="java&#45;keyword">final</span> <span class="java&#45;object">int</span> MAX_TOTAL = 12;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> <span class="java&#45;object">String</span> getText() &#123;
+        <span class="java&#45;keyword">return</span> text;
+    &#125;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> void setText(<span class="java&#45;object">String</span> text) &#123;
+        <span class="java&#45;keyword">this</span>.text = text;
+    &#125;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> Date getDate() &#123;
+        <span class="java&#45;keyword">return</span> date;
+    &#125;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> void setDate(Date date) &#123;
+        <span class="java&#45;keyword">this</span>.date = date;
+    &#125;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> <span class="java&#45;object">int</span> getNumber() &#123;
+        <span class="java&#45;keyword">return</span> number;
+    &#125;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> void setNumber(<span class="java&#45;object">int</span> number) &#123;
+        <span class="java&#45;keyword">this</span>.number = number;
+    &#125;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> <span class="java&#45;object">int</span> getNumber2() &#123;
+        <span class="java&#45;keyword">return</span> number2;
+    &#125;<p class="paragraph"/>    <span class="java&#45;keyword">public</span> void setNumber2(<span class="java&#45;object">int</span> number2) &#123;
+        <span class="java&#45;keyword">this</span>.number2 = number2;
+    &#125;
+&#125;</pre></div><p class="paragraph"/>The base validation file for the ValidatedBean is <b class="bold">ValidatedBean-validation.xml</b>
+<div class="code"><pre>&#60;!DOCTYPE validators PUBLIC <span class="xml&#45;quote">"&#45;//OpenSymphony Group//XWork Validator 1.0//EN"</class> <span class="xml&#45;quote">"http://www.opensymphony.com/xwork/xwork&#45;validator&#45;1.0.dtd"</class>&#62;
+&#60;validators&#62;
+    &#60;field name=<span class="xml&#45;quote">"text"</class>&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"requiredstring"</class>&#62;
+            &#60;message key=<span class="xml&#45;quote">"invalid.text"</class>&#62;Empty Text!&#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+    &#60;/field&#62;
+    &#60;field name=<span class="xml&#45;quote">"date"</class>&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"date"</class>&#62;
+            &#60;param name=<span class="xml&#45;quote">"min"</class>&#62;01/01/1970&#60;/param&#62;
+            &#60;message key=<span class="xml&#45;quote">"invalid.date"</class>&#62;Invalid Date!&#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+    &#60;/field&#62;
+    &#60;field name=<span class="xml&#45;quote">"number"</class>&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"int"</class>&#62;
+            &#60;param name=<span class="xml&#45;quote">"min"</class>&#62;1&#60;/param&#62;
+            &#60;param name=<span class="xml&#45;quote">"max"</class>&#62;10&#60;/param&#62;
+            &#60;message key=<span class="xml&#45;quote">"invalid.number"</class>&#62;Invalid Number!&#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+    &#60;/field&#62;
+&#60;/validators&#62;</pre></div><p class="paragraph"/>In the Visitor Validation Example, we add a <b class="bold">VisitorFieldValidator</b> (see <a href="fieldvalidator.html">Using the VisitorFieldValidator</a>) to apply these validations to our <b class="bold">ValidatedBean</b>. The Action is defined in our <b class="bold">xwork.xml</b> file like this:
+<div class="code"><pre>&#60;action name=<span class="xml&#45;quote">"visitorValidation"</class> class=<span class="xml&#45;quote">"com.opensymphony.webwork.example.ValidatedAction"</class>&#62;
+            &#60;interceptor&#45;ref name=<span class="xml&#45;quote">"validationWorkflowStack"</class>/&#62;
+            &#60;param name=<span class="xml&#45;quote">"validationAction"</class>&#62;visitorValidation.action&#60;/param&#62;
+            &#60;result name=<span class="xml&#45;quote">"success"</class>&#62;valid.vm&#60;/result&#62;
+            &#60;result name=<span class="xml&#45;quote">"input"</class>&#62;validationForm.vm&#60;/result&#62;
+            &#60;result name=<span class="xml&#45;quote">"error"</class>&#62;validationForm.vm&#60;/result&#62;
+        &#60;/action&#62;</pre></div><p class="paragraph"/>Here we see a slight difference from the basic validation example above. I've added a static param to the Action which will be applied to the Action by the static-param interceptor. This parameter only sets the value for the action to post the form to for validation (see <b class="bold">validationForm.vm</b>).<p class="paragraph"/>The Action name above, <b class="bold">visitorValidation</b> is mapped to another set of validations defined in the file <b class="bold">ValidatedAction-visitorValidation-validation.xml</b>
+<div class="code"><pre>&#60;!DOCTYPE validators PUBLIC <span class="xml&#45;quote">"&#45;//OpenSymphony Group//XWork Validator 1.0//EN"</class> <span class="xml&#45;quote">"http://www.opensymphony.com/xwork/xwork&#45;validator&#45;1.0.dtd"</class>&#62;
+&#60;validators&#62;
+    &#60;field name=<span class="xml&#45;quote">"bean"</class>&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"required"</class>&#62;
+            &#60;message&#62;The bean must not be null.&#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"visitor"</class>&#62;
+            &#60;message&#62;bean: &#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+    &#60;/field&#62;
+&#60;/validators&#62;</pre></div><p class="paragraph"/>This file is found automatically by the validation framework based on the class name (ValidatedAction), the action alias, which is used as the validation context (visitorValidation) and the standard suffix (-validation.xml) to form the filename <b class="bold">ValidatedAction-visitorValidation-validation.xml</b>.<p class="paragraph"/>This file defines two validators for the "bean" field, a required validator which makes sure the bean is not null, and a VisitorFieldValidator. The VisitorFieldValidator will apply the validators for the <b class="bold">ValidatedBean</b> using the same validation context as is used in validating <b class="bold">ValidatedAction</b>, <b class="bold">visitorValidation</b>. It therefore looks for the validation files <b class="bold">ValidatedBean-validation.xml</b> (the default validations for the ValidatedBean) and <b class="bold">ValidatedBean-visitorValidation-validation.xml</b> (the validations specific to this validation context) , in that order.<p class="paragraph"/>The <b class="bold">ValidatedBean-validation.xml</b> looks like this:<p class="paragraph"/><div class="code"><pre>&#60;!DOCTYPE validators PUBLIC <span class="xml&#45;quote">"&#45;//OpenSymphony Group//XWork Validator 1.0//EN"</class> <span class="xml&#45;quote">"http://www.opensymphony.com/xwork/xwork&#45;validator&#45;1.0.dtd"</class>&#62;
+&#60;validators&#62;
+    &#60;field name=<span class="xml&#45;quote">"text"</class>&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"requiredstring"</class>&#62;
+            &#60;message key=<span class="xml&#45;quote">"invalid.text"</class>&#62;Empty Text!&#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+    &#60;/field&#62;
+    &#60;field name=<span class="xml&#45;quote">"date"</class>&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"date"</class>&#62;
+            &#60;param name=<span class="xml&#45;quote">"min"</class>&#62;01/01/1970&#60;/param&#62;
+            &#60;message key=<span class="xml&#45;quote">"invalid.date"</class>&#62;Invalid Date!&#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+    &#60;/field&#62;
+    &#60;field name=<span class="xml&#45;quote">"number"</class>&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"int"</class>&#62;
+            &#60;param name=<span class="xml&#45;quote">"min"</class>&#62;1&#60;/param&#62;
+            &#60;param name=<span class="xml&#45;quote">"max"</class>&#62;10&#60;/param&#62;
+            &#60;message key=<span class="xml&#45;quote">"invalid.number"</class>&#62;Invalid Number!&#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+    &#60;/field&#62;
+&#60;/validators&#62;</pre></div><p class="paragraph"/>This file applies validations for three fields (text, date, and number) and gives message keys and default messages for each of them. These message keys will be used to look up messages from a resource bundle specific to the <b class="bold">ValidatedBean</b> class. In the same package as the <b class="bold">ValidatedBean</b> is a file named <b class="bold">ValidatedBean.properties</b>
+<div class="code"><pre>invalid.date=You must enter a date after $&#123;min&#125;.
+invalid.text=You must enter some text.
+invalid.number=You must enter a number between $&#123;min&#125; and $&#123;max&#125;.
+invalid.total=The total of number and number2 must be less than $&#123;@com.opensymphony.webwork.example.ValidatedBean@MAX_TOTAL&#125;.</pre></div><p class="paragraph"/>These messages will be used for any errors added for the <b class="bold">ValidatedBean</b> using a message key. As you can see from the body of the messages, they can be parameterized with properties from the Bean, the Interceptor, and the Action (and they will be searched in that order). There is also an example of using a Static field <b class="bold">${@com.opensymphony.webwork.example.ValidatedBean@MAX_TOTAL}</b>.<p class="paragraph"/>The <b class="bold">ValidatedBean-visitorValidation-validation.xml</b> file would define validations specific for the <b class="bold">visitorValidation</b> validation context, but it is not there, so it is ignored.
+<h3 class="heading-1"><a name="Expression"/><a href="validationexample.html#Expression" title="Permalink to Expression"><img src="http://wiki.opensymphony.com/images/permalink.png" alt="" border="0"/></a> Visitor Validation with the Expression Validator
+</h3><p class="paragraph"/>The final example shows a similar setup to the previous visitor validation example. The <b class="bold">xwork.xml</b> configuration for this example is very similar to the <b class="bold">visitorValidation</b> example:
+<div class="code"><pre>&#60;action name=<span class="xml&#45;quote">"expressionValidation"</class> class=<span class="xml&#45;quote">"com.opensymphony.webwork.example.ValidatedAction"</class>&#62;
+            &#60;interceptor&#45;ref name=<span class="xml&#45;quote">"validationWorkflowStack"</class>/&#62;
+            &#60;param name=<span class="xml&#45;quote">"validationAction"</class>&#62;expressionValidation.action&#60;/param&#62;
+            &#60;result name=<span class="xml&#45;quote">"success"</class>&#62;valid.vm&#60;/result&#62;
+            &#60;result name=<span class="xml&#45;quote">"input"</class>&#62;validationForm.vm&#60;/result&#62;
+            &#60;result name=<span class="xml&#45;quote">"error"</class>&#62;validationForm.vm&#60;/result&#62;
+        &#60;/action&#62;</pre></div><p class="paragraph"/>The <b class="bold">ValidatedAction-expressionValidation-validation.xml</b> file defines the validations specific to this validation context:
+<div class="code"><pre>&#60;!DOCTYPE validators PUBLIC <span class="xml&#45;quote">"&#45;//OpenSymphony Group//XWork Validator 1.0//EN"</class> <span class="xml&#45;quote">"http://www.opensymphony.com/xwork/xwork&#45;validator&#45;1.0.dtd"</class>&#62;
+&#60;validators&#62;
+    &#60;field name=<span class="xml&#45;quote">"bean"</class>&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"required"</class>&#62;
+            &#60;message&#62;The bean must not be null.&#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"visitor"</class>&#62;
+            &#60;param name=<span class="xml&#45;quote">"context"</class>&#62;expression&#60;/param&#62;
+            &#60;message&#62;bean: &#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+    &#60;/field&#62;
+&#60;/validators&#62;</pre></div><p class="paragraph"/>This is almost identical to the <b class="bold">ValidatedAction-visitorValidation-validation.xml</b> file, but shows an example of passing a context param to the <b class="bold">VisitorFieldValidator</b>. In this case, rather than using the same validation context as is used for the <b class="bold">ValidatedAction</b> (<b class="bold">expressionValidation</b>), it passes another context (<b class="bold">expression</b>) to be used instead.<p class="paragraph"/>In this case, the validation context specific validations for the <b class="bold">ValidatedBean</b> is present, and it's named <b class="bold">ValidatedBean-expression-validation.xml</b>
+<div class="code"><pre>&#60;!DOCTYPE validators PUBLIC <span class="xml&#45;quote">"&#45;//OpenSymphony Group//XWork Validator 1.0//EN"</class> <span class="xml&#45;quote">"http://www.opensymphony.com/xwork/xwork&#45;validator&#45;1.0.dtd"</class>&#62;
+&#60;validators&#62;
+    &#60;validator type=<span class="xml&#45;quote">"expression"</class>&#62;
+        &#60;param name=<span class="xml&#45;quote">"expression"</class>&#62;@com.opensymphony.webwork.example.ValidatedBean@MAX_TOTAL &#62; (number + number2)&#60;/param&#62;
+        &#60;message key=<span class="xml&#45;quote">"invalid.total"</class>&#62;Invalid total!&#60;/message&#62;
+    &#60;/validator&#62;
+&#60;/validators&#62;</pre></div>
+This adds an object-level (as opposed to field-level) ExpressionValidator which checks the total of the number and number2 fields against a static constant, and adds an error message if the total is more than the constant. 
+<h3 class="heading-1"><a name="ErrorMessages"/><a href="validationexample.html#ErrorMessages" title="Permalink to ErrorMessages"><img src="http://wiki.opensymphony.com/images/permalink.png" alt="" border="0"/></a> A note about error messages with the VisitorFieldValidator
+</h3><p class="paragraph"/>With the VisitorFieldValidator, message field names are appended with the field name of the field in the Action. In this case, the fields "<b class="bold">text</b>", "<b class="bold">date</b>", and "<b class="bold">number</b>" in the <b class="bold">ValidatedBean</b> would be added as field error messages to the Action with field names "<b class="bold">bean.text</b>", "<b class="bold">bean.date</b>", and "<b class="bold">bean.number</b>". The error messages added for the object-level ExpressionValidator applied in the last example will be added as field-level errors to the Action with the name "<b class="bold">bean</b>".
+
+  </div>
+</body>
+</html>
