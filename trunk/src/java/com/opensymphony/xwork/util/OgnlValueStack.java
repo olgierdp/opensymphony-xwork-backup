@@ -5,12 +5,12 @@
 package com.opensymphony.xwork.util;
 
 import ognl.Ognl;
+import ognl.OgnlContext;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-
 import java.util.Map;
 
 
@@ -102,6 +102,7 @@ public class OgnlValueStack implements Serializable {
         this.context = Ognl.createDefaultContext(this.root, accessor, XWorkConverter.getInstance());
         context.put(VALUE_STACK, this);
         Ognl.setClassResolver(context, accessor);
+        ((OgnlContext) context).setTraceEvaluations(true);
     }
 
     private Object readResolve() throws ObjectStreamException {

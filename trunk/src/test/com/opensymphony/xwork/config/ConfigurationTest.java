@@ -3,31 +3,11 @@
  * All rights reserved.
  */
 
-/**
- * Copyright (c) 2002 Notiva. All Rights Reserved.
- *
- * This software is the confidential and proprietary information of Notiva.
- * ("Confidential Information").  You shall not disclose such Confidential
- * Information and shall use it only in accordance with the terms of the
- * license agreement you entered into with Notiva.
- *
- * NOTIVA MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF THE
- * SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, OR NON-INFRINGEMENT. NOTIVA SHALL NOT BE LIABLE FOR ANY DAMAGES
- * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
- * THIS SOFTWARE OR ITS DERIVATIVES.
- */
 package com.opensymphony.xwork.config;
 
-import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.ActionProxy;
-import com.opensymphony.xwork.ActionProxyFactory;
-import com.opensymphony.xwork.MockInterceptor;
-import com.opensymphony.xwork.SimpleAction;
+import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
-
 import junit.framework.TestCase;
 
 import java.util.HashMap;

@@ -6,9 +6,7 @@ package com.opensymphony.xwork.config;
 
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
-
 import com.opensymphony.util.FileManager;
-
 import junit.framework.TestCase;
 
 
@@ -50,7 +48,8 @@ public class ConfigurationManagerTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        ConfigurationManager.clearConfigurationProviders();
+        ConfigurationManager.destroyConfiguration();
+
         configProviderMock = new Mock(ConfigurationProvider.class);
 
         ConfigurationProvider mockProvider = (ConfigurationProvider) configProviderMock.proxy();
@@ -63,6 +62,6 @@ public class ConfigurationManagerTest extends TestCase {
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        ConfigurationManager.configurationInstance = null;
+        ConfigurationManager.destroyConfiguration();
     }
 }

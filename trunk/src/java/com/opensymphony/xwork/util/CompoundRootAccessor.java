@@ -4,17 +4,12 @@
  */
 package com.opensymphony.xwork.util;
 
-import com.opensymphony.xwork.util.CompoundRoot;
-
 import ognl.*;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.beans.IntrospectionException;
-
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 
@@ -102,14 +97,14 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         }
     }
 
-    public Object callMethod(Map context, Object target, String name, List list) throws MethodFailedException {
+    public Object callMethod(Map context, Object target, String name, Object[] objects) throws MethodFailedException {
         CompoundRoot root = (CompoundRoot) target;
 
         for (Iterator iterator = root.iterator(); iterator.hasNext();) {
             Object o = iterator.next();
 
             try {
-                Object value = OgnlRuntime.callMethod((OgnlContext) context, o, name, name, list);
+                Object value = OgnlRuntime.callMethod((OgnlContext) context, o, name, name, objects);
 
                 if (value != null) {
                     return value;
@@ -122,7 +117,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         return null;
     }
 
-    public Object callStaticMethod(Map transientVars, Class aClass, String s, List list) throws MethodFailedException {
+    public Object callStaticMethod(Map transientVars, Class aClass, String s, Object[] objects) throws MethodFailedException {
         return null;
     }
 

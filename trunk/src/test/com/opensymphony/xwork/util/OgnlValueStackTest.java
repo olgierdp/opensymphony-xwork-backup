@@ -6,13 +6,10 @@ package com.opensymphony.xwork.util;
 
 import junit.framework.TestCase;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
+import java.io.*;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -30,7 +27,7 @@ public class OgnlValueStackTest extends TestCase {
         Dog dog = new Dog();
         dog.setAge(12);
         dog.setName("Rover");
-        dog.setChildAges(new int[] {1, 2});
+        dog.setChildAges(new int[]{1, 2});
 
         vs.push(dog);
         assertEquals("1, 2", vs.findValue("childAges", String.class));
@@ -56,7 +53,7 @@ public class OgnlValueStackTest extends TestCase {
         Dog dog = new Dog();
         dog.setAge(12);
         dog.setName("Rover");
-        dog.setChildAges(new int[] {1, 2});
+        dog.setChildAges(new int[]{1, 2});
         dog.setHates(cat);
 
         vs.push(dog);
@@ -228,5 +225,22 @@ public class OgnlValueStackTest extends TestCase {
 
         assertEquals(dog2, vs.pop());
         assertEquals("Rover", vs.findValue("name"));
+    }
+
+    public void testSetBarAsString() {
+        Foo foo = new Foo();
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        Map context = vs.getContext();
+
+        HashMap props = new HashMap();
+        props.put("bar", "bar:123");
+
+        OgnlUtil.setProperties(props, foo, context);
+
+        assertEquals("bar", foo.getBar().getTitle());
+        assertEquals(123, foo.getBar().getSomethingElse());
     }
 }

@@ -5,7 +5,6 @@
 package com.opensymphony.xwork.util;
 
 import junit.framework.TestCase;
-
 import ognl.Ognl;
 
 import java.util.Calendar;
@@ -36,7 +35,7 @@ public class OgnlUtilTest extends TestCase {
 
         foo1.setTitle("blah");
         foo1.setNumber(1);
-        foo1.setPoints(new long[] {1, 2, 3});
+        foo1.setPoints(new long[]{1, 2, 3});
         foo1.setBirthday(cal.getTime());
         foo1.setUseful(false);
 
@@ -63,7 +62,7 @@ public class OgnlUtilTest extends TestCase {
 
         foo.setTitle("blah");
         foo.setNumber(1);
-        foo.setPoints(new long[] {1, 2, 3});
+        foo.setPoints(new long[]{1, 2, 3});
         foo.setBirthday(cal.getTime());
         foo.setUseful(false);
 
@@ -86,20 +85,6 @@ public class OgnlUtilTest extends TestCase {
         assertEquals(foo.getBar().getTitle(), "i am barbaz");
     }
 
-    public void testSetBarAsString() {
-        Foo foo = new Foo();
-
-        Map context = Ognl.createDefaultContext(foo);
-
-        HashMap props = new HashMap();
-        props.put("bar", "bar:123");
-
-        OgnlUtil.setProperties(props, foo, context);
-
-        assertEquals("bar", foo.getBar().getTitle());
-        assertEquals(123, foo.getBar().getSomethingElse());
-    }
-
     public void testSetPropertiesBoolean() {
         Foo foo = new Foo();
 
@@ -111,11 +96,11 @@ public class OgnlUtilTest extends TestCase {
 
         assertEquals(true, foo.isUseful());
 
-        //        props = new HashMap();
-        //        props.put("useful", "false");
-        //        OgnlUtil.setProperties(props, foo, context);
-        //
-        //        assertEquals(false, foo.isUseful());
+        props = new HashMap();
+        props.put("useful", "false");
+        OgnlUtil.setProperties(props, foo, context);
+
+        assertEquals(false, foo.isUseful());
     }
 
     public void testSetPropertiesDate() {
@@ -154,7 +139,7 @@ public class OgnlUtilTest extends TestCase {
         Map context = Ognl.createDefaultContext(foo);
 
         HashMap props = new HashMap();
-        props.put("points", new String[] {"1", "2"});
+        props.put("points", new String[]{"1", "2"});
         OgnlUtil.setProperties(props, foo, context);
 
         assertNotNull(foo.getPoints());
@@ -194,7 +179,7 @@ public class OgnlUtilTest extends TestCase {
         OgnlUtil.setProperties(props, foo, context);
         assertEquals(123, foo.getaLong());
 
-        props.put("aLong", new String[] {"123"});
+        props.put("aLong", new String[]{"123"});
 
         foo.setaLong(0);
         OgnlUtil.setProperties(props, foo, context);

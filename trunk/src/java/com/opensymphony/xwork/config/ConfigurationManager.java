@@ -5,10 +5,8 @@
 package com.opensymphony.xwork.config;
 
 import com.opensymphony.util.FileManager;
-
 import com.opensymphony.xwork.config.impl.DefaultConfiguration;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -27,8 +25,12 @@ public class ConfigurationManager {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     protected static final Log LOG = LogFactory.getLog(ConfigurationManager.class);
-    protected static Configuration configurationInstance = null;
-    private static List configurationProviders = Collections.synchronizedList(new ArrayList());
+    protected static Configuration configurationInstance;
+    private static List configurationProviders;
+
+    static {
+        destroyConfiguration();
+    }
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
@@ -37,10 +39,15 @@ public class ConfigurationManager {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    public static void destroyConfiguration() {
+        configurationProviders = Collections.synchronizedList(new ArrayList());
+        configurationInstance = null;
+    }
+
     /**
-    * Get the current XWork configuration object.  By default an instance of DefaultConfiguration will be returned
-    * @see com.opensymphony.xwork.config.impl.DefaultConfiguration
-    */
+     * Get the current XWork configuration object.  By default an instance of DefaultConfiguration will be returned
+     * @see com.opensymphony.xwork.config.impl.DefaultConfiguration
+     */
     public static Configuration getConfiguration() {
         if (configurationInstance == null) {
             configurationInstance = new DefaultConfiguration();
@@ -52,18 +59,18 @@ public class ConfigurationManager {
     }
 
     /**
-    * <p>
-    * get the current list of ConfigurationProviders.
-    * </p>
-    * <p>
-    * if no custom ConfigurationProviders have been added, this method
-    * will return a list containing only the default ConfigurationProvider, XMLConfigurationProvider.  if a custom
-    * ConfigurationProvider has been added, then the XmlConfigurationProvider must be added by hand.
-    * </p>
-    * @todo the lazy instantiation of XmlConfigurationProvider should be refactored to be elsewhere.  the behavior described above seems unintuitive.
-    * @return the list of registered ConfigurationProvider objects
-    * @see com.opensymphony.xwork.config.ConfigurationProvider
-    */
+     * <p>
+     * get the current list of ConfigurationProviders.
+     * </p>
+     * <p>
+     * if no custom ConfigurationProviders have been added, this method
+     * will return a list containing only the default ConfigurationProvider, XMLConfigurationProvider.  if a custom
+     * ConfigurationProvider has been added, then the XmlConfigurationProvider must be added by hand.
+     * </p>
+     * @todo the lazy instantiation of XmlConfigurationProvider should be refactored to be elsewhere.  the behavior described above seems unintuitive.
+     * @return the list of registered ConfigurationProvider objects
+     * @see com.opensymphony.xwork.config.ConfigurationProvider
+     */
     public static List getConfigurationProviders() {
         if (configurationProviders.size() == 0) {
             configurationProviders.add(new XmlConfigurationProvider());
@@ -73,23 +80,23 @@ public class ConfigurationManager {
     }
 
     /**
-    * adds a configuration provider to the List of ConfigurationProviders.  a given ConfigurationProvider may be added
-    * more than once
-    * @todo what does it mean to have a configuration provider added more than once?  should configurationProviders be a set instead?
-    * @param provider the ConfigurationProvider to register
-    */
+     * adds a configuration provider to the List of ConfigurationProviders.  a given ConfigurationProvider may be added
+     * more than once
+     * @todo what does it mean to have a configuration provider added more than once?  should configurationProviders be a set instead?
+     * @param provider the ConfigurationProvider to register
+     */
     public static void addConfigurationProvider(ConfigurationProvider provider) {
         configurationProviders.add(provider);
     }
 
     /**
-    * clears the registered ConfigurationProviders.  this method will call destroy() on each of the registered
-    * ConfigurationProviders
-    * @see com.opensymphony.xwork.config.ConfigurationProvider#destroy
-    */
+     * clears the registered ConfigurationProviders.  this method will call destroy() on each of the registered
+     * ConfigurationProviders
+     * @see com.opensymphony.xwork.config.ConfigurationProvider#destroy
+     */
     public synchronized static void clearConfigurationProviders() {
         for (Iterator iterator = configurationProviders.iterator();
-                iterator.hasNext();) {
+             iterator.hasNext();) {
             ConfigurationProvider provider = (ConfigurationProvider) iterator.next();
             provider.destroy();
         }
@@ -98,11 +105,11 @@ public class ConfigurationManager {
     }
 
     /**
-    * reloads the Configuration files if the configuration files indicate that they need to be reloaded.
-    *
-    * @todo as FileManager.setReloadingConfigs never appears to be set anywhere, will this ever do anything?
-    * @todo it currently appears that the reload strategy is to check on each call to getConfiguration().  this seems extremely burdensome.  a caching mechanism should be implemented
-    */
+     * reloads the Configuration files if the configuration files indicate that they need to be reloaded.
+     *
+     * @todo as FileManager.setReloadingConfigs never appears to be set anywhere, will this ever do anything?
+     * @todo it currently appears that the reload strategy is to check on each call to getConfiguration().  this seems extremely burdensome.  a caching mechanism should be implemented
+     */
     private static void conditionalReload() {
         if (FileManager.isReloadingConfigs()) {
             LOG.debug("Checking ConfigurationProviders for reload.");
@@ -110,7 +117,7 @@ public class ConfigurationManager {
             boolean reload = false;
 
             for (Iterator iterator = getConfigurationProviders().iterator();
-                    iterator.hasNext();) {
+                 iterator.hasNext();) {
                 ConfigurationProvider provider = (ConfigurationProvider) iterator.next();
 
                 if (provider.needsReload()) {

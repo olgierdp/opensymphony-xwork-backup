@@ -32,6 +32,18 @@ import java.util.Map;
 public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestBase {
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        ConfigurationManager.destroyConfiguration();
+    }
+
+    protected void tearDown() throws Exception {
+        super.tearDown();
+
+        ConfigurationManager.destroyConfiguration();
+    }
+
     public void testBasicInterceptors() throws ConfigurationException {
         final String filename = "com/opensymphony/xwork/config/providers/xwork-test-interceptors-basic.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);

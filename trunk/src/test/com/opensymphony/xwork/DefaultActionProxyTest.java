@@ -6,7 +6,6 @@ package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
-
 import junit.framework.TestCase;
 
 
@@ -19,7 +18,7 @@ public class DefaultActionProxyTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setUp() {
-        ConfigurationManager.clearConfigurationProviders();
+        ConfigurationManager.destroyConfiguration();
         ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
     }
 

@@ -7,7 +7,6 @@ package com.opensymphony.xwork.config.providers;
 import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.impl.MockConfiguration;
-
 import junit.framework.TestCase;
 
 
@@ -16,7 +15,7 @@ import junit.framework.TestCase;
  * @author Jason Carreira
  * Created Jun 9, 2003 7:42:12 AM
  */
-public class ConfigurationTestBase extends TestCase {
+public abstract class ConfigurationTestBase extends TestCase {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     protected Configuration configuration;
