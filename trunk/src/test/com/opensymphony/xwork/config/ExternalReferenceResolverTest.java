@@ -6,14 +6,13 @@
  */
 package com.opensymphony.xwork.config;
 
-import com.opensymphony.xwork.Action;
-import com.opensymphony.xwork.ActionProxy;
-import com.opensymphony.xwork.ActionProxyFactory;
-import com.opensymphony.xwork.ExternalReferenceAction;
+import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
 
 import junit.framework.TestCase;
+
+import java.util.HashMap;
 
 /**
  * @author Ross
@@ -26,12 +25,20 @@ public class ExternalReferenceResolverTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
+        ActionContext.setContext(new ActionContext(new HashMap()));
+        
 		// ensure we're using the default configuration, not simple config
 		XmlConfigurationProvider c = new XmlConfigurationProvider();
 		ConfigurationManager.addConfigurationProvider(c);
 		ConfigurationManager.getConfiguration().reload();
 	}
-	
+
+    protected void tearDown() throws Exception
+    {
+        ActionContext.setContext(null);
+        super.tearDown();
+    }
+
 	/**
 	 * test that resolver has been loaded and given to the package config
 	 */

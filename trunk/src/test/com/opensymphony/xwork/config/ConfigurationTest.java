@@ -166,7 +166,7 @@ public class ConfigurationTest extends TestCase {
             assertNotNull(proxy);
             proxy = ActionProxyFactory.getFactory().createActionProxy("multipleInheritance", "testMultipleInheritance", null);
             assertNotNull(proxy);
-            assertEquals(5, proxy.getConfig().getInterceptors().size());
+            assertEquals(6, proxy.getConfig().getInterceptors().size());
             assertEquals(2, proxy.getConfig().getResults().size());
         } catch (Exception e) {
             e.printStackTrace();
@@ -177,7 +177,7 @@ public class ConfigurationTest extends TestCase {
     public void testPackageExtension() {
         try {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("/foo/bar", "Bar", null);
-            assertEquals(5, proxy.getConfig().getInterceptors().size());
+            assertEquals(6, proxy.getConfig().getInterceptors().size());
         } catch (Exception e) {
             e.printStackTrace();
             fail();
