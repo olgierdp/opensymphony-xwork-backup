@@ -27,6 +27,7 @@ public class SimpleAction extends ActionSupport {
     private Properties settings = new Properties();
     private String blah;
     private String name;
+    private TestBean bean = new TestBean();
     private int bar;
     private int baz;
     private int foo;
@@ -47,6 +48,14 @@ public class SimpleAction extends ActionSupport {
 
     public int getBaz() {
         return baz;
+    }
+
+    public void setBean(TestBean bean) {
+        this.bean = bean;
+    }
+
+    public TestBean getBean() {
+        return bean;
     }
 
     public void setBlah(String blah) {

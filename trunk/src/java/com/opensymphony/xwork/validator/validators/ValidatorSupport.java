@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.validator.validators;
 
 import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.xwork.util.OgnlUtil;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.TextParseUtil;
 import com.opensymphony.xwork.validator.ValidationException;
@@ -76,7 +77,7 @@ public abstract class ValidatorSupport implements Validator {
 
     protected Object getFieldValue(String name, Object object) throws ValidationException {
         try {
-            return Ognl.getValue(name, object);
+            return Ognl.getValue(OgnlUtil.compile(name), Ognl.createDefaultContext(object), object);
         } catch (OgnlException e) {
             final String msg = "Caught exception while getting value for field " + name;
             log.error(msg, e);

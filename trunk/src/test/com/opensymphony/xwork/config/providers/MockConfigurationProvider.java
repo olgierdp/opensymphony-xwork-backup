@@ -36,6 +36,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
     public static final String PARAM_INTERCEPTOR_ACTION_NAME = "parametersInterceptorTest";
     public static final String VALIDATION_ACTION_NAME = "validationInterceptorTest";
     public static final String VALIDATION_ALIAS_NAME = "validationAlias";
+    public static final String VALIDATION_SUBPROPERTY_NAME = "subproperty";
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -93,6 +94,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         ActionConfig validationActionConfig = new ActionConfig(null, SimpleAction.class, null, results, interceptors);
         defaultPackageContext.addActionConfig(VALIDATION_ACTION_NAME, validationActionConfig);
         defaultPackageContext.addActionConfig(VALIDATION_ALIAS_NAME, validationActionConfig);
+        defaultPackageContext.addActionConfig(VALIDATION_SUBPROPERTY_NAME, validationActionConfig);
 
         // We need this actionconfig to be the final destination for action chaining
         ActionConfig barActionConfig = new ActionConfig(null, SimpleAction.class, null, null, null);

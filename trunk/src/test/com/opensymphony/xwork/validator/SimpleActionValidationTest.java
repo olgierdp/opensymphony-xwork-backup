@@ -101,8 +101,6 @@ public class SimpleActionValidationTest extends TestCase {
     }
 
     public void testParamterizedMessage() {
-        ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
-
         HashMap params = new HashMap();
         params.put("bar", "42");
 
@@ -121,6 +119,41 @@ public class SimpleActionValidationTest extends TestCase {
             String errorMessage = (String) barErrors.get(0);
             assertNotNull(errorMessage);
             assertEquals("bar must be between 6 and 10, current value is 42.", errorMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    public void testSubPropertiesAreValidated() {
+        HashMap params = new HashMap();
+        params.put("baz", "10");
+
+        //valid values
+        params.put("foo", "8");
+        params.put("bar", "7");
+        params.put("date", "12/23/2002");
+
+        params.put("bean.name", "Name should be valid");
+
+        // this should cause a message
+        params.put("bean.count", "100");
+
+        HashMap extraContext = new HashMap();
+        extraContext.put(ActionContext.PARAMETERS, params);
+
+        try {
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.VALIDATION_SUBPROPERTY_NAME, extraContext);
+            proxy.execute();
+            assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
+
+            Map errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
+            List beanCountErrors = (List) errors.get("bean.count");
+            assertEquals(1, beanCountErrors.size());
+
+            String errorMessage = (String) beanCountErrors.get(0);
+            assertNotNull(errorMessage);
+            assertEquals("bean.count out of range.", errorMessage);
         } catch (Exception e) {
             e.printStackTrace();
             fail();
