@@ -28,8 +28,8 @@ public abstract class ValidatorSupport implements Validator {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     protected final Log log = LogFactory.getLog(this.getClass());
-    private String defaultMessage = "";
-    private String messageKey = null;
+    protected String defaultMessage = "";
+    protected String messageKey = null;
     private ValidatorContext validatorContext;
 
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -49,6 +49,10 @@ public abstract class ValidatorSupport implements Validator {
         stack.push(this);
 
         if (messageKey != null) {
+            if ((defaultMessage == null) || (defaultMessage.trim().equals(""))) {
+                defaultMessage = messageKey;
+            }
+
             message = validatorContext.getText(messageKey, defaultMessage);
         } else {
             message = defaultMessage;

@@ -20,18 +20,23 @@ public class ConversionErrorFieldValidator extends FieldValidatorSupport {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-     * The validation implementation must guarantee that setValidatorContext will
-     * be called with a non-null ValidatorContext before validate is called.
-     * @param object
-     * @throws ValidationException
-     */
+ * The validation implementation must guarantee that setValidatorContext will
+ * be called with a non-null ValidatorContext before validate is called.
+ * @param object
+ * @throws ValidationException
+ */
     public void validate(Object object) throws ValidationException {
-        String fullFieldName = getValidatorContext().getFullFieldName(getFieldName());
+        String fieldName = getFieldName();
+        String fullFieldName = getValidatorContext().getFullFieldName(fieldName);
         ActionContext context = ActionContext.getContext();
         Map conversionErrors = context.getConversionErrors();
 
         if (conversionErrors.containsKey(fullFieldName)) {
-            addFieldError(getFieldName(), XWorkConverter.getConversionErrorMessage(fullFieldName, context.getValueStack()));
+            if ((defaultMessage == null) || (defaultMessage.trim().equals(""))) {
+                defaultMessage = XWorkConverter.getConversionErrorMessage(fullFieldName, context.getValueStack());
+            }
+
+            addFieldError(fieldName, object);
         }
     }
 }

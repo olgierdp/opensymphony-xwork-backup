@@ -4,20 +4,15 @@
  */
 package com.opensymphony.xwork.validator;
 
-import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.ActionProxy;
-import com.opensymphony.xwork.ActionProxyFactory;
-import com.opensymphony.xwork.ValidationAware;
+import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.util.OgnlValueStack;
+import com.opensymphony.xwork.validator.validators.ValidatorSupport;
 
 import junit.framework.TestCase;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -101,6 +96,26 @@ public class SimpleActionValidationTest extends TestCase {
             e.printStackTrace();
             fail();
         }
+    }
+
+    public void testMessageKeyIsReturnedIfNoOtherDefault() throws ValidationException {
+        Validator validator = new ValidatorSupport() {
+            public void validate(Object object) throws ValidationException {
+                addActionError(object);
+            }
+        };
+
+        String messageKey = "does.not.exist";
+        validator.setMessageKey(messageKey);
+
+        ValidatorContext validatorContext = new DelegatingValidatorContext(new SimpleAction());
+        validator.setValidatorContext(validatorContext);
+        validator.validate(this);
+        assertTrue(validatorContext.hasActionErrors());
+
+        Collection errors = validatorContext.getActionErrors();
+        assertEquals(1, errors.size());
+        assertEquals(messageKey, errors.toArray()[0]);
     }
 
     public void testParamterizedMessage() {
