@@ -195,4 +195,9 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
 
         return result;
     }
+
+
+    public String toString() {
+        return "{ActionConfig " + clazz.getName() + (methodName != null ? "." + methodName + "()" : "") + "}";
+    }
 }

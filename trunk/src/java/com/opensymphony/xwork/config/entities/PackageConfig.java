@@ -389,6 +389,6 @@ public class PackageConfig {
     }
 
     public String toString() {
-        return "{" + super.toString() + " Name:" + name + " abstract:" + isAbstract + " namespace:" + namespace + " parents:" + parents + "}";
+        return "{PackageConfig Name:" + name + " namespace:" + namespace + " abstract:" + isAbstract + " parents:" + parents + "}";
     }
 }

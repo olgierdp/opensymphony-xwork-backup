@@ -192,6 +192,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         ActionConfig actionConfig = new ActionConfig(methodName, clazz, actionParams, results, interceptorList);
         packageContext.addActionConfig(name, actionConfig);
+
+        if (LOG.isDebugEnabled())
+            LOG.debug("Loaded " + (TextUtils.stringSet(packageContext.getNamespace()) ? packageContext.getNamespace() + "/" : "")
+                    + name + " in '" + packageContext.getName() + "' package:" + actionConfig);
     }
 
     /**
@@ -199,6 +203,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     */
     protected void addPackage(Element packageElement) throws ConfigurationException {
         PackageConfig newPackage = buildPackageContext(packageElement);
+
+        if (LOG.isDebugEnabled())
+            LOG.debug("Loaded " + newPackage);
 
         // add result types (and default result) to this package
         addResultTypes(newPackage, packageElement);
@@ -442,6 +449,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     //    }
     private void loadConfigurationFile(String fileName, DocumentBuilder db) {
         if (!includedFileNames.contains(fileName)) {
+            if (LOG.isDebugEnabled())
+                LOG.debug("Loading xwork configuration from: " + fileName);
             includedFileNames.add(fileName);
 
             Document doc = null;
@@ -489,10 +498,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     }
                 }
             }
-        }
 
-        //        loadPackages(rootElement);
-        //        loadIncludes(rootElement, db);
+            if (LOG.isDebugEnabled())
+                LOG.debug("Loaded xwork configuration from: " + fileName);
+        }
     }
 
     /**
