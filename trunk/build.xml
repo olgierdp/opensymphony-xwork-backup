@@ -283,6 +283,7 @@
     <target name="release">
         <!-- update the navpanel.jsp to include the download link -->
         <filter token="DOWNLOAD" value="${latest.download}"/>
+        <filter token="DOWNLOAD_JAR" value="${latest.download.jar}"/>
         <copy tofile="${docs}/navpanel.jsp" file="${docs}/navpanel-source.jsp" filtering="yes" overwrite="yes"/>
 
         <cvs command="commit -m '${name} ${version} release' ${docs}/navpanel.jsp"/>
