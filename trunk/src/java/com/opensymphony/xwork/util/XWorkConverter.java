@@ -101,6 +101,10 @@ public class XWorkConverter extends DefaultTypeConverter {
         this.defaultTypeConverter = defaultTypeConverter;
     }
 
+    public Object convertValue(Map map, Object o, Class aClass) {
+        return convertValue(map, null, null, null, o,  aClass);
+    }
+
     public Object convertValue(Map context, Object target, Member member, String property, Object value, Class toClass) {
         //
         // Process the conversion using the default mappings, if one exists
