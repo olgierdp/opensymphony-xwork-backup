@@ -5,26 +5,14 @@
 package com.opensymphony.xwork.interceptor.component;
 
 import com.opensymphony.xwork.ObjectFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.Serializable;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 /**
- *
- *
  * @author joew@thoughtworks.com
  * @author $Author$
  * @version $Revision$
@@ -72,7 +60,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
     }
 
     public void initializeObject(Object obj) {
-        loadResource(obj, this);
+        loadResource(obj, obj.getClass(), this);
 
         // is this even needed now?
         //        if (fallback != null) {
@@ -117,14 +105,14 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         addAllInterfaces(clazz.getSuperclass(), allInterfaces);
     }
 
-    private Class loadResource(Object resource, DefaultComponentManager dcm) {
+    private Class loadResource(Object resource, Class clazz, DefaultComponentManager dcm) {
         boolean resourceNotLoaded = !dcm.loadOrder.contains(resource);
 
         if (resourceNotLoaded) {
-            Map resources = getResourceDependencies(resource.getClass());
+            Map resources = getResourceDependencies(clazz);
 
             for (Iterator iterator = resources.entrySet().iterator();
-                    iterator.hasNext();) {
+                 iterator.hasNext();) {
                 Map.Entry mapEntry = (Map.Entry) iterator.next();
                 Class depResource = (Class) mapEntry.getKey();
                 DefaultComponentManager newDcm = (DefaultComponentManager) mapEntry.getValue();
@@ -136,7 +124,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
                         newResource = ObjectFactory.getObjectFactory().buildBean(depResource);
                     }
 
-                    Class enabler = loadResource(newResource, newDcm);
+                    Class enabler = loadResource(newResource, depResource, newDcm);
                     setupResource(resource, enabler, newResource);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -147,19 +135,19 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
                 }
             }
 
-            dcm.alreadyLoaded.add(resource.getClass());
+            dcm.alreadyLoaded.add(clazz);
 
             if (resource instanceof Initializable) {
                 Initializable initializable = (Initializable) resource;
                 initializable.init();
             }
 
-            dcm.resourceInstances.put(resource.getClass(), resource);
+            dcm.resourceInstances.put(clazz, resource);
             dcm.loadOrder.add(resource);
         }
 
         // now return this class's enabler
-        Class enabler = (Class) dcm.enablers2.get(resource.getClass());
+        Class enabler = (Class) dcm.enablers2.get(clazz);
 
         return enabler;
     }
@@ -170,7 +158,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         }
 
         try {
-            enabler.getMethods()[0].invoke(resource, new Object[] {newResource});
+            enabler.getMethods()[0].invoke(resource, new Object[]{newResource});
         } catch (Exception e) {
             e.printStackTrace();
 
