@@ -57,7 +57,7 @@ public abstract class ActionProxyFactory {
      * as part of creating an ActionProxy. Client code should not need to call the createActionInvocation methods.
      * @param actionProxy
      * @param extraContext
-     * @param pushAction tells whether the Action should be pushed onto the ValueStack 
+     * @param pushAction tells whether the Action should be pushed onto the ValueStack
      * @return
      * @throws Exception
      */

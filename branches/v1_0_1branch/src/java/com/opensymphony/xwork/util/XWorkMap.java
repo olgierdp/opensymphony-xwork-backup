@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.ObjectFactory;
+
 import java.util.HashMap;
 
 
@@ -30,7 +32,7 @@ public class XWorkMap extends HashMap {
 
         if (o == null) {
             try {
-                o = clazz.newInstance();
+                o = ObjectFactory.getObjectFactory().buildBean(clazz);
                 this.put(key, o);
             } catch (Exception e) {
                 e.printStackTrace();

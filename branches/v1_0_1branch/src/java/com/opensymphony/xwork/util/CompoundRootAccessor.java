@@ -61,6 +61,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         Boolean reportError = (Boolean) context.get(OgnlValueStack.REPORT_ERRORS_ON_NO_PROP);
 
         final String msg = "No object in the CompoundRoot has a property named '" + name + "'.";
+
         if ((reportError != null) && (reportError.booleanValue())) {
             log.error(msg);
             throw new RuntimeException(msg);

@@ -6,6 +6,7 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.util.ClassLoaderUtil;
 
+import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.util.OgnlUtil;
 
 import org.apache.commons.logging.Log;
@@ -51,11 +52,10 @@ public class ValidatorFactory {
         Validator validator;
 
         try {
-            validator = (Validator) clazz.newInstance();
-            OgnlUtil.setProperties(params, validator);
+            validator = ObjectFactory.getObjectFactory().buildValidator(clazz, params);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IllegalArgumentException("There was a problem creating a FieldValidator of type " + clazz.getName());
+            throw new IllegalArgumentException("There was a problem creating a Validator of type " + clazz.getName());
         }
 
         return validator;

@@ -7,6 +7,7 @@ package com.opensymphony.xwork.util;
 import com.opensymphony.util.FileManager;
 
 import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.xwork.ObjectFactory;
 
 import ognl.*;
 
@@ -36,9 +37,9 @@ public class XWorkConverter extends DefaultTypeConverter {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     HashMap defaultMappings = new HashMap();
-    HashSet unknownMappings = new HashSet();
     HashMap mappings = new HashMap();
     HashSet noMapping = new HashSet();
+    HashSet unknownMappings = new HashSet();
     TypeConverter defaultTypeConverter = new XWorkBasicConverter();
 
     //~ Constructors ///////////////////////////////////////////////////////////
@@ -77,6 +78,13 @@ public class XWorkConverter extends DefaultTypeConverter {
         return instance;
     }
 
+    public static String buildConverterFilename(Class clazz) {
+        String className = clazz.getName();
+        String resource = className.replace('.', '/') + "-conversion.properties";
+
+        return resource;
+    }
+
     public static void resetInstance() {
         instance = null;
     }
@@ -97,6 +105,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             Class clazz = null;
 
             clazz = target.getClass();
+
             Object[] classProp = null;
 
             // this is to handle weird issues with setValue with a different type
@@ -165,38 +174,6 @@ public class XWorkConverter extends DefaultTypeConverter {
         }
     }
 
-    private Object[] getClassProperty(Map context) {
-        Object[] classProp = null;
-        OgnlContext ognlContext = (OgnlContext) context;
-        Evaluation eval = ognlContext.getCurrentEvaluation();
-
-        if (eval == null) {
-            eval = ognlContext.getLastEvaluation();
-        }
-
-        if ((eval != null) && (eval.getLastChild() != null)) {
-            classProp = new Object[2];
-
-            // since we changed what the source was (tricked Ognl essentially)
-            if ((eval.getLastChild().getLastChild() != null) && (eval.getLastChild().getLastChild().getSource() != null) && (eval.getLastChild().getLastChild().getSource().getClass() != CompoundRoot.class)) {
-                classProp[0] = eval.getLastChild().getLastChild().getSource().getClass();
-            } else {
-                classProp[0] = eval.getLastChild().getSource().getClass();
-            }
-
-            // ugly hack getting the property, but it works
-            String property = eval.getNode().jjtGetChild(eval.getNode().jjtGetNumChildren() - 1).toString();
-
-            if (property.startsWith("\"") && property.endsWith("\"")) {
-                property = property.substring(1, property.length() - 1);
-            }
-
-            classProp[1] = property;
-        }
-
-        return classProp;
-    }
-
     public TypeConverter lookup(String className) {
         if (unknownMappings.contains(className)) {
             return null;
@@ -231,14 +208,6 @@ public class XWorkConverter extends DefaultTypeConverter {
         return lookup(clazz.getName());
     }
 
-    protected synchronized void registerConverter(String className, TypeConverter converter) {
-        defaultMappings.put(className, converter);
-    }
-
-    protected synchronized void registerConverterNotFound(String className) {
-        unknownMappings.add(className);
-    }
-
     protected void handleConversionException(Map context, String property, Object value, Object object) {
         if ((context.get(REPORT_CONVERSION_ERRORS) == Boolean.TRUE)) {
             String realProperty = property;
@@ -257,6 +226,46 @@ public class XWorkConverter extends DefaultTypeConverter {
 
             conversionErrors.put(realProperty, value);
         }
+    }
+
+    protected synchronized void registerConverter(String className, TypeConverter converter) {
+        defaultMappings.put(className, converter);
+    }
+
+    protected synchronized void registerConverterNotFound(String className) {
+        unknownMappings.add(className);
+    }
+
+    private Object[] getClassProperty(Map context) {
+        Object[] classProp = null;
+        OgnlContext ognlContext = (OgnlContext) context;
+        Evaluation eval = ognlContext.getCurrentEvaluation();
+
+        if (eval == null) {
+            eval = ognlContext.getLastEvaluation();
+        }
+
+        if ((eval != null) && (eval.getLastChild() != null)) {
+            classProp = new Object[2];
+
+            // since we changed what the source was (tricked Ognl essentially)
+            if ((eval.getLastChild().getLastChild() != null) && (eval.getLastChild().getLastChild().getSource() != null) && (eval.getLastChild().getLastChild().getSource().getClass() != CompoundRoot.class)) {
+                classProp[0] = eval.getLastChild().getLastChild().getSource().getClass();
+            } else {
+                classProp[0] = eval.getLastChild().getSource().getClass();
+            }
+
+            // ugly hack getting the property, but it works
+            String property = eval.getNode().jjtGetChild(eval.getNode().jjtGetNumChildren() - 1).toString();
+
+            if (property.startsWith("\"") && property.endsWith("\"")) {
+                property = property.substring(1, property.length() - 1);
+            }
+
+            classProp[1] = property;
+        }
+
+        return classProp;
     }
 
     private Object acceptableErrorValue(Class toClass) {
@@ -285,13 +294,6 @@ public class XWorkConverter extends DefaultTypeConverter {
         return null;
     }
 
-    public static String buildConverterFilename(Class clazz) {
-        String className = clazz.getName();
-        String resource = className.replace('.', '/') + "-conversion.properties";
-
-        return resource;
-    }
-
     private Map buildConverterMapping(Class clazz) throws Exception {
         Map mapping = new HashMap();
 
@@ -308,6 +310,7 @@ public class XWorkConverter extends DefaultTypeConverter {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 String propName = (String) entry.getKey();
                 String className = (String) entry.getValue();
+
                 if (!propName.startsWith("Collection_")) {
                     entry.setValue(createTypeConverter(className));
                 }
@@ -333,10 +336,10 @@ public class XWorkConverter extends DefaultTypeConverter {
         return mapping;
     }
 
-    private TypeConverter createTypeConverter(String className) throws Exception, InstantiationException {
+    private TypeConverter createTypeConverter(String className) throws Exception {
         Class conversionClass = Thread.currentThread().getContextClassLoader().loadClass(className);
 
-        return (TypeConverter) conversionClass.newInstance();
+        return (TypeConverter) ObjectFactory.getObjectFactory().buildBean(conversionClass);
     }
 
     private void loadConversionProps(String propsName) throws Exception {

@@ -5,10 +5,11 @@
 package com.opensymphony.xwork.config.providers;
 
 import com.opensymphony.xwork.MockInterceptor;
+import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.SimpleAction;
-import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.entities.ActionConfig;
+import com.opensymphony.xwork.config.entities.InterceptorConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.interceptor.TimerInterceptor;
@@ -36,9 +37,10 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public void testActions() throws ConfigurationException {
+    public void testActions() throws Exception {
         final String filename = "com/opensymphony/xwork/config/providers/xwork-test-actions.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
+        ObjectFactory objectFactory = ObjectFactory.getObjectFactory();
 
         // setup expectations
         // bar action is very simple, just two params
@@ -52,7 +54,9 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         params.put("foo", "18");
         params.put("bar", "24");
         results.put("success", new ResultConfig("success", MockResult.class, new HashMap()));
-        interceptors.add(InterceptorBuilder.buildInterceptor(TimerInterceptor.class, new HashMap()));
+
+        InterceptorConfig timerInterceptorConfig = new InterceptorConfig("timer", TimerInterceptor.class, new HashMap());
+        interceptors.add(objectFactory.buildInterceptor(timerInterceptorConfig, new HashMap()));
 
         ActionConfig fooAction = new ActionConfig(null, SimpleAction.class, params, results, interceptors);
 
@@ -60,8 +64,10 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         HashMap interceptorParams = new HashMap();
         interceptorParams.put("expectedFoo", "expectedFooValue");
         interceptorParams.put("foo", MockInterceptor.DEFAULT_FOO_VALUE);
+
+        InterceptorConfig mockInterceptorConfig = new InterceptorConfig("mock", MockInterceptor.class, new HashMap());
         interceptors = new ArrayList();
-        interceptors.add(InterceptorBuilder.buildInterceptor(MockInterceptor.class, interceptorParams));
+        interceptors.add(objectFactory.buildInterceptor(mockInterceptorConfig, interceptorParams));
 
         ActionConfig intAction = new ActionConfig(null, SimpleAction.class, new HashMap(), new HashMap(), interceptors);
 
@@ -70,7 +76,7 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         interceptorParams.put("expectedFoo", "expectedFooValue");
         interceptorParams.put("foo", "foo123");
         interceptors = new ArrayList();
-        interceptors.add(InterceptorBuilder.buildInterceptor(MockInterceptor.class, interceptorParams));
+        interceptors.add(objectFactory.buildInterceptor(mockInterceptorConfig, interceptorParams));
 
         ActionConfig intOverAction = new ActionConfig(null, SimpleAction.class, new HashMap(), new HashMap(), interceptors);
 

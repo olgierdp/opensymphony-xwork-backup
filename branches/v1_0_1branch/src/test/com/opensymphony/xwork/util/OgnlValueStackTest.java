@@ -81,6 +81,18 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals("blah", action.getName());
     }
 
+    public void testConvertStringArrayToList() {
+        Foo foo = new Foo();
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        vs.setValue("strings", new String[] {"one", "two"});
+
+        assertNotNull(foo.getStrings());
+        assertEquals("one", foo.getStrings().get(0));
+        assertEquals("two", foo.getStrings().get(1));
+    }
+
     public void testDeepProperties() {
         OgnlValueStack vs = new OgnlValueStack();
 
@@ -356,16 +368,6 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals(0, action.getBar());
     }
 
-    public void testTypeConversionError() {
-        TestBean bean = new TestBean();
-        OgnlValueStack stack = new OgnlValueStack();
-        stack.push(bean);
-        stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-        stack.setValue("count","a");
-        Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
-        assertTrue(conversionErrors.containsKey("count"));
-    }
-
     public void testSerializable() throws IOException, ClassNotFoundException {
         OgnlValueStack vs = new OgnlValueStack();
 
@@ -415,23 +417,6 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals(123, foo.getChild().getBar().getSomethingElse());
     }
 
-    public void testSetReallyDeepBarAsString() {
-        Foo foo = new Foo();
-        Foo foo2 = new Foo();
-        foo.setChild(foo2);
-
-        Foo foo3 = new Foo();
-        foo2.setChild(foo3);
-
-        OgnlValueStack vs = new OgnlValueStack();
-        vs.push(foo);
-
-        vs.setValue("child.child.bar", "bar:123");
-
-        assertEquals("bar", foo.getChild().getChild().getBar().getTitle());
-        assertEquals(123, foo.getChild().getChild().getBar().getSomethingElse());
-    }
-
     public void testSetNullList() {
         Foo foo = new Foo();
         OgnlValueStack vs = new OgnlValueStack();
@@ -453,18 +438,6 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals("Deep null cat", ((Cat) ((Cat) foo.getCats().get(0)).getFoo().getCats().get(1)).name);
     }
 
-    public void testConvertStringArrayToList() {
-        Foo foo = new Foo();
-        OgnlValueStack vs = new OgnlValueStack();
-        vs.push(foo);
-
-        vs.setValue("strings", new String[]{"one", "two"});
-
-        assertNotNull(foo.getStrings());
-        assertEquals("one", foo.getStrings().get(0));
-        assertEquals("two", foo.getStrings().get(1));
-    }
-
     public void testSetNullMap() {
         Foo foo = new Foo();
         OgnlValueStack vs = new OgnlValueStack();
@@ -484,6 +457,23 @@ public class OgnlValueStackTest extends TestCase {
         assertNotNull(((Cat) foo.getCatMap().get("One")).getFoo().getCatMap());
         assertNotNull(((Cat) ((Cat) foo.getCatMap().get("One")).getFoo().getCatMap().get("Two")));
         assertEquals("Deep null cat", ((Cat) ((Cat) foo.getCatMap().get("One")).getFoo().getCatMap().get("Two")).name);
+    }
+
+    public void testSetReallyDeepBarAsString() {
+        Foo foo = new Foo();
+        Foo foo2 = new Foo();
+        foo.setChild(foo2);
+
+        Foo foo3 = new Foo();
+        foo2.setChild(foo3);
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        vs.setValue("child.child.bar", "bar:123");
+
+        assertEquals("bar", foo.getChild().getChild().getBar().getTitle());
+        assertEquals(123, foo.getChild().getChild().getBar().getSomethingElse());
     }
 
     public void testSettingDogGender() {
@@ -557,6 +547,17 @@ public class OgnlValueStackTest extends TestCase {
 
         assertEquals(dog2, vs.pop());
         assertEquals("Rover", vs.findValue("name"));
+    }
+
+    public void testTypeConversionError() {
+        TestBean bean = new TestBean();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(bean);
+        stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        stack.setValue("count", "a");
+
+        Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
+        assertTrue(conversionErrors.containsKey("count"));
     }
 
     //~ Inner Classes //////////////////////////////////////////////////////////

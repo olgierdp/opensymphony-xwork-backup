@@ -23,9 +23,11 @@ import java.util.*;
  * @author Jason Carreira
  */
 public class SimpleActionValidationTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
+    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Locale origLocale;
+
+    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testAliasValidation() {
         HashMap params = new HashMap();
@@ -192,5 +194,4 @@ public class SimpleActionValidationTest extends TestCase {
     protected void tearDown() throws Exception {
         Locale.setDefault(origLocale);
     }
-
 }

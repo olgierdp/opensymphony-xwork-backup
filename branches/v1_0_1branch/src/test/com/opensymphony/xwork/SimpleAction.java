@@ -78,7 +78,7 @@ public class SimpleAction extends ActionSupport {
     }
 
     public boolean[] getBools() {
-        boolean[] b = new boolean[]{true, false, false, true};
+        boolean[] b = new boolean[] {true, false, false, true};
 
         return b;
     }

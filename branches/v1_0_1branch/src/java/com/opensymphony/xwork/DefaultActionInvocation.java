@@ -10,12 +10,14 @@ import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.interceptor.PreResultListener;
 import com.opensymphony.xwork.util.OgnlUtil;
 import com.opensymphony.xwork.util.OgnlValueStack;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -143,17 +145,11 @@ public class DefaultActionInvocation implements ActionInvocation {
         Result newResult = null;
 
         if (resultConfig != null) {
-            Class resultClass = resultConfig.getClazz();
-
-            if (resultClass != null) {
-                try {
-                    newResult = (Result) resultClass.newInstance();
-                } catch (Exception e) {
-                    LOG.error("There was an exception while instantiating the result of type " + resultClass, e);
-                    throw e;
-                }
-
-                OgnlUtil.setProperties(resultConfig.getParams(), newResult, ActionContext.getContext().getContextMap());
+            try {
+                newResult = ObjectFactory.getObjectFactory().buildResult(resultConfig);
+            } catch (Exception e) {
+                LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClazz(), e);
+                throw e;
             }
         }
 
@@ -181,7 +177,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         if (!executed) {
             if (preResultListeners != null) {
                 for (Iterator iterator = preResultListeners.iterator();
-                     iterator.hasNext();) {
+                        iterator.hasNext();) {
                     PreResultListener listener = (PreResultListener) iterator.next();
                     listener.beforeResult(this, resultCode);
                 }
@@ -200,16 +196,14 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     protected void createAction() {
         // load action
-        Class actionClass = proxy.getConfig().getClazz();
-
         try {
-            action = (Action) actionClass.newInstance();
+            action = ObjectFactory.getObjectFactory().buildAction(proxy.getConfig());
         } catch (InstantiationException e) {
             throw new XworkException("Unable to intantiate Action!", e);
         } catch (IllegalAccessException e) {
             throw new XworkException("Illegal access to constructor, is it public?", e);
         } catch (ClassCastException e) {
-            throw new XworkException("Action class " + actionClass.getClass().getName() + "does not implement " + Action.class.getName(), e);
+            throw new XworkException("Action class " + proxy.getConfig().getClazz().getName() + " does not implement " + Action.class.getName(), e);
         } catch (Exception e) {
             String gripe = "";
 

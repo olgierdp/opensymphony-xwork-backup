@@ -4,13 +4,17 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.util.FileManager;
+
+import com.opensymphony.xwork.ObjectFactory;
+
 import ognl.*;
 
-import java.lang.reflect.Method;
-import java.util.*;
 import java.io.InputStream;
 
-import com.opensymphony.util.FileManager;
+import java.lang.reflect.Method;
+
+import java.util.*;
 
 
 /**
@@ -19,13 +23,15 @@ import com.opensymphony.util.FileManager;
  * @version $Revision$
  */
 public class InstantiatingNullHandler implements NullHandler {
-    //~ Instance fields ////////////////////////////////////////////////////////
+    //~ Static fields/initializers /////////////////////////////////////////////
 
-    private Map clazzMap = new HashMap();
     public static final String CREATE_NULL_OBJECTS = "xwork.NullHandler.createNullObjects";
+
+    //~ Instance fields ////////////////////////////////////////////////////////
 
     HashMap mappings = new HashMap();
     HashSet noMapping = new HashSet();
+    private Map clazzMap = new HashMap();
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -42,7 +48,8 @@ public class InstantiatingNullHandler implements NullHandler {
      */
     public Object nullPropertyValue(Map context, Object target, Object property) {
         Boolean create = (Boolean) context.get(CREATE_NULL_OBJECTS);
-        boolean c = (create == null ? false : create.booleanValue());
+        boolean c = ((create == null) ? false : create.booleanValue());
+
         if (!c) {
             return null;
         }
@@ -52,9 +59,11 @@ public class InstantiatingNullHandler implements NullHandler {
         }
 
         Method method = null;
+
         if (target instanceof CompoundRoot) {
             // sometimes the null object may be at the root, so we need to check all of them
             CompoundRoot root = (CompoundRoot) target;
+
             for (Iterator iterator = root.iterator(); iterator.hasNext();) {
                 Object o = iterator.next();
                 Map methodMap = getMethodMap(o);
@@ -62,6 +71,7 @@ public class InstantiatingNullHandler implements NullHandler {
 
                 if (method != null) {
                     target = o;
+
                     break;
                 }
             }
@@ -80,7 +90,7 @@ public class InstantiatingNullHandler implements NullHandler {
         try {
             Class clazz = method.getParameterTypes()[0];
             Object param = createObject(context, clazz, target, property.toString());
-            method.invoke(target, new Object[]{param});
+            method.invoke(target, new Object[] {param});
 
             return param;
         } catch (Exception e) {
@@ -90,56 +100,9 @@ public class InstantiatingNullHandler implements NullHandler {
         return null;
     }
 
-    private Object createObject(Map context, Class clazz, Object target, String property) throws InstantiationException, IllegalAccessException {
-        if (clazz == Collection.class || clazz == List.class) {
-            Class collectionType = getCollectionType(target.getClass(), property);
-            if (collectionType == null) {
-                return null;
-            }
-            return new XWorkList(collectionType);
-        } else if (clazz == Map.class) {
-            Class collectionType = getCollectionType(target.getClass(), property);
-            if (collectionType == null) {
-                return null;
-            }            
-            return new XWorkMap(collectionType);
-        }
-
-        return clazz.newInstance();
-    }
-
-
-    private Map buildConverterMapping(Class clazz) throws Exception {
-        Map mapping = new HashMap();
-
-        String resource = XWorkConverter.buildConverterFilename(clazz);
-        InputStream is = FileManager.loadFile(resource, clazz);
-
-        if (is != null) {
-            Properties props = new Properties();
-            props.load(is);
-            mapping.putAll(props);
-
-            for (Iterator iterator = mapping.entrySet().iterator();
-                    iterator.hasNext();) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                String propName = (String) entry.getKey();
-                String className = (String) entry.getValue();
-                if (propName.startsWith("Collection_")) {
-                    entry.setValue(Class.forName(className));
-                }
-            }
-
-            mappings.put(clazz, mapping);
-        } else {
-            noMapping.add(clazz);
-        }
-
-        return mapping;
-    }
-
     private Class getCollectionType(Class clazz, String property) {
         Class propClass = null;
+
         if (!noMapping.contains(clazz)) {
             try {
                 Map mapping = (Map) mappings.get(clazz);
@@ -158,19 +121,6 @@ public class InstantiatingNullHandler implements NullHandler {
 
         return propClass;
     }
-
-    private Map conditionalReload(Class clazz, Map oldValues) throws Exception {
-        Map mapping = oldValues;
-
-        if (FileManager.isReloadingConfigs()) {
-            if (FileManager.fileNeedsReloading(XWorkConverter.buildConverterFilename(clazz))) {
-                mapping = buildConverterMapping(clazz);
-            }
-        }
-
-        return mapping;
-    }
-
 
     /**
      * Attempt to find the setter associated with the provided instance and propertyName.  If we do find it, place that
@@ -222,5 +172,69 @@ public class InstantiatingNullHandler implements NullHandler {
 
             return methodMap;
         }
+    }
+
+    private Map buildConverterMapping(Class clazz) throws Exception {
+        Map mapping = new HashMap();
+
+        String resource = XWorkConverter.buildConverterFilename(clazz);
+        InputStream is = FileManager.loadFile(resource, clazz);
+
+        if (is != null) {
+            Properties props = new Properties();
+            props.load(is);
+            mapping.putAll(props);
+
+            for (Iterator iterator = mapping.entrySet().iterator();
+                    iterator.hasNext();) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                String propName = (String) entry.getKey();
+                String className = (String) entry.getValue();
+
+                if (propName.startsWith("Collection_")) {
+                    entry.setValue(Class.forName(className));
+                }
+            }
+
+            mappings.put(clazz, mapping);
+        } else {
+            noMapping.add(clazz);
+        }
+
+        return mapping;
+    }
+
+    private Map conditionalReload(Class clazz, Map oldValues) throws Exception {
+        Map mapping = oldValues;
+
+        if (FileManager.isReloadingConfigs()) {
+            if (FileManager.fileNeedsReloading(XWorkConverter.buildConverterFilename(clazz))) {
+                mapping = buildConverterMapping(clazz);
+            }
+        }
+
+        return mapping;
+    }
+
+    private Object createObject(Map context, Class clazz, Object target, String property) throws Exception {
+        if ((clazz == Collection.class) || (clazz == List.class)) {
+            Class collectionType = getCollectionType(target.getClass(), property);
+
+            if (collectionType == null) {
+                return null;
+            }
+
+            return new XWorkList(collectionType);
+        } else if (clazz == Map.class) {
+            Class collectionType = getCollectionType(target.getClass(), property);
+
+            if (collectionType == null) {
+                return null;
+            }
+
+            return new XWorkMap(collectionType);
+        }
+
+        return ObjectFactory.getObjectFactory().buildBean(clazz);
     }
 }
