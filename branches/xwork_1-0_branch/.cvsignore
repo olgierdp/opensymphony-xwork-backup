@@ -1,0 +1,13 @@
+*.ipr
+*.iws
+*.iml
+build
+dist
+test*
+target
+maven.log
+.project
+.classpath
+bin
+build-*.xml
+ioc-src.zip

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<constraint-set>
+
+	<constrain name="toolbar">
+		<left>
+			<toAttribute reference="_container" attribute="left" offset="5" />
+		</left>
+		<top>
+			<toAttribute reference="_container" attribute="top" offset="5" />
+		</top>
+		<right>
+			<toAttribute reference="_container" attribute="right" offset="-5" />
+		</right>
+	</constrain>
+
+	<constrain name="table">
+		<left>
+			<toAttribute reference="_container" attribute="left" offset="5" />
+		</left>
+		<top>
+			<toAttribute reference="toolbar" attribute="bottom" offset="5" />
+		</top>
+		<right>
+			<toAttribute reference="_container" attribute="right" offset="-5" />
+		</right>
+		<bottom>
+			<toAttribute reference="_container" attribute="bottom" offset="-5" />
+		</bottom>
+	</constrain>
+
+</constraint-set>
