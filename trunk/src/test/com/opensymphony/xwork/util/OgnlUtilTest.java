@@ -14,9 +14,7 @@ import ognl.OgnlRuntime;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -92,6 +90,22 @@ public class OgnlUtilTest extends TestCase {
         } catch (OgnlException e) {
             e.printStackTrace(); //To change body of catch statement use Options | File Templates.
         }
+    }
+
+    public void testCanSetDependentObjectArray() {
+        EmailAction action = new EmailAction();
+        Map context = Ognl.createDefaultContext(action);
+
+        HashMap props = new HashMap();
+        props.put("email[0].address", "addr1");
+        props.put("email[1].address", "addr2");
+        props.put("email[2].address", "addr3");
+
+        OgnlUtil.setProperties(props, action, context);
+        assertEquals(3, action.email.size());
+        assertEquals("addr1", action.email.get(0).toString());
+        assertEquals("addr2", action.email.get(1).toString());
+        assertEquals("addr3", action.email.get(2).toString());
     }
 
     public void testCopySameType() {
@@ -268,5 +282,47 @@ public class OgnlUtilTest extends TestCase {
         foo.setaLong(0);
         OgnlUtil.setProperties(props, foo, context);
         assertEquals(123, foo.getaLong());
+    }
+
+    //~ Inner Classes //////////////////////////////////////////////////////////
+
+    public static class Email {
+        String address;
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public String toString() {
+            return address;
+        }
+    }
+
+    class EmailAction {
+        public List email = new OgnlList(Email.class);
+
+        public List getEmail() {
+            return this.email;
+        }
+    }
+
+    class OgnlList extends ArrayList {
+        private Class clazz;
+
+        public OgnlList(Class clazz) {
+            this.clazz = clazz;
+        }
+
+        public synchronized Object get(int index) {
+            while (index >= this.size()) {
+                try {
+                    this.add(clazz.newInstance());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            return super.get(index);
+        }
     }
 }
