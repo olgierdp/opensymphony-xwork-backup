@@ -99,7 +99,6 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
      * @return cached instance of the action method or null if method name was not specified
      */
     public Method getMethod() throws NoSuchMethodException {
-
         if (method != null) {
             return method;
         }
@@ -125,7 +124,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
                 }
             }
         } else // return default execute() method if method name is not specified
-         {
+        {
             method = clazz.getMethod("execute", new Class[0]);
         }
 

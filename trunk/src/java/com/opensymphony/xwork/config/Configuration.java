@@ -29,22 +29,23 @@ public interface Configuration {
     Map getPackageConfigs();
 
     /**
- * the current runtime configuration.  currently, if changes have been made to the Configuration since the last
- * time buildRuntimeConfiguration() was called, you'll need to make sure to
- * @return
- */
+     * the current runtime configuration.  currently, if changes have been made to the Configuration since the last
+     * time buildRuntimeConfiguration() was called, you'll need to make sure to
+     *
+     * @return
+     */
     RuntimeConfiguration getRuntimeConfiguration();
 
     void addPackageConfig(String name, PackageConfig packageConfig);
 
     /**
- * allow the Configuration to clean up any resources that have been used
- */
+     * allow the Configuration to clean up any resources that have been used
+     */
     void destroy();
 
     /**
- * @throws ConfigurationException
- */
+     * @throws ConfigurationException
+     */
     void reload() throws ConfigurationException;
 
     void removePackageConfig(String name);

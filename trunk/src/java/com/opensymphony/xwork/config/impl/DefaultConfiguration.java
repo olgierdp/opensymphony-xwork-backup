@@ -17,8 +17,9 @@ import java.util.*;
 
 /**
  * DefaultConfiguration
+ *
  * @author Jason Carreira
- * Created Feb 24, 2003 7:38:06 AM
+ *         Created Feb 24, 2003 7:38:06 AM
  */
 public class DefaultConfiguration implements Configuration {
     //~ Static fields/initializers /////////////////////////////////////////////
@@ -59,8 +60,8 @@ public class DefaultConfiguration implements Configuration {
     }
 
     /**
-    * Allows the configuration to clean up any resources used
-    */
+     * Allows the configuration to clean up any resources used
+     */
     public void destroy() {
     }
 
@@ -69,15 +70,16 @@ public class DefaultConfiguration implements Configuration {
     }
 
     /**
-    * Calls the ConfigurationProviderFactory.getConfig() to tell it to reload the configuration and then calls
-    * buildRuntimeConfiguration().
-    * @throws ConfigurationException
-    */
+     * Calls the ConfigurationProviderFactory.getConfig() to tell it to reload the configuration and then calls
+     * buildRuntimeConfiguration().
+     *
+     * @throws ConfigurationException
+     */
     public synchronized void reload() throws ConfigurationException {
         packageContexts.clear();
 
         for (Iterator iterator = ConfigurationManager.getConfigurationProviders().iterator();
-                iterator.hasNext();) {
+             iterator.hasNext();) {
             ConfigurationProvider provider = (ConfigurationProvider) iterator.next();
             provider.init(this);
         }
@@ -90,7 +92,7 @@ public class DefaultConfiguration implements Configuration {
 
         if (toBeRemoved != null) {
             for (Iterator iterator = packageContexts.values().iterator();
-                    iterator.hasNext();) {
+                 iterator.hasNext();) {
                 PackageConfig packageContext = (PackageConfig) iterator.next();
                 packageContext.removeParent(toBeRemoved);
             }
@@ -98,14 +100,14 @@ public class DefaultConfiguration implements Configuration {
     }
 
     /**
-    * This methodName builds the internal runtime configuration used by Xwork for finding and configuring Actions from the
-    * programmatic configuration data structures. All of the old runtime configuration will be discarded and rebuilt.
-    */
+     * This methodName builds the internal runtime configuration used by Xwork for finding and configuring Actions from the
+     * programmatic configuration data structures. All of the old runtime configuration will be discarded and rebuilt.
+     */
     protected synchronized RuntimeConfiguration buildRuntimeConfiguration() throws ConfigurationException {
         Map namespaceActionConfigs = new HashMap();
 
         for (Iterator iterator = packageContexts.values().iterator();
-                iterator.hasNext();) {
+             iterator.hasNext();) {
             PackageConfig packageContext = (PackageConfig) iterator.next();
 
             if (!packageContext.isAbstract()) {
@@ -119,7 +121,7 @@ public class DefaultConfiguration implements Configuration {
                 Map actionConfigs = packageContext.getAllActionConfigs();
 
                 for (Iterator actionIterator = actionConfigs.keySet().iterator();
-                        actionIterator.hasNext();) {
+                     actionIterator.hasNext();) {
                     String actionName = (String) actionIterator.next();
                     ActionConfig baseConfig = (ActionConfig) actionConfigs.get(actionName);
                     configs.put(actionName, buildFullActionConfig(packageContext, baseConfig));
@@ -136,7 +138,7 @@ public class DefaultConfiguration implements Configuration {
         String defaultResult = packageContext.getFullDefaultResultType();
 
         for (Iterator iterator = results.entrySet().iterator();
-                iterator.hasNext();) {
+             iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
 
             if (entry.getValue() == null) {
@@ -147,12 +149,13 @@ public class DefaultConfiguration implements Configuration {
     }
 
     /**
-    * Builds the full runtime actionconfig with all of the defaults and inheritance
-    * @param packageContext the PackageConfig which holds the base config we're building from
-    * @param baseConfig the ActionConfig which holds only the configuration specific to itself, without the defaults
-    * and inheritance
-    * @return a full ActionConfig for runtime configuration with all of the inherited and default params
-    */
+     * Builds the full runtime actionconfig with all of the defaults and inheritance
+     *
+     * @param packageContext the PackageConfig which holds the base config we're building from
+     * @param baseConfig     the ActionConfig which holds only the configuration specific to itself, without the defaults
+     *                       and inheritance
+     * @return a full ActionConfig for runtime configuration with all of the inherited and default params
+     */
     private ActionConfig buildFullActionConfig(PackageConfig packageContext, ActionConfig baseConfig) throws ConfigurationException {
         Map params = new HashMap(baseConfig.getParams());
         Map results = new HashMap(packageContext.getAllGlobalResults());
@@ -187,13 +190,13 @@ public class DefaultConfiguration implements Configuration {
         }
 
         /**
-        * Gets the configuration information for an action name, or returns null if the
-        * name is not recognized.
-        *
-        * @param name the name of the action
-        * @param namespace the namespace for the action or null for the empty namespace, ""
-        * @return the configuration information for action requested
-        */
+         * Gets the configuration information for an action name, or returns null if the
+         * name is not recognized.
+         *
+         * @param name      the name of the action
+         * @param namespace the namespace for the action or null for the empty namespace, ""
+         * @return the configuration information for action requested
+         */
         public synchronized ActionConfig getActionConfig(String namespace, String name) {
             ActionConfig config = null;
             Map actions = (Map) namespaceActionConfigs.get((namespace == null) ? "" : namespace);
@@ -215,10 +218,10 @@ public class DefaultConfiguration implements Configuration {
         }
 
         /**
-        * Gets the configuration settings for every action.
-        *
-        * @return a Map of namespace - > Map of ActionConfig objects, with the key being the action name
-        */
+         * Gets the configuration settings for every action.
+         *
+         * @return a Map of namespace - > Map of ActionConfig objects, with the key being the action name
+         */
         public synchronized Map getActionConfigs() {
             return namespaceActionConfigs;
         }
@@ -227,12 +230,12 @@ public class DefaultConfiguration implements Configuration {
             StringBuffer buff = new StringBuffer("RuntimeConfiguration - actions are\n");
 
             for (Iterator iterator = namespaceActionConfigs.keySet().iterator();
-                    iterator.hasNext();) {
+                 iterator.hasNext();) {
                 String namespace = (String) iterator.next();
                 Map actionConfigs = (Map) namespaceActionConfigs.get(namespace);
 
                 for (Iterator iterator2 = actionConfigs.keySet().iterator();
-                        iterator2.hasNext();) {
+                     iterator2.hasNext();) {
                     buff.append(namespace + "/" + iterator2.next() + "\n");
                 }
             }

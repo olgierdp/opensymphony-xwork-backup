@@ -145,7 +145,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
             Map resources = getResourceDependencies(clazz);
 
             for (Iterator iterator = resources.entrySet().iterator();
-                    iterator.hasNext();) {
+                 iterator.hasNext();) {
                 Map.Entry mapEntry = (Map.Entry) iterator.next();
                 Class depResource = (Class) mapEntry.getKey();
                 DefaultComponentManager newDcm = (DefaultComponentManager) mapEntry.getValue();
@@ -201,7 +201,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         }
 
         try {
-            enabler.getMethods()[0].invoke(resource, new Object[] {newResource});
+            enabler.getMethods()[0].invoke(resource, new Object[]{newResource});
         } catch (Exception e) {
             e.printStackTrace();
 

@@ -23,21 +23,21 @@ public class XmlConfigurationProviderMultilevelTest extends ConfigurationTestBas
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-    * attempt to load an xwork.xml file that has multilevel levels of inheritance and verify that the interceptors are
-    * correctly propagated through.
-    *
-    * @throws Exception
-    */
+     * attempt to load an xwork.xml file that has multilevel levels of inheritance and verify that the interceptors are
+     * correctly propagated through.
+     *
+     * @throws Exception
+     */
     public void testMultiLevelInheritance() throws Exception {
         final String filename = "com/opensymphony/xwork/config/providers/xwork-test-multilevel.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
         provider.init(configuration);
 
         /**
-        * for this test, we expect the action named, action3, in the namespace, namespace3, to have a single
-        * ParameterInterceptor.  The ParameterInterceptor, param, has been defined far up namespace3's parentage ...
-        * namespace3 -> namespace2 -> namespace1 -> default
-        */
+         * for this test, we expect the action named, action3, in the namespace, namespace3, to have a single
+         * ParameterInterceptor.  The ParameterInterceptor, param, has been defined far up namespace3's parentage ...
+         * namespace3 -> namespace2 -> namespace1 -> default
+         */
         PackageConfig packageConfig = configuration.getPackageConfig("namespace3");
         Assert.assertNotNull(packageConfig);
         assertEquals(2, packageConfig.getAllInterceptorConfigs().size());
