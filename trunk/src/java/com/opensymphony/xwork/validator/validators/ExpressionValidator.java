@@ -31,7 +31,14 @@ public class ExpressionValidator extends ValidatorSupport {
 
     public void validate(Object object) throws ValidationException {
         Boolean answer = Boolean.FALSE;
-        Object obj = getFieldValue(expression, object);
+        Object obj = null;
+        try {
+            obj = getFieldValue(expression, object);
+        } catch (ValidationException e) {
+            throw e;
+        } catch (Exception e) {
+            // let this pass, but it will be logged right below
+        }
 
         if ((obj != null) && (obj instanceof Boolean)) {
             answer = (Boolean) obj;
