@@ -75,7 +75,7 @@ public class LocalizedTextUtil {
 
             ResourceBundle bundle = findResourceBundle(bundleName, locale);
             if (bundle != null) {
-                reloadBundles(bundle);
+                reloadBundles();
                 try {
                     return bundle.getString(aTextName);
                 } catch (MissingResourceException e) {
@@ -355,7 +355,7 @@ public class LocalizedTextUtil {
 
     public static String findText(ResourceBundle bundle, String aTextName, Locale locale, String defaultMessage, Object[] args, OgnlValueStack valueStack) {
         try {
-            reloadBundles(bundle);
+            reloadBundles();
 
             String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
             MessageFormat mf = buildMessageFormat(message, locale);
@@ -402,7 +402,7 @@ public class LocalizedTextUtil {
             return null;
         }
 
-        reloadBundles(bundle);
+        reloadBundles();
 
         try {
             String message = TextParseUtil.translateVariables(bundle.getString(key), valueStack);
@@ -491,10 +491,10 @@ public class LocalizedTextUtil {
         return null;
     }
 
-    private static void reloadBundles(ResourceBundle resource) {
+    private static void reloadBundles() {
         if (reloadBundles) {
             try {
-                Class klass = resource.getClass().getSuperclass();
+                Class klass = ResourceBundle.class;
                 Field field = klass.getDeclaredField("cacheList");
                 field.setAccessible(true);
 
