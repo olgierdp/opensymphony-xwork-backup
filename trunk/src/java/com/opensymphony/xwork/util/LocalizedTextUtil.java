@@ -63,10 +63,9 @@ public class LocalizedTextUtil {
      *
      * @param aTextName the message key
      * @param locale    the locale the message should be for
-     * @return a localized message based on the specified key
-     * @throws MissingResourceException if no message can be found for the specified key
+     * @return a localized message based on the specified key, or null if no localized message can be found for it
      */
-    public static String findDefaultText(String aTextName, Locale locale) throws MissingResourceException {
+    public static String findDefaultText(String aTextName, Locale locale) {
         //List localList = new ArrayList(DEFAULT_RESOURCE_BUNDLES);
         List localList = DEFAULT_RESOURCE_BUNDLES; // it isn't sync'd, but this is so rare, let's do it anyway
 
@@ -94,13 +93,16 @@ public class LocalizedTextUtil {
      * @param aTextName the message key
      * @param locale    the locale the message should be for
      * @param params    an array of objects to be substituted into the message text
-     * @return A formatted message based on the specified key
-     * @throws MissingResourceException if no message can be found for the specified key
+     * @return A formatted message based on the specified key, or null if no localized message can be found for it
      */
-    public static String findDefaultText(String aTextName, Locale locale, Object[] params) throws MissingResourceException {
-        MessageFormat mf = buildMessageFormat(findDefaultText(aTextName, locale), locale);
+    public static String findDefaultText(String aTextName, Locale locale, Object[] params) {
 
-        return mf.format(params);
+        String defaultText = findDefaultText(aTextName, locale);
+        if (defaultText != null) {
+            MessageFormat mf = buildMessageFormat(defaultText, locale);
+            return mf.format(params);
+        }
+        return null;
     }
 
     public static ResourceBundle findResourceBundle(String aBundleName, Locale locale) {
