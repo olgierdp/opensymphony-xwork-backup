@@ -26,14 +26,12 @@ import java.util.TreeSet;
 /**
  * ActionValidatorManager
  *
- * Created : Jan 20, 2003 8:26:51 AM
- *
  * @author Jason Carreira
+ * @author Mark Woon
  */
 public class ActionValidatorManager {
     //~ Static fields/initializers /////////////////////////////////////////////
 
-    private static final String ACTION_VALIDATOR_KEY = "__ACTION_VALIDATOR_KEY__";
     protected static final String VALIDATION_CONFIG_SUFFIX = "-validation.xml";
     private static final Map validatorCache = Collections.synchronizedMap(new HashMap());
     private static final Map validatorFileCache = Collections.synchronizedMap(new HashMap());
@@ -64,8 +62,7 @@ public class ActionValidatorManager {
 
     public static void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException {
         List validators = getValidators(object.getClass(), context);
-
-        Set shortcircuited = null;
+        Set shortcircuitedFields = null;
 
         for (Iterator iterator = validators.iterator(); iterator.hasNext();) {
             Validator validator = (Validator) iterator.next();
@@ -75,29 +72,27 @@ public class ActionValidatorManager {
                 LOG.debug("Running validator: " + validator + " for object " + object);
             }
 
-            String fieldName = ACTION_VALIDATOR_KEY;
             FieldValidator fValidator = null;
 
             if (validator instanceof FieldValidator) {
                 fValidator = (FieldValidator) validator;
-                fieldName = fValidator.getFieldName();
-            }
 
-            if ((shortcircuited != null) && shortcircuited.contains(fieldName)) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Short-circuited, skipping");
+                if ((shortcircuitedFields != null) && shortcircuitedFields.contains(fValidator.getFieldName())) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Short-circuited, skipping");
+                    }
+
+                    continue;
                 }
-
-                continue;
             }
 
-            if (validator instanceof ShortCircuitingValidator && ((ShortCircuitingValidator) validator).isShortCircuit()) {
+            if (validator instanceof ShortCircuitableValidator && ((ShortCircuitableValidator) validator).isShortCircuit()) {
                 // get number of existing errors
                 int errs = 0;
 
                 if (fValidator != null) {
                     if (validatorContext.hasFieldErrors()) {
-                        Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fieldName);
+                        Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fValidator.getFieldName());
 
                         if (fieldErrors != null) {
                             errs = fieldErrors.size();
@@ -113,26 +108,32 @@ public class ActionValidatorManager {
 
                 validator.validate(object);
 
-                Collection errCol = null;
-
                 if (fValidator != null) {
                     if (validatorContext.hasFieldErrors()) {
-                        errCol = (Collection) validatorContext.getFieldErrors().get(fieldName);
+                        Collection errCol = (Collection) validatorContext.getFieldErrors().get(fValidator.getFieldName());
+
+                        if ((errCol != null) && (errCol.size() > errs)) {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("Short-circuiting on field validation");
+                            }
+
+                            if (shortcircuitedFields == null) {
+                                shortcircuitedFields = new TreeSet();
+                            }
+
+                            shortcircuitedFields.add(fValidator.getFieldName());
+                        }
                     }
                 } else if (validatorContext.hasActionErrors()) {
-                    errCol = validatorContext.getActionErrors();
-                }
+                    Collection errCol = validatorContext.getActionErrors();
 
-                if ((errCol != null) && (errCol.size() > errs)) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Short-circuiting");
+                    if ((errCol != null) && (errCol.size() > errs)) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Short-circuiting");
+                        }
+
+                        break;
                     }
-
-                    if (shortcircuited == null) {
-                        shortcircuited = new TreeSet();
-                    }
-
-                    shortcircuited.add(fieldName);
                 }
 
                 continue;
@@ -151,61 +152,67 @@ public class ActionValidatorManager {
     }
 
     private static List buildAliasValidators(Class aClass, String context, boolean checkFile) {
-        final String fullClassName = aClass.getName();
-        final String className = fullClassName.substring(fullClassName.lastIndexOf('.') + 1);
-        final String fullPath = fullClassName.replace('.', '/');
-        final String path = fullPath.substring(0, fullPath.lastIndexOf('/') + 1);
-        final String fileName = path + className + "-" + context + VALIDATION_CONFIG_SUFFIX;
+        String fileName = aClass.getName().replace('.', '/') + "-" + context + VALIDATION_CONFIG_SUFFIX;
 
         return loadFile(fileName, aClass, checkFile);
     }
 
     private static List buildClassValidators(Class aClass, boolean checkFile) {
-        final String actionClassName = aClass.getName();
-        final String actionName = actionClassName.replace('.', '/');
-
-        String fileName = actionName + VALIDATION_CONFIG_SUFFIX;
+        String fileName = aClass.getName().replace('.', '/') + VALIDATION_CONFIG_SUFFIX;
 
         return loadFile(fileName, aClass, checkFile);
     }
 
     /**
-    * This method 'collects' all the validators for a given action invocation.
-    *
-    * It will traverse up the class hierarchy looking for validators for every super class
-    * and interface of the current action, as well as adding validators for any alias of
-    * this invocation. Nifty!
-    */
+     * This method 'collects' all the validators for a given action invocation.
+     *
+     * It will traverse up the class hierarchy looking for validators for every super class
+     * and interface of the current action, as well as adding validators for any alias of
+     * this invocation. Nifty!
+     *
+     *  Given the following class structure:
+     *
+     *   interface Animal;
+     *   interface Quadraped extends Animal;
+     *   class AnimalImpl implements Animal;
+     *   class QuadrapedImpl extends AnimalImpl implements Quadraped;
+     *   class Dog extends QuadrapedImpl;
+     *
+     *  This method will look for the following config files:
+     *
+     *   Animal
+     *   Animal-concept
+     *   AnimalImpl
+     *   AnimalImpl-context
+     *   Quadraped
+     *   Quadraped-concept
+     *   QuadrapedImpl
+     *   QuadrapedImpl-context
+     *   Dog
+     *   Dog-context
+     */
     private static List buildValidators(Class clazz, String context, boolean checkFile) {
         List validators = new ArrayList();
 
-        // order matters for short-circuit
-        validators.addAll(buildAliasValidators(clazz, context, checkFile));
-        validators.addAll(buildClassValidators(clazz, checkFile));
+        if (!clazz.equals(Object.class)) {
+            validators.addAll(buildValidators(clazz.getSuperclass(), context, checkFile));
+        }
 
         // look for validators for implemented interfaces
         Class[] interfaces = clazz.getInterfaces();
 
         for (int x = 0; x < interfaces.length; x++) {
             validators.addAll(buildClassValidators(interfaces[x], checkFile));
+
+            if (context != null) {
+                validators.addAll(buildAliasValidators(interfaces[x], context, checkFile));
+            }
         }
 
-        // looking for validators in class hierarchy
-        Class anActionClass = clazz.getSuperclass();
+        validators.addAll(buildClassValidators(clazz, checkFile));
 
-        while (!anActionClass.equals(Object.class)) {
-            // look for validators for this class
-            validators.addAll(buildClassValidators(anActionClass, checkFile));
-
-            // look for validators for implemented interfaces
-            interfaces = anActionClass.getInterfaces();
-
-            for (int x = 0; x < interfaces.length; x++) {
-                validators.addAll(buildClassValidators(interfaces[x], checkFile));
-            }
-
-            // search up class hierarchy
-            anActionClass = anActionClass.getSuperclass();
+        if (context != null) {
+            validators.addAll(buildAliasValidators(clazz, context, checkFile));
         }
 
         return validators;

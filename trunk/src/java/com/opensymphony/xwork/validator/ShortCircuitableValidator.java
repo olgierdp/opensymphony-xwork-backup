@@ -6,13 +6,12 @@ package com.opensymphony.xwork.validator;
 
 
 /**
- * The ShortCircuitingFieldValidator interface defines the methods to be
- * implemented by FieldValidators that can short-circuit the validator queue
+ * This interface should be implemented by validators that can short-circuit the validator queue
  * that it is in.
  *
  * @author Mark Woon
  */
-public interface ShortCircuitingValidator extends Validator {
+public interface ShortCircuitableValidator {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**

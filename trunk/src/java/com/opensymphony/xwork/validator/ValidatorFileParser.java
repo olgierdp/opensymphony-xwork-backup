@@ -142,8 +142,8 @@ public class ValidatorFileParser {
 
             Validator validator = ValidatorFactory.getValidator(validatorType, params);
 
-            if (validator instanceof ShortCircuitingValidator) {
-                ((ShortCircuitingValidator) validator).setShortCircuit(Boolean.valueOf(validatorElement.getAttribute("short-circuit")).booleanValue());
+            if (validator instanceof ShortCircuitableValidator) {
+                ((ShortCircuitableValidator) validator).setShortCircuit(Boolean.valueOf(validatorElement.getAttribute("short-circuit")).booleanValue());
             }
 
             NodeList messageNodes = validatorElement.getElementsByTagName("message");

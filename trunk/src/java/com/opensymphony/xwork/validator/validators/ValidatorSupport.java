@@ -7,8 +7,9 @@ package com.opensymphony.xwork.validator.validators;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.TextParseUtil;
-import com.opensymphony.xwork.validator.ShortCircuitingValidator;
+import com.opensymphony.xwork.validator.ShortCircuitableValidator;
 import com.opensymphony.xwork.validator.ValidationException;
+import com.opensymphony.xwork.validator.Validator;
 import com.opensymphony.xwork.validator.ValidatorContext;
 
 import org.apache.commons.logging.Log;
@@ -20,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Jason Carreira
  * Created Feb 15, 2003 3:58:21 PM
  */
-public abstract class ValidatorSupport implements ShortCircuitingValidator {
+public abstract class ValidatorSupport implements Validator, ShortCircuitableValidator {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     protected final Log log = LogFactory.getLog(this.getClass());

@@ -44,20 +44,20 @@ public class ValidatorFileParserTest extends TestCase {
         assertEquals("You must enter a value for foo.", fieldValidator.getDefaultMessage());
 
         validator = (Validator) configs.get(1);
-        assertTrue(validator instanceof ShortCircuitingValidator);
-        assertTrue(((ShortCircuitingValidator) validator).isShortCircuit());
+        assertTrue(validator instanceof ShortCircuitableValidator);
+        assertTrue(((ShortCircuitableValidator) validator).isShortCircuit());
 
         validator = (Validator) configs.get(2);
         assertTrue(validator instanceof IntRangeFieldValidator);
-        assertFalse(((ShortCircuitingValidator) validator).isShortCircuit());
+        assertFalse(((ShortCircuitableValidator) validator).isShortCircuit());
 
         validator = (Validator) configs.get(3);
         assertTrue(validator instanceof ExpressionValidator);
-        assertFalse(((ShortCircuitingValidator) validator).isShortCircuit());
+        assertFalse(((ShortCircuitableValidator) validator).isShortCircuit());
 
         validator = (Validator) configs.get(4);
         assertTrue(validator instanceof ExpressionValidator);
-        assertTrue(((ShortCircuitingValidator) validator).isShortCircuit());
+        assertTrue(((ShortCircuitableValidator) validator).isShortCircuit());
     }
 
     protected void setUp() throws Exception {
