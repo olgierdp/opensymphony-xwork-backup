@@ -55,7 +55,6 @@ public class ActionValidatorManagerTest extends TestCase {
             bean.setName("foo");
             bean.setCount(99);
 
-
             ValidatorContext context = new GenericValidatorContext(bean);
             ActionValidatorManager.validate(bean, "beanMessageBundle", context);
             assertTrue(context.hasErrors());
@@ -65,32 +64,6 @@ public class ActionValidatorManagerTest extends TestCase {
             assertNotNull(l);
             assertEquals(1, l.size());
             assertEquals("Smaller Invalid Count: 99", l.get(0));
-        } catch (ValidationException ex) {
-            ex.printStackTrace();
-            fail("Validation error: " + ex.getMessage());
-        }
-    }
-
-    public void testMessageInterpolation() {
-        // get validators
-        List validatorList = ActionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
-        assertEquals(3, validatorList.size());
-
-        try {
-            TestBean bean = new TestBean();
-            bean.setName("foo");
-            bean.setCount(150);
-
-
-            ValidatorContext context = new GenericValidatorContext(bean);
-            ActionValidatorManager.validate(bean, "beanMessageBundle", context);
-            assertTrue(context.hasErrors());
-            assertTrue(context.hasFieldErrors());
-
-            List l = (List) context.getFieldErrors().get("count");
-            assertNotNull(l);
-            assertEquals(1, l.size());
-            assertEquals("Count must be between 1 and 100, current value is 150.", l.get(0));
         } catch (ValidationException ex) {
             ex.printStackTrace();
             fail("Validation error: " + ex.getMessage());
@@ -160,6 +133,31 @@ public class ActionValidatorManagerTest extends TestCase {
         final FieldValidator dataValidator2 = (FieldValidator) validatorList.get(9);
         assertEquals("data", dataValidator2.getFieldName());
         assertTrue(dataValidator2 instanceof RequiredStringValidator);
+    }
+
+    public void testMessageInterpolation() {
+        // get validators
+        List validatorList = ActionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
+        assertEquals(3, validatorList.size());
+
+        try {
+            TestBean bean = new TestBean();
+            bean.setName("foo");
+            bean.setCount(150);
+
+            ValidatorContext context = new GenericValidatorContext(bean);
+            ActionValidatorManager.validate(bean, "beanMessageBundle", context);
+            assertTrue(context.hasErrors());
+            assertTrue(context.hasFieldErrors());
+
+            List l = (List) context.getFieldErrors().get("count");
+            assertNotNull(l);
+            assertEquals(1, l.size());
+            assertEquals("Count must be between 1 and 100, current value is 150.", l.get(0));
+        } catch (ValidationException ex) {
+            ex.printStackTrace();
+            fail("Validation error: " + ex.getMessage());
+        }
     }
 
     public void testSameAliasWithDifferentClass() {

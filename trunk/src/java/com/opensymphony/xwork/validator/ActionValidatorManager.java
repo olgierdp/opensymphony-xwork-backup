@@ -75,6 +75,7 @@ public class ActionValidatorManager {
             if (validator instanceof FieldValidator) {
                 fValidator = (FieldValidator) validator;
                 fullFieldName = fValidator.getValidatorContext().getFullFieldName(fValidator.getFieldName());
+
                 if ((shortcircuitedFields != null) && shortcircuitedFields.contains(fullFieldName)) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Short-circuited, skipping");

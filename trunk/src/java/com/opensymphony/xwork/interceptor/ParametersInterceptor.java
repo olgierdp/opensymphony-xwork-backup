@@ -53,6 +53,7 @@ public class ParametersInterceptor extends AroundInterceptor {
             }
 
             ActionContext invocationContext = invocation.getInvocationContext();
+
             try {
                 invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
                 invocationContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);

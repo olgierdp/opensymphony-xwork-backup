@@ -5,10 +5,12 @@
 package com.opensymphony.xwork.util;
 
 import com.mockobjects.dynamic.Mock;
+
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.test.ModelDrivenAction2;
 import com.opensymphony.xwork.test.TestBean2;
+
 import junit.framework.TestCase;
 
 import java.util.Collections;
@@ -24,6 +26,27 @@ import java.util.MissingResourceException;
  */
 public class LocalizedTextUtilTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
+
+    public void testActionGetText() {
+        try {
+            ModelDrivenAction2 action = new ModelDrivenAction2();
+            TestBean2 bean = (TestBean2) action.getModel();
+            Bar bar = new Bar();
+            bean.setBarObj(bar);
+
+            Mock mockActionInvocation = new Mock(ActionInvocation.class);
+            mockActionInvocation.expectAndReturn("getAction", action);
+            ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
+            ActionContext.getContext().getValueStack().push(action);
+            ActionContext.getContext().getValueStack().push(action.getModel());
+
+            String message = action.getText("barObj.title");
+            assertEquals("Title:", message);
+        } catch (MissingResourceException ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage());
+        }
+    }
 
     public void testActionGetTextXXX() {
         try {
@@ -41,28 +64,6 @@ public class LocalizedTextUtilTest extends TestCase {
 
             assertEquals("Okay! You found Me!", foundBean2);
             assertEquals("Haha you cant FindMe!", message);
-
-        } catch (MissingResourceException ex) {
-            ex.printStackTrace();
-            fail(ex.getMessage());
-        }
-    }
-
-    public void testActionGetText() {
-        try {
-            ModelDrivenAction2 action = new ModelDrivenAction2();
-            TestBean2 bean = (TestBean2) action.getModel();
-            Bar bar = new Bar();
-            bean.setBarObj(bar);
-
-            Mock mockActionInvocation = new Mock(ActionInvocation.class);
-            mockActionInvocation.expectAndReturn("getAction", action);
-            ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
-            ActionContext.getContext().getValueStack().push(action);
-            ActionContext.getContext().getValueStack().push(action.getModel());
-
-            String message = action.getText("barObj.title");
-            assertEquals("Title:", message);
         } catch (MissingResourceException ex) {
             ex.printStackTrace();
             fail(ex.getMessage());
@@ -183,9 +184,9 @@ public class LocalizedTextUtilTest extends TestCase {
 
     public void testParameterizedDefaultMessage() {
         try {
-            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
-                "AddUser"
-            });
+            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[] {
+                    "AddUser"
+                });
             assertEquals("There is no Action mapped for action name AddUser", message);
         } catch (MissingResourceException e) {
             e.printStackTrace();
@@ -195,9 +196,9 @@ public class LocalizedTextUtilTest extends TestCase {
 
     public void testParameterizedDefaultMessageWithPackage() {
         try {
-            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
-                "blah", "AddUser"
-            });
+            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[] {
+                    "blah", "AddUser"
+                });
             assertEquals("There is no Action mapped for namespace blah and action name AddUser", message);
         } catch (MissingResourceException e) {
             e.printStackTrace();
