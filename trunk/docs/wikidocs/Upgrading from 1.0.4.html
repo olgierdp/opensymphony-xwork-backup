@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>XWork : Upgrading from 1.0</title>
+        <title>XWork : Upgrading from 1.0.4</title>
 	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
         <META http-equiv="Content-Type" content="text/html; charset=UTF-8">	    
     </head>
@@ -11,14 +11,16 @@
 			    <td valign="top" class="pagebody">
 				    <div class="pageheader">
 					    <span class="pagetitle">
-                            XWork : Upgrading from 1.0
+                            XWork : Upgrading from 1.0.4
                                                     </span>
 				    </div>
 				    <div class="pagesubheading">
 					    This page last changed on Dec 12, 2004 by <font color="#0050B2">plightbo</font>.
 				    </div>
 
-				    <p class="paragraph">Upgrading to XWork 1.0.1 from 1.0 involves very little work. All you need to do is copy over the new xwork-1.0.1.jar in replace of xwork-1.0.jar and make sure that the new <a href="Dependencies.html" title="Dependencies">Dependencies</a> are all in place.</p>
+				    <p class="paragraph">Upgrading to XWork 1.0.5 from 1.0.4 is mostly backwards compatible. However, there is one change you should be aware of:</p><b class="strong">ParametersInterceptor changes</b><br/>
+ParametersInterceptor has been modified to not allow any parameter names to be used that contain any special OGNL characters, such as &quot;#&quot;, &quot;,&quot;, and &quot;=&quot;. This fixes a security hole, but if you were depending on it we recommend that you figure out an alternative way to do what you are doing rather than depend on this vulnerability. Upgrading to 1.0.5 fixes this issue.
+
 
 				    
                     			    </td>
