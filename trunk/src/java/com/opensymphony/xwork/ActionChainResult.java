@@ -23,7 +23,12 @@ import java.util.HashMap;
  * @version $Revision$
  */
 public class ActionChainResult implements Result {
+    
     //~ Static fields/initializers /////////////////////////////////////////////
+    public static final String CHAIN_DEPTH = "com.opensymphony.xwork.ActionChainResult.CHAIN_DEPTH";
+
+    // to prevent infinite recursion, only allow 100 chains within the same request
+    public static int maxChainDepth = 100;
 
     private static final Log log = LogFactory.getLog(ActionChainResult.class);
     public static final String DEFAULT_PARAM = "actionName";
@@ -80,11 +85,18 @@ public class ActionChainResult implements Result {
      * @param invocation the DefaultActionInvocation calling the action call stack
      */
     public void execute(ActionInvocation invocation) throws Exception {
+        
+        int currentDepth = currentChainDepth();
+        if (currentDepth > maxChainDepth) {
+            throw new XworkException("Chain infinite recursion detected, maxChainDepth=" + maxChainDepth);
+        }
+        incrementChainDepth();
+
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.VALUE_STACK, ActionContext.getContext().getValueStack());
         extraContext.put(ActionContext.PARAMETERS, ActionContext.getContext().getParameters());
         extraContext.put("com.opensymphony.xwork.interceptor.component.ComponentManager", ActionContext.getContext().get("com.opensymphony.xwork.interceptor.component.ComponentManager"));
-        extraContext.put(ChainingInterceptor.ACTION_CONTEXT_CHAIN_DEPTH, ActionContext.getContext().get(ChainingInterceptor.ACTION_CONTEXT_CHAIN_DEPTH));
+        extraContext.put(CHAIN_DEPTH, ActionContext.getContext().get(CHAIN_DEPTH));
 
         if (log.isDebugEnabled()) {
             log.debug("Chaining to action " + actionName);
@@ -97,9 +109,24 @@ public class ActionChainResult implements Result {
 
         proxy = ActionProxyFactory.getFactory().createActionProxy(this.namespace, actionName, extraContext);
         proxy.execute();
+
     }
 
     public int hashCode() {
         return ((actionName != null) ? actionName.hashCode() : 0);
+    }
+
+    private int currentChainDepth() {
+        Integer chainDepth = (Integer) ActionContext.getContext().get(CHAIN_DEPTH);
+
+        if (chainDepth == null) {
+            return 1;
+        } else {
+            return chainDepth.intValue();
+        }
+    }
+
+    private void incrementChainDepth() {
+        ActionContext.getContext().put(CHAIN_DEPTH, new Integer(currentChainDepth() + 1));
     }
 }
