@@ -38,9 +38,9 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     protected Action action;
     protected ActionProxy proxy;
+    protected Map extraContext;
     ActionContext invocationContext;
     Iterator interceptors;
-    Map extraContext;
     OgnlValueStack stack;
     Result result;
     String resultCode;
