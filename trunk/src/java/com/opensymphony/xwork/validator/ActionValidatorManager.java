@@ -164,19 +164,21 @@ public class ActionValidatorManager {
      * This method 'collects' all the validators for a given action invocation.
      *
      * It will traverse up the class hierarchy looking for validators for every super class
-     * and interface of the current action, as well as adding validators for any alias of
-     * this invocation. Nifty!
+     * and directly implemented interface of the current action, as well as adding validators for
+     * any alias of this invocation. Nifty!
      *
-     *  Given the following class structure:
-     *
-     *   interface Animal;
+     * Given the following class structure:
+     * <pre>
+     *   interface Thing;
+     *   interface Animal extends Thing;
      *   interface Quadraped extends Animal;
      *   class AnimalImpl implements Animal;
      *   class QuadrapedImpl extends AnimalImpl implements Quadraped;
      *   class Dog extends QuadrapedImpl;
+     * </pre>
      *
-     *  This method will look for the following config files:
-     *
+     * This method will look for the following config files for Dog:
+     * <pre>
      *   Animal
      *   Animal-context
      *   AnimalImpl
@@ -187,7 +189,10 @@ public class ActionValidatorManager {
      *   QuadrapedImpl-context
      *   Dog
      *   Dog-context
+     * </pre>
      *
+     * Note that the validation rules for Thing is never looked for because no class in the
+     * hierarchy directly implements Thing.
      *
      * @param clazz the Class to look up validators for
      * @param context the context to use when looking up validators
@@ -204,15 +209,15 @@ public class ActionValidatorManager {
             return validators;
         }
 
-        if (!clazz.equals(Object.class)) {
-            if (!clazz.isInterface()) {
-                validators.addAll(buildValidators(clazz.getSuperclass(), context, checkFile, checked));
-            } else {
-                Class[] interfaces = clazz.getInterfaces();
+        if (clazz.isInterface()) {
+            Class[] interfaces = clazz.getInterfaces();
 
-                for (int x = 0; x < interfaces.length; x++) {
-                    validators.addAll(buildValidators(interfaces[x], context, checkFile, checked));
-                }
+            for (int x = 0; x < interfaces.length; x++) {
+                validators.addAll(buildValidators(interfaces[x], context, checkFile, checked));
+            }
+        } else {
+            if (!clazz.equals(Object.class)) {
+                validators.addAll(buildValidators(clazz.getSuperclass(), context, checkFile, checked));
             }
         }
 
