@@ -7,6 +7,10 @@
 <xwork>
     <include file="xwork-default.xml"/>
     <package name="default" extends="xwork-default" externalReferenceResolver="com.opensymphony.xwork.config.TestExternalReferenceResolver">
+        <result-types>
+            <result-type name="object" class="com.opensymphony.xwork.dispatcher.ObjectResult"/>
+        </result-types>
+
         <global-results>
             <result name="login"> <!-- should be chain type since it is the default -->
                 <param name="actionName">login</param>
@@ -50,37 +54,46 @@
         </action>
         <!-- test resolution  -->
         <action name="TestExternalRefResolver" class="com.opensymphony.xwork.ExternalReferenceAction">
-        	<external-ref name="foo">myFoo</external-ref>
+                <external-ref name="foo">myFoo</external-ref>
             <interceptor-ref name="debugStack"/>
             <interceptor-ref name="defaultStack"/>
         </action>
         <!-- test required flag -->
         <action name="TestExternalRefResolver2" class="com.opensymphony.xwork.ExternalReferenceAction">
-        	<external-ref name="foo">myFoo</external-ref>
-        	<external-ref required="false" name="does_not_exist">Does Not Exist</external-ref>
+                <external-ref name="foo">myFoo</external-ref>
+                <external-ref required="false" name="does_not_exist">Does Not Exist</external-ref>
             <interceptor-ref name="debugStack"/>
             <interceptor-ref name="defaultStack"/>
         </action>
         <!-- test where required reference is not found -->
         <action name="TestExternalRefResolver3" class="com.opensymphony.xwork.ExternalReferenceAction">
-        	<external-ref required="true" name="Boo">myBoo</external-ref>
+                <external-ref required="true" name="Boo">myBoo</external-ref>
             <interceptor-ref name="debugStack"/>
             <interceptor-ref name="defaultStack"/>
         </action>
-        
+
         <!-- chain resursion detection -->
         <action name="InfiniteRecursionChain" class="com.opensymphony.xwork.ActionSupport">
-        	<result name="success" type="chain">InfiniteRecursionChain</result>
+                <result name="success" type="chain">InfiniteRecursionChain</result>
         </action>
-        
-   	</package>
-   	
-   	<package name="test-external-refs" extends="default" namespace="test/externalRef/">
-        <!-- test resolution when Resolver is declared on parent -->
-        <action name="TestExternalRefResolver4" class="com.opensymphony.xwork.ExternalReferenceAction">
-        	<external-ref name="foo">myFoo</external-ref>
+
+        <action name="TestObjectDispatcher" class="com.opensymphony.xwork.dispatcher.ObjectTestAction">
+            <result name="success" type="object">
+                    <param name="mappingName">test</param>
+                    <param name="viewName">test</param>
+            </result>
             <interceptor-ref name="defaultStack"/>
         </action>
+
+   </package>
+
+           <package name="test-external-refs" extends="default" namespace="test/externalRef/">
+        <!-- test resolution when Resolver is declared on parent -->
+        <action name="TestExternalRefResolver4" class="com.opensymphony.xwork.ExternalReferenceAction">
+                <external-ref name="foo">myFoo</external-ref>
+            <interceptor-ref name="defaultStack"/>
+        </action>
+
    </package>
 
     <package name="bar" extends="default" namespace="/foo/bar">
