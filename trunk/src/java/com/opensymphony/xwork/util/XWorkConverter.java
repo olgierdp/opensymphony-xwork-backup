@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.util.FileManager;
 
 import ognl.*;
 
@@ -117,26 +118,10 @@ public class XWorkConverter extends DefaultTypeConverter {
                     Map mapping = (Map) mappings.get(clazz);
 
                     if (mapping == null) {
-                        mapping = new HashMap();
-                        mappings.put(clazz, mapping);
+                        mapping = buildConverterMapping(clazz);
 
-                        String className = clazz.getName();
-                        String resource = className.replace('.', '/') + "-conversion.properties";
-                        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-
-                        if (is != null) {
-                            Properties props = new Properties();
-                            props.load(is);
-                            mapping.putAll(props);
-
-                            for (Iterator iterator = mapping.entrySet().iterator();
-                                 iterator.hasNext();) {
-                                Map.Entry entry = (Map.Entry) iterator.next();
-                                entry.setValue(createTypeConverter((String) entry.getValue()));
-                            }
-                        } else {
-                            noMapping.add(clazz);
-                        }
+                    } else {
+                        mapping = conditionalReload(clazz, mapping);
                     }
 
                     tc = (TypeConverter) mapping.get(property);
@@ -183,6 +168,45 @@ public class XWorkConverter extends DefaultTypeConverter {
                 return null;
             }
         }
+    }
+
+    private Map buildConverterMapping(Class clazz) throws Exception {
+        Map mapping = new HashMap();
+
+        String resource = buildConverterFilename(clazz);
+        InputStream is = FileManager.loadFile(resource,clazz);
+
+        if (is != null) {
+            Properties props = new Properties();
+            props.load(is);
+            mapping.putAll(props);
+
+            for (Iterator iterator = mapping.entrySet().iterator();
+                 iterator.hasNext();) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                entry.setValue(createTypeConverter((String) entry.getValue()));
+            }
+            mappings.put(clazz, mapping);
+        } else {
+            noMapping.add(clazz);
+        }
+        return mapping;
+    }
+
+    private String buildConverterFilename(Class clazz) {
+        String className = clazz.getName();
+        String resource = className.replace('.', '/') + "-conversion.properties";
+        return resource;
+    }
+
+    private Map conditionalReload(Class clazz, Map oldValues) throws Exception {
+        Map mapping = oldValues;
+        if (FileManager.isReloadingConfigs()) {
+            if (FileManager.fileNeedsReloading(buildConverterFilename(clazz))) {
+                mapping = buildConverterMapping(clazz);
+            }
+        }
+        return mapping;
     }
 
     public TypeConverter lookup(String className) {
