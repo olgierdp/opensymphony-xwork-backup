@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!ELEMENT xwork (package|include)+>
+<!ELEMENT xwork (package|include)*>
 
 <!ELEMENT package (result-types?, interceptors?, default-interceptor-ref?, global-results?, action*)>
 <!ATTLIST package
