@@ -40,8 +40,8 @@ public class ActionValidatorManagerTest extends TestCase {
     public void testBuildsValidatorsForAlias() {
         List validatorList = ActionValidatorManager.getValidators(SimpleAction.class, alias);
 
-        // 5 in the class level + 2 in the alias
-        assertEquals(7, validatorList.size());
+        // 6 in the class level + 2 in the alias
+        assertEquals(8, validatorList.size());
     }
 
     public void testGetValidatorsForInterface() {
@@ -66,8 +66,8 @@ public class ActionValidatorManagerTest extends TestCase {
     public void testGetValidatorsFromInterface() {
         List validatorList = ActionValidatorManager.getValidators(SimpleAction3.class, alias);
 
-        // 5 in the class hierarchy + 1 in the interface
-        assertEquals(9, validatorList.size());
+        // 8 in the class hierarchy + 1 in the interface + 1 in interface alias
+        assertEquals(10, validatorList.size());
 
         final FieldValidator barValidator1 = (FieldValidator) validatorList.get(0);
         assertEquals("bar", barValidator1.getFieldName());
@@ -85,22 +85,26 @@ public class ActionValidatorManagerTest extends TestCase {
         assertEquals("foo", fooValidator.getFieldName());
         assertTrue(fooValidator instanceof IntRangeFieldValidator);
 
-        final Validator expressionValidator = (Validator) validatorList.get(4);
+        final FieldValidator bazValidator = (FieldValidator) validatorList.get(4);
+        assertEquals("baz", bazValidator.getFieldName());
+        assertTrue(bazValidator instanceof IntRangeFieldValidator);
+
+        final Validator expressionValidator = (Validator) validatorList.get(5);
         assertTrue(expressionValidator instanceof ExpressionValidator);
 
-        final FieldValidator bazValidator1 = (FieldValidator) validatorList.get(5);
+        final FieldValidator bazValidator1 = (FieldValidator) validatorList.get(6);
         assertEquals("baz", bazValidator1.getFieldName());
         assertTrue(bazValidator1 instanceof RequiredFieldValidator);
 
-        final FieldValidator bazValidator2 = (FieldValidator) validatorList.get(6);
+        final FieldValidator bazValidator2 = (FieldValidator) validatorList.get(7);
         assertEquals("baz", bazValidator2.getFieldName());
         assertTrue(bazValidator2 instanceof IntRangeFieldValidator);
 
-        final FieldValidator dataValidator1 = (FieldValidator) validatorList.get(7);
+        final FieldValidator dataValidator1 = (FieldValidator) validatorList.get(8);
         assertEquals("data", dataValidator1.getFieldName());
         assertTrue(dataValidator1 instanceof RequiredFieldValidator);
 
-        final FieldValidator dataValidator2 = (FieldValidator) validatorList.get(8);
+        final FieldValidator dataValidator2 = (FieldValidator) validatorList.get(9);
         assertEquals("data", dataValidator2.getFieldName());
         assertTrue(dataValidator2 instanceof RequiredStringValidator);
     }

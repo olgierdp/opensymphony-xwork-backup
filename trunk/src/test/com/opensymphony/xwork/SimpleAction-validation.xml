@@ -24,6 +24,12 @@
             <message key="foo.range">Could not find foo.range!</message>
         </field-validator>
     </field>
+    <field name="baz">
+        <field-validator type="int">
+            <param name="min">0</param>
+            <message key="baz.range">Could not find baz.range!</message>
+        </field-validator>
+    </field>
     <validator type="expression">
         <param name="expression">foo > bar</param>
         <message>Foo must be greater than Bar. Foo = ${foo}, Bar = ${bar}.</message>

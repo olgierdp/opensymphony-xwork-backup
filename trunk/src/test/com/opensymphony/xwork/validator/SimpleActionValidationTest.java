@@ -74,6 +74,36 @@ public class SimpleActionValidationTest extends TestCase {
         }
     }
 
+    public void testLookingUpFieldNameAsTextKey() {
+        HashMap params = new HashMap();
+
+        // should cause a message
+        params.put("baz", "-1");
+
+        //valid values
+        params.put("bar", "7");
+
+        HashMap extraContext = new HashMap();
+        extraContext.put(ActionContext.PARAMETERS, params);
+
+        try {
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
+            proxy.execute();
+            assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
+
+            Map errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
+            List bazErrors = (List) errors.get("baz");
+            assertEquals(1, bazErrors.size());
+
+            String errorMessage = (String) bazErrors.get(0);
+            assertNotNull(errorMessage);
+            assertEquals("Baz Field must be greater than 0", errorMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
     public void testMessageKey() {
         HashMap params = new HashMap();
         params.put("foo", "200");
