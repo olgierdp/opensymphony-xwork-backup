@@ -98,16 +98,16 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
      * @return a Collection of the specified type
      */
     private Collection createCollection(Object fromObject, String propertyName, Class toType, Class memberType, int size) {
-        try {
-            Object original = Ognl.getValue(OgnlUtil.compile(propertyName),fromObject);
-            if (original instanceof Collection) {
-                Collection coll = (Collection) original;
-                coll.clear();
-                return coll;
-            }
-        } catch (Exception e) {
-            // fail back to creating a new one
-        }
+//        try {
+//            Object original = Ognl.getValue(OgnlUtil.compile(propertyName),fromObject);
+//            if (original instanceof Collection) {
+//                Collection coll = (Collection) original;
+//                coll.clear();
+//                return coll;
+//            }
+//        } catch (Exception e) {
+//            // fail back to creating a new one
+//        }
 
         Collection result;
 
