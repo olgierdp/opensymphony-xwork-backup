@@ -21,7 +21,7 @@ public interface ValidationAware extends Serializable {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-     * Set the Collection of Action-level String error messages
+     * Set the Collection of Action-level String error messages.
      *
      * @param errorMessages
      */
@@ -51,7 +51,7 @@ public interface ValidationAware extends Serializable {
     Collection getActionMessages();
 
     /**
-     * Set the field error map of fieldname (String) to Collection of String error messages
+     * Set the field error map of fieldname (String) to Collection of String error messages.
      *
      * @param errorMap
      */
@@ -67,19 +67,19 @@ public interface ValidationAware extends Serializable {
     Map getFieldErrors();
 
     /**
-     * Add an Action-level error message to this Action
+     * Add an Action-level error message to this Action.
      *
      * @param anErrorMessage
      */
     void addActionError(String anErrorMessage);
 
     /**
-     * Add an Action-level message to this Action
+     * Add an Action-level message to this Action.
      */
     void addActionMessage(String aMessage);
 
     /**
-     * Add an error message for a given field
+     * Add an error message for a given field.
      *
      * @param fieldName    name of field
      * @param errorMessage the error message
@@ -87,7 +87,7 @@ public interface ValidationAware extends Serializable {
     void addFieldError(String fieldName, String errorMessage);
 
     /**
-     * Check whether there are any Action-level error messages
+     * Check whether there are any Action-level error messages.
      *
      * @return true if any Action-level error messages have been registered
      */
@@ -101,6 +101,8 @@ public interface ValidationAware extends Serializable {
     boolean hasActionMessages();
 
     /**
+     * Note that this does not have the same meaning as in WW 1.x.
+     *
      * @return (hasActionErrors() || hasFieldErrors())
      */
     boolean hasErrors();
