@@ -38,7 +38,7 @@ public interface Interceptor {
      * request by the {@link ActionInvocation} or to short-circuit the processing and just return a String return code.
      *
      * @return the return code, either returned from {@link ActionInvocation#invoke()}, or from the interceptor itself.
-     * @throws Exception any system-level error, as definied in {@link com.opensymphony.xwork.Action#execute()}.
+     * @throws Exception any system-level error, as defined in {@link com.opensymphony.xwork.Action#execute()}.
      */
     String intercept(ActionInvocation invocation) throws Exception;
 }
