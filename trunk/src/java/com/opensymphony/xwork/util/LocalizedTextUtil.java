@@ -191,13 +191,15 @@ public class LocalizedTextUtil {
 
         do {
             try {
-                String packageName = clazz.getPackage().getName();
-                ResourceBundle bundle = findResourceBundle(packageName + ".package", locale);
-                reloadBundles(bundle);
+                if (clazz != null && clazz.getPackage() != null) {
+                    String packageName = clazz.getPackage().getName();
+                    ResourceBundle bundle = findResourceBundle(packageName + ".package", locale);
+                    reloadBundles(bundle);
 
-                String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
+                    String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
 
-                return MessageFormat.format(message, args);
+                    return MessageFormat.format(message, args);
+                }
             } catch (MissingResourceException ex) {
                 clazz = clazz.getSuperclass();
             }
