@@ -386,6 +386,9 @@ textarea, textarea.editor {
     color: #999999;
 	margin: 0px;
 }
+.spacenametitle img {
+  margin: 0 0 -4px 0;
+}
 .spacenametitle a {
     text-decoration: none;
     color: #999999;
@@ -937,8 +940,14 @@ color: black;
     border-bottom: #bbb; border-width: 0 0 1px 0; border-style: solid; font-size: 16px; text-align: left;
 }
 .permissionTab {
-    border-width: 0 0 0 1px; border-style: solid; background: #3c78b5; color: white;
+    border-width: 0 0 0 1px; border-style: solid; background: #99CCFF; color: white; font-size: 10px;
+}
+.permissionSuperTab {
+    border-width: 0 0 0 1px; border-style: solid; background: #669900; color: white;
 }
 .permissionCell {
     border-left: #bbb; border-width: 0 0 0 1px; border-style: solid;
 }
+
+/* warning panel */
+.warningPanel { background: #FFFFCE; border:#F0C000 1px solid; padding: 8px; margin: 10px; }
