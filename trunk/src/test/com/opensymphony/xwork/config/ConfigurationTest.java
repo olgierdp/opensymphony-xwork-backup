@@ -2,12 +2,12 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-
 package com.opensymphony.xwork.config;
 
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
+
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public class ConfigurationTest extends TestCase {
         try {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("/does/not/exist", "Foo", extraContext);
             proxy.execute();
-            assertEquals("this is blah", proxy.getValueStack().findValue("blah"));
+            assertEquals("this is blah", proxy.getInvocation().getStack().findValue("blah"));
         } catch (Exception e) {
             e.printStackTrace();
             fail();

@@ -8,7 +8,6 @@ import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.util.LocalizedTextUtil;
-import com.opensymphony.xwork.util.OgnlValueStack;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,16 +37,15 @@ public class DefaultActionProxy implements ActionProxy {
     String actionName;
     String namespace;
     boolean executeResult;
-    private transient ActionContext nestedContext;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
     /**
-* This constructor is private so the builder methods (create*) should be used to create an DefaultActionProxy.
-*
-* The reason for the builder methods is so that you can use a subclass to create your own DefaultActionProxy instance
-* (like a RMIActionProxy).
-*/
+    * This constructor is private so the builder methods (create*) should be used to create an DefaultActionProxy.
+    *
+    * The reason for the builder methods is so that you can use a subclass to create your own DefaultActionProxy instance
+    * (like a RMIActionProxy).
+    */
     protected DefaultActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult) throws Exception {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Creating an DefaultActionProxy for namespace " + namespace + " and action name " + actionName);
@@ -112,11 +110,10 @@ public class DefaultActionProxy implements ActionProxy {
         return namespace;
     }
 
-    public OgnlValueStack getValueStack() {
-        return invocation.getStack();
-    }
-
     public String execute() throws Exception {
+        ActionContext nestedContext = ActionContext.getContext();
+        ActionContext.setContext(invocation.getInvocationContext());
+
         String retCode = null;
         retCode = invocation.invoke();
 
@@ -128,10 +125,6 @@ public class DefaultActionProxy implements ActionProxy {
     }
 
     protected void prepare() throws Exception {
-        nestedContext = ActionContext.getContext();
-
-        // this will set up a new ActionContext on the ThreadLocal
         invocation = ActionProxyFactory.getFactory().createActionInvocation(this, extraContext);
-        ActionContext.getContext().setName(actionName);
     }
 }

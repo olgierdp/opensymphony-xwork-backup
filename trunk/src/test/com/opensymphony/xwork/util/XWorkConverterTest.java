@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.xwork.ModelDrivenAction;
 import com.opensymphony.xwork.SimpleAction;
 
 import junit.framework.TestCase;
@@ -39,12 +41,45 @@ public class XWorkConverterTest extends TestCase {
         SimpleAction action = new SimpleAction();
         action.setDate(null);
 
-        //        context = Ognl.createDefaultContext(action);
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(action);
+        ActionContext.getContext().setValueStack(stack);
         assertNull("Conversion should have failed.", converter.convertValue(context, action, null, "date", new String[] {
                     "invalid date"
                 }, Date.class));
+        stack.pop();
         assertTrue(action.hasFieldErrors());
         assertNotNull(action.getFieldErrors().get("date"));
+        assertEquals("Invalid field value for field \"date\".", ((List) action.getFieldErrors().get("date")).get(0));
+    }
+
+    public void testFieldErrorMessageAddedWhenConversionFailsOnModelDriven() {
+        ModelDrivenAction action = new ModelDrivenAction();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(action);
+        stack.push(action.getModel());
+        ActionContext.getContext().setValueStack(stack);
+        assertNull("Conversion should have failed.", converter.convertValue(context, action, null, "birth", new String[] {
+                    "invalid date"
+                }, Date.class));
+        stack.pop();
+        stack.pop();
+        assertTrue(action.hasFieldErrors());
+        assertNotNull(action.getFieldErrors().get("birth"));
+        assertEquals("Invalid date for birth.", ((List) action.getFieldErrors().get("birth")).get(0));
+    }
+
+    public void testNoFieldErrorAddedForEmptyStringParameter() {
+        SimpleAction action = new SimpleAction();
+
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(action);
+        ActionContext.getContext().setValueStack(stack);
+        assertNull("Conversion should have failed.", converter.convertValue(context, action, null, "bar", new String[] {
+                    ""
+                }, Integer.class));
+        stack.pop();
+        assertFalse(action.hasFieldErrors());
     }
 
     public void testStringArrayToCollection() {

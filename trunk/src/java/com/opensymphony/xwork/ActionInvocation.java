@@ -17,9 +17,21 @@ import java.io.Serializable;
 public interface ActionInvocation extends Serializable {
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    /**
+     * Get the Action associated with this ActionInvocation
+     * @return
+     */
     Action getAction();
 
     boolean isExecuted();
+
+    /**
+     * Gets the ActionContext associated with this ActionInvocation. The ActionProxy is
+     * responsible for setting this ActionContext onto the ThreadLocal before invoking
+     * the ActionInvocation and resetting the old ActionContext afterwards.
+     * @return
+     */
+    ActionContext getInvocationContext();
 
     ActionProxy getProxy();
 
@@ -33,9 +45,22 @@ public interface ActionInvocation extends Serializable {
      */
     Result getResult() throws Exception;
 
+    /**
+     * Gets the result code returned from this ActionInvocation
+     * @return
+     */
     String getResultCode();
 
     OgnlValueStack getStack();
 
+    /**
+     * Invokes the next step in processing this ActionInvocation. If there are more
+     * Interceptors, this will call the next one. If Interceptors choose not to short-circuit
+     * ActionInvocation processing and return their own return code, they will call
+     * invoke() to allow the next Interceptor to execute. If there are no more Interceptors
+     * to be applied, the Action is executed.
+     * @return
+     * @throws Exception
+     */
     String invoke() throws Exception;
 }

@@ -112,6 +112,6 @@ public class XworkException extends RuntimeException {
             return super.toString();
         }
 
-        return super.toString() + " with nested exception " + throwable.toString();
+        return super.toString() + "\n    with nested exception \n" + throwable.toString();
     }
 }

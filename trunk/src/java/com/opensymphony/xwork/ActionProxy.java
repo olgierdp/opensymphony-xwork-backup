@@ -34,7 +34,5 @@ public interface ActionProxy extends Serializable {
 
     String getNamespace();
 
-    OgnlValueStack getValueStack();
-
     String execute() throws Exception;
 }

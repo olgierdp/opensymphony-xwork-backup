@@ -21,19 +21,6 @@ import java.util.HashMap;
 public class ActionInvocationTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public void testActionContextHasActionInvocation() {
-        try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", "Foo", null);
-            assertEquals(ActionContext.getContext().getActionInvocation(), proxy.getInvocation());
-
-            // do some cleanup
-            ActionContext.setContext(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
-    }
-
     public void testCommandInvocation() throws Exception {
         ActionProxy baseActionProxy = ActionProxyFactory.getFactory().createActionProxy("baz", "commandTest", null);
         assertEquals("success", baseActionProxy.execute());
@@ -52,7 +39,7 @@ public class ActionInvocationTest extends TestCase {
         try {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", "Foo", extraContext);
             proxy.execute();
-            assertEquals("this is blah", proxy.getValueStack().findValue("blah"));
+            assertEquals("this is blah", proxy.getInvocation().getStack().findValue("blah"));
         } catch (Exception e) {
             e.printStackTrace();
             fail();
