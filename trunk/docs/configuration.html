@@ -1,0 +1,103 @@
+<html>
+<head>
+<title>XWork Configuration</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="main.css" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1>XWork Configuration </h1>
+<p>Xwork is configured through the use of a file named xwork.xml in the root of 
+  the classpath. This file defines the action and interceptor configurations and 
+  mappings. Here's the test xwork.xml file:</p>
+<table width="90%" border="0" bgcolor="#E9E9E9">
+  <tr>
+    <td> 
+      <pre>&lt;!DOCTYPE xwork PUBLIC &quot;-//OpenSymphony Group//XWork 1.0//EN&quot; &quot;http://www.opensymphony.com/xwork/xwork-1.0.dtd&quot;&gt;<br>&lt;xwork&gt;<br>    &lt;package name=&quot;default&quot;&gt;<br>        &lt;result-types&gt;<br>            &lt;result-type name=&quot;chain&quot; class=&quot;com.opensymphony.xwork.ActionChainResult&quot;/&gt;<br>        &lt;/result-types&gt;<br>        &lt;interceptors&gt;<br>            &lt;interceptor name=&quot;timer&quot; class=&quot;com.opensymphony.xwork.interceptor.TimerInterceptor&quot;/&gt;<br>            &lt;interceptor name=&quot;logger&quot; class=&quot;com.opensymphony.xwork.interceptor.LoggingInterceptor&quot;/&gt;<br>            &lt;interceptor name=&quot;chain&quot; class=&quot;com.opensymphony.xwork.interceptor.ChainingInterceptor&quot;/&gt;<br>            &lt;interceptor name=&quot;params&quot; class=&quot;com.opensymphony.xwork.interceptor.ParametersInterceptor&quot;/&gt;<br>            &lt;interceptor name=&quot;static-params&quot; class=&quot;com.opensymphony.xwork.interceptor.StaticParametersInterceptor&quot;/&gt;<br>            &lt;interceptor name=&quot;component&quot; class=&quot;com.opensymphony.xwork.interceptor.component.ComponentInterceptor&quot;/&gt;<br>            &lt;interceptor name=&quot;result&quot; class=&quot;com.opensymphony.xwork.interceptor.ResultInterceptor&quot;/&gt;<br>            &lt;interceptor name=&quot;stack&quot; class=&quot;com.opensymphony.xwork.interceptor.StackInterceptor&quot;/&gt;<br>            &lt;interceptor-stack name=&quot;defaultStack&quot;&gt;<br>                &lt;interceptor-ref name=&quot;result&quot;/&gt;<br>                &lt;interceptor-ref name=&quot;static-params&quot;/&gt;<br>                &lt;interceptor-ref name=&quot;params&quot;/&gt;<br>                &lt;interceptor-ref name=&quot;stack&quot;/&gt;<br>            &lt;/interceptor-stack&gt;<br>            &lt;interceptor-stack name=&quot;debugStack&quot;&gt;<br>                &lt;interceptor-ref name=&quot;timer&quot;/&gt;<br>                &lt;interceptor-ref name=&quot;logger&quot;/&gt;<br>            &lt;/interceptor-stack&gt;<br>        &lt;/interceptors&gt;<br>        &lt;global-results&gt;<br>            &lt;result name=&quot;login&quot; type=&quot;chain&quot;&gt;<br>                &lt;param name=&quot;actionName&quot;&gt;login&lt;/param&gt;<br>            &lt;/result&gt;<br>        &lt;/global-results&gt;<br>        &lt;action name=&quot;Foo&quot; class=&quot;com.opensymphony.xwork.SimpleAction&quot;&gt;<br>            &lt;param name=&quot;foo&quot;&gt;17&lt;/param&gt;<br>            &lt;param name=&quot;bar&quot;&gt;23&lt;/param&gt;<br>            &lt;result name=&quot;success&quot; type=&quot;chain&quot;&gt;<br>                &lt;param name=&quot;actionName&quot;&gt;Bar&lt;/param&gt;<br>            &lt;/result&gt;<br>            &lt;interceptor-ref name=&quot;debugStack&quot;/&gt;<br>            &lt;interceptor-ref name=&quot;defaultStack&quot;/&gt;<br>        &lt;/action&gt;<br>    &lt;/package&gt;<br>    &lt;package name=&quot;bar&quot; extends=&quot;default&quot; namespace=&quot;/foo/bar&quot;&gt;<br>        &lt;interceptors&gt;<br>            &lt;interceptor-stack name=&quot;barDefaultStack&quot;&gt;<br>                &lt;interceptor-ref name=&quot;debugStack&quot;/&gt;<br>                &lt;interceptor-ref name=&quot;defaultStack&quot;/&gt;<br>            &lt;/interceptor-stack&gt;<br>        &lt;/interceptors&gt;<br>        &lt;action name=&quot;Bar&quot; class=&quot;com.opensymphony.xwork.SimpleAction&quot;&gt;<br>            &lt;interceptor-ref name=&quot;barDefaultStack&quot;/&gt;<br>        &lt;/action&gt;<br>    &lt;/package&gt;<br>    &lt;package name=&quot;abstractPackage&quot; namespace=&quot;/abstract&quot; abstract=&quot;true&quot;&gt;<br>        &lt;action name=&quot;test&quot; class=&quot;com.opensymphony.xwork.SimpleAction&quot;/&gt;<br>    &lt;/package&gt;<br>    &lt;package name=&quot;nonAbstractPackage&quot; extends=&quot;abstractPackage&quot; namespace=&quot;/nonAbstract&quot;/&gt;<br>&lt;/xwork&gt;</pre>
+    </td>
+  </tr>
+</table>
+<ul>
+  <li><b>Packages</b> - All configuration settings are in a package. Result types, 
+    interceptors, and actions are all package context specific, no more global 
+    settings (unless you have a &quot;default&quot; package and have your other 
+    packages extend it). Result, Interceptor, and Action configurations are inherited 
+    by packages which &quot;extend&quot; another package, such as package &quot;bar&quot; 
+    above, which extends &quot;default&quot;. </li>
+  <li><b>Interceptor stacks</b> - Make it easier to have sets of interceptors 
+    you apply together in a certain order. These are also inherited as part of 
+    the interceptor definition inheritance. Essentially these are just name mappings 
+    to lists of interceptors instead of one Interceptor. </li>
+  <li><b>Namespaces</b> - a new idea of mine, this allows actions to be aliased 
+    with the same name, providing they are in different namespaces. With the ServletDispatcher, 
+    this equates to the path before the action name, which will allow for J2EE 
+    declarative security. Namespaces are optional attributes of package definitions 
+    and, if excluded, defaults to &quot;&quot;. If the action configuration is 
+    not found with the supplied namespace, the &quot;&quot; namespace is checked 
+    as the default namespace, which makes it work like we have now (any path works, 
+    you get the action aliased with the name). </li>
+</ul>
+<p>xwork.xml elements </p>
+<p>Package </p>
+<p>The package element has one required attribute, &quot;name&quot;, which acts 
+  as the key for later reference to this package. The &quot;extends&quot; attribute 
+  is optional and allows one package to inherit the configuration of a previous 
+  package including all interceptor, interceptor-stack, and action configurations. 
+  Note that the configuration file is processed sequentially down the document, 
+  so the package referenced by an &quot;extends&quot; should be defined above 
+  the package which extends it. The &quot;abstract&quot; optional attribute allows 
+  you to make a package abstract, which will allow you to extend from it without 
+  the action configurations defined in the abstract package actually being available 
+  at runtime.</p>
+<p>Namespace </p>
+<p>The optional namespace attribute warrants its own discussion section. The namespace 
+  attribute allows you to segregate action configurations into namespaces, so 
+  that you may use the same action alias in more than one namespace with different 
+  classes, parameters, etc. This is in contrast to Webwork 1.x, where all action 
+  names and aliases were global and could not be re-used in an application. The 
+  default namespace, which is &quot;&quot; (an empty string) is used as a &quot;catch-all&quot; 
+  namespace, so if an action configuration is not found in a specified namespace, 
+  the default namespace will also be searched. This allows you to have global 
+  action configurations outside of the &quot;extends&quot; hierarchy, as well 
+  as to allow the previous Webwork 1.x behavior by not specifying namespaces. 
+  It is also intended that the namespace functionality can be used for security, 
+  for instance by having the path before the action name be used as the namespace 
+  by the Webwork 2.0 ServletDispatcher, thus allowing the use of J2EE declarative 
+  security on paths to be easily implemented and maintained.</p>
+<p>Result-Type </p>
+<p>Result types define classes and map them to names to be referred in the action 
+  configuration results. This serves as a shorthand name-value pair for these 
+  classes.</p>
+<p>Interceptors</p>
+<p> Interceptors also serve as a name-value pairing for referring to specific 
+  Interceptor classes by a shorthand name where we use interceptor-ref elements, 
+  such as in Interceptor stacks and action configurations.</p>
+<p>Interceptor-Stack </p>
+<p>The interceptor-stack element allows you to assign a name for later referencing 
+  via interceptor-ref to an ordered list of interceptors. This allows you to create 
+  standard groups of interceptors to be used in a certain order. The interceptor 
+  stack name/value pairs are stored in the same map as the interceptor definitions, 
+  so anywhere you use an interceptor-ref to refer to an interceptor you may also 
+  refer to an interceptor stack.</p>
+<p>Global-results</p>
+<p> The global results allows you to define result mappings which will be used 
+  as defaults for all action configurations and will be automatically inherited 
+  by all action configurations in this package and all packages which extend this 
+  package.</p>
+<p>Action</p>
+<p> The action element allows the mapping of names to action classes. These names 
+  are used, along with the namespace described above, to retrieve the action config 
+  from the configuration. The action may also be parameterized by using the param 
+  elements, as above, which will set parameters into the Action at execution (with 
+  the help of the StaticParametersInterceptor). The action may also have one or 
+  more results mapped to string return codes, such as &quot;success&quot;, &quot;error&quot;, 
+  or &quot;input&quot;, which are the default 3 return states for actions, although 
+  ANY return string may be used and mapped to a result. The result, which is mapped 
+  to a result class by the &quot;type&quot; attribute which refers to the result-type 
+  name defined above, may also be parameterized by using the param element. The 
+  action may also define one or more interceptor refs to either interceptors or 
+  interceptor stacks to be applied before and after the action execution (see 
+  the section on Interceptors below). The ordering of these interceptor refs determines 
+  the order in which they will be applied. </p>
+</body>
+</html>

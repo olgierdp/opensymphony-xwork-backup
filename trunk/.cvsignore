@@ -1,0 +1,8 @@
+*.ipr
+*.iws
+*.iml
+build
+dist
+test*
+target
+maven.log
