@@ -38,6 +38,8 @@ public class LocalizedTextUtil {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public static void addDefaultResourceBundle(String resourceBundleName) {
+        //make sure this doesn't get added more than once
+        DEFAULT_RESOURCE_BUNDLES.remove(resourceBundleName);
         DEFAULT_RESOURCE_BUNDLES.add(0, resourceBundleName);
 
         if (LOG.isDebugEnabled()) {
@@ -132,12 +134,13 @@ public class LocalizedTextUtil {
      */
     public static String findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args) {
         OgnlValueStack valueStack = ActionContext.getContext().getValueStack();
+
         do {
             try {
                 ResourceBundle bundle = findResourceBundle(aClass.getName(), locale);
 
-
                 String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
+
                 return MessageFormat.format(message, args);
             } catch (MissingResourceException ex) {
                 aClass = aClass.getSuperclass();
@@ -146,12 +149,15 @@ public class LocalizedTextUtil {
 
         try {
             String message = TextParseUtil.translateVariables(findDefaultText(aTextName, locale), valueStack);
+
             return MessageFormat.format(message, args);
         } catch (MissingResourceException ex) {
             //ignore
         }
 
-        LOG.debug("Unable to find text for key " + aTextName);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Unable to find text for key " + aTextName);
+        }
 
         return MessageFormat.format(TextParseUtil.translateVariables(defaultMessage, valueStack), args);
     }

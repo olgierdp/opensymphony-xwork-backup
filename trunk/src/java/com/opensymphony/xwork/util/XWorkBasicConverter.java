@@ -176,6 +176,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 result = sdf.parse(sa);
             } catch (ParseException e) {
             }
+        } else if (Date.class.isAssignableFrom(value.getClass())) {
+            result = (Date) value;
         }
 
         return result;
@@ -291,6 +293,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 String s = sa[i];
                 result.add(s);
             }
+        } else if (List.class.isAssignableFrom(value.getClass())) {
+            result = (List) value;
         }
 
         return result;
@@ -340,6 +344,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 String s = sa[i];
                 result.add(s);
             }
+        } else if (Set.class.isAssignableFrom(value.getClass())) {
+            result = (Set) value;
         }
 
         return result;
