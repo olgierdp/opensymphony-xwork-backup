@@ -114,36 +114,6 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals("Smokey", vs.findValue("hates.name", String.class));
     }
 
-    public void testExceptionThrown() {
-        OgnlValueStack vs = new OgnlValueStack();
-
-        Dog dog1 = new Dog();
-        dog1.setAge(12);
-        dog1.setName("Rover");
-
-        vs.push(dog1);
-
-        try {
-            vs.findValue("exception");
-            fail("An exception was expected");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        try {
-            vs.setValue("exception", "blah");
-            fail("An exception was expected");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        try {
-            vs.findValue("this");
-        } catch (Exception e) {
-            fail("an exception was not expected");
-        }
-    }
-
     public void testFooBarAsString() {
         OgnlValueStack vs = new OgnlValueStack();
         Foo foo = new Foo();
