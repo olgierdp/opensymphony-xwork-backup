@@ -522,7 +522,7 @@ public class LocalizedTextUtil {
         String pattern;
         Locale locale;
 
-        public MessageFormatKey(String pattern, Locale locale) {
+        MessageFormatKey(String pattern, Locale locale) {
             this.pattern = pattern;
             this.locale = locale;
         }

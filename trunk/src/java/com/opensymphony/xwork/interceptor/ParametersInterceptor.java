@@ -10,6 +10,7 @@ import com.opensymphony.xwork.util.InstantiatingNullHandler;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.XWorkConverter;
 import com.opensymphony.xwork.util.XWorkMethodAccessor;
+import ognl.OgnlContext;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -53,11 +54,18 @@ public class ParametersInterceptor extends AroundInterceptor {
             }
 
             ActionContext invocationContext = invocation.getInvocationContext();
-
+			
+			boolean oldtrace=false;
+			
+			OgnlContext ognlContext=(OgnlContext)invocationContext.getContextMap();
+			oldtrace=ognlContext.getTraceEvaluations();
             try {
                 invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
                 invocationContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
                 invocationContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+                
+                ognlContext.setTraceEvaluations(true);
+                
 
                 if (parameters != null) {
                     final OgnlValueStack stack = ActionContext.getContext().getValueStack();
@@ -73,6 +81,7 @@ public class ParametersInterceptor extends AroundInterceptor {
                     }
                 }
             } finally {
+				ognlContext.setTraceEvaluations(oldtrace);
                 invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
                 invocationContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.FALSE);
                 invocationContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.FALSE);

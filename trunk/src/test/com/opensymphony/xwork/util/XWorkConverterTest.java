@@ -34,6 +34,33 @@ public class XWorkConverterTest extends TestCase {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    public void testConversionToSetKeepsOriginalSetAndReplacesContents() {
+        OgnlValueStack stack = new OgnlValueStack();
+
+        Map stackContext = stack.getContext();
+        stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+        stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+        stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+
+        String[] param = new String[] {"abc", "def", "ghi"};
+        List paramList = Arrays.asList(param);
+
+        List originalList = new ArrayList();
+        originalList.add("jkl");
+        originalList.add("mno");
+
+        User user = new User();
+        user.setList(originalList);
+        stack.push(user);
+
+        stack.setValue("list", param);
+
+        List userList = user.getList();
+        assertEquals(3,userList.size());
+        assertEquals(paramList,userList);
+        assertSame(originalList,userList);
+    }
+
     public void testArrayToNumberConversion() {
         String[] value = new String[]{"12345"};
         assertEquals(new Integer(12345), converter.convertValue(context, null, null, null, value, Integer.class));

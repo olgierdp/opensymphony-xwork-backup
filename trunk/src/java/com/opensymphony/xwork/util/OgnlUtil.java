@@ -4,7 +4,12 @@
  */
 package com.opensymphony.xwork.util;
 
-import ognl.*;
+import ognl.Ognl;
+import ognl.OgnlContext;
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
+import ognl.TypeConverter;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -12,11 +17,12 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.lang.reflect.Method;
 
 
 /**
@@ -173,7 +179,7 @@ public class OgnlUtil {
             Object target = getRealTarget(property, context, root);
 
             if (target != null) {
-                Class memberType = (Class) XWorkConverter.getInstance().getConverter(target.getClass(), XWorkConverter.CONVERSION_COLLECTION_PREFIX + property);
+                Class memberType = (Class) XWorkConverter.getInstance().getObjectTypeDeterminer().getElementClass(target.getClass(), property,null);
 
                 if (memberType != null) {
                     TypeConverter converter = Ognl.getTypeConverter(context);

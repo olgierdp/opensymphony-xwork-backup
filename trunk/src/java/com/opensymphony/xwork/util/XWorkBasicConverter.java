@@ -77,7 +77,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     	if (context == null) {
     		return Locale.getDefault();
     	}
-    	
+
         Locale locale = (Locale) context.get(ActionContext.LOCALE);
 
         if (locale == null) {
@@ -90,12 +90,25 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     /**
      * Creates a Collection of the specified type.
      *
+     * @param fromObject
+     * @param propertyName
      * @param toType     the type of Collection to create
      * @param memberType the type of object elements in this collection must be
      * @param size       the initial size of the collection (ignored if 0 or less)
      * @return a Collection of the specified type
      */
-    private Collection createCollection(Class toType, Class memberType, int size) {
+    private Collection createCollection(Object fromObject, String propertyName, Class toType, Class memberType, int size) {
+        try {
+            Object original = Ognl.getValue(OgnlUtil.compile(propertyName),fromObject);
+            if (original instanceof Collection) {
+                Collection coll = (Collection) original;
+                coll.clear();
+                return coll;
+            }
+        } catch (Exception e) {
+            // fail back to creating a new one
+        }
+
         Collection result;
 
         if (toType == Set.class) {
@@ -166,12 +179,13 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     }
 
     private Collection doConvertToCollection(Map context, Object o, Member member, String prop, Object value, Class toType) {
-        Collection result = null;
+        Collection result;
         Class memberType = String.class;
 
         if (o != null) {
-            memberType = (Class) XWorkConverter.getInstance().getConverter(o.getClass(), XWorkConverter.CONVERSION_COLLECTION_PREFIX + prop);
-
+            //memberType = (Class) XWorkConverter.getInstance().getConverter(o.getClass(), XWorkConverter.CONVERSION_COLLECTION_PREFIX + prop);
+        	memberType = XWorkConverter.getInstance().getObjectTypeDeterminer().getElementClass(o.getClass(), prop,null);
+        	
             if (memberType == null) {
                 memberType = String.class;
             }
@@ -183,7 +197,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         } else if (value.getClass().isArray()) {
             Object[] objArray = (Object[]) value;
             TypeConverter converter = Ognl.getTypeConverter(context);
-            result = createCollection(toType, memberType, objArray.length);
+            result = createCollection(o, prop, toType, memberType, objArray.length);
 
             for (int i = 0; i < objArray.length; i++) {
                 result.add(converter.convertValue(context, o, member, prop, objArray[i], memberType));
@@ -191,13 +205,13 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         } else if (Collection.class.isAssignableFrom(value.getClass())) {
             Collection col = (Collection) value;
             TypeConverter converter = Ognl.getTypeConverter(context);
-            result = createCollection(toType, memberType, col.size());
+            result = createCollection(o, prop, toType, memberType, col.size());
 
             for (Iterator it = col.iterator(); it.hasNext();) {
                 result.add(converter.convertValue(context, o, member, prop, it.next(), memberType));
             }
         } else {
-            result = createCollection(toType, memberType, -1);
+            result = createCollection(o, prop, toType, memberType, -1);
             result.add(value);
         }
 

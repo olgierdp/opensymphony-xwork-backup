@@ -23,8 +23,10 @@ public class Foo {
     Date birthday;
     Foo child;
     List cats;
+    List moreCats;
     List strings;
     Map catMap;
+    Map anotherCatMap;
     String title;
     long[] points;
     Foo[] relatives;
@@ -89,7 +91,30 @@ public class Foo {
     public int getNumber() {
         return number;
     }
-
+	/**
+	 * @return Returns the anotherCatMap.
+	 */
+	public Map getAnotherCatMap() {
+		return anotherCatMap;
+	}
+	/**
+	 * @param anotherCatMap The anotherCatMap to set.
+	 */
+	public void setAnotherCatMap(Map anotherCatMap) {
+		this.anotherCatMap = anotherCatMap;
+	}
+	/**
+	 * @return Returns the moreCats.
+	 */
+	public List getMoreCats() {
+		return moreCats;
+	}
+	/**
+	 * @param moreCats The moreCats to set.
+	 */
+	public void setMoreCats(List moreCats) {
+		this.moreCats = moreCats;
+	}
     public void setPoints(long[] points) {
         this.points = points;
     }

@@ -46,4 +46,8 @@ public class Bar extends ActionSupport {
     public String getTitle() {
         return title;
     }
+
+	public String toString() {
+		return getTitle() + ":" + getSomethingElse();
+	}
 }

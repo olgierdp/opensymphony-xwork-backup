@@ -97,4 +97,38 @@ public class SetPropertiesTest extends TestCase {
         assertNull(bar.getId());
         assertEquals(0, bar.getFieldErrors().size());
     }
+    public void testAddingToCollectionsWithObjects() {
+		Foo foo=new Foo();
+		foo.setMoreCats(new ArrayList());
+		String spielname="Spielen";    	
+		OgnlValueStack vs = new OgnlValueStack();
+		vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+		vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+		vs.push(foo);
+		vs.setValue("moreCats[1].name", spielname);
+		Object setCat=foo.getMoreCats().get(1);
+		assertNotNull(setCat);
+		assertTrue(setCat instanceof Cat);
+		assertTrue(((Cat)setCat).getName().equals(spielname));
+    
+    }
+    public void testAddingToMapsWithObjects() {
+    	Foo foo=new Foo();
+		foo.setAnotherCatMap(new HashMap());
+		String spielname="Spielen";    	
+		OgnlValueStack vs = new OgnlValueStack();
+		vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+		vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+		vs.push(foo);
+		vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+		vs.setValue("anotherCatMap[\"3\"].name", spielname);
+		Object setCat=foo.getAnotherCatMap().get(new Long(3));
+		assertNotNull(setCat);
+		assertTrue(setCat instanceof Cat);
+		assertTrue(((Cat)setCat).getName().equals(spielname));
+			
+    
+    }
+    
+    
 }
