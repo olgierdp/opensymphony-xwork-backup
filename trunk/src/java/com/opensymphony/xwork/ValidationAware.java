@@ -21,28 +21,30 @@ public interface ValidationAware extends Serializable {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-     * Set the Collection of Action level String error messages
+     * Set the Collection of Action-level String error messages
      *
      * @param errorMessages
      */
     void setActionErrors(Collection errorMessages);
 
     /**
-     * Get the Collection of Action level error messages for this action. Error messages should not be added directly
-     * here, as implementations are free to return a new Collection or an Unmodifiable Collection.
+     * Get the Collection of Action-level error messages for this action. Error messages should not
+     * be added directly here, as implementations are free to return a new Collection or an
+     * Unmodifiable Collection.
      *
      * @return Collection of String error messages
      */
     Collection getActionErrors();
 
     /**
-     * Set the Collection of Action level String messages (not errors)
+     * Set the Collection of Action-level String messages (not errors).
      */
     void setActionMessages(Collection messages);
 
     /**
-     * Get the Collection of Action level messages for this action. Messages should not be added directly
-     * here, as implementations are free to return a new Collection or an Unmodifiable Collection.
+     * Get the Collection of Action-level messages for this action. Messages should not be added
+     * directly here, as implementations are free to return a new Collection or an Unmodifiable
+     * Collection.
      *
      * @return Collection of String messages
      */
@@ -56,22 +58,23 @@ public interface ValidationAware extends Serializable {
     void setFieldErrors(Map errorMap);
 
     /**
-     * Get the field specific errors associated with this action. Error messages should not be added directly
-     * here, as implementations are free to return a new Collection or an Unmodifiable Collection.
+     * Get the field specific errors associated with this action. Error messages should not be added
+     * directly here, as implementations are free to return a new Collection or an Unmodifiable
+     * Collection.
      *
      * @return Map with errors mapped from fieldname (String) to Collection of String error messages
      */
     Map getFieldErrors();
 
     /**
-     * Add an Action level error message to this Action
+     * Add an Action-level error message to this Action
      *
      * @param anErrorMessage
      */
     void addActionError(String anErrorMessage);
 
     /**
-     * Add an Action level message to this Action
+     * Add an Action-level message to this Action
      */
     void addActionMessage(String aMessage);
 
@@ -84,11 +87,18 @@ public interface ValidationAware extends Serializable {
     void addFieldError(String fieldName, String errorMessage);
 
     /**
-     * Check whether there are any Action level error messages
+     * Check whether there are any Action-level error messages
      *
-     * @return true if any Action level error messages have been registered
+     * @return true if any Action-level error messages have been registered
      */
     boolean hasActionErrors();
+
+    /**
+     * Checks whether there are any Action-level messages.
+     *
+     * @return true if any Action-level messages have been registered
+     */
+    boolean hasActionMessages();
 
     /**
      * @return (hasActionErrors() || hasFieldErrors())

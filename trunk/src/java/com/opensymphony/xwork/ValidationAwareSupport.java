@@ -8,9 +8,9 @@ import java.util.*;
 
 
 /**
- * ValidationAwareSupport
+ * Provides a default implementation of ValidationAware.
+ *
  * @author Jason Carreira
- * Created Aug 2, 2003 11:56:27 PM
  */
 public class ValidationAwareSupport implements ValidationAware {
     //~ Instance fields ////////////////////////////////////////////////////////
@@ -42,10 +42,11 @@ public class ValidationAwareSupport implements ValidationAware {
     }
 
     /**
-* Get the field specific errors.
-*
-* @return an unmodifiable Map with errors mapped from fieldname (String) to Collection of String error messages
-*/
+     * Get the field specific errors.
+     *
+     * @return an unmodifiable Map with errors mapped from fieldname (String) to Collection of
+     * String error messages
+     */
     public synchronized Map getFieldErrors() {
         return new HashMap(internalGetFieldErrors());
     }
@@ -55,8 +56,8 @@ public class ValidationAwareSupport implements ValidationAware {
     }
 
     /**
- * Add an Action level message to this Action
- */
+     * Add an Action level message to this Action
+     */
     public void addActionMessage(String aMessage) {
         internalGetActionMessages().add(aMessage);
     }
@@ -78,9 +79,18 @@ public class ValidationAwareSupport implements ValidationAware {
     }
 
     /**
-* Note that this does not have the same meaning as in WW 1.x
-* @return (hasActionErrors() || hasFieldErrors())
-*/
+     * Checks whether there are any Action-level messages.
+     *
+     * @return true if any Action-level messages have been registered
+     */
+    public boolean hasActionMessages() {
+        return (actionMessages != null) && !actionMessages.isEmpty();
+    }
+
+    /**
+     * Note that this does not have the same meaning as in WW 1.x
+     * @return (hasActionErrors() || hasFieldErrors())
+     */
     public synchronized boolean hasErrors() {
         return (hasActionErrors() || hasFieldErrors());
     }

@@ -126,6 +126,15 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
         return validationAware.hasActionErrors();
     }
 
+    /**
+     * Checks whether there are any Action-level messages.
+     *
+     * @return true if any Action-level messages have been registered
+     */
+    public boolean hasActionMessages() {
+        return validationAware.hasActionMessages();
+    }
+
     public boolean hasErrors() {
         return validationAware.hasErrors();
     }

@@ -18,9 +18,9 @@ import java.util.ResourceBundle;
 
 
 /**
- * DelegatingValidatorContext
+ * Provides a default implementation of ValidatorContext.
+ *
  * @author Jason Carreira
- * Created Aug 3, 2003 12:33:30 AM
  */
 public class DelegatingValidatorContext implements ValidatorContext {
     //~ Instance fields ////////////////////////////////////////////////////////
@@ -54,18 +54,19 @@ public class DelegatingValidatorContext implements ValidatorContext {
     }
 
     /**
- * Set the Collection of Action level String messages (not errors)
- */
+     * Set the Collection of Action level String messages (not errors)
+     */
     public void setActionMessages(Collection messages) {
         validationAware.setActionMessages(messages);
     }
 
     /**
- * Get the Collection of Action level messages for this action. Messages should not be added directly
- * here, as implementations are free to return a new Collection or an Unmodifiable Collection.
- *
- * @return Collection of String messages
- */
+     * Get the Collection of Action level messages for this action. Messages should not be added
+     * directly here, as implementations are free to return a new Collection or an Unmodifiable
+     * Collection.
+     *
+     * @return Collection of String messages
+     */
     public Collection getActionMessages() {
         return validationAware.getActionMessages();
     }
@@ -79,10 +80,10 @@ public class DelegatingValidatorContext implements ValidatorContext {
     }
 
     /**
-* Translates a simple field name into a full field name in Ognl syntax
-* @param fieldName
-* @return
-*/
+     * Translates a simple field name into a full field name in Ognl syntax
+     * @param fieldName
+     * @return
+     */
     public String getFullFieldName(String fieldName) {
         return fieldName;
     }
@@ -120,8 +121,8 @@ public class DelegatingValidatorContext implements ValidatorContext {
     }
 
     /**
- * Add an Action level message to this Action
- */
+     * Add an Action level message to this Action
+     */
     public void addActionMessage(String aMessage) {
         validationAware.addActionMessage(aMessage);
     }
@@ -132,6 +133,15 @@ public class DelegatingValidatorContext implements ValidatorContext {
 
     public boolean hasActionErrors() {
         return validationAware.hasActionErrors();
+    }
+
+    /**
+     * Checks whether there are any Action-level messages.
+     *
+     * @return true if any Action-level messages have been registered
+     */
+    public boolean hasActionMessages() {
+        return validationAware.hasActionMessages();
     }
 
     public boolean hasErrors() {
@@ -210,8 +220,8 @@ public class DelegatingValidatorContext implements ValidatorContext {
         }
 
         /**
- * Set the Collection of Action level String messages (not errors)
- */
+         * Set the Collection of Action level String messages (not errors)
+         */
         public void setActionMessages(Collection messages) {
             for (Iterator iterator = messages.iterator(); iterator.hasNext();) {
                 String s = (String) iterator.next();
@@ -220,11 +230,12 @@ public class DelegatingValidatorContext implements ValidatorContext {
         }
 
         /**
- * Get the Collection of Action level messages for this action. Messages should not be added directly
- * here, as implementations are free to return a new Collection or an Unmodifiable Collection.
- *
- * @return Collection of String messages
- */
+         * Get the Collection of Action level messages for this action. Messages should not be added
+         * directly here, as implementations are free to return a new Collection or an Unmodifiable
+         * Collection.
+         *
+         * @return Collection of String messages
+         */
         public Collection getActionMessages() {
             return null;
         }
@@ -246,8 +257,8 @@ public class DelegatingValidatorContext implements ValidatorContext {
         }
 
         /**
- * Add an Action level message to this Action
- */
+         * Add an Action level message to this Action
+         */
         public void addActionMessage(String aMessage) {
             log.info("Validation Message: " + aMessage);
         }
@@ -257,6 +268,15 @@ public class DelegatingValidatorContext implements ValidatorContext {
         }
 
         public boolean hasActionErrors() {
+            return false;
+        }
+
+        /**
+         * Checks whether there are any Action-level messages.
+         *
+         * @return true if any Action-level messages have been registered
+         */
+        public boolean hasActionMessages() {
             return false;
         }
 
