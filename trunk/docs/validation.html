@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>OpenSymphony Wiki :: Xwork Documentation</title>
+  <link type="text/css" href="main.css" rel="STYLESHEET"/>
+</head>
+<body>
+  <div id="page-logo">
+    <a href="index.html">XWork Documentation</a>
+  </div>
+    <div class="snip-title">
+      <h1 class="snip-name">Xwork Validation Framework
+  
+  </h1>
+  </div>
+<div id="snip-content" class="snip-content">
+ <div class="snip-attachments"></div>
+ 
+ The validation framework in XWork is designed to help you apply simple validation rules to your Actions before they are executed. 
+<h3 class="heading-1">Core Concepts
+</h3><p class="paragraph"/>The Validator framework, at its core, takes just an object and a String context name for which to validate that object. This allows you to have different validations for the same class in different contexts. You can define default validations in the class-level validation file (<b class="bold">ClassName-validation.xml</b>), and then define validations which are added on top of these for a specific context (<b class="bold">ClassName-contextName-validation.xml</b>). In the case of Action validation, this context is the Action alias. The validators are applied in the order they are listed in the validation files and error messages are saved into the Object (if it implements ValidationAware).
+<h3 class="heading-1">The ValidationInterceptor
+</h3><p class="paragraph"/>The ValidationInterceptor is an Xwork Interceptor which handles the process of applying validators to an Action before it is executed and allows the Validators to apply any messages to the Action that are required. Bear in mind that even if errors are added due to failed validation, the action will still be executed.
+<h3 class="heading-1">Registering Validators
+</h3><p class="paragraph"/>Validators must be registered with the ValidatorFactory. This may either be done programmatically, using the registerValidator(String name, Class clazz) static method of the ValidatorFactory, or by putting a file name validators.xml in the root of the classpath with a structure like this:<p class="paragraph"/><div class="code"><pre>&#60;validators&#62;
+    &#60;validator name=<span class="xml&#45;quote">"required"</class>
+        class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.RequiredFieldValidator"</class>/&#62;
+    &#60;validator name=<span class="xml&#45;quote">"requiredstring"</class>
+        class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.RequiredStringValidator"</class>/&#62;
+    &#60;validator name=<span class="xml&#45;quote">"int"</class> 
+        class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.IntRangeFieldValidator"</class>/&#62;
+    &#60;validator name=<span class="xml&#45;quote">"date"</class> 
+        class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.DateRangeFieldValidator"</class>/&#62;
+    &#60;validator name=<span class="xml&#45;quote">"expression"</class> 
+        class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.ExpressionValidator"</class>/&#62;
+&#60;/validators&#62;</pre></div>
+<h3 class="heading-1">Turning on Validation
+</h3><p class="paragraph"/>All that is required to enable validation for an Action is to put the ValidationInterceptor in the interceptor refs of the action (see <a href="configuration.html">Xwork Configuration</a>) like so:<p class="paragraph"/><div class="code"><pre>&#60;interceptor name=<span class="xml&#45;quote">"validator"</class> class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.ValidationInterceptor"</class>/&#62;</pre></div><p class="paragraph"/>Then create a file named <b class="bold">ActionName-validation.xml</b> in the same package as the Action class file. You may also create alias specific validators which add to the Action class specific validators defined in the <b class="bold">ActionName-validation.xml</b> by creating another file in the same directory name <b class="bold">ActionName-aliasname-validation.xml</b>, where <b class="bold">ActionName</b> is the name of the class, and <b class="bold">aliasname</b> is the name of the action alias defined in the <b class="bold">xwork.xml</b> configuration for this Action. The framework will also search up the inheritance tree of the action to find default validations for parent classes of the Action, just like the <a href="localisation.html">Localization with XWork</a> framework does when finding messages.<p class="paragraph"/>In this way, you may define some default interceptors for all of the alias's of a class, and then define alias specific validators in the <b class="bold">ActionName-alias-validation.xml</b>.
+<h3 class="heading-1">Defining validation rules in a validation.xml
+</h3><p class="paragraph"/>Here is an example validator.xml, SimpleAction-validation.xml, from the Xwork tests:<p class="paragraph"/><div class="code"><pre>&#60;!DOCTYPE validators PUBLIC <span class="xml&#45;quote">"&#45;//OpenSymphony Group//XWork Validator 1.0//EN"</class>
+        <span class="xml&#45;quote">"http://www.opensymphony.com/xwork/xwork&#45;validator&#45;1.0.dtd"</class>&#62;
+&#60;validators&#62;
+    &#60;field name=<span class="xml&#45;quote">"bar"</class>&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"required"</class>&#62;
+            &#60;message&#62;You must enter a value for bar.&#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"int"</class>&#62;
+            &#60;param name=<span class="xml&#45;quote">"min"</class>&#62;6&#60;/param&#62;
+            &#60;param name=<span class="xml&#45;quote">"max"</class>&#62;10&#60;/param&#62;
+            &#60;message&#62;bar must be between $&#123;min&#125; and $&#123;max&#125;, current value is $&#123;bar&#125;.&#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+    &#60;/field&#62;
+    &#60;field name=<span class="xml&#45;quote">"date"</class>&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"date"</class>&#62;
+            &#60;param name=<span class="xml&#45;quote">"min"</class>&#62;12/22/2002&#60;/param&#62;
+            &#60;param name=<span class="xml&#45;quote">"max"</class>&#62;12/25/2002&#60;/param&#62;
+            &#60;message&#62;The date must be between 12&#45;22&#45;2002 and 12&#45;25&#45;2002.&#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+    &#60;/field&#62;
+    &#60;field name=<span class="xml&#45;quote">"foo"</class>&#62;
+        &#60;field&#45;validator type=<span class="xml&#45;quote">"int"</class>&#62;
+            &#60;param name=<span class="xml&#45;quote">"min"</class>&#62;0&#60;/param&#62;
+            &#60;param name=<span class="xml&#45;quote">"max"</class>&#62;100&#60;/param&#62;
+            &#60;message key=<span class="xml&#45;quote">"foo.range"</class>&#62;Could not find foo.range!&#60;/message&#62;
+        &#60;/field&#45;validator&#62;
+    &#60;/field&#62;
+    &#60;validator type=<span class="xml&#45;quote">"expression"</class>&#62;
+        &#60;param name=<span class="xml&#45;quote">"expression"</class>&#62;foo &#62; bar&#60;/param&#62;
+        &#60;message&#62;Foo must be greater than Bar. Foo = $&#123;foo&#125;, Bar = $&#123;bar&#125;.&#60;/message&#62;
+    &#60;/validator&#62;
+&#60;/validators&#62;</pre></div><p class="paragraph"/>Here we can see the configuration of validators for the SimpleAction class. Validators (and field-validators) must have a "type" attribute, which refers to a name of an Validator registered with the ValidatorFactory as above. Validator elements may also have &#60;param&#62; elements with name and value attributes to set arbitrary parameters into the Validator instance. See below for discussion of the message element.
+<h3 class="heading-1-1">Validator vs. Field-Validator
+</h3><p class="paragraph"/>Field-Validator elements inside &#60;field&#62; elements are basically the same as Validator elements, except that they inherit a parameter with name "fieldName" and with a value of the field name set in the enclosing field element.<p class="paragraph"/>The reason for the field-&#62;field-validator structure is that it is more clear to group the validators for a particular field under one field element, and because the fieldName param would otherwise always have to be set for field validators.<p class="paragraph"/>That said, it's perfectly legal to only use validator elements without the field elements and set the fieldName parameter for each of them.
+<h3 class="heading-1-1">Message Element
+</h3><p class="paragraph"/>Each Validator or Field-Validator element must define one message element inside the validator element body. The message element has 1 attributes, key which is not required. The body of the message tag is taken as the default message which should be added to the Action if the validator fails.<p class="paragraph"/>Key gives a message key to look up in the Action's ResourceBundles using getText() from LocaleAware if the Action implements that interface (as ActionSupport does). This provides for Localized messages based on the Locale of the user making the request (or whatever Locale you've set into the LocaleAware Action).<p class="paragraph"/>After either retrieving the message from the ResourceBundle using the Key value, or using the Default message, the current Validator is pushed onto the ValueStack, then the message is parsed for &#36;&#123;...&#125; sections which are replaced with the evaluated value of the string between the &#36;&#123; and &#125;. This allows you to parameterize your messages with values from the Validator, the Action, or both. Here is an example of a parameterized message:<p class="paragraph"/><div class="code"><pre>bar must be between &#36;&#123;min&#125; and &#36;&#123;max&#125;, current value is &#36;&#123;bar&#125;.</pre></div><p class="paragraph"/>This will pull the min and max parameters from the IntRangeFieldValidator and the value of bar from the Action.
+<h3 class="heading-1">Building a Validator
+</h3><p class="paragraph"/>Validators implement the <b class="bold">com.opensymphony.xwork.validator.Validator</b> interface<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">public</span> <span class="java&#45;keyword">interface</span> Validator &#123;
+    void setDefaultMessage(<span class="java&#45;object">String</span> message);<p class="paragraph"/>    <span class="java&#45;object">String</span> getDefaultMessage();<p class="paragraph"/>    <span class="java&#45;object">String</span> getMessage(<span class="java&#45;object">Object</span> object);<p class="paragraph"/>    void setMessageKey(<span class="java&#45;object">String</span> key);<p class="paragraph"/>    <span class="java&#45;object">String</span> getMessageKey();<p class="paragraph"/>    /&#42;&#42;
+     &#42; This method will be called before validate with a non&#45;<span class="java&#45;keyword">null</span> 
+     &#42; ValidatorContext.
+     &#42; @param validatorContext
+     &#42;/
+    void setValidatorContext(ValidatorContext validatorContext);<p class="paragraph"/>    ValidatorContext getValidatorContext();<p class="paragraph"/>    /&#42;&#42;
+     &#42; The validation implementation must guarantee that setValidatorContext
+     &#42; will be called with a non&#45;<span class="java&#45;keyword">null</span> ValidatorContext before validate is 
+     &#42; called.
+     &#42; @param object
+     &#42; @<span class="java&#45;keyword">throws</span> ValidationException
+     &#42;/
+    void validate(<span class="java&#45;object">Object</span> object) <span class="java&#45;keyword">throws</span> ValidationException;
+&#125;</pre></div><p class="paragraph"/>FieldValidators implement <b class="bold">com.opensymphony.xwork.validator.FieldValidator</b>, which extends Validator:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">public</span> <span class="java&#45;keyword">interface</span> FieldValidator <span class="java&#45;keyword">extends</span> Validator &#123;<p class="paragraph"/>    /&#42;&#42;
+     &#42; Sets the field name to validate with <span class="java&#45;keyword">this</span> FieldValidator
+     &#42; @param fieldName
+     &#42;/
+    void setFieldName(<span class="java&#45;object">String</span> fieldName);<p class="paragraph"/>    /&#42;&#42;
+     &#42; @<span class="java&#45;keyword">return</span> the field name to be validated
+     &#42;/
+    <span class="java&#45;object">String</span> getFieldName();<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/>Validators and FieldValidators can extend base classes <b class="bold">com.opensymphony.xwork.validator.validators.ValidatorSupport</b> and <b class="bold">com.opensymphony.xwork.validator.validators.FieldValidatorSupport</b> to get the base message behavior, and will only need to implement validate(Action action).<p class="paragraph"/>The Support classes provide the functionality to use the message key and default message to get the localied message body and the parsing of the message body to provide for parameterized messages. Implementations of the Validator Interface which do not extend the Support base classes should provide this functionality as well for consistency.<p class="paragraph"/>The <b class="bold">ValidatorContext</b> set into the Validator is an interface which extends both <b class="bold">ValidationAware</b> and <b class="bold">LocaleAware</b> and is used for looking up message texts and settting errors. When validators are called from the ValidationInterceptor, a DelegatingValidatorContext is created which delegates these calls to the Action if it implements these interfaces. If the Action does not implement LocaleAware, a LocaleAwareSupport instance is created which uses the Action's class to look up resource bundle texts, if available. If the action does not implement ValidationAware, an implementation which simply logs the validation errors is created and delegated to. When calling the validation framework from outside the ValidationInterceptor, any ValidatorContext implementation can be passed in.<p class="paragraph"/>Validator classes may define any number of properties using the usual getX() setX() naming convention and have those properties set using &#60;param name="x"&#62;foo&#60;/param&#62; elements below the &#60;validator&#62; element. The values of these properties may then be used in the validate() method to parameterize the validation. Validators which extend the Support classes may also use the<p class="paragraph"/>Object getFieldValue(String name, Action action) method to get the field value of a named property from an Action.
+<h3 class="heading-1">Using the Expression Validator
+</h3><p class="paragraph"/>The Expression validator extends the ValidatorSupport base class and has one parameter which should be set using &#60;param name="expression"&#62; any valid ognl expression which returns a boolean&#60;/param&#62;. The expression will be evaluated against the ValueStack, allowing you to use any properties of the Action in comparisons, etc.<p class="paragraph"/>This allows for very powerful cross-property validation expressions. Here is a simple example of the ExpressionValidator in a configuration:<p class="paragraph"/><div class="code"><pre>&#60;validator type=<span class="xml&#45;quote">"expression"</class>&#62;
+        &#60;param name=<span class="xml&#45;quote">"expression"</class>&#62;foo &#62; bar&#60;/param&#62;
+        &#60;message default=<span class="xml&#45;quote">"Foo must be greater than Bar. Foo = $&#123;foo&#125;, Bar = $&#123;bar&#125;."</class>/&#62;
+&#60;/validator&#62;</pre></div>
+<h3 class="heading-1">See <a href="fieldvalidator.html">Using the VisitorFieldValidator</a></h3>
+</div>
+ 
+  
+  
+  </body></html>
