@@ -76,10 +76,6 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     public Object convertValue(Map context, Object target, Member member, String property, Object value, Class toClass) {
-        if (value == null) {
-            return null;
-        }
-
         //
         // Process the conversion using the default mappings, if one exists
         //
