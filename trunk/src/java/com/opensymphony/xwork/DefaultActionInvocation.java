@@ -241,6 +241,8 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         if (aResult != null) {
             aResult.execute(this);
+        } else {
+            LOG.warn("No result defined for action " + getAction().getClass().getName() + " and result " + getResultCode());
         }
     }
 

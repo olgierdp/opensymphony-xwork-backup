@@ -162,7 +162,13 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         HashMap actionParams = XmlHelper.getParams(actionElement);
 
-        Map results = buildResults(actionElement, packageContext);
+        Map results;
+
+        try {
+            results = buildResults(actionElement, packageContext);
+        } catch (ConfigurationException e) {
+            throw new ConfigurationException("Error building results for action " + name + " in namespace " + packageContext.getNamespace(), e);
+        }
 
         List interceptorList = buildInterceptorList(actionElement, packageContext);
 
@@ -288,9 +294,11 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
 
                 ResultTypeConfig config = (ResultTypeConfig) packageContext.getAllResultTypeConfigs().get(resultType);
+
                 if (config == null) {
-                    throw new ConfigurationException("There is no result type defined for " + resultType);
+                    throw new ConfigurationException("There is no result type defined for type '" + resultType + "' mapped with name '" + resultName + "'");
                 }
+
                 Class resultClass = config.getClazz();
 
                 // invalid result type specified in result definition
