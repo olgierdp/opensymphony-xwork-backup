@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork;
 
+import com.opensymphony.xwork.interceptor.component.ComponentInterceptor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -16,7 +17,7 @@ import java.util.Set;
  * A special kind of view that invokes GenericDispatch (using the previously existing
  * ActionContext) and executes another action. This view takes one required parameter:
  * <ul>
- *  <li><b>actionName</b> - the name of the action that will be chained to</li>
+ * <li><b>actionName</b> - the name of the action that will be chained to</li>
  * </ul>
  *
  * @author $Author$
@@ -49,6 +50,7 @@ public class ActionChainResult implements Result {
     /**
      * sets the namespace of the Action that we're chaining to.  if namespace
      * is null, this defaults to the current namespace.
+     *
      * @param namespace the name of the namespace we're chaining to
      */
     public void setNamespace(String namespace) {
@@ -90,7 +92,7 @@ public class ActionChainResult implements Result {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.VALUE_STACK, ActionContext.getContext().getValueStack());
         extraContext.put(ActionContext.PARAMETERS, ActionContext.getContext().getParameters());
-        extraContext.put("com.opensymphony.xwork.interceptor.component.ComponentManager", ActionContext.getContext().get("com.opensymphony.xwork.interceptor.component.ComponentManager"));
+        extraContext.put(ComponentInterceptor.COMPONENT_MANAGER, ActionContext.getContext().get(ComponentInterceptor.COMPONENT_MANAGER));
         extraContext.put(CHAIN_HISTORY, ActionContext.getContext().get(CHAIN_HISTORY));
 
         if (log.isDebugEnabled()) {
