@@ -18,38 +18,51 @@ import java.util.ResourceBundle;
 
 
 /**
- * Provides a default implementation of ValidatorContext.
+ * A default implementation of the {@link ValidatorContext} interface.
  *
  * @author Jason Carreira
  */
 public class DelegatingValidatorContext implements ValidatorContext {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private LocaleProvider localeProvider;
     private TextProvider textProvider;
     private ValidationAware validationAware;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
-
-    public DelegatingValidatorContext(ValidationAware validationAware, TextProvider textProvider, LocaleProvider localeProvider) {
+    /**
+     * Creates a new validation context given a ValidationAware object, and a text and locale provider. These objects
+     * are used internally to set errors and get and set error text.
+     */
+    public DelegatingValidatorContext(ValidationAware validationAware, TextProvider textProvider,
+            LocaleProvider localeProvider)
+    {
         this.textProvider = textProvider;
         this.validationAware = validationAware;
         this.localeProvider = localeProvider;
     }
 
+    /**
+     * Creates a new validation context given an object - usually an Action. The internal objects
+     * (validation aware instance and a locale and text provider) are created based on the given action.
+     *
+     * @param object the object to use for validation (usually an Action).
+     */
     public DelegatingValidatorContext(Object object) {
         this.localeProvider = makeLocaleProvider(object);
         this.validationAware = makeValidationAware(object);
         this.textProvider = makeTextProvider(object, localeProvider);
     }
 
+    /**
+     * Create a new validation context given a Class definition. The locale provider, text provider and
+     * the validation context are created based on the class.
+     *
+     * @param clazz the class to initialize the context with.
+     */
     public DelegatingValidatorContext(Class clazz) {
         localeProvider = new ActionContextLocaleProvider();
         textProvider = new TextProviderSupport(clazz, localeProvider);
         validationAware = new LoggingValidationAware(clazz);
     }
-
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setActionErrors(Collection errorMessages) {
         validationAware.setActionErrors(errorMessages);
@@ -59,20 +72,10 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return validationAware.getActionErrors();
     }
 
-    /**
-     * Set the Collection of Action level String messages (not errors)
-     */
     public void setActionMessages(Collection messages) {
         validationAware.setActionMessages(messages);
     }
 
-    /**
-     * Get the Collection of Action level messages for this action. Messages should not be added
-     * directly here, as implementations are free to return a new Collection or an Unmodifiable
-     * Collection.
-     *
-     * @return Collection of String messages
-     */
     public Collection getActionMessages() {
         return validationAware.getActionMessages();
     }
@@ -85,11 +88,6 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return validationAware.getFieldErrors();
     }
 
-    /**
-     * Translates a simple field name into a full field name in Ognl syntax
-     * @param fieldName
-     * @return
-     */
     public String getFullFieldName(String fieldName) {
         return fieldName;
     }
@@ -126,9 +124,6 @@ public class DelegatingValidatorContext implements ValidatorContext {
         validationAware.addActionError(anErrorMessage);
     }
 
-    /**
-     * Add an Action level message to this Action
-     */
     public void addActionMessage(String aMessage) {
         validationAware.addActionMessage(aMessage);
     }
@@ -141,11 +136,6 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return validationAware.hasActionErrors();
     }
 
-    /**
-     * Checks whether there are any Action-level messages.
-     *
-     * @return true if any Action-level messages have been registered
-     */
     public boolean hasActionMessages() {
         return validationAware.hasActionMessages();
     }
@@ -198,15 +188,20 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return validationAware;
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
-
+    /**
+     * An implementation of LocaleProvider which gets the locale from the action context.
+     */
     private static class ActionContextLocaleProvider implements LocaleProvider {
         public Locale getLocale() {
             return ActionContext.getContext().getLocale();
         }
     }
 
+    /**
+     * An implementation of ValidationAware which logs errors and messages. 
+     */
     private static class LoggingValidationAware implements ValidationAware {
+
         private Log log;
 
         public LoggingValidationAware(Class clazz) {
@@ -218,8 +213,7 @@ public class DelegatingValidatorContext implements ValidatorContext {
         }
 
         public void setActionErrors(Collection errorMessages) {
-            for (Iterator iterator = errorMessages.iterator();
-                    iterator.hasNext();) {
+            for (Iterator iterator = errorMessages.iterator(); iterator.hasNext();) {
                 String s = (String) iterator.next();
                 addActionError(s);
             }
@@ -229,9 +223,6 @@ public class DelegatingValidatorContext implements ValidatorContext {
             return null;
         }
 
-        /**
-         * Set the Collection of Action level String messages (not errors)
-         */
         public void setActionMessages(Collection messages) {
             for (Iterator iterator = messages.iterator(); iterator.hasNext();) {
                 String s = (String) iterator.next();
@@ -239,20 +230,12 @@ public class DelegatingValidatorContext implements ValidatorContext {
             }
         }
 
-        /**
-         * Get the Collection of Action level messages for this action. Messages should not be added
-         * directly here, as implementations are free to return a new Collection or an Unmodifiable
-         * Collection.
-         *
-         * @return Collection of String messages
-         */
         public Collection getActionMessages() {
             return null;
         }
 
         public void setFieldErrors(Map errorMap) {
-            for (Iterator iterator = errorMap.entrySet().iterator();
-                    iterator.hasNext();) {
+            for (Iterator iterator = errorMap.entrySet().iterator(); iterator.hasNext();) {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 addFieldError((String) entry.getKey(), (String) entry.getValue());
             }
@@ -266,9 +249,6 @@ public class DelegatingValidatorContext implements ValidatorContext {
             log.error("Validation error: " + anErrorMessage);
         }
 
-        /**
-         * Add an Action level message to this Action
-         */
         public void addActionMessage(String aMessage) {
             log.info("Validation Message: " + aMessage);
         }
@@ -281,11 +261,6 @@ public class DelegatingValidatorContext implements ValidatorContext {
             return false;
         }
 
-        /**
-         * Checks whether there are any Action-level messages.
-         *
-         * @return true if any Action-level messages have been registered
-         */
         public boolean hasActionMessages() {
             return false;
         }
