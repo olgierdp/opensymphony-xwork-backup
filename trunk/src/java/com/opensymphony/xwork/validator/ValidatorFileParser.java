@@ -34,6 +34,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * Created : Jan 20, 2003 1:30:53 PM
  *
  * @author Jason Carreira
+ * @author James House
  */
 public class ValidatorFileParser {
     //~ Static fields/initializers /////////////////////////////////////////////
@@ -42,8 +43,8 @@ public class ValidatorFileParser {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public static List parseActionValidators(InputStream is) {
-        List validators = new ArrayList();
+    public static List parseActionValidatorConfigs(InputStream is) {
+        List validatorCfgs = new ArrayList();
         Document doc = null;
 
         try {
@@ -93,14 +94,14 @@ public class ValidatorFileParser {
                 extraParams.put("fieldName", fieldName);
 
                 NodeList validatorNodes = fieldElement.getElementsByTagName("field-validator");
-                addValidators(validatorNodes, extraParams, validators);
+                addValidatorConfigs(validatorNodes, extraParams, validatorCfgs);
             }
 
             NodeList validatorNodes = doc.getElementsByTagName("validator");
-            addValidators(validatorNodes, new HashMap(), validators);
+            addValidatorConfigs(validatorNodes, new HashMap(), validatorCfgs);
         }
 
-        return validators;
+        return validatorCfgs;
     }
 
     public static void parseValidatorDefinitions(InputStream is) {
@@ -128,7 +129,7 @@ public class ValidatorFileParser {
         }
     }
 
-    private static void addValidators(NodeList validatorNodes, Map extraParams, List validators) {
+    private static void addValidatorConfigs(NodeList validatorNodes, Map extraParams, List validatorCfgs) {
         for (int j = 0; j < validatorNodes.getLength(); j++) {
             Element validatorElement = (Element) validatorNodes.item(j);
             String validatorType = validatorElement.getAttribute("type");
@@ -142,24 +143,25 @@ public class ValidatorFileParser {
                 params.put(paramName, paramValue);
             }
 
-            Validator validator = ValidatorFactory.getValidator(validatorType, params);
+            // ensure that the type is valid...
+            ValidatorFactory.lookupRegisteredValidatorType(validatorType);
+            
+            ValidatorConfig vCfg = new ValidatorConfig(validatorType, params);
 
-            if (validator instanceof ShortCircuitableValidator) {
-                ((ShortCircuitableValidator) validator).setShortCircuit(Boolean.valueOf(validatorElement.getAttribute("short-circuit")).booleanValue());
-            }
+            vCfg.setShortCircuit(Boolean.valueOf(validatorElement.getAttribute("short-circuit")).booleanValue());
 
             NodeList messageNodes = validatorElement.getElementsByTagName("message");
             Element messageElement = (Element) messageNodes.item(0);
             String key = messageElement.getAttribute("key");
 
             if ((key != null) && (key.trim().length() > 0)) {
-                validator.setMessageKey(key);
+                vCfg.setMessageKey(key);
             }
 
             final Node defaultMessageNode = messageElement.getFirstChild();
             String defaultMessage = (defaultMessageNode == null) ? "" : defaultMessageNode.getNodeValue();
-            validator.setDefaultMessage(defaultMessage);
-            validators.add(validator);
+            vCfg.setDefaultMessage(defaultMessage);
+            validatorCfgs.add(vCfg);
         }
     }
 }

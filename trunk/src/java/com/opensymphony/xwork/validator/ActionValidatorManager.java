@@ -24,6 +24,7 @@ import java.util.*;
  *
  * @author Jason Carreira
  * @author Mark Woon
+ * @author James House
  */
 public class ActionValidatorManager {
 
@@ -47,13 +48,24 @@ public class ActionValidatorManager {
 
         if (validatorCache.containsKey(validatorKey)) {
             if (FileManager.isReloadingConfigs()) {
-                validatorCache.put(validatorKey, buildValidators(clazz, context, true, null));
+                validatorCache.put(validatorKey, buildValidatorConfigs(clazz, context, true, null));
             }
         } else {
-            validatorCache.put(validatorKey, buildValidators(clazz, context, false, null));
+            validatorCache.put(validatorKey, buildValidatorConfigs(clazz, context, false, null));
         }
 
-        return (List) validatorCache.get(validatorKey);
+        // get the set of validator configs
+        List cfgs = (List) validatorCache.get(validatorKey);
+
+        // create clean instances of the validators for the caller's use
+        ArrayList validators = new ArrayList(cfgs.size());
+        for (Iterator iterator = cfgs.iterator(); iterator.hasNext(); ) {
+            ValidatorConfig cfg = (ValidatorConfig) iterator.next();
+            Validator validator = ValidatorFactory.getValidator(cfg);
+            validators.add(validator);
+        }
+        
+        return validators;
     }
 
     /**
@@ -175,20 +187,21 @@ public class ActionValidatorManager {
         return sb.toString();
     }
 
-    private static List buildAliasValidators(Class aClass, String context, boolean checkFile) {
+    private static List buildAliasValidatorConfigs(Class aClass, String context, boolean checkFile) {
         String fileName = aClass.getName().replace('.', '/') + "-" + context + VALIDATION_CONFIG_SUFFIX;
 
         return loadFile(fileName, aClass, checkFile);
     }
 
-    private static List buildClassValidators(Class aClass, boolean checkFile) {
+    private static List buildClassValidatorConfigs(Class aClass, boolean checkFile) {
         String fileName = aClass.getName().replace('.', '/') + VALIDATION_CONFIG_SUFFIX;
 
         return loadFile(fileName, aClass, checkFile);
     }
 
     /**
-     * <p>This method 'collects' all the validators for a given action invocation.</p>
+     * <p>This method 'collects' all the validator configurations for a given 
+     * action invocation.</p>
      *
      * <p>It will traverse up the class hierarchy looking for validators for every super class
      * and directly implemented interface of the current action, as well as adding validators for
@@ -226,26 +239,26 @@ public class ActionValidatorManager {
      * @param checkFile true if the validation config file should be checked to see if it has been
      *      updated.
      * @param checked the set of previously checked class-contexts, null if none have been checked
-     * @return a list of validators for the given class and context.
+     * @return a list of validator configs for the given class and context.
      */
-    private static List buildValidators(Class clazz, String context, boolean checkFile, Set checked) {
-        List validators = new ArrayList();
+    private static List buildValidatorConfigs(Class clazz, String context, boolean checkFile, Set checked) {
+        List validatorConfigs = new ArrayList();
 
         if (checked == null) {
             checked = new TreeSet();
         } else if (checked.contains(clazz.getName())) {
-            return validators;
+            return validatorConfigs;
         }
 
         if (clazz.isInterface()) {
             Class[] interfaces = clazz.getInterfaces();
 
             for (int x = 0; x < interfaces.length; x++) {
-                validators.addAll(buildValidators(interfaces[x], context, checkFile, checked));
+                validatorConfigs.addAll(buildValidatorConfigs(interfaces[x], context, checkFile, checked));
             }
         } else {
             if (!clazz.equals(Object.class)) {
-                validators.addAll(buildValidators(clazz.getSuperclass(), context, checkFile, checked));
+                validatorConfigs.addAll(buildValidatorConfigs(clazz.getSuperclass(), context, checkFile, checked));
             }
         }
 
@@ -257,24 +270,24 @@ public class ActionValidatorManager {
                 continue;
             }
 
-            validators.addAll(buildClassValidators(interfaces[x], checkFile));
+            validatorConfigs.addAll(buildClassValidatorConfigs(interfaces[x], checkFile));
 
             if (context != null) {
-                validators.addAll(buildAliasValidators(interfaces[x], context, checkFile));
+                validatorConfigs.addAll(buildAliasValidatorConfigs(interfaces[x], context, checkFile));
             }
 
             checked.add(interfaces[x].getName());
         }
 
-        validators.addAll(buildClassValidators(clazz, checkFile));
+        validatorConfigs.addAll(buildClassValidatorConfigs(clazz, checkFile));
 
         if (context != null) {
-            validators.addAll(buildAliasValidators(clazz, context, checkFile));
+            validatorConfigs.addAll(buildAliasValidatorConfigs(clazz, context, checkFile));
         }
 
         checked.add(clazz.getName());
 
-        return validators;
+        return validatorConfigs;
     }
 
     private static List loadFile(String fileName, Class clazz, boolean checkFile) {
@@ -287,7 +300,7 @@ public class ActionValidatorManager {
                 is = FileManager.loadFile(fileName, clazz);
 
                 if (is != null) {
-                    retList = new ArrayList(ValidatorFileParser.parseActionValidators(is));
+                    retList = new ArrayList(ValidatorFileParser.parseActionValidatorConfigs(is));
                 }
             } catch (Exception e) {
                 LOG.error("Caught exception while loading file " + fileName, e);

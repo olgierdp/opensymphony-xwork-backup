@@ -8,12 +8,10 @@ import com.opensymphony.util.ClassLoaderUtil;
 
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
-import com.opensymphony.xwork.validator.validators.ExpressionValidator;
-import com.opensymphony.xwork.validator.validators.IntRangeFieldValidator;
-import com.opensymphony.xwork.validator.validators.RequiredFieldValidator;
 
 import junit.framework.TestCase;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.List;
@@ -25,6 +23,7 @@ import java.util.List;
  * Created : Jan 20, 2003 3:41:26 PM
  *
  * @author Jason Carreira
+ * @author James House
  */
 public class ValidatorFileParserTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -32,32 +31,31 @@ public class ValidatorFileParserTest extends TestCase {
     public void testParser() {
         InputStream is = ClassLoaderUtil.getResourceAsStream("com/opensymphony/xwork/validator/validator-parser-test.xml", this.getClass());
 
-        List configs = ValidatorFileParser.parseActionValidators(is);
+        List configs = ValidatorFileParser.parseActionValidatorConfigs(is);
+        
         assertNotNull(configs);
         assertEquals(5, configs.size());
 
-        Validator validator = (Validator) configs.get(0);
-        assertTrue(validator instanceof RequiredFieldValidator);
+        ValidatorConfig cfg = (ValidatorConfig) configs.get(0);
+        assertEquals("required", cfg.getType());
+        assertEquals("foo", cfg.getParams().get("fieldName"));
+        assertEquals("You must enter a value for foo.", cfg.getDefaultMessage());
 
-        FieldValidator fieldValidator = (FieldValidator) validator;
-        assertEquals("foo", fieldValidator.getFieldName());
-        assertEquals("You must enter a value for foo.", fieldValidator.getDefaultMessage());
+        cfg = (ValidatorConfig) configs.get(1);
+        assertEquals("required", cfg.getType());
+        assertTrue(cfg.isShortCircuit());
 
-        validator = (Validator) configs.get(1);
-        assertTrue(validator instanceof ShortCircuitableValidator);
-        assertTrue(((ShortCircuitableValidator) validator).isShortCircuit());
+        cfg = (ValidatorConfig) configs.get(2);
+        assertEquals("int", cfg.getType());
+        assertFalse(cfg.isShortCircuit());
 
-        validator = (Validator) configs.get(2);
-        assertTrue(validator instanceof IntRangeFieldValidator);
-        assertFalse(((ShortCircuitableValidator) validator).isShortCircuit());
+        cfg = (ValidatorConfig) configs.get(3);
+        assertEquals("expression", cfg.getType());
+        assertFalse(cfg.isShortCircuit());
 
-        validator = (Validator) configs.get(3);
-        assertTrue(validator instanceof ExpressionValidator);
-        assertFalse(((ShortCircuitableValidator) validator).isShortCircuit());
-
-        validator = (Validator) configs.get(4);
-        assertTrue(validator instanceof ExpressionValidator);
-        assertTrue(((ShortCircuitableValidator) validator).isShortCircuit());
+        cfg = (ValidatorConfig) configs.get(4);
+        assertEquals("expression", cfg.getType());
+        assertTrue(cfg.isShortCircuit());
     }
 
     protected void setUp() throws Exception {

@@ -23,6 +23,7 @@ import java.util.Map;
  * Created : Jan 20, 2003 12:11:11 PM
  *
  * @author Jason Carreira
+ * @author James House
  */
 public class ValidatorFactory {
     //~ Static fields/initializers /////////////////////////////////////////////
@@ -41,22 +42,30 @@ public class ValidatorFactory {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public static Validator getValidator(String type, Map params) {
-        String className = (String) validators.get(type);
+    /**
+     * Get a Validator that matches the given configuration.
+     */
+    public static Validator getValidator(ValidatorConfig cfg) {
 
-        if (className == null) {
-            throw new IllegalArgumentException("There is no validator class mapped to the name " + type);
-        }
-
+        String className = lookupRegisteredValidatorType(cfg.getType());
+        
         Validator validator;
 
         try {
-            validator = ObjectFactory.getObjectFactory().buildValidator(className, params);
+            // instantiate the validator, and set configured parameters
+            validator = ObjectFactory.getObjectFactory().buildValidator(className, cfg.getParams());
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException("There was a problem creating a Validator of type " + className);
         }
 
+        // set other configured properties
+        validator.setMessageKey(cfg.getMessageKey());
+        validator.setDefaultMessage(cfg.getDefaultMessage());
+        if (validator instanceof ShortCircuitableValidator) {
+            ((ShortCircuitableValidator) validator).setShortCircuit(cfg.isShortCircuit());
+        }
+        
         return validator;
     }
 
@@ -66,6 +75,17 @@ public class ValidatorFactory {
         }
 
         validators.put(name, className);
+    }
+    
+    public static String lookupRegisteredValidatorType(String name) {
+        // lookup the validator class mapped to the type name
+        String className = (String) validators.get(name);
+
+        if (className == null) {
+            throw new IllegalArgumentException("There is no validator class mapped to the name " + name);
+        }
+        
+        return className;
     }
 
     private static void parseValidators() {

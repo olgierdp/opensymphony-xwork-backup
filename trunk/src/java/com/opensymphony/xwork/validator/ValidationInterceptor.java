@@ -12,7 +12,7 @@ import com.opensymphony.xwork.interceptor.AroundInterceptor;
 /**
  * Validates an action. This interceptor extends the {@link AroundInterceptor} and implements only the
  * {@link AroundInterceptor#before(com.opensymphony.xwork.ActionInvocation)} method. This class
- * simply class the {@link ActionValidatorManager#validate(java.lang.Object, java.lang.String)} method
+ * simply calls the {@link ActionValidatorManager#validate(java.lang.Object, java.lang.String)} method
  * with the given Action and its context.
  *
  * @author Jason Carreira
