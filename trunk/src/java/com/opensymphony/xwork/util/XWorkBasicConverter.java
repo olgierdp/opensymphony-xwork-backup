@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.util.TextUtils;
+import com.opensymphony.xwork.ActionContext;
 
 import ognl.DefaultTypeConverter;
 
@@ -12,6 +13,7 @@ import java.lang.reflect.Member;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 
 import java.util.*;
 
@@ -170,11 +172,16 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
         if (value instanceof String) {
             String sa = (String) value;
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            Locale locale = (Locale) context.get(ActionContext.LOCALE);
+            if (locale == null) {
+                locale = Locale.getDefault();
+            }
+            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
 
             try {
-                result = sdf.parse(sa);
+                result = df.parse(sa);
             } catch (ParseException e) {
+                e.printStackTrace();
             }
         } else if (Date.class.isAssignableFrom(value.getClass())) {
             result = (Date) value;
