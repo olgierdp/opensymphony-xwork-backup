@@ -152,8 +152,7 @@
     <target name="jar" depends="java">
         <mkdir dir="${build}"/>
 
-        <copy todir="${build.java}" file="${src.etc}/xwork-1.0.dtd"/>
-        <copy todir="${build.java}" file="${src.etc}/xwork-validator-1.0.2.dtd"/>
+        <copy todir="${build.java}" file="${src.etc}/*.dtd"/>
 
         <jar basedir="${build.java}" jarfile="${build}/${name}-${version}.jar"/>
     </target>
