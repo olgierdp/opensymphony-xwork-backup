@@ -22,6 +22,12 @@ public class URLValidator extends FieldValidatorSupport {
         String fieldName = getFieldName();
         Object value = this.getFieldValue(fieldName, object);
 
+        // if there is no value - don't do comparison
+        // if a value is required, a required validator should be added to the field
+        if (value == null) {
+            return;
+        }
+
         if (!(value instanceof String) || !TextUtils.verifyUrl((String) value)) {
             addFieldError(fieldName, object);
         }

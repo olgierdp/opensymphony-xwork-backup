@@ -62,10 +62,10 @@ public class DelegatingValidatorContext implements ValidatorContext {
     }
 
     /**
-     * Translates a simple field name into a full field name in Ognl syntax
-     * @param fieldName
-     * @return
-     */
+ * Translates a simple field name into a full field name in Ognl syntax
+ * @param fieldName
+ * @return
+ */
     public String getFullFieldName(String fieldName) {
         return fieldName;
     }
@@ -127,7 +127,7 @@ public class DelegatingValidatorContext implements ValidatorContext {
     }
 
     protected static TextProvider makeTextProvider(Object object, LocaleProvider localeProvider) {
-        if (object instanceof LocaleProvider) {
+        if (object instanceof TextProvider) {
             return (TextProvider) object;
         } else {
             return new TextProviderSupport(object.getClass(), localeProvider);
