@@ -165,8 +165,13 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         }
 
         try {
-            ActionConfig actionConfig = new ActionConfig(null, className, null, null, null);
-            Action action = ObjectFactory.getObjectFactory().buildAction(actionConfig);
+            if (ObjectFactory.getObjectFactory().isNoArgConstructorRequired()) {
+                ActionConfig actionConfig = new ActionConfig(null, className, null, null, null);
+                ObjectFactory.getObjectFactory().buildAction(actionConfig);
+            }
+            else {
+                ObjectFactory.getObjectFactory().getClassInstance(className);
+            }
         } catch (Exception e) { // TODO: Not pretty
             LOG.error("Action class [" + className + "] not found, skipping action [" + name + "]", e);
 
