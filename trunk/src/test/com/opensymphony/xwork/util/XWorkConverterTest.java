@@ -13,6 +13,9 @@ import junit.framework.TestCase;
 import ognl.Ognl;
 import ognl.OgnlException;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -208,6 +211,8 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(new Float(123.5), converter.convertValue(context, null, null, null, "123.5", float.class));
         assertEquals(new Boolean(false), converter.convertValue(context, null, null, null, "false", boolean.class));
         assertEquals(new Boolean(true), converter.convertValue(context, null, null, null, "true", boolean.class));
+        assertEquals(new BigDecimal(123.5), converter.convertValue(context, null, null, null, "123.5", BigDecimal.class));
+        assertEquals(new BigInteger("123"), converter.convertValue(context, null, null, null, "123", BigInteger.class));
     }
 
     protected void setUp() throws Exception {
