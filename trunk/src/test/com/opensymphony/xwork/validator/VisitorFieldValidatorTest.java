@@ -76,7 +76,7 @@ public class VisitorFieldValidatorTest extends TestCase {
         assertTrue(fieldErrors.containsKey("bean.count"));
 
         List beanCountMessages = (List) fieldErrors.get("bean.count");
-        assertEquals(1, beanCountMessages.size());
+        assertEquals(2, beanCountMessages.size());
 
         String beanCountMessage = (String) beanCountMessages.get(0);
         assertEquals("bean: Count must be between 1 and 100, current value is -1.", beanCountMessage);

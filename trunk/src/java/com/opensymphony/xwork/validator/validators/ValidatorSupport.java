@@ -17,9 +17,9 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * ValidatorSupport
+ * Abstract implementation of the Validator interface suitable for subclassing.
+ *
  * @author Jason Carreira
- * Created Feb 15, 2003 3:58:21 PM
  */
 public abstract class ValidatorSupport implements Validator, ShortCircuitableValidator {
     //~ Instance fields ////////////////////////////////////////////////////////
@@ -42,8 +42,14 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
 
     public String getMessage(Object object) {
         String message;
-
         OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        boolean pop = false;
+
+        if (!stack.getRoot().contains(object)) {
+            stack.push(object);
+            pop = true;
+        }
+
         stack.push(this);
 
         if (messageKey != null) {
@@ -59,6 +65,10 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
         message = TextParseUtil.translateVariables(message, stack);
 
         stack.pop();
+
+        if (pop) {
+            stack.pop();
+        }
 
         return message;
     }
