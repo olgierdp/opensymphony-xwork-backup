@@ -9,8 +9,10 @@ import com.opensymphony.util.TextUtils;
 import com.opensymphony.xwork.ActionContext;
 
 import ognl.DefaultTypeConverter;
-import ognl.OgnlRuntime;
+import ognl.Ognl;
+import ognl.TypeConverter;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Member;
 
 import java.text.DateFormat;
@@ -39,26 +41,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = doConvertToBoolean(context, value);
         } else if (toType == Boolean.class) {
             result = doConvertToBoolean(context, value);
-        } else if (toType == boolean[].class) {
-            result = doConvertToBoolArray(context, value);
-        } else if (toType == Boolean[].class) {
-            result = doConvertToBooleanArray(context, value);
-        } else if (toType == int[].class) {
-            result = doConvertToIntArray(context, value);
-        } else if (toType == Integer[].class) {
-            result = doConvertToIntegerArray(context, value);
-        } else if (toType == long[].class) {
-            result = doConvertToLongArray(context, value);
-        } else if (toType == Long[].class) {
-            result = doConvertToLongArray2(context, value);
-        } else if (toType == double[].class) {
-            result = doConvertToDoubleArray(context, value);
-        } else if (toType == Double[].class) {
-            result = doConvertToDoubleArray2(context, value);
-        } else if (toType == float[].class) {
-            result = doConvertToFloatArray(context, value);
-        } else if (toType == Float[].class) {
-            result = doConvertToFloatArray2(context, value);
+        } else if (toType.isArray()) {
+            result = doConvertToArray(context, o, member, s, value, toType);
         } else if (toType == Date.class) {
             result = doConvertToDate(context, value);
         } else if (toType == List.class) {
@@ -69,17 +53,13 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = doConvertToList(context, value);
         } else if (toType == Class.class) {
             result = doConvertToClass(context, value);
-        } else {
-            if ((toType == String[].class) && (value instanceof String)) {
-                result = new String[] {(String) value};
-            }
         }
 
         if (result == null) {
-            if (value instanceof String[]) {
-                String[] array = (String[]) value;
+            if (value instanceof Object[]) {
+                Object[] array = (Object[]) value;
 
-                if ((array != null) && (array.length == 1)) {
+                if ((array != null) && (array.length >= 1)) {
                     value = array[0];
                 }
 
@@ -93,18 +73,25 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return result;
     }
 
-    private Object doConvertToBoolArray(Map context, Object value) {
-        boolean[] result = null;
+    private Object doConvertToArray(Map context, Object o, Member member, String s, Object value, Class toType) {
+        Object result = null;
+        Class componentType = toType.getComponentType();
 
-        if (value instanceof String[]) {
-            String[] sa = (String[]) value;
-            boolean[] ba = new boolean[sa.length];
+        if (componentType != null) {
+            TypeConverter converter = Ognl.getTypeConverter(context);
 
-            for (int i = 0; i < sa.length; i++) {
-                ba[i] = ((Boolean) doConvertToBoolean(context, sa[i])).booleanValue();
+            if (value.getClass().isArray()) {
+                int length = Array.getLength(value);
+                result = Array.newInstance(componentType, length);
+
+                for (int i = 0; i < length; i++) {
+                    Object valueItem = Array.get(value, i);
+                    Array.set(result, i, converter.convertValue(context, o, member, s, valueItem, componentType));
+                }
+            } else {
+                result = Array.newInstance(componentType, 1);
+                Array.set(result, 0, converter.convertValue(context, o, member, s, value, componentType));
             }
-
-            result = ba;
         }
 
         return result;
@@ -118,23 +105,6 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         }
 
         return null;
-    }
-
-    private Object doConvertToBooleanArray(Map context, Object value) {
-        Boolean[] result = null;
-
-        if (value instanceof String[]) {
-            String[] sa = (String[]) value;
-            Boolean[] ba = new Boolean[sa.length];
-
-            for (int i = 0; i < sa.length; i++) {
-                ba[i] = ((Boolean) doConvertToBoolean(context, sa[i]));
-            }
-
-            result = ba;
-        }
-
-        return result;
     }
 
     private Class doConvertToClass(Map context, Object value) {
@@ -175,105 +145,6 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return result;
     }
 
-    private double[] doConvertToDoubleArray(Map context, Object value) {
-        double[] result = null;
-
-        if (value instanceof String[]) {
-            String[] sa = (String[]) value;
-            double[] da = new double[sa.length];
-
-            for (int i = 0; i < sa.length; i++) {
-                da[i] = ((Double) super.convertValue(context, sa[i], Double.class)).doubleValue();
-            }
-
-            result = da;
-        }
-
-        return result;
-    }
-
-    private Double[] doConvertToDoubleArray2(Map context, Object value) {
-        double[] primitives = doConvertToDoubleArray(context, value);
-        Double[] result = null;
-
-        if (primitives != null) {
-            result = new Double[primitives.length];
-
-            for (int i = 0; i < primitives.length; i++) {
-                double primitive = primitives[i];
-                result[i] = new Double(primitive);
-            }
-        }
-
-        return result;
-    }
-
-    private float[] doConvertToFloatArray(Map context, Object value) {
-        float[] result = null;
-
-        if (value instanceof String[]) {
-            String[] sa = (String[]) value;
-            float[] da = new float[sa.length];
-
-            for (int i = 0; i < sa.length; i++) {
-                da[i] = ((Float) super.convertValue(context, sa[i], Float.class)).floatValue();
-            }
-
-            result = da;
-        }
-
-        return result;
-    }
-
-    private Float[] doConvertToFloatArray2(Map context, Object value) {
-        float[] primitives = doConvertToFloatArray(context, value);
-        Float[] result = null;
-
-        if (primitives != null) {
-            result = new Float[primitives.length];
-
-            for (int i = 0; i < primitives.length; i++) {
-                float primitive = primitives[i];
-                result[i] = new Float(primitive);
-            }
-        }
-
-        return result;
-    }
-
-    private int[] doConvertToIntArray(Map context, Object value) {
-        int[] result = null;
-
-        if (value instanceof String[]) {
-            String[] sa = (String[]) value;
-            int[] ia = new int[sa.length];
-
-            for (int i = 0; i < sa.length; i++) {
-                ia[i] = ((Integer) super.convertValue(context, sa[i], Integer.class)).intValue();
-            }
-
-            result = ia;
-        }
-
-        return result;
-    }
-
-    private Integer[] doConvertToIntegerArray(Map context, Object value) {
-        int[] primitives = doConvertToIntArray(context, value);
-        Integer[] result = null;
-
-        if (primitives != null) {
-            result = new Integer[primitives.length];
-
-            for (int i = 0; i < primitives.length; i++) {
-                int primitive = primitives[i];
-                result[i] = new Integer(primitive);
-            }
-        }
-
-        return result;
-    }
-
     private List doConvertToList(Map context, Object value) {
         List result = null;
 
@@ -287,39 +158,6 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             }
         } else if (List.class.isAssignableFrom(value.getClass())) {
             result = (List) value;
-        }
-
-        return result;
-    }
-
-    private long[] doConvertToLongArray(Map context, Object value) {
-        long[] result = null;
-
-        if (value instanceof String[]) {
-            String[] sa = (String[]) value;
-            long[] la = new long[sa.length];
-
-            for (int i = 0; i < sa.length; i++) {
-                la[i] = ((Long) super.convertValue(context, sa[i], Long.class)).longValue();
-            }
-
-            result = la;
-        }
-
-        return result;
-    }
-
-    private Long[] doConvertToLongArray2(Map context, Object value) {
-        long[] primitives = doConvertToLongArray(context, value);
-        Long[] result = null;
-
-        if (primitives != null) {
-            result = new Long[primitives.length];
-
-            for (int i = 0; i < primitives.length; i++) {
-                long primitive = primitives[i];
-                result[i] = new Long(primitive);
-            }
         }
 
         return result;

@@ -12,7 +12,6 @@ import com.opensymphony.xwork.config.ConfigurationManager;
 
 import junit.framework.TestCase;
 
-import ognl.Ognl;
 import ognl.OgnlException;
 
 import java.math.BigDecimal;
@@ -33,7 +32,7 @@ import java.util.*;
 public class XWorkConverterTest extends TestCase {
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    Map context = Ognl.createDefaultContext(this);
+    Map context;
     XWorkConverter converter;
 
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -265,6 +264,7 @@ public class XWorkConverterTest extends TestCase {
         ActionContext ac = new ActionContext(stack.getContext());
         ac.setLocale(Locale.US);
         ActionContext.setContext(ac);
+        context = ac.getContextMap();
     }
 
     protected void tearDown() throws Exception {
