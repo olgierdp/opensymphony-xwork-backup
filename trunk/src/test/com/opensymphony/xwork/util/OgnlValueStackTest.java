@@ -368,4 +368,18 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals(a_value, vs.findValue(a_key));
         assertEquals(b_value, vs.findValue(b_key));
     }
+
+    public void testNullEntry() {
+        OgnlValueStack vs = new OgnlValueStack();
+
+        Dog dog = new Dog();
+        dog.setName("Rover");
+
+        vs.push(dog);
+        assertEquals("Rover", vs.findValue("name", String.class));
+
+        vs.push(null);
+        assertEquals("Rover", vs.findValue("name", String.class));
+    }
+
 }
