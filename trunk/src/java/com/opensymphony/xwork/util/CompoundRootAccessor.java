@@ -11,6 +11,8 @@ import org.apache.commons.logging.LogFactory;
 import java.beans.IntrospectionException;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Arrays;
 
 
 /**
@@ -25,6 +27,8 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
     private final static Log log = LogFactory.getLog(CompoundRootAccessor.class);
 
     //~ Methods ////////////////////////////////////////////////////////////////
+
+    private static Map invalidMethods = new HashMap();
 
     public void setProperty(Map context, Object target, Object name, Object value) throws OgnlException {
         CompoundRoot root = (CompoundRoot) target;
@@ -113,18 +117,38 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         for (Iterator iterator = root.iterator(); iterator.hasNext();) {
             Object o = iterator.next();
 
-            try {
-                Object value = OgnlRuntime.callMethod((OgnlContext) context, o, name, name, objects);
+            Class clazz = o.getClass();
+            Class[] argTypes = getArgTypes(objects);
+            CompoundRootAccessor.MethodCall mc = new CompoundRootAccessor.MethodCall(clazz, name, argTypes);
+            if (!invalidMethods.containsKey(mc)) {
+                try {
+                    Object value = OgnlRuntime.callMethod((OgnlContext) context, o, name, name, objects);
 
-                if (value != null) {
-                    return value;
+                    if (value != null) {
+                        return value;
+                    }
+                } catch (OgnlException e) {
+                    // try the next one
+                    invalidMethods.put(mc, Boolean.TRUE);
                 }
-            } catch (OgnlException e) {
-                // try the next one
             }
         }
 
         return null;
+    }
+
+    private Class[] getArgTypes(Object[] args) {
+        if (args == null) {
+            return new Class[0];
+        }
+
+        Class[] classes = new Class[args.length];
+        for (int i = 0; i < args.length; i++) {
+            Object arg = args[i];
+            classes[i] = arg.getClass();
+        }
+
+        return classes;
     }
 
     public Object callStaticMethod(Map transientVars, Class aClass, String s, Object[] objects) throws MethodFailedException {
@@ -153,5 +177,33 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         }
 
         return Thread.currentThread().getContextClassLoader().loadClass(className);
+    }
+
+    static class MethodCall {
+        Class clazz;
+        String name;
+        Class[] args;
+        int hash;
+
+        public MethodCall(Class clazz, String name, Class[] args) {
+            this.clazz = clazz;
+            this.name = name;
+            this.args = args;
+            this.hash = clazz.hashCode() + name.hashCode();
+
+            for (int i = 0; i < args.length; i++) {
+                Class arg = args[i];
+                hash += arg.hashCode();
+            }
+        }
+
+        public int hashCode() {
+            return hash;
+        }
+
+        public boolean equals(Object obj) {
+            MethodCall mc = (CompoundRootAccessor.MethodCall) obj;
+            return (mc.clazz.equals(clazz) && mc.name.equals(name) && Arrays.equals(mc.args, args));
+        }
     }
 }
