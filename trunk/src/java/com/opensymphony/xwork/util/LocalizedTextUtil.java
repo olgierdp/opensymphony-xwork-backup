@@ -187,11 +187,9 @@ public class LocalizedTextUtil {
         }
 
         // nothing still? alright, search the package hierarchy now
-        clazz = aClass;
-
-        do {
-            try {
-                if (clazz != null && clazz.getPackage() != null) {
+        for (clazz = aClass; clazz != null && !clazz.equals(Object.class); clazz = clazz.getSuperclass()) {
+            if (clazz.getPackage() != null) {
+                try {
                     String packageName = clazz.getPackage().getName();
                     ResourceBundle bundle = findResourceBundle(packageName + ".package", locale);
                     reloadBundles(bundle);
@@ -199,13 +197,10 @@ public class LocalizedTextUtil {
                     String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
 
                     return MessageFormat.format(message, args);
-                } else {
-                    clazz = clazz.getSuperclass();
+                } catch (MissingResourceException ex) {
                 }
-            } catch (MissingResourceException ex) {
-                clazz = clazz.getSuperclass();
             }
-        } while (!clazz.equals(Object.class));
+        }
 
         return getDefaultText(aTextName, locale, valueStack, args, defaultMessage);
     }
