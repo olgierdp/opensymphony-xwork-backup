@@ -4,13 +4,11 @@
  */
 package com.opensymphony.xwork.validator.validators;
 
-import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.ValidationException;
 
 
 /**
- *
+ * Validates a field using an OGNL expression.
  *
  * @author $Author$
  * @version $Revision$

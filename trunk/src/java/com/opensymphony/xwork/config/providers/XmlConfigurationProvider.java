@@ -7,23 +7,29 @@ package com.opensymphony.xwork.config.providers;
 import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.util.FileManager;
 import com.opensymphony.util.TextUtils;
+
 import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.config.*;
 import com.opensymphony.xwork.config.entities.*;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import org.xml.sax.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
 
 
 /**
@@ -116,7 +122,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 });
             loadConfigurationFile(configFileName, db);
         } catch (Exception e) {
-            LOG.fatal("Could not load XWork configuration file, failing");
+            LOG.fatal("Could not load XWork configuration file, failing", e);
             throw new ConfigurationException("Error loading configuration file " + configFileName, e);
         }
     }
@@ -466,7 +472,6 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             Element interceptorElement = (Element) interceptorList.item(i);
             String name = interceptorElement.getAttribute("name");
             String className = interceptorElement.getAttribute("class");
-            Class clazz = null;
 
             Map params = XmlHelper.getParams(interceptorElement);
             InterceptorConfig config = null;
