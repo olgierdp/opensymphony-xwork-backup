@@ -7,6 +7,7 @@ package com.opensymphony.xwork.util;
 import junit.framework.TestCase;
 
 import ognl.Ognl;
+import ognl.OgnlException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,9 +35,9 @@ public class XWorkConverterTest extends TestCase {
         list.add("foo");
         list.add("bar");
         list.add("baz");
-        assertEquals(list, converter.doConvert(context, new String[] {
-                    "foo", "bar", "baz"
-                }, Collection.class));
+        assertEquals(list, converter.convertValue(context, new String[]{
+            "foo", "bar", "baz"
+        }, null, null, null, Collection.class));
     }
 
     public void testStringArrayToList() {
@@ -44,63 +45,63 @@ public class XWorkConverterTest extends TestCase {
         list.add("foo");
         list.add("bar");
         list.add("baz");
-        assertEquals(list, converter.doConvert(context, new String[] {
-                    "foo", "bar", "baz"
-                }, List.class));
+        assertEquals(list, converter.convertValue(context, new String[]{
+            "foo", "bar", "baz"
+        }, null, null, null, List.class));
     }
 
     public void testStringArrayToPrimitiveWrappers() {
-        Long[] longs = (Long[]) converter.doConvert(context, new String[] {
-                "123", "456"
-            }, Long[].class);
+        Long[] longs = (Long[]) converter.convertValue(context, new String[]{
+            "123", "456"
+        }, null, null, null, Long[].class);
         assertNotNull(longs);
-        assertTrue(Arrays.equals(new Long[] {new Long(123), new Long(456)}, longs));
+        assertTrue(Arrays.equals(new Long[]{new Long(123), new Long(456)}, longs));
 
-        Integer[] ints = (Integer[]) converter.doConvert(context, new String[] {
-                "123", "456"
-            }, Integer[].class);
+        Integer[] ints = (Integer[]) converter.convertValue(context, new String[]{
+            "123", "456"
+        }, null, null, null, Integer[].class);
         assertNotNull(ints);
-        assertTrue(Arrays.equals(new Integer[] {
-                    new Integer(123), new Integer(456)
-                }, ints));
+        assertTrue(Arrays.equals(new Integer[]{
+            new Integer(123), new Integer(456)
+        }, ints));
 
-        Double[] doubles = (Double[]) converter.doConvert(context, new String[] {
-                "123", "456"
-            }, Double[].class);
+        Double[] doubles = (Double[]) converter.convertValue(context, new String[]{
+            "123", "456"
+        }, null, null, null, Double[].class);
         assertNotNull(doubles);
-        assertTrue(Arrays.equals(new Double[] {new Double(123), new Double(456)}, doubles));
+        assertTrue(Arrays.equals(new Double[]{new Double(123), new Double(456)}, doubles));
     }
 
-    public void testStringArrayToPrimitives() {
-        long[] longs = (long[]) converter.doConvert(context, new String[] {
-                "123", "456"
-            }, long[].class);
+    public void testStringArrayToPrimitives() throws OgnlException {
+        long[] longs = (long[]) converter.convertValue(context, new String[]{
+            "123", "456"
+        }, null, null, null, long[].class);
         assertNotNull(longs);
-        assertTrue(Arrays.equals(new long[] {123, 456}, longs));
+        assertTrue(Arrays.equals(new long[]{123, 456}, longs));
 
-        int[] ints = (int[]) converter.doConvert(context, new String[] {
-                "123", "456"
-            }, int[].class);
+        int[] ints = (int[]) converter.convertValue(context, new String[]{
+            "123", "456"
+        }, null, null, null, int[].class);
         assertNotNull(ints);
-        assertTrue(Arrays.equals(new int[] {123, 456}, ints));
+        assertTrue(Arrays.equals(new int[]{123, 456}, ints));
 
-        double[] doubles = (double[]) converter.doConvert(context, new String[] {
-                "123", "456"
-            }, double[].class);
+        double[] doubles = (double[]) converter.convertValue(context, new String[]{
+            "123", "456"
+        }, null, null, null, double[].class);
         assertNotNull(doubles);
-        assertTrue(Arrays.equals(new double[] {123, 456}, doubles));
+        assertTrue(Arrays.equals(new double[]{123, 456}, doubles));
     }
 
     public void testStringToPrimitiveWrappers() {
-        assertEquals(new Long(123), converter.doConvert(context, "123", Long.class));
-        assertEquals(new Integer(123), converter.doConvert(context, "123", Integer.class));
-        assertEquals(new Double(123.5), converter.doConvert(context, "123.5", Double.class));
+        assertEquals(new Long(123), converter.convertValue(context, "123", null, null, null, Long.class));
+        assertEquals(new Integer(123), converter.convertValue(context, "123", null, null, null, Integer.class));
+        assertEquals(new Double(123.5), converter.convertValue(context, "123.5", null, null, null, Double.class));
     }
 
     public void testStringToPrimitives() {
-        assertEquals(new Long(123), converter.doConvert(context, "123", long.class));
-        assertEquals(new Integer(123), converter.doConvert(context, "123", int.class));
-        assertEquals(new Double(123.5), converter.doConvert(context, "123.5", double.class));
+        assertEquals(new Long(123), converter.convertValue(context, "123", null, null, null, long.class));
+        assertEquals(new Integer(123), converter.convertValue(context, "123", null, null, null, int.class));
+        assertEquals(new Double(123.5), converter.convertValue(context, "123.5", null, null, null, double.class));
     }
 
     protected void setUp() throws Exception {
