@@ -43,6 +43,12 @@ public class DelegatingValidatorContext implements ValidatorContext {
         this.textProvider = makeTextProvider(object, localeProvider);
     }
 
+    public DelegatingValidatorContext(Class clazz) {
+        localeProvider = new ActionContextLocaleProvider();
+        textProvider = new TextProviderSupport(clazz, localeProvider);
+        validationAware = new LoggingValidationAware(clazz);
+    }
+
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setActionErrors(Collection errorMessages) {
@@ -202,6 +208,10 @@ public class DelegatingValidatorContext implements ValidatorContext {
 
     private static class LoggingValidationAware implements ValidationAware {
         private Log log;
+
+        public LoggingValidationAware(Class clazz) {
+            log = LogFactory.getLog(clazz);
+        }
 
         public LoggingValidationAware(Object obj) {
             log = LogFactory.getLog(obj.getClass());
