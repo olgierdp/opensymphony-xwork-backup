@@ -274,35 +274,12 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     private Object[] getClassProperty(Map context) {
-        Object[] classProp = null;
-        OgnlContext ognlContext = (OgnlContext) context;
-        Evaluation eval = ognlContext.getCurrentEvaluation();
-
-        if (eval == null) {
-            eval = ognlContext.getLastEvaluation();
+        List link = (List) context.get("__link");
+        if (link == null || link.isEmpty()) {
+            return null;
         }
 
-        if ((eval != null) && (eval.getLastChild() != null)) {
-            classProp = new Object[2];
-
-            // since we changed what the source was (tricked Ognl essentially)
-            if ((eval.getLastChild().getLastChild() != null) && (eval.getLastChild().getLastChild().getSource() != null) && (eval.getLastChild().getLastChild().getSource().getClass() != CompoundRoot.class)) {
-                classProp[0] = eval.getLastChild().getLastChild().getSource().getClass();
-            } else {
-                classProp[0] = eval.getLastChild().getSource().getClass();
-            }
-
-            // ugly hack getting the property, but it works
-            String property = eval.getNode().jjtGetChild(eval.getNode().jjtGetNumChildren() - 1).toString();
-
-            if (property.startsWith("\"") && property.endsWith("\"")) {
-                property = property.substring(1, property.length() - 1);
-            }
-
-            classProp[1] = property;
-        }
-
-        return classProp;
+        return (Object[]) link.get(link.size() - 1);
     }
 
     private Object acceptableErrorValue(Class toClass) {

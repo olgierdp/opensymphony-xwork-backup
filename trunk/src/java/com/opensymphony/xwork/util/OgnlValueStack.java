@@ -5,17 +5,12 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.DefaultTextProvider;
-import ognl.Ognl;
-import ognl.OgnlContext;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
+import ognl.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.Serializable;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -37,11 +32,34 @@ public class OgnlValueStack implements Serializable {
     static {
         accessor = new CompoundRootAccessor();
         OgnlRuntime.setPropertyAccessor(CompoundRoot.class, accessor);
+        OgnlRuntime.setPropertyAccessor(Object.class, new ObjectAccessor());
         OgnlRuntime.setPropertyAccessor(Iterator.class, new XWorkIteratorPropertyAccessor());
         OgnlRuntime.setPropertyAccessor(Enumeration.class, new XWorkEnumerationAcccessor());
         OgnlRuntime.setMethodAccessor(Object.class, new XWorkMethodAccessor());
         OgnlRuntime.setMethodAccessor(CompoundRoot.class, accessor);
         OgnlRuntime.setNullHandler(Object.class, new InstantiatingNullHandler());
+    }
+
+    public static class ObjectAccessor extends ObjectPropertyAccessor {
+        public Object getProperty(Map map, Object o, Object o1) throws OgnlException {
+            Object obj = super.getProperty(map, o, o1);
+            link(map, o.getClass(), (String) o1);
+            return obj;
+        }
+
+        public void setProperty(Map map, Object o, Object o1, Object o2) throws OgnlException {
+            super.setProperty(map, o, o1, o2);
+        }
+    }
+
+    public static void link(Map context, Class clazz, String name) {
+        List link = (List) context.get("__link");
+        if (link == null) {
+            link = new ArrayList(3);
+            context.put("__link", link);
+        }
+
+        link.add(new Object[] { clazz, name });
     }
 
     //~ Instance fields ////////////////////////////////////////////////////////
@@ -217,8 +235,8 @@ public class OgnlValueStack implements Serializable {
         this.context = Ognl.createDefaultContext(this.root, accessor, XWorkConverter.getInstance());
         context.put(VALUE_STACK, this);
         Ognl.setClassResolver(context, accessor);
-        ((OgnlContext) context).setTraceEvaluations(true);
-        ((OgnlContext) context).setKeepLastEvaluation(true);
+        ((OgnlContext) context).setTraceEvaluations(false);
+        ((OgnlContext) context).setKeepLastEvaluation(false);
     }
 
     private Object readResolve() {
