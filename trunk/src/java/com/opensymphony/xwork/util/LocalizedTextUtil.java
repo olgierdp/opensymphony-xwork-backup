@@ -356,8 +356,9 @@ public class LocalizedTextUtil {
     }
 
     private static MessageFormat buildMessageFormat(String pattern, Locale locale) {
-        MessageFormat format = new MessageFormat(pattern);
+        MessageFormat format = new MessageFormat("");
         format.setLocale(locale);
+        format.applyPattern(pattern);
 
         return format;
     }
