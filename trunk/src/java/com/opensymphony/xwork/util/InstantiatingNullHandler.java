@@ -82,7 +82,7 @@ public class InstantiatingNullHandler implements NullHandler {
 
         try {
             Class clazz = method.getParameterTypes()[0];
-            Object param = clazz.newInstance();
+            Object param = createObject(clazz, context);
             method.invoke(target, new Object[]{param});
 
             return param;
@@ -91,6 +91,10 @@ public class InstantiatingNullHandler implements NullHandler {
         }
 
         return null;
+    }
+
+    private Object createObject(Class clazz, Map context) throws InstantiationException, IllegalAccessException {
+        return clazz.newInstance();
     }
 
     /**
