@@ -15,4 +15,12 @@ import com.opensymphony.xwork.ValidationAware;
  * Created Aug 3, 2003 12:30:32 AM
  */
 public interface ValidatorContext extends ValidationAware, TextProvider, LocaleProvider {
+    //~ Methods ////////////////////////////////////////////////////////////////
+
+    /**
+     * Translates a simple field name into a full field name in Ognl syntax
+     * @param fieldName
+     * @return
+     */
+    String getFullFieldName(String fieldName);
 }

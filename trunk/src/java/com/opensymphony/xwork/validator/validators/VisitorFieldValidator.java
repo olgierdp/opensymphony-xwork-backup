@@ -49,23 +49,25 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
 
         if (value instanceof Collection) {
             Collection coll = (Collection) value;
+            Object[] array = coll.toArray();
 
-            for (Iterator iterator = coll.iterator(); iterator.hasNext();) {
-                Object o = iterator.next();
-                validateObject(fieldName, o, visitorContext);
-            }
+            validateArrayElements(array, fieldName, visitorContext);
         } else if (value instanceof Object[]) {
             Object[] array = (Object[]) value;
 
-            for (int i = 0; i < array.length; i++) {
-                Object o = array[i];
-                validateObject(fieldName, o, visitorContext);
-            }
+            validateArrayElements(array, fieldName, visitorContext);
         } else {
             validateObject(fieldName, value, visitorContext);
         }
 
         stack.pop();
+    }
+
+    private void validateArrayElements(Object[] array, String fieldName, String visitorContext) throws ValidationException {
+        for (int i = 0; i < array.length; i++) {
+            Object o = array[i];
+            validateObject(fieldName + "[" + i + "]", o, visitorContext);
+        }
     }
 
     private void validateObject(String fieldName, Object o, String visitorContext) throws ValidationException {
@@ -92,12 +94,21 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
             this.message = message;
         }
 
+        /**
+         * Translates a simple field name into a full field name in Ognl syntax
+         * @param fieldName
+         * @return
+         */
+        public String getFullFieldName(String fieldName) {
+            return field + "." + fieldName;
+        }
+
         public void addActionError(String anErrorMessage) {
             super.addFieldError(field, message + anErrorMessage);
         }
 
         public void addFieldError(String fieldName, String errorMessage) {
-            super.addFieldError(field + "." + fieldName, message + errorMessage);
+            super.addFieldError(getFullFieldName(fieldName), message + errorMessage);
         }
     }
 }

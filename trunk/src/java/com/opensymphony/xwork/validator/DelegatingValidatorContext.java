@@ -61,6 +61,15 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return validationAware.getFieldErrors();
     }
 
+    /**
+     * Translates a simple field name into a full field name in Ognl syntax
+     * @param fieldName
+     * @return
+     */
+    public String getFullFieldName(String fieldName) {
+        return fieldName;
+    }
+
     public Locale getLocale() {
         return localeProvider.getLocale();
     }

@@ -50,14 +50,22 @@ public class VisitorFieldValidatorTest extends TestCase {
         assertTrue(action.hasFieldErrors());
 
         Map fieldErrors = action.getFieldErrors();
-        assertEquals(2, fieldErrors.size());
-        assertTrue(fieldErrors.containsKey("testBeanArray.name"));
+
+        //4 errors for the array, one for context
+        assertEquals(5, fieldErrors.size());
+        assertTrue(fieldErrors.containsKey("testBeanArray[1].name"));
 
         //the error from the action should be there too
         assertTrue(fieldErrors.containsKey("context"));
 
-        List errors = (List) fieldErrors.get("testBeanArray.name");
-        assertEquals(4, errors.size());
+        List errors = (List) fieldErrors.get("testBeanArray[1].name");
+        assertEquals(1, errors.size());
+        errors = (List) fieldErrors.get("testBeanArray[2].name");
+        assertEquals(1, errors.size());
+        errors = (List) fieldErrors.get("testBeanArray[3].name");
+        assertEquals(1, errors.size());
+        errors = (List) fieldErrors.get("testBeanArray[4].name");
+        assertEquals(1, errors.size());
     }
 
     public void testBeanMessagesUseBeanResourceBundle() throws Exception {
@@ -83,14 +91,22 @@ public class VisitorFieldValidatorTest extends TestCase {
         assertTrue(action.hasFieldErrors());
 
         Map fieldErrors = action.getFieldErrors();
-        assertEquals(2, fieldErrors.size());
-        assertTrue(fieldErrors.containsKey("testBeanList.name"));
+
+        //4 for the list, 1 for context
+        assertEquals(5, fieldErrors.size());
+        assertTrue(fieldErrors.containsKey("testBeanList[1].name"));
 
         //the error from the action should be there too
         assertTrue(fieldErrors.containsKey("context"));
 
-        List errors = (List) fieldErrors.get("testBeanList.name");
-        assertEquals(4, errors.size());
+        List errors = (List) fieldErrors.get("testBeanList[1].name");
+        assertEquals(1, errors.size());
+        errors = (List) fieldErrors.get("testBeanList[2].name");
+        assertEquals(1, errors.size());
+        errors = (List) fieldErrors.get("testBeanList[3].name");
+        assertEquals(1, errors.size());
+        errors = (List) fieldErrors.get("testBeanList[4].name");
+        assertEquals(1, errors.size());
     }
 
     public void testContextIsOverriddenByContextParamInValidationXML() throws Exception {
