@@ -15,5 +15,5 @@ package com.opensymphony.xwork;
 public interface Validateable {
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    void validate() throws Exception;
+    void validate();
 }
