@@ -42,7 +42,7 @@ public class OgnlValueStack {
 
     public OgnlValueStack() {
         this.root = new CompoundRoot();
-        this.context = Ognl.createDefaultContext(this.root, accessor, DefaultConverter.getInstance());
+        this.context = Ognl.createDefaultContext(this.root, accessor, XWorkConverter.getInstance());
         context.put(VALUE_STACK, this);
         Ognl.setClassResolver(context, accessor);
     }

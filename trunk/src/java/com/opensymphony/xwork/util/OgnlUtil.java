@@ -6,7 +6,6 @@ package com.opensymphony.xwork.util;
 
 import ognl.Ognl;
 import ognl.OgnlException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -14,7 +13,6 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -47,7 +45,7 @@ public class OgnlUtil {
             return;
         }
 
-        Ognl.setTypeConverter(context, DefaultConverter.getInstance());
+        Ognl.setTypeConverter(context, XWorkConverter.getInstance());
 
         Object oldRoot = Ognl.getRoot(context);
         Ognl.setRoot(context, o);
@@ -74,7 +72,7 @@ public class OgnlUtil {
     */
     public static void setProperties(Map properties, Object o) {
         Map context = Ognl.createDefaultContext(o);
-        Ognl.setTypeConverter(context, DefaultConverter.getInstance());
+        Ognl.setTypeConverter(context, XWorkConverter.getInstance());
         setProperties(properties, o, context);
     }
 
@@ -86,7 +84,7 @@ public class OgnlUtil {
     * @param context the context which may include the TypeConverter
     */
     public static void setProperty(String name, Object value, Object o, Map context) {
-        Ognl.setTypeConverter(context, DefaultConverter.getInstance());
+        Ognl.setTypeConverter(context, XWorkConverter.getInstance());
 
         Object oldRoot = Ognl.getRoot(context);
         Ognl.setRoot(context, o);
@@ -121,7 +119,7 @@ public class OgnlUtil {
 
     /**
     * Copies the properties in the object "from" and sets them in the object "to"
-    * using specified type converter, or {@link com.opensymphony.xwork.util.DefaultConverter} if none is specified.
+    * using specified type converter, or {@link com.opensymphony.xwork.util.XWorkConverter} if none is specified.
     *
     * @param from the source object
     * @param to the target object
@@ -129,10 +127,10 @@ public class OgnlUtil {
     */
     public static void copy(Object from, Object to, Map context) {
         Map contextFrom = Ognl.createDefaultContext(from);
-        Ognl.setTypeConverter(contextFrom, DefaultConverter.getInstance());
+        Ognl.setTypeConverter(contextFrom, XWorkConverter.getInstance());
 
         Map contextTo = Ognl.createDefaultContext(to);
-        Ognl.setTypeConverter(contextTo, DefaultConverter.getInstance());
+        Ognl.setTypeConverter(contextTo, XWorkConverter.getInstance());
 
         BeanInfo beanInfoFrom = null;
 
