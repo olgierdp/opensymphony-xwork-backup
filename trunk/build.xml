@@ -242,7 +242,11 @@
 
     <target name="dist" depends="jar, editor-jar, docs">
         <copy file="${build}/${name}-${version}.jar" todir="${build.dist}"/>
-        <copy file="${build}/${name}-editor-${version}.jar" todir="${build.dist}"/>
+        <copy todir="${build.dist}">
+            <fileset dir="${build}">
+                <include name="${name}-editor-${version}.jar"/>
+            </fileset>
+        </copy>
 
         <copy todir="${build.dist}/src">
             <fileset dir="${src.java}"/>
