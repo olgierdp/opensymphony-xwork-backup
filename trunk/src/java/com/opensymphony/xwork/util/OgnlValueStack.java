@@ -21,7 +21,10 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- *
+ * OgnlValueStack allows multiple beans to be pushed in and dynamic Ognl expressions to be evaluated against it. When
+ * evaluating an expression, the stack will be searched down the stack, from the latest objects pushed in to the
+ * earliest, looking for a bean with a getter or setter for the given property or a method of the given name (depending
+ * on the expression being evaluated).
  *
  * @author $Author$
  * @version $Revision$
@@ -66,18 +69,38 @@ public class OgnlValueStack implements Serializable {
         return context;
     }
 
+    /**
+     * Sets the default type to convert to if no type is provided when getting a value.
+     * @param defaultType
+     */
     public void setDefaultType(Class defaultType) {
         this.defaultType = defaultType;
     }
 
+    /**
+     * Get the CompoundRoot which holds the objects pushed onto the stack
+     * @return
+     */
     public CompoundRoot getRoot() {
         return root;
     }
 
+    /**
+     * Attempts to set a property on a bean in the stack with the given expression using the default search order.
+     * @param expr the expression defining the path to the property to be set.
+     * @param value the value to be set into the neamed property
+     */
     public void setValue(String expr, Object value) {
         setValue(expr, value, false);
     }
 
+    /**
+     * Attempts to set a property on a bean in the stack with the given expression using the default search order.
+     * @param expr the expression defining the path to the property to be set.
+     * @param value the value to be set into the neamed property
+     * @param throwExceptionOnFailure a flag to tell whether an exception should be thrown if there is no property with
+     * the given name.
+     */
     public void setValue(String expr, Object value, boolean throwExceptionOnFailure) {
         Map context = getContext();
 
@@ -93,6 +116,11 @@ public class OgnlValueStack implements Serializable {
         }
     }
 
+    /**
+     * Find a value by evaluating the given expression against the stack in the default search order.
+     * @param expr the expression giving the path of properties to navigate to find the property value to return
+     * @return the result of evaluating the expression
+     */
     public Object findValue(String expr) {
         try {
             if (expr == null) {
@@ -112,6 +140,12 @@ public class OgnlValueStack implements Serializable {
         }
     }
 
+    /**
+     * Find a value by evaluating the given expression against the stack in the default search order.
+     * @param expr the expression giving the path of properties to navigate to find the property value to return
+     * @param asType the type to convert the return value to
+     * @return the result of evaluating the expression
+     */
     public Object findValue(String expr, Class asType) {
         try {
             if (expr == null) {
@@ -127,18 +161,36 @@ public class OgnlValueStack implements Serializable {
         }
     }
 
+    /**
+     * Get the object on the top of the stack without changing the stack.
+     * @see {@link com.opensymphony.xwork.util.CompoundRoot#peek()}
+     */
     public Object peek() {
         return root.peek();
     }
 
+    /**
+     * Get the object on the top of the stack and remove it from the stack.
+     * @see {@link com.opensymphony.xwork.util.CompoundRoot#pop()}
+     * @return
+     */
     public Object pop() {
         return root.pop();
     }
 
+    /**
+     * Put this object onto the top of the stack
+     * @param o the object to be pushed onto the stack
+     * @see {@link com.opensymphony.xwork.util.CompoundRoot#push(java.lang.Object)}
+     */
     public void push(Object o) {
         root.push(o);
     }
 
+    /**
+     * Get the number of objects in the stack
+     * @return
+     */
     public int size() {
         return root.size();
     }
