@@ -67,22 +67,23 @@ public class InstantiatingNullHandler implements NullHandler {
 
         try {
             Class clazz = null;
-            Object o = target;
+            Object realTarget = target;
 
+            // find real target
             if (target instanceof CompoundRoot) {
                 CompoundRoot root = (CompoundRoot) target;
 
                 for (Iterator iterator = root.iterator(); iterator.hasNext();) {
-                    o = iterator.next();
+                    realTarget = iterator.next();
 
-                    if (OgnlRuntime.hasSetProperty((OgnlContext) context, o, property.toString())) {
-                        clazz = OgnlRuntime.getPropertyDescriptor(o.getClass(), property.toString()).getPropertyType();
+                    if (OgnlRuntime.hasSetProperty((OgnlContext) context, realTarget, property.toString())) {
+                        clazz = OgnlRuntime.getPropertyDescriptor(realTarget.getClass(), property.toString()).getPropertyType();
 
                         break;
                     }
                 }
             } else {
-                clazz = OgnlRuntime.getPropertyDescriptor(o.getClass(), property.toString()).getPropertyType();
+                clazz = OgnlRuntime.getPropertyDescriptor(realTarget.getClass(), property.toString()).getPropertyType();
             }
 
             if (clazz == null) {
@@ -90,12 +91,10 @@ public class InstantiatingNullHandler implements NullHandler {
                 return null;
             }
 
-            Object param = createObject(clazz, o, property.toString());
+            Object param = createObject(clazz, realTarget, property.toString());
 
-            Ognl.setValue(property.toString(), context, o, param);
+            Ognl.setValue(property.toString(), context, realTarget, param);
 
-            //OgnlRuntime.setProperty((OgnlContext) context, target, property.toString(), param);
-            //method.invoke(target, new Object[]{param});
             return param;
         } catch (Exception e) {
             LOG.error("Could not create and/or set value back on to object", e);
@@ -109,7 +108,7 @@ public class InstantiatingNullHandler implements NullHandler {
     }
 
     private Object createObject(Class clazz, Object target, String property) throws Exception {
-        if ((clazz == Collection.class) || (clazz == List.class)) {
+        if (Collection.class.isAssignableFrom(clazz)) {
             Class collectionType = getCollectionType(target.getClass(), property);
 
             if (collectionType == null) {

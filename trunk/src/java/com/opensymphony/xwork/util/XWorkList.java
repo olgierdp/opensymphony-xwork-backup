@@ -140,12 +140,15 @@ public class XWorkList extends ArrayList {
         }
 
         boolean trim = false;
+
         if (index >= this.size()) {
             trim = true;
         }
+
         for (Iterator it = c.iterator(); it.hasNext(); index++) {
             add(index, it.next());
         }
+
         if (trim) {
             remove(this.size() - 1);
         }

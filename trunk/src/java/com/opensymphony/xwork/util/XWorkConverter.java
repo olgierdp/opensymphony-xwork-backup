@@ -211,7 +211,7 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     protected Object getConverter(Class clazz, String property) {
-        if (!noMapping.contains(clazz)) {
+        if ((property != null) && !noMapping.contains(clazz)) {
             try {
                 Map mapping = (Map) mappings.get(clazz);
 

@@ -23,11 +23,9 @@ import java.util.*;
 
 
 /**
- *
+ * Default type converter for XWork.
  *
  * @author <a href="mailto:plightbo@cisco.com">Pat Lightbody</a>
- * @author $Author$
- * @version $Revision$
  */
 public class XWorkBasicConverter extends DefaultTypeConverter {
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -59,7 +57,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             if (value instanceof Object[]) {
                 Object[] array = (Object[]) value;
 
-                if ((array != null) && (array.length >= 1)) {
+                if (array.length >= 1) {
                     value = array[0];
                 }
 
@@ -223,7 +221,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             List intArray = new ArrayList(x.length);
 
             for (int i = 0; i < x.length; i++) {
-                intArray.add(new Boolean(x[i]));
+                intArray.add(Boolean.valueOf(x[i]));
             }
 
             result = TextUtils.join(", ", intArray);
