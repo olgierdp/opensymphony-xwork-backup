@@ -70,11 +70,12 @@ public class ActionValidatorManager {
             }
 
             FieldValidator fValidator = null;
+            String fullFieldName = null;
 
             if (validator instanceof FieldValidator) {
                 fValidator = (FieldValidator) validator;
-
-                if ((shortcircuitedFields != null) && shortcircuitedFields.contains(fValidator.getFieldName())) {
+                fullFieldName = fValidator.getValidatorContext().getFullFieldName(fValidator.getFieldName());
+                if ((shortcircuitedFields != null) && shortcircuitedFields.contains(fullFieldName)) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Short-circuited, skipping");
                     }
@@ -89,7 +90,7 @@ public class ActionValidatorManager {
 
                 if (fValidator != null) {
                     if (validatorContext.hasFieldErrors()) {
-                        Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fValidator.getFieldName());
+                        Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fullFieldName);
 
                         if (fieldErrors != null) {
                             errs = new ArrayList(fieldErrors);
@@ -107,7 +108,7 @@ public class ActionValidatorManager {
 
                 if (fValidator != null) {
                     if (validatorContext.hasFieldErrors()) {
-                        Collection errCol = (Collection) validatorContext.getFieldErrors().get(fValidator.getFieldName());
+                        Collection errCol = (Collection) validatorContext.getFieldErrors().get(fullFieldName);
 
                         if ((errCol != null) && !errCol.equals(errs)) {
                             if (LOG.isDebugEnabled()) {
@@ -118,7 +119,7 @@ public class ActionValidatorManager {
                                 shortcircuitedFields = new TreeSet();
                             }
 
-                            shortcircuitedFields.add(fValidator.getFieldName());
+                            shortcircuitedFields.add(fullFieldName);
                         }
                     }
                 } else if (validatorContext.hasActionErrors()) {
