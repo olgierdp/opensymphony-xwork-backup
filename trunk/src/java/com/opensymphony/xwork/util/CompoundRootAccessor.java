@@ -125,6 +125,9 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         for (Iterator iterator = root.iterator(); iterator.hasNext();) {
             Object o = iterator.next();
 
+            if (o == null) {
+                continue;
+            }
             Class clazz = o.getClass();
             Class[] argTypes = getArgTypes(objects);
 
