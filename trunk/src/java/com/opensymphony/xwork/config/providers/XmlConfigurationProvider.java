@@ -328,9 +328,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         if (!("".equals(externalReferenceResolver))) {
             try {
-                Class erResolverClazz = ClassLoaderUtil.loadClass(externalReferenceResolver, ExternalReferenceResolver.class);
-
-                erResolver = (ExternalReferenceResolver) erResolverClazz.newInstance();
+                erResolver = (ExternalReferenceResolver)ObjectFactory.getObjectFactory().buildBean(externalReferenceResolver); 
             } catch (ClassNotFoundException e) {
                 //TODO this should be localized
                 String msg = "Could not find External Reference Resolver: " + externalReferenceResolver + ". " + e.getMessage();
