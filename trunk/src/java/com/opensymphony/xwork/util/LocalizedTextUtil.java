@@ -8,15 +8,12 @@ import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.ModelDriven;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
 import java.text.MessageFormat;
-
 import java.util.*;
 
 
@@ -208,8 +205,8 @@ public class LocalizedTextUtil {
      * @param locale         the locale the message should be for
      * @param defaultMessage the message to be returned if no text message can be found in any
      *                       resource bundle
-     * @param valueStack the value stack to use to evaluate expressions instead of the
-     * one in the ActionContext ThreadLocal
+     * @param valueStack     the value stack to use to evaluate expressions instead of the
+     *                       one in the ActionContext ThreadLocal
      * @return the localized text, or null if none can be found and no defaultMessage is provided
      */
     public static String findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args, OgnlValueStack valueStack) {
@@ -257,8 +254,8 @@ public class LocalizedTextUtil {
 
         // nothing still? alright, search the package hierarchy now
         for (Class clazz = aClass;
-                (clazz != null) && !clazz.equals(Object.class);
-                clazz = clazz.getSuperclass()) {
+             (clazz != null) && !clazz.equals(Object.class);
+             clazz = clazz.getSuperclass()) {
             if (clazz.getPackage() != null) {
                 String packageName = clazz.getPackage().getName() + ".package";
                 msg = getMessage(packageName, locale, aTextName, valueStack, args);
@@ -420,7 +417,7 @@ public class LocalizedTextUtil {
         MessageFormatKey key = new MessageFormatKey(pattern, locale);
         MessageFormat format = (MessageFormat) messageFormats.get(key);
         if (format == null) {
-            synchronized(messageFormats) {
+            synchronized (messageFormats) {
                 format = new MessageFormat(pattern, locale);
                 messageFormats.put(key, format);
             }
