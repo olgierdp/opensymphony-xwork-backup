@@ -137,6 +137,8 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     Throwable reason = e.getReason();
                     if (mc != null && reason != null && reason.getClass() == NoSuchMethodException.class) {
                         invalidMethods.put(mc, Boolean.TRUE);
+                    } else if (reason != null) {
+                        throw new MethodFailedException(o, name, e.getReason());
                     }
                 }
             }
