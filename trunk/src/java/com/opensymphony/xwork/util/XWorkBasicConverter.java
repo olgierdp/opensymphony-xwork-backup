@@ -74,6 +74,10 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     }
 
     private Locale getLocale(Map context) {
+    	if (context == null) {
+    		return Locale.getDefault();
+    	}
+    	
         Locale locale = (Locale) context.get(ActionContext.LOCALE);
 
         if (locale == null) {
