@@ -115,28 +115,6 @@ public class DefaultActionInvocation implements ActionInvocation {
         return returnResult;
     }
 
-    public Result createResult() throws Exception {
-        Map results = proxy.getConfig().getResults();
-        ResultConfig resultConfig = (ResultConfig) results.get(resultCode);
-        Result newResult = null;
-
-        if (resultConfig != null) {
-            Class resultClass = resultConfig.getClazz();
-
-            if (resultClass != null) {
-                try {
-                    newResult = (Result) resultClass.newInstance();
-                } catch (Exception e) {
-                    LOG.error("There was an exception while instantiating the result of type " + resultClass, e);
-                    throw e;
-                }
-
-                OgnlUtil.setProperties(resultConfig.getParams(), newResult, ActionContext.getContext().getContextMap());
-            }
-        }
-        return newResult;
-    }
-
     public String getResultCode() {
         return resultCode;
     }
@@ -157,6 +135,29 @@ public class DefaultActionInvocation implements ActionInvocation {
         }
 
         preResultListeners.add(listener);
+    }
+
+    public Result createResult() throws Exception {
+        Map results = proxy.getConfig().getResults();
+        ResultConfig resultConfig = (ResultConfig) results.get(resultCode);
+        Result newResult = null;
+
+        if (resultConfig != null) {
+            Class resultClass = resultConfig.getClazz();
+
+            if (resultClass != null) {
+                try {
+                    newResult = (Result) resultClass.newInstance();
+                } catch (Exception e) {
+                    LOG.error("There was an exception while instantiating the result of type " + resultClass, e);
+                    throw e;
+                }
+
+                OgnlUtil.setProperties(resultConfig.getParams(), newResult, ActionContext.getContext().getContextMap());
+            }
+        }
+
+        return newResult;
     }
 
     public String invoke() throws Exception {
@@ -180,7 +181,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         if (!executed) {
             if (preResultListeners != null) {
                 for (Iterator iterator = preResultListeners.iterator();
-                     iterator.hasNext();) {
+                        iterator.hasNext();) {
                     PreResultListener listener = (PreResultListener) iterator.next();
                     listener.beforeResult(this, resultCode);
                 }
@@ -199,12 +200,16 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     protected void createAction() {
         // load action
+        Class actionClass = proxy.getConfig().getClazz();
+
         try {
-            action = (Action) proxy.getConfig().getClazz().newInstance();
+            action = (Action) actionClass.newInstance();
         } catch (InstantiationException e) {
             throw new XworkException("Unable to intantiate Action!", e);
         } catch (IllegalAccessException e) {
             throw new XworkException("Illegal access to constructor, is it public?", e);
+        } catch (ClassCastException e) {
+            throw new XworkException("Action class " + actionClass.getClass().getName() + "does not implement " + Action.class.getName(), e);
         } catch (Exception e) {
             String gripe = "";
 
@@ -218,8 +223,8 @@ public class DefaultActionInvocation implements ActionInvocation {
                 gripe = "Unable to instantiate Action, " + proxy.getConfig().getClazz().getName() + ",  defined for '" + proxy.getActionName() + "' in namespace '" + proxy.getNamespace() + "'";
             }
 
-            gripe += (" -- " + e.getMessage());
-            throw new XworkException(gripe);
+            gripe += (((" -- " + e.getMessage()) != null) ? e.getMessage() : " [no message in exception]");
+            throw new XworkException(gripe, e);
         }
     }
 
