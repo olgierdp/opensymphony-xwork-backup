@@ -215,19 +215,26 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     protected Object getConverter(Class clazz, String property) {
+        // we synchronize on the class's string representation rather than the
+        // class itself since it is possible (though rare) to have two different
+        // class instances through the use of wacky classloaders. This sync
+        // prevents multiple requests from causes configuration to be loaded
+        // multiple times.
+        synchronized(clazz.toString().intern()) {
         if ((property != null) && !noMapping.contains(clazz)) {
-            try {
-                Map mapping = (Map) mappings.get(clazz);
+                try {
+                    Map mapping = (Map) mappings.get(clazz);
 
-                if (mapping == null) {
-                    mapping = buildConverterMapping(clazz);
-                } else {
-                    mapping = conditionalReload(clazz, mapping);
+                    if (mapping == null) {
+                        mapping = buildConverterMapping(clazz);
+                    } else {
+                        mapping = conditionalReload(clazz, mapping);
+                    }
+
+                    return mapping.get(property);
+                } catch (Throwable t) {
+                    noMapping.add(clazz);
                 }
-
-                return mapping.get(property);
-            } catch (Throwable t) {
-                noMapping.add(clazz);
             }
         }
 
@@ -368,6 +375,8 @@ public class XWorkConverter extends DefaultTypeConverter {
      * @return the converter mappings
      */
     private Map buildConverterMapping(Class clazz) throws Exception {
+        System.out.println(clazz);
+
         Map mapping = new HashMap();
 
         // check for conversion mapping associated with super classes and any implemented interfaces
