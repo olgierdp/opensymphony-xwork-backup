@@ -32,7 +32,7 @@ public class LocalizedTextUtilTest extends TestCase {
         LocalizedTextUtil.addDefaultResourceBundle("com/opensymphony/xwork/SimpleAction");
 
         try {
-            String message = LocalizedTextUtil.findDefaultText("foo.range");
+            String message = LocalizedTextUtil.findDefaultText("foo.range", Locale.US);
             assertEquals("Foo Range Message", message);
         } catch (MissingResourceException e) {
             e.printStackTrace();

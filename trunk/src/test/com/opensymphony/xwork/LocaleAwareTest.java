@@ -22,9 +22,9 @@ public class LocaleAwareTest extends TestCase {
 
     public void testGetText() {
         try {
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.FOO_ACTION_NAME, null);
             ActionContext.getContext().setLocale(Locale.US);
 
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.FOO_ACTION_NAME, null);
             LocaleAware localeAware = (LocaleAware) proxy.getAction();
             assertEquals("Foo Range Message", localeAware.getText("foo.range"));
         } catch (Exception e) {

@@ -83,6 +83,7 @@ public class SimpleActionValidationTest extends TestCase {
 
         try {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
+            ActionContext.getContext().setLocale(Locale.US);
             proxy.execute();
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
@@ -130,6 +131,5 @@ public class SimpleActionValidationTest extends TestCase {
         ConfigurationManager.clearConfigurationProviders();
         ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
         ConfigurationManager.getConfiguration().reload();
-        ActionContext.getContext().setLocale(Locale.US);
     }
 }
