@@ -88,21 +88,20 @@ public class ActionValidatorManager {
 
             if (validator instanceof ShortCircuitableValidator && ((ShortCircuitableValidator) validator).isShortCircuit()) {
                 // get number of existing errors
-                int errs = 0;
-
+                List errs = null;
                 if (fValidator != null) {
                     if (validatorContext.hasFieldErrors()) {
                         Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fValidator.getFieldName());
 
                         if (fieldErrors != null) {
-                            errs = fieldErrors.size();
+                            errs = new ArrayList(fieldErrors);
                         }
                     }
                 } else if (validatorContext.hasActionErrors()) {
                     Collection actionErrors = validatorContext.getActionErrors();
 
                     if (actionErrors != null) {
-                        errs = actionErrors.size();
+                        errs = new ArrayList(actionErrors);
                     }
                 }
 
@@ -112,7 +111,7 @@ public class ActionValidatorManager {
                     if (validatorContext.hasFieldErrors()) {
                         Collection errCol = (Collection) validatorContext.getFieldErrors().get(fValidator.getFieldName());
 
-                        if ((errCol != null) && (errCol.size() > errs)) {
+                        if ((errCol != null) && !errCol.equals(errs)) {
                             if (LOG.isDebugEnabled()) {
                                 LOG.debug("Short-circuiting on field validation");
                             }
@@ -127,7 +126,7 @@ public class ActionValidatorManager {
                 } else if (validatorContext.hasActionErrors()) {
                     Collection errCol = validatorContext.getActionErrors();
 
-                    if ((errCol != null) && (errCol.size() > errs)) {
+                    if ((errCol != null) && !errCol.equals(errs)) {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Short-circuiting");
                         }
