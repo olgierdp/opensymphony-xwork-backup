@@ -56,16 +56,19 @@ public class TimerInterceptor implements Interceptor {
     /**
     * Allows the Interceptor to do some processing on the request before and/or after the rest of the processing of the
     * request by the DefaultActionInvocation or to short-circuit the processing and just return a String return code.
-    *
-    * @param dispatcher
-    * @return
-    * @throws Exception
     */
-    public String intercept(ActionInvocation dispatcher) throws Exception {
+    public String intercept(ActionInvocation invocation) throws Exception {
         long startTime = System.currentTimeMillis();
-        String result = dispatcher.invoke();
+        String result = invocation.invoke();
         long executionTime = System.currentTimeMillis() - startTime;
-        log.info("Processed action " + dispatcher.getProxy().getActionName() + " in " + executionTime + "ms.");
+        String namespace = invocation.getProxy().getNamespace();
+        StringBuffer message = new StringBuffer("Processed action ");
+        if ((namespace != null) && (namespace.trim().length() > 0)) {
+            message.append(namespace).append("/");
+        }
+        message.append(invocation.getProxy().getActionName());
+        message.append(" in ").append(executionTime).append("ms.");
+        log.info(message.toString());
 
         return result;
     }

@@ -21,6 +21,8 @@ public class LoggingInterceptor extends AroundInterceptor {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log log = LogFactory.getLog(LoggingInterceptor.class);
+    private static final String FINISH_MESSAGE = "Finishing execution stack for action ";
+    private static final String START_MESSAGE = "Starting execution stack for action ";
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -41,10 +43,20 @@ public class LoggingInterceptor extends AroundInterceptor {
     }
 
     protected void after(ActionInvocation invocation, String result) throws Exception {
-        log.info("Finishing execution stack for action " + invocation.getProxy().getActionName());
+        logMessage(invocation, FINISH_MESSAGE);
     }
 
     protected void before(ActionInvocation invocation) throws Exception {
-        log.info("Starting execution stack for action " + invocation.getProxy().getActionName());
+        logMessage(invocation, START_MESSAGE);
+    }
+
+    private void logMessage(ActionInvocation invocation, String baseMessage) {
+        StringBuffer message = new StringBuffer(baseMessage);
+        String namespace = invocation.getProxy().getNamespace();
+        if ((namespace != null) && (namespace.trim().length() > 0)) {
+            message.append(namespace).append("/");
+        }
+        message.append(invocation.getProxy().getActionName());
+        log.info(message.toString());
     }
 }
