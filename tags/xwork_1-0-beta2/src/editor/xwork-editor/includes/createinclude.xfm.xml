@@ -1,0 +1,75 @@
+<xface:window
+	xmlns:xface="http://www.xesoft.com/xmlns/xface"
+	xmlns:xprocess="http://www.xesoft.com/xmlns/xprocess"
+	id="create_include"
+	width="400"
+	height="200"
+	location="center_on_screen"
+	modal="application"
+	resizable="false">
+
+	<xface:relative-layout constraints="/xwork-editor/edit.layout.xml" />
+
+	<xface:label id="label_message" label="create_include_message" />
+
+	<xface:panel id="inputs">
+		<xface:input-panel-layout />
+
+		<xface:label id="label_file" label="file" />
+		<xface:text-input id="file" />
+
+	</xface:panel>
+
+	<xface:button id="ok" label="ok" />
+	<xface:button id="cancel" label="cancel" />
+
+	<!-- Hide the window when cancel is pressed -->
+	<xface:hide-adapter element="../cancel" event="ACTION" />
+
+	<!-- Show the window when add_package button is pressed -->
+	<xface:show-adapter element="../../toolbar/create_include" event="ACTION" />
+
+	<!-- Clear the inputs when the window is shown -->
+	<xprocess:action>
+		<xface:action-adapter element="../.." event="SHOW" />
+		<xprocess:script>
+			<xface:param id="script"><![CDATA[
+				parent.findElement("../inputs/file").setValue("");
+			]]></xface:param>
+		</xprocess:script>
+	</xprocess:action>
+
+	<!-- Create the package when the OK button is pressed -->
+	<xprocess:action>
+		<xface:action-adapter element="../../ok" event="ACTION" />
+		<xprocess:script>
+			<xface:param id="script"><![CDATA[
+				var vFile = parent.findElement("../inputs/file").getValue();
+				var vModel = parent.findElement("../../table/model");
+				var vRoot = vModel.getData();
+				var vDocument = vRoot.getOwnerDocument();
+
+				/* First check to see that a real package name was entered */
+				if (vFile.trim().length() == 0)
+				{
+					throw "A valid file name was not entered";
+				}
+
+				/* Second check to see if the package exists */
+				var vExistingElement = Packages.com.xe.xface.xml.XPathGetter.getElement(vRoot,"include[@file='"+vFile+"']");
+				if (vExistingElement != null)
+				{
+					throw "A include with the file '"+vFile+"' already exists";
+				}
+
+				/* Now, create the element and add it to the model */
+				var vElement = vDocument.createElement("include");
+				vElement.setAttribute("file",vFile);
+
+				vModel.addObject(vElement);
+			]]></xface:param>
+		</xprocess:script>
+		<xprocess:hide object="../.." />
+	</xprocess:action>
+
+</xface:window>

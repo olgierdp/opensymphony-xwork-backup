@@ -1,0 +1,53 @@
+<xface:tab
+	xmlns:xface="http://www.xesoft.com/xmlns/xface"
+	xmlns:xprocess="http://www.xesoft.com/xmlns/xprocess"
+	id="interceptors">
+
+	<xface:split-panel id="split" orientation="horizontal" weight="50">
+		<xface:panel id="top">
+			<xface:relative-layout constraints="/xwork-editor/xwork-panel-right2.layout.xml"/>
+
+			<xface:toolbar id="toolbar">
+				<xface:toolbar-button id="create_interceptor_ref" image="xwork-editor/images/add_interceptor.gif"/>
+				<xface:toolbar-button id="delete_interceptor_ref" image="xwork-editor/images/delete.gif">
+					<xface:selected-list-enabled-adapter element="../../../table" selection="both"/>
+				</xface:toolbar-button>
+				<xface:toolbar-button id="move_up" image="xwork-editor/images/step_up.gif">
+					<xface:selected-list-enabled-adapter element="../../../table" selection="not_first"/>
+					<xface:selected-list-move-adapter element="../../../table" direction="up" />
+				</xface:toolbar-button>
+				<xface:toolbar-button id="move_down" image="xwork-editor/images/step_down.gif">
+					<xface:selected-list-enabled-adapter element="../../../table" selection="not_last"/>
+					<xface:selected-list-move-adapter element="../../../table" direction="down" />
+				</xface:toolbar-button>
+			</xface:toolbar>
+
+			<xface:table id="table">
+				<xface:xml-tablemodel id="model" xpath="interceptor-ref"/>
+				<xface:column id="name" property="@name"/>
+			</xface:table>
+		</xface:panel>
+		<xface:panel id="bottom">
+			<xface:selected-list-enabled-adapter element="../../top/table" selection="both"/>
+
+			<xface:inset-layout constraints="tabpanel,5,5,5,5" />
+
+			<xface:tab-panel id="tabpanel">
+				<xface:include src="/xwork-editor/parameter/parametertab.xfm.xml" />
+			</xface:tab-panel>
+
+			<xface:xml-datamodel id="model">
+				<xface:adapter element="../../tabpanel/params/table/model" elementProperty="data"/>
+				<xface:selected-table-item-adapter element="../../../top/table"/>
+			</xface:xml-datamodel>
+
+		</xface:panel>
+	</xface:split-panel>
+
+	<!--
+		Panel Includes
+   -->
+	<xface:include src="createinterceptorref.xfm.xml" />
+	<xface:include src="deleteinterceptorref.xfm.xml" />
+
+</xface:tab>
