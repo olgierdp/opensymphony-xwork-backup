@@ -95,6 +95,10 @@ public class LocalizedTextUtil {
         return findText(aClass, aTextName, locale, aTextName, new Object[0]);
     }
 
+    public static String findText(ResourceBundle bundle, String aTextName, Locale locale) {
+        return findText(bundle, aTextName, locale, aTextName, new Object[0]);
+    }
+
     /**
      * Finds a localized text message for the given text key, aTextName. findText uses a system of
      * defaults for finding resource bundle property files for searching for the message text.
@@ -129,6 +133,24 @@ public class LocalizedTextUtil {
             }
         } while (!aClass.equals(Object.class));
 
+        return getDefaultText(aTextName, locale, valueStack, args, defaultMessage);
+    }
+
+    public static String findText(ResourceBundle bundle, String aTextName, Locale locale, String defaultMessage, Object[] args) {
+        OgnlValueStack valueStack = ActionContext.getContext().getValueStack();
+
+        try {
+            String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
+
+            return MessageFormat.format(message, args);
+        } catch (MissingResourceException ex) {
+        }
+
+        return getDefaultText(aTextName, locale, valueStack, args, defaultMessage);
+
+    }
+
+    private static String getDefaultText(String aTextName, Locale locale, OgnlValueStack valueStack, Object[] args, String defaultMessage) {
         try {
             String message = TextParseUtil.translateVariables(findDefaultText(aTextName, locale), valueStack);
 

@@ -21,11 +21,17 @@ public class TextProviderSupport implements TextProvider {
 
     private Class clazz;
     private LocaleProvider localeProvider;
+    private ResourceBundle bundle;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
     public TextProviderSupport(Class clazz, LocaleProvider provider) {
         this.clazz = clazz;
+        this.localeProvider = provider;
+    }
+
+    public TextProviderSupport(ResourceBundle bundle, LocaleProvider provider) {
+        this.bundle = bundle;
         this.localeProvider = provider;
     }
 
@@ -43,7 +49,11 @@ public class TextProviderSupport implements TextProvider {
     * @return     value of named text
     */
     public String getText(String aTextName) {
-        return LocalizedTextUtil.findText(clazz, aTextName, getLocale());
+        if (clazz != null) {
+            return LocalizedTextUtil.findText(clazz, aTextName, getLocale());
+        }
+
+        return LocalizedTextUtil.findText(bundle, aTextName, getLocale());
     }
 
     /**
@@ -75,7 +85,11 @@ public class TextProviderSupport implements TextProvider {
      * @return     value of named text
      */
     public String getText(String aTextName, List args) {
-        return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), aTextName, args.toArray());
+        if (clazz != null) {
+            return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), aTextName, args.toArray());
+        }
+
+        return LocalizedTextUtil.findText(bundle, aTextName, getLocale(), aTextName, args.toArray());
     }
 
     /**
@@ -92,7 +106,11 @@ public class TextProviderSupport implements TextProvider {
      * @return     value of named text
      */
     public String getText(String aTextName, String defaultValue, List args) {
-        return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), defaultValue, args.toArray());
+        if (clazz != null) {
+            return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), defaultValue, args.toArray());
+        }
+
+        return LocalizedTextUtil.findText(bundle, aTextName, getLocale(), defaultValue, args.toArray());
     }
 
     /**
