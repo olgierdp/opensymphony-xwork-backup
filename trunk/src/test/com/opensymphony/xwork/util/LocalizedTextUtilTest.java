@@ -5,18 +5,10 @@
 package com.opensymphony.xwork.util;
 
 import com.mockobjects.dynamic.Mock;
-
-import com.opensymphony.xwork.Action;
-import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.ActionProxy;
-import com.opensymphony.xwork.ActionProxyFactory;
-import com.opensymphony.xwork.ModelDriven;
-import com.opensymphony.xwork.XWorkMessages;
+import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.test.ModelDrivenAction2;
 import com.opensymphony.xwork.test.TestBean2;
-
 import junit.framework.TestCase;
 
 import java.util.Collections;
@@ -26,11 +18,35 @@ import java.util.MissingResourceException;
 
 /**
  * LocalizedTextUtilTest
+ *
  * @author Jason Carreira
- * Created Apr 20, 2003 12:07:17 AM
+ *         Created Apr 20, 2003 12:07:17 AM
  */
 public class LocalizedTextUtilTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
+
+    public void testActionGetTextXXX() {
+        try {
+            LocalizedTextUtil.addDefaultResourceBundle("com/opensymphony/xwork/util/FindMe");
+
+            SimpleAction action = new SimpleAction();
+
+            Mock mockActionInvocation = new Mock(ActionInvocation.class);
+            mockActionInvocation.expectAndReturn("getAction", action);
+            ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
+            ActionContext.getContext().getValueStack().push(action);
+
+            String message = action.getText("bean.name");
+            String foundBean2 = action.getText("bean2.name");
+
+            assertEquals("Okay! You found Me!", foundBean2);
+            assertEquals("Haha you cant FindMe!", message);
+
+        } catch (MissingResourceException ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage());
+        }
+    }
 
     public void testActionGetText() {
         try {
@@ -167,9 +183,9 @@ public class LocalizedTextUtilTest extends TestCase {
 
     public void testParameterizedDefaultMessage() {
         try {
-            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[] {
-                    "AddUser"
-                });
+            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
+                "AddUser"
+            });
             assertEquals("There is no Action mapped for action name AddUser", message);
         } catch (MissingResourceException e) {
             e.printStackTrace();
@@ -179,9 +195,9 @@ public class LocalizedTextUtilTest extends TestCase {
 
     public void testParameterizedDefaultMessageWithPackage() {
         try {
-            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[] {
-                    "blah", "AddUser"
-                });
+            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
+                "blah", "AddUser"
+            });
             assertEquals("There is no Action mapped for namespace blah and action name AddUser", message);
         } catch (MissingResourceException e) {
             e.printStackTrace();
