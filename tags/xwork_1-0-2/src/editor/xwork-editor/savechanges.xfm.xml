@@ -1,0 +1,27 @@
+<xface:dialog
+	xmlns:xface="http://www.xesoft.com/xmlns/xface"
+	xmlns:xprocess="http://www.xesoft.com/xmlns/xprocess"
+	xmlns:xwork-editor="http://www.xesoft.com/xmlns/xwork-editor"
+	id="save_changes"
+	type="yes_no_cancel">
+
+	<xwork-editor:save-changes-adapter />
+
+	<!-- exit when no is pressed -->
+	<xprocess:action>
+		<xface:action-adapter element="../.." event="NO"/>
+		<xprocess:exit/>
+	</xprocess:action>
+
+	<!-- show the main window again when cancel is pressed -->
+	<xprocess:action>
+		<xface:action-adapter element="../.." event="CANCEL"/>
+		<xprocess:show>
+			<xface:param id="object">../../..</xface:param>
+		</xprocess:show>
+	</xprocess:action>
+
+	<!-- Show the dialog when the main window is closed -->
+	<xface:show-adapter element="../.." event="CLOSE" />
+
+</xface:dialog>

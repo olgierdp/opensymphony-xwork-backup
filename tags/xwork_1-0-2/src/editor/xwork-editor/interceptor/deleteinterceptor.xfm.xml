@@ -1,0 +1,14 @@
+<xface:dialog
+	xmlns:xface="http://www.xesoft.com/xmlns/xface"
+	xmlns:xprocess="http://www.xesoft.com/xmlns/xprocess"
+	id="delete_interceptor"
+	type="question">
+
+
+	<!-- Show the dialog when delete package button is pressed -->
+	<xface:selected-list-delete-adapter element="../../split/left/table" event="OK" />
+
+	<!-- Show the dialog when delete package button is pressed -->
+	<xface:show-adapter element="../../split/left/toolbar/delete_interceptor" event="ACTION" />
+
+</xface:dialog>

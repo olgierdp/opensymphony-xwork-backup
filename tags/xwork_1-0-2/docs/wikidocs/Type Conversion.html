@@ -1,0 +1,75 @@
+<html>
+    <head>
+        <title>XWork : Type Conversion</title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">	    
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <div class="pageheader">
+					    <span class="pagetitle">
+                            XWork : Type Conversion
+                                                    </span>
+				    </div>
+				    <div class="pagesubheading">
+					    This page last changed on Jul 21, 2004 by <font color="#0050B2">unkyaku</font>.
+				    </div>
+
+				    <ul class="star">
+<li> Overview</li>
+<li> <a href="Null Property Access.html" title="Null Property Access">Null Property Access</a></li>
+<li> <a href="Type Conversion Error Handling.html" title="Type Conversion Error Handling">Type Conversion Error Handling</a></li>
+</ul><br/>
+Type conversion allows you to easily convert objects from one class to another.  Whenever XWork attempts to get or set a property on an Action or object and the Class of the value to be get/set is not what is expected, XWork will try to convert it to the correct class.<p class="paragraph">A common use case is when submitting forms on the web, where we are usually converting to and from String classes.  A good example is date conversion.  Let&#039;s suppose we have the following classs:</p><div class="code"><div class="codeContent">
+<pre><span class="java&#45;keyword">public</span> class Foo <span class="java&#45;keyword">implements</span> Action &#123;&#10;  <span class="java&#45;keyword">private</span> Date date;&#10;  <span class="java&#45;keyword">public</span> void setDate(Date date) &#123; <span class="java&#45;keyword">this</span>.date = date ; &#125;&#10;  <span class="java&#45;keyword">public</span>&#160;<span class="java&#45;object">String</span> execute() &#123;&#10;    <span class="java&#45;comment">// <span class="java&#45;keyword">do</span> work here</span>&#10;  &#125;&#10;&#125;</pre>
+</div></div><p class="paragraph">XWork&#039;s type converter would allow us to pass in the String &quot;07/08/2003&quot; and have it be automatically converted to a Date object that&#039;s been set to July 8, 2003.</p>XWork already supports basic type conversion, but you can also use your own type converters.  To define a custom type converter, you&#039;ll need to perform the following steps:<br/>
+
+<ul class="star">
+<li> Create your custom type converter object by implementing ognl.TypeConverter or extending ognl.DefaultTypeConverter</li>
+<li> Define your conversion rules in a file named <b class="strong">className-conversion.properties</b> or add the appropriate entry to <b class="strong">xwork-conversion.properties</b></li>
+</ul><p class="paragraph"><h2 class="heading2"><a name="TypeConversion-DefiningConversionRules"> Defining Conversion Rules</a></h2></p>Conversion rules can be defined at both the class level as well as the application level.
+<p class="paragraph"><h3 class="heading3"><a name="TypeConversion-Classspecificconversionrules"> Class-specific conversion rules</a></h3></p>To define a class-specific conversion rules, create a file named <b class="strong">className-conversion.properties</b>.  The syntax for these files are:<br/>
+
+<div class="code"><div class="codeContent">
+<pre>property = full.class.name.of.converter&#10;Collection&#95;property = full.class.name&#10;Map&#95;property = full.class.name</pre>
+</div></div><p class="paragraph">This file defines the type converter to use for properties of an Action or object.  If a property is a Collection (List only) or Map, you can also specify the type of elements in the Collection/Map.   Please note that there are some issues to consider when working with <a href="Type Conversion In Collections.html" title="Type Conversion In Collections">type conversion in collections</a>.</p>When looking for a type converter, XWork will search up the class hierarchy and directly implemented for conversion rules.  Given the following class hierarchy:
+<div class="code"><div class="codeContent">
+<pre><span class="java&#45;keyword">interface</span> Animal;&#10;class AnimalImpl <span class="java&#45;keyword">implements</span> Animal;&#10;<span class="java&#45;keyword">interface</span> Quadraped <span class="java&#45;keyword">extends</span> Animal;&#10;class QuadrapedImpl <span class="java&#45;keyword">extends</span> AnimalImpl <span class="java&#45;keyword">implements</span> Quadraped;</pre>
+</div></div><p class="paragraph">XWork will look for a conversion rule in the following files in the following order:
+<div class="code"><div class="codeContent">
+<pre>QuadrapedImpl&#45;conversion.properties&#10;Quadraped&#45;conversion.properties&#10;AnimalImpl&#45;conversion.properties&#10;Animal&#45;conversion.properties</pre>
+</div></div></p><h3 class="heading3"><a name="TypeConversion-Applicationwideconversionrules"> Application-wide conversion rules</a></h3><p class="paragraph">To define application-wide conversion rules, create a file named <b class="strong">xwork-conversion.properties</b> and place it in the root classpath.  The syntax for this file is:
+<div class="code"><div class="codeContent">
+<pre>full.class.name = full.class.name.of.converter</pre>
+</div></div></p>Whenever XWork sees any classes listed in this file, it will use the specified converter to convert values to that class.  <p class="paragraph">When looking up a default converter, XWork will search up the class hierarchy to find the appropriate converter.  Given the class hierarchy above, XWork will look for a conversion rule for the class in the following order:
+<div class="code"><div class="codeContent">
+<pre>QuadrapedImpl&#10;AnimalImpl</pre>
+</div></div></p><h2 class="heading2"><a name="TypeConversion-AnExample"> An Example</a></h2><p class="paragraph">To use the Contact example (where Contact is a persistent object), let&#039;s say we have the following Action:</p><div class="code"><div class="codeContent">
+<pre><span class="java&#45;keyword">public</span> class AddContactAction <span class="java&#45;keyword">implements</span> Action &#123;&#10;  <span class="java&#45;keyword">private</span> Contact contact1;&#10;  <span class="java&#45;keyword">private</span> Contact contact2;&#10;  <span class="java&#45;keyword">public</span> void setContact1(Contact contact) &#123; <span class="java&#45;keyword">this</span>.contact1 = contact; &#125;&#10;  <span class="java&#45;keyword">public</span> void setContact2(Contact contact) &#123; <span class="java&#45;keyword">this</span>.contact2 = contact; &#125;&#10;&#10;  <span class="java&#45;keyword">public</span>&#160;<span class="java&#45;object">String</span> execute() &#123; &#8230; &#125;&#10;&#125;</pre>
+</div></div><p class="paragraph">What we&#039;re expecting from the UI is for contact to be &quot;1&quot;, the primary key of the contact.  We want the type converter to convert the string &quot;1&quot; to the Contact with a contactId of 1.  Likewise, we&#039;d like the converter to be able to reverse the operation.  When displayed, a Contact object should print out its contactId as a String.</p>The first step is to create our custom TypeConverter:<br/>
+
+<div class="code"><div class="codeContent">
+<pre><span class="java&#45;keyword">public</span> class ContactConverter <span class="java&#45;keyword">extends</span> ognl.DefaultTypeConverter &#123;&#10;  <span class="java&#45;keyword">public</span>&#160;<span class="java&#45;object">Object</span> convertValue(Map ognlContext, <span class="java&#45;object">Object</span> value, <span class="java&#45;object">Class</span> toType) &#123;&#10;    <span class="java&#45;keyword">if</span>( toType == <span class="java&#45;object">String</span>.class ) &#123;&#10;      Contact contact = (Contact)value;&#10;      <span class="java&#45;keyword">return</span>&#160;<span class="java&#45;keyword">new</span>&#160;<span class="java&#45;object">String</span>(contact.getContactId());&#10;    &#125; <span class="java&#45;keyword">else</span>&#160;<span class="java&#45;keyword">if</span>( toType == Contact.class ) &#123;&#10;      <span class="java&#45;object">Integer</span> id = <span class="java&#45;keyword">new</span>&#160;<span class="java&#45;object">Integer</span>((<span class="java&#45;object">String</span>)value);&#10;      Session session = &#8230; <span class="java&#45;comment">// get a Hibernate Session</span>&#10;      Contact contact = (Contact)session.load(Contact.class, id);&#10;      <span class="java&#45;keyword">return</span> contact;&#10;    &#125;&#10;    <span class="java&#45;keyword">return</span>&#160;<span class="java&#45;keyword">null</span>;&#10;  &#125;&#10;&#125;</pre>
+</div></div><p class="paragraph">The next part is to bind our ContactConverter to the previous AddContactAction.  I&#039;ll bind the ContactConverter to the AddContactAction by creating a file called AddContactAction-conversion.properties that&#039;s in the same directory as the AddContactAction class.</p>I would then populate the properties file as follows:<br/>
+
+<div class="code"><div class="codeContent">
+<pre>contact1 = com.acme.ContactConverter&#10;contact2 = com.acme.ContactConverter</pre>
+</div></div><p class="paragraph">Now, when XWork attempts to populate your object from parameters, you&#039;ll be given the actual instances of Contact from your database.</p>Having said all that, I can&#039;t really recommend doing database lookups here as a best practice.  In fact, I&#039;d say it&#039;s not such a good idea, but it does illustrate type converters well <img src="./icons/emoticons/smile.gif" height="20" width="20" align="absmiddle" alt="" border="0"/>  Any exception thrown here will be handled as described in <a href="Type Conversion Error Handling.html" title="Type Conversion Error Handling">Type Conversion Error Handling</a>.
+
+				    
+                    			    </td>
+		    </tr>
+	    </table>
+	    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td height="12" background="border/border_bottom.gif"><img src="border/spacer.gif" width="1" height="1" border="0"/></td>
+			</tr>
+		    <tr>
+			    <td align="center"><font color="grey">Document generated by Confluence on Aug 26, 2004 13:54</font></td>
+		    </tr>
+	    </table>
+    </body>
+</html>

@@ -1,0 +1,86 @@
+<xface:window
+	xmlns:xface="http://www.xesoft.com/xmlns/xface"
+	xmlns:xprocess="http://www.xesoft.com/xmlns/xprocess"
+	id="createpackage"
+	label="create_package"
+	width="400"
+	height="200"
+	location="center_on_screen"
+	modal="application"
+	resizable="false">
+
+	<xface:relative-layout constraints="/xwork-editor/edit.layout.xml" />
+
+	<xface:label id="label_message" label="create_package_message" />
+
+	<xface:panel id="inputs">
+		<xface:input-panel-layout />
+
+		<xface:label id="package_name" />
+		<xface:text-input id="package" />
+
+		<xface:label id="label_extends" label="extends" />
+		<xface:text-input id="extends" />
+
+	</xface:panel>
+
+	<xface:button id="ok" label="ok" />
+	<xface:button id="cancel" label="cancel" />
+
+	<!-- Hide the window when cancel is pressed -->
+	<xface:hide-adapter element="../cancel" event="ACTION" />
+
+	<!-- Show the window when add_package button is pressed -->
+	<xface:show-adapter element="../../split/left/toolbar/create_package" event="ACTION" />
+
+	<!-- Clear the inputs when the window is shown -->
+	<xprocess:action>
+		<xface:action-adapter element="../.." event="SHOW" />
+		<xprocess:script>
+			<xface:param id="script"><![CDATA[
+				parent.findElement("../inputs/package").setValue("");
+				parent.findElement("../inputs/extends").setValue("");
+			]]></xface:param>
+		</xprocess:script>
+	</xprocess:action>
+
+	<!-- Create the package when the OK button is pressed -->
+	<xprocess:action>
+		<xface:action-adapter element="../../ok" event="ACTION" />
+		<xprocess:script>
+			<xface:param id="script"><![CDATA[
+				var vPackage = parent.findElement("../inputs/package").getValue();
+				var vExtends = parent.findElement("../inputs/extends").getValue();
+				var vModel = parent.findElement("../../split/left/table/model");
+				var vRoot = vModel.getData();
+				var vDocument = vRoot.getOwnerDocument();
+
+				/* First check to see that a real package name was entered */
+				if (vPackage.trim().length() == 0)
+				{
+					throw "A valid package name was not entered";
+				}
+
+				/* Second check to see if the package exists */
+				var vExistingElement = Packages.com.xe.xface.xml.XPathGetter.getElement(vRoot,"package[@name='"+vPackage+"']");
+				if (vExistingElement != null)
+				{
+					throw "A package with the name '"+vPackage+"' already exists";
+				}
+
+				/* Now, create the element and add it to the model */
+				var vElement = vDocument.createElement("package");
+				vElement.setAttribute("name",vPackage);
+
+				if (vExtends.trim().length() > 0)
+				{
+					vElement.setAttribute("extends",vExtends);
+				}
+
+				vModel.addObject(vElement);
+			]]></xface:param>
+		</xprocess:script>
+		<xprocess:hide object="../.." />
+	</xprocess:action>
+
+</xface:window>
