@@ -92,10 +92,19 @@ public class XWorkConverter extends DefaultTypeConverter {
             if ((target instanceof CompoundRoot) && (context != null)) {
                 OgnlContext ognlContext = (OgnlContext) context;
                 Evaluation eval = ognlContext.getCurrentEvaluation();
+                if (eval == null) {
+                    eval = ognlContext.getLastEvaluation();
+                }
 
-                if (eval != null) {
+                if (eval != null && eval.getLastChild() != null) {
                     // since we changed what the source was (tricked Ognl essentially)
-                    clazz = eval.getLastChild().getSource().getClass();
+                    if (eval.getLastChild().getLastChild() != null
+                            && eval.getLastChild().getLastChild().getSource() != null
+                            && eval.getLastChild().getLastChild().getSource().getClass() != CompoundRoot.class) {
+                        clazz = eval.getLastChild().getLastChild().getSource().getClass();
+                    } else {
+                        clazz = eval.getLastChild().getSource().getClass();
+                    }
 
                     // ugly hack getting the property, but it works
                     property = eval.getNode().jjtGetChild(eval.getNode().jjtGetNumChildren() - 1).toString();

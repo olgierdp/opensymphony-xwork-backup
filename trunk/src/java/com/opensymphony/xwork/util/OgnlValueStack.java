@@ -30,6 +30,7 @@ public class OgnlValueStack implements Serializable {
         accessor = new CompoundRootAccessor();
         OgnlRuntime.setPropertyAccessor(CompoundRoot.class, accessor);
         OgnlRuntime.setMethodAccessor(CompoundRoot.class, accessor);
+        OgnlRuntime.setNullHandler(Object.class, new InstantiatingNullHandler());
     }
 
     //~ Instance fields ////////////////////////////////////////////////////////
@@ -120,6 +121,7 @@ public class OgnlValueStack implements Serializable {
         context.put(VALUE_STACK, this);
         Ognl.setClassResolver(context, accessor);
         ((OgnlContext) context).setTraceEvaluations(true);
+        ((OgnlContext) context).setKeepLastEvaluation(true);
     }
 
     private Object readResolve() throws ObjectStreamException {

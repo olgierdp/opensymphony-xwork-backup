@@ -316,12 +316,35 @@ public class OgnlValueStackTest extends TestCase {
         OgnlValueStack vs = new OgnlValueStack();
         vs.push(foo);
 
+        vs.getContext().put("foo", foo);
+
+        assertEquals("bar:123", vs.findValue("#foo.bar", String.class));
         assertEquals("bar:123", vs.findValue("bar", String.class));
         assertEquals("bar:123", vs.findValue("child.bar", String.class));
         assertEquals("bar:123", vs.findValue("child.child.bar", String.class));
         assertEquals("bar:123", vs.findValue("relatives[0].bar", String.class));
         assertEquals("bar:123", vs.findValue("child.relatives[0].bar", String.class));
         assertEquals("bar:123", vs.findValue("child.child.relatives[0].bar", String.class));
+
+        vs.push(vs.findValue("child"));
+        assertEquals("bar:123", vs.findValue("bar", String.class));
+        assertEquals("bar:123", vs.findValue("child.bar", String.class));
+        assertEquals("bar:123", vs.findValue("relatives[0].bar", String.class));
+        assertEquals("bar:123", vs.findValue("child.relatives[0].bar", String.class));
+    }
+
+    public void testPetSoarBug() {
+        Cat cat = new Cat();
+        cat.setFoo(new Foo());
+        Bar bar = new Bar();
+        bar.setTitle("bar");
+        bar.setSomethingElse(123);
+        cat.getFoo().setBar(bar);
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(cat);
+
+        assertEquals("bar:123", vs.findValue("foo.bar", String.class));
     }
 
     public void testMapEntriesAvailableByKey() {

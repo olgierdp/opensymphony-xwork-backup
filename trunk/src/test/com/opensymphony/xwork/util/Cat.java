@@ -20,6 +20,7 @@ public class Cat {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     String name;
+    Foo foo;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -29,5 +30,13 @@ public class Cat {
 
     public String getName() {
         return name;
+    }
+
+    public Foo getFoo() {
+        return foo;
+    }
+
+    public void setFoo(Foo foo) {
+        this.foo = foo;
     }
 }
