@@ -133,7 +133,17 @@
         <jar basedir="${build.java}" jarfile="${build}/${name}-${version}.jar"/>
     </target>
 
-    <target name="editor-java">
+    <target name="check-jdk14">
+        <condition property="jdk14">
+            <available classname="java.util.prefs.Preferences"/>
+        </condition>
+    </target>
+
+    <target name="warn-nojdk14" depends="check-jdk14" unless="jdk14">
+        <echo message="JDK1.4 or later is not being used... The editor will not be built"/>
+    </target>
+
+    <target name="editor-java" depends="warn-nojdk14" if="jdk14">
         <mkdir dir="${build.editor}"/>
         <mkdir dir="${build.editor}/META-INF"/>
         <javac srcdir="${src.editor}" destdir="${build.editor}" includes="com/opensymphony/xworkeditor/**" classpathref="editor.classpath" debug="on"/>
@@ -144,8 +154,8 @@
             </fileset>
         </copy>
     </target>
-    
-    <target name="create-xelements">
+
+    <target name="create-xelements" depends="warn-nojdk14" if="jdk14">
         <taskdef name="xelements" classname="com.xe.xface.ant.XElementsTask" classpathref="editor.classpath"/>
         <xelements dest="${build.editor}/META-INF">
             <fileset dir="${src.editor}">
@@ -153,8 +163,8 @@
 			    </fileset>
 		  </xelements>
     </target>
-	    
-    <target name="editor-jar" depends="editor-java,create-xelements">
+
+    <target name="editor-jar" depends="warn-nojdk14,editor-java,create-xelements" if="jdk14">
         <mkdir dir="${build}"/>
 
         <copy todir="${build.editor}" file="${src.etc}/xwork-1.0.dtd"/>
@@ -168,10 +178,10 @@
             <manifest>
                 <attribute name="Main-Class" value="com.opensymphony.xworkeditor.Application"/>
                 <attribute name="Class-Path" value="${editor.jar.classpath}"/>
-            </manifest>        
+            </manifest>
         </jar>
     </target>
-    
+
     <target name="javadocs">
         <mkdir dir="${build.dist}/docs/api"/>
         <javadoc sourcepath="${src.java}"
