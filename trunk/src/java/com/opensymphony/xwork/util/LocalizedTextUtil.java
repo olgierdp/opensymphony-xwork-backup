@@ -147,7 +147,7 @@ public class LocalizedTextUtil {
             //ignore
         }
 
-        LOG.warn("Unable to find text for key " + aTextName);
+        LOG.debug("Unable to find text for key " + aTextName);
 
         return defaultMessage;
     }
