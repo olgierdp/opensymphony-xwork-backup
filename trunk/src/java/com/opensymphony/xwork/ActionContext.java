@@ -6,8 +6,6 @@ package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.util.OgnlValueStack;
 
-import java.io.Serializable;
-
 import java.util.Locale;
 import java.util.Map;
 
@@ -16,7 +14,7 @@ import java.util.Map;
  * @author $Author$
  * @version $Revision$
  */
-public class ActionContext implements Serializable {
+public class ActionContext {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     static ThreadLocal actionContext = new ActionContextThreadLocal();

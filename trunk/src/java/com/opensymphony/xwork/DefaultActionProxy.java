@@ -32,22 +32,22 @@ public class DefaultActionProxy implements ActionProxy {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     ActionConfig config;
-    ActionContext lastContext;
+    transient ActionContext lastContext;
     ActionInvocation invocation;
     Map extraContext;
     String actionName;
     String namespace;
     boolean executeResult;
-    private ActionContext nestedContext;
+    private transient ActionContext nestedContext;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
     /**
-    * This constructor is private so the builder methods (create*) should be used to create an DefaultActionProxy.
-    *
-    * The reason for the builder methods is so that you can use a subclass to create your own DefaultActionProxy instance
-    * (like a RMIActionProxy).
-    */
+* This constructor is private so the builder methods (create*) should be used to create an DefaultActionProxy.
+*
+* The reason for the builder methods is so that you can use a subclass to create your own DefaultActionProxy instance
+* (like a RMIActionProxy).
+*/
     protected DefaultActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult) throws Exception {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Creating an DefaultActionProxy for namespace " + namespace + " and action name " + actionName);

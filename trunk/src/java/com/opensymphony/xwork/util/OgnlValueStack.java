@@ -4,15 +4,10 @@
  */
 package com.opensymphony.xwork.util;
 
-import com.opensymphony.xwork.util.CompoundRoot;
-import com.opensymphony.xwork.util.CompoundRootAccessor;
-import com.opensymphony.xwork.util.OgnlUtil;
-
 import ognl.Ognl;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 
-import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
