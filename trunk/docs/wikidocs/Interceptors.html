@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <title>XWork : Interceptors</title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">	    
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <div class="pageheader">
+					    <span class="pagetitle">
+                            XWork : Interceptors
+                                                    </span>
+				    </div>
+				    <div class="pagesubheading">
+					    This page last changed on Aug 18, 2004 by <font color="#0050B2">unkyaku</font>.
+				    </div>
+
+				    <ul class="star">
+<li> Overview</li>
+<li> <a href="PrepareInterceptor.html" title="PrepareInterceptor">PrepareInterceptor</a></li>
+<li> <a href="ValidationInterceptor.html" title="ValidationInterceptor">ValidationInterceptor</a></li>
+<li> <a href="DefaultWorkflowInterceptor.html" title="DefaultWorkflowInterceptor">DefaultWorkflowInterceptor</a></li>
+</ul>
+<h2 class="heading2"><a name="Interceptors-Overview"> Overview</a></h2><p class="paragraph">Interceptors allow you to define code to be executed before and/or after the execution of an action. They are defined outside the action class, yet have access to the action and the action execution environment at runtime, allowing you to encapsulate cross-cutting code and provide separation of concerns.</p>Interceptors are given the ActionInvocation object at runtime, and may do whatever processing needed, then forward processing to the rest of the ActionInvocation, which will either call the next Interceptor or the Action, if there are no more Interceptors, and do whatever post-processing needed. <p class="paragraph">Interceptors may also decide to short-circuit processing and return whatever result string desired WITHOUT forwarding processing, thus keeping the Action from executing. This ability should be used with caution, however, as any data loading or processing expected to be done by the Action will not happen.</p>Here is the invoke() method from ActionInvocation, which calls the Interceptors and the Action:<br/>
+
+<div class="code"><div class="codeContent">
+<pre><span class="java&#45;keyword">public</span>&#160;<span class="java&#45;object">String</span> invoke() <span class="java&#45;keyword">throws</span> Exception &#123;&#10;        <span class="java&#45;keyword">if</span> (executed) &#123;&#10;            <span class="java&#45;keyword">throw</span>&#160;<span class="java&#45;keyword">new</span> IllegalStateException(<span class="java&#45;quote">&quot;Action has already executed&quot;</span>);&#10;        &#125;&#10;&#10;        <span class="java&#45;keyword">if</span> (interceptors.hasNext()) &#123;&#10;            Interceptor interceptor = (Interceptor) interceptors.next();&#10;            result = interceptor.intercept(<span class="java&#45;keyword">this</span>);&#10;        &#125; <span class="java&#45;keyword">else</span> &#123;&#10;            result = action.execute();&#10;            executed = <span class="java&#45;keyword">true</span>;&#10;        &#125;&#10;&#10;        <span class="java&#45;keyword">return</span> result;&#10;    &#125;</pre>
+</div></div><p class="paragraph">It may not be immediately apparent how the rest of the Interceptors and the Action come to be called from the code snippet. For this we need to look at the Interceptor implementation in <b class="strong">AroundInterceptor</b>:</p><div class="code"><div class="codeContent">
+<pre><span class="java&#45;keyword">public</span>&#160;<span class="java&#45;object">String</span> intercept(ActionInvocation invocation) <span class="java&#45;keyword">throws</span> Exception &#123;&#10;        before(invocation);&#10;&#10;        result = invocation.invoke();&#10;        after(invocation);&#10;&#10;        <span class="java&#45;keyword">return</span> result;&#10;    &#125;</pre>
+</div></div><p class="paragraph">Here we can see that the Interceptor calls back into the ActionInvocation.invoke() to tell the ActionInvocation to continue down the chain and eventually executes the Action. It is here that the Interceptor can decide not to forward to the rest of the Interceptors and the Action, and choose instead to return a return code.</p>It is also important to know what the AroundInterceptor is doing when you extend it to implement your own Interceptors.<p class="paragraph">The AroundInterceptor defines a base class for interceptor implementations. It delegates calls to subclasses, which must implement the abstract methods before() and after(). The before() call is first called, then the rest of the ActionInvocation is called and the String result is saved (and is available to the Interceptor implementation during the after() method). Finally, the after() method is called and the result is returned.</p><img src="./icons/emoticons/information.png" height="16" width="16" align="absmiddle" alt="" border="0"/> Note that all Interceptor implementations must be threadsafe.
+<p class="paragraph"><h2 class="heading2"><a name="Interceptors-%3Caname%3D%22InterceptorsUtility%22%3E%3C%2Fa%3EUtilityInterceptors"> <a name="Interceptors-Utility"></a> Utility Interceptors</a></h2></p>The TimerInterceptor and LoggingInterceptor are provided as simple examples and utilities. <br/>
+
+<ul class="star">
+<li> The <b class="strong">LoggingInterceptor</b> simply logs before and after executing the rest of the ActionInvocation.</li>
+<li> The <b class="strong">TimerInterceptor</b> times the execution of the remainder of the ActionInvocation.<br/>
+The TimerInterceptor does not extend AroundInterceptor because it needs to keep some state (the start time) from before the rest of the execution. Interceptors must be stateless, so it is impossible to save this in an instance field. It is a good rule of thumb to say that if your interceptor needs to maintain information from the beginning to the end of the interceptor call, it should implement Interceptor directly, not subclass AroundInterceptor. Here is the code for <b class="strong">intercept()</b> in TimerInterceptor:
+</li>
+</ul>
+<div class="code"><div class="codeContent">
+<pre><span class="java&#45;keyword">public</span>&#160;<span class="java&#45;object">String</span> intercept(ActionInvocation dispatcher) <span class="java&#45;keyword">throws</span> Exception &#123;&#10;        <span class="java&#45;object">long</span> startTime = <span class="java&#45;object">System</span>.currentTimeMillis();&#10;        <span class="java&#45;object">String</span> result = dispatcher.invoke();&#10;        <span class="java&#45;object">long</span> executionTime = <span class="java&#45;object">System</span>.currentTimeMillis() &#45; startTime;&#10;        log.info(<span class="java&#45;quote">&quot;Processed action &quot;</span> &#43; dispatcher.getProxy().getActionName() &#43; <span class="java&#45;quote">&quot; in &quot;</span> &#43; executionTime &#43; <span class="java&#45;quote">&quot;ms.&quot;</span>);&#10;&#10;        <span class="java&#45;keyword">return</span> result;&#10;    &#125;</pre>
+</div></div><p class="paragraph">It is important to remember to call <b class="strong">invoke()</b> on the ActionInvocation if you directly implement Interceptor, otherwise the rest of the Interceptors and the Action will not be executed.</p><h2 class="heading2"><a name="Interceptors-%3Caname%3D%22InterceptorsParameter%22%3E%3C%2Fa%3EParameterInterceptorspopulatingyourAction"> <a name="Interceptors-Parameter"></a> Parameter Interceptors - populating your Action</a></h2><p class="paragraph">The StaticParametersInterceptor and ParametersInterceptor populate your Action fields during the ActionInvocation execution.</p><ul class="star">
+<li> The <b class="strong">StaticParametersInterceptor</b> applies the parameters defined in the Action configuration with the &lt;param&gt; elements.</li>
+<li> The <b class="strong">ParametersInterceptor</b> populates the Action with the parameters passed in as part of the request.</li>
+</ul><br/>
+The StaticParametersInterceptor should be applied before the ParametersInterceptor so that the static parameters may be set as the defaults and overridden by the request parameters.<p class="paragraph"><h2 class="heading2"><a name="Interceptors-%3Caname%3D%22InterceptorsModelDriven%22%3E%3C%2Fa%3EModelDrivenInterceptorchoosingyourmodel"> <a name="Interceptors-ModelDriven"></a> ModelDrivenInterceptor - choosing your model</a></h2></p>Normally, the <b class="strong">StaticParameterInterceptor</b> and the <b class="strong">ParametersInterceptor</b> apply themselves directly to the Action.  Using the ModelDrivenInterceptor, you can specify an alternate object to have the parameters applied to instead.<p class="paragraph">Consider the following Action:</p><div class="code"><div class="codeContent">
+<pre><span class="java&#45;keyword">public</span> class AddContactAction <span class="java&#45;keyword">implements</span> Action &#123;&#10;  <span class="java&#45;keyword">private</span>&#160;<span class="java&#45;object">String</span> name;&#10;  <span class="java&#45;keyword">private</span>&#160;<span class="java&#45;object">String</span> addr;&#10;  <span class="java&#45;keyword">private</span>&#160;<span class="java&#45;object">String</span> city;&#10;&#10;  <span class="java&#45;keyword">public</span> void setName(<span class="java&#45;object">String</span> name) &#123; <span class="java&#45;keyword">this</span>.name = name ; &#125;&#10;  <span class="java&#45;keyword">public</span> void setAddr(<span class="java&#45;object">String</span> addr) &#123; <span class="java&#45;keyword">this</span>.addr = addr ; &#125;&#10;  <span class="java&#45;keyword">public</span> void setCity(<span class="java&#45;object">String</span> city) &#123; <span class="java&#45;keyword">this</span>.city = city ; &#125;&#10;&#10;  <span class="java&#45;keyword">public</span>&#160;<span class="java&#45;object">String</span> execute() &#123;&#10;     Contact contact = <span class="java&#45;keyword">new</span> Contact();&#10;     contact.setName(name);&#10;     contact.setAddr(addr);&#10;     contact.setCity(city);&#10;&#10;     <span class="java&#45;comment">// save contact information here</span>&#10;  &#125;&#10;&#125;</pre>
+</div></div><p class="paragraph">We can see that our action will be populated with name, addr, and city parameters if they are passed in.  In the execute we copy these values to a contact object and save the contact.</p>Here&#039;s the ModelDriven interface:<br/>
+
+<div class="code"><div class="codeContent">
+<pre><span class="java&#45;keyword">public</span>&#160;<span class="java&#45;keyword">interface</span> ModelDriven &#123;&#10;  <span class="java&#45;keyword">public</span>&#160;<span class="java&#45;object">Object</span> getModel();&#10;&#125;</pre>
+</div></div><p class="paragraph">Let&#039;s apply the ModelDriven interface to Action above:</p><div class="code"><div class="codeContent">
+<pre><span class="java&#45;keyword">public</span> class AddContactAction <span class="java&#45;keyword">implements</span> Action, ModelDriven &#123;&#10;  <span class="java&#45;keyword">private</span> Contact contact = <span class="java&#45;keyword">new</span> Contact();&#10;&#10;  <span class="java&#45;keyword">public</span>&#160;<span class="java&#45;object">Object</span> getModel() &#123; <span class="java&#45;keyword">return</span>&#160;<span class="java&#45;keyword">this</span>.contact ; &#125;&#10;&#10;  <span class="java&#45;keyword">public</span> void execute() &#123;&#10;    <span class="java&#45;comment">// save the contact information</span>&#10;  &#125;&#10;&#125;</pre>
+</div></div><p class="paragraph">Now the ParametersInterceptor and the StaticParametersInterceptor will be applied directly to our Contact so when execute gets called, this.contact will already be populated with all the information we need.  Neat, huh?</p>Behavior similar to model driven can be achieved just using the parameter interceptor.  For example, rather than implementing ModelDriven, we could have written:<br/>
+
+<div class="code"><div class="codeContent">
+<pre><span class="java&#45;keyword">public</span> class AddContactAction <span class="java&#45;keyword">implements</span> Action &#123;&#10;  <span class="java&#45;keyword">private</span> Contact contact = <span class="java&#45;keyword">new</span> Contact();&#10;&#10;  <span class="java&#45;keyword">public</span> Contact getContact &#123; <span class="java&#45;keyword">return</span>&#160;<span class="java&#45;keyword">this</span>.contact ; &#125;&#10;&#10;  <span class="java&#45;keyword">public</span> void execute() &#123;&#10;    <span class="java&#45;comment">// save the contact information</span>&#10;  &#125;&#10;&#125;</pre>
+</div></div><p class="paragraph">The difference between this Action and the previous ModelDriven action is twofold:</p><ul class="star">
+<li> Using the ModelDriven action, we can reference our parameters name, addr, and city.  Also, the Model (Contact) will be pushed onto the ValueStack so we&#039;ll have Contact and AddContactAction on the value stack</li>
+<li> When not using the ModelDriven action, we need to reference our parameters as contact.name, contact.addr, and contact.city.</li>
+</ul><p class="paragraph">One potential drawback when using ModelDriven actions is that if you need to access some parameters in order to load the model for the ModelDriven action, you will need to call the ParametersInterceptor and/or the StaticParametersInterceptor twice (before and after the ModelDrivenInterceptor).  The first time sets all parameters on the Action, the second time sets all parameters on the model.</p><h2 class="heading2"><a name="Interceptors-%3Caname%3D%22InterceptorsChaining%22%3E%3C%2Fa%3EChainingInterceptor"> <a name="Interceptors-Chaining"></a> ChainingInterceptor</a></h2><p class="paragraph">The <b class="strong">ChainingInterceptor</b> populates the Action it is being applied to with the results of the previous action. When actions are chained together, the action being chained FROM is on the ValueStack when the next action is called. This means that when the next ActionProxy is executed, the action that is being chained TO will be placed onto the valuestack, but the old action will also be there, just down one level. This interceptor works by traversing the ValueStack to find the parameters of any objects there and sets them onto the final action.</p>
+
+				    
+                    			    </td>
+		    </tr>
+	    </table>
+	    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td height="12" background="border/border_bottom.gif"><img src="border/spacer.gif" width="1" height="1" border="0"/></td>
+			</tr>
+		    <tr>
+			    <td align="center"><font color="grey">Document generated by Confluence on Aug 26, 2004 13:54</font></td>
+		    </tr>
+	    </table>
+    </body>
+</html>
