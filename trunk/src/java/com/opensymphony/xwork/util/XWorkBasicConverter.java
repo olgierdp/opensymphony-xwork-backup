@@ -7,6 +7,7 @@ package com.opensymphony.xwork.util;
 import com.opensymphony.util.TextUtils;
 
 import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.xwork.XworkException;
 
 import ognl.DefaultTypeConverter;
 import ognl.Ognl;
@@ -17,7 +18,6 @@ import java.lang.reflect.Member;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import java.util.*;
 
@@ -124,6 +124,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             try {
                 clazz = Class.forName((String) value);
             } catch (ClassNotFoundException e) {
+                throw new XworkException(e.getLocalizedMessage(), e);
             }
         }
 
@@ -142,7 +143,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             try {
                 result = df.parse(sa);
             } catch (ParseException e) {
-                throw new RuntimeException("Could not parse date");
+                throw new XworkException("Could not parse date", e);
             }
         } else if (Date.class.isAssignableFrom(value.getClass())) {
             result = (Date) value;
