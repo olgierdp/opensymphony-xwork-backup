@@ -219,7 +219,7 @@ public class OgnlValueStack implements Serializable {
         return aStack;
     }
 
-    public void setPropertyOverrides(Map overrides) {
+    public void setExprOverrides(Map overrides) {
         this.overrides = overrides;
     }
 }

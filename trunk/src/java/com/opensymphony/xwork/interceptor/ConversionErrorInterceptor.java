@@ -58,7 +58,7 @@ public class ConversionErrorInterceptor extends AroundInterceptor {
                 public void beforeResult(ActionInvocation invocation, String resultCode) {
                     Map fakie = (Map) invocation.getInvocationContext().get(ORIGINAL_PROPERTY_OVERRIDE);
                     if (fakie != null) {
-                        invocation.getStack().setPropertyOverrides(fakie);
+                        invocation.getStack().setExprOverrides(fakie);
                     }
                 }
             });
