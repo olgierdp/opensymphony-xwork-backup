@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.validator.validators;
 
 import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.ActionValidatorManager;
 import com.opensymphony.xwork.validator.DelegatingValidatorContext;
 import com.opensymphony.xwork.validator.ValidationException;
@@ -48,31 +49,40 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
 
             for (Iterator iterator = coll.iterator(); iterator.hasNext();) {
                 Object o = iterator.next();
-                ValidatorContext validatorContext = new AppendingValidatorContext(getValidatorContext(), fieldName, getMessage(o));
-                ActionValidatorManager.validate(o, visitorContext, validatorContext);
+                validateObject(fieldName, o, visitorContext);
             }
         } else if (value instanceof Object[]) {
             Object[] array = (Object[]) value;
 
             for (int i = 0; i < array.length; i++) {
                 Object o = array[i];
-                ValidatorContext validatorContext = new AppendingValidatorContext(getValidatorContext(), fieldName, getMessage(o));
-                ActionValidatorManager.validate(o, visitorContext, validatorContext);
+                validateObject(fieldName, o, visitorContext);
             }
         } else {
-            ValidatorContext validatorContext = new AppendingValidatorContext(getValidatorContext(), fieldName, getMessage(value));
-            ActionValidatorManager.validate(value, visitorContext, validatorContext);
+            validateObject(fieldName, value, visitorContext);
         }
+    }
+
+    private void validateObject(String fieldName, Object o, String visitorContext) throws ValidationException {
+        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        stack.push(o);
+
+        ValidatorContext validatorContext = new AppendingValidatorContext(getValidatorContext(), o, fieldName, getMessage(o));
+        ActionValidatorManager.validate(o, visitorContext, validatorContext);
+        stack.pop();
     }
 
     //~ Inner Classes //////////////////////////////////////////////////////////
 
     private class AppendingValidatorContext extends DelegatingValidatorContext {
+        Object o;
         String field;
         String message;
 
-        public AppendingValidatorContext(Object object, String field, String message) {
-            super(object);
+        public AppendingValidatorContext(ValidatorContext parent, Object object, String field, String message) {
+            super(parent, makeLocaleAware(object));
+
+            //            super(parent);
             this.field = field;
             this.message = message;
         }

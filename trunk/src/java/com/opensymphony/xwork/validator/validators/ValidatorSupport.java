@@ -45,15 +45,16 @@ public abstract class ValidatorSupport implements Validator {
     public String getMessage(Object object) {
         String message;
 
+        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        stack.push(this);
+
         if (messageKey != null) {
             message = validatorContext.getText(messageKey, defaultMessage);
         } else {
             message = defaultMessage;
+            message = TextParseUtil.translateVariables(message, stack);
         }
 
-        OgnlValueStack stack = ActionContext.getContext().getValueStack();
-        stack.push(this);
-        message = TextParseUtil.translateVariables(message, stack);
         stack.pop();
 
         return message;

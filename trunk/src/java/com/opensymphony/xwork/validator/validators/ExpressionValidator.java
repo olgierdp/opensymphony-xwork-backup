@@ -32,7 +32,13 @@ public class ExpressionValidator extends ValidatorSupport {
     public void validate(Object object) throws ValidationException {
         Boolean answer = Boolean.FALSE;
         OgnlValueStack stack = ActionContext.getContext().getValueStack();
-        Object obj = stack.findValue(expression);
+        Object obj = null;
+
+        try {
+            obj = stack.findValue(expression);
+        } catch (Exception e) {
+            log.warn("Caught exception while evaluating expression " + expression, e);
+        }
 
         if ((obj != null) && (obj instanceof Boolean)) {
             answer = (Boolean) obj;

@@ -48,8 +48,8 @@ public class DefaultConfiguration implements Configuration {
             reload();
         } catch (ConfigurationException e) {
             String s = "Caught ConfigurationException while initializing ConfigurationProvider.";
-            LOG.error(s, e);
-            throw new RuntimeException(s);
+            LOG.fatal(s);
+            throw e;
         }
     }
 
@@ -76,9 +76,9 @@ public class DefaultConfiguration implements Configuration {
     }
 
     /**
-    * This methodName builds the internal runtime configuration used by Xwork for finding and configuring Actions from the
-    * programmatic configuration data structures. All of the old runtime configuration will be discarded and rebuilt.
-    */
+* This methodName builds the internal runtime configuration used by Xwork for finding and configuring Actions from the
+* programmatic configuration data structures. All of the old runtime configuration will be discarded and rebuilt.
+*/
     public synchronized void buildRuntimeConfiguration() throws ConfigurationException {
         Map namespaceActionConfigs = new HashMap();
 
@@ -111,16 +111,16 @@ public class DefaultConfiguration implements Configuration {
     }
 
     /**
-    * Allows the configuration to clean up any resources used
-    */
+* Allows the configuration to clean up any resources used
+*/
     public void destroy() {
     }
 
     /**
-    * Calls the ConfigurationProviderFactory.getConfig() to tell it to reload the configuration and then calls
-    * buildRuntimeConfiguration().
-    * @throws ConfigurationException
-    */
+* Calls the ConfigurationProviderFactory.getConfig() to tell it to reload the configuration and then calls
+* buildRuntimeConfiguration().
+* @throws ConfigurationException
+*/
     public synchronized void reload() throws ConfigurationException {
         packageContexts.clear();
 
@@ -160,12 +160,12 @@ public class DefaultConfiguration implements Configuration {
     }
 
     /**
-    * Builds the full runtime actionconfig with all of the defaults and inheritance
-    * @param packageContext the PackageConfig which holds the base config we're building from
-    * @param baseConfig the ActionConfig which holds only the configuration specific to itself, without the defaults
-    * and inheritance
-    * @return a full ActionConfig for runtime configuration with all of the inherited and default params
-    */
+* Builds the full runtime actionconfig with all of the defaults and inheritance
+* @param packageContext the PackageConfig which holds the base config we're building from
+* @param baseConfig the ActionConfig which holds only the configuration specific to itself, without the defaults
+* and inheritance
+* @return a full ActionConfig for runtime configuration with all of the inherited and default params
+*/
     private ActionConfig buildFullActionConfig(PackageConfig packageContext, ActionConfig baseConfig) throws ConfigurationException {
         Map params = new HashMap(baseConfig.getParams());
         Map results = new HashMap(packageContext.getAllGlobalResults());
@@ -198,13 +198,13 @@ public class DefaultConfiguration implements Configuration {
         }
 
         /**
-        * Gets the configuration information for an action name, or returns null if the
-        * name is not recognized.
-        *
-        * @param name the name of the action
-        * @param namespace the namespace for the action or null for the empty namespace, ""
-        * @return the configuration information for action requested
-        */
+* Gets the configuration information for an action name, or returns null if the
+* name is not recognized.
+*
+* @param name the name of the action
+* @param namespace the namespace for the action or null for the empty namespace, ""
+* @return the configuration information for action requested
+*/
         public synchronized ActionConfig getActionConfig(String namespace, String name) {
             ActionConfig config = null;
             Map actions = (Map) namespaceActionConfigs.get((namespace == null) ? "" : namespace);
@@ -226,10 +226,10 @@ public class DefaultConfiguration implements Configuration {
         }
 
         /**
-        * Gets the configuration settings for every action.
-        *
-        * @return a Map of namespace - > Map of ActionConfig objects, with the key being the action name
-        */
+* Gets the configuration settings for every action.
+*
+* @return a Map of namespace - > Map of ActionConfig objects, with the key being the action name
+*/
         public synchronized Map getActionConfigs() {
             return namespaceActionConfigs;
         }

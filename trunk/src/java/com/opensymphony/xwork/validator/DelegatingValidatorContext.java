@@ -32,18 +32,13 @@ public class DelegatingValidatorContext implements ValidatorContext {
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
-    public DelegatingValidatorContext(Object object) {
-        if (object instanceof ValidationAware) {
-            validationAware = (ValidationAware) object;
-        } else {
-            validationAware = new LoggingValidationAware(object);
-        }
+    public DelegatingValidatorContext(ValidationAware validationAware, LocaleAware localeAware) {
+        this.localeAware = localeAware;
+        this.validationAware = validationAware;
+    }
 
-        if (object instanceof LocaleAware) {
-            localeAware = (LocaleAware) object;
-        } else {
-            localeAware = new LocaleAwareSupport(object.getClass());
-        }
+    public DelegatingValidatorContext(Object object) {
+        this(makeValidationAware(object), makeLocaleAware(object));
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -108,9 +103,41 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return validationAware.hasFieldErrors();
     }
 
+    protected static LocaleAware makeLocaleAware(Object object) {
+        if (object instanceof LocaleAware) {
+            return (LocaleAware) object;
+        } else {
+            return new LocaleAwareSupport(object.getClass());
+        }
+    }
+
+    protected static ValidationAware makeValidationAware(Object object) {
+        if (object instanceof ValidationAware) {
+            return (ValidationAware) object;
+        } else {
+            return new LoggingValidationAware(object);
+        }
+    }
+
+    protected void setLocaleAware(LocaleAware localeAware) {
+        this.localeAware = localeAware;
+    }
+
+    protected LocaleAware getLocaleAware() {
+        return localeAware;
+    }
+
+    protected void setValidationAware(ValidationAware validationAware) {
+        this.validationAware = validationAware;
+    }
+
+    protected ValidationAware getValidationAware() {
+        return validationAware;
+    }
+
     //~ Inner Classes //////////////////////////////////////////////////////////
 
-    private class LoggingValidationAware implements ValidationAware {
+    private static class LoggingValidationAware implements ValidationAware {
         private Log log;
 
         public LoggingValidationAware(Object obj) {

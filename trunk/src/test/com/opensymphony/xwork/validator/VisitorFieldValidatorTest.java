@@ -7,6 +7,7 @@ package com.opensymphony.xwork.validator;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.VisitorValidatorTestAction;
+import com.opensymphony.xwork.util.OgnlValueStack;
 
 import junit.framework.TestCase;
 
@@ -35,13 +36,16 @@ public class VisitorFieldValidatorTest extends TestCase {
         Calendar cal = new GregorianCalendar(1900, 01, 01);
         bean.setBirth(cal.getTime());
         bean.setCount(-1);
+
+        OgnlValueStack stack = new OgnlValueStack();
+        ActionContext.setContext(new ActionContext(stack.getContext()));
     }
 
     public void testArrayValidation() throws Exception {
         TestBean[] beanArray = action.getTestBeanArray();
         TestBean testBean = beanArray[0];
         testBean.setName("foo");
-        ActionValidatorManager.validate(action, "validateArray");
+        validate("validateArray");
 
         assertTrue(action.hasFieldErrors());
 
@@ -56,11 +60,25 @@ public class VisitorFieldValidatorTest extends TestCase {
         assertEquals(4, errors.size());
     }
 
+    public void testBeanMessagesUseBeanResourceBundle() throws Exception {
+        validate("beanMessageBundle");
+        assertTrue(action.hasFieldErrors());
+
+        Map fieldErrors = action.getFieldErrors();
+        assertTrue(fieldErrors.containsKey("bean.count"));
+
+        List beanCountMessages = (List) fieldErrors.get("bean.count");
+        assertEquals(1, beanCountMessages.size());
+
+        String beanCountMessage = (String) beanCountMessages.get(0);
+        assertEquals("bean: Count must be between 1 and 100, current value is -1.", beanCountMessage);
+    }
+
     public void testCollectionValidation() throws Exception {
         List testBeanList = action.getTestBeanList();
         TestBean testBean = (TestBean) testBeanList.get(0);
         testBean.setName("foo");
-        ActionValidatorManager.validate(action, "validateList");
+        validate("validateList");
 
         assertTrue(action.hasFieldErrors());
 
@@ -76,7 +94,7 @@ public class VisitorFieldValidatorTest extends TestCase {
     }
 
     public void testContextIsOverriddenByContextParamInValidationXML() throws Exception {
-        ActionValidatorManager.validate(action, "visitorValidationAlias");
+        validate("visitorValidationAlias");
         assertTrue(action.hasFieldErrors());
 
         Map fieldErrors = action.getFieldErrors();
@@ -90,8 +108,7 @@ public class VisitorFieldValidatorTest extends TestCase {
     }
 
     public void testContextIsPropagated() throws Exception {
-        ActionContext.getContext().setName("visitorValidation");
-        ActionValidatorManager.validate(action, "visitorValidation");
+        validate("visitorValidation");
         assertTrue(action.hasFieldErrors());
 
         Map fieldErrors = action.getFieldErrors();
@@ -102,5 +119,16 @@ public class VisitorFieldValidatorTest extends TestCase {
 
         //the error from the action should be there too
         assertTrue(fieldErrors.containsKey("context"));
+    }
+
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        ActionContext.setContext(null);
+    }
+
+    private void validate(String context) throws ValidationException {
+        ActionContext actionContext = ActionContext.getContext();
+        actionContext.setName(context);
+        ActionValidatorManager.validate(action, context);
     }
 }
