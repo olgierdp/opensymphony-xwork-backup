@@ -23,7 +23,6 @@ public class ModelDrivenInterceptorTest extends TestCase {
 
     Action action;
     Mock mockActionInvocation;
-    Mock mockActionProxy;
     ModelDrivenInterceptor modelDrivenInterceptor;
     Object model;
 
@@ -32,7 +31,7 @@ public class ModelDrivenInterceptorTest extends TestCase {
     public void testModelDrivenGetsPushedOntoStack() throws Exception {
         OgnlValueStack stack = new OgnlValueStack();
         action = new ModelDrivenAction();
-        mockActionProxy.expectAndReturn("getAction", action);
+        mockActionInvocation.expectAndReturn("getAction", action);
         mockActionInvocation.expectAndReturn("getStack", stack);
 
         modelDrivenInterceptor.before((ActionInvocation) mockActionInvocation.proxy());
@@ -43,22 +42,19 @@ public class ModelDrivenInterceptorTest extends TestCase {
 
     public void testStackNotModifedForNormalAction() throws Exception {
         action = new ActionSupport();
-        mockActionProxy.expectAndReturn("getAction", action);
+        mockActionInvocation.expectAndReturn("getAction", action);
 
         // nothing should happen
         modelDrivenInterceptor.before((ActionInvocation) mockActionInvocation.proxy());
     }
 
     protected void setUp() throws Exception {
-        mockActionProxy = new Mock(ActionProxy.class);
         mockActionInvocation = new Mock(ActionInvocation.class);
-        mockActionInvocation.expectAndReturn("getProxy", mockActionProxy.proxy());
         modelDrivenInterceptor = new ModelDrivenInterceptor();
         model = new Date(); // any object will do
     }
 
     protected void tearDown() throws Exception {
-        mockActionProxy.verify();
         mockActionInvocation.verify();
     }
 
