@@ -6,39 +6,33 @@ package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.util.LocalizedTextUtil;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.List;
 
 
 /**
- * LocaleAwareSupport
+ * TextProviderSupport
  * @author Jason Carreira
  * Created Aug 3, 2003 12:21:12 AM
  */
-public class LocaleAwareSupport implements LocaleAware {
+public class TextProviderSupport implements TextProvider {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private Class clazz;
+    private LocaleProvider localeProvider;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
-    public LocaleAwareSupport(Class clazz) {
+    public TextProviderSupport(Class clazz, LocaleProvider provider) {
         this.clazz = clazz;
+        this.localeProvider = provider;
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    /**
-    * Get the locale for this action.
-    *
-    * Applications may customize how locale is chosen by
-    * subclassing ActionSupport and override this methodName.
-    *
-    * @return     the locale to use
-    */
-    public Locale getLocale() {
-        return ActionContext.getContext().getLocale();
+    private Locale getLocale() {
+        return localeProvider.getLocale();
     }
 
     /**
@@ -110,7 +104,7 @@ public class LocaleAwareSupport implements LocaleAware {
     *
     * You can override the getLocale() methodName to change the behaviour of how
     * to choose locale for the bundles that are returned. Typically you would
-    * use the LocaleAware interface to get the users configured locale, or use
+    * use the TextProvider interface to get the users configured locale, or use
     * your own methodName to allow the user to select the locale and store it in
     * the session (by using the SessionAware interface).
     *

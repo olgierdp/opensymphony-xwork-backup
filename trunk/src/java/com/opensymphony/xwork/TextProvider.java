@@ -10,22 +10,12 @@ import java.util.List;
 
 
 /**
- * LocaleAware
+ * TextProvider
  * @author Jason Carreira
  * Created Feb 10, 2003 9:55:48 AM
  */
-public interface LocaleAware {
+public interface TextProvider {
     //~ Methods ////////////////////////////////////////////////////////////////
-
-    /**
-     * Get the locale for this action.
-     *
-     * Applications may customize how locale is chosen by
-     * subclassing ActionSupport and override this methodName.
-     *
-     * @return     the locale to use
-     */
-    Locale getLocale();
 
     /**
      * Get a text from the resource bundles associated with this action.
@@ -88,7 +78,7 @@ public interface LocaleAware {
     *
     * You can override the getLocale() methodName to change the behaviour of how
     * to choose locale for the bundles that are returned. Typically you would
-    * use the LocaleAware interface to get the users configured locale, or use
+    * use the TextProvider interface to get the users configured locale, or use
     * your own methodName to allow the user to select the locale and store it in
     * the session (by using the SessionAware interface).
     *

@@ -19,14 +19,14 @@ import java.util.*;
  * Time: 3:45:29 PM
  * To change this template use Options | File Templates.
  */
-public class ActionSupport implements Action, Serializable, Validateable, ValidationAware, LocaleAware {
+public class ActionSupport implements Action, Serializable, Validateable, ValidationAware, TextProvider, LocaleProvider {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     protected transient static final Log LOG = LogFactory.getLog(ActionSupport.class);
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    private final LocaleAware localeAware = new LocaleAwareSupport(getClass());
+    private final TextProvider textProvider = new TextProviderSupport(getClass(), this);
     private final ValidationAware validationAware = new ValidationAwareSupport();
 
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -51,31 +51,31 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
     }
 
     public Locale getLocale() {
-        return localeAware.getLocale();
+        return ActionContext.getContext().getLocale();
     }
 
     public String getText(String aTextName) {
-        return localeAware.getText(aTextName);
+        return textProvider.getText(aTextName);
     }
 
     public String getText(String aTextName, String defaultValue) {
-        return localeAware.getText(aTextName, defaultValue);
+        return textProvider.getText(aTextName, defaultValue);
     }
 
     public String getText(String aTextName, List args) {
-        return localeAware.getText(aTextName, args);
+        return textProvider.getText(aTextName, args);
     }
 
     public String getText(String aTextName, String defaultValue, List args) {
-        return localeAware.getText(aTextName, defaultValue, args);
+        return textProvider.getText(aTextName, defaultValue, args);
     }
 
     public ResourceBundle getTexts(String aBundleName) {
-        return localeAware.getTexts(aBundleName);
+        return textProvider.getTexts(aBundleName);
     }
 
     public ResourceBundle getTexts() {
-        return localeAware.getTexts();
+        return textProvider.getTexts();
     }
 
     public void addActionError(String anErrorMessage) {

@@ -4,8 +4,9 @@
  */
 package com.opensymphony.xwork.validator;
 
-import com.opensymphony.xwork.LocaleAware;
+import com.opensymphony.xwork.TextProvider;
 import com.opensymphony.xwork.ValidationAware;
+import com.opensymphony.xwork.LocaleProvider;
 
 
 /**
@@ -13,5 +14,5 @@ import com.opensymphony.xwork.ValidationAware;
  * @author Jason Carreira
  * Created Aug 3, 2003 12:30:32 AM
  */
-public interface ValidatorContext extends ValidationAware, LocaleAware {
+public interface ValidatorContext extends ValidationAware, TextProvider, LocaleProvider {
 }

@@ -25,7 +25,7 @@ public class LocaleAwareTest extends TestCase {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.FOO_ACTION_NAME, null);
             ActionContext.getContext().setLocale(Locale.US);
 
-            LocaleAware localeAware = (LocaleAware) proxy.getAction();
+            TextProvider localeAware = (TextProvider) proxy.getAction();
             assertEquals("Foo Range Message", localeAware.getText("foo.range"));
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,7 +38,7 @@ public class LocaleAwareTest extends TestCase {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.FOO_ACTION_NAME, null);
             ActionContext.getContext().setLocale(Locale.GERMANY);
 
-            LocaleAware localeAware = (LocaleAware) proxy.getAction();
+            TextProvider localeAware = (TextProvider) proxy.getAction();
             assertEquals("I don't know German", localeAware.getText("foo.range"));
         } catch (Exception e) {
             e.printStackTrace();

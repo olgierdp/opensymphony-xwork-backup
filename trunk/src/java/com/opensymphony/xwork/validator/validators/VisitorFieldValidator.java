@@ -85,7 +85,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         String message;
 
         public AppendingValidatorContext(ValidatorContext parent, Object object, String field, String message) {
-            super(parent, makeLocaleAware(object));
+            super(parent, makeTextProvider(object, parent), parent);
 
             //            super(parent);
             this.field = field;

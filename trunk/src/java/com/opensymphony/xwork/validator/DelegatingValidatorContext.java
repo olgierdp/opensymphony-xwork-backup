@@ -4,9 +4,7 @@
  */
 package com.opensymphony.xwork.validator;
 
-import com.opensymphony.xwork.LocaleAware;
-import com.opensymphony.xwork.LocaleAwareSupport;
-import com.opensymphony.xwork.ValidationAware;
+import com.opensymphony.xwork.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,18 +25,22 @@ import java.util.ResourceBundle;
 public class DelegatingValidatorContext implements ValidatorContext {
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    private LocaleAware localeAware;
+    private LocaleProvider localeProvider;
+    private TextProvider textProvider;
     private ValidationAware validationAware;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
-    public DelegatingValidatorContext(ValidationAware validationAware, LocaleAware localeAware) {
-        this.localeAware = localeAware;
+    public DelegatingValidatorContext(ValidationAware validationAware, TextProvider textProvider, LocaleProvider localeProvider) {
+        this.textProvider = textProvider;
         this.validationAware = validationAware;
+        this.localeProvider = localeProvider;
     }
 
     public DelegatingValidatorContext(Object object) {
-        this(makeValidationAware(object), makeLocaleAware(object));
+        this.localeProvider = makeLocaleProvider(object);
+        this.validationAware = makeValidationAware(object);
+        this.textProvider = makeTextProvider(object,localeProvider);
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -60,31 +62,31 @@ public class DelegatingValidatorContext implements ValidatorContext {
     }
 
     public Locale getLocale() {
-        return localeAware.getLocale();
+        return localeProvider.getLocale();
     }
 
     public String getText(String aTextName) {
-        return localeAware.getText(aTextName);
+        return textProvider.getText(aTextName);
     }
 
     public String getText(String aTextName, String defaultValue) {
-        return localeAware.getText(aTextName, defaultValue);
+        return textProvider.getText(aTextName, defaultValue);
     }
 
     public String getText(String aTextName, List args) {
-        return localeAware.getText(aTextName, args);
+        return textProvider.getText(aTextName, args);
     }
 
     public String getText(String aTextName, String defaultValue, List args) {
-        return localeAware.getText(aTextName, defaultValue, args);
+        return textProvider.getText(aTextName, defaultValue, args);
     }
 
     public ResourceBundle getTexts(String aBundleName) {
-        return localeAware.getTexts(aBundleName);
+        return textProvider.getTexts(aBundleName);
     }
 
     public ResourceBundle getTexts() {
-        return localeAware.getTexts();
+        return textProvider.getTexts();
     }
 
     public void addActionError(String anErrorMessage) {
@@ -107,11 +109,11 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return validationAware.hasFieldErrors();
     }
 
-    protected static LocaleAware makeLocaleAware(Object object) {
-        if (object instanceof LocaleAware) {
-            return (LocaleAware) object;
+    protected static TextProvider makeTextProvider(Object object, LocaleProvider localeProvider) {
+        if (object instanceof LocaleProvider) {
+            return (TextProvider) object;
         } else {
-            return new LocaleAwareSupport(object.getClass());
+            return new TextProviderSupport(object.getClass(), localeProvider);
         }
     }
 
@@ -123,12 +125,20 @@ public class DelegatingValidatorContext implements ValidatorContext {
         }
     }
 
-    protected void setLocaleAware(LocaleAware localeAware) {
-        this.localeAware = localeAware;
+    protected static LocaleProvider makeLocaleProvider(Object object) {
+        if (object instanceof LocaleProvider) {
+            return (LocaleProvider) object;
+        } else {
+            return new ActionContextLocaleProvider();
+        }
     }
 
-    protected LocaleAware getLocaleAware() {
-        return localeAware;
+    protected void setTextProvider(TextProvider textProvider) {
+        this.textProvider = textProvider;
+    }
+
+    protected TextProvider getTextProvider() {
+        return textProvider;
     }
 
     protected void setValidationAware(ValidationAware validationAware) {
@@ -191,5 +201,12 @@ public class DelegatingValidatorContext implements ValidatorContext {
         public boolean hasFieldErrors() {
             return false;
         }
+    }
+
+    private static class ActionContextLocaleProvider implements LocaleProvider {
+        public Locale getLocale() {
+            return ActionContext.getContext().getLocale();
+        }
+
     }
 }
