@@ -48,8 +48,8 @@
          the connection element has the form:
          scm:<system>:<system specific connection string> -->
     <repository>
-        <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/opensymphony:xwork</connection>
-        <url>http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/opensymphony/</url>
+        <connection>scm:cvs:pserver:savaki@cvs.dev.java.net:/cvs:xwork</connection>
+        <url>http://xwork.dev.java.net/source/browse/xwork/</url>
     </repository>
 
     <!-- any mailing lists for the project -->
