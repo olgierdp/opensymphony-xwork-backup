@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>XWork Documentation</title>
+  <link type="text/css" href="main.css" rel="STYLESHEET"/>
+</head>
+<body>
+  <div id="page-logo">
+    <a href="index.html"><img src="logo.png" border="0"/></a>
+  </div>
+    <div class="snip-title">
+	  <h1 class="snip-name">Type Conversion
+  
+  </h1>
+  </div>
+<div id="snip-content" class="snip-content">
+
+ <div class="snip-attachments"></div>
+ 
+ Type conversion allows you to easily convert objects between on class to another.  As most of the conversion is for the web, this is usually to and from String classes.  The most common example is the conversion of date.  Let's suppose we have the following classs:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">public</span> class Foo <span class="java&#45;keyword">implements</span> Action &#123;
+  <span class="java&#45;keyword">private</span> Date date;
+  <span class="java&#45;keyword">public</span> void setDate(Date date) &#123; <span class="java&#45;keyword">this</span>.date = date ; &#125;
+  <span class="java&#45;keyword">public</span> <span class="java&#45;object">String</span> execute() &#123;
+    // <span class="java&#45;keyword">do</span> work here
+  &#125;
+&#125;</pre></div><p class="paragraph"/>XWork's type converter would allow us to pass in the String 07/08/2003 and have it be automatically converted to a Date object that's been set to July 8, 2003.<p class="paragraph"/>To define your own type converter, you'll need to perform the following steps:
+<ul class="star">
+<li>create your custom type converter object by extending DefaultTypeConverter</li>
+<li>map your type converter to your Action or model using a *-conversion.properties file</li>
+</ul><p class="paragraph"/>To use the Contact example (where Contact is a persistence object), let's say we have the following Action:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">public</span> class AddContactAction <span class="java&#45;keyword">implements</span> Action &#123;
+  <span class="java&#45;keyword">private</span> Contact contact1;
+  <span class="java&#45;keyword">private</span> Contact contact2;
+  <span class="java&#45;keyword">public</span> void setContact1(Contact contact) &#123; <span class="java&#45;keyword">this</span>.contact1 = contact; &#125;
+  <span class="java&#45;keyword">public</span> void setContact2(Contact contact) &#123; <span class="java&#45;keyword">this</span>.contact2 = contact; &#125;<p class="paragraph"/>  <span class="java&#45;keyword">public</span> <span class="java&#45;object">String</span> execute() &#123; &#8230; &#125;
+&#125;</pre></div><p class="paragraph"/>What we're expecting from the UI is for contact to be "1", the primary key of the contact.  We want the type converter to convert the string "1" to the Contact with a contactId of 1.  Likewise, we'd like the converter to be able to reverse the operation.  When displayed, a Contact object should print out its contactId as a String.<p class="paragraph"/>The first step is to create our custom TypeConverter:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">public</span> class ContactConverter <span class="java&#45;keyword">extends</span> DefaultTypeConverter &#123;
+  <span class="java&#45;keyword">public</span> <span class="java&#45;object">Object</span> convertValue(Map ognlContext, <span class="java&#45;object">Object</span> value, <span class="java&#45;object">Class</span> toType) &#123;
+    <span class="java&#45;keyword">if</span>( toType == <span class="java&#45;object">String</span>.class ) &#123;
+      Contact contact = (Contact)value;
+      <span class="java&#45;keyword">return</span> <span class="java&#45;keyword">new</span> <span class="java&#45;object">String</span>(contact.getContactId());
+    &#125; <span class="java&#45;keyword">else</span> <span class="java&#45;keyword">if</span>( toType == Contact.class ) &#123;
+      <span class="java&#45;object">Integer</span> id = <span class="java&#45;keyword">new</span> <span class="java&#45;object">Integer</span>((<span class="java&#45;object">String</span>)value);
+      Session session = &#8230; // get a Hibernate Session
+      Contact contact = (Contact)session.load(Contact.class, id);
+      <span class="java&#45;keyword">return</span> contact;
+    &#125;
+  &#125;
+&#125;</pre></div><p class="paragraph"/>The next part is to bind our ContactConverter to the previous AddContactAction.  I'll bind the ContactConverter to the AddContactAction by creating a file called AddContactAction-conversion.properties that's in the same directory as the AddContactAction class.<p class="paragraph"/>I would then populate the properties file as follows:<p class="paragraph"/><div class="code"><pre>contact1 = com.acme.ContactConverter
+contact2 = com.acme.ContactConverter</pre></div><p class="paragraph"/>Now, when XWork attempts to populate your object from parameters, you'll be given the actual instances of Contact from your database.<p class="paragraph"/>Having said all that, I can't really recommend doing database lookups here as a best practice.  In fact, I'd say it's not such a good idea, but it does illustrate type converters well :)  Any exception thrown here will be handled as described in <a href="conversionerrorhandling.html">Type Conversion Error Handling</a><p class="paragraph"/>
+  </div>
+</body>
+</html>

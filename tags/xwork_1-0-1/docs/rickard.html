@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>XWork Documentation</title>
+  <link type="text/css" href="main.css" rel="STYLESHEET"/>
+</head>
+<body>
+  <div id="page-logo">
+    <a href="index.html"><img src="logo.png" border="0"/></a>
+  </div>
+    <div class="snip-title">
+	  <h1 class="snip-name">RickardXWorkThoughts
+  
+  </h1>
+  </div>
+<div id="snip-content" class="snip-content">
+
+ <div class="snip-attachments"></div>
+ 
+ <ul class="star">
+<li>Actions. These are the application implementations (generic or specific) that together define the behaviour of the application. No news here.</li>
+<li>Interceptors. These are cross-cutting concerns that apply to several actions, and which may modify the behaviour of it, produce some side-effect to the execution of the Action, or modify the input or output of the Action.</li>
+<li>Components. This is a new concept for WebWork. Instead of just having a bunch of non-related Action's, one would bundle some of them together into a Component. An Action may be part of several Components though. The main feature of a Component is to function as a state machine which determine what Action to execute during a page rendering.</li>
+<li>Packages. Also a new concept. There are usually two approaches to configuration: coarse-grained or fine-grained. In the coarse-grained style a setting applies to EVERYTHING in the app. In the fine-grained style each part needs to be individually configured. The first focus on ease-of-use and the latter on flexibility. Packages allow for something in between. An Action, Interceptor or Component can be defined in a Package and can easily refer to one another within that package. By having hierarchical packages can easily refer to definitions in other Packages. For example, we would most likely define a number of Actions, Interceptors and possible Components that are in a "default" Package, which user Packages would then depend on. However, user Packages could then override any such definition made higher up. This gives the  ease-of-use of a coarse-grained configuration together with the total control and flexibility of a fine-grained configuration, while still providing reasonably clear semantics.</li>
+</ul><p class="paragraph"/>These are the core concepts that I can think of. Now, for my own 
+portlet-ish needs (which I hope will be more common for others too in 
+the future) the following applies:
+<ul class="star">
+<li>Actions and Components, and their resulting views, are ALWAYS called through a servlet include. This means that the URL in a browser NEVER reveals that XWork is used. For example, an admin app would consist of an admin.jsp which includes the Actions/Components needed for that app. Not only does that make it easy to extend the admin app later on with more "portlets", it also makes it possible (for those who are so inclined) to use J2EE declarative security very easily. Plus bookmarks are human-friendly. This means that the dispatcher would explicitly disallow Action invocation that are NOT a result of an include. This too adds some extra security, since only actions that YOU decide should be called are actually callable. Plus, your actions can decide much better in what order they are called, depending on your app requirements. The actual include would still be using the ".action" extension though.</li>
+<li>For many simple portlets an include of a .action is fine. For complex portlets that require a state machine this is not ok. Instead, what one usually wants is to include a "component" that then delegates to some action depending on the *state* of some automata. This is similar to how the CardPane works in WebWork. Essentially, XWork would include this kind of state machine as a built-in concept instead of as an "add-on" like CardPane, since this is such an important and common case. It needs to be as simple and flexible as is possible. When a component renders its view it also creates URL's that define what the possible next states are. This means that the URL's in the generated HTML are shortlived (i.e. after one of the URL's have been clicked they are all invalid), which also means that it will be impossible to have a double form submit. After the first submit the URL will be invalid, so clicking again will not lead to a re-execution of the action. This also gives some extra security.</li>
+<li>The execution of a Component (and maybe Action's too) needs to be split into two phases. The actual execution of an action is done at the _beginning_ of a page render, and the rendering is done at the time of the include. Why? Because the action may influence what is shown on the page, and may also result in a redirect to another page. If the action execution is done at the point of the include it's too late to do a redirect, and other portlets may have rendered state that is then changed by the action execution. (This thinking, by coincidence, mirrors well how the portlet API will work)</li>
+<li>When rendering URL's, the parameters need to be namespace'd in order to allow several portlets to happily live together on a page. I.e. instead of having ?foo=bar one could have ?1.foo=bar&2.foo=bar. The XWork servlet dispatcher would then at execution filter out those parameters which does not apply to the action/component/portlet being executed, and only the remaining parameters are applied using the setX() initialization code. This requires the rendering code to use either a taglib (in JSP) or some JavaBean (in Velocity) which can do this encoding. I know that for *some* applications this will be overkill, but for those of use who are going beyond very simple web apps it is a definitive must.</li>
+</ul>
+
+  </div>
+</body>
+</html>
