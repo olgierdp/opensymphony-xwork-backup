@@ -4,35 +4,8 @@
  >
 
 <xwork>
-    <package name="default">
-        <result-types>
-            <result-type name="chain" class="com.opensymphony.xwork.ActionChainResult" default="true"/>
-        </result-types>
-
-        <interceptors>
-            <interceptor name="timer" class="com.opensymphony.xwork.interceptor.TimerInterceptor"/>
-            <interceptor name="logger" class="com.opensymphony.xwork.interceptor.LoggingInterceptor"/>
-            <interceptor name="chain" class="com.opensymphony.xwork.interceptor.ChainingInterceptor"/>
-            <interceptor name="params" class="com.opensymphony.xwork.interceptor.ParametersInterceptor"/>
-            <interceptor name="static-params" class="com.opensymphony.xwork.interceptor.StaticParametersInterceptor"/>
-            <interceptor name="model-driven" class="com.opensymphony.xwork.interceptor.ModelDrivenInterceptor"/>
-            <interceptor name="component" class="com.opensymphony.xwork.interceptor.component.ComponentInterceptor"/>
-            <interceptor name="test" class="com.opensymphony.xwork.MockInterceptor">
-                <param name="foo">expectedFoo</param>
-            </interceptor>
-
-            <interceptor-stack name="defaultStack">
-                <interceptor-ref name="static-params"/>
-                <interceptor-ref name="model-driven"/>
-                <interceptor-ref name="params"/>
-            </interceptor-stack>
-
-            <interceptor-stack name="debugStack">
-                <interceptor-ref name="timer"/>
-                <interceptor-ref name="logger"/>
-            </interceptor-stack>
-        </interceptors>
-
+    <include file="xwork-default.xml"/>
+    <package name="default" extends="xwork-default">
         <global-results>
             <result name="login"> <!-- should be chain type since it is the default -->
                 <param name="actionName">login</param>

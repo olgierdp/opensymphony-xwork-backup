@@ -332,17 +332,16 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         }
     }
 
-    protected void loadIncludes(Element rootElement, DocumentBuilder db) throws Exception {
-        NodeList includeList = rootElement.getElementsByTagName("include");
-
-        for (int i = 0; i < includeList.getLength(); i++) {
-            Element includeElement = (Element) includeList.item(i);
-            String fileName = includeElement.getAttribute("file");
-            includedFileNames.add(fileName);
-            loadConfigurationFile(fileName, db);
-        }
-    }
-
+    //    protected void loadIncludes(Element rootElement, DocumentBuilder db) throws Exception {
+    //        NodeList includeList = rootElement.getElementsByTagName("include");
+    //
+    //        for (int i = 0; i < includeList.getLength(); i++) {
+    //            Element includeElement = (Element) includeList.item(i);
+    //            String fileName = includeElement.getAttribute("file");
+    //            includedFileNames.add(fileName);
+    //            loadConfigurationFile(fileName, db);
+    //        }
+    //    }
     protected InterceptorStackConfig loadInterceptorStack(Element element, PackageConfig context) throws ConfigurationException {
         String name = element.getAttribute("name");
 
@@ -395,15 +394,14 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         loadInterceptorStacks(element, context);
     }
 
-    protected void loadPackages(Element rootElement) throws ConfigurationException {
-        NodeList packageList = rootElement.getElementsByTagName("package");
-
-        for (int i = 0; i < packageList.getLength(); i++) {
-            Element packageElement = (Element) packageList.item(i);
-            addPackage(packageElement);
-        }
-    }
-
+    //    protected void loadPackages(Element rootElement) throws ConfigurationException {
+    //        NodeList packageList = rootElement.getElementsByTagName("package");
+    //
+    //        for (int i = 0; i < packageList.getLength(); i++) {
+    //            Element packageElement = (Element) packageList.item(i);
+    //            addPackage(packageElement);
+    //        }
+    //    }
     private void loadConfigurationFile(String fileName, DocumentBuilder db) throws Exception {
         Document doc = null;
         InputStream is = null;
@@ -429,9 +427,29 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         }
 
         Element rootElement = doc.getDocumentElement();
+        NodeList children = rootElement.getChildNodes();
+        int childSize = children.getLength();
 
-        loadPackages(rootElement);
-        loadIncludes(rootElement, db);
+        for (int i = 0; i < childSize; i++) {
+            Node childNode = children.item(i);
+
+            if (childNode instanceof Element) {
+                Element child = (Element) childNode;
+
+                final String nodeName = child.getNodeName();
+
+                if (nodeName.equals("package")) {
+                    addPackage(child);
+                } else if (nodeName.equals("include")) {
+                    String includeFileName = child.getAttribute("file");
+                    includedFileNames.add(includeFileName);
+                    loadConfigurationFile(includeFileName, db);
+                }
+            }
+        }
+
+        //        loadPackages(rootElement);
+        //        loadIncludes(rootElement, db);
     }
 
     /**
