@@ -79,6 +79,11 @@ public class InstantiatingNullHandler implements NullHandler {
                 clazz = OgnlRuntime.getPropertyDescriptor(o.getClass(), property.toString()).getPropertyType();
             }
 
+            if (clazz == null) {
+                // can't do much here!
+                return null;
+            }
+
             Object param = createObject(clazz, o, property.toString());
 
             Ognl.setValue(property.toString(), context, o, param);
@@ -87,7 +92,6 @@ public class InstantiatingNullHandler implements NullHandler {
 
             return param;
         } catch (Exception e) {
-            e.printStackTrace();
             LOG.error("Could not create and/or set value back on to object", e);
         }
 
