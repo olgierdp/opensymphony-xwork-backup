@@ -31,8 +31,8 @@ public class XmlConfigurationProviderPackagesTest extends ConfigurationTestBase 
         provider.init(configuration);
 
         // setup our expectations
-        PackageConfig expectedNamespacePackage = new PackageConfig("namespacepkg", "/namespace/set", false);
-        PackageConfig expectedAbstractPackage = new PackageConfig("abstractpkg", null, true);
+        PackageConfig expectedNamespacePackage = new PackageConfig("namespacepkg", "/namespace/set", false, null);
+        PackageConfig expectedAbstractPackage = new PackageConfig("abstractpkg", null, true, null);
 
         // test expectations
         assertEquals(3, configuration.getPackageConfigs().size());
@@ -60,7 +60,7 @@ public class XmlConfigurationProviderPackagesTest extends ConfigurationTestBase 
         // setup our expectations
         PackageConfig defaultPackage = new PackageConfig("default");
 
-        PackageConfig abstractPackage = new PackageConfig("abstractPackage", null, true);
+        PackageConfig abstractPackage = new PackageConfig("abstractPackage", null, true, null);
 
         PackageConfig singleInheritancePackage = new PackageConfig("singleInheritance");
         singleInheritancePackage.addParent(defaultPackage);

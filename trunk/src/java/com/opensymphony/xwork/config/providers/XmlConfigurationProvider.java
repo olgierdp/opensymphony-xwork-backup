@@ -12,7 +12,9 @@ import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.ConfigurationUtil;
+import com.opensymphony.xwork.config.ExternalReferenceResolver;
 import com.opensymphony.xwork.config.entities.ActionConfig;
+import com.opensymphony.xwork.config.entities.ExternalReference;
 import com.opensymphony.xwork.config.entities.InterceptorConfig;
 import com.opensymphony.xwork.config.entities.InterceptorStackConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
@@ -189,13 +191,16 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         }
 
         List interceptorList = buildInterceptorList(actionElement, packageContext);
-
-        ActionConfig actionConfig = new ActionConfig(methodName, clazz, actionParams, results, interceptorList);
+        
+		List externalrefs = buildExternalRefs(actionElement, packageContext);
+		
+        ActionConfig actionConfig = new ActionConfig(methodName, clazz, actionParams, results, interceptorList, externalrefs, packageContext.getName());
         packageContext.addActionConfig(name, actionConfig);
 
         if (LOG.isDebugEnabled())
             LOG.debug("Loaded " + (TextUtils.stringSet(packageContext.getNamespace()) ? packageContext.getNamespace() + "/" : "")
                     + name + " in '" + packageContext.getName() + "' package:" + actionConfig);
+
     }
 
     /**
@@ -269,6 +274,39 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         return interceptorList;
     }
+    
+	protected List buildExternalRefs(Element element, PackageConfig context) throws ConfigurationException {
+		List refs = new ArrayList();
+		NodeList externalRefList = element.getElementsByTagName("external-ref");
+		
+		String refName = null;
+		String refValue = null;
+		String requiredTemp = null;
+		boolean required;
+		for (int i = 0; i < externalRefList.getLength(); i++) {
+			Element refElement = (Element) externalRefList.item(i);
+
+			if (refElement.getParentNode().equals(element)) {
+				refName = refElement.getAttribute("name");
+				
+				//If the external ref is not declared explicitly, we can introspect the
+				//reference type using it's name and try resolving the reference using it's class type
+				if(refElement.getChildNodes().getLength() > 0)
+				{    
+				    refValue = refElement.getChildNodes().item(0).getNodeValue();
+				}
+				requiredTemp = refElement.getAttribute("required");
+				if("".equals(requiredTemp)) {
+					required = true;
+				} else {
+					required = Boolean.valueOf(requiredTemp).booleanValue();
+				}
+				refs.add(new ExternalReference(refName, refValue, required));
+			}
+		}
+
+		return refs;
+	}
 
     /**
     * This method builds a package context by looking for the parents of this new package.
@@ -281,10 +319,36 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         boolean isAbstract = Boolean.valueOf(abstractVal).booleanValue();
         String name = TextUtils.noNull(packageElement.getAttribute("name"));
         String namespace = TextUtils.noNull(packageElement.getAttribute("namespace"));
+		
+        //RM* Load the ExternalReferenceResolver if one has been set
+		ExternalReferenceResolver erResolver = null;
+		
+        String externalReferenceResolver = TextUtils.noNull(packageElement.getAttribute("externalReferenceResolver"));
+		
+		if(!("".equals(externalReferenceResolver)))
+		{	
+	        try {
+				Class erResolverClazz = ClassLoaderUtil.loadClass(externalReferenceResolver, ExternalReferenceResolver.class);
+				
+			    erResolver = (ExternalReferenceResolver) erResolverClazz.newInstance();
+				
+	        } catch (ClassNotFoundException e) {
+	        	//TODO this should be localized
+	        	String msg = "Could not find External Reference Resolver: " + externalReferenceResolver + ". " + e.getMessage();
+				LOG.error(msg);
+				throw new ConfigurationException(msg, e);
+			} catch (Exception e)
+			{
+				//TODO this should be localized
+				String msg = "Could not create External Reference Resolver: " + externalReferenceResolver + ". " + e.getMessage();
+				LOG.error(msg);
+				throw new ConfigurationException(msg, e);
+			}
+		}
+		
+		if (!TextUtils.stringSet(TextUtils.noNull(parent))) { // no parents
 
-        if (!TextUtils.stringSet(TextUtils.noNull(parent))) { // no parents
-
-            return new PackageConfig(name, namespace, isAbstract);
+            return new PackageConfig(name, namespace, isAbstract, erResolver);
         } else { // has parents, let's look it up
 
             List parents = ConfigurationUtil.buildParentsFromString(configuration, parent);
@@ -292,9 +356,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             if (parents.size() <= 0) {
                 LOG.error("Unable to find parent packages " + parent);
 
-                return new PackageConfig(name, namespace, isAbstract);
+                return new PackageConfig(name, namespace, isAbstract, erResolver);
             } else {
-                return new PackageConfig(name, namespace, isAbstract, parents);
+                return new PackageConfig(name, namespace, isAbstract, erResolver, parents);
             }
         }
     }

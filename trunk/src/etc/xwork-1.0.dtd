@@ -7,6 +7,7 @@
     extends CDATA #IMPLIED
     namespace CDATA #IMPLIED
     abstract CDATA #IMPLIED
+    externalReferenceResolver NMTOKEN #IMPLIED
 >
 
 <!ELEMENT result-types (result-type+)>
@@ -41,9 +42,15 @@
     name CDATA #REQUIRED
 >
 
+<!ELEMENT external-ref (#PCDATA)>
+<!ATTLIST external-ref
+    name NMTOKEN #REQUIRED
+    required (true|false) "false"
+>
+
 <!ELEMENT global-results (result+)>
 
-<!ELEMENT action (param|result|interceptor-ref)*>
+<!ELEMENT action (param|result|interceptor-ref|external-ref)*>
 <!ATTLIST action
 name CDATA #REQUIRED
     class CDATA #REQUIRED

@@ -21,8 +21,10 @@
             <interceptor name="test" class="com.opensymphony.xwork.MockInterceptor">
                 <param name="foo">expectedFoo</param>
             </interceptor>
+            <interceptor name="reference-resolver" class="com.opensymphony.xwork.interceptor.ExternalReferencesInterceptor"/>
 
             <interceptor-stack name="defaultStack">
+            	<interceptor-ref name="reference-resolver"/>
                 <interceptor-ref name="static-params"/>
                 <interceptor-ref name="model-driven"/>
                 <interceptor-ref name="params"/>

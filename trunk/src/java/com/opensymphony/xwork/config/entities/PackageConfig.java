@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.config.entities;
 
 import com.opensymphony.util.TextUtils;
+import com.opensymphony.xwork.config.ExternalReferenceResolver;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,6 +40,7 @@ public class PackageConfig {
     private String name;
     private String namespace = "";
     private boolean isAbstract = false;
+    private ExternalReferenceResolver externalRefResolver = null;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
@@ -49,14 +51,15 @@ public class PackageConfig {
         this.name = name;
     }
 
-    public PackageConfig(String name, String namespace, boolean isAbstract) {
+    public PackageConfig(String name, String namespace, boolean isAbstract, ExternalReferenceResolver externalRefResolver) {
         this(name);
         this.namespace = TextUtils.noNull(namespace);
         this.isAbstract = isAbstract;
+        this.externalRefResolver = externalRefResolver;
     }
 
-    public PackageConfig(String name, String namespace, boolean isAbstract, List parents) {
-        this(name, namespace, isAbstract);
+    public PackageConfig(String name, String namespace, boolean isAbstract, ExternalReferenceResolver externalRefResolver, List parents) {
+        this(name, namespace, isAbstract, externalRefResolver);
 
         for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
             PackageConfig parent = (PackageConfig) iterator.next();
@@ -391,4 +394,34 @@ public class PackageConfig {
     public String toString() {
         return "{PackageConfig Name:" + name + " namespace:" + namespace + " abstract:" + isAbstract + " parents:" + parents + "}";
     }
+    
+	/**
+	 * Gets the Reference resolver for this package.  If the resolver for this package is
+	 * not specified, the method will try and find one on one of the parent packages
+	 * @return Returns the externalRefResolver.
+	 */
+	public ExternalReferenceResolver getExternalRefResolver() {
+		//If this resolver is null, lets look to see if our parents have one
+		if(externalRefResolver==null) {
+			PackageConfig packageConfig;
+			for(Iterator iter = getParents().iterator(); iter.hasNext();)
+			{
+				packageConfig = (PackageConfig)iter.next();
+				if(packageConfig.getExternalRefResolver() != null )
+				{
+					externalRefResolver = packageConfig.getExternalRefResolver();
+					break;
+				}
+			}
+		}
+		return externalRefResolver;
+	}
+
+	/**
+	 * @param externalRefResolver The externalRefResolver to set.
+	 */
+	public void setExternalRefResolver(ExternalReferenceResolver externalRefResolver) {
+		this.externalRefResolver = externalRefResolver;
+	}
+
 }

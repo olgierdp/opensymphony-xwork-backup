@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,10 +36,12 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
     //~ Instance fields ////////////////////////////////////////////////////////
 
     protected List interceptors;
+    protected List externalRefs;
     protected Map params;
     protected Map results;
     protected Method method;
     protected String methodName;
+	protected String packageName;
     private Class clazz;
 
     //~ Constructors ///////////////////////////////////////////////////////////
@@ -47,14 +50,25 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
         params = new HashMap();
         results = new HashMap();
         interceptors = new ArrayList();
+		externalRefs = new ArrayList();
     }
-
-    public ActionConfig(String methodName, Class clazz, Map parameters, Map results, List interceptors) {
+    //Helper constuctor to maintain backward compatibility with objects that create ActionConfigs
+    //TODO this should be removed if these changes are rolled in to xwork CVS
+	public ActionConfig(String methodName, Class clazz, Map parameters, Map results, List interceptors) 
+	{
+		this(methodName, clazz, parameters, results, interceptors, Collections.EMPTY_LIST, new String());
+	}
+	
+	//TODO If this is commited to CVS we should put the package arg at the front of the ctor and fix
+	//code that uses it
+    public ActionConfig(String methodName, Class clazz, Map parameters, Map results, List interceptors, List externalRefs, String packageName) {
         this.methodName = methodName;
         this.interceptors = interceptors;
         this.params = parameters;
         this.results = results;
         this.clazz = clazz;
+        this.externalRefs = externalRefs;
+        this.packageName = packageName;
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -137,7 +151,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
     public void addInterceptors(List interceptors) {
         getInterceptors().addAll(interceptors);
     }
-
+    
     public void addParam(String name, Object value) {
         getParams().put(name, value);
     }
@@ -145,7 +159,20 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
     public void addResultConfig(ResultConfig resultConfig) {
         getResults().put(resultConfig.getName(), resultConfig);
     }
+    
+	public void addExternalRef(ExternalReference reference) {
+		getExternalRefs().add(reference);
+	}
 
+	public void addExternalRefs(List externalRefs) {
+		getExternalRefs().addAll(externalRefs);
+	}
+	
+	public List getExternalRefs()
+	{
+		return externalRefs;
+	}
+	
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -195,8 +222,20 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
 
         return result;
     }
+	/**
+	 * @return Returns the packageName.
+	 */
+	public String getPackageName() {
+		return packageName;
+	}
 
-
+	/**
+	 * @param packageName The packageName to set.
+	 */
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
+    
     public String toString() {
         return "{ActionConfig " + clazz.getName() + (methodName != null ? "." + methodName + "()" : "") + "}";
     }

@@ -2,10 +2,11 @@
     "-//OpenSymphony Group//XWork 1.0//EN"
     "http://www.opensymphony.com/xwork/xwork-1.0.dtd"
  >
+ <!-- "file:///temp/ross/xwork/src/etc/xwork-1.0.dtd"  -->
 
 <xwork>
     <include file="xwork-default.xml"/>
-    <package name="default" extends="xwork-default">
+    <package name="default" extends="xwork-default" externalReferenceResolver="com.opensymphony.xwork.config.TestExternalReferenceResolver">
         <global-results>
             <result name="login"> <!-- should be chain type since it is the default -->
                 <param name="actionName">login</param>
@@ -44,7 +45,34 @@
             <interceptor-ref name="defaultStack"/>
             <interceptor-ref name="validation"/>
         </action>
-    </package>
+        <!-- test resolution  -->
+        <action name="TestExternalRefResolver" class="com.opensymphony.xwork.ExternalReferenceAction">
+        	<external-ref name="foo">myFoo</external-ref>
+            <interceptor-ref name="debugStack"/>
+            <interceptor-ref name="defaultStack"/>
+        </action>
+        <!-- test required flag -->
+        <action name="TestExternalRefResolver2" class="com.opensymphony.xwork.ExternalReferenceAction">
+        	<external-ref name="foo">myFoo</external-ref>
+        	<external-ref required="false" name="does_not_exist">Does Not Exist</external-ref>
+            <interceptor-ref name="debugStack"/>
+            <interceptor-ref name="defaultStack"/>
+        </action>
+        <!-- test where required reference is not found -->
+        <action name="TestExternalRefResolver3" class="com.opensymphony.xwork.ExternalReferenceAction">
+        	<external-ref required="true" name="Boo">myBoo</external-ref>
+            <interceptor-ref name="debugStack"/>
+            <interceptor-ref name="defaultStack"/>
+        </action>
+   	</package>
+   	
+   	<package name="test-external-refs" extends="default" namespace="test/externalRef/">
+        <!-- test resolution when Resolver is declared on parent -->
+        <action name="TestExternalRefResolver4" class="com.opensymphony.xwork.ExternalReferenceAction">
+        	<external-ref name="foo">myFoo</external-ref>
+            <interceptor-ref name="defaultStack"/>
+        </action>
+   </package>
 
     <package name="bar" extends="default" namespace="/foo/bar">
         <interceptors>
