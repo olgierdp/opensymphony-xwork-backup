@@ -90,16 +90,7 @@ public class XWorkConverter extends DefaultTypeConverter {
                 OgnlContext ognlContext = (OgnlContext) context;
                 Evaluation eval = ognlContext.getCurrentEvaluation();
 
-                if (eval == null) {
-                    eval = ognlContext.getLastEvaluation();
-
-                    // since the upgrade to ognl-2.6.3.jar, eval is null here
-                    // and this null check was being caoucht by an outer try/catch which ignored it !
-                    if (eval != null) {
-                        clazz = eval.getResult().getClass();
-                        property = (String) eval.getLastChild().getResult();
-                    }
-                } else {
+                if (eval != null) {
                     // since we changed what the source was (tricked Ognl essentially)
                     clazz = eval.getLastChild().getSource().getClass();
 
