@@ -8,8 +8,6 @@ import java.io.Serializable;
 
 
 /**
- *
- *
  * @author <a href="mailto:plightbo@cisco.com">Pat Lightbody</a>
  * @author $Author$
  * @version $Revision$
@@ -86,18 +84,19 @@ public class Dog implements Serializable {
     }
 
     /**
+     * @return null
+     */
+    public Integer nullMethod() {
+        return null;
+    }
+
+    /**
      * a method which is safe to call with a null argument
+     *
      * @param arg the Boolean to return
      * @return arg, if it is not null, or Boolean.TRUE if arg is null
      */
     public Boolean nullSafeMethod(Boolean arg) {
         return (arg == null) ? Boolean.TRUE : arg;
-    }
-
-    /**
-     * @return null
-     */
-    public Integer nullMethod() {
-        return null;
     }
 }

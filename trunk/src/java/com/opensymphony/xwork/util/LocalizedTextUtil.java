@@ -5,25 +5,18 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.ActionContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.text.MessageFormat;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 /**
  * LocalizedTextUtil
+ *
  * @author Jason Carreira
- * Created Apr 19, 2003 11:02:26 PM
+ *         Created Apr 19, 2003 11:02:26 PM
  */
 public class LocalizedTextUtil {
     //~ Static fields/initializers /////////////////////////////////////////////
@@ -73,8 +66,9 @@ public class LocalizedTextUtil {
     /**
      * Returns a localized message for the specified text key, aTextName, substituting variables from the
      * array of params into the message.
+     *
      * @param aTextName The message key
-     * @param params An array of objects to be substituted into the message text
+     * @param params    An array of objects to be substituted into the message text
      * @return A formatted message based on the key specified
      * @throws MissingResourceException
      */
@@ -89,6 +83,7 @@ public class LocalizedTextUtil {
     /**
      * Calls {@link #findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args)} with
      * aTextName as the default message.
+     *
      * @see #findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args)
      */
     public static String findText(Class aClass, String aTextName, Locale locale) {
@@ -112,9 +107,10 @@ public class LocalizedTextUtil {
      * search the default message bundles</li>
      * <li>If the text has still not been found, the provided defaultMessage is returned.<li>
      * </ol>
-     * @param aClass the class whose name to use as the start point for the search
-     * @param aTextName the text key to find the text message for
-     * @param locale the locale to use to find the correct ResourceBundle
+     *
+     * @param aClass         the class whose name to use as the start point for the search
+     * @param aTextName      the text key to find the text message for
+     * @param locale         the locale to use to find the correct ResourceBundle
      * @param defaultMessage the message to be returned if no text message can be found in a resource bundle
      * @return
      */
@@ -147,7 +143,6 @@ public class LocalizedTextUtil {
         }
 
         return getDefaultText(aTextName, locale, valueStack, args, defaultMessage);
-
     }
 
     private static String getDefaultText(String aTextName, Locale locale, OgnlValueStack valueStack, Object[] args, String defaultMessage) {

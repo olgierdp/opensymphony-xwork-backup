@@ -19,11 +19,6 @@ public class SimpleAction extends ActionSupport {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String COMMAND_RETURN_CODE = "com.opensymphony.xwork.SimpleAction.CommandInvoked";
-    private boolean throwException;
-
-    public SimpleAction() {
-        System.out.println("hi");
-    }
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
@@ -33,9 +28,16 @@ public class SimpleAction extends ActionSupport {
     private String blah;
     private String name;
     private TestBean bean = new TestBean();
+    private boolean throwException;
     private int bar;
     private int baz;
     private int foo;
+
+    //~ Constructors ///////////////////////////////////////////////////////////
+
+    public SimpleAction() {
+        System.out.println("hi");
+    }
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -76,7 +78,7 @@ public class SimpleAction extends ActionSupport {
     }
 
     public boolean[] getBools() {
-        boolean[] b = new boolean[] {true, false, false, true};
+        boolean[] b = new boolean[]{true, false, false, true};
 
         return b;
     }
@@ -121,8 +123,20 @@ public class SimpleAction extends ActionSupport {
         return someList;
     }
 
+    public void setThrowException(boolean throwException) {
+        this.throwException = throwException;
+    }
+
     public String commandMethod() throws Exception {
         return COMMAND_RETURN_CODE;
+    }
+
+    public String exceptionMethod() throws Exception {
+        if (throwException) {
+            throw new Exception("We're supposed to throw this");
+        }
+
+        return "OK";
     }
 
     public String execute() throws Exception {
@@ -141,17 +155,5 @@ public class SimpleAction extends ActionSupport {
         someList.add("kerry");
 
         return SUCCESS;
-    }
-
-    public void setThrowException(boolean throwException) {
-        this.throwException = throwException;
-    }
-
-    public String exceptionMethod() throws Exception {
-        if (throwException) {
-            throw new Exception("We're supposed to throw this");
-        }
-
-        return "OK";
     }
 }
