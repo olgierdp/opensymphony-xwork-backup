@@ -75,6 +75,7 @@ public class DelegatingSaxXmlProvider implements ConfigurationProvider {
         SAXParser saxParser;
 
         DefaultDelegatingHandler handler;
+        InputStream is = null;
 
         try {
             saxParser = SAXParserFactory.newInstance().newSAXParser();
@@ -90,7 +91,7 @@ public class DelegatingSaxXmlProvider implements ConfigurationProvider {
                     }
                 });
 
-            InputStream is = getInputStream(configFileName);
+            is = getInputStream(configFileName);
 
             if (is == null) {
                 throw new Exception("Could not open file " + configFileName);
@@ -105,6 +106,14 @@ public class DelegatingSaxXmlProvider implements ConfigurationProvider {
             LOG.fatal("Could not load XWork configuration file, failing", e);
 
             return;
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    LOG.error("Unable to close input stream", e);
+                }
+            }
         }
 
         if ((handler != null) && (handler.getException() != null) && (handler.getException().hasErrors())) {

@@ -38,6 +38,7 @@ import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private Configuration configuration;
+    private List includedFileNames = new ArrayList();
     private String configFileName = "xwork.xml";
 
     //~ Constructors ///////////////////////////////////////////////////////////
@@ -77,6 +79,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
     public void init(Configuration configuration) throws ConfigurationException {
         this.configuration = configuration;
+        includedFileNames.clear();
 
         DocumentBuilder db;
 
@@ -118,7 +121,15 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     * @return true if the file has been changed since the last time we read it
     */
     public boolean needsReload() {
-        return FileManager.fileNeedsReloading(configFileName);
+        boolean needsReload = FileManager.fileNeedsReloading(configFileName);
+        Iterator fileNameIterator = includedFileNames.iterator();
+
+        while (!needsReload && (fileNameIterator.hasNext())) {
+            String fileName = (String) fileNameIterator.next();
+            needsReload = FileManager.fileNeedsReloading(fileName);
+        }
+
+        return needsReload;
     }
 
     protected InputStream getInputStream(String fileName) {
@@ -327,6 +338,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         for (int i = 0; i < includeList.getLength(); i++) {
             Element includeElement = (Element) includeList.item(i);
             String fileName = includeElement.getAttribute("file");
+            includedFileNames.add(fileName);
             loadConfigurationFile(fileName, db);
         }
     }
@@ -394,9 +406,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
     private void loadConfigurationFile(String fileName, DocumentBuilder db) throws Exception {
         Document doc = null;
+        InputStream is = null;
 
         try {
-            InputStream is = getInputStream(fileName);
+            is = getInputStream(fileName);
 
             if (is == null) {
                 throw new Exception("Could not open file " + fileName);
@@ -404,7 +417,15 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
             doc = db.parse(is);
         } catch (Exception e) {
-            LOG.error("Caught exception while loading file " + fileName);
+            LOG.error("Caught exception while loading file " + fileName, e);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    LOG.error("Unable to close input stream", e);
+                }
+            }
         }
 
         Element rootElement = doc.getDocumentElement();

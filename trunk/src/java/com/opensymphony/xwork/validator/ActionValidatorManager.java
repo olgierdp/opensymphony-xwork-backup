@@ -9,6 +9,7 @@ import com.opensymphony.util.FileManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.ArrayList;
@@ -129,15 +130,27 @@ public class ActionValidatorManager {
     }
 
     private static List loadFile(String fileName, Class clazz, boolean checkFile) {
-        List retList;
+        List retList = Collections.EMPTY_LIST;
 
         if ((checkFile && FileManager.fileNeedsReloading(fileName)) || !validatorFileCache.containsKey(fileName)) {
-            InputStream is = FileManager.loadFile(fileName, clazz);
+            InputStream is = null;
 
-            if (is != null) {
-                retList = new ArrayList(ValidatorFileParser.parseActionValidators(is));
-            } else {
-                retList = Collections.EMPTY_LIST;
+            try {
+                is = FileManager.loadFile(fileName, clazz);
+
+                if (is != null) {
+                    retList = new ArrayList(ValidatorFileParser.parseActionValidators(is));
+                }
+            } catch (Exception e) {
+                LOG.error("Caught exception while loading file " + fileName, e);
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        LOG.error("Unable to close input stream", e);
+                    }
+                }
             }
 
             validatorFileCache.put(fileName, retList);
