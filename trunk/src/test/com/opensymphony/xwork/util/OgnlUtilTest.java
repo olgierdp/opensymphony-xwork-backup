@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.util;
 
 import junit.framework.TestCase;
+
 import ognl.Ognl;
 
 import java.util.Calendar;
@@ -35,7 +36,7 @@ public class OgnlUtilTest extends TestCase {
 
         foo1.setTitle("blah");
         foo1.setNumber(1);
-        foo1.setPoints(new long[]{1, 2, 3});
+        foo1.setPoints(new long[] {1, 2, 3});
         foo1.setBirthday(cal.getTime());
         foo1.setUseful(false);
 
@@ -62,7 +63,7 @@ public class OgnlUtilTest extends TestCase {
 
         foo.setTitle("blah");
         foo.setNumber(1);
-        foo.setPoints(new long[]{1, 2, 3});
+        foo.setPoints(new long[] {1, 2, 3});
         foo.setBirthday(cal.getTime());
         foo.setUseful(false);
 
@@ -130,7 +131,7 @@ public class OgnlUtilTest extends TestCase {
         props.put("number", "2");
         OgnlUtil.setProperties(props, foo, context);
 
-        assertEquals(foo.getNumber(), 2);
+        assertEquals(2, foo.getNumber());
     }
 
     public void testSetPropertiesLongArray() {
@@ -139,13 +140,13 @@ public class OgnlUtilTest extends TestCase {
         Map context = Ognl.createDefaultContext(foo);
 
         HashMap props = new HashMap();
-        props.put("points", new String[]{"1", "2"});
+        props.put("points", new String[] {"1", "2"});
         OgnlUtil.setProperties(props, foo, context);
 
         assertNotNull(foo.getPoints());
-        assertEquals(foo.getPoints().length, 2);
-        assertEquals(foo.getPoints()[0], 1);
-        assertEquals(foo.getPoints()[1], 2);
+        assertEquals(2, foo.getPoints().length);
+        assertEquals(1, foo.getPoints()[0]);
+        assertEquals(2, foo.getPoints()[1]);
     }
 
     public void testSetPropertiesString() {
@@ -165,7 +166,7 @@ public class OgnlUtilTest extends TestCase {
         Map context = Ognl.createDefaultContext(foo);
         assertFalse(123456 == foo.getNumber());
         OgnlUtil.setProperty("number", "123456", foo, context);
-        assertTrue(123456 == foo.getNumber());
+        assertEquals(123456, foo.getNumber());
     }
 
     public void testStringToLong() {
@@ -179,7 +180,7 @@ public class OgnlUtilTest extends TestCase {
         OgnlUtil.setProperties(props, foo, context);
         assertEquals(123, foo.getaLong());
 
-        props.put("aLong", new String[]{"123"});
+        props.put("aLong", new String[] {"123"});
 
         foo.setaLong(0);
         OgnlUtil.setProperties(props, foo, context);

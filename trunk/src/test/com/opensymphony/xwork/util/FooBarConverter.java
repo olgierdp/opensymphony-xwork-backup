@@ -6,6 +6,8 @@ package com.opensymphony.xwork.util;
 
 import ognl.DefaultTypeConverter;
 
+import java.lang.reflect.Member;
+
 import java.util.Map;
 
 
@@ -38,5 +40,12 @@ public class FooBarConverter extends DefaultTypeConverter {
         }
 
         return null;
+    }
+
+    /* (non-Javadoc)
+ * @see ognl.TypeConverter#convertValue(java.util.Map, java.lang.Object, java.lang.reflect.Member, java.lang.String, java.lang.Object, java.lang.Class)
+ */
+    public Object convertValue(Map context, Object source, Member member, String property, Object value, Class toClass) {
+        return convertValue(context, value, toClass);
     }
 }
