@@ -42,32 +42,32 @@ public class ActionValidatorManagerTest extends TestCase {
         // 2 in the class level + 2 in the alias
         assertEquals(7, validatorList.size());
 
-        final FieldValidator barValidator1 = (FieldValidator) validatorList.get(0);
-        assertEquals("bar", barValidator1.getFieldName());
-        assertTrue(barValidator1 instanceof RequiredFieldValidator);
-
-        final FieldValidator barValidator2 = (FieldValidator) validatorList.get(1);
-        assertEquals("bar", barValidator2.getFieldName());
-        assertTrue(barValidator2 instanceof IntRangeFieldValidator);
-
-        final FieldValidator dateValidator = (FieldValidator) validatorList.get(2);
-        assertEquals("date", dateValidator.getFieldName());
-        assertTrue(dateValidator instanceof DateRangeFieldValidator);
-
-        final FieldValidator fooValidator = (FieldValidator) validatorList.get(3);
-        assertEquals("foo", fooValidator.getFieldName());
-        assertTrue(fooValidator instanceof IntRangeFieldValidator);
-
-        final Validator expressionValidator = (Validator) validatorList.get(4);
-        assertTrue(expressionValidator instanceof ExpressionValidator);
-
-        final FieldValidator bazValidator1 = (FieldValidator) validatorList.get(5);
+        final FieldValidator bazValidator1 = (FieldValidator) validatorList.get(0);
         assertEquals("baz", bazValidator1.getFieldName());
         assertTrue(bazValidator1 instanceof RequiredFieldValidator);
 
-        final FieldValidator bazValidator2 = (FieldValidator) validatorList.get(6);
+        final FieldValidator bazValidator2 = (FieldValidator) validatorList.get(1);
         assertEquals("baz", bazValidator2.getFieldName());
         assertTrue(bazValidator2 instanceof IntRangeFieldValidator);
+
+        final FieldValidator barValidator1 = (FieldValidator) validatorList.get(2);
+        assertEquals("bar", barValidator1.getFieldName());
+        assertTrue(barValidator1 instanceof RequiredFieldValidator);
+
+        final FieldValidator barValidator2 = (FieldValidator) validatorList.get(3);
+        assertEquals("bar", barValidator2.getFieldName());
+        assertTrue(barValidator2 instanceof IntRangeFieldValidator);
+
+        final FieldValidator dateValidator = (FieldValidator) validatorList.get(4);
+        assertEquals("date", dateValidator.getFieldName());
+        assertTrue(dateValidator instanceof DateRangeFieldValidator);
+
+        final FieldValidator fooValidator = (FieldValidator) validatorList.get(5);
+        assertEquals("foo", fooValidator.getFieldName());
+        assertTrue(fooValidator instanceof IntRangeFieldValidator);
+
+        final Validator expressionValidator = (Validator) validatorList.get(6);
+        assertTrue(expressionValidator instanceof ExpressionValidator);
     }
 
     public void testGetValidatorsForInterface() {
@@ -109,13 +109,13 @@ public class ActionValidatorManagerTest extends TestCase {
     public void testShortCircuit() {
         // get validators
         List validatorList = ActionValidatorManager.getValidators(User.class, null);
-        assertEquals(7, validatorList.size());
+        assertEquals(10, validatorList.size());
 
         try {
             User user = new User();
             user.setName("Mark");
             user.setEmail("mark@mycompany.com");
-            user.setEmail2("mark2@mycompany.com");
+            user.setEmail2("mark@mycompany.com");
 
             // this should work
             ValidatorContext context = new GenericValidatorContext(user);
@@ -129,6 +129,7 @@ public class ActionValidatorManagerTest extends TestCase {
             ActionValidatorManager.validate(user, null, context);
             assertTrue(context.hasFieldErrors());
 
+            // check field errors
             List l = (List) context.getFieldErrors().get("email");
             assertNotNull(l);
             assertEquals(1, l.size());
@@ -138,6 +139,13 @@ public class ActionValidatorManagerTest extends TestCase {
             assertEquals(2, l.size());
             assertEquals("Not a valid e-mail2.", l.get(0));
             assertEquals("Email2 not from the right company.", l.get(1));
+
+            // check action errors
+            assertTrue(context.hasActionErrors());
+            l = (List) context.getActionErrors();
+            assertNotNull(l);
+            assertEquals(1, l.size());
+            assertEquals("Email does not start with mark", l.get(0));
         } catch (ValidationException ex) {
             ex.printStackTrace();
             fail("Validation error: " + ex.getMessage());

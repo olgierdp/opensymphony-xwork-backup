@@ -8,6 +8,7 @@ import com.opensymphony.util.ClassLoaderUtil;
 
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
+import com.opensymphony.xwork.validator.validators.ExpressionValidator;
 import com.opensymphony.xwork.validator.validators.IntRangeFieldValidator;
 import com.opensymphony.xwork.validator.validators.RequiredFieldValidator;
 
@@ -33,7 +34,7 @@ public class ValidatorFileParserTest extends TestCase {
 
         List configs = ValidatorFileParser.parseActionValidators(is);
         assertNotNull(configs);
-        assertEquals(3, configs.size());
+        assertEquals(5, configs.size());
 
         Validator validator = (Validator) configs.get(0);
         assertTrue(validator instanceof RequiredFieldValidator);
@@ -43,12 +44,20 @@ public class ValidatorFileParserTest extends TestCase {
         assertEquals("You must enter a value for foo.", fieldValidator.getDefaultMessage());
 
         validator = (Validator) configs.get(1);
-        assertTrue(validator instanceof ShortCircuitingFieldValidator);
-        assertTrue(((ShortCircuitingFieldValidator) validator).isShortCircuit());
+        assertTrue(validator instanceof ShortCircuitingValidator);
+        assertTrue(((ShortCircuitingValidator) validator).isShortCircuit());
 
         validator = (Validator) configs.get(2);
         assertTrue(validator instanceof IntRangeFieldValidator);
-        assertFalse(((ShortCircuitingFieldValidator) validator).isShortCircuit());
+        assertFalse(((ShortCircuitingValidator) validator).isShortCircuit());
+
+        validator = (Validator) configs.get(3);
+        assertTrue(validator instanceof ExpressionValidator);
+        assertFalse(((ShortCircuitingValidator) validator).isShortCircuit());
+
+        validator = (Validator) configs.get(4);
+        assertTrue(validator instanceof ExpressionValidator);
+        assertTrue(((ShortCircuitingValidator) validator).isShortCircuit());
     }
 
     protected void setUp() throws Exception {

@@ -5,15 +5,11 @@
 package com.opensymphony.xwork.validator.validators;
 
 import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.util.OgnlUtil;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.TextParseUtil;
+import com.opensymphony.xwork.validator.ShortCircuitingValidator;
 import com.opensymphony.xwork.validator.ValidationException;
-import com.opensymphony.xwork.validator.Validator;
 import com.opensymphony.xwork.validator.ValidatorContext;
-
-import ognl.Ognl;
-import ognl.OgnlException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,13 +20,14 @@ import org.apache.commons.logging.LogFactory;
  * @author Jason Carreira
  * Created Feb 15, 2003 3:58:21 PM
  */
-public abstract class ValidatorSupport implements Validator {
+public abstract class ValidatorSupport implements ShortCircuitingValidator {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     protected final Log log = LogFactory.getLog(this.getClass());
     protected String defaultMessage = "";
     protected String messageKey = null;
     private ValidatorContext validatorContext;
+    private boolean m_shortCircuit;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -71,6 +68,14 @@ public abstract class ValidatorSupport implements Validator {
 
     public String getMessageKey() {
         return messageKey;
+    }
+
+    public void setShortCircuit(boolean shortcircuit) {
+        m_shortCircuit = shortcircuit;
+    }
+
+    public boolean isShortCircuit() {
+        return m_shortCircuit;
     }
 
     public void setValidatorContext(ValidatorContext validatorContext) {

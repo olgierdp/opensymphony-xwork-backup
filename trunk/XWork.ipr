@@ -1,9 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4" relativePaths="false">
-  <component name="AntConfiguration" />
+  <component name="AntConfiguration">
+    <buildFile url="file://$PROJECT_DIR$/build.xml">
+      <useEmacsModeOutput value="true" />
+      <maximumHeapSize value="128" />
+      <useCustomJdk value="false" />
+      <useJavaw value="false" />
+      <includeProjectClasspath value="false" />
+      <includeParser value="true" />
+      <additionalClassPath>
+        <entry path="file://D:/bin/apache-ant-1.6.1/lib/ant-junit.jar" />
+        <entry path="file://D:/bin/apache-ant-1.6.1/lib/junit.jar" />
+        <entry path="file://$PROJECT_DIR$/lib/build/clover-1.2.3.jar" />
+      </additionalClassPath>
+    </buildFile>
+  </component>
   <component name="CodeStyleSettingsManager">
-    <option name="PER_PROJECT_SETTINGS" />
-    <option name="USE_PER_PROJECT_SETTINGS" value="false" />
+    <option name="PER_PROJECT_SETTINGS">
+      <value>
+        <option name="JAVA_INDENT_OPTIONS">
+          <value>
+            <option name="INDENT_SIZE" value="4" />
+            <option name="CONTINUATION_INDENT_SIZE" value="4" />
+            <option name="TAB_SIZE" value="4" />
+            <option name="USE_TAB_CHARACTER" value="false" />
+            <option name="SMART_TABS" value="false" />
+          </value>
+        </option>
+        <option name="JSP_INDENT_OPTIONS">
+          <value>
+            <option name="INDENT_SIZE" value="2" />
+            <option name="CONTINUATION_INDENT_SIZE" value="4" />
+            <option name="TAB_SIZE" value="2" />
+            <option name="USE_TAB_CHARACTER" value="false" />
+            <option name="SMART_TABS" value="false" />
+          </value>
+        </option>
+        <option name="XML_INDENT_OPTIONS">
+          <value>
+            <option name="INDENT_SIZE" value="2" />
+            <option name="CONTINUATION_INDENT_SIZE" value="4" />
+            <option name="TAB_SIZE" value="2" />
+            <option name="USE_TAB_CHARACTER" value="false" />
+            <option name="SMART_TABS" value="false" />
+          </value>
+        </option>
+        <option name="OTHER_INDENT_OPTIONS">
+          <value>
+            <option name="INDENT_SIZE" value="2" />
+            <option name="CONTINUATION_INDENT_SIZE" value="4" />
+            <option name="TAB_SIZE" value="2" />
+            <option name="USE_TAB_CHARACTER" value="false" />
+            <option name="SMART_TABS" value="false" />
+          </value>
+        </option>
+        <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
+        <option name="BLANK_LINES_AFTER_IMPORTS" value="2" />
+        <option name="SPACE_AFTER_TYPE_CAST" value="false" />
+        <option name="FIELD_NAME_PREFIX" value="m_" />
+        <option name="STATIC_FIELD_NAME_PREFIX" value="s_" />
+        <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="8" />
+        <option name="IMPORT_LAYOUT_TABLE">
+          <value>
+            <package name="java" withSubpackages="true" />
+            <package name="javax" withSubpackages="true" />
+            <package name="gnu.trove" withSubpackages="true" />
+            <package name="org.apache" withSubpackages="true" />
+            <package name="net.sf.hibernate" withSubpackages="true" />
+            <package name="" withSubpackages="true" />
+          </value>
+        </option>
+      </value>
+    </option>
+    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
   </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
@@ -67,7 +136,7 @@
       <module fileurl="file://$PROJECT_DIR$/XWork.iml" filepath="$PROJECT_DIR$/XWork.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" assert-keyword="false" project-jdk-name="java version &quot;1.4.2_01&quot;" />
+  <component name="ProjectRootManager" version="2" assert-keyword="false" project-jdk-name="java version &quot;1.4.2_03&quot;" />
   <component name="Regex">
     <option name="pos1" value="218" />
     <option name="pos2" value="218" />

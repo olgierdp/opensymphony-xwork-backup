@@ -33,6 +33,7 @@ import java.util.TreeSet;
 public class ActionValidatorManager {
     //~ Static fields/initializers /////////////////////////////////////////////
 
+    private static final String ACTION_VALIDATOR_KEY = "__ACTION_VALIDATOR_KEY__";
     protected static final String VALIDATION_CONFIG_SUFFIX = "-validation.xml";
     private static final Map validatorCache = Collections.synchronizedMap(new HashMap());
     private static final Map validatorFileCache = Collections.synchronizedMap(new HashMap());
@@ -64,7 +65,7 @@ public class ActionValidatorManager {
     public static void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException {
         List validators = getValidators(object.getClass(), context);
 
-        Set shortcircuitedFields = null;
+        Set shortcircuited = null;
 
         for (Iterator iterator = validators.iterator(); iterator.hasNext();) {
             Validator validator = (Validator) iterator.next();
@@ -74,44 +75,67 @@ public class ActionValidatorManager {
                 LOG.debug("Running validator: " + validator + " for object " + object);
             }
 
-            if (validator instanceof FieldValidator) {
-                FieldValidator fValidator = (FieldValidator) validator;
+            String fieldName = ACTION_VALIDATOR_KEY;
+            FieldValidator fValidator = null;
 
-                if ((shortcircuitedFields != null) && shortcircuitedFields.contains(fValidator.getFieldName())) {
-                    continue;
+            if (validator instanceof FieldValidator) {
+                fValidator = (FieldValidator) validator;
+                fieldName = fValidator.getFieldName();
+            }
+
+            if ((shortcircuited != null) && shortcircuited.contains(fieldName)) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Short-circuited, skipping");
                 }
 
-                if (validator instanceof ShortCircuitingFieldValidator && ((ShortCircuitingFieldValidator) validator).isShortCircuit()) {
-                    int errs = 0;
+                continue;
+            }
 
+            if (validator instanceof ShortCircuitingValidator && ((ShortCircuitingValidator) validator).isShortCircuit()) {
+                // get number of existing errors
+                int errs = 0;
+
+                if (fValidator != null) {
                     if (validatorContext.hasFieldErrors()) {
-                        Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fValidator.getFieldName());
+                        Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fieldName);
 
                         if (fieldErrors != null) {
                             errs = fieldErrors.size();
                         }
                     }
+                } else if (validatorContext.hasActionErrors()) {
+                    Collection actionErrors = validatorContext.getActionErrors();
 
-                    validator.validate(object);
+                    if (actionErrors != null) {
+                        errs = actionErrors.size();
+                    }
+                }
 
+                validator.validate(object);
+
+                Collection errCol = null;
+
+                if (fValidator != null) {
                     if (validatorContext.hasFieldErrors()) {
-                        Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fValidator.getFieldName());
+                        errCol = (Collection) validatorContext.getFieldErrors().get(fieldName);
+                    }
+                } else if (validatorContext.hasActionErrors()) {
+                    errCol = validatorContext.getActionErrors();
+                }
 
-                        if ((fieldErrors != null) && (fieldErrors.size() > errs)) {
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug("Short-circuiting");
-                            }
-
-                            if (shortcircuitedFields == null) {
-                                shortcircuitedFields = new TreeSet();
-                            }
-
-                            shortcircuitedFields.add(fValidator.getFieldName());
-                        }
+                if ((errCol != null) && (errCol.size() > errs)) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Short-circuiting");
                     }
 
-                    continue;
+                    if (shortcircuited == null) {
+                        shortcircuited = new TreeSet();
+                    }
+
+                    shortcircuited.add(fieldName);
                 }
+
+                continue;
             }
 
             validator.validate(object);
@@ -155,6 +179,10 @@ public class ActionValidatorManager {
     private static List buildValidators(Class clazz, String context, boolean checkFile) {
         List validators = new ArrayList();
 
+        // order matters for short-circuit
+        validators.addAll(buildAliasValidators(clazz, context, checkFile));
+        validators.addAll(buildClassValidators(clazz, checkFile));
+
         // look for validators for implemented interfaces
         Class[] interfaces = clazz.getInterfaces();
 
@@ -166,6 +194,9 @@ public class ActionValidatorManager {
         Class anActionClass = clazz.getSuperclass();
 
         while (!anActionClass.equals(Object.class)) {
+            // look for validators for this class
+            validators.addAll(buildClassValidators(anActionClass, checkFile));
+
             // look for validators for implemented interfaces
             interfaces = anActionClass.getInterfaces();
 
@@ -174,12 +205,8 @@ public class ActionValidatorManager {
             }
 
             // search up class hierarchy
-            validators.addAll(buildClassValidators(anActionClass, checkFile));
             anActionClass = anActionClass.getSuperclass();
         }
-
-        validators.addAll(buildClassValidators(clazz, checkFile));
-        validators.addAll(buildAliasValidators(clazz, context, checkFile));
 
         return validators;
     }

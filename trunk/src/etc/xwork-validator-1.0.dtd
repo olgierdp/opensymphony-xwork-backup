@@ -15,6 +15,7 @@
 <!ELEMENT validator (param*, message)>
 <!ATTLIST validator
 	type CDATA #REQUIRED
+    short-circuit (true|false) "false"
 >
 
 <!ELEMENT param (#PCDATA)>

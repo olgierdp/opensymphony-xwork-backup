@@ -1,0 +1,19 @@
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.dtd">
+<validators>
+    <field name="email">
+        <field-validator type="fieldexpression">
+            <param name="expression">email.endsWith('mycompany.com')</param>
+            <message>Email not from the right company.</message>
+        </field-validator>
+    </field>
+    <field name="email2">
+        <field-validator type="fieldexpression">
+            <param name="expression">email.endsWith('mycompany.com')</param>
+            <message>Email2 not from the right company.</message>
+        </field-validator>
+    </field>
+    <validator type="expression">
+        <param name="expression">email2.startsWith('mark')</param>
+        <message>Email2 does not start with mark</message>
+    </validator>
+</validators>

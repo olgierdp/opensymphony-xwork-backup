@@ -12,7 +12,7 @@ package com.opensymphony.xwork.validator;
  *
  * @author Mark Woon
  */
-public interface ShortCircuitingFieldValidator extends FieldValidator {
+public interface ShortCircuitingValidator extends Validator {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
