@@ -13,8 +13,6 @@ import org.apache.commons.logging.LogFactory;
 /**
  * AroundInterceptor
  *
- * Created : Jan 7, 2003 10:38:50 PM
- *
  * @author Jason Carreira
  */
 public abstract class AroundInterceptor implements Interceptor {

@@ -6,13 +6,23 @@ package com.opensymphony.xwork.util;
 
 
 /**
- * TextParseUtil
+ * Utility class for text parsing.
+ *
  * @author Jason Carreira
  * Created Feb 10, 2003 8:55:11 PM
  */
 public class TextParseUtil {
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    /**
+     * Converts all instances of ${...} in <code>expression</code> to the value returned
+     * by a call to {@link OgnlValueStack#findValue(java.lang.String)}. If an item cannot
+     * be found on the stack (null is returned), then the entire variable ${...} is not
+     * displayed, just as if the item was on the stack but returned an empty string.
+     *
+     * @param expression an expression that hasn't yet been translated
+     * @return the parsed expression
+     */
     public static String translateVariables(String expression, OgnlValueStack stack) {
         while (true) {
             int x = expression.indexOf("${");

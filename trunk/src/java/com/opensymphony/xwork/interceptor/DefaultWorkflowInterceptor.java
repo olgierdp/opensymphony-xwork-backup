@@ -11,34 +11,31 @@ import com.opensymphony.xwork.ValidationAware;
 
 
 /**
- * DefaultWorkflowInterceptor
+ * An interceptor that does some basic validation workflow before allowing the interceptor chain to continue.
+ * The order of execution in the workflow is:
+ *
+ * <ol>
+ *  <li>If the action being executed implements {@link Validateable}, the action's
+ *      {@link Validateable#validate() validate} method is called.</li>
+ *  <li>Next, if the action implements {@link ValidationAware}, the action's
+ *      {@link ValidationAware#hasErrors() hasErrors} method is called. If this
+ *      method returns true, this interceptor stops the chain from continuing and
+ *      immediately returns {@link Action#INPUT}</li>
+ * </ol>
+ *
+ * <i>Note: if the action doesn't implement either interface, this interceptor effectively does nothing.</i>
+ *
  * @author Jason Carreira
- * Created Jul 2, 2003 9:50:10 PM
  */
 public class DefaultWorkflowInterceptor implements Interceptor {
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    /**
-     * Called to let an interceptor clean up any resources it has allocated.
-     */
     public void destroy() {
     }
 
-    /**
-     * Called after an Interceptor is created, but before any requests are processed using the intercept() methodName. This
-     * gives the Interceptor a chance to initialize any needed resources.
-     */
     public void init() {
     }
 
-    /**
-     * Allows the Interceptor to do some processing on the request before and/or after the rest of the processing of the
-     * request by the DefaultActionInvocation or to short-circuit the processing and just return a String return code.
-     *
-     * @param invocation
-     * @return
-     * @throws Exception
-     */
     public String intercept(ActionInvocation invocation) throws Exception {
         Action action = invocation.getAction();
 

@@ -6,11 +6,11 @@ package com.opensymphony.xwork;
 
 
 /**
- * Validateable provides an Interface for Actions which can be validated.
+ * Provides an interface in which a call for a validation check can be done. 
+ *
  * @author Jason Carreira
  * @see ActionSupport
  * @see com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor
- * Created Aug 29, 2003 1:42:21 PM
  */
 public interface Validateable {
     //~ Methods ////////////////////////////////////////////////////////////////

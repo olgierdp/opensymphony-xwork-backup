@@ -13,9 +13,8 @@ import java.util.*;
 
 
 /**
- * User: Mike
- * Date: May 27, 2003
- * Time: 3:45:29 PM
+ * Provides a default implementation for the most common actions.
+ * See the documentation for all the interfaces this class implements for more detailed information.
  */
 public class ActionSupport implements Action, Serializable, Validateable, ValidationAware, TextProvider, LocaleProvider {
     //~ Static fields/initializers /////////////////////////////////////////////
@@ -98,6 +97,11 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
         validationAware.addFieldError(fieldName, errorMessage);
     }
 
+    /**
+     * A default implementation that does nothing an returns "success".
+     *
+     * @return {@link #SUCCESS}
+     */
     public String execute() throws Exception {
         return SUCCESS;
     }
@@ -115,6 +119,7 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
     }
 
     /**
+     * A default implementation that validates nothing.
      * Subclasses should override this method to provide validations.
      */
     public void validate() {

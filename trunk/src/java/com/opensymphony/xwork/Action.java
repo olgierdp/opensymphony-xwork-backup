@@ -8,9 +8,8 @@ import java.io.Serializable;
 
 
 /**
- * All Actions must minimally implement this interface. It provides the
- * execute methodName, which is done by actions to perform whatever their
- * purpose is.
+ * All Actions must minimally implement this interface, which exposes
+ * the execute() method.
  *
  * @author $Author$
  * @version $Revision$
@@ -63,9 +62,7 @@ public interface Action extends Serializable {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-     * This methodName is where the logic of the action is executed.
-     * Parameters are passed by calling set-methods, or by implementing
-     * the ParameterAware interface.
+     * Where the logic of the action is executed.
      *
      * @return     a string representing the logical result of the execution.
      * See constants in this interface for a list of standard result values.
