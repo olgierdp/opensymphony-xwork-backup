@@ -7,12 +7,12 @@ package com.opensymphony.xwork.util;
 import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ModelDriven;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
-
 import java.util.*;
 
 
@@ -28,11 +28,17 @@ public class LocalizedTextUtil {
     private static final List DEFAULT_RESOURCE_BUNDLES = Collections.synchronizedList(new ArrayList());
     private static final Log LOG = LogFactory.getLog(LocalizedTextUtil.class);
 
+    private static boolean reloadBundles = false;
+
     static {
         DEFAULT_RESOURCE_BUNDLES.add("com/opensymphony/xwork/xwork-messages");
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
+
+    public static void setReloadBundles(boolean reloadBundles) {
+        LocalizedTextUtil.reloadBundles = reloadBundles;
+    }
 
     public static void addDefaultResourceBundle(String resourceBundleName) {
         //make sure this doesn't get added more than once
@@ -41,6 +47,21 @@ public class LocalizedTextUtil {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("Added default resource bundle " + resourceBundleName + ", default resource bundles = " + DEFAULT_RESOURCE_BUNDLES);
+        }
+    }
+
+    private static void reloadBundles(ResourceBundle resource) {
+        if (reloadBundles) {
+            try {
+                Class klass = resource.getClass().getSuperclass();
+                Field field = klass.getDeclaredField("cacheList");
+                field.setAccessible(true);
+                Object cache = field.get(null);
+                Method clearMethod = cache.getClass().getMethod("clear", new Class[0]);
+                clearMethod.invoke(cache, new Object[0]);
+            } catch (Exception e) {
+                LOG.error("Could not reload resource bundles", e);
+            }
         }
     }
 
@@ -53,7 +74,7 @@ public class LocalizedTextUtil {
 
             try {
                 ResourceBundle bundle = findResourceBundle(bundleName, locale);
-
+                reloadBundles(bundle);
                 return bundle.getString(aTextName);
             } catch (MissingResourceException ex) {
                 e = ex;
@@ -131,6 +152,7 @@ public class LocalizedTextUtil {
         do {
             try {
                 ResourceBundle bundle = findResourceBundle(clazz.getName(), locale);
+                reloadBundles(bundle);
                 String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
 
                 return MessageFormat.format(message, args);
@@ -153,6 +175,7 @@ public class LocalizedTextUtil {
                     for (int x = 0; x < interfaces.length; x++) {
                         try {
                             ResourceBundle bundle = findResourceBundle(interfaces[x].getName(), locale);
+                            reloadBundles(bundle);
                             String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
 
                             return MessageFormat.format(message, args);
@@ -163,6 +186,7 @@ public class LocalizedTextUtil {
                     // search up model class hierarchy
                     try {
                         ResourceBundle bundle = findResourceBundle(clazz.getName(), locale);
+                        reloadBundles(bundle);
                         String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
 
                         return MessageFormat.format(message, args);
@@ -181,6 +205,7 @@ public class LocalizedTextUtil {
         OgnlValueStack valueStack = ActionContext.getContext().getValueStack();
 
         try {
+            reloadBundles(bundle);
             String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
 
             return MessageFormat.format(message, args);
