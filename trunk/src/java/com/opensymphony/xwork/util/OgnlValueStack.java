@@ -36,6 +36,7 @@ public class OgnlValueStack implements Serializable {
 
     CompoundRoot root;
     transient Map context;
+    Class defaultType;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
@@ -67,6 +68,14 @@ public class OgnlValueStack implements Serializable {
 
     public Object findValue(String expr) {
         try {
+            if (expr == null) {
+                return null;
+            }
+
+            if (defaultType != null) {
+                return findValue(expr, defaultType);
+            }
+
             return Ognl.getValue(OgnlUtil.compile(expr), context, root);
         } catch (OgnlException e) {
             return null;
@@ -75,6 +84,10 @@ public class OgnlValueStack implements Serializable {
 
     public Object findValue(String expr, Class asType) {
         try {
+            if (expr == null) {
+                return null;
+            }
+
             return Ognl.getValue(OgnlUtil.compile(expr), context, root, asType);
         } catch (OgnlException e) {
             return null;
@@ -95,6 +108,10 @@ public class OgnlValueStack implements Serializable {
 
     public int size() {
         return root.size();
+    }
+
+    public void setDefaultType(Class defaultType) {
+        this.defaultType = defaultType;
     }
 
     private void setRoot(CompoundRoot compoundRoot) {
