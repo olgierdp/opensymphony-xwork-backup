@@ -31,12 +31,12 @@ public class DefaultActionProxy implements ActionProxy {
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    ActionConfig config;
-    ActionInvocation invocation;
-    Map extraContext;
-    String actionName;
-    String namespace;
-    boolean executeResult;
+    protected ActionConfig config;
+    protected ActionInvocation invocation;
+    protected Map extraContext;
+    protected String actionName;
+    protected String namespace;
+    protected boolean executeResult;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
