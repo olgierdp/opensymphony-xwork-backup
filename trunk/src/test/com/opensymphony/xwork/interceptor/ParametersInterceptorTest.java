@@ -4,16 +4,10 @@
  */
 package com.opensymphony.xwork.interceptor;
 
-import com.opensymphony.xwork.Action;
-import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.ActionProxy;
-import com.opensymphony.xwork.ActionProxyFactory;
-import com.opensymphony.xwork.ModelDrivenAction;
-import com.opensymphony.xwork.SimpleAction;
-import com.opensymphony.xwork.TestBean;
+import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
-
+import com.opensymphony.xwork.util.OgnlValueStack;
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -22,7 +16,7 @@ import java.util.Map;
 
 /**
  * ParametersInterceptorTest
- *
+ * <p/>
  * Created : Jan 15, 2003 8:49:15 PM
  *
  * @author Jason Carreira
@@ -73,6 +67,28 @@ public class ParametersInterceptorTest extends TestCase {
             assertEquals(nameVal, model.getName());
             assertEquals(15, model.getCount());
             assertEquals(fooVal, action.getFoo());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    public void testParametersDoesNotAffectSession() {
+        Map params = new HashMap();
+        params.put("blah", "This is blah");
+        params.put("#session.foo", "Foo");
+
+        HashMap extraContext = new HashMap();
+        extraContext.put(ActionContext.PARAMETERS, params);
+
+        try {
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
+            OgnlValueStack stack = proxy.getInvocation().getStack();
+            HashMap session = new HashMap();
+            stack.getContext().put("session", session);
+            proxy.execute();
+            assertEquals("This is blah", ((SimpleAction) proxy.getAction()).getBlah());
+            assertNull(session.get("foo"));
         } catch (Exception e) {
             e.printStackTrace();
             fail();
