@@ -375,8 +375,6 @@ public class XWorkConverter extends DefaultTypeConverter {
      * @return the converter mappings
      */
     private Map buildConverterMapping(Class clazz) throws Exception {
-        System.out.println(clazz);
-
         Map mapping = new HashMap();
 
         // check for conversion mapping associated with super classes and any implemented interfaces
