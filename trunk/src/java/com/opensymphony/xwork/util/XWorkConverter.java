@@ -130,7 +130,7 @@ public class XWorkConverter extends DefaultTypeConverter {
                             mapping.putAll(props);
 
                             for (Iterator iterator = mapping.entrySet().iterator();
-                                    iterator.hasNext();) {
+                                 iterator.hasNext();) {
                                 Map.Entry entry = (Map.Entry) iterator.next();
                                 entry.setValue(createTypeConverter((String) entry.getValue()));
                             }
@@ -149,15 +149,10 @@ public class XWorkConverter extends DefaultTypeConverter {
         if (tc == null) {
             if (toClass.equals(String.class) && value != null && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class))) {
                 // when converting to a string, use the source target's class's converter
-                if (defaultMappings.containsKey(value.getClass().getName())) {
-                    tc = (TypeConverter) defaultMappings.get(value.getClass().getName());
-                }
+                tc = lookup(value.getClass());
             } else {
                 // when converting from a string, use the toClass's converter
-                if (defaultMappings.containsKey(toClass.getName())) {
-                    //	converting from String
-                    tc = (TypeConverter) defaultMappings.get(toClass.getName());
-                }
+                tc = lookup(toClass);
             }
         }
 
@@ -191,7 +186,53 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     public TypeConverter lookup(String className) {
-        return (TypeConverter) defaultMappings.get(className);
+        TypeConverter result = (TypeConverter) defaultMappings.get(className);
+
+        //Looks for super classes
+        if (result == null) {
+            Class clazz = null;
+            try {
+                clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+            } catch (ClassNotFoundException cnfe) {
+            }
+
+            result = lookupSuper(clazz);
+
+            if (result != null) {
+                //Register now, the next lookup will be faster
+                registerConverter(className, result);
+            }
+        }
+        return result;
+    }
+
+    private TypeConverter lookupSuper(Class clazz) {
+
+        TypeConverter result = null;
+
+        if (clazz != null) {
+            result = (TypeConverter) defaultMappings.get(clazz.getName());
+
+            if (result == null) {
+                // Looks for direct interfaces (depth = 1 )
+                Class[] interfaces = clazz.getInterfaces();
+                for (int i = 0; i < interfaces.length; i++) {
+                    if (defaultMappings.containsKey(interfaces[i].getName())) {
+                        result = (TypeConverter) defaultMappings.get(interfaces[i].getName());
+                    }
+                    break;
+                }
+
+                if (result == null) {
+                    // Looks for the superclass
+                    // If 'clazz' is the Object class, an interface, a primitive type or void then clazz.getSuperClass() returns null 
+                    result = lookupSuper(clazz.getSuperclass());
+                }
+            }
+
+        }
+
+        return result;
     }
 
     public TypeConverter lookup(Class clazz) {
@@ -231,7 +272,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         props.load(is);
 
         for (Iterator iterator = props.entrySet().iterator();
-                iterator.hasNext();) {
+             iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String key = (String) entry.getKey();
 
