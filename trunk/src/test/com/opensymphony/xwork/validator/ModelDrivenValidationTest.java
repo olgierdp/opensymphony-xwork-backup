@@ -1,12 +1,18 @@
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.ConfigurationManager;
+
 import junit.framework.TestCase;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * ModelDrivenValidationTest
@@ -14,14 +20,18 @@ import java.util.Map;
  * Created Oct 1, 2003 10:08:25 AM
  */
 public class ModelDrivenValidationTest extends TestCase {
+    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testModelDrivenValidation() throws Exception {
         Map params = new HashMap();
-        params.put("count", new String[]{"11"});
+        params.put("count", new String[] {"11"});
+
         Map context = new HashMap();
         context.put(ActionContext.PARAMETERS, params);
+
         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "TestModelDrivenValidation", context);
         assertEquals(Action.SUCCESS, proxy.execute());
+
         ModelDrivenAction action = (ModelDrivenAction) proxy.getAction();
         assertTrue(action.hasFieldErrors());
         assertTrue(action.getFieldErrors().containsKey("count"));

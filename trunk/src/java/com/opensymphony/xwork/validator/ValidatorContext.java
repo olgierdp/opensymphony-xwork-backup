@@ -4,9 +4,9 @@
  */
 package com.opensymphony.xwork.validator;
 
+import com.opensymphony.xwork.LocaleProvider;
 import com.opensymphony.xwork.TextProvider;
 import com.opensymphony.xwork.ValidationAware;
-import com.opensymphony.xwork.LocaleProvider;
 
 
 /**

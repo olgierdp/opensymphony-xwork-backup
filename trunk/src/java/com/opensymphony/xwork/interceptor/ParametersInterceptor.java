@@ -40,7 +40,7 @@ public class ParametersInterceptor extends AroundInterceptor {
                     final OgnlValueStack stack = ActionContext.getContext().getValueStack();
 
                     for (Iterator iterator = parameters.entrySet().iterator();
-                         iterator.hasNext();) {
+                            iterator.hasNext();) {
                         Map.Entry entry = (Map.Entry) iterator.next();
                         stack.setValue(entry.getKey().toString(), entry.getValue());
                     }

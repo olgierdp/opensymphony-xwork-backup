@@ -7,6 +7,7 @@ package com.opensymphony.xwork.util;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.XWorkMessages;
 import com.opensymphony.xwork.config.ConfigurationManager;
+
 import junit.framework.TestCase;
 
 import java.util.Locale;
@@ -71,11 +72,9 @@ public class LocalizedTextUtilTest extends TestCase {
 
     public void testParameterizedDefaultMessage() {
         try {
-            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION,
-                    Locale.getDefault(),
-                    new String[]{
-                "AddUser"
-            });
+            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[] {
+                    "AddUser"
+                });
             assertEquals("There is no Action mapped for action name AddUser", message);
         } catch (MissingResourceException e) {
             e.printStackTrace();
@@ -85,11 +84,9 @@ public class LocalizedTextUtilTest extends TestCase {
 
     public void testParameterizedDefaultMessageWithPackage() {
         try {
-            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION,
-                    Locale.getDefault(),
-                    new String[]{
-                "blah", "AddUser"
-            });
+            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[] {
+                    "blah", "AddUser"
+                });
             assertEquals("There is no Action mapped for namespace blah and action name AddUser", message);
         } catch (MissingResourceException e) {
             e.printStackTrace();
@@ -101,6 +98,7 @@ public class LocalizedTextUtilTest extends TestCase {
         super.setUp();
         ConfigurationManager.destroyConfiguration();
         ConfigurationManager.getConfiguration().reload();
+
         OgnlValueStack stack = new OgnlValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
         ActionContext.getContext().setLocale(Locale.US);

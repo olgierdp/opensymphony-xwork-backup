@@ -40,7 +40,7 @@ public class DelegatingValidatorContext implements ValidatorContext {
     public DelegatingValidatorContext(Object object) {
         this.localeProvider = makeLocaleProvider(object);
         this.validationAware = makeValidationAware(object);
-        this.textProvider = makeTextProvider(object,localeProvider);
+        this.textProvider = makeTextProvider(object, localeProvider);
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -109,6 +109,14 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return validationAware.hasFieldErrors();
     }
 
+    protected static LocaleProvider makeLocaleProvider(Object object) {
+        if (object instanceof LocaleProvider) {
+            return (LocaleProvider) object;
+        } else {
+            return new ActionContextLocaleProvider();
+        }
+    }
+
     protected static TextProvider makeTextProvider(Object object, LocaleProvider localeProvider) {
         if (object instanceof LocaleProvider) {
             return (TextProvider) object;
@@ -122,14 +130,6 @@ public class DelegatingValidatorContext implements ValidatorContext {
             return (ValidationAware) object;
         } else {
             return new LoggingValidationAware(object);
-        }
-    }
-
-    protected static LocaleProvider makeLocaleProvider(Object object) {
-        if (object instanceof LocaleProvider) {
-            return (LocaleProvider) object;
-        } else {
-            return new ActionContextLocaleProvider();
         }
     }
 
@@ -150,6 +150,12 @@ public class DelegatingValidatorContext implements ValidatorContext {
     }
 
     //~ Inner Classes //////////////////////////////////////////////////////////
+
+    private static class ActionContextLocaleProvider implements LocaleProvider {
+        public Locale getLocale() {
+            return ActionContext.getContext().getLocale();
+        }
+    }
 
     private static class LoggingValidationAware implements ValidationAware {
         private Log log;
@@ -201,12 +207,5 @@ public class DelegatingValidatorContext implements ValidatorContext {
         public boolean hasFieldErrors() {
             return false;
         }
-    }
-
-    private static class ActionContextLocaleProvider implements LocaleProvider {
-        public Locale getLocale() {
-            return ActionContext.getContext().getLocale();
-        }
-
     }
 }

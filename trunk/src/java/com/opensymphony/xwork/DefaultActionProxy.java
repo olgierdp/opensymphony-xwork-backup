@@ -12,8 +12,8 @@ import com.opensymphony.xwork.util.LocalizedTextUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.Map;
 import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -61,15 +61,11 @@ public class DefaultActionProxy implements ActionProxy {
             String message;
 
             if ((namespace != null) && (namespace.trim().length() > 0)) {
-                message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION,
-                        Locale.getDefault(),
-                        new String[] {
+                message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[] {
                             namespace, actionName
                         });
             } else {
-                message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION,
-                        Locale.getDefault(),
-                        new String[] {
+                message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[] {
                             actionName
                         });
             }

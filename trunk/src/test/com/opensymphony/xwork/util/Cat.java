@@ -19,10 +19,18 @@ public class Cat {
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    String name;
     Foo foo;
+    String name;
 
     //~ Methods ////////////////////////////////////////////////////////////////
+
+    public void setFoo(Foo foo) {
+        this.foo = foo;
+    }
+
+    public Foo getFoo() {
+        return foo;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -30,13 +38,5 @@ public class Cat {
 
     public String getName() {
         return name;
-    }
-
-    public Foo getFoo() {
-        return foo;
-    }
-
-    public void setFoo(Foo foo) {
-        this.foo = foo;
     }
 }

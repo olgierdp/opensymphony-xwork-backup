@@ -10,9 +10,9 @@ import com.opensymphony.xwork.ActionProxyFactory;
 import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.ValidationAware;
 import com.opensymphony.xwork.ValidationAwareSupport;
-import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
+import com.opensymphony.xwork.util.OgnlValueStack;
 
 import junit.framework.TestCase;
 

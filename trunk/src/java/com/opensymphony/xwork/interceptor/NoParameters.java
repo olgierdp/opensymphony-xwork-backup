@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork.interceptor;
 
+
 /**
 * This marker interface should be implemented by actions that do not want any
 * parameters set on them automatically (by the ParametersActionFactoryProxy)
@@ -12,9 +13,8 @@ package com.opensymphony.xwork.interceptor;
 * It may also be useful if one for security reasons wants to make sure that
 * parameters cannot be set by malicious users.
 *
-* @author	Dick Zetterberg (dick@transitor.se)
-* @version	$Revision$, $Date$
+* @author        Dick Zetterberg (dick@transitor.se)
+* @version        $Revision$, $Date$
 */
-public interface NoParameters
-{
+public interface NoParameters {
 }

@@ -11,9 +11,10 @@ import ognl.OgnlRuntime;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.Map;
-import java.util.Iterator;
+
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -57,6 +58,10 @@ public class OgnlValueStack implements Serializable {
 
     public Map getContext() {
         return context;
+    }
+
+    public void setDefaultType(Class defaultType) {
+        this.defaultType = defaultType;
     }
 
     public CompoundRoot getRoot() {
@@ -116,10 +121,6 @@ public class OgnlValueStack implements Serializable {
 
     public int size() {
         return root.size();
-    }
-
-    public void setDefaultType(Class defaultType) {
-        this.defaultType = defaultType;
     }
 
     private void setRoot(CompoundRoot compoundRoot) {

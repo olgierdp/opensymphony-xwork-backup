@@ -6,7 +6,9 @@ package com.opensymphony.xwork.config;
 
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
+
 import com.opensymphony.util.FileManager;
+
 import junit.framework.TestCase;
 
 

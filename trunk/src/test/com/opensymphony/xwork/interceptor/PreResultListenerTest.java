@@ -63,8 +63,8 @@ public class PreResultListenerTest extends TestCase {
                 }
 
                 /**
-* Initializes the configuration object.
-*/
+                * Initializes the configuration object.
+                */
                 public void init(Configuration configuration) throws ConfigurationException {
                     PackageConfig packageConfig = new PackageConfig("package");
                     ActionConfig actionConfig = new ActionConfig(null, SimpleFooAction.class, null, null, null);
@@ -73,9 +73,9 @@ public class PreResultListenerTest extends TestCase {
                 }
 
                 /**
-* Tells whether the ConfigurationProvider should reload its configuration
-* @return
-*/
+                * Tells whether the ConfigurationProvider should reload its configuration
+                * @return
+                */
                 public boolean needsReload() {
                     return false;
                 }

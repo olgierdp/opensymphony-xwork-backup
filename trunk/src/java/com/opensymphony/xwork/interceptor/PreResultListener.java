@@ -17,9 +17,9 @@ public interface PreResultListener {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
- * This callback method will be called after the Action execution and before the Result execution.
- * @param invocation
- * @param resultCode
- */
+    * This callback method will be called after the Action execution and before the Result execution.
+    * @param invocation
+    * @param resultCode
+    */
     void beforeResult(ActionInvocation invocation, String resultCode);
 }

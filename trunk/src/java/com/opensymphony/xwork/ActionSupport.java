@@ -49,11 +49,8 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
     }
 
     public Locale getLocale() {
-        return (ActionContext.getContext() != null) ?
-                ActionContext.getContext().getLocale() :
-                null;
+        return (ActionContext.getContext() != null) ? ActionContext.getContext().getLocale() : null;
     }
-
 
     public String getText(String aTextName) {
         return textProvider.getText(aTextName);

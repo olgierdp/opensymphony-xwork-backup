@@ -31,10 +31,6 @@ public class TextProviderSupport implements TextProvider {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    private Locale getLocale() {
-        return localeProvider.getLocale();
-    }
-
     /**
     * Get a text from the resource bundles associated with this action.
     * The resource bundles are searched, starting with the one associated
@@ -123,5 +119,9 @@ public class TextProviderSupport implements TextProvider {
     */
     public ResourceBundle getTexts() {
         return getTexts(clazz.getName());
+    }
+
+    private Locale getLocale() {
+        return localeProvider.getLocale();
     }
 }

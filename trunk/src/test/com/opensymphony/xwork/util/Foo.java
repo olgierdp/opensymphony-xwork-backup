@@ -19,15 +19,23 @@ public class Foo {
 
     Bar bar;
     Date birthday;
+    Foo child;
     String title;
     long[] points;
+    Foo[] relatives;
     boolean useful;
     int number;
     long aLong;
-    Foo child;
-    Foo[] relatives;
 
     //~ Methods ////////////////////////////////////////////////////////////////
+
+    public void setALong(long aLong) {
+        this.aLong = aLong;
+    }
+
+    public long getALong() {
+        return aLong;
+    }
 
     public void setBar(Bar bar) {
         this.bar = bar;
@@ -43,6 +51,14 @@ public class Foo {
 
     public Date getBirthday() {
         return birthday;
+    }
+
+    public void setChild(Foo child) {
+        this.child = child;
+    }
+
+    public Foo getChild() {
+        return child;
     }
 
     public void setNumber(int number) {
@@ -61,6 +77,14 @@ public class Foo {
         return points;
     }
 
+    public void setRelatives(Foo[] relatives) {
+        this.relatives = relatives;
+    }
+
+    public Foo[] getRelatives() {
+        return relatives;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -75,29 +99,5 @@ public class Foo {
 
     public boolean isUseful() {
         return useful;
-    }
-
-    public long getALong() {
-        return aLong;
-    }
-
-    public void setALong(long aLong) {
-        this.aLong = aLong;
-    }
-
-    public void setChild(Foo child) {
-        this.child = child;
-    }
-
-    public Foo getChild() {
-        return child;
-    }
-
-    public Foo[] getRelatives() {
-        return relatives;
-    }
-
-    public void setRelatives(Foo[] relatives) {
-        this.relatives = relatives;
     }
 }

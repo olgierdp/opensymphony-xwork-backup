@@ -53,7 +53,7 @@ public class OgnlUtil {
         Ognl.setRoot(context, o);
 
         for (Iterator iterator = props.entrySet().iterator();
-             iterator.hasNext();) {
+                iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String expression = (String) entry.getKey();
 

@@ -7,6 +7,7 @@ package com.opensymphony.xwork;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.util.OgnlValueStack;
+
 import junit.framework.TestCase;
 
 import java.util.Locale;
