@@ -8,6 +8,8 @@ import com.opensymphony.util.TextUtils;
 
 import com.opensymphony.xwork.validator.ValidationException;
 
+import java.util.Map;
+
 
 /**
  * RequiredStringValidator checks that a String field is non-null and has a length > 0 (ie it isn't "")
