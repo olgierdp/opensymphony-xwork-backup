@@ -17,13 +17,17 @@ import com.opensymphony.xwork.interceptor.AroundInterceptor;
  * @version $Revision$
  */
 public class ComponentInterceptor extends AroundInterceptor {
+    //~ Static fields/initializers /////////////////////////////////////////////
+
+    public static final String COMPONENT_MANAGER = "com.opensymphony.xwork.interceptor.component.ComponentManager";
+
     //~ Methods ////////////////////////////////////////////////////////////////
 
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }
 
     protected void before(ActionInvocation dispatcher) throws Exception {
-        ComponentManager container = (ComponentManager) ActionContext.getContext().get("com.opensymphony.xwork.interceptor.component.ComponentManager");
+        ComponentManager container = (ComponentManager) ActionContext.getContext().get(COMPONENT_MANAGER);
 
         if (container != null) {
             container.initializeObject(dispatcher.getAction());

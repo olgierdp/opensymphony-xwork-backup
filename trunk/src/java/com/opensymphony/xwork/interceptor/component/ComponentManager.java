@@ -11,6 +11,10 @@ package com.opensymphony.xwork.interceptor.component;
  * @version $Revision$
  */
 public interface ComponentManager {
+    //~ Instance fields ////////////////////////////////////////////////////////
+
+    String COMPONENT_MANAGER_KEY = "XWorkComponentManager";
+
     //~ Methods ////////////////////////////////////////////////////////////////
 
     Object getComponent(Class enablerType);
