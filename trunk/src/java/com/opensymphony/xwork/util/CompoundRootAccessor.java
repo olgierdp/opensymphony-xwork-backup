@@ -8,6 +8,9 @@ import com.opensymphony.xwork.util.CompoundRoot;
 
 import ognl.*;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.beans.IntrospectionException;
 
 import java.util.Iterator;
@@ -22,6 +25,10 @@ import java.util.Map;
  * @version $Revision$
  */
 public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, ClassResolver {
+    //~ Static fields/initializers /////////////////////////////////////////////
+
+    private final static Log log = LogFactory.getLog(CompoundRootAccessor.class);
+
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setProperty(Map context, Object target, Object name, Object value) throws OgnlException {
@@ -39,7 +46,9 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 }
             } catch (OgnlException e) {
                 if (e.getReason() != null) {
-                    throw new RuntimeException(e.getReason());
+                    final String msg = "Caught an Ognl exception while setting property " + name;
+                    log.error(msg, e);
+                    throw new RuntimeException(msg);
                 }
             } catch (IntrospectionException e) {
             }
@@ -79,7 +88,9 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     }
                 } catch (OgnlException e) {
                     if (e.getReason() != null) {
-                        throw new RuntimeException(e.getReason());
+                        final String msg = "Caught an Ognl exception while getting property " + name;
+                        log.error(msg, e);
+                        throw new RuntimeException(msg);
                     }
                 } catch (IntrospectionException e) {
                 }
