@@ -54,10 +54,12 @@ public class ValidatorFileParser {
             DocumentBuilder builder = dbf.newDocumentBuilder();
             builder.setEntityResolver(new EntityResolver() {
                     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-                        if ("-//OpenSymphony Group//XWork Validator 1.0//EN".equals(publicId)) {
-                            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+                        ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
+                        if ("-//OpenSymphony Group//XWork Validator 1.0//EN".equals(publicId)) {
                             return new InputSource(loader.getResourceAsStream("xwork-validator-1.0.dtd"));
+                        } else if ("-//OpenSymphony Group//XWork Validator 1.0.2//EN".equals(publicId)) {
+                            return new InputSource(loader.getResourceAsStream("xwork-validator-1.0.2.dtd"));
                         }
 
                         return null;
