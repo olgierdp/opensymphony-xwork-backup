@@ -19,6 +19,7 @@ public class SimpleAction extends ActionSupport {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String COMMAND_RETURN_CODE = "com.opensymphony.xwork.SimpleAction.CommandInvoked";
+    private boolean throwException;
 
     public SimpleAction() {
         System.out.println("hi");
@@ -140,5 +141,17 @@ public class SimpleAction extends ActionSupport {
         someList.add("kerry");
 
         return SUCCESS;
+    }
+
+    public void setThrowException(boolean throwException) {
+        this.throwException = throwException;
+    }
+
+    public String exceptionMethod() throws Exception {
+        if (throwException) {
+            throw new Exception("We're supposed to throw this");
+        }
+
+        return "OK";
     }
 }

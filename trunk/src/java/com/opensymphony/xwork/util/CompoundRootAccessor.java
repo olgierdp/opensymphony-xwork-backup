@@ -119,8 +119,13 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
             Class clazz = o.getClass();
             Class[] argTypes = getArgTypes(objects);
-            CompoundRootAccessor.MethodCall mc = new CompoundRootAccessor.MethodCall(clazz, name, argTypes);
-            if (!invalidMethods.containsKey(mc)) {
+
+            CompoundRootAccessor.MethodCall mc = null;
+            if (argTypes != null) {
+                mc = new CompoundRootAccessor.MethodCall(clazz, name, argTypes);
+            }
+
+            if (argTypes == null || !invalidMethods.containsKey(mc)) {
                 try {
                     Object value = OgnlRuntime.callMethod((OgnlContext) context, o, name, name, objects);
 
@@ -129,7 +134,10 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     }
                 } catch (OgnlException e) {
                     // try the next one
-                    invalidMethods.put(mc, Boolean.TRUE);
+                    Throwable reason = e.getReason();
+                    if (mc != null && reason != null && reason.getClass() == NoSuchMethodException.class) {
+                        invalidMethods.put(mc, Boolean.TRUE);
+                    }
                 }
             }
         }

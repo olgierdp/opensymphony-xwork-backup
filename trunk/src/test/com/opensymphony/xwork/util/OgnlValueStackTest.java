@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.opensymphony.xwork.SimpleAction;
+
 
 /**
  *
@@ -382,6 +384,41 @@ public class OgnlValueStackTest extends TestCase {
 
         vs.push(null);
         assertEquals("Rover", vs.findValue("name", String.class));
+    }
+
+    public void testPrimitiveSettingWithInvalidValueAddsFieldError() {
+        SimpleAction action = new SimpleAction();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS,Boolean.TRUE);
+        stack.push(action);
+        stack.setValue("bar","3x");
+
+        assertTrue(action.getFieldErrors().containsKey("bar"));
+        assertEquals(0, action.getBar());
+    }
+
+    public void testCallMethodThatThrowsExceptionTwice() {
+        SimpleAction action = new SimpleAction();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(action);
+
+        action.setThrowException(true);
+        assertNull(stack.findValue("exceptionMethod1()"));
+        action.setThrowException(false);
+        assertEquals("OK", stack.findValue("exceptionMethod()"));
+    }
+
+    public void testCallMethodWithNullArg() {
+        SimpleAction action = new SimpleAction();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(action);
+
+        stack.findValue("setName(blah)");
+        assertNull(action.getName());
+
+        action.setBlah("blah");
+        stack.findValue("setName(blah)");
+        assertEquals("blah", action.getName());
     }
 
 }

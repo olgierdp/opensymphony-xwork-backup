@@ -150,7 +150,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             } catch (Exception e) {
                 handleConversionException(context, property, value, target);
 
-                return null;
+                return acceptableErrorValue(toClass);
             }
         }
 
@@ -160,7 +160,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             } catch (Exception e) {
                 handleConversionException(context, property, value, target);
 
-                return null;
+                return acceptableErrorValue(toClass);
             }
         } else {
             try {
@@ -168,9 +168,35 @@ public class XWorkConverter extends DefaultTypeConverter {
             } catch (Exception e) {
                 handleConversionException(context, property, value, target);
 
-                return null;
+                return acceptableErrorValue(toClass);
             }
         }
+    }
+
+    private Object acceptableErrorValue(Class toClass) {
+        if (!toClass.isPrimitive()) {
+            return null;
+        }
+
+        if (toClass == int.class) {
+            return new Integer(0);
+        } else if (toClass == double.class) {
+            return new Double(0);
+        } else if (toClass == long.class) {
+            return new Long(0);
+        } else if (toClass == boolean.class) {
+            return Boolean.FALSE;
+        } else if (toClass == short.class) {
+            return new Short((short) 0);
+        } else if (toClass == float.class) {
+            return new Float(0);
+        } else if (toClass == byte.class) {
+            return new Byte((byte) 0);
+        } else if (toClass == char.class) {
+            return new Character((char) 0);
+        }
+
+        return null;
     }
 
     private Map buildConverterMapping(Class clazz) throws Exception {
