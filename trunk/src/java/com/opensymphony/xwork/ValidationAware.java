@@ -6,6 +6,7 @@ package com.opensymphony.xwork;
 
 import java.util.Collection;
 import java.util.Map;
+import java.io.Serializable;
 
 
 /**
@@ -14,7 +15,7 @@ import java.util.Map;
  * @author $author$
  * @version $Revision$
  */
-public interface ValidationAware {
+public interface ValidationAware extends Serializable {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**

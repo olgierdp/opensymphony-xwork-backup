@@ -34,6 +34,7 @@ public class OgnlValueStack implements Serializable {
         OgnlRuntime.setPropertyAccessor(CompoundRoot.class, accessor);
         OgnlRuntime.setPropertyAccessor(Iterator.class, new XWorkIteratorPropertyAccessor());
         OgnlRuntime.setPropertyAccessor(Enumeration.class, new XWorkEnumerationAcccessor());
+        OgnlRuntime.setMethodAccessor(Object.class, new XWorkMethodAccessor());
         OgnlRuntime.setMethodAccessor(CompoundRoot.class, accessor);
         OgnlRuntime.setNullHandler(Object.class, new InstantiatingNullHandler());
     }

@@ -24,7 +24,7 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    private final TextProvider textProvider = new TextProviderSupport(getClass(), this);
+    private transient final TextProvider textProvider = new TextProviderSupport(getClass(), this);
     private final ValidationAware validationAware = new ValidationAwareSupport();
 
     //~ Methods ////////////////////////////////////////////////////////////////
