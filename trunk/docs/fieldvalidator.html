@@ -3,12 +3,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <title>OpenSymphony Wiki (Offline Version) :: Xwork Documentation</title>
+  <title>XWork Documentation</title>
   <link type="text/css" href="main.css" rel="STYLESHEET"/>
 </head>
 <body>
   <div id="page-logo">
-    <a href="index.html">XWork Documentation</a>
+    <a href="index.html"><img src="logo.png" border="0"/></a>
   </div>
     <div class="snip-title">
 	  <h1 class="snip-name">Using the VisitorFieldValidator
@@ -20,8 +20,10 @@
  <div class="snip-attachments"></div>
  
  see the <a href="validation.html">Xwork Validation Framework</a>
-<h3 class="heading-1">What is the VisitorFieldValidator</h3><p class="paragraph"/>The VisitorFieldValidator allows you to forward validation to object properties of your action using the objects own validation files. This allows you to use the ModelDriven development pattern and manage your validations for your models in one place, where they belong, next to your model classes. The VisitorFieldValidator can handle either simple Object properties, Collections of Objects, or Arrays.
-<h3 class="heading-1">Applying the VisitorFieldValidator</h3><p class="paragraph"/>The VisitorFieldValidator is applied like any other field validator in a validation.xml file (see <a href="validation.html">Xwork Validation Framework</a>).<p class="paragraph"/><div class="code"><pre>&#60;field name=<span class="java&#45;quote">"bean"</span>&#62;
+<h3 class="heading-1">What is the VisitorFieldValidator
+</h3><p class="paragraph"/>The VisitorFieldValidator allows you to forward validation to object properties of your action using the objects own validation files. This allows you to use the ModelDriven development pattern and manage your validations for your models in one place, where they belong, next to your model classes. The VisitorFieldValidator can handle either simple Object properties, Collections of Objects, or Arrays.
+<h3 class="heading-1">Applying the VisitorFieldValidator
+</h3><p class="paragraph"/>The VisitorFieldValidator is applied like any other field validator in a validation.xml file (see <a href="validation.html">Xwork Validation Framework</a>).<p class="paragraph"/><div class="code"><pre>&#60;field name=<span class="java&#45;quote">"bean"</span>&#62;
     &#60;field&#45;validator type=<span class="java&#45;quote">"visitor"</span>&#62;
         &#60;param name=<span class="java&#45;quote">"context"</span>&#62;anotherContext&#60;/param&#62;
         &#60;message&#62;bean: &#60;/message&#62;

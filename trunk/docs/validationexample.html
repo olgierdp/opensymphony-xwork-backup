@@ -3,12 +3,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <title>OpenSymphony Wiki (Offline Version) :: Xwork Documentation</title>
+  <title>XWork Documentation</title>
   <link type="text/css" href="main.css" rel="STYLESHEET"/>
 </head>
 <body>
   <div id="page-logo">
-    <a href="index.html">XWork Documentation</a>
+    <a href="index.html"><img src="logo.png" border="0"/></a>
   </div>
     <div class="snip-title">
 	  <h1 class="snip-name">A WebWork2 Example of Xwork Validation
@@ -20,7 +20,8 @@
  <div class="snip-attachments"></div>
  
  Included in the <a href="http://wiki.opensymphony.com/space/WebWork2">WebWork2</a> example war file is an example of using the <a href="validation.html">Xwork Validation Framework</a> in WebWork2. This example consists of three links which all use the same Action Class and view pages (Velocity).
-<h3 class="heading-1">The sources</h3><p class="paragraph"/>First, I had to add the <b class="bold">validators.xml</b> file to the root of the source tree for the example app
+<h3 class="heading-1">The sources
+</h3><p class="paragraph"/>First, I had to add the <b class="bold">validators.xml</b> file to the root of the source tree for the example app
 <div class="code"><pre>&#60;validators&#62;
     &#60;validator name=<span class="xml&#45;quote">"required"</class> class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.RequiredFieldValidator"</class>/&#62;
     &#60;validator name=<span class="xml&#45;quote">"requiredstring"</class> class=<span class="xml&#45;quote">"com.opensymphony.xwork.validator.validators.RequiredStringValidator"</class>/&#62;
@@ -117,14 +118,16 @@ Bean Properties:
 Input was valid!
 &#60;/body&#62;
 &#60;/html&#62;</pre></div><p class="paragraph"/>We'll look at any other example-specific configuration files as we get to them.
-<h3 class="heading-1"><a name="BasicValidation"/><a href="validationexample.html#BasicValidation" title="Permalink to BasicValidation"><img src="http://wiki.opensymphony.com/images/permalink.png" alt="" border="0"/></a> Basic Validation</h3><p class="paragraph"/>
+<h3 class="heading-1"><a name="BasicValidation"/><a href="validationexample.html#BasicValidation" title="Permalink to BasicValidation"><img src="http://wiki.opensymphony.com/images/permalink.png" alt="" border="0"/></a> Basic Validation
+</h3><p class="paragraph"/>
 The BasicValidation example is defined in the example <b class="bold">xwork.xml</b> file like this
 <div class="code"><pre>&#60;action name=<span class="xml&#45;quote">"basicValidation"</class> class=<span class="xml&#45;quote">"com.opensymphony.webwork.example.ValidatedAction"</class>&#62;
             &#60;interceptor&#45;ref name=<span class="xml&#45;quote">"validationWorkflowStack"</class>/&#62;<p class="paragraph"/>            &#60;result name=<span class="xml&#45;quote">"success"</class> type=<span class="xml&#45;quote">"dispatcher"</class>&#62;valid.vm&#60;/result&#62;
             &#60;result name=<span class="xml&#45;quote">"input"</class> type=<span class="xml&#45;quote">"dispatcher"</class>&#62;validationForm.vm&#60;/result&#62;
             &#60;result name=<span class="xml&#45;quote">"error"</class> type=<span class="xml&#45;quote">"dispatcher"</class>&#62;validationForm.vm&#60;/result&#62;
         &#60;/action&#62;</pre></div><p class="paragraph"/>The <b class="bold">interceptor-ref</b> here, to <b class="bold">"validationWorkflowStack"</b>, is defined in webwork-default.xml (see <a href="http://wiki.opensymphony.com/space/Using+webwork-default.xml">Using webwork-default.xml</a>) and provides the parameter interceptors as well as the ValidationInterceptor (see <a href="validation.html">Xwork Validation Framework</a> and the DefaultWorkFlowInterceptor (see <a href="interceptors.html#DefaultWorkflow">Xwork Interceptors#DefaultWorkflow</a>). All of the parameters from the configuration file (there are none in this case) followed by the parameters from the request will be set onto the Action. Next, the validations will be run, and finally the DefaultWorkflow will be applied (see <a href="interceptors.html#DefaultWorkflow">Xwork Interceptors#DefaultWorkflow</a>).<p class="paragraph"/>This example is very simple, and the ValidatedAction-validation.xml file is the only set of Validations which will be applied. This means that the only validation done is that you enter some text for the name field. 
-<h3 class="heading-1"><a name="VisitorValidation"/><a href="validationexample.html#VisitorValidation" title="Permalink to VisitorValidation"><img src="http://wiki.opensymphony.com/images/permalink.png" alt="" border="0"/></a> Visitor Validation Example</h3><p class="paragraph"/>The <b class="bold">ValidatedAction</b> holds a reference to a plain Java bean, <b class="bold">ValidatedBean</b>:
+<h3 class="heading-1"><a name="VisitorValidation"/><a href="validationexample.html#VisitorValidation" title="Permalink to VisitorValidation"><img src="http://wiki.opensymphony.com/images/permalink.png" alt="" border="0"/></a> Visitor Validation Example
+</h3><p class="paragraph"/>The <b class="bold">ValidatedAction</b> holds a reference to a plain Java bean, <b class="bold">ValidatedBean</b>:
 <div class="code"><pre><span class="java&#45;keyword">package</span> com.opensymphony.webwork.example;<p class="paragraph"/><span class="java&#45;keyword">import</span> java.util.Date;<p class="paragraph"/>/&#42;&#42;
  &#42; ValidatedBean
  &#42; @author Jason Carreira
@@ -216,7 +219,8 @@ The BasicValidation example is defined in the example <b class="bold">xwork.xml<
 invalid.text=You must enter some text.
 invalid.number=You must enter a number between $&#123;min&#125; and $&#123;max&#125;.
 invalid.total=The total of number and number2 must be less than $&#123;@com.opensymphony.webwork.example.ValidatedBean@MAX_TOTAL&#125;.</pre></div><p class="paragraph"/>These messages will be used for any errors added for the <b class="bold">ValidatedBean</b> using a message key. As you can see from the body of the messages, they can be parameterized with properties from the Bean, the Interceptor, and the Action (and they will be searched in that order). There is also an example of using a Static field <b class="bold">${@com.opensymphony.webwork.example.ValidatedBean@MAX_TOTAL}</b>.<p class="paragraph"/>The <b class="bold">ValidatedBean-visitorValidation-validation.xml</b> file would define validations specific for the <b class="bold">visitorValidation</b> validation context, but it is not there, so it is ignored.
-<h3 class="heading-1"><a name="Expression"/><a href="validationexample.html#Expression" title="Permalink to Expression"><img src="http://wiki.opensymphony.com/images/permalink.png" alt="" border="0"/></a> Visitor Validation with the Expression Validator</h3><p class="paragraph"/>The final example shows a similar setup to the previous visitor validation example. The <b class="bold">xwork.xml</b> configuration for this example is very similar to the <b class="bold">visitorValidation</b> example:
+<h3 class="heading-1"><a name="Expression"/><a href="validationexample.html#Expression" title="Permalink to Expression"><img src="http://wiki.opensymphony.com/images/permalink.png" alt="" border="0"/></a> Visitor Validation with the Expression Validator
+</h3><p class="paragraph"/>The final example shows a similar setup to the previous visitor validation example. The <b class="bold">xwork.xml</b> configuration for this example is very similar to the <b class="bold">visitorValidation</b> example:
 <div class="code"><pre>&#60;action name=<span class="xml&#45;quote">"expressionValidation"</class> class=<span class="xml&#45;quote">"com.opensymphony.webwork.example.ValidatedAction"</class>&#62;
             &#60;interceptor&#45;ref name=<span class="xml&#45;quote">"validationWorkflowStack"</class>/&#62;
             &#60;param name=<span class="xml&#45;quote">"validationAction"</class>&#62;expressionValidation.action&#60;/param&#62;
@@ -244,7 +248,8 @@ invalid.total=The total of number and number2 must be less than $&#123;@com.open
     &#60;/validator&#62;
 &#60;/validators&#62;</pre></div>
 This adds an object-level (as opposed to field-level) ExpressionValidator which checks the total of the number and number2 fields against a static constant, and adds an error message if the total is more than the constant. 
-<h3 class="heading-1"><a name="ErrorMessages"/><a href="validationexample.html#ErrorMessages" title="Permalink to ErrorMessages"><img src="http://wiki.opensymphony.com/images/permalink.png" alt="" border="0"/></a> A note about error messages with the VisitorFieldValidator</h3><p class="paragraph"/>With the VisitorFieldValidator, message field names are appended with the field name of the field in the Action. In this case, the fields "<b class="bold">text</b>", "<b class="bold">date</b>", and "<b class="bold">number</b>" in the <b class="bold">ValidatedBean</b> would be added as field error messages to the Action with field names "<b class="bold">bean.text</b>", "<b class="bold">bean.date</b>", and "<b class="bold">bean.number</b>". The error messages added for the object-level ExpressionValidator applied in the last example will be added as field-level errors to the Action with the name "<b class="bold">bean</b>".
+<h3 class="heading-1"><a name="ErrorMessages"/><a href="validationexample.html#ErrorMessages" title="Permalink to ErrorMessages"><img src="http://wiki.opensymphony.com/images/permalink.png" alt="" border="0"/></a> A note about error messages with the VisitorFieldValidator
+</h3><p class="paragraph"/>With the VisitorFieldValidator, message field names are appended with the field name of the field in the Action. In this case, the fields "<b class="bold">text</b>", "<b class="bold">date</b>", and "<b class="bold">number</b>" in the <b class="bold">ValidatedBean</b> would be added as field error messages to the Action with field names "<b class="bold">bean.text</b>", "<b class="bold">bean.date</b>", and "<b class="bold">bean.number</b>". The error messages added for the object-level ExpressionValidator applied in the last example will be added as field-level errors to the Action with the name "<b class="bold">bean</b>".
 
   </div>
 </body>

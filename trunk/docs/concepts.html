@@ -3,12 +3,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <title>OpenSymphony Wiki (Offline Version) :: Xwork Documentation</title>
+  <title>XWork Documentation</title>
   <link type="text/css" href="main.css" rel="STYLESHEET"/>
 </head>
 <body>
   <div id="page-logo">
-    <a href="index.html">XWork Documentation</a>
+    <a href="index.html"><img src="logo.png" border="0"/></a>
   </div>
     <div class="snip-title">
 	  <h1 class="snip-name">XWork Core Concepts
@@ -19,22 +19,34 @@
 
  <div class="snip-attachments"></div>
  
- <h3 class="heading-1">XWork Core Concepts</h3><p class="paragraph"/><a href="index.html">XWork</a> is based on a number of core concepts that helps to explain how the framework works. The core concepts can be broken down into two parts: Architecture Concepts and Terminology.
-<h3 class="heading-1">Architecture Concepts</h3>
+ <h3 class="heading-1">XWork Core Concepts
+</h3><p class="paragraph"/><a href="index.html">XWork</a> is based on a number of core concepts that helps to explain how the framework works. The core concepts can be broken down into two parts: Architecture Concepts and Terminology.
+<h3 class="heading-1">Architecture Concepts
+</h3>
 <ul class="star">
 <li>Explain Command Driven Architecture (in general)</li>
 <li>Explain the implementation in XWork</li>
 </ul>
-<h3 class="heading-1">Terminology</h3>
-<h3 class="heading-1-1">Actions</h3><p class="paragraph"/>Actions are classes that get invoked in response to a request, execute some code and return a Result. Actions implement at a minimum a single method, execute(), that defines the entry point called by the framework. This method allows developers to define a unit of work that will be executed each time the Action is called.
-<h3 class="heading-1-1">ActionContext</h3><p class="paragraph"/>The ActionContext provides access to the execution environment in the form of named objects during an Action invocation. A new ActionContext is created for each invocation allowing developers to access/modify these properties in a thread safe manner. The ActionContext makes a number of properties available that are typically set to appropriate values by the framework. In WebWork 2 for example, the ActionContext session map wraps an underlying HttpSession object. This allows access to environment specific properties without tying the core framework to a specific execution environment. For more information, see ActionContext in <a href="basics.html">XWork Basics</a>.
-<h3 class="heading-1-1">Interceptors</h3><p class="paragraph"/>In XWork, Interceptors are objects that dynamically intercept Action invocations. They provide the developer with the opportunity to define code that can be executed before and/or after the execution of an action. They also have the ability to prevent an action from executing. Interceptors provide developers a way to encapulate common functionality in a re-usable form that can be applied to one or more Actions. See <a href="interceptors.html">XWork Interceptors</a> for further details.
-<h3 class="heading-1-1">Stacks</h3><p class="paragraph"/>To handle the case where developers want to apply more than a single Interceptor to an Action, Stacks have been introduced. Stacks are an ordered list of Interceptors and/or other Stacks that get applied when an Action is invoked. Stacks centralize the declaration of Interceptors and provide a convenient way to configure mutiple actions.
-<h3 class="heading-1-1">Results</h3><p class="paragraph"/>Results are string constants that Actions return to indicate the status of an Action execution. A standard set of Results are defined by default: error, input, login, none and success.  Developers are, of course, free to create their own Results to indicate more application specific cases.
-<h3 class="heading-1-1">Result Types</h3><p class="paragraph"/>Result Types are classes that determine what happens after an Action executes and a Result is returned. Developers are free to create their own Result Types according to the needs of their application or environment. In WebWork 2 for example, Servlet and Velocity Result Types have been created to handle rendering views in web applications.
-<h3 class="heading-1-1">Packages</h3><p class="paragraph"/>Packages are a way to group Actions, Results, Result Types, Interceptors and Stacks into a logical unit that shares a common configuration. Packages are similiar to objects in that they can be extended and have individual parts overridden by "sub" packages.
-<h3 class="heading-1-1">ValueStack</h3><p class="paragraph"/>The ValueStack is a stack implementation built on top of an OGNL core. The OGNL expression language can be used to traverse the stack and retrieve the desired object. The OGNL expression language provides a number of additional features including: automatic type conversion, method invocation and object comparisons. For more information, see the <span class="nobr"><img src="http://wiki.opensymphony.com/images/external-link.png" alt="&gt;&gt;" border="0"/><a href="http://ognl.org/index.html">OGNL Website</a></span>.
-<h3 class="heading-1-1">Components</h3><p class="paragraph"/>XWork provides the ComponentManager interface (and a corresponding implementation in the DefaultComponentManager class) to apply a design pattern known as <b class="bold">Inversion of Control</b> (or IoC for short). In a nutshell, the IoC pattern allows a parent object (in this case XWork's ComponentManager instance) to control a client object (usually an action, but it could be any object that implements the appropriate <b class="bold">enabler</b>). See <a href="components.html">XWork Components</a> for further details.
+<h3 class="heading-1">Terminology
+</h3>
+<h3 class="heading-1-1">Actions
+</h3><p class="paragraph"/>Actions are classes that get invoked in response to a request, execute some code and return a Result. Actions implement at a minimum a single method, execute(), that defines the entry point called by the framework. This method allows developers to define a unit of work that will be executed each time the Action is called.
+<h3 class="heading-1-1">ActionContext
+</h3><p class="paragraph"/>The ActionContext provides access to the execution environment in the form of named objects during an Action invocation. A new ActionContext is created for each invocation allowing developers to access/modify these properties in a thread safe manner. The ActionContext makes a number of properties available that are typically set to appropriate values by the framework. In WebWork 2 for example, the ActionContext session map wraps an underlying HttpSession object. This allows access to environment specific properties without tying the core framework to a specific execution environment. For more information, see ActionContext in <a href="basics.html">XWork Basics</a>.
+<h3 class="heading-1-1">Interceptors
+</h3><p class="paragraph"/>In XWork, Interceptors are objects that dynamically intercept Action invocations. They provide the developer with the opportunity to define code that can be executed before and/or after the execution of an action. They also have the ability to prevent an action from executing. Interceptors provide developers a way to encapulate common functionality in a re-usable form that can be applied to one or more Actions. See <a href="interceptors.html">XWork Interceptors</a> for further details.
+<h3 class="heading-1-1">Stacks
+</h3><p class="paragraph"/>To handle the case where developers want to apply more than a single Interceptor to an Action, Stacks have been introduced. Stacks are an ordered list of Interceptors and/or other Stacks that get applied when an Action is invoked. Stacks centralize the declaration of Interceptors and provide a convenient way to configure mutiple actions.
+<h3 class="heading-1-1">Results
+</h3><p class="paragraph"/>Results are string constants that Actions return to indicate the status of an Action execution. A standard set of Results are defined by default: error, input, login, none and success.  Developers are, of course, free to create their own Results to indicate more application specific cases.
+<h3 class="heading-1-1">Result Types
+</h3><p class="paragraph"/>Result Types are classes that determine what happens after an Action executes and a Result is returned. Developers are free to create their own Result Types according to the needs of their application or environment. In WebWork 2 for example, Servlet and Velocity Result Types have been created to handle rendering views in web applications.
+<h3 class="heading-1-1">Packages
+</h3><p class="paragraph"/>Packages are a way to group Actions, Results, Result Types, Interceptors and Stacks into a logical unit that shares a common configuration. Packages are similiar to objects in that they can be extended and have individual parts overridden by "sub" packages.
+<h3 class="heading-1-1">ValueStack
+</h3><p class="paragraph"/>The ValueStack is a stack implementation built on top of an OGNL core. The OGNL expression language can be used to traverse the stack and retrieve the desired object. The OGNL expression language provides a number of additional features including: automatic type conversion, method invocation and object comparisons. For more information, see the <span class="nobr"><img src="http://wiki.opensymphony.com/images/external-link.png" alt="&gt;&gt;" border="0"/><a href="http://ognl.org/index.html">OGNL Website</a></span>.
+<h3 class="heading-1-1">Components
+</h3><p class="paragraph"/>XWork provides the ComponentManager interface (and a corresponding implementation in the DefaultComponentManager class) to apply a design pattern known as <b class="bold">Inversion of Control</b> (or IoC for short). In a nutshell, the IoC pattern allows a parent object (in this case XWork's ComponentManager instance) to control a client object (usually an action, but it could be any object that implements the appropriate <b class="bold">enabler</b>). See <a href="components.html">XWork Components</a> for further details.
   </div>
 </body>
 </html>
