@@ -7,8 +7,8 @@ package com.opensymphony.xwork.validator;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionProxy;
 import com.opensymphony.xwork.ActionProxyFactory;
-import com.opensymphony.xwork.ValidationAware;
 import com.opensymphony.xwork.TestBean;
+import com.opensymphony.xwork.ValidationAware;
 import com.opensymphony.xwork.ValidationAwareSupport;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
@@ -17,8 +17,8 @@ import junit.framework.TestCase;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -28,6 +28,28 @@ import java.util.List;
  */
 public class ExpressionValidatorTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
+
+    public void testExpressionValidationOfStringLength() throws ValidationException {
+        TestBean bean = new TestBean();
+        bean.setName("abc");
+        ActionContext.getContext().getValueStack().push(bean);
+
+        DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
+        ActionValidatorManager.validate(bean, "expressionValidation", context);
+        assertTrue(context.hasFieldErrors());
+
+        final Map fieldErrors = context.getFieldErrors();
+        assertTrue(fieldErrors.containsKey("name"));
+
+        List nameErrors = (List) fieldErrors.get("name");
+        assertEquals(1, nameErrors.size());
+        assertEquals("Name must be greater than 5 characters, it is currently 'abc'", nameErrors.get(0));
+
+        bean.setName("abcdefg");
+        context = new DelegatingValidatorContext(new ValidationAwareSupport());
+        ActionValidatorManager.validate(bean, "expressionValidation", context);
+        assertFalse(context.hasFieldErrors());
+    }
 
     public void testExpressionValidatorFailure() {
         HashMap params = new HashMap();
@@ -74,25 +96,6 @@ public class ExpressionValidatorTest extends TestCase {
             e.printStackTrace();
             fail();
         }
-    }
-
-    public void testExpressionValidationOfStringLength() throws ValidationException {
-        TestBean bean = new TestBean();
-        bean.setName("abc");
-        ActionContext.getContext().getValueStack().push(bean);
-        DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManager.validate(bean,"expressionValidation",context);
-        assertTrue(context.hasFieldErrors());
-        final Map fieldErrors = context.getFieldErrors();
-        assertTrue(fieldErrors.containsKey("name"));
-        List nameErrors = (List) fieldErrors.get("name");
-        assertEquals(1,nameErrors.size());
-        assertEquals("Name must be greater than 5 characters, it is currently 'abc'",nameErrors.get(0));
-
-        bean.setName("abcdefg");
-        context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManager.validate(bean,"expressionValidation",context);
-        assertFalse(context.hasFieldErrors());
     }
 
     protected void setUp() throws Exception {
