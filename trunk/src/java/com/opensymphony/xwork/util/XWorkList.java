@@ -39,6 +39,17 @@ public class XWorkList extends ArrayList {
         this.clazz = clazz;
     }
 
+    public XWorkList(Class clazz, Collection c) {
+        super(c.size());
+        this.clazz = clazz;
+        addAll(c);
+    }
+
+    public XWorkList(Class clazz, int initialCapacity) {
+        super(initialCapacity);
+        this.clazz = clazz;
+    }
+
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
