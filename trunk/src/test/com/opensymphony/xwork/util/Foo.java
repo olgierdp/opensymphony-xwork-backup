@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.util;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -26,6 +27,7 @@ public class Foo {
     boolean useful;
     int number;
     long aLong;
+    List bars;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -99,5 +101,13 @@ public class Foo {
 
     public boolean isUseful() {
         return useful;
+    }
+
+    public List getBars() {
+        return bars;
+    }
+
+    public void setBars(List bars) {
+        this.bars = bars;
     }
 }

@@ -289,7 +289,11 @@ public class XWorkConverter extends DefaultTypeConverter {
             for (Iterator iterator = mapping.entrySet().iterator();
                     iterator.hasNext();) {
                 Map.Entry entry = (Map.Entry) iterator.next();
-                entry.setValue(createTypeConverter((String) entry.getValue()));
+                String propName = (String) entry.getKey();
+                String className = (String) entry.getValue();
+                if (!propName.startsWith("Collection_")) {
+                    entry.setValue(createTypeConverter(className));
+                }
             }
 
             mappings.put(clazz, mapping);

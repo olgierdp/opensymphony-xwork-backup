@@ -34,8 +34,8 @@ public class ParametersInterceptor extends AroundInterceptor {
             }
 
             try {
-                InstantiatingNullHandler.setState(true);
-                XWorkMethodAccessor.setState(true);
+                invocation.getInvocationContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+                invocation.getInvocationContext().put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
                 invocation.getInvocationContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
                 if (parameters != null) {
@@ -48,9 +48,9 @@ public class ParametersInterceptor extends AroundInterceptor {
                     }
                 }
             } finally {
+                invocation.getInvocationContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
+                invocation.getInvocationContext().put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.FALSE);
                 invocation.getInvocationContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.FALSE);
-                InstantiatingNullHandler.setState(false);
-                XWorkMethodAccessor.setState(false);
             }
         }
     }

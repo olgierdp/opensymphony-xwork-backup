@@ -7,9 +7,7 @@ package com.opensymphony.xwork.util;
 import ognl.NullHandler;
 
 import java.lang.reflect.Method;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -18,37 +16,12 @@ import java.util.Map;
  * @version $Revision$
  */
 public class InstantiatingNullHandler implements NullHandler {
-    //~ Static fields/initializers /////////////////////////////////////////////
-
-    private static ThreadLocal state = new ThreadLocal();
-
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private Map clazzMap = new HashMap();
+    public static final String CREATE_NULL_OBJECTS = "xwork.NullHandler.createNullObjects";
 
     //~ Methods ////////////////////////////////////////////////////////////////
-
-    /**
-     * this is very ugly!  however, it gets the job done.  if the state is set to on, then the InstantiatingNullHandler
-     * will create a new object if the requested property does not already exist.  the intended paradigm is
-     *
-     * <pre>
-     * try {
-     *    InstantiatingNullHandler.setState(true);
-     *    // call Ognl setters
-     * } finally {
-     *    InstantiatingNullHandler.setState(false);
-     * }
-     * </pre>
-     * @param on indicates whether or not new objects should be created
-     */
-    public static void setState(boolean on) {
-        if (on) {
-            state.set(Boolean.TRUE);
-        } else {
-            state.set(null);
-        }
-    }
 
     public Object nullMethodResult(Map context, Object target, String methodName, Object[] args) {
         return null;
@@ -62,7 +35,9 @@ public class InstantiatingNullHandler implements NullHandler {
      * @return
      */
     public Object nullPropertyValue(Map context, Object target, Object property) {
-        if (state.get() == null) {
+        Boolean create = (Boolean) context.get(CREATE_NULL_OBJECTS);
+        boolean c = (create == null ? false : create.booleanValue());
+        if (!c) {
             return null;
         }
 
@@ -94,7 +69,20 @@ public class InstantiatingNullHandler implements NullHandler {
     }
 
     private Object createObject(Class clazz, Map context) throws InstantiationException, IllegalAccessException {
+        if (clazz == Collection.class || clazz == List.class) {
+            return createNewList(context);
+        } else if (clazz == Set.class) {
+
+        } else if (clazz == Map.class) {
+
+        }
+
         return clazz.newInstance();
+    }
+
+    private XWorkList createNewList(Map context) {
+        Class clazz = null;
+        return new XWorkList(clazz);
     }
 
     /**
