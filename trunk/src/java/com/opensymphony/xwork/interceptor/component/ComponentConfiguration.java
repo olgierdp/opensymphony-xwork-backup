@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author $Author$
  * @version $Revision$
  */
-public class ComponentConfiguration {
+public class ComponentConfiguration implements Serializable {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log log = LogFactory.getLog(ComponentConfiguration.class);
@@ -139,7 +140,7 @@ public class ComponentConfiguration {
 
     //~ Inner Classes //////////////////////////////////////////////////////////
 
-    private class ComponentDefinition {
+    private class ComponentDefinition implements Serializable {
         private String className;
         private String enablerClass;
 
