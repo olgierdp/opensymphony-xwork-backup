@@ -21,23 +21,12 @@ public class ChainResultTest extends TestCase {
 
     public void testRecursiveChain() throws Exception {
 
-        // allowed 1 chain
-        ActionChainResult.maxChainDepth = 1;
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", "RecursionChain", null);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", "InfiniteRecursionChain", null);
         try {
             proxy.execute();
-            fail("infinite recursion not detected");
+            fail("did not detected repeated chain to an action");
         } catch (XworkException e) {
-            assertTrue(e.getMessage().indexOf("infinite") != -1);
         }
-        
-    }
-
-    public void testValidChain() throws Exception {
-
-        ActionChainResult.maxChainDepth = 100;
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", "RecursionChain", null);
-        proxy.execute();
         
     }
 

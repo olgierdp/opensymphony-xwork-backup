@@ -66,14 +66,8 @@
         </action>
         
         <!-- chain resursion detection -->
-        <action name="RecursionChain" class="com.opensymphony.xwork.ActionSupport">
-        	<result name="success" type="chain">RecursionChain2</result>
-        </action>
-        <action name="RecursionChain2" class="com.opensymphony.xwork.ActionSupport">
-        	<result name="success" type="chain">RecursionChain3</result>
-        </action>
-        <action name="RecursionChain3" class="com.opensymphony.xwork.ActionSupport">
-			<result name="success" type="void"/>
+        <action name="InfiniteRecursionChain" class="com.opensymphony.xwork.ActionSupport">
+        	<result name="success" type="chain">InfiniteRecursionChain</result>
         </action>
         
    	</package>

@@ -4,12 +4,12 @@
  */
 package com.opensymphony.xwork;
 
-import com.opensymphony.xwork.interceptor.ChainingInterceptor;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.HashMap;
 
 
 /**
@@ -24,14 +24,9 @@ import java.util.HashMap;
  */
 public class ActionChainResult implements Result {
     
-    //~ Static fields/initializers /////////////////////////////////////////////
-    public static final String CHAIN_DEPTH = "com.opensymphony.xwork.ActionChainResult.CHAIN_DEPTH";
-
-    // to prevent infinite recursion, only allow 100 chains within the same request
-    public static int maxChainDepth = 100;
-
     private static final Log log = LogFactory.getLog(ActionChainResult.class);
     public static final String DEFAULT_PARAM = "actionName";
+    private static final String CHAIN_HISTORY = "CHAIN_HISTORY";
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
@@ -86,17 +81,16 @@ public class ActionChainResult implements Result {
      */
     public void execute(ActionInvocation invocation) throws Exception {
         
-        int currentDepth = currentChainDepth();
-        if (currentDepth > maxChainDepth) {
-            throw new XworkException("Chain infinite recursion detected, maxChainDepth=" + maxChainDepth);
+        if (isInChainHistory(namespace, actionName)) {
+            throw new XworkException("infinite recursion detected");
         }
-        incrementChainDepth();
+        addToHistory(namespace, actionName);
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.VALUE_STACK, ActionContext.getContext().getValueStack());
         extraContext.put(ActionContext.PARAMETERS, ActionContext.getContext().getParameters());
         extraContext.put("com.opensymphony.xwork.interceptor.component.ComponentManager", ActionContext.getContext().get("com.opensymphony.xwork.interceptor.component.ComponentManager"));
-        extraContext.put(CHAIN_DEPTH, ActionContext.getContext().get(CHAIN_DEPTH));
+        extraContext.put(CHAIN_HISTORY, ActionContext.getContext().get(CHAIN_HISTORY));
 
         if (log.isDebugEnabled()) {
             log.debug("Chaining to action " + actionName);
@@ -116,17 +110,25 @@ public class ActionChainResult implements Result {
         return ((actionName != null) ? actionName.hashCode() : 0);
     }
 
-    private int currentChainDepth() {
-        Integer chainDepth = (Integer) ActionContext.getContext().get(CHAIN_DEPTH);
-
-        if (chainDepth == null) {
-            return 1;
+    private boolean isInChainHistory(String namespace, String actionName) {
+        Set chainHistory = (Set) ActionContext.getContext().get(CHAIN_HISTORY);
+        if (chainHistory == null) {
+            return false;
         } else {
-            return chainDepth.intValue();
+            return chainHistory.contains(makeKey(namespace, actionName));
         }
     }
-
-    private void incrementChainDepth() {
-        ActionContext.getContext().put(CHAIN_DEPTH, new Integer(currentChainDepth() + 1));
+    private void addToHistory(String namespace, String actionName) {
+        Set chainHistory = (Set) ActionContext.getContext().get(CHAIN_HISTORY);
+        if (chainHistory == null) {
+        	chainHistory = new HashSet();
+		}
+		ActionContext.getContext().put(CHAIN_HISTORY, chainHistory);
+		
+		chainHistory.add(makeKey(namespace, actionName));
+    }
+    
+    private String makeKey(String namespace, String actionName) {
+        return namespace + "/" + actionName;
     }
 }
