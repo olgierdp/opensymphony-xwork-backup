@@ -44,13 +44,6 @@ public class DefaultConfiguration implements Configuration {
     //~ Constructors ///////////////////////////////////////////////////////////
 
     public DefaultConfiguration() {
-        try {
-            reload();
-        } catch (ConfigurationException e) {
-            String s = "Caught ConfigurationException while initializing ConfigurationProvider.";
-            LOG.fatal(s);
-            throw e;
-        }
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -76,10 +69,45 @@ public class DefaultConfiguration implements Configuration {
     }
 
     /**
+    * Allows the configuration to clean up any resources used
+    */
+    public void destroy() {
+    }
+
+    /**
+    * Calls the ConfigurationProviderFactory.getConfig() to tell it to reload the configuration and then calls
+    * buildRuntimeConfiguration().
+    * @throws ConfigurationException
+    */
+    public synchronized void reload() throws ConfigurationException {
+        packageContexts.clear();
+
+        for (Iterator iterator = ConfigurationManager.getConfigurationProviders().iterator();
+                iterator.hasNext();) {
+            ConfigurationProvider provider = (ConfigurationProvider) iterator.next();
+            provider.init(this);
+        }
+
+        runtimeConfiguration = buildRuntimeConfiguration();
+    }
+
+    public void removePackageConfig(String name) {
+        PackageConfig toBeRemoved = (PackageConfig) packageContexts.get(name);
+
+        if (toBeRemoved != null) {
+            for (Iterator iterator = packageContexts.values().iterator();
+                    iterator.hasNext();) {
+                PackageConfig packageContext = (PackageConfig) iterator.next();
+                packageContext.removeParent(toBeRemoved);
+            }
+        }
+    }
+
+    /**
     * This methodName builds the internal runtime configuration used by Xwork for finding and configuring Actions from the
     * programmatic configuration data structures. All of the old runtime configuration will be discarded and rebuilt.
     */
-    public synchronized void buildRuntimeConfiguration() throws ConfigurationException {
+    protected synchronized RuntimeConfiguration buildRuntimeConfiguration() throws ConfigurationException {
         Map namespaceActionConfigs = new HashMap();
 
         for (Iterator iterator = packageContexts.values().iterator();
@@ -107,42 +135,7 @@ public class DefaultConfiguration implements Configuration {
             }
         }
 
-        runtimeConfiguration = new RuntimeConfigurationImpl(namespaceActionConfigs);
-    }
-
-    /**
-    * Allows the configuration to clean up any resources used
-    */
-    public void destroy() {
-    }
-
-    /**
-    * Calls the ConfigurationProviderFactory.getConfig() to tell it to reload the configuration and then calls
-    * buildRuntimeConfiguration().
-    * @throws ConfigurationException
-    */
-    public synchronized void reload() throws ConfigurationException {
-        packageContexts.clear();
-
-        for (Iterator iterator = ConfigurationManager.getConfigurationProviders().iterator();
-                iterator.hasNext();) {
-            ConfigurationProvider provider = (ConfigurationProvider) iterator.next();
-            provider.init(this);
-        }
-
-        buildRuntimeConfiguration();
-    }
-
-    public void removePackageConfig(String name) {
-        PackageConfig toBeRemoved = (PackageConfig) packageContexts.get(name);
-
-        if (toBeRemoved != null) {
-            for (Iterator iterator = packageContexts.values().iterator();
-                    iterator.hasNext();) {
-                PackageConfig packageContext = (PackageConfig) iterator.next();
-                packageContext.removeParent(toBeRemoved);
-            }
-        }
+        return new RuntimeConfigurationImpl(namespaceActionConfigs);
     }
 
     private void setDefaultResults(Map results, PackageConfig packageContext) {

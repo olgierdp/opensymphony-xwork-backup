@@ -5,8 +5,10 @@
 package com.opensymphony.xwork.config;
 
 import com.opensymphony.util.FileManager;
+
 import com.opensymphony.xwork.config.impl.DefaultConfiguration;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -39,9 +41,8 @@ public class ConfigurationManager {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public static void destroyConfiguration() {
-        configurationProviders = Collections.synchronizedList(new ArrayList());
-        configurationInstance = null;
+    public static void setConfiguration(Configuration configuration) {
+        configurationInstance = configuration;
     }
 
     /**
@@ -51,6 +52,7 @@ public class ConfigurationManager {
     public static Configuration getConfiguration() {
         if (configurationInstance == null) {
             configurationInstance = new DefaultConfiguration();
+            configurationInstance.reload();
         } else {
             conditionalReload();
         }
@@ -82,11 +84,12 @@ public class ConfigurationManager {
     /**
      * adds a configuration provider to the List of ConfigurationProviders.  a given ConfigurationProvider may be added
      * more than once
-     * @todo what does it mean to have a configuration provider added more than once?  should configurationProviders be a set instead?
      * @param provider the ConfigurationProvider to register
      */
     public static void addConfigurationProvider(ConfigurationProvider provider) {
-        configurationProviders.add(provider);
+        if (!configurationProviders.contains(provider)) {
+            configurationProviders.add(provider);
+        }
     }
 
     /**
@@ -96,12 +99,17 @@ public class ConfigurationManager {
      */
     public synchronized static void clearConfigurationProviders() {
         for (Iterator iterator = configurationProviders.iterator();
-             iterator.hasNext();) {
+                iterator.hasNext();) {
             ConfigurationProvider provider = (ConfigurationProvider) iterator.next();
             provider.destroy();
         }
 
         configurationProviders.clear();
+    }
+
+    public static void destroyConfiguration() {
+        configurationProviders = Collections.synchronizedList(new ArrayList());
+        configurationInstance = null;
     }
 
     /**
@@ -117,7 +125,7 @@ public class ConfigurationManager {
             boolean reload = false;
 
             for (Iterator iterator = getConfigurationProviders().iterator();
-                 iterator.hasNext();) {
+                    iterator.hasNext();) {
                 ConfigurationProvider provider = (ConfigurationProvider) iterator.next();
 
                 if (provider.needsReload()) {

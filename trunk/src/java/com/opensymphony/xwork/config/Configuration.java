@@ -36,11 +36,6 @@ public interface Configuration {
     void addPackageConfig(String name, PackageConfig packageConfig);
 
     /**
-     * @throws ConfigurationException
-     */
-    void buildRuntimeConfiguration() throws ConfigurationException;
-
-    /**
      * allow the Configuration to clean up any resources that have been used
      */
     void destroy();
