@@ -288,6 +288,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
 
                 ResultTypeConfig config = (ResultTypeConfig) packageContext.getAllResultTypeConfigs().get(resultType);
+                if (config == null) {
+                    throw new ConfigurationException("There is no result type defined for " + resultType);
+                }
                 Class resultClass = config.getClazz();
 
                 // invalid result type specified in result definition
