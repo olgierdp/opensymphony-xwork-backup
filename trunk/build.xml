@@ -231,6 +231,13 @@
         <copy todir="${build.dist}/docs">
             <fileset dir="${docs}"/>
         </copy>
+
+        <copy todir="${build.dist}/docs">
+            <fileset dir="${src.etc}">
+                <include name="*.dtd"/> 
+            </fileset>
+        </copy>
+
     </target>
 
     <target name="dist" depends="jar, editor-jar, docs">
