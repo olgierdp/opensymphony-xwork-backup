@@ -407,7 +407,7 @@ public class OgnlValueStackTest extends TestCase {
         vs.setValue("cats[0].foo.cats[1].name", "Deep null cat");
         assertNotNull(((Cat) foo.getCats().get(0)).getFoo());
         assertNotNull(((Cat) foo.getCats().get(0)).getFoo().getCats());
-        assertNotNull(((Cat) ((Cat) foo.getCats().get(0)).getFoo().getCats().get(1)));
+        assertNotNull(((Cat) foo.getCats().get(0)).getFoo().getCats().get(1));
         assertEquals("Deep null cat", ((Cat) ((Cat) foo.getCats().get(0)).getFoo().getCats().get(1)).name);
     }
 
@@ -428,7 +428,7 @@ public class OgnlValueStackTest extends TestCase {
         vs.setValue("catMap['One'].foo.catMap['Two'].name", "Deep null cat");
         assertNotNull(((Cat) foo.getCatMap().get("One")).getFoo());
         assertNotNull(((Cat) foo.getCatMap().get("One")).getFoo().getCatMap());
-        assertNotNull(((Cat) ((Cat) foo.getCatMap().get("One")).getFoo().getCatMap().get("Two")));
+        assertNotNull(((Cat) foo.getCatMap().get("One")).getFoo().getCatMap().get("Two"));
         assertEquals("Deep null cat", ((Cat) ((Cat) foo.getCatMap().get("One")).getFoo().getCatMap().get("Two")).name);
     }
 
