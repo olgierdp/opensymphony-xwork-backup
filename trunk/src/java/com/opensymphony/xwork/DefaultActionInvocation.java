@@ -83,13 +83,13 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     /**
- * If the DefaultActionInvocation has been executed before and the Result is an instance of ActionChainResult, this method
- * will walk down the chain of ActionChainResults until it finds a non-chain result, which will be returned. If the
- * DefaultActionInvocation's result has not been executed before, the Result instance will be created and populated with
- * the result params.
- * @return a Result instance
- * @throws Exception
- */
+    * If the DefaultActionInvocation has been executed before and the Result is an instance of ActionChainResult, this method
+    * will walk down the chain of ActionChainResults until it finds a non-chain result, which will be returned. If the
+    * DefaultActionInvocation's result has not been executed before, the Result instance will be created and populated with
+    * the result params.
+    * @return a Result instance
+    * @throws Exception
+    */
     public Result getResult() throws Exception {
         if (result != null) {
             Result returnResult = result;
@@ -175,6 +175,10 @@ public class DefaultActionInvocation implements ActionInvocation {
         // load action
         try {
             action = (Action) proxy.getConfig().getClazz().newInstance();
+        } catch (InstantiationException e) {
+            throw new XworkException("Unable to intantiate Action!", e);
+        } catch (IllegalAccessException e) {
+            throw new XworkException("Illegal access to constructor, is it public?", e);
         } catch (Exception e) {
             String gripe = "";
 
@@ -189,7 +193,7 @@ public class DefaultActionInvocation implements ActionInvocation {
             }
 
             gripe += (" -- " + e.getMessage());
-            throw new IllegalArgumentException(gripe);
+            throw new XworkException(gripe);
         }
     }
 
@@ -230,8 +234,8 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     /**
- * Uses getResult to get the final Result and executes it
- */
+    * Uses getResult to get the final Result and executes it
+    */
     private void executeResult() throws Exception {
         Result aResult = getResult();
 
