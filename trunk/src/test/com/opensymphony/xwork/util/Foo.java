@@ -6,6 +6,7 @@ package com.opensymphony.xwork.util;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -28,6 +29,7 @@ public class Foo {
     int number;
     long aLong;
     List cats;
+    Map catMap;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -109,5 +111,13 @@ public class Foo {
 
     public void setCats(List cats) {
         this.cats = cats;
+    }
+
+    public Map getCatMap() {
+        return catMap;
+    }
+
+    public void setCatMap(Map catMap) {
+        this.catMap = catMap;
     }
 }

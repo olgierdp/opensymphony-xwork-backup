@@ -92,20 +92,22 @@ public class InstantiatingNullHandler implements NullHandler {
 
     private Object createObject(Map context, Class clazz, Object target, String property) throws InstantiationException, IllegalAccessException {
         if (clazz == Collection.class || clazz == List.class) {
-            return createNewList(target, property);
-        } else if (clazz == Set.class) {
-
+            Class collectionType = getCollectionType(target.getClass(), property);
+            if (collectionType == null) {
+                return null;
+            }
+            return new XWorkList(collectionType);
         } else if (clazz == Map.class) {
-
+            Class collectionType = getCollectionType(target.getClass(), property);
+            if (collectionType == null) {
+                return null;
+            }            
+            return new XWorkMap(collectionType);
         }
 
         return clazz.newInstance();
     }
 
-    private XWorkList createNewList(Object target, String property) {
-        Class clazz = getCollectionType(target.getClass(), property);
-        return new XWorkList(clazz);
-    }
 
     private Map buildConverterMapping(Class clazz) throws Exception {
         Map mapping = new HashMap();
