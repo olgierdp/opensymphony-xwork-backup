@@ -10,3 +10,4 @@ maven.log
 .classpath
 bin
 build-*.xml
+ioc-src.zip
