@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork.validator.validators;
 
-import com.opensymphony.xwork.validator.FieldValidator;
+import com.opensymphony.xwork.validator.ShortCircuitingFieldValidator;
 
 
 /**
@@ -14,10 +14,11 @@ import com.opensymphony.xwork.validator.FieldValidator;
  *
  * @author Jason Carreira
  */
-public abstract class FieldValidatorSupport extends ValidatorSupport implements FieldValidator {
+public abstract class FieldValidatorSupport extends ValidatorSupport implements ShortCircuitingFieldValidator {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private String fieldName = null;
+    private boolean m_shortCircuit;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -27,5 +28,13 @@ public abstract class FieldValidatorSupport extends ValidatorSupport implements 
 
     public String getFieldName() {
         return fieldName;
+    }
+
+    public void setShortCircuit(boolean shortcircuit) {
+        m_shortCircuit = shortcircuit;
+    }
+
+    public boolean isShortCircuit() {
+        return m_shortCircuit;
     }
 }

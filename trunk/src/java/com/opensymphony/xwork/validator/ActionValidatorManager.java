@@ -13,11 +13,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 /**
@@ -61,12 +64,54 @@ public class ActionValidatorManager {
     public static void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException {
         List validators = getValidators(object.getClass(), context);
 
+        Set shortcircuitedFields = null;
+
         for (Iterator iterator = validators.iterator(); iterator.hasNext();) {
             Validator validator = (Validator) iterator.next();
             validator.setValidatorContext(validatorContext);
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Running validator: " + validator + " for object " + object);
+            }
+
+            if (validator instanceof FieldValidator) {
+                FieldValidator fValidator = (FieldValidator) validator;
+
+                if ((shortcircuitedFields != null) && shortcircuitedFields.contains(fValidator.getFieldName())) {
+                    continue;
+                }
+
+                if (validator instanceof ShortCircuitingFieldValidator && ((ShortCircuitingFieldValidator) validator).isShortCircuit()) {
+                    int errs = 0;
+
+                    if (validatorContext.hasFieldErrors()) {
+                        Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fValidator.getFieldName());
+
+                        if (fieldErrors != null) {
+                            errs = fieldErrors.size();
+                        }
+                    }
+
+                    validator.validate(object);
+
+                    if (validatorContext.hasFieldErrors()) {
+                        Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fValidator.getFieldName());
+
+                        if ((fieldErrors != null) && (fieldErrors.size() > errs)) {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("Short-circuiting");
+                            }
+
+                            if (shortcircuitedFields == null) {
+                                shortcircuitedFields = new TreeSet();
+                            }
+
+                            shortcircuitedFields.add(fValidator.getFieldName());
+                        }
+                    }
+
+                    continue;
+                }
             }
 
             validator.validate(object);

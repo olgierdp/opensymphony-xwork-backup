@@ -5,5 +5,14 @@
             <message key="test.key">You must enter a value for foo.</message>
         </field-validator>
     </field>
+    <field name="bar">
+        <field-validator type="required" short-circuit="true">
+            <message key="bar.key">You must enter a value for bar.</message>
+        </field-validator>
+        <field-validator type="int">
+            <param name="min">6</param>
+            <param name="max">10</param>
+            <message>bar must be between ${min} and ${max}, current value is ${bar}.</message>
+        </field-validator>
+    </field>
 </validators>
-

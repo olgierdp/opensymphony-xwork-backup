@@ -1,0 +1,32 @@
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.dtd">
+<validators>
+    <field name="name">
+        <field-validator type="required">
+            <message key="name.key">You must enter a value for name.</message>
+        </field-validator>
+    </field>
+    <field name="email">
+        <field-validator type="required" short-circuit="true">
+            <message>You must enter a value for email.</message>
+        </field-validator>
+        <field-validator type="email" short-circuit="true">
+            <message>Not a valid e-mail.</message>
+        </field-validator>
+        <field-validator type="fieldexpression">
+            <param name="expression">email.endsWith('mycompany.com')</param>
+            <message>Email not from the right company.</message>
+        </field-validator>
+    </field>
+    <field name="email2">
+        <field-validator type="required">
+            <message>You must enter a value for email2.</message>
+        </field-validator>
+        <field-validator type="email">
+            <message>Not a valid e-mail2.</message>
+        </field-validator>
+        <field-validator type="fieldexpression">
+            <param name="expression">email.endsWith('mycompany.com')</param>
+            <message>Email2 not from the right company.</message>
+        </field-validator>
+    </field>
+</validators>

@@ -8,6 +8,7 @@ import com.opensymphony.util.ClassLoaderUtil;
 
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
+import com.opensymphony.xwork.validator.validators.IntRangeFieldValidator;
 import com.opensymphony.xwork.validator.validators.RequiredFieldValidator;
 
 import junit.framework.TestCase;
@@ -32,7 +33,7 @@ public class ValidatorFileParserTest extends TestCase {
 
         List configs = ValidatorFileParser.parseActionValidators(is);
         assertNotNull(configs);
-        assertEquals(configs.size(), 1);
+        assertEquals(3, configs.size());
 
         Validator validator = (Validator) configs.get(0);
         assertTrue(validator instanceof RequiredFieldValidator);
@@ -40,6 +41,14 @@ public class ValidatorFileParserTest extends TestCase {
         FieldValidator fieldValidator = (FieldValidator) validator;
         assertEquals("foo", fieldValidator.getFieldName());
         assertEquals("You must enter a value for foo.", fieldValidator.getDefaultMessage());
+
+        validator = (Validator) configs.get(1);
+        assertTrue(validator instanceof ShortCircuitingFieldValidator);
+        assertTrue(((ShortCircuitingFieldValidator) validator).isShortCircuit());
+
+        validator = (Validator) configs.get(2);
+        assertTrue(validator instanceof IntRangeFieldValidator);
+        assertFalse(((ShortCircuitingFieldValidator) validator).isShortCircuit());
     }
 
     protected void setUp() throws Exception {

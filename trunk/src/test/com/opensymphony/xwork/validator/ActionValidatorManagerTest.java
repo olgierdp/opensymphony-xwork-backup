@@ -7,6 +7,7 @@ package com.opensymphony.xwork.validator;
 import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.test.SimpleAction2;
 import com.opensymphony.xwork.test.SimpleAction3;
+import com.opensymphony.xwork.test.User;
 import com.opensymphony.xwork.validator.validators.DateRangeFieldValidator;
 import com.opensymphony.xwork.validator.validators.ExpressionValidator;
 import com.opensymphony.xwork.validator.validators.IntRangeFieldValidator;
@@ -103,5 +104,43 @@ public class ActionValidatorManagerTest extends TestCase {
         List validatorList = ActionValidatorManager.getValidators(SimpleAction.class, alias);
         List validatorList2 = ActionValidatorManager.getValidators(SimpleAction2.class, alias);
         assertFalse(validatorList.size() == validatorList2.size());
+    }
+
+    public void testShortCircuit() {
+        // get validators
+        List validatorList = ActionValidatorManager.getValidators(User.class, null);
+        assertEquals(7, validatorList.size());
+
+        try {
+            User user = new User();
+            user.setName("Mark");
+            user.setEmail("mark@mycompany.com");
+            user.setEmail2("mark2@mycompany.com");
+
+            // this should work
+            ValidatorContext context = new GenericValidatorContext(user);
+            ActionValidatorManager.validate(user, null, context);
+            assertFalse(context.hasErrors());
+
+            // this should short-circuit at the second validator for email
+            user.setEmail("bad_email");
+            user.setEmail2("bad_email");
+            context = new GenericValidatorContext(user);
+            ActionValidatorManager.validate(user, null, context);
+            assertTrue(context.hasFieldErrors());
+
+            List l = (List) context.getFieldErrors().get("email");
+            assertNotNull(l);
+            assertEquals(1, l.size());
+            assertEquals("Not a valid e-mail.", l.get(0));
+            l = (List) context.getFieldErrors().get("email2");
+            assertNotNull(l);
+            assertEquals(2, l.size());
+            assertEquals("Not a valid e-mail2.", l.get(0));
+            assertEquals("Email2 not from the right company.", l.get(1));
+        } catch (ValidationException ex) {
+            ex.printStackTrace();
+            fail("Validation error: " + ex.getMessage());
+        }
     }
 }

@@ -5,22 +5,27 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ObjectFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import org.xml.sax.*;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 
 /**
@@ -107,7 +112,6 @@ public class ValidatorFileParser {
                 Element validatorElement = (Element) nodes.item(i);
                 String name = validatorElement.getAttribute("name");
                 String className = validatorElement.getAttribute("class");
-                Class clazz = null;
 
                 try {
                     // catch any problems here
@@ -137,6 +141,11 @@ public class ValidatorFileParser {
             }
 
             Validator validator = ValidatorFactory.getValidator(validatorType, params);
+
+            if (validator instanceof ShortCircuitingFieldValidator) {
+                ((ShortCircuitingFieldValidator) validator).setShortCircuit(Boolean.valueOf(validatorElement.getAttribute("short-circuit")).booleanValue());
+            }
+
             NodeList messageNodes = validatorElement.getElementsByTagName("message");
             Element messageElement = (Element) messageNodes.item(0);
             String key = messageElement.getAttribute("key");
