@@ -6,6 +6,7 @@ package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionInvocation;
+import com.opensymphony.xwork.Validateable;
 import com.opensymphony.xwork.ValidationAware;
 
 
@@ -40,6 +41,11 @@ public class DefaultWorkflowInterceptor implements Interceptor {
      */
     public String intercept(ActionInvocation invocation) throws Exception {
         Action action = invocation.getAction();
+
+        if (action instanceof Validateable) {
+            Validateable validateable = (Validateable) action;
+            validateable.validate();
+        }
 
         if (action instanceof ValidationAware) {
             ValidationAware validationAwareAction = (ValidationAware) action;

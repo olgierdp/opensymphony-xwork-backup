@@ -13,7 +13,7 @@ import java.util.List;
  * @author Jason Carreira
  * Created Aug 4, 2003 1:00:04 AM
  */
-public class VisitorValidatorTestAction extends BaseActionSupport {
+public class VisitorValidatorTestAction extends ActionSupport {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private List testBeanList = new ArrayList();

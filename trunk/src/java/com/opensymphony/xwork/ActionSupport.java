@@ -4,42 +4,102 @@
  */
 package com.opensymphony.xwork;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.Serializable;
+
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
 
 /**
- * ActionSupport
- * @author Jason Carreira
- * Created Feb 10, 2003 9:47:39 AM
+ * Created by IntelliJ IDEA.
+ * User: Mike
+ * Date: May 27, 2003
+ * Time: 3:45:29 PM
+ * To change this template use Options | File Templates.
  */
-public class ActionSupport extends BaseActionSupport {
+public class ActionSupport implements Action, Serializable, Validateable, ValidationAware, LocaleAware {
+    //~ Static fields/initializers /////////////////////////////////////////////
+
+    protected transient static final Log LOG = LogFactory.getLog(ActionSupport.class);
+
+    //~ Instance fields ////////////////////////////////////////////////////////
+
+    private final LocaleAware localeAware = new LocaleAwareSupport(getClass());
+    private final ValidationAware validationAware = new ValidationAwareSupport();
+
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public String doDefault() throws Exception {
-        return INPUT;
+    public void setActionErrors(Collection errorMessages) {
+        validationAware.setActionErrors(errorMessages);
     }
 
-    public String doExecute() throws Exception {
-        return SUCCESS;
+    public Collection getActionErrors() {
+        return validationAware.getActionErrors();
     }
 
-    public String execute() throws Exception {
-        doValidation();
-
-        if (hasErrors()) {
-            return INPUT;
-        }
-
-        return doExecute();
+    public void setFieldErrors(Map errorMap) {
+        validationAware.setFieldErrors(errorMap);
     }
 
     /**
-     * Subclasses may override this method to provide validation
-     * of input data. The execute() method calls doValidation()
-     * in the beginning of its code (which will delegate to this method),
-     * so as to check input data before doing the actual processing.
-     *
-     * <p>If any application errors arise these should be registered
-     * by calling addActionError() or addFieldError().</p>
+     * @return a Map of field names -> List of errors or null if no errors have been added
      */
-    protected void doValidation() {
+    public Map getFieldErrors() {
+        return validationAware.getFieldErrors();
+    }
+
+    public Locale getLocale() {
+        return localeAware.getLocale();
+    }
+
+    public String getText(String aTextName) {
+        return localeAware.getText(aTextName);
+    }
+
+    public String getText(String aTextName, String defaultValue) {
+        return localeAware.getText(aTextName, defaultValue);
+    }
+
+    public ResourceBundle getTexts(String aBundleName) {
+        return localeAware.getTexts(aBundleName);
+    }
+
+    public ResourceBundle getTexts() {
+        return localeAware.getTexts();
+    }
+
+    public void addActionError(String anErrorMessage) {
+        validationAware.addActionError(anErrorMessage);
+    }
+
+    public void addFieldError(String fieldName, String errorMessage) {
+        validationAware.addFieldError(fieldName, errorMessage);
+    }
+
+    public String execute() throws Exception {
+        return SUCCESS;
+    }
+
+    public boolean hasActionErrors() {
+        return validationAware.hasActionErrors();
+    }
+
+    public boolean hasErrors() {
+        return validationAware.hasErrors();
+    }
+
+    public boolean hasFieldErrors() {
+        return validationAware.hasFieldErrors();
+    }
+
+    /**
+     * Subclasses should override this method to provide validations.
+     */
+    public void validate() {
     }
 }
