@@ -6,24 +6,16 @@ package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.LocaleAware;
 import com.opensymphony.xwork.ValidationAware;
-
 import ognl.DefaultTypeConverter;
 import ognl.Evaluation;
 import ognl.OgnlContext;
 import ognl.TypeConverter;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
-
 import java.lang.reflect.Member;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 
 /**
@@ -108,8 +100,14 @@ public class XWorkConverter extends DefaultTypeConverter {
                         property = (String) eval.getLastChild().getResult();
                     }
                 } else {
+                    // since we changed what the source was (tricked Ognl essentially)
                     clazz = eval.getLastChild().getSource().getClass();
-                    property = (String) eval.getFirstChild().getResult();
+
+                    // ugly hack getting the property, but it works
+                    property = eval.getNode().jjtGetChild(eval.getNode().jjtGetNumChildren() - 1).toString();
+                    if (property.startsWith("\"") && property.endsWith("\"")) {
+                        property = property.substring(1, property.length() - 1);
+                    }
                 }
             }
 
@@ -131,7 +129,7 @@ public class XWorkConverter extends DefaultTypeConverter {
                             mapping.putAll(props);
 
                             for (Iterator iterator = mapping.entrySet().iterator();
-                                    iterator.hasNext();) {
+                                 iterator.hasNext();) {
                                 Map.Entry entry = (Map.Entry) iterator.next();
                                 entry.setValue(createTypeConverter((String) entry.getValue()));
                             }
@@ -251,7 +249,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         props.load(is);
 
         for (Iterator iterator = props.entrySet().iterator();
-                iterator.hasNext();) {
+             iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String key = (String) entry.getKey();
 

@@ -24,6 +24,8 @@ public class Foo {
     boolean useful;
     int number;
     long aLong;
+    Foo child;
+    Foo[] relatives;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -81,5 +83,21 @@ public class Foo {
 
     public void setaLong(long aLong) {
         this.aLong = aLong;
+    }
+
+    public void setChild(Foo child) {
+        this.child = child;
+    }
+
+    public Foo getChild() {
+        return child;
+    }
+
+    public Foo[] getRelatives() {
+        return relatives;
+    }
+
+    public void setRelatives(Foo[] relatives) {
+        this.relatives = relatives;
     }
 }

@@ -5,12 +5,10 @@
 package com.opensymphony.xwork.util;
 
 import ognl.*;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.beans.IntrospectionException;
-
 import java.util.Iterator;
 import java.util.Map;
 
@@ -78,7 +76,10 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
                         //Ognl.getValue(OgnlUtil.compile((String) name), context, o);
                         if (value != null) {
-                            ognlContext.pushEvaluation(new Evaluation(ognlContext.getCurrentEvaluation().getNode(), o));
+                            Evaluation currentEvaluation = ognlContext.getCurrentEvaluation();
+                            SimpleNode node = currentEvaluation.getNode();
+                            currentEvaluation.setSource(o);
+                            ognlContext.pushEvaluation(new Evaluation(node, o));
 
                             return value;
                         }

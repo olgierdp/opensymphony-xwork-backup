@@ -233,15 +233,94 @@ public class OgnlValueStackTest extends TestCase {
         OgnlValueStack vs = new OgnlValueStack();
         vs.push(foo);
 
-        Map context = vs.getContext();
-
-        HashMap props = new HashMap();
-        props.put("bar", "bar:123");
-
-        OgnlUtil.setProperties(props, foo, context);
+        vs.setValue("bar", "bar:123");
 
         assertEquals("bar", foo.getBar().getTitle());
         assertEquals(123, foo.getBar().getSomethingElse());
+    }
+
+    public void testSetDeepBarAsString() {
+        Foo foo = new Foo();
+        Foo foo2 = new Foo();
+        foo.setChild(foo2);
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        vs.setValue("child.bar", "bar:123");
+
+        assertEquals("bar", foo.getChild().getBar().getTitle());
+        assertEquals(123, foo.getChild().getBar().getSomethingElse());
+    }
+
+    public void testSetReallyDeepBarAsString() {
+        Foo foo = new Foo();
+        Foo foo2 = new Foo();
+        foo.setChild(foo2);
+        Foo foo3 = new Foo();
+        foo2.setChild(foo3);
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        vs.setValue("child.child.bar", "bar:123");
+
+        assertEquals("bar", foo.getChild().getChild().getBar().getTitle());
+        assertEquals(123, foo.getChild().getChild().getBar().getSomethingElse());
+    }
+
+    public void testGetBarAsString() {
+        Foo foo = new Foo();
+        Bar bar = new Bar();
+        bar.setTitle("bar");
+        bar.setSomethingElse(123);
+        foo.setBar(bar);
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        String output = (String) vs.findValue("bar", String.class);
+        assertEquals("bar:123", output);
+    }
+
+    public void testGetComplexBarAsString() {
+        // children foo->foo->foo
+        Foo foo = new Foo();
+        Foo foo2 = new Foo();
+        foo.setChild(foo2);
+        Foo foo3 = new Foo();
+        foo2.setChild(foo3);
+
+        // relatives
+        Foo fooA = new Foo();
+        foo.setRelatives(new Foo[]{fooA});
+        Foo fooB = new Foo();
+        foo2.setRelatives(new Foo[]{fooB});
+        Foo fooC = new Foo();
+        foo3.setRelatives(new Foo[]{fooC});
+
+        // the bar
+        Bar bar = new Bar();
+        bar.setTitle("bar");
+        bar.setSomethingElse(123);
+
+        // now place the bar all over
+        foo.setBar(bar);
+        foo2.setBar(bar);
+        foo3.setBar(bar);
+        fooA.setBar(bar);
+        fooB.setBar(bar);
+        fooC.setBar(bar);
+
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        assertEquals("bar:123", vs.findValue("bar", String.class));
+        assertEquals("bar:123", vs.findValue("child.bar", String.class));
+        assertEquals("bar:123", vs.findValue("child.child.bar", String.class));
+        assertEquals("bar:123", vs.findValue("relatives[0].bar", String.class));
+        assertEquals("bar:123", vs.findValue("child.relatives[0].bar", String.class));
+        assertEquals("bar:123", vs.findValue("child.child.relatives[0].bar", String.class));
     }
 
     public void testMapEntriesAvailableByKey() {
@@ -254,10 +333,10 @@ public class OgnlValueStackTest extends TestCase {
         Map map = new HashMap();
         String a_key = "a";
         String a_value = "A";
-        map.put(a_key,a_value);
+        map.put(a_key, a_value);
         String b_key = "b";
         String b_value = "B";
-        map.put(b_key,b_value);
+        map.put(b_key, b_value);
 
         vs.push(map);
 
