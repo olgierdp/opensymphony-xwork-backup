@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.test.User;
 
 import junit.framework.TestCase;
 
@@ -388,5 +389,30 @@ public class OgnlUtilTest extends TestCase {
 
             return super.get(index);
         }
+    }
+
+    /**
+     * Test that type conversion is performed on indexed collection properties.
+     */
+    public void testSetIndexedValue() {
+        OgnlValueStack stack = new OgnlValueStack();
+        Map stackContext = stack.getContext();
+        stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+        stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+        stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+
+        User user = new User();
+        stack.push(user);
+
+        // indexed string w/ existing array
+        user.setList(new ArrayList());
+        user.getList().add("");
+
+        String[] foo = new String[] {"asdf"};
+        stack.setValue("list[0]", foo);
+        assertNotNull(user.getList());
+        assertEquals(1, user.getList().size());
+        assertEquals(String.class, user.getList().get(0).getClass());
+        assertEquals("asdf", user.getList().get(0));
     }
 }
