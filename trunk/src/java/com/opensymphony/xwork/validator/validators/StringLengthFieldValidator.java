@@ -21,34 +21,34 @@ import com.opensymphony.xwork.validator.ValidationException;
 public class StringLengthFieldValidator extends FieldValidatorSupport {
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    private boolean m_doTrim = true;
-    private int m_maxLength = -1;
-    private int m_minLength = -1;
+    private boolean doTrim = true;
+    private int maxLength = -1;
+    private int minLength = -1;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setMaxLength(int maxLength) {
-        this.m_maxLength = maxLength;
+        this.maxLength = maxLength;
     }
 
     public int getMaxLength() {
-        return m_maxLength;
+        return maxLength;
     }
 
     public void setMinLength(int minLength) {
-        this.m_minLength = minLength;
+        this.minLength = minLength;
     }
 
     public int getMinLength() {
-        return m_minLength;
+        return minLength;
     }
 
     public void setTrim(boolean trim) {
-        m_doTrim = trim;
+        doTrim = trim;
     }
 
     public boolean getTrim() {
-        return m_doTrim;
+        return doTrim;
     }
 
     public void validate(Object object) throws ValidationException {
@@ -58,13 +58,13 @@ public class StringLengthFieldValidator extends FieldValidatorSupport {
         if (val == null) {
             addFieldError(fieldName, object);
         } else {
-            if (m_doTrim) {
+            if (doTrim) {
                 val = val.trim();
             }
 
-            if ((m_minLength > -1) && (val.length() < m_minLength)) {
+            if ((minLength > -1) && (val.length() < minLength)) {
                 addFieldError(fieldName, object);
-            } else if ((m_maxLength > -1) && (val.length() > m_maxLength)) {
+            } else if ((maxLength > -1) && (val.length() > maxLength)) {
                 addFieldError(fieldName, object);
             }
         }
