@@ -96,7 +96,7 @@ public class LocalizedTextUtil {
      * @throws MissingResourceException if no message can be found for the specified key
      */
     public static String findDefaultText(String aTextName, Locale locale, Object[] params) throws MissingResourceException {
-        MessageFormat mf = new MessageFormat(findDefaultText(aTextName, locale), locale);
+        MessageFormat mf = buildMessageFormat(findDefaultText(aTextName, locale), locale);
 
         return mf.format(params);
     }
@@ -291,7 +291,7 @@ public class LocalizedTextUtil {
             reloadBundles(bundle);
 
             String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
-            MessageFormat mf = new MessageFormat(message, locale);
+            MessageFormat mf = buildMessageFormat(message, locale);
 
             return mf.format(args);
         } catch (MissingResourceException ex) {
@@ -323,7 +323,7 @@ public class LocalizedTextUtil {
 
             // defaultMessage may be null
             if (message != null) {
-                MessageFormat mf = new MessageFormat(TextParseUtil.translateVariables(message, valueStack), locale);
+                MessageFormat mf = buildMessageFormat(TextParseUtil.translateVariables(message, valueStack), locale);
 
                 return mf.format(args);
             }
@@ -342,12 +342,19 @@ public class LocalizedTextUtil {
 
             String message = TextParseUtil.translateVariables(bundle.getString(key), valueStack);
 
-            MessageFormat mf = new MessageFormat(message, locale);
+            MessageFormat mf = buildMessageFormat(message, locale);
 
             return mf.format(args);
         } catch (MissingResourceException ex) {
             return null;
         }
+    }
+
+    private static MessageFormat buildMessageFormat(String pattern, Locale locale) {
+        MessageFormat format = new MessageFormat(pattern);
+        format.setLocale(locale);
+
+        return format;
     }
 
     /**

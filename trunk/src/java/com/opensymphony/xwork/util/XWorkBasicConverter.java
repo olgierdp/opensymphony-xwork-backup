@@ -284,7 +284,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             List intArray = new ArrayList(x.length);
 
             for (int i = 0; i < x.length; i++) {
-                intArray.add(Boolean.valueOf(x[i]));
+                intArray.add(new Boolean(x[i]));
             }
 
             result = TextUtils.join(", ", intArray);

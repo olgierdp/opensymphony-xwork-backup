@@ -5,6 +5,9 @@
 package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.interceptor.component.ComponentInterceptor;
+import com.opensymphony.xwork.util.OgnlValueStack;
+import com.opensymphony.xwork.util.TextParseUtil;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -83,11 +86,20 @@ public class ActionChainResult implements Result {
      * @param invocation the DefaultActionInvocation calling the action call stack
      */
     public void execute(ActionInvocation invocation) throws Exception {
-        if (isInChainHistory(namespace, actionName)) {
+        // if the finalNamespace wasn't explicitly defined, assume the current one
+        if (this.namespace == null) {
+            this.namespace = invocation.getProxy().getNamespace();
+        }
+
+        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        String finalNamespace = TextParseUtil.translateVariables(namespace, stack);
+        String finalActionName = TextParseUtil.translateVariables(actionName, stack);
+
+        if (isInChainHistory(finalNamespace, finalActionName)) {
             throw new XworkException("infinite recursion detected");
         }
 
-        addToHistory(namespace, actionName);
+        addToHistory(finalNamespace, finalActionName);
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.VALUE_STACK, ActionContext.getContext().getValueStack());
@@ -96,15 +108,10 @@ public class ActionChainResult implements Result {
         extraContext.put(CHAIN_HISTORY, ActionContext.getContext().get(CHAIN_HISTORY));
 
         if (log.isDebugEnabled()) {
-            log.debug("Chaining to action " + actionName);
+            log.debug("Chaining to action " + finalActionName);
         }
 
-        // if the namespace wasn't explicitly defined, assume the current one
-        if (this.namespace == null) {
-            this.namespace = invocation.getProxy().getNamespace();
-        }
-
-        proxy = ActionProxyFactory.getFactory().createActionProxy(this.namespace, actionName, extraContext);
+        proxy = ActionProxyFactory.getFactory().createActionProxy(finalNamespace, finalActionName, extraContext);
         proxy.execute();
     }
 
