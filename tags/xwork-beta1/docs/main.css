@@ -1,0 +1,31 @@
+li, br, div, p {
+	font-family : Verdana,Arial,Helvetica,"MS Sans Serif";
+}
+
+i, b, em, strong {
+	color: #164a7d;
+}
+
+pre,code {
+	color: #164a7d;
+	font-size : 12px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: #164a7d;
+	text-align: left;
+}
+
+a, a:visited{
+	color: #164a7d;
+}
+
+li {
+	padding-bottom: 2pt;
+}
+
+a { }a:visited { }b { }body { 
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+; font-size: 12px } td { 
+	font-family : Verdana, Arial, Helvetica, sans-serif;
+; font-size: 10px } 
