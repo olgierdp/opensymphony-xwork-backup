@@ -36,7 +36,6 @@ public class SimpleAction extends ActionSupport {
     //~ Constructors ///////////////////////////////////////////////////////////
 
     public SimpleAction() {
-        System.out.println("hi");
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -78,7 +77,7 @@ public class SimpleAction extends ActionSupport {
     }
 
     public boolean[] getBools() {
-        boolean[] b = new boolean[] {true, false, false, true};
+        boolean[] b = new boolean[]{true, false, false, true};
 
         return b;
     }
