@@ -36,12 +36,12 @@ public class OgnlUtil {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-* Sets the object's properties using the default type converter.
-*
-* @param props the properties being set
-* @param o the object
-* @param context the action context
-*/
+     * Sets the object's properties using the default type converter.
+     *
+     * @param props the properties being set
+     * @param o the object
+     * @param context the action context
+     */
     public static void setProperties(Map props, Object o, Map context) {
         if (props == null) {
             return;
@@ -53,7 +53,7 @@ public class OgnlUtil {
         Ognl.setRoot(context, o);
 
         for (Iterator iterator = props.entrySet().iterator();
-                iterator.hasNext();) {
+             iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String expression = (String) entry.getKey();
 
@@ -64,22 +64,22 @@ public class OgnlUtil {
     }
 
     /**
-* Sets the properties on the object using the default context
-* @param properties
-* @param o
-*/
+     * Sets the properties on the object using the default context
+     * @param properties
+     * @param o
+     */
     public static void setProperties(Map properties, Object o) {
         Map context = Ognl.createDefaultContext(o);
         setProperties(properties, o, context);
     }
 
     /**
-* Sets the named property to the supplied value on the Object
-* @param name the name of the property to be set
-* @param value the value to set into the named property
-* @param o the object upon which to set the property
-* @param context the context which may include the TypeConverter
-*/
+     * Sets the named property to the supplied value on the Object
+     * @param name the name of the property to be set
+     * @param value the value to set into the named property
+     * @param o the object upon which to set the property
+     * @param context the context which may include the TypeConverter
+     */
     public static void setProperty(String name, Object value, Object o, Map context) {
         Ognl.setTypeConverter(context, XWorkConverter.getInstance());
 
@@ -105,13 +105,13 @@ public class OgnlUtil {
     }
 
     /**
-* Copies the properties in the object "from" and sets them in the object "to"
-* using specified type converter, or {@link com.opensymphony.xwork.util.XWorkConverter} if none is specified.
-*
-* @param from the source object
-* @param to the target object
-* @param context the action context we're running under
-*/
+     * Copies the properties in the object "from" and sets them in the object "to"
+     * using specified type converter, or {@link com.opensymphony.xwork.util.XWorkConverter} if none is specified.
+     *
+     * @param from the source object
+     * @param to the target object
+     * @param context the action context we're running under
+     */
     public static void copy(Object from, Object to, Map context) {
         Map contextFrom = Ognl.createDefaultContext(from);
         Ognl.setTypeConverter(contextFrom, XWorkConverter.getInstance());
