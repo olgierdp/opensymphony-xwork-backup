@@ -6,7 +6,7 @@ package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
-
+import com.opensymphony.xwork.util.OgnlValueStack;
 import junit.framework.TestCase;
 
 import java.util.Locale;
@@ -47,8 +47,11 @@ public class LocaleAwareTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        ConfigurationManager.clearConfigurationProviders();
+        ConfigurationManager.destroyConfiguration();
         ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
         ConfigurationManager.getConfiguration().reload();
+
+        OgnlValueStack stack = new OgnlValueStack();
+        ActionContext.setContext(new ActionContext(stack.getContext()));
     }
 }

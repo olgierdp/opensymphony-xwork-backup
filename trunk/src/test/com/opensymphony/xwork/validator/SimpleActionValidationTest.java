@@ -10,7 +10,7 @@ import com.opensymphony.xwork.ActionProxyFactory;
 import com.opensymphony.xwork.ValidationAware;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
-
+import com.opensymphony.xwork.util.OgnlValueStack;
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -83,6 +83,8 @@ public class SimpleActionValidationTest extends TestCase {
 
         try {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
+            OgnlValueStack stack = new OgnlValueStack();
+            ActionContext.setContext(new ActionContext(stack.getContext()));
             ActionContext.getContext().setLocale(Locale.US);
             proxy.execute();
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
@@ -161,7 +163,7 @@ public class SimpleActionValidationTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        ConfigurationManager.clearConfigurationProviders();
+        ConfigurationManager.destroyConfiguration();
         ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
         ConfigurationManager.getConfiguration().reload();
     }
