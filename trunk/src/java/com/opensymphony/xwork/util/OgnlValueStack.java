@@ -9,15 +9,15 @@ import ognl.OgnlContext;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -77,6 +77,10 @@ public class OgnlValueStack implements Serializable {
         this.defaultType = defaultType;
     }
 
+    public void setExprOverrides(Map overrides) {
+        this.overrides = overrides;
+    }
+
     /**
      * Get the CompoundRoot which holds the objects pushed onto the stack
      * @return
@@ -127,7 +131,7 @@ public class OgnlValueStack implements Serializable {
                 return null;
             }
 
-            if (overrides != null && overrides.containsKey(expr)) {
+            if ((overrides != null) && overrides.containsKey(expr)) {
                 expr = (String) overrides.get(expr);
             }
 
@@ -140,6 +144,7 @@ public class OgnlValueStack implements Serializable {
             return null;
         } catch (Exception e) {
             LOG.warn("Caught an exception while evaluating expression '" + expr + "' against value stack", e);
+
             return null;
         }
     }
@@ -156,7 +161,7 @@ public class OgnlValueStack implements Serializable {
                 return null;
             }
 
-            if (overrides != null && overrides.containsKey(expr)) {
+            if ((overrides != null) && overrides.containsKey(expr)) {
                 expr = (String) overrides.get(expr);
             }
 
@@ -165,13 +170,14 @@ public class OgnlValueStack implements Serializable {
             return null;
         } catch (Exception e) {
             LOG.warn("Caught an exception while evaluating expression '" + expr + "' against value stack", e);
+
             return null;
         }
     }
 
     /**
      * Get the object on the top of the stack without changing the stack.
-     * @see {@link com.opensymphony.xwork.util.CompoundRoot#peek()}
+     * @see com.opensymphony.xwork.util.CompoundRoot#peek()
      */
     public Object peek() {
         return root.peek();
@@ -179,8 +185,8 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Get the object on the top of the stack and remove it from the stack.
-     * @see {@link com.opensymphony.xwork.util.CompoundRoot#pop()}
-     * @return
+     * @see com.opensymphony.xwork.util.CompoundRoot#pop()
+     * @return the object on the top of the stack
      */
     public Object pop() {
         return root.pop();
@@ -189,7 +195,7 @@ public class OgnlValueStack implements Serializable {
     /**
      * Put this object onto the top of the stack
      * @param o the object to be pushed onto the stack
-     * @see {@link com.opensymphony.xwork.util.CompoundRoot#push(java.lang.Object)}
+     * @see com.opensymphony.xwork.util.CompoundRoot#push(java.lang.Object)
      */
     public void push(Object o) {
         root.push(o);
@@ -197,7 +203,7 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Get the number of objects in the stack
-     * @return
+     * @return the number of objects in the stack
      */
     public int size() {
         return root.size();
@@ -217,9 +223,5 @@ public class OgnlValueStack implements Serializable {
         aStack.setRoot(this.root);
 
         return aStack;
-    }
-
-    public void setExprOverrides(Map overrides) {
-        this.overrides = overrides;
     }
 }

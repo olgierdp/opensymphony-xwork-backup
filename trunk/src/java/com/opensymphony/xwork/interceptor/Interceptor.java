@@ -8,12 +8,12 @@ import com.opensymphony.xwork.ActionInvocation;
 
 
 /**
- * An interceptor is a stateless class that follows the interceptor pattern, as found in {@link  javax.filter.Filter}
- * and in AOP languages.
+ * An interceptor is a stateless class that follows the interceptor pattern, as
+ * found in {@link  javax.servlet.Filter} and in AOP languages.
  * <p/>
  * Interceptors <b>must</b> be stateless and not assume that a new instance will be created for each request or Action.
  * Interceptors may choose to either short-circuit the {@link ActionInvocation} execution and return a return code
- * (such as {@link com.opensymphony.xwork.Action.SUCCESS}), or it may choose to do some processing before
+ * (such as {@link com.opensymphony.xwork.Action#SUCCESS}), or it may choose to do some processing before
  * and/or after delegating the rest of the procesing using {@link ActionInvocation#invoke()}.
  *
  * @author Jason Carreira

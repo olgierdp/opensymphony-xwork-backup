@@ -56,11 +56,11 @@ public class MockConfiguration implements Configuration {
         throw new UnsupportedOperationException();
     }
 
-    public void reload() throws ConfigurationException {
+    public void rebuildRuntimeConfiguration() {
         throw new UnsupportedOperationException();
     }
 
-    public void rebuildRuntimeConfiguration() {
+    public void reload() throws ConfigurationException {
         throw new UnsupportedOperationException();
     }
 
