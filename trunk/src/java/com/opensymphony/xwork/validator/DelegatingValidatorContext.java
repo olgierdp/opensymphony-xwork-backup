@@ -53,6 +53,23 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return validationAware.getActionErrors();
     }
 
+    /**
+ * Set the Collection of Action level String messages (not errors)
+ */
+    public void setActionMessages(Collection messages) {
+        validationAware.setActionMessages(messages);
+    }
+
+    /**
+ * Get the Collection of Action level messages for this action. Messages should not be added directly
+ * here, as implementations are free to return a new Collection or an Unmodifiable Collection.
+ *
+ * @return Collection of String messages
+ */
+    public Collection getActionMessages() {
+        return validationAware.getActionMessages();
+    }
+
     public void setFieldErrors(Map errorMap) {
         validationAware.setFieldErrors(errorMap);
     }
@@ -62,10 +79,10 @@ public class DelegatingValidatorContext implements ValidatorContext {
     }
 
     /**
- * Translates a simple field name into a full field name in Ognl syntax
- * @param fieldName
- * @return
- */
+* Translates a simple field name into a full field name in Ognl syntax
+* @param fieldName
+* @return
+*/
     public String getFullFieldName(String fieldName) {
         return fieldName;
     }
@@ -102,6 +119,13 @@ public class DelegatingValidatorContext implements ValidatorContext {
         validationAware.addActionError(anErrorMessage);
     }
 
+    /**
+ * Add an Action level message to this Action
+ */
+    public void addActionMessage(String aMessage) {
+        validationAware.addActionMessage(aMessage);
+    }
+
     public void addFieldError(String fieldName, String errorMessage) {
         validationAware.addFieldError(fieldName, errorMessage);
     }
@@ -118,19 +142,19 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return validationAware.hasFieldErrors();
     }
 
-    protected static LocaleProvider makeLocaleProvider(Object object) {
-        if (object instanceof LocaleProvider) {
-            return (LocaleProvider) object;
-        } else {
-            return new ActionContextLocaleProvider();
-        }
-    }
-
     public static TextProvider makeTextProvider(Object object, LocaleProvider localeProvider) {
         if (object instanceof TextProvider) {
             return (TextProvider) object;
         } else {
             return new TextProviderSupport(object.getClass(), localeProvider);
+        }
+    }
+
+    protected static LocaleProvider makeLocaleProvider(Object object) {
+        if (object instanceof LocaleProvider) {
+            return (LocaleProvider) object;
+        } else {
+            return new ActionContextLocaleProvider();
         }
     }
 
@@ -185,6 +209,26 @@ public class DelegatingValidatorContext implements ValidatorContext {
             return null;
         }
 
+        /**
+ * Set the Collection of Action level String messages (not errors)
+ */
+        public void setActionMessages(Collection messages) {
+            for (Iterator iterator = messages.iterator(); iterator.hasNext();) {
+                String s = (String) iterator.next();
+                addActionMessage(s);
+            }
+        }
+
+        /**
+ * Get the Collection of Action level messages for this action. Messages should not be added directly
+ * here, as implementations are free to return a new Collection or an Unmodifiable Collection.
+ *
+ * @return Collection of String messages
+ */
+        public Collection getActionMessages() {
+            return null;
+        }
+
         public void setFieldErrors(Map errorMap) {
             for (Iterator iterator = errorMap.entrySet().iterator();
                     iterator.hasNext();) {
@@ -199,6 +243,13 @@ public class DelegatingValidatorContext implements ValidatorContext {
 
         public void addActionError(String anErrorMessage) {
             log.error("Validation error: " + anErrorMessage);
+        }
+
+        /**
+ * Add an Action level message to this Action
+ */
+        public void addActionMessage(String aMessage) {
+            log.info("Validation Message: " + aMessage);
         }
 
         public void addFieldError(String fieldName, String errorMessage) {

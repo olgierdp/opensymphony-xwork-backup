@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork.interceptor;
 
+import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
 
 import com.opensymphony.xwork.Action;
@@ -56,6 +57,7 @@ public class ConversionErrorInterceptorTest extends TestCase {
         conversionErrors = new HashMap();
         context.setConversionErrors(conversionErrors);
         mockInvocation.matchAndReturn("getInvocationContext", context);
+        mockInvocation.expect("addPreResultListener", C.isA(PreResultListener.class));
         mockInvocation.expectAndReturn("invoke", Action.SUCCESS);
     }
 }

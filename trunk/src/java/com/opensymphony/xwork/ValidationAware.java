@@ -36,6 +36,19 @@ public interface ValidationAware extends Serializable {
     Collection getActionErrors();
 
     /**
+     * Set the Collection of Action level String messages (not errors)
+     */
+    void setActionMessages(Collection messages);
+
+    /**
+     * Get the Collection of Action level messages for this action. Messages should not be added directly
+     * here, as implementations are free to return a new Collection or an Unmodifiable Collection.
+     *
+     * @return Collection of String messages
+     */
+    Collection getActionMessages();
+
+    /**
      * Set the field error map of fieldname (String) to Collection of String error messages
      *
      * @param errorMap
@@ -56,6 +69,11 @@ public interface ValidationAware extends Serializable {
      * @param anErrorMessage
      */
     void addActionError(String anErrorMessage);
+
+    /**
+     * Add an Action level message to this Action
+     */
+    void addActionMessage(String aMessage);
 
     /**
      * Add an error message for a given field

@@ -12,7 +12,6 @@ import com.opensymphony.xwork.validator.ValidationException;
 import com.opensymphony.xwork.validator.ValidatorContext;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 
 /**
@@ -28,20 +27,20 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public void setContext(String context) {
-        this.context = context;
-    }
-
-    public String getContext() {
-        return context;
+    public void setAppendPrefix(boolean appendPrefix) {
+        this.appendPrefix = appendPrefix;
     }
 
     public boolean isAppendPrefix() {
         return appendPrefix;
     }
 
-    public void setAppendPrefix(boolean appendPrefix) {
-        this.appendPrefix = appendPrefix;
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    public String getContext() {
+        return context;
     }
 
     public void validate(Object object) throws ValidationException {
@@ -82,13 +81,16 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
     private void validateObject(String fieldName, Object o, String visitorContext) throws ValidationException {
         OgnlValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(o);
+
         ValidatorContext validatorContext;
+
         if (appendPrefix) {
-            validatorContext = new AppendingValidatorContext(getValidatorContext(), o, fieldName, getMessage(o), appendPrefix);
+            validatorContext = new AppendingValidatorContext(getValidatorContext(), o, fieldName, getMessage(o));
         } else {
             ValidatorContext parent = getValidatorContext();
             validatorContext = new DelegatingValidatorContext(parent, DelegatingValidatorContext.makeTextProvider(o, parent), parent);
         }
+
         ActionValidatorManager.validate(o, visitorContext, validatorContext);
         stack.pop();
     }
@@ -100,7 +102,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         String field;
         String message;
 
-        public AppendingValidatorContext(ValidatorContext parent, Object object, String field, String message, boolean appendPrefix) {
+        public AppendingValidatorContext(ValidatorContext parent, Object object, String field, String message) {
             super(parent, makeTextProvider(object, parent), parent);
 
             //            super(parent);
@@ -109,10 +111,10 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         }
 
         /**
-         * Translates a simple field name into a full field name in Ognl syntax
-         * @param fieldName
-         * @return
-         */
+ * Translates a simple field name into a full field name in Ognl syntax
+ * @param fieldName
+ * @return
+ */
         public String getFullFieldName(String fieldName) {
             return field + "." + fieldName;
         }

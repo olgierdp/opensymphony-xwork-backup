@@ -4,12 +4,7 @@
  */
 package com.opensymphony.xwork;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -21,6 +16,7 @@ public class ValidationAwareSupport implements ValidationAware {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private Collection actionErrors;
+    private Collection actionMessages;
     private Map fieldErrors;
 
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -33,21 +29,36 @@ public class ValidationAwareSupport implements ValidationAware {
         return new ArrayList(internalGetActionErrors());
     }
 
+    public synchronized void setActionMessages(Collection messages) {
+        this.actionMessages = messages;
+    }
+
+    public synchronized Collection getActionMessages() {
+        return new ArrayList(internalGetActionMessages());
+    }
+
     public synchronized void setFieldErrors(Map errorMap) {
         this.fieldErrors = errorMap;
     }
 
     /**
-    * Get the field specific errors.
-    *
-    * @return an unmodifiable Map with errors mapped from fieldname (String) to Collection of String error messages
-    */
+* Get the field specific errors.
+*
+* @return an unmodifiable Map with errors mapped from fieldname (String) to Collection of String error messages
+*/
     public synchronized Map getFieldErrors() {
         return new HashMap(internalGetFieldErrors());
     }
 
     public synchronized void addActionError(String anErrorMessage) {
         internalGetActionErrors().add(anErrorMessage);
+    }
+
+    /**
+ * Add an Action level message to this Action
+ */
+    public void addActionMessage(String aMessage) {
+        internalGetActionMessages().add(aMessage);
     }
 
     public synchronized void addFieldError(String fieldName, String errorMessage) {
@@ -67,9 +78,9 @@ public class ValidationAwareSupport implements ValidationAware {
     }
 
     /**
-    * Note that this does not have the same meaning as in WW 1.x
-    * @return (hasActionErrors() || hasFieldErrors())
-    */
+* Note that this does not have the same meaning as in WW 1.x
+* @return (hasActionErrors() || hasFieldErrors())
+*/
     public synchronized boolean hasErrors() {
         return (hasActionErrors() || hasFieldErrors());
     }
@@ -84,6 +95,14 @@ public class ValidationAwareSupport implements ValidationAware {
         }
 
         return actionErrors;
+    }
+
+    private Collection internalGetActionMessages() {
+        if (actionMessages == null) {
+            actionMessages = new ArrayList();
+        }
+
+        return actionMessages;
     }
 
     private Map internalGetFieldErrors() {

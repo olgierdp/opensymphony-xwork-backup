@@ -36,6 +36,14 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
         return validationAware.getActionErrors();
     }
 
+    public void setActionMessages(Collection messages) {
+        validationAware.setActionMessages(messages);
+    }
+
+    public Collection getActionMessages() {
+        return validationAware.getActionMessages();
+    }
+
     /**
      * @deprecated Use {@link #getActionErrors()}.
      */
@@ -93,8 +101,16 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
         validationAware.addActionError(anErrorMessage);
     }
 
+    public void addActionMessage(String aMessage) {
+        validationAware.addActionMessage(aMessage);
+    }
+
     public void addFieldError(String fieldName, String errorMessage) {
         validationAware.addFieldError(fieldName, errorMessage);
+    }
+
+    public String doDefault() throws Exception {
+        return SUCCESS;
     }
 
     /**
@@ -103,10 +119,6 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
      * @return {@link #SUCCESS}
      */
     public String execute() throws Exception {
-        return SUCCESS;
-    }
-
-    public String doDefault() throws Exception {
         return SUCCESS;
     }
 
