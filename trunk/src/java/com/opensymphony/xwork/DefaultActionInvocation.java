@@ -10,14 +10,12 @@ import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.interceptor.PreResultListener;
 import com.opensymphony.xwork.util.OgnlUtil;
 import com.opensymphony.xwork.util.OgnlValueStack;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,8 +23,6 @@ import java.util.Map;
 
 
 /**
- *
- *
  * @author $Author$
  * @version $Revision$
  */
@@ -89,6 +85,7 @@ public class DefaultActionInvocation implements ActionInvocation {
      * will walk down the chain of ActionChainResults until it finds a non-chain result, which will be returned. If the
      * DefaultActionInvocation's result has not been executed before, the Result instance will be created and populated with
      * the result params.
+     *
      * @return a Result instance
      * @throws Exception
      */
@@ -127,6 +124,7 @@ public class DefaultActionInvocation implements ActionInvocation {
      * Register a com.opensymphony.xwork.interceptor.PreResultListener to be notified after the Action is executed and before the
      * Result is executed. The ActionInvocation implementation must guarantee that listeners will be called in the order
      * in which they are registered. Listener registration and execution does not need to be thread-safe.
+     *
      * @param listener
      */
     public void addPreResultListener(PreResultListener listener) {
@@ -181,7 +179,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         if (!executed) {
             if (preResultListeners != null) {
                 for (Iterator iterator = preResultListeners.iterator();
-                        iterator.hasNext();) {
+                     iterator.hasNext();) {
                     PreResultListener listener = (PreResultListener) iterator.next();
                     listener.beforeResult(this, resultCode);
                 }
@@ -268,7 +266,7 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         if (result != null) {
             result.execute(this);
-        } else if (!resultCode.equals(Action.NONE)) {
+        } else if (!Action.NONE.equals(resultCode)) {
             LOG.warn("No result defined for action " + getAction().getClass().getName() + " and result " + getResultCode());
         }
     }
