@@ -6,6 +6,7 @@ package com.opensymphony.xwork.test;
 
 import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.util.Bar;
+import com.opensymphony.xwork.util.Cat;
 
 
 /**
@@ -18,6 +19,7 @@ public class TestBean2 extends TestBean implements DataAware {
 
     private Bar bar;
     private String data;
+    private Cat cat;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -35,5 +37,13 @@ public class TestBean2 extends TestBean implements DataAware {
 
     public String getData() {
         return data;
+    }
+
+    public Cat getCat() {
+        return cat;
+    }
+
+    public void setCat(Cat cat) {
+        this.cat = cat;
     }
 }

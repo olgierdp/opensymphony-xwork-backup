@@ -7,7 +7,6 @@ package com.opensymphony.xwork.util;
 import ognl.DefaultTypeConverter;
 
 import java.lang.reflect.Member;
-
 import java.util.Map;
 
 
@@ -42,6 +41,9 @@ public class FooBarConverter extends DefaultTypeConverter {
             cat.setName((String) value);
 
             return cat;
+        } else {
+            System.out.println("Don't know how to convert between " + value.getClass().getName() +
+                    " and " + toType.getName());
         }
 
         return null;
