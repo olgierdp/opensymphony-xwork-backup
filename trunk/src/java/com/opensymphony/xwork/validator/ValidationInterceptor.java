@@ -8,13 +8,10 @@ import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.interceptor.AroundInterceptor;
 
-import java.util.Iterator;
-import java.util.List;
-
 
 /**
  * ValidationInterceptor
- *
+ * <p/>
  * Created : Jan 19, 2003 3:56:42 PM
  *
  * @author Jason Carreira
@@ -30,7 +27,7 @@ public class ValidationInterceptor extends AroundInterceptor {
         String context = invocation.getProxy().getActionName();
 
         if (log.isDebugEnabled()) {
-            log.debug("Validating " + invocation.getProxy().getNamespace() + invocation.getProxy().getActionName() + ".");
+            log.debug("Validating " + invocation.getProxy().getNamespace() + "/" + invocation.getProxy().getActionName() + ".");
         }
 
         ActionValidatorManager.validate(action, context);
