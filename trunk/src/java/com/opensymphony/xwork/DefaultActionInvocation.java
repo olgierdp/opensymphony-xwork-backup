@@ -85,13 +85,13 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     /**
-    * If the DefaultActionInvocation has been executed before and the Result is an instance of ActionChainResult, this method
-    * will walk down the chain of ActionChainResults until it finds a non-chain result, which will be returned. If the
-    * DefaultActionInvocation's result has not been executed before, the Result instance will be created and populated with
-    * the result params.
-    * @return a Result instance
-    * @throws Exception
-    */
+* If the DefaultActionInvocation has been executed before and the Result is an instance of ActionChainResult, this method
+* will walk down the chain of ActionChainResults until it finds a non-chain result, which will be returned. If the
+* DefaultActionInvocation's result has not been executed before, the Result instance will be created and populated with
+* the result params.
+* @return a Result instance
+* @throws Exception
+*/
     public Result getResult() throws Exception {
         if (result != null) {
             Result returnResult = result;
@@ -146,11 +146,11 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     /**
-     * Register a com.opensymphony.xwork.interceptor.PreResultListener to be notified after the Action is executed and before the
-     * Result is executed. The ActionInvocation implementation must guarantee that listeners will be called in the order
-     * in which they are registered. Listener registration and execution does not need to be thread-safe.
-     * @param listener
-     */
+ * Register a com.opensymphony.xwork.interceptor.PreResultListener to be notified after the Action is executed and before the
+ * Result is executed. The ActionInvocation implementation must guarantee that listeners will be called in the order
+ * in which they are registered. Listener registration and execution does not need to be thread-safe.
+ * @param listener
+ */
     public void addPreResultListener(PreResultListener listener) {
         if (preResultListeners == null) {
             preResultListeners = new ArrayList(1);
@@ -175,15 +175,17 @@ public class DefaultActionInvocation implements ActionInvocation {
             }
         }
 
-        if (preResultListeners != null) {
-            for (Iterator iterator = preResultListeners.iterator();
-                    iterator.hasNext();) {
-                PreResultListener listener = (PreResultListener) iterator.next();
-                listener.beforeResult(this, resultCode);
-            }
-        }
-
+        // this is needed because the result will be executed, then control will return to the Interceptor, which will
+        // return above and flow through again
         if (!executed) {
+            if (preResultListeners != null) {
+                for (Iterator iterator = preResultListeners.iterator();
+                        iterator.hasNext();) {
+                    PreResultListener listener = (PreResultListener) iterator.next();
+                    listener.beforeResult(this, resultCode);
+                }
+            }
+
             // now execute the result, if we're supposed to
             if (proxy.getExecuteResult()) {
                 executeResult();
@@ -258,8 +260,8 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     /**
-    * Uses getResult to get the final Result and executes it
-    */
+* Uses getResult to get the final Result and executes it
+*/
     private void executeResult() throws Exception {
         Result aResult = getResult();
 
