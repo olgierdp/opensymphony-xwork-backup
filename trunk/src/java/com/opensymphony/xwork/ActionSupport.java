@@ -13,11 +13,9 @@ import java.util.*;
 
 
 /**
- * Created by IntelliJ IDEA.
  * User: Mike
  * Date: May 27, 2003
  * Time: 3:45:29 PM
- * To change this template use Options | File Templates.
  */
 public class ActionSupport implements Action, Serializable, Validateable, ValidationAware, TextProvider, LocaleProvider {
     //~ Static fields/initializers /////////////////////////////////////////////
@@ -51,8 +49,11 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
     }
 
     public Locale getLocale() {
-        return ActionContext.getContext().getLocale();
+        return (ActionContext.getContext() != null) ?
+                ActionContext.getContext().getLocale() :
+                null;
     }
+
 
     public String getText(String aTextName) {
         return textProvider.getText(aTextName);

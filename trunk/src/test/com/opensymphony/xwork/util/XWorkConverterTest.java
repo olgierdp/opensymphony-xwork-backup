@@ -228,10 +228,14 @@ public class XWorkConverterTest extends TestCase {
     protected void setUp() throws Exception {
         converter = XWorkConverter.getInstance();
         ConfigurationManager.destroyConfiguration();
-        ActionContext.setContext(null);
+        OgnlValueStack stack = new OgnlValueStack();
+        ActionContext ac = new ActionContext(stack.getContext());
+        ac.setLocale(Locale.US);
+        ActionContext.setContext(ac);
     }
 
     protected void tearDown() throws Exception {
         XWorkConverter.resetInstance();
+        ActionContext.setContext(null);
     }
 }

@@ -47,10 +47,6 @@ public class LocalizedTextUtil {
         }
     }
 
-    public static String findDefaultText(String aTextName) throws MissingResourceException {
-        return findDefaultText(aTextName, ActionContext.getContext().getLocale());
-    }
-
     public static String findDefaultText(String aTextName, Locale locale) throws MissingResourceException {
         MissingResourceException e = null;
         List localList = new ArrayList(DEFAULT_RESOURCE_BUNDLES);
@@ -82,26 +78,12 @@ public class LocalizedTextUtil {
      * @return A formatted message based on the key specified
      * @throws MissingResourceException
      */
-    public static String findDefaultText(String aTextName, Object[] params) throws MissingResourceException {
-        return MessageFormat.format(findDefaultText(aTextName), params);
-    }
-
-    public static ResourceBundle findResourceBundle(String aBundleName) {
-        return findResourceBundle(aBundleName, ActionContext.getContext().getLocale());
+    public static String findDefaultText(String aTextName, Locale locale, Object[] params) throws MissingResourceException {
+        return MessageFormat.format(findDefaultText(aTextName, locale), params);
     }
 
     public static ResourceBundle findResourceBundle(String aBundleName, Locale locale) {
         return ResourceBundle.getBundle(aBundleName, locale, Thread.currentThread().getContextClassLoader());
-    }
-
-    /**
-     * Calls {@link #findText(Class aClass, String aTextName, Locale locale)} with
-     * {@link com.opensymphony.xwork.ActionContext#getLocale()} as the locale.
-     * @see #findText(Class aClass, String aTextName, Locale locale)
-     * @see com.opensymphony.xwork.ActionContext#getLocale()
-     */
-    public static String findText(Class aClass, String aTextName) {
-        return findText(aClass, aTextName, ActionContext.getContext().getLocale());
     }
 
     /**
