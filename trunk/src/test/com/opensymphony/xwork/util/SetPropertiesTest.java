@@ -21,48 +21,43 @@ import java.util.Map;
  *
  */
 public class SetPropertiesTest extends TestCase {
-    //~ Constructors ///////////////////////////////////////////////////////////
-
-    /**
-     *
-     */
-    public SetPropertiesTest(String a) {
-        super(a);
-    }
-
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testOgnlUtilEmptyStringAsLong() {
         Bar bar = new Bar();
-        bar.setId(null);
-
         Map context = Ognl.createDefaultContext(bar);
+        context.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        bar.setId(null);
 
         HashMap props = new HashMap();
         props.put("id", "");
 
         OgnlUtil.setProperties(props, bar, context);
         assertNull(bar.getId());
+        assertEquals(0, bar.getFieldErrors().size());
 
         props.put("id", new String[] {""});
 
         bar.setId(null);
         OgnlUtil.setProperties(props, bar, context);
         assertNull(bar.getId());
+        assertEquals(0, bar.getFieldErrors().size());
     }
 
     public void testValueStackSetValueEmptyStringAsLong() {
         Bar bar = new Bar();
-
         OgnlValueStack vs = new OgnlValueStack();
+        vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         vs.push(bar);
 
         vs.setValue("id", "");
         assertNull(bar.getId());
+        assertEquals(0, bar.getFieldErrors().size());
 
         bar.setId(null);
 
         vs.setValue("id", new String[] {""});
         assertNull(bar.getId());
+        assertEquals(0, bar.getFieldErrors().size());
     }
 }

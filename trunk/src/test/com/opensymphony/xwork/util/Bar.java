@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.ActionSupport;
+
 
 /**
  *
@@ -12,7 +14,7 @@ package com.opensymphony.xwork.util;
  * @author $Author$
  * @version $Revision$
  */
-public class Bar {
+public class Bar extends ActionSupport {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     Long id;
