@@ -39,7 +39,7 @@ public class ChainingInterceptor extends AroundInterceptor {
 
             while (iterator.hasNext()) {
                 Object o = iterator.next();
-                OgnlUtil.copy(o, invocation.getAction(), ActionContext.getContext().getContextMap());
+                OgnlUtil.copy(o, invocation.getAction(), invocation.getInvocationContext().getContextMap());
             }
         }
     }
