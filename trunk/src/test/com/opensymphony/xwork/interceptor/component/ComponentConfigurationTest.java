@@ -5,10 +5,12 @@
 package com.opensymphony.xwork.interceptor.component;
 
 import junit.framework.TestCase;
+
 import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+
 import java.util.ArrayList;
 
 

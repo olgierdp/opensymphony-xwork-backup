@@ -7,10 +7,13 @@ package com.opensymphony.xwork.util;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.TestBean;
+
 import junit.framework.TestCase;
 
 import java.io.*;
+
 import java.math.BigDecimal;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +38,7 @@ public class OgnlValueStackTest extends TestCase {
         Dog dog = new Dog();
         dog.setAge(12);
         dog.setName("Rover");
-        dog.setChildAges(new int[]{1, 2});
+        dog.setChildAges(new int[] {1, 2});
 
         vs.push(dog);
         assertEquals("1, 2", vs.findValue("childAges", String.class));
@@ -86,7 +89,7 @@ public class OgnlValueStackTest extends TestCase {
         OgnlValueStack vs = new OgnlValueStack();
         vs.push(foo);
 
-        vs.setValue("strings", new String[]{"one", "two"});
+        vs.setValue("strings", new String[] {"one", "two"});
 
         assertNotNull(foo.getStrings());
         assertEquals("one", foo.getStrings().get(0));
@@ -102,7 +105,7 @@ public class OgnlValueStackTest extends TestCase {
         Dog dog = new Dog();
         dog.setAge(12);
         dog.setName("Rover");
-        dog.setChildAges(new int[]{1, 2});
+        dog.setChildAges(new int[] {1, 2});
         dog.setHates(cat);
 
         vs.push(dog);
@@ -146,13 +149,13 @@ public class OgnlValueStackTest extends TestCase {
 
         // relatives
         Foo fooA = new Foo();
-        foo.setRelatives(new Foo[]{fooA});
+        foo.setRelatives(new Foo[] {fooA});
 
         Foo fooB = new Foo();
-        foo2.setRelatives(new Foo[]{fooB});
+        foo2.setRelatives(new Foo[] {fooB});
 
         Foo fooC = new Foo();
-        foo3.setRelatives(new Foo[]{fooC});
+        foo3.setRelatives(new Foo[] {fooC});
 
         // the bar
         Bar bar = new Bar();

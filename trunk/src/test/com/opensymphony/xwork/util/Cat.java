@@ -20,8 +20,8 @@ public class Cat {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     Foo foo;
-    String name;
     List kittens;
+    String name;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -33,19 +33,19 @@ public class Cat {
         return foo;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
+    public void setKittens(List kittens) {
+        this.kittens = kittens;
     }
 
     public List getKittens() {
         return kittens;
     }
 
-    public void setKittens(List kittens) {
-        this.kittens = kittens;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }

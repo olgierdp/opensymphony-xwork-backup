@@ -280,14 +280,13 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         // get a new List so we don't get problems with the iterator if someone changes the list
         List interceptorList = new ArrayList(proxy.getConfig().getInterceptors());
-
-        if (interceptorList != null) {
-            interceptors = interceptorList.iterator();
-        }
+        interceptors = interceptorList.iterator();
     }
 
     private String invokeAction(Action action, ActionConfig actionConfig) throws Exception {
-        LOG.debug("Executing action method = " + actionConfig.getMethodName());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Executing action method = " + actionConfig.getMethodName());
+        }
 
         try {
             Method method = actionConfig.getMethod();

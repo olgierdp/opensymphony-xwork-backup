@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionInvocation;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

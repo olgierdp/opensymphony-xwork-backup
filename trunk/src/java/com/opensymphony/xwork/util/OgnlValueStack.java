@@ -12,7 +12,6 @@ import ognl.OgnlRuntime;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 import java.util.Enumeration;
@@ -218,7 +217,7 @@ public class OgnlValueStack implements Serializable {
         ((OgnlContext) context).setKeepLastEvaluation(true);
     }
 
-    private Object readResolve() throws ObjectStreamException {
+    private Object readResolve() {
         OgnlValueStack aStack = new OgnlValueStack();
         aStack.setRoot(this.root);
 

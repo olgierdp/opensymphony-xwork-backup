@@ -7,6 +7,7 @@ package com.opensymphony.xwork.config;
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
+
 import junit.framework.TestCase;
 
 import java.util.HashMap;

@@ -5,10 +5,12 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.ObjectFactory;
+
 import ognl.NullHandler;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlRuntime;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -66,12 +68,16 @@ public class InstantiatingNullHandler implements NullHandler {
         try {
             Class clazz = null;
             Object o = target;
+
             if (target instanceof CompoundRoot) {
                 CompoundRoot root = (CompoundRoot) target;
+
                 for (Iterator iterator = root.iterator(); iterator.hasNext();) {
                     o = iterator.next();
+
                     if (OgnlRuntime.hasSetProperty((OgnlContext) context, o, property.toString())) {
                         clazz = OgnlRuntime.getPropertyDescriptor(o.getClass(), property.toString()).getPropertyType();
+
                         break;
                     }
                 }
@@ -87,9 +93,9 @@ public class InstantiatingNullHandler implements NullHandler {
             Object param = createObject(clazz, o, property.toString());
 
             Ognl.setValue(property.toString(), context, o, param);
+
             //OgnlRuntime.setProperty((OgnlContext) context, target, property.toString(), param);
             //method.invoke(target, new Object[]{param});
-
             return param;
         } catch (Exception e) {
             LOG.error("Could not create and/or set value back on to object", e);

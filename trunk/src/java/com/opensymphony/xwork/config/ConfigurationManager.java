@@ -5,8 +5,10 @@
 package com.opensymphony.xwork.config;
 
 import com.opensymphony.util.FileManager;
+
 import com.opensymphony.xwork.config.impl.DefaultConfiguration;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -106,7 +108,7 @@ public class ConfigurationManager {
     public static void clearConfigurationProviders() {
         synchronized (configurationProviders) {
             for (Iterator iterator = configurationProviders.iterator();
-                 iterator.hasNext();) {
+                    iterator.hasNext();) {
                 ConfigurationProvider provider = (ConfigurationProvider) iterator.next();
                 provider.destroy();
             }
@@ -140,7 +142,7 @@ public class ConfigurationManager {
                 reload = false;
 
                 for (Iterator iterator = getConfigurationProviders().iterator();
-                     iterator.hasNext();) {
+                        iterator.hasNext();) {
                     ConfigurationProvider provider = (ConfigurationProvider) iterator.next();
 
                     if (provider.needsReload()) {

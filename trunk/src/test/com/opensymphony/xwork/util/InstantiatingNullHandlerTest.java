@@ -1,12 +1,26 @@
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork.util;
 
 import junit.framework.TestCase;
+
 import ognl.OgnlContext;
 
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * DOCUMENT ME!
+ *
+ * @author $author$
+ * @version $Revision$
+ */
 public class InstantiatingNullHandlerTest extends TestCase {
+    //~ Methods ////////////////////////////////////////////////////////////////
+
     public void testInheritance() {
         Tiger t = new Tiger();
         CompoundRoot root = new CompoundRoot();
@@ -14,6 +28,7 @@ public class InstantiatingNullHandlerTest extends TestCase {
 
         Map context = new OgnlContext();
         context.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+
         InstantiatingNullHandler nh = new InstantiatingNullHandler();
 
         Object dogList = nh.nullPropertyValue(context, root, "dogs");
@@ -21,7 +36,6 @@ public class InstantiatingNullHandlerTest extends TestCase {
         assertEquals(Dog.class, clazz);
         assertNotNull(dogList);
         assertTrue(dogList instanceof List);
-
 
         Object kittenList = nh.nullPropertyValue(context, root, "kittens");
         clazz = nh.getCollectionType(Tiger.class, "kittens");

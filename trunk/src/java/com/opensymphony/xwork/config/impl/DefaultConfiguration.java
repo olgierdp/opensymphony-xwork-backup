@@ -9,6 +9,7 @@ import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.config.entities.ResultTypeConfig;
 import com.opensymphony.xwork.config.providers.InterceptorBuilder;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -79,7 +80,7 @@ public class DefaultConfiguration implements Configuration {
         packageContexts.clear();
 
         for (Iterator iterator = ConfigurationManager.getConfigurationProviders().iterator();
-             iterator.hasNext();) {
+                iterator.hasNext();) {
             ConfigurationProvider provider = (ConfigurationProvider) iterator.next();
             provider.init(this);
         }
@@ -92,7 +93,7 @@ public class DefaultConfiguration implements Configuration {
 
         if (toBeRemoved != null) {
             for (Iterator iterator = packageContexts.values().iterator();
-                 iterator.hasNext();) {
+                    iterator.hasNext();) {
                 PackageConfig packageContext = (PackageConfig) iterator.next();
                 packageContext.removeParent(toBeRemoved);
             }
@@ -107,7 +108,7 @@ public class DefaultConfiguration implements Configuration {
         Map namespaceActionConfigs = new HashMap();
 
         for (Iterator iterator = packageContexts.values().iterator();
-             iterator.hasNext();) {
+                iterator.hasNext();) {
             PackageConfig packageContext = (PackageConfig) iterator.next();
 
             if (!packageContext.isAbstract()) {
@@ -121,7 +122,7 @@ public class DefaultConfiguration implements Configuration {
                 Map actionConfigs = packageContext.getAllActionConfigs();
 
                 for (Iterator actionIterator = actionConfigs.keySet().iterator();
-                     actionIterator.hasNext();) {
+                        actionIterator.hasNext();) {
                     String actionName = (String) actionIterator.next();
                     ActionConfig baseConfig = (ActionConfig) actionConfigs.get(actionName);
                     configs.put(actionName, buildFullActionConfig(packageContext, baseConfig));
@@ -138,7 +139,7 @@ public class DefaultConfiguration implements Configuration {
         String defaultResult = packageContext.getFullDefaultResultType();
 
         for (Iterator iterator = results.entrySet().iterator();
-             iterator.hasNext();) {
+                iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
 
             if (entry.getValue() == null) {
@@ -230,12 +231,12 @@ public class DefaultConfiguration implements Configuration {
             StringBuffer buff = new StringBuffer("RuntimeConfiguration - actions are\n");
 
             for (Iterator iterator = namespaceActionConfigs.keySet().iterator();
-                 iterator.hasNext();) {
+                    iterator.hasNext();) {
                 String namespace = (String) iterator.next();
                 Map actionConfigs = (Map) namespaceActionConfigs.get(namespace);
 
                 for (Iterator iterator2 = actionConfigs.keySet().iterator();
-                     iterator2.hasNext();) {
+                        iterator2.hasNext();) {
                     buff.append(namespace + "/" + iterator2.next() + "\n");
                 }
             }

@@ -112,15 +112,15 @@ public class ObjectFactory {
          *            Action mapping or InterceptorStack definition
          */
     public Interceptor buildInterceptor(InterceptorConfig interceptorConfig, Map interceptorRefParams) throws ConfigurationException {
-        Interceptor interceptor = null;
         String interceptorClassName = interceptorConfig.getClassName();
-        String message;
         Map thisInterceptorClassParams = interceptorConfig.getParams();
         Map params = (thisInterceptorClassParams == null) ? new HashMap() : new HashMap(thisInterceptorClassParams);
         params.putAll(interceptorRefParams);
 
+        String message;
+
         try {
-            interceptor = (Interceptor) buildBean(interceptorClassName);
+            Interceptor interceptor = (Interceptor) buildBean(interceptorClassName);
             OgnlUtil.setProperties(params, interceptor);
             interceptor.init();
 

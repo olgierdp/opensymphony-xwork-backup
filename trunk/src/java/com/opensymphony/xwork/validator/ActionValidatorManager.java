@@ -89,6 +89,7 @@ public class ActionValidatorManager {
             if (validator instanceof ShortCircuitableValidator && ((ShortCircuitableValidator) validator).isShortCircuit()) {
                 // get number of existing errors
                 List errs = null;
+
                 if (fValidator != null) {
                     if (validatorContext.hasFieldErrors()) {
                         Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fValidator.getFieldName());

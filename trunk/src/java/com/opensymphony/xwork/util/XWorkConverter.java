@@ -5,17 +5,22 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.util.FileManager;
+
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ObjectFactory;
+
 import ognl.DefaultTypeConverter;
 import ognl.Evaluation;
 import ognl.OgnlContext;
 import ognl.TypeConverter;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
+
 import java.lang.reflect.Member;
+
 import java.util.*;
 
 
@@ -156,26 +161,6 @@ public class XWorkConverter extends DefaultTypeConverter {
         }
     }
 
-    protected Object getConverter(Class clazz, String property) {
-        if (!noMapping.contains(clazz)) {
-            try {
-                Map mapping = (Map) mappings.get(clazz);
-
-                if (mapping == null) {
-                    mapping = buildConverterMapping(clazz);
-                } else {
-                    mapping = conditionalReload(clazz, mapping);
-                }
-
-                return mapping.get(property);
-            } catch (Throwable t) {
-                noMapping.add(clazz);
-            }
-        }
-
-        return null;
-    }
-
     /**
      * Looks for a TypeConverter in the default mappings.
      *
@@ -222,6 +207,26 @@ public class XWorkConverter extends DefaultTypeConverter {
      */
     public TypeConverter lookup(Class clazz) {
         return lookup(clazz.getName());
+    }
+
+    protected Object getConverter(Class clazz, String property) {
+        if (!noMapping.contains(clazz)) {
+            try {
+                Map mapping = (Map) mappings.get(clazz);
+
+                if (mapping == null) {
+                    mapping = buildConverterMapping(clazz);
+                } else {
+                    mapping = conditionalReload(clazz, mapping);
+                }
+
+                return mapping.get(property);
+            } catch (Throwable t) {
+                noMapping.add(clazz);
+            }
+        }
+
+        return null;
     }
 
     protected void handleConversionException(Map context, String property, Object value, Object object) {
@@ -410,7 +415,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         props.load(is);
 
         for (Iterator iterator = props.entrySet().iterator();
-             iterator.hasNext();) {
+                iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String key = (String) entry.getKey();
 
