@@ -4,12 +4,15 @@
  */
 package com.opensymphony.xwork.validator;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import com.opensymphony.util.FileManager;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import com.opensymphony.util.FileManager;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import java.util.*;
 
 
 /**
@@ -200,6 +203,7 @@ public class ActionValidatorManager {
         } else if (checked.contains(clazz.getName())) {
             return validators;
         }
+
         if (!clazz.equals(Object.class)) {
             validators.addAll(buildValidators(clazz.getSuperclass(), context, checkFile, checked));
         }
@@ -213,9 +217,11 @@ public class ActionValidatorManager {
             }
 
             validators.addAll(buildClassValidators(interfaces[x], checkFile));
+
             if (context != null) {
                 validators.addAll(buildAliasValidators(interfaces[x], context, checkFile));
             }
+
             checked.add(interfaces[x].getName());
         }
 
@@ -224,6 +230,7 @@ public class ActionValidatorManager {
         if (context != null) {
             validators.addAll(buildAliasValidators(clazz, context, checkFile));
         }
+
         checked.add(clazz.getName());
 
         return validators;

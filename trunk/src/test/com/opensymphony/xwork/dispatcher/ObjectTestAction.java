@@ -31,30 +31,30 @@ public class ObjectTestAction extends ActionSupport {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
- * Setter for property blah.
- * @param newBlah the new value for field blah
- */
+     * Setter for property blah.
+     * @param newBlah the new value for field blah
+     */
     public void setBlah(String newBlah) {
         blah = newBlah;
     }
 
     /**
- * Getter for property blah.
- * @return the value of field blah
- */
+     * Getter for property blah.
+     * @return the value of field blah
+     */
     public String getBlah() {
         return blah;
     }
 
     /**
- * This methodName is where the logic of the action is executed.
- *
- * @return a string representing the logical result of the execution. See constants in this
- *   interface for a list of standard result values.
- * @throws Exception thrown if a system level exception occurs. Application level exceptions
- *   should be handled by returning an error value, such as Action.ERROR.
- * @todo Implement this com.opensymphony.xwork.Action method
- */
+     * This methodName is where the logic of the action is executed.
+     *
+     * @return a string representing the logical result of the execution. See constants in this
+     *   interface for a list of standard result values.
+     * @throws Exception thrown if a system level exception occurs. Application level exceptions
+     *   should be handled by returning an error value, such as Action.ERROR.
+     * @todo Implement this com.opensymphony.xwork.Action method
+     */
     public String execute() throws Exception {
         if (log.isDebugEnabled()) {
             log.debug("Blah was " + getBlah());

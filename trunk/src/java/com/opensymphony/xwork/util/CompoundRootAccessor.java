@@ -5,10 +5,12 @@
 package com.opensymphony.xwork.util;
 
 import ognl.*;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.beans.IntrospectionException;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -128,6 +130,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
             if (o == null) {
                 continue;
             }
+
             Class clazz = o.getClass();
             Class[] argTypes = getArgTypes(objects);
 

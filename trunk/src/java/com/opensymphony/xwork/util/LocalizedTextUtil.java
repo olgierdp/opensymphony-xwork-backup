@@ -7,12 +7,15 @@ package com.opensymphony.xwork.util;
 import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ModelDriven;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
 import java.text.MessageFormat;
+
 import java.util.*;
 
 
@@ -187,7 +190,8 @@ public class LocalizedTextUtil {
         }
 
         // nothing still? alright, search the package hierarchy now
-        for (clazz = aClass; clazz != null && !clazz.equals(Object.class); clazz = clazz.getSuperclass()) {
+        for (clazz = aClass; (clazz != null) && !clazz.equals(Object.class);
+                clazz = clazz.getSuperclass()) {
             if (clazz.getPackage() != null) {
                 try {
                     String packageName = clazz.getPackage().getName();

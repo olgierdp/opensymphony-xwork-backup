@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * test the object dispatcher
- * @authorPeter Kelley
+ * @author Peter Kelley
  */
 public class ObjectDispatcherTest extends TestCase implements MappingFactory, ResultObjectFactory {
     //~ Instance fields ////////////////////////////////////////////////////////
@@ -27,9 +27,9 @@ public class ObjectDispatcherTest extends TestCase implements MappingFactory, Re
     //~ Constructors ///////////////////////////////////////////////////////////
 
     /**
-* default constructor
-* @param name The name of the test fixture
-*/
+     * default constructor
+     * @param name The name of the test fixture
+     */
     public ObjectDispatcherTest(String name) {
         super(name);
     }
@@ -37,60 +37,60 @@ public class ObjectDispatcherTest extends TestCase implements MappingFactory, Re
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-* Setter for property bar.
-* @param newBar the new value for field bar
-*/
+     * Setter for property bar.
+     * @param newBar the new value for field bar
+     */
     public void setBar(String newBar) {
         bar = newBar;
     }
 
     /**
-* Getter for property bar.
-* @return the value of field bar
-*/
+     * Getter for property bar.
+     * @return the value of field bar
+     */
     public String getBar() {
         return bar;
     }
 
     /**
-* Setter for property foo.
-* @param newFoo the new value for field foo
-*/
+     * Setter for property foo.
+     * @param newFoo the new value for field foo
+     */
     public void setFoo(String newFoo) {
         foo = newFoo;
     }
 
     /**
-* Getter for property foo.
-* @return the value of field foo
-*/
+     * Getter for property foo.
+     * @return the value of field foo
+     */
     public String getFoo() {
         return foo;
     }
 
     /**
-* Setter for property foobar.
-* @param newFoobar the new value for field foobar
-*/
+     * Setter for property foobar.
+     * @param newFoobar the new value for field foobar
+     */
     public void setFoobar(String newFoobar) {
         foobar = newFoobar;
     }
 
     /**
-* Getter for property foobar.
-* @return the value of field foobar
-*/
+     * Getter for property foobar.
+     * @return the value of field foobar
+     */
     public String getFoobar() {
         return foobar;
     }
 
     /**
-* Get a mapping set with the given name.
-*
-* @param name The name of the mapping set to get
-* @return Either the mapping set with the given name or <code>null</code> if no mapping set
-*   exists with that name
-*/
+     * Get a mapping set with the given name.
+     *
+     * @param name The name of the mapping set to get
+     * @return Either the mapping set with the given name or <code>null</code> if no mapping set
+     *   exists with that name
+     */
     public MappingSet getMappingSet(String name) {
         MappingSet mappingSet = new MappingSet(name);
 
@@ -108,18 +108,18 @@ public class ObjectDispatcherTest extends TestCase implements MappingFactory, Re
     }
 
     /**
-* Get the result object
-* @param key The key of the object to get (ignored)
-* @return this
-*/
+     * Get the result object
+     * @param key The key of the object to get (ignored)
+     * @return this
+     */
     public Object getResultObject(String key) {
         return this;
     }
 
     /**
-* Test dispatching from an object
-* @throws Exception
-*/
+     * Test dispatching from an object
+     * @throws Exception
+     */
     public void testDispatch() throws Exception {
         String namespace = "";
         String action = "TestObjectDispatcher";
@@ -131,18 +131,18 @@ public class ObjectDispatcherTest extends TestCase implements MappingFactory, Re
     }
 
     /**
-* set up for a test
-* @throws Exception if something bad happens
-*/
+     * set up for a test
+     * @throws Exception if something bad happens
+     */
     protected void setUp() throws Exception {
         super.setUp();
         objectDispatcher = new ObjectDispatcher(this);
     }
 
     /**
-* clean up after a test
-* @throws Exception if something bad happens
-*/
+     * clean up after a test
+     * @throws Exception if something bad happens
+     */
     protected void tearDown() throws Exception {
         objectDispatcher = null;
         super.tearDown();
