@@ -26,7 +26,7 @@ public class SetPropertiesTest extends TestCase
 	}
 
 
-	public void testEmptyStringToLong() {
+	public void testOgnlUtilEmptyStringAsLong() {
 		Bar bar = new Bar();
 		bar.setId(null);
 
@@ -45,7 +45,7 @@ public class SetPropertiesTest extends TestCase
 		assertNull(bar.getId());
 	}
 
-	public void testSetEmptyStringAsLong() {
+	public void testValueStackSetValueEmptyStringAsLong() {
 		Bar bar = new Bar();
 
 		OgnlValueStack vs = new OgnlValueStack();
