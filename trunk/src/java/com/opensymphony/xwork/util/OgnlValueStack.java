@@ -53,13 +53,7 @@ public class OgnlValueStack implements Serializable {
     }
 
     public static void link(Map context, Class clazz, String name) {
-        List link = (List) context.get("__link");
-        if (link == null) {
-            link = new ArrayList(3);
-            context.put("__link", link);
-        }
-
-        link.add(new Object[] { clazz, name });
+        context.put("__link", new Object[] { clazz, name });
     }
 
     //~ Instance fields ////////////////////////////////////////////////////////

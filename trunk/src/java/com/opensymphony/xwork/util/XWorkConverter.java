@@ -269,12 +269,7 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     private Object[] getClassProperty(Map context) {
-        List link = (List) context.get("__link");
-        if (link == null || link.isEmpty()) {
-            return null;
-        }
-
-        return (Object[]) link.get(link.size() - 1);
+        return (Object[]) context.get("__link");
     }
 
     private Object acceptableErrorValue(Class toClass) {
