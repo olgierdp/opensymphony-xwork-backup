@@ -6,6 +6,7 @@ package com.opensymphony.xwork;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.List;
 
 
 /**
@@ -52,6 +53,8 @@ public interface LocaleAware {
      * @return     value of named text
      */
     String getText(String aTextName, String defaultValue);
+
+    String getText(String aTextName, List args);
 
     /**
     * Get the named bundle.

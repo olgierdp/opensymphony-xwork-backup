@@ -103,12 +103,12 @@ public class LocalizedTextUtil {
     }
 
     /**
-     * Calls {@link #findText(Class aClass, String aTextName, Locale locale, String defaultMessage)} with
+     * Calls {@link #findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args)} with
      * aTextName as the default message.
-     * @see #findText(Class aClass, String aTextName, Locale locale, String defaultMessage)
+     * @see #findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args)
      */
     public static String findText(Class aClass, String aTextName, Locale locale) {
-        return findText(aClass, aTextName, locale, aTextName);
+        return findText(aClass, aTextName, locale, aTextName, new Object[0]);
     }
 
     /**
@@ -130,26 +130,29 @@ public class LocalizedTextUtil {
      * @param defaultMessage the message to be returned if no text message can be found in a resource bundle
      * @return
      */
-    public static String findText(Class aClass, String aTextName, Locale locale, String defaultMessage) {
+    public static String findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args) {
         OgnlValueStack valueStack = ActionContext.getContext().getValueStack();
         do {
             try {
                 ResourceBundle bundle = findResourceBundle(aClass.getName(), locale);
 
-                return TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
+
+                String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
+                return MessageFormat.format(message, args);
             } catch (MissingResourceException ex) {
                 aClass = aClass.getSuperclass();
             }
         } while (!aClass.equals(Object.class));
 
         try {
-            return TextParseUtil.translateVariables(findDefaultText(aTextName, locale), valueStack);
+            String message = TextParseUtil.translateVariables(findDefaultText(aTextName, locale), valueStack);
+            return MessageFormat.format(message, args);
         } catch (MissingResourceException ex) {
             //ignore
         }
 
         LOG.debug("Unable to find text for key " + aTextName);
 
-        return TextParseUtil.translateVariables(defaultMessage, valueStack);
+        return MessageFormat.format(TextParseUtil.translateVariables(defaultMessage, valueStack), args);
     }
 }

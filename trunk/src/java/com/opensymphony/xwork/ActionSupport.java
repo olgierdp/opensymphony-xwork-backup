@@ -9,10 +9,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.Serializable;
 
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 /**
@@ -63,6 +60,11 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
 
     public String getText(String aTextName, String defaultValue) {
         return localeAware.getText(aTextName, defaultValue);
+    }
+
+    public String getText(String aTextName, List args)
+    {
+        return localeAware.getText(aTextName, args);
     }
 
     public ResourceBundle getTexts(String aBundleName) {

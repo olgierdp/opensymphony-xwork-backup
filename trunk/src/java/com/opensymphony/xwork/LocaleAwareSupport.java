@@ -8,6 +8,7 @@ import com.opensymphony.xwork.util.LocalizedTextUtil;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.List;
 
 
 /**
@@ -68,7 +69,11 @@ public class LocaleAwareSupport implements LocaleAware {
      * @return     value of named text
      */
     public String getText(String aTextName, String defaultValue) {
-        return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), defaultValue);
+        return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), defaultValue, new Object[0]);
+    }
+
+    public String getText(String aTextName, List args) {
+        return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), aTextName, args.toArray(new Object[args.size()]));
     }
 
     /**
