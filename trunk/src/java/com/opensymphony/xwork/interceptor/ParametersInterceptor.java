@@ -25,28 +25,30 @@ public class ParametersInterceptor extends AroundInterceptor {
     }
 
     protected void before(ActionInvocation invocation) throws Exception {
-        final Map parameters = ActionContext.getContext().getParameters();
+        if (!(invocation.getAction() instanceof NoParameters)) {
+            final Map parameters = ActionContext.getContext().getParameters();
 
-        if (log.isDebugEnabled()) {
-            log.debug("Setting params " + parameters);
-        }
-
-        try {
-            InstantiatingNullHandler.setState(true);
-            invocation.getInvocationContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-
-            if (parameters != null) {
-                final OgnlValueStack stack = ActionContext.getContext().getValueStack();
-
-                for (Iterator iterator = parameters.entrySet().iterator();
-                        iterator.hasNext();) {
-                    Map.Entry entry = (Map.Entry) iterator.next();
-                    stack.setValue(entry.getKey().toString(), entry.getValue());
-                }
+            if (log.isDebugEnabled()) {
+                log.debug("Setting params " + parameters);
             }
-        } finally {
-            invocation.getInvocationContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.FALSE);
-            InstantiatingNullHandler.setState(false);
+
+            try {
+                InstantiatingNullHandler.setState(true);
+                invocation.getInvocationContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+
+                if (parameters != null) {
+                    final OgnlValueStack stack = ActionContext.getContext().getValueStack();
+
+                    for (Iterator iterator = parameters.entrySet().iterator();
+                         iterator.hasNext();) {
+                        Map.Entry entry = (Map.Entry) iterator.next();
+                        stack.setValue(entry.getKey().toString(), entry.getValue());
+                    }
+                }
+            } finally {
+                invocation.getInvocationContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.FALSE);
+                InstantiatingNullHandler.setState(false);
+            }
         }
     }
 }
