@@ -10,6 +10,7 @@ import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.test.ModelDrivenAction2;
+import com.opensymphony.xwork.test.User;
 
 import junit.framework.TestCase;
 
@@ -39,6 +40,19 @@ public class XWorkConverterTest extends TestCase {
     XWorkConverter converter;
 
     //~ Methods ////////////////////////////////////////////////////////////////
+
+    public void testArrayToNumberConversion() {
+        String[] value = new String[] {"12345"};
+        assertEquals(new Integer(12345), converter.convertValue(context, null, null, null, value, Integer.class));
+        assertEquals(new Long(12345), converter.convertValue(context, null, null, null, value, Long.class));
+        value[0] = "123.45";
+        assertEquals(new Float(123.45), converter.convertValue(context, null, null, null, value, Float.class));
+        assertEquals(new Double(123.45), converter.convertValue(context, null, null, null, value, Double.class));
+        value[0] = "1234567890123456789012345678901234567890";
+        assertEquals(new BigInteger(value[0]), converter.convertValue(context, null, null, null, value, BigInteger.class));
+        value[0] = "1234567890123456789.012345678901234567890";
+        assertEquals(new BigDecimal(value[0]), converter.convertValue(context, null, null, null, value, BigDecimal.class));
+    }
 
     public void testDateConversion() throws ParseException {
         java.sql.Date sqlDate = new java.sql.Date(System.currentTimeMillis());
@@ -156,19 +170,6 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(dateString, converter.convertValue(context, null, null, null, date, String.class));
     }
 
-    public void testNumericConversion() {
-        String[] value = new String[] {"12345"};
-        assertEquals(new Integer(12345), converter.convertValue(context, null, null, null, value, Integer.class));
-        assertEquals(new Long(12345), converter.convertValue(context, null, null, null, value, Long.class));
-        value[0] = "123.45";
-        assertEquals(new Float(123.45), converter.convertValue(context, null, null, null, value, Float.class));
-        assertEquals(new Double(123.45), converter.convertValue(context, null, null, null, value, Double.class));
-        value[0] = "1234567890123456789012345678901234567890";
-        assertEquals(new BigInteger(value[0]), converter.convertValue(context, null, null, null, value, BigInteger.class));
-        value[0] = "1234567890123456789.012345678901234567890";
-        assertEquals(new BigDecimal(value[0]), converter.convertValue(context, null, null, null, value, BigDecimal.class));
-    }
-
     public void testPrimitiveToString() {
         Locale locale = Locale.GERMANY;
         NumberFormat nf = NumberFormat.getInstance(locale);
@@ -283,6 +284,23 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(list, converter.convertValue(context, null, null, null, new String[] {
                     "foo", "bar", "bar", "baz"
                 }, Set.class));
+    }
+
+    public void testStringToCollectionConversion() {
+        OgnlValueStack stack = new OgnlValueStack();
+        Map stackContext = stack.getContext();
+        stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+        stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+        stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+
+        User user = new User();
+        stack.push(user);
+
+        stack.setValue("list", "asdf");
+        assertNotNull(user.getList());
+        assertEquals(1, user.getList().size());
+        assertEquals(String.class, user.getList().get(0).getClass());
+        assertEquals("asdf", user.getList().get(0));
     }
 
     public void testStringToCustomTypeUsingCustomConverter() {

@@ -83,6 +83,36 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return locale;
     }
 
+    /**
+     * Creates a Collection of the specified type.
+     *
+     * @param toType the type of Collection to create
+     * @param memberType the type of object elements in this collection must be
+     * @param size the initial size of the collection (ignored if 0 or less)
+     * @return a Collection of the specified type
+     */
+    private Collection createCollection(Class toType, Class memberType, int size) {
+        Collection result;
+
+        if (toType == Set.class) {
+            if (size > 0) {
+                result = new HashSet(size);
+            } else {
+                result = new HashSet();
+            }
+        } else if (toType == SortedSet.class) {
+            result = new TreeSet();
+        } else {
+            if (size > 0) {
+                result = new XWorkList(memberType, size);
+            } else {
+                result = new XWorkList(memberType);
+            }
+        }
+
+        return result;
+    }
+
     private Object doConvertToArray(Map context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;
         Class componentType = toType.getComponentType();
@@ -148,36 +178,23 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = (Collection) value;
         } else if (value.getClass().isArray()) {
             Object[] objArray = (Object[]) value;
-
-            if (toType == Set.class) {
-                result = new HashSet(objArray.length);
-            } else if (toType == SortedSet.class) {
-                result = new TreeSet();
-            } else {
-                result = new XWorkList(memberType, objArray.length);
-            }
-
             TypeConverter converter = Ognl.getTypeConverter(context);
+            result = createCollection(toType, memberType, objArray.length);
 
             for (int i = 0; i < objArray.length; i++) {
                 result.add(converter.convertValue(context, o, member, prop, objArray[i], memberType));
             }
         } else if (Collection.class.isAssignableFrom(value.getClass())) {
             Collection col = (Collection) value;
-
-            if (toType == Set.class) {
-                result = new HashSet(col.size());
-            } else if (toType == SortedSet.class) {
-                result = new TreeSet();
-            } else {
-                result = new XWorkList(memberType, col.size());
-            }
-
             TypeConverter converter = Ognl.getTypeConverter(context);
+            result = createCollection(toType, memberType, col.size());
 
             for (Iterator it = col.iterator(); it.hasNext();) {
                 result.add(converter.convertValue(context, o, member, prop, it.next(), memberType));
             }
+        } else {
+            result = createCollection(toType, memberType, -1);
+            result.add(value);
         }
 
         return result;
