@@ -1,0 +1,9 @@
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.dtd">
+<validators>
+    <field name="foo">
+        <field-validator type="required">
+            <message key="test.key">You must enter a value for foo.</message>
+        </field-validator>
+    </field>
+</validators>
+
