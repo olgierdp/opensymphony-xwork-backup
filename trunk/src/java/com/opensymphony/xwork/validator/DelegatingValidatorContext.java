@@ -75,6 +75,10 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return localeAware.getText(aTextName, args);
     }
 
+    public String getText(String aTextName, String defaultValue, List args) {
+        return localeAware.getText(aTextName, defaultValue, args);
+    }
+
     public ResourceBundle getTexts(String aBundleName) {
         return localeAware.getTexts(aBundleName);
     }
