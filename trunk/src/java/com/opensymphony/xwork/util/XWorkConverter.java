@@ -144,27 +144,30 @@ public class XWorkConverter extends DefaultTypeConverter {
         //
         // Process the conversion using the default mappings, if one exists
         //
-        if (defaultMappings.containsKey(toClass.getName())) {
-            TypeConverter tc = null;
+        TypeConverter tc = null;
 
-            if (toClass.equals(String.class) && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class))) {
-                // converting ToString from NON String 
+        if (toClass.equals(String.class) && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class))) {
+            // when converting to a string, use the source object's class's converter
+            if (defaultMappings.containsKey(value.getClass().getName())) {
                 tc = (TypeConverter) defaultMappings.get(value.getClass().getName());
-            } else {
+            }
+        } else {
+            // when converting from a string, use the toClass's converter
+            if (defaultMappings.containsKey(toClass.getName())) {
                 //	converting from String
                 tc = (TypeConverter) defaultMappings.get(toClass.getName());
             }
+        }
 
-            if (tc != null) {
-                try {
-                    return tc.convertValue(context, object, member, property, value, toClass);
-                } catch (Exception e) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.error("Conversion failed", e);
-                    }
-
-                    return null;
+        if (tc != null) {
+            try {
+                return tc.convertValue(context, object, member, property, value, toClass);
+            } catch (Exception e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.error("Conversion failed", e);
                 }
+
+                return null;
             }
         }
 
