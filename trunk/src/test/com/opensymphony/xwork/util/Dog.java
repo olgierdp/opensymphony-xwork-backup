@@ -84,4 +84,13 @@ public class Dog implements Serializable {
     public int multiplyAge(int by) {
         return age * by;
     }
+
+    /**
+     * a method which is safe to call with a null argument
+     * @param arg the Boolean to return
+     * @return arg, if it is not null, or Boolean.TRUE if arg is null
+     */
+    public Boolean nullSafeMethod(Boolean arg) {
+        return (arg == null) ? Boolean.TRUE : arg;
+    }
 }

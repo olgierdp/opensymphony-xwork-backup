@@ -129,6 +129,8 @@ public class OgnlValueStackTest extends TestCase {
 
         assertEquals("Jack", vs.findValue("name"));
         assertEquals("Rover", vs.findValue("[1].name"));
+        //hates will be null
+        assertEquals(Boolean.TRUE,vs.findValue("nullSafeMethod(hates)"));
     }
 
     public void testSerializable() throws IOException, ClassNotFoundException {

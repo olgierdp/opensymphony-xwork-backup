@@ -85,56 +85,56 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     /**
-* If the DefaultActionInvocation has been executed before and the Result is an instance of ActionChainResult, this method
-* will walk down the chain of ActionChainResults until it finds a non-chain result, which will be returned. If the
-* DefaultActionInvocation's result has not been executed before, the Result instance will be created and populated with
-* the result params.
-* @return a Result instance
-* @throws Exception
-*/
+     * If the DefaultActionInvocation has been executed before and the Result is an instance of ActionChainResult, this method
+     * will walk down the chain of ActionChainResults until it finds a non-chain result, which will be returned. If the
+     * DefaultActionInvocation's result has not been executed before, the Result instance will be created and populated with
+     * the result params.
+     * @return a Result instance
+     * @throws Exception
+     */
     public Result getResult() throws Exception {
-        if (result != null) {
-            Result returnResult = result;
+        Result returnResult = result;
 
-            // If we've chained to other Actions, we need to find the last result
-            while (returnResult instanceof ActionChainResult) {
-                ActionProxy aProxy = ((ActionChainResult) returnResult).getProxy();
+        // If we've chained to other Actions, we need to find the last result
+        while (returnResult instanceof ActionChainResult) {
+            ActionProxy aProxy = ((ActionChainResult) returnResult).getProxy();
 
-                if (aProxy != null) {
-                    Result proxyResult = aProxy.getInvocation().getResult();
+            if (aProxy != null) {
+                Result proxyResult = aProxy.getInvocation().getResult();
 
-                    if ((proxyResult != null) && (aProxy.getExecuteResult())) {
-                        returnResult = proxyResult;
-                    } else {
-                        break;
-                    }
+                if ((proxyResult != null) && (aProxy.getExecuteResult())) {
+                    returnResult = proxyResult;
                 } else {
                     break;
                 }
+            } else {
+                break;
             }
-
-            return returnResult;
-        } else {
-            Map results = proxy.getConfig().getResults();
-            ResultConfig resultConfig = (ResultConfig) results.get(resultCode);
-
-            if (resultConfig != null) {
-                Class resultClass = resultConfig.getClazz();
-
-                if (resultClass != null) {
-                    try {
-                        result = (Result) resultClass.newInstance();
-                    } catch (Exception e) {
-                        LOG.error("There was an exception while instantiating the result of type " + resultClass, e);
-                        throw e;
-                    }
-
-                    OgnlUtil.setProperties(resultConfig.getParams(), result, ActionContext.getContext().getContextMap());
-                }
-            }
-
-            return result;
         }
+
+        return returnResult;
+    }
+
+    public Result createResult() throws Exception {
+        Map results = proxy.getConfig().getResults();
+        ResultConfig resultConfig = (ResultConfig) results.get(resultCode);
+        Result newResult = null;
+
+        if (resultConfig != null) {
+            Class resultClass = resultConfig.getClazz();
+
+            if (resultClass != null) {
+                try {
+                    newResult = (Result) resultClass.newInstance();
+                } catch (Exception e) {
+                    LOG.error("There was an exception while instantiating the result of type " + resultClass, e);
+                    throw e;
+                }
+
+                OgnlUtil.setProperties(resultConfig.getParams(), newResult, ActionContext.getContext().getContextMap());
+            }
+        }
+        return newResult;
     }
 
     public String getResultCode() {
@@ -146,11 +146,11 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     /**
- * Register a com.opensymphony.xwork.interceptor.PreResultListener to be notified after the Action is executed and before the
- * Result is executed. The ActionInvocation implementation must guarantee that listeners will be called in the order
- * in which they are registered. Listener registration and execution does not need to be thread-safe.
- * @param listener
- */
+     * Register a com.opensymphony.xwork.interceptor.PreResultListener to be notified after the Action is executed and before the
+     * Result is executed. The ActionInvocation implementation must guarantee that listeners will be called in the order
+     * in which they are registered. Listener registration and execution does not need to be thread-safe.
+     * @param listener
+     */
     public void addPreResultListener(PreResultListener listener) {
         if (preResultListeners == null) {
             preResultListeners = new ArrayList(1);
@@ -180,7 +180,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         if (!executed) {
             if (preResultListeners != null) {
                 for (Iterator iterator = preResultListeners.iterator();
-                        iterator.hasNext();) {
+                     iterator.hasNext();) {
                     PreResultListener listener = (PreResultListener) iterator.next();
                     listener.beforeResult(this, resultCode);
                 }
@@ -260,14 +260,14 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     /**
-* Uses getResult to get the final Result and executes it
-*/
+     * Uses getResult to get the final Result and executes it
+     */
     private void executeResult() throws Exception {
-        Result aResult = getResult();
+        result = createResult();
 
-        if (aResult != null) {
-            aResult.execute(this);
-        } else if (!resultCode.equals(Action.NONE)){
+        if (result != null) {
+            result.execute(this);
+        } else if (!resultCode.equals(Action.NONE)) {
             LOG.warn("No result defined for action " + getAction().getClass().getName() + " and result " + getResultCode());
         }
     }

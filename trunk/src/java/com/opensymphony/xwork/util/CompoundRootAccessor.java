@@ -145,7 +145,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         Class[] classes = new Class[args.length];
         for (int i = 0; i < args.length; i++) {
             Object arg = args[i];
-            classes[i] = arg.getClass();
+            classes[i] = (arg != null) ? arg.getClass() : Object.class;
         }
 
         return classes;
