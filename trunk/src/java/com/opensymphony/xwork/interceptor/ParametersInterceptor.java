@@ -52,10 +52,11 @@ public class ParametersInterceptor extends AroundInterceptor {
                 log.debug("Setting params " + parameters);
             }
 
+            ActionContext invocationContext = invocation.getInvocationContext();
             try {
-                invocation.getInvocationContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-                invocation.getInvocationContext().put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
-                invocation.getInvocationContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+                invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+                invocationContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+                invocationContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
                 if (parameters != null) {
                     final OgnlValueStack stack = ActionContext.getContext().getValueStack();
@@ -67,9 +68,9 @@ public class ParametersInterceptor extends AroundInterceptor {
                     }
                 }
             } finally {
-                invocation.getInvocationContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
-                invocation.getInvocationContext().put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.FALSE);
-                invocation.getInvocationContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.FALSE);
+                invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
+                invocationContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.FALSE);
+                invocationContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.FALSE);
             }
         }
     }
