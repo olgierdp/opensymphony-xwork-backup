@@ -7,9 +7,6 @@
 <xwork>
     <include file="xwork-default.xml"/>
     <package name="default" extends="xwork-default" externalReferenceResolver="com.opensymphony.xwork.config.TestExternalReferenceResolver">
-        <result-types>
-            <result-type name="object" class="com.opensymphony.xwork.dispatcher.ObjectResult"/>
-        </result-types>
 
         <global-results>
             <result name="login"> <!-- should be chain type since it is the default -->
@@ -75,14 +72,6 @@
         <!-- chain resursion detection -->
         <action name="InfiniteRecursionChain" class="com.opensymphony.xwork.ActionSupport">
                 <result name="success" type="chain">InfiniteRecursionChain</result>
-        </action>
-
-        <action name="TestObjectDispatcher" class="com.opensymphony.xwork.dispatcher.ObjectTestAction">
-            <result name="success" type="object">
-                    <param name="mappingName">test</param>
-                    <param name="viewName">test</param>
-            </result>
-            <interceptor-ref name="defaultStack"/>
         </action>
 
    </package>
