@@ -77,11 +77,11 @@ public class Foo {
         return useful;
     }
 
-    public long getaLong() {
+    public long getALong() {
         return aLong;
     }
 
-    public void setaLong(long aLong) {
+    public void setALong(long aLong) {
         this.aLong = aLong;
     }
 

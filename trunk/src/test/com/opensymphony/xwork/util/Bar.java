@@ -17,7 +17,8 @@ public class Bar {
 
     String title;
     int somethingElse;
-
+	Long id;
+	
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setSomethingElse(int somethingElse) {
@@ -35,4 +36,12 @@ public class Bar {
     public String getTitle() {
         return title;
     }
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getId() {
+		return this.id;
+	}
 }

@@ -227,7 +227,8 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals("Rover", vs.findValue("name"));
     }
 
-    public void testSetBarAsString() {
+
+	public void testSetBarAsString() {
         Foo foo = new Foo();
 
         OgnlValueStack vs = new OgnlValueStack();

@@ -182,7 +182,7 @@ public class OgnlUtilTest extends TestCase {
         props.put("aLong", "123a");
 
         OgnlUtil.setProperties(props, foo, context);
-        assertEquals(0, foo.getaLong());
+        assertEquals(0, foo.getALong());
     }
 
     public void testSetPropertiesBoolean() {
@@ -268,24 +268,25 @@ public class OgnlUtilTest extends TestCase {
         assertEquals(123456, foo.getNumber());
     }
 
-    public void testStringToLong() {
-        Foo foo = new Foo();
+	public void testStringToLong() {
+		Foo foo = new Foo();
 
-        Map context = Ognl.createDefaultContext(foo);
+		Map context = Ognl.createDefaultContext(foo);
 
-        HashMap props = new HashMap();
-        props.put("aLong", "123");
+		HashMap props = new HashMap();
+		props.put("aLong", "123");
 
-        OgnlUtil.setProperties(props, foo, context);
-        assertEquals(123, foo.getaLong());
+		OgnlUtil.setProperties(props, foo, context);
+		assertEquals(123, foo.getALong());
 
-        props.put("aLong", new String[] {"123"});
+		props.put("aLong", new String[] {"123"});
 
-        foo.setaLong(0);
-        OgnlUtil.setProperties(props, foo, context);
-        assertEquals(123, foo.getaLong());
-    }
+		foo.setALong(0);
+		OgnlUtil.setProperties(props, foo, context);
+		assertEquals(123, foo.getALong());
+	}
 
+	
     //~ Inner Classes //////////////////////////////////////////////////////////
 
     public static class Email {
