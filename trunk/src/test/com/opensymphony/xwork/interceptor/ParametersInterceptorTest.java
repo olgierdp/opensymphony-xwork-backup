@@ -30,6 +30,28 @@ import java.util.Map;
 public class ParametersInterceptorTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    public void testDoesNotAllowMethodInvocations() {
+        Map params = new HashMap();
+        params.put("@java.lang.System@exit(1).dummy", "dumb value");
+
+        HashMap extraContext = new HashMap();
+        extraContext.put(ActionContext.PARAMETERS, params);
+
+        try {
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.MODEL_DRIVEN_PARAM_TEST, extraContext);
+            assertEquals(Action.SUCCESS, proxy.execute());
+
+            ModelDrivenAction action = (ModelDrivenAction) proxy.getAction();
+            TestBean model = (TestBean) action.getModel();
+
+            String property = System.getProperty("webwork.security.test");
+            assertNull(property);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
     public void testModelDrivenParameters() {
         Map params = new HashMap();
         final String fooVal = "com.opensymphony.xwork.interceptor.ParametersInterceptorTest.foo";
@@ -72,29 +94,6 @@ public class ParametersInterceptorTest extends TestCase {
             e.printStackTrace();
             fail();
         }
-    }
-
-    public void testDoesNotAllowMethodInvocations() {
-        Map params = new HashMap();
-        params.put("@java.lang.System@exit(1).dummy", "dumb value");
-
-        HashMap extraContext = new HashMap();
-        extraContext.put(ActionContext.PARAMETERS, params);
-
-        try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.MODEL_DRIVEN_PARAM_TEST, extraContext);
-            assertEquals(Action.SUCCESS, proxy.execute());
-
-            ModelDrivenAction action = (ModelDrivenAction) proxy.getAction();
-            TestBean model = (TestBean) action.getModel();
-
-            String property = System.getProperty("webwork.security.test");
-            assertNull(property);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
-
     }
 
     protected void setUp() throws Exception {

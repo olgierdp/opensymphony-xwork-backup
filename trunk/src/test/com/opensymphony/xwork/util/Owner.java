@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork.util;
 
+
 /**
  * DOCUMENT ME!
  *

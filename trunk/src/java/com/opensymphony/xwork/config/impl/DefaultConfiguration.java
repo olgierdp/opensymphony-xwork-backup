@@ -175,11 +175,10 @@ public class DefaultConfiguration implements Configuration {
                 interceptors.addAll(InterceptorBuilder.constructInterceptorReference(packageContext, defaultInterceptorRefName, new HashMap()));
             }
         }
-        
+
         List externalRefs = baseConfig.getExternalRefs();
-        
-        ActionConfig config = new ActionConfig(baseConfig.getMethodName(), baseConfig.getClazz(), 
-        		params, results, interceptors, baseConfig.getExternalRefs(), packageContext.getName());
+
+        ActionConfig config = new ActionConfig(baseConfig.getMethodName(), baseConfig.getClazz(), params, results, interceptors, baseConfig.getExternalRefs(), packageContext.getName());
 
         return config;
     }

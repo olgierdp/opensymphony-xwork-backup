@@ -35,6 +35,7 @@ public class FieldExpressionValidator extends FieldValidatorSupport {
 
         Boolean answer = Boolean.FALSE;
         Object obj = null;
+
         try {
             obj = getFieldValue(expression, object);
         } catch (ValidationException e) {

@@ -77,11 +77,13 @@ public class ActionContext {
      */
     public static ActionContext getContext() {
         ActionContext context = (ActionContext) actionContext.get();
+
         if (context == null) {
             OgnlValueStack vs = new OgnlValueStack();
             context = new ActionContext(vs.getContext());
             setContext(context);
         }
+
         return context;
     }
 

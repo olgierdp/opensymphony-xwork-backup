@@ -53,9 +53,11 @@ public class LoggingInterceptor extends AroundInterceptor {
     private void logMessage(ActionInvocation invocation, String baseMessage) {
         StringBuffer message = new StringBuffer(baseMessage);
         String namespace = invocation.getProxy().getNamespace();
+
         if ((namespace != null) && (namespace.trim().length() > 0)) {
             message.append(namespace).append("/");
         }
+
         message.append(invocation.getProxy().getActionName());
         log.info(message.toString());
     }

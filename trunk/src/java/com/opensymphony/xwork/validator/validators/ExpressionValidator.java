@@ -32,6 +32,7 @@ public class ExpressionValidator extends ValidatorSupport {
     public void validate(Object object) throws ValidationException {
         Boolean answer = Boolean.FALSE;
         Object obj = null;
+
         try {
             obj = getFieldValue(expression, object);
         } catch (ValidationException e) {

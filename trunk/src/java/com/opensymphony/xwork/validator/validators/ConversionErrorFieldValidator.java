@@ -20,11 +20,11 @@ public class ConversionErrorFieldValidator extends FieldValidatorSupport {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
- * The validation implementation must guarantee that setValidatorContext will
- * be called with a non-null ValidatorContext before validate is called.
- * @param object
- * @throws ValidationException
- */
+    * The validation implementation must guarantee that setValidatorContext will
+    * be called with a non-null ValidatorContext before validate is called.
+    * @param object
+    * @throws ValidationException
+    */
     public void validate(Object object) throws ValidationException {
         String fieldName = getFieldName();
         String fullFieldName = getValidatorContext().getFullFieldName(fieldName);
