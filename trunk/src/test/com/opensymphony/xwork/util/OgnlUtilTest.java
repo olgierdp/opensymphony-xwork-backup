@@ -137,6 +137,75 @@ public class OgnlUtilTest extends TestCase {
         assertEquals(foo1.getBirthday(), foo2.getBirthday());
         assertEquals(foo1.isUseful(), foo2.isUseful());
     }
+    
+    
+    public void testIncudeExcludes() {
+        
+        Foo foo1 = new Foo();
+        Foo foo2 = new Foo();
+        
+            Calendar cal = Calendar.getInstance();
+            cal.clear();
+            cal.set(Calendar.MONTH, Calendar.FEBRUARY);
+            cal.set(Calendar.DAY_OF_MONTH, 12);
+            cal.set(Calendar.YEAR, 1982);
+
+            foo1.setPoints(new long[] {1, 2, 3});
+            foo1.setBirthday(cal.getTime());
+            foo1.setUseful(false);
+	
+        	
+        foo1.setTitle("foo1 title");	
+        foo1.setNumber(1);
+        
+        foo2.setTitle("foo2 title");	
+        foo2.setNumber(2);
+
+        Map context = Ognl.createDefaultContext(foo1);
+
+        List excludes = new ArrayList();
+    	excludes.add("title");
+    	excludes.add("number");
+
+        OgnlUtil.copy(foo1, foo2, context, excludes, null);
+        // these values should remain unchanged in foo2
+        assertEquals(foo2.getTitle(), "foo2 title");
+        assertEquals(foo2.getNumber(), 2);
+
+        // these values should be changed/copied
+        assertEquals(foo1.getPoints(), foo2.getPoints());
+        assertEquals(foo1.getBirthday(), foo2.getBirthday());
+        assertEquals(foo1.isUseful(), foo2.isUseful());
+        
+        
+        
+        Bar b1 = new Bar();
+        Bar b2 = new Bar();
+        
+        b1.setTitle("bar1 title");
+        b1.setSomethingElse(10);
+        
+        
+        b1.setId(new Long(1));
+        
+        b2.setTitle("");
+        b2.setId(new Long(2));
+        
+        context = Ognl.createDefaultContext(b1);
+        List includes = new ArrayList();
+        includes.add("title");
+        includes.add("somethingElse");
+
+        OgnlUtil.copy(b1, b2, context, null, includes);
+        // includes properties got copied
+        assertEquals(b1.getTitle(), b2.getTitle());
+        assertEquals(b1.getSomethingElse(), b2.getSomethingElse());
+      
+        // id properties did not
+        assertEquals(b2.getId(), new Long(2));
+        
+    }
+    
 
     public void testCopyUnevenObjects() {
         Foo foo = new Foo();
