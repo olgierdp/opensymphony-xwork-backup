@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.config.providers;
 
 import com.opensymphony.xwork.ActionChainResult;
+import com.opensymphony.xwork.ModelDrivenAction;
 import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.config.ConfigurationProvider;
@@ -31,7 +32,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String FOO_ACTION_NAME = "foo";
-    public static final String MODEL_DRIVEN_ACTION_NAME = "model";
+    public static final String MODEL_DRIVEN_PARAM_TEST = "modelParamTest";
     public static final String PARAM_INTERCEPTOR_ACTION_NAME = "parametersInterceptorTest";
     public static final String VALIDATION_ACTION_NAME = "validationInterceptorTest";
     public static final String VALIDATION_ALIAS_NAME = "validationAlias";
@@ -70,6 +71,13 @@ public class MockConfigurationProvider implements ConfigurationProvider {
 
         ActionConfig paramInterceptorActionConfig = new ActionConfig(null, SimpleAction.class, null, results, interceptors);
         defaultPackageContext.addActionConfig(PARAM_INTERCEPTOR_ACTION_NAME, paramInterceptorActionConfig);
+
+        interceptors = new ArrayList();
+        interceptors.add(new ModelDrivenInterceptor());
+        interceptors.add(new ParametersInterceptor());
+
+        ActionConfig modelParamActionConfig = new ActionConfig(null, ModelDrivenAction.class, null, null, interceptors);
+        defaultPackageContext.addActionConfig(MODEL_DRIVEN_PARAM_TEST, modelParamActionConfig);
 
         results = new HashMap();
         successParams = new HashMap();

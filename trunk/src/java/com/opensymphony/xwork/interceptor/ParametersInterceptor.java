@@ -4,11 +4,12 @@
  */
 package com.opensymphony.xwork.interceptor;
 
-import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.ModelDriven;
-import com.opensymphony.xwork.util.OgnlUtil;
+import com.opensymphony.xwork.util.OgnlValueStack;
+
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -24,17 +25,20 @@ public class ParametersInterceptor extends AroundInterceptor {
     }
 
     protected void before(ActionInvocation invocation) throws Exception {
-        Action action = invocation.getAction();
+        final Map parameters = ActionContext.getContext().getParameters();
 
         if (log.isDebugEnabled()) {
-            log.debug("Setting params " + ActionContext.getContext().getParameters());
+            log.debug("Setting params " + parameters);
         }
 
-        // populate model bean's fields if action is ModelDriven, otherwise populate action's fields
-        if (action instanceof ModelDriven) {
-            OgnlUtil.setProperties(ActionContext.getContext().getParameters(), ((ModelDriven) action).getModel(), ActionContext.getContext().getContextMap());
-        } else {
-            OgnlUtil.setProperties(ActionContext.getContext().getParameters(), action, ActionContext.getContext().getContextMap());
+        if (parameters != null) {
+            final OgnlValueStack stack = ActionContext.getContext().getValueStack();
+
+            for (Iterator iterator = parameters.entrySet().iterator();
+                    iterator.hasNext();) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                stack.setValue(entry.getKey().toString(), entry.getValue());
+            }
         }
     }
 }

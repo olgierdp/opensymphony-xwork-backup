@@ -4,8 +4,6 @@
  */
 package com.opensymphony.xwork;
 
-import java.util.Date;
-
 
 /**
  * ModelDrivenAction
@@ -15,18 +13,23 @@ import java.util.Date;
 public class ModelDrivenAction extends ActionSupport implements ModelDriven {
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    private Date date = new Date();
+    private String foo;
+    private TestBean model = new TestBean();
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public Date getDate() {
-        return date;
+    public void setFoo(String foo) {
+        this.foo = foo;
+    }
+
+    public String getFoo() {
+        return foo;
     }
 
     /**
-     * @return the model to be pushed onto the ValueStack instead of the Action itself
-     */
+ * @return the model to be pushed onto the ValueStack after the Action itself
+ */
     public Object getModel() {
-        return date;
+        return model;
     }
 }

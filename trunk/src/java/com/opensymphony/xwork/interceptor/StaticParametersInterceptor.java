@@ -7,10 +7,12 @@ package com.opensymphony.xwork.interceptor;
 import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.ModelDriven;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.Parameterizable;
-import com.opensymphony.xwork.util.OgnlUtil;
+import com.opensymphony.xwork.util.OgnlValueStack;
+
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -29,20 +31,25 @@ public class StaticParametersInterceptor extends AroundInterceptor {
         ActionConfig config = invocation.getProxy().getConfig();
         Action action = invocation.getAction();
 
+        final Map parameters = config.getParams();
+
         if (log.isDebugEnabled()) {
-            log.debug("Setting static params " + config.getParams());
+            log.debug("Setting static parameters " + parameters);
         }
 
-        // for actions marked as Parameterizable, pass the static params directly
+        // for actions marked as Parameterizable, pass the static parameters directly
         if (action instanceof Parameterizable) {
-            ((Parameterizable) action).setParams(config.getParams());
+            ((Parameterizable) action).setParams(parameters);
         }
 
-        // populate model bean's fields if action is ModelDriven, otherwise populate action's fields
-        if (action instanceof ModelDriven) {
-            OgnlUtil.setProperties(config.getParams(), ((ModelDriven) action).getModel(), ActionContext.getContext().getContextMap());
-        } else {
-            OgnlUtil.setProperties(config.getParams(), action, ActionContext.getContext().getContextMap());
+        if (parameters != null) {
+            final OgnlValueStack stack = ActionContext.getContext().getValueStack();
+
+            for (Iterator iterator = parameters.entrySet().iterator();
+                    iterator.hasNext();) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                stack.setValue(entry.getKey().toString(), entry.getValue());
+            }
         }
     }
 }

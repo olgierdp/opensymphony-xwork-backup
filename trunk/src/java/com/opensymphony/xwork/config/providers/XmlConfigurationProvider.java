@@ -298,6 +298,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     // if <result ...>something</result> then we add a parameter of 'something' as this is the most used result param
                     if ((resultElement.getChildNodes().getLength() == 1) && (resultElement.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE)) {
                         params = new HashMap();
+
                         try {
                             String paramName = (String) resultClass.getField("DEFAULT_PARAM").get(null);
                             params.put(paramName, resultElement.getChildNodes().item(0).getNodeValue());

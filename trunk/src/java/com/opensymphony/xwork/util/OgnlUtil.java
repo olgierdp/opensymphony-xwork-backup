@@ -36,12 +36,12 @@ public class OgnlUtil {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-    * Sets the object's properties using the default type converter.
-    *
-    * @param props the properties being set
-    * @param o the object
-    * @param context the action context
-    */
+* Sets the object's properties using the default type converter.
+*
+* @param props the properties being set
+* @param o the object
+* @param context the action context
+*/
     public static void setProperties(Map props, Object o, Map context) {
         if (props == null) {
             return;
@@ -57,45 +57,36 @@ public class OgnlUtil {
             Map.Entry entry = (Map.Entry) iterator.next();
             String expression = (String) entry.getKey();
 
-            try {
-                Ognl.setValue(compile(expression), context, o, entry.getValue());
-            } catch (OgnlException e) {
-                // ignore, this happens a lot
-            }
+            internalSetProperty(expression, entry.getValue(), o, context);
         }
 
         Ognl.setRoot(context, oldRoot);
     }
 
     /**
-    * Sets the properties on the object using the default context
-    * @param properties
-    * @param o
-    */
+* Sets the properties on the object using the default context
+* @param properties
+* @param o
+*/
     public static void setProperties(Map properties, Object o) {
         Map context = Ognl.createDefaultContext(o);
-        Ognl.setTypeConverter(context, XWorkConverter.getInstance());
         setProperties(properties, o, context);
     }
 
     /**
-    * Sets the named property to the supplied value on the Object
-    * @param name the name of the property to be set
-    * @param value the value to set into the named property
-    * @param o the object upon which to set the property
-    * @param context the context which may include the TypeConverter
-    */
+* Sets the named property to the supplied value on the Object
+* @param name the name of the property to be set
+* @param value the value to set into the named property
+* @param o the object upon which to set the property
+* @param context the context which may include the TypeConverter
+*/
     public static void setProperty(String name, Object value, Object o, Map context) {
         Ognl.setTypeConverter(context, XWorkConverter.getInstance());
 
         Object oldRoot = Ognl.getRoot(context);
         Ognl.setRoot(context, o);
 
-        try {
-            Ognl.setValue(compile(name), context, o, value);
-        } catch (OgnlException e) {
-            // ignore, this happens a lot
-        }
+        internalSetProperty(name, value, o, context);
 
         Ognl.setRoot(context, oldRoot);
     }
@@ -120,13 +111,13 @@ public class OgnlUtil {
     }
 
     /**
-    * Copies the properties in the object "from" and sets them in the object "to"
-    * using specified type converter, or {@link com.opensymphony.xwork.util.XWorkConverter} if none is specified.
-    *
-    * @param from the source object
-    * @param to the target object
-    * @param context the action context we're running under
-    */
+* Copies the properties in the object "from" and sets them in the object "to"
+* using specified type converter, or {@link com.opensymphony.xwork.util.XWorkConverter} if none is specified.
+*
+* @param from the source object
+* @param to the target object
+* @param context the action context we're running under
+*/
     public static void copy(Object from, Object to, Map context) {
         Map contextFrom = Ognl.createDefaultContext(from);
         Ognl.setTypeConverter(contextFrom, XWorkConverter.getInstance());
@@ -156,6 +147,14 @@ public class OgnlUtil {
             } catch (OgnlException e) {
                 // ignore, this is OK
             }
+        }
+    }
+
+    static void internalSetProperty(String name, Object value, Object o, Map context) {
+        try {
+            Ognl.setValue(compile(name), context, o, value);
+        } catch (OgnlException e) {
+            // ignore, this happens a lot
         }
     }
 }

@@ -4,16 +4,20 @@
  */
 package com.opensymphony.xwork.interceptor;
 
+import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionProxy;
 import com.opensymphony.xwork.ActionProxyFactory;
+import com.opensymphony.xwork.ModelDrivenAction;
 import com.opensymphony.xwork.SimpleAction;
+import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 
 import junit.framework.TestCase;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -26,8 +30,35 @@ import java.util.HashMap;
 public class ParametersInterceptorTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    public void testModelDrivenParameters() {
+        Map params = new HashMap();
+        final String fooVal = "com.opensymphony.xwork.interceptor.ParametersInterceptorTest.foo";
+        params.put("foo", fooVal);
+
+        final String nameVal = "com.opensymphony.xwork.interceptor.ParametersInterceptorTest.name";
+        params.put("name", nameVal);
+        params.put("count", "15");
+
+        HashMap extraContext = new HashMap();
+        extraContext.put(ActionContext.PARAMETERS, params);
+
+        try {
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.MODEL_DRIVEN_PARAM_TEST, extraContext);
+            assertEquals(Action.SUCCESS, proxy.execute());
+
+            ModelDrivenAction action = (ModelDrivenAction) proxy.getAction();
+            TestBean model = (TestBean) action.getModel();
+            assertEquals(nameVal, model.getName());
+            assertEquals(15, model.getCount());
+            assertEquals(fooVal, action.getFoo());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
     public void testParameters() {
-        HashMap params = new HashMap();
+        Map params = new HashMap();
         params.put("blah", "This is blah");
 
         HashMap extraContext = new HashMap();
