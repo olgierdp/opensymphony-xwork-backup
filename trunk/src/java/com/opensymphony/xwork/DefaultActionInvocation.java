@@ -254,10 +254,6 @@ public class DefaultActionInvocation implements ActionInvocation {
             contextMap.putAll(extraContext);
         }
 
-        if (pushAction) {
-            stack.push(action);
-        }
-
         //put this DefaultActionInvocation into the context map
         contextMap.put(ActionContext.ACTION_INVOCATION, this);
 
@@ -278,9 +274,14 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     private void init() throws Exception {
+        Map contextMap = createContextMap();
+
         createAction();
 
-        Map contextMap = createContextMap();
+        if (pushAction) {
+            stack.push(action);
+        }
+
         invocationContext = new ActionContext(contextMap);
         invocationContext.setName(proxy.getActionName());
 
