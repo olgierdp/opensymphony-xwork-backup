@@ -6,9 +6,6 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.util.FileManager;
 
-import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.ActionProxy;
-
 import java.io.InputStream;
 
 import java.util.ArrayList;
@@ -34,41 +31,35 @@ public class ActionValidatorManager {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public static synchronized List getValidators(ActionInvocation invocation) {
-        final String validatorKey = buildValidatorKey(invocation);
+    public static synchronized List getValidators(Class clazz, String context) {
+        final String validatorKey = buildValidatorKey(clazz, context);
 
         if (validatorCache.containsKey(validatorKey)) {
-            conditionalReload(invocation);
+            conditionalReload(clazz, context);
         } else {
-            List validators = buildValidators(invocation, false);
+            List validators = buildValidators(clazz, context, false);
             validatorCache.put(validatorKey, validators);
         }
 
         return (List) validatorCache.get(validatorKey);
     }
 
-    protected static String buildValidatorKey(ActionInvocation invocation) {
-        final ActionProxy proxy = invocation.getProxy();
-        StringBuffer sb = new StringBuffer(proxy.getNamespace());
+    protected static String buildValidatorKey(Class clazz, String context) {
+        StringBuffer sb = new StringBuffer(clazz.getName());
         sb.append("/");
-        sb.append(proxy.getActionName());
+        sb.append(context);
 
         return sb.toString();
     }
 
-    private static List buildAliasValidators(Class aClass, ActionInvocation invocation, boolean checkFile) {
-        final String actionClassName = aClass.getName();
-        final String actionName = actionClassName.replace('.', '/');
-        final String actionPath = actionName.substring(0, actionName.lastIndexOf('/') + 1);
-        final String aliasName = actionPath + invocation.getProxy().getActionName();
+    private static List buildAliasValidators(Class aClass, String context, boolean checkFile) {
+        final String fullClassName = aClass.getName();
+        final String className = fullClassName.substring(fullClassName.lastIndexOf('.') + 1);
+        final String fullPath = fullClassName.replace('.', '/');
+        final String path = fullPath.substring(0, fullPath.lastIndexOf('/') + 1);
+        final String fileName = path + className + "-" + context + VALIDATION_CONFIG_SUFFIX;
 
-        if (!aliasName.equals(actionName)) {
-            String fileName = aliasName + VALIDATION_CONFIG_SUFFIX;
-
-            return loadFile(fileName, aClass, checkFile);
-        }
-
-        return Collections.EMPTY_LIST;
+        return loadFile(fileName, aClass, checkFile);
     }
 
     private static List buildClassValidators(Class aClass, boolean checkFile) {
@@ -86,13 +77,12 @@ public class ActionValidatorManager {
     * It will traverse up the class hierarchy looking for validators for every super class
     * of the current action, as well as adding validators for any alias of this invocation. Nifty!
     */
-    private static List buildValidators(ActionInvocation invocation, boolean checkFile) {
+    private static List buildValidators(Class clazz, String context, boolean checkFile) {
         List validators = new ArrayList();
-        final Class actionClass = invocation.getAction().getClass();
 
         // validators for the action class validators.addAll(buildClassValidators(actionClass, checkFile)); validators.addAll(buildAliasValidators(actionClass, invocation, checkFile));
         // looking for validators for every super class
-        Class anActionClass = actionClass;
+        Class anActionClass = clazz;
         anActionClass = anActionClass.getSuperclass();
 
         while (!anActionClass.equals(Object.class)) {
@@ -100,16 +90,16 @@ public class ActionValidatorManager {
             anActionClass = anActionClass.getSuperclass();
         }
 
-        validators.addAll(buildClassValidators(actionClass, checkFile));
-        validators.addAll(buildAliasValidators(actionClass, invocation, checkFile));
+        validators.addAll(buildClassValidators(clazz, checkFile));
+        validators.addAll(buildAliasValidators(clazz, context, checkFile));
 
         return validators;
     }
 
-    private static void conditionalReload(ActionInvocation invocation) {
+    private static void conditionalReload(Class clazz, String context) {
         if (FileManager.isReloadingConfigs()) {
-            final String actionName = buildValidatorKey(invocation);
-            validatorCache.put(actionName, buildValidators(invocation, true));
+            final String actionName = buildValidatorKey(clazz, context);
+            validatorCache.put(actionName, buildValidators(clazz, context, true));
         }
     }
 
@@ -119,7 +109,6 @@ public class ActionValidatorManager {
         if ((checkFile && FileManager.fileNeedsReloading(fileName)) || !validatorFileCache.containsKey(fileName)) {
             InputStream is = FileManager.loadFile(fileName, clazz);
 
-            //            InputStream is = ClassLoaderUtil.getResourceAsStream(fileName, clazz);
             if (is != null) {
                 retList = new ArrayList(ValidatorFileParser.parseActionValidators(is));
             } else {

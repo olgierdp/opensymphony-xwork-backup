@@ -4,12 +4,13 @@
  */
 package com.opensymphony.xwork.validator;
 
-import com.mockobjects.dynamic.Mock;
-
 import com.opensymphony.xwork.Action;
-import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.ActionProxy;
+import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.test.SimpleAction2;
+import com.opensymphony.xwork.validator.validators.DateRangeFieldValidator;
+import com.opensymphony.xwork.validator.validators.ExpressionValidator;
+import com.opensymphony.xwork.validator.validators.IntRangeFieldValidator;
+import com.opensymphony.xwork.validator.validators.RequiredFieldValidator;
 
 import junit.framework.TestCase;
 
@@ -24,54 +25,58 @@ import java.util.List;
 public class ActionValidatorManagerTest extends TestCase {
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    ActionInvocation invocation;
-    ActionProxy actionProxy;
-    Mock mockActionInvocation;
-    Mock mockActionProxy;
+    protected Action action;
+    protected final String alias = "validationAlias";
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testBuildValidatorKey() {
-        String validatorKey = ActionValidatorManager.buildValidatorKey(invocation);
-        assertEquals("/namespace/validationAlias", validatorKey);
-        mockActionInvocation.verify();
-        mockActionProxy.verify();
+        String validatorKey = ActionValidatorManager.buildValidatorKey(action.getClass(), alias);
+        assertEquals(action.getClass().getName() + "/" + alias, validatorKey);
     }
 
-    public void testSameAliasWithDifferentNamespace() {
-        Action action = new SimpleAction2();
-        mockActionInvocation.expectAndReturn("getAction", action);
+    public void testBuildsValidatorsForAlias() {
+        List validatorList = ActionValidatorManager.getValidators(action.getClass(), alias);
 
-        //        mockActionProxy.expectAndReturn("getNamespace", "/namespace");
-        //        mockActionProxy.expectAndReturn("getActionName", "validationAlias");
-        mockActionInvocation.expectAndReturn("getProxy", actionProxy);
-        mockActionProxy.expectAndReturn("getActionName", "validationAlias");
+        // 2 in the class level + 2 in the alias
+        assertEquals(7, validatorList.size());
 
-        List validatorList = ActionValidatorManager.getValidators(invocation);
+        final FieldValidator barValidator1 = (FieldValidator) validatorList.get(0);
+        assertEquals("bar", barValidator1.getFieldName());
+        assertTrue(barValidator1 instanceof RequiredFieldValidator);
 
-        // setup another call, with a different namespace. If it doesn't realize that there should be different
-        // validation configurations for the different namespaces, then some of these expected calls won't be made
-        // and things should fail.
-        mockActionInvocation.expectAndReturn("getProxy", actionProxy);
-        mockActionProxy.expectAndReturn("getNamespace", "/namespace2");
-        mockActionProxy.expectAndReturn("getActionName", "validationAlias");
-        mockActionInvocation.expectAndReturn("getAction", action);
-        mockActionInvocation.expectAndReturn("getProxy", actionProxy);
-        mockActionProxy.expectAndReturn("getActionName", "validationAlias");
+        final FieldValidator barValidator2 = (FieldValidator) validatorList.get(1);
+        assertEquals("bar", barValidator2.getFieldName());
+        assertTrue(barValidator2 instanceof IntRangeFieldValidator);
 
-        List validatorList2 = ActionValidatorManager.getValidators(invocation);
-        assertNotSame(validatorList, validatorList2);
-        mockActionInvocation.verify();
-        mockActionProxy.verify();
+        final FieldValidator dateValidator = (FieldValidator) validatorList.get(2);
+        assertEquals("date", dateValidator.getFieldName());
+        assertTrue(dateValidator instanceof DateRangeFieldValidator);
+
+        final FieldValidator fooValidator = (FieldValidator) validatorList.get(3);
+        assertEquals("foo", fooValidator.getFieldName());
+        assertTrue(fooValidator instanceof IntRangeFieldValidator);
+
+        final Validator expressionValidator = (Validator) validatorList.get(4);
+        assertTrue(expressionValidator instanceof ExpressionValidator);
+
+        final FieldValidator bazValidator1 = (FieldValidator) validatorList.get(5);
+        assertEquals("baz", bazValidator1.getFieldName());
+        assertTrue(bazValidator1 instanceof RequiredFieldValidator);
+
+        final FieldValidator bazValidator2 = (FieldValidator) validatorList.get(6);
+        assertEquals("baz", bazValidator2.getFieldName());
+        assertTrue(bazValidator2 instanceof IntRangeFieldValidator);
+    }
+
+    public void testSameAliasWithDifferentClass() {
+        List validatorList = ActionValidatorManager.getValidators(action.getClass(), alias);
+        Action action2 = new SimpleAction2();
+        List validatorList2 = ActionValidatorManager.getValidators(action2.getClass(), alias);
+        assertFalse(validatorList.size() == validatorList2.size());
     }
 
     protected void setUp() {
-        mockActionInvocation = new Mock(ActionInvocation.class);
-        invocation = (ActionInvocation) mockActionInvocation.proxy();
-        mockActionProxy = new Mock(ActionProxy.class);
-        actionProxy = (ActionProxy) mockActionProxy.proxy();
-        mockActionInvocation.expectAndReturn("getProxy", actionProxy);
-        mockActionProxy.expectAndReturn("getNamespace", "/namespace");
-        mockActionProxy.expectAndReturn("getActionName", "validationAlias");
+        action = new SimpleAction();
     }
 }

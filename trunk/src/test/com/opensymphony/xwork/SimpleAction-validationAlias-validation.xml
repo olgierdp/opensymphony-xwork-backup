@@ -5,8 +5,8 @@
             <message>You must enter a value for baz.</message>
         </field-validator>
         <field-validator type="int">
-            <param name="min">2"</param>
-            <param name="max">4"</param>
+            <param name="min">2</param>
+            <param name="max">4</param>
             <message>baz out of range.</message>
         </field-validator>
     </field>

@@ -26,7 +26,7 @@ public class ValidationInterceptor extends AroundInterceptor {
     }
 
     protected void before(ActionInvocation invocation) throws Exception {
-        List validators = ActionValidatorManager.getValidators(invocation);
+        List validators = ActionValidatorManager.getValidators(invocation.getAction().getClass(), invocation.getProxy().getActionName());
         Action action = invocation.getAction();
 
         if (log.isDebugEnabled()) {
