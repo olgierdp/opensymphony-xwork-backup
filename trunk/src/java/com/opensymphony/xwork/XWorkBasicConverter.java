@@ -1,12 +1,20 @@
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork;
 
 import com.opensymphony.util.TextUtils;
+
 import ognl.DefaultTypeConverter;
 
 import java.lang.reflect.Member;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.*;
+
 
 /**
  *
@@ -15,9 +23,10 @@ import java.util.*;
  * @author $Author$
  * @version $Revision$
  */
-
 public class XWorkBasicConverter extends DefaultTypeConverter {
-    public Object convertValue(Map context, Object value, Member member, String s, Object o1, Class toType) {
+    //~ Methods ////////////////////////////////////////////////////////////////
+
+    public Object convertValue(Map context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;
 
         if (toType == String.class) {
@@ -44,7 +53,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = doConvertToClass(context, value);
         } else {
             if ((toType == String[].class) && (value instanceof String)) {
-                result = new String[]{(String) value};
+                result = new String[] {(String) value};
             }
         }
 
@@ -240,5 +249,4 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
         return result;
     }
-
 }

@@ -11,7 +11,9 @@ import ognl.TypeConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.lang.reflect.Member;
+
 import java.util.*;
 
 
@@ -27,9 +29,9 @@ public class XWorkConverter extends DefaultTypeConverter {
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
+    HashMap defaultMappings = new HashMap();
     HashMap mappings = new HashMap();
     HashSet noMapping = new HashSet();
-    HashMap defaultMappings = new HashMap();
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
@@ -42,19 +44,6 @@ public class XWorkConverter extends DefaultTypeConverter {
         try {
             loadConversionProps("xwork-conversion.properties");
         } catch (Exception e) {
-        }
-    }
-
-    private void loadConversionProps(String propsName) throws Exception {
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(propsName);
-        Properties props = new Properties();
-        props.load(is);
-
-        for (Iterator iterator = props.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String key = (String) entry.getKey();
-
-            defaultMappings.put(key, createTypeConverter((String) entry.getValue()));
         }
     }
 
@@ -72,12 +61,13 @@ public class XWorkConverter extends DefaultTypeConverter {
         instance = null;
     }
 
-    public Object convertValue(Map context, Object value, Member member, String s, Object o1, Class aClass) {
+    public Object convertValue(Map context, Object o, Member member, String s, Object value, Class aClass) {
         if (value == null) {
             return null;
         }
 
         Class clazz = null;
+
         try {
             OgnlContext ognlContext = (OgnlContext) context;
             Evaluation eval = ognlContext.getCurrentEvaluation();
@@ -108,7 +98,7 @@ public class XWorkConverter extends DefaultTypeConverter {
                     mapping.putAll(props);
 
                     for (Iterator iterator = mapping.entrySet().iterator();
-                         iterator.hasNext();) {
+                            iterator.hasNext();) {
                         Map.Entry entry = (Map.Entry) iterator.next();
                         entry.setValue(createTypeConverter((String) entry.getValue()));
                     }
@@ -117,7 +107,7 @@ public class XWorkConverter extends DefaultTypeConverter {
                 TypeConverter converter = (TypeConverter) mapping.get(property);
 
                 if (converter != null) {
-                    return converter.convertValue(context, value, member, s, o1, aClass);
+                    return converter.convertValue(context, o, member, s, value, aClass);
                 }
             }
         } catch (Throwable t) {
@@ -129,14 +119,14 @@ public class XWorkConverter extends DefaultTypeConverter {
         if (defaultMappings.containsKey(aClass.getName())) {
             try {
                 TypeConverter tc = (TypeConverter) defaultMappings.get(aClass.getName());
-                return tc.convertValue(context, value, member, s, o1, aClass);
+
+                return tc.convertValue(context, o, member, s, value, aClass);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-
-        return super.convertValue(context, value, member, s, o1, aClass);
+        return super.convertValue(context, o, member, s, value, aClass);
     }
 
     private TypeConverter createTypeConverter(String className) throws Exception, InstantiationException {
@@ -145,4 +135,17 @@ public class XWorkConverter extends DefaultTypeConverter {
         return (TypeConverter) conversionClass.newInstance();
     }
 
+    private void loadConversionProps(String propsName) throws Exception {
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(propsName);
+        Properties props = new Properties();
+        props.load(is);
+
+        for (Iterator iterator = props.entrySet().iterator();
+                iterator.hasNext();) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            String key = (String) entry.getKey();
+
+            defaultMappings.put(key, createTypeConverter((String) entry.getValue()));
+        }
+    }
 }

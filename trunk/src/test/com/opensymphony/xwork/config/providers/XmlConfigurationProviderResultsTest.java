@@ -41,11 +41,11 @@ public class XmlConfigurationProviderResultsTest extends ConfigurationTestBase {
         results.put("mockTypedResult", new ResultConfig("mockTypedResult", MockResult.class, new HashMap()));
 
         Map resultParams = new HashMap();
-        resultParams.put("location", "bar.vm");
+        resultParams.put("actionName", "bar.vm");
         results.put("specificLocationResult", new ResultConfig("specificLocationResult", ActionChainResult.class, resultParams));
 
         resultParams = new HashMap();
-        resultParams.put("location", "foo.vm");
+        resultParams.put("actionName", "foo.vm");
         results.put("defaultLocationResult", new ResultConfig("defaultLocationResult", ActionChainResult.class, resultParams));
 
         resultParams = new HashMap();
