@@ -33,6 +33,39 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    public Object getComponent(Class enablerType) {
+        DefaultComponentManager dcm = this;
+
+        // loop all the DCMs and get the one that holds this enabler
+        Class resource = null;
+
+        while (dcm != null) {
+            resource = (Class) dcm.enablers.get(enablerType);
+
+            if (resource != null) {
+                break;
+            }
+
+            dcm = dcm.fallback;
+        }
+
+        if (resource == null) {
+            // this is an unknown resource, return null;
+            return null;
+        }
+
+        // now that we have the DCM and the resource class, we can set it up
+        try {
+            ResourceEnablerPair pair = setupAndOptionallyCreateResource(dcm, resource);
+
+            return pair.resource;
+        } catch (Exception e) {
+            String message = "Could not load resource with enabler " + enablerType;
+            log.error(message, e);
+            throw new RuntimeException(message);
+        }
+    }
+
     public void setFallback(ComponentManager fallback) {
         if (fallback instanceof DefaultComponentManager) {
             this.fallback = (DefaultComponentManager) fallback;
@@ -66,38 +99,6 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         //        if (fallback != null) {
         //            fallback.initializeObject(obj);
         //        }
-    }
-
-    public Object getComponent(Class enablerType) {
-        DefaultComponentManager dcm = this;
-
-        // loop all the DCMs and get the one that holds this enabler
-        Class resource = null;
-        while (dcm != null) {
-            resource = (Class) dcm.enablers.get(enablerType);
-
-            if (resource != null) {
-                break;
-            }
-
-            dcm = dcm.fallback;
-        }
-
-        if (resource == null)
-        {
-            // this is an unknown resource, return null;
-            return null;
-        }
-
-        // now that we have the DCM and the resource class, we can set it up
-        try {
-            ResourceEnablerPair pair = setupAndOptionallyCreateResource(dcm, resource);
-            return pair.resource;
-        } catch (Exception e) {
-            String message = "Could not load resource with enabler " + enablerType;
-            log.error(message, e);
-            throw new RuntimeException(message);
-        }
     }
 
     private Map getResourceDependencies(Class resourceClass) {
@@ -144,7 +145,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
             Map resources = getResourceDependencies(clazz);
 
             for (Iterator iterator = resources.entrySet().iterator();
-                 iterator.hasNext();) {
+                    iterator.hasNext();) {
                 Map.Entry mapEntry = (Map.Entry) iterator.next();
                 Class depResource = (Class) mapEntry.getKey();
                 DefaultComponentManager newDcm = (DefaultComponentManager) mapEntry.getValue();
@@ -185,10 +186,12 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         if (newResource == null) {
             newResource = ObjectFactory.getObjectFactory().buildBean(depResource);
         }
+
         pair.resource = newResource;
 
         Class enabler = loadResource(newResource, depResource, newDcm);
         pair.enabler = enabler;
+
         return pair;
     }
 
@@ -198,7 +201,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         }
 
         try {
-            enabler.getMethods()[0].invoke(resource, new Object[]{newResource});
+            enabler.getMethods()[0].invoke(resource, new Object[] {newResource});
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -207,6 +210,8 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
             }
         }
     }
+
+    //~ Inner Classes //////////////////////////////////////////////////////////
 
     class ResourceEnablerPair {
         Class enabler;

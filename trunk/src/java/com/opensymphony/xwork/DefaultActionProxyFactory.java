@@ -41,6 +41,7 @@ public class DefaultActionProxyFactory extends ActionProxyFactory {
     */
     public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext) throws Exception {
         setupConfigIfActionIsCommand(namespace, actionName);
+
         return new DefaultActionProxy(namespace, actionName, extraContext, true);
     }
 
@@ -49,6 +50,7 @@ public class DefaultActionProxyFactory extends ActionProxyFactory {
     */
     public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult) throws Exception {
         setupConfigIfActionIsCommand(namespace, actionName);
+
         return new DefaultActionProxy(namespace, actionName, extraContext, executeResult);
     }
 
@@ -58,15 +60,13 @@ public class DefaultActionProxyFactory extends ActionProxyFactory {
         }
 
         int bang = actionName.indexOf('!');
+
         if (bang != -1) {
             String realAction = actionName.substring(0, bang);
             String command = actionName.substring(bang + 1);
 
-            ActionConfig actionConfig
-                    = ConfigurationManager.getConfiguration().getRuntimeConfiguration().getActionConfig(namespace, realAction);
-            ActionConfig newConfig = new ActionConfig(command, actionConfig.getClazz(), actionConfig.getParams(),
-                    actionConfig.getResults(), actionConfig.getInterceptors(), actionConfig.getExternalRefs(),
-                    actionConfig.getPackageName());
+            ActionConfig actionConfig = ConfigurationManager.getConfiguration().getRuntimeConfiguration().getActionConfig(namespace, realAction);
+            ActionConfig newConfig = new ActionConfig(command, actionConfig.getClassName(), actionConfig.getParams(), actionConfig.getResults(), actionConfig.getInterceptors(), actionConfig.getExternalRefs(), actionConfig.getPackageName());
 
             ConfigurationManager.getConfiguration().getPackageConfig(newConfig.getPackageName()).addActionConfig(actionName, newConfig);
             ConfigurationManager.getConfiguration().rebuildRuntimeConfiguration();

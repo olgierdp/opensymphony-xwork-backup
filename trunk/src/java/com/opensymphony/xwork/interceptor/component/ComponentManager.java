@@ -13,6 +13,8 @@ package com.opensymphony.xwork.interceptor.component;
 public interface ComponentManager {
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    Object getComponent(Class enablerType);
+
     void setFallback(ComponentManager fallback);
 
     void addEnabler(Class component, Class enablerType);
@@ -20,6 +22,4 @@ public interface ComponentManager {
     void dispose();
 
     void initializeObject(Object obj);
-
-    Object getComponent(Class enablerType);
 }

@@ -4,32 +4,23 @@
  */
 package com.opensymphony.xwork.validator;
 
-import com.opensymphony.util.ClassLoaderUtil;
-
+import com.opensymphony.xwork.ObjectFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.*;
 
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 
 /**
@@ -119,13 +110,11 @@ public class ValidatorFileParser {
                 Class clazz = null;
 
                 try {
-                    clazz = ClassLoaderUtil.loadClass(className, ValidatorFileParser.class);
-                } catch (ClassNotFoundException e) {
-                    log.error("Unable to load validator class");
-                }
-
-                if (clazz != null) {
-                    ValidatorFactory.registerValidator(name, clazz);
+                    // catch any problems here
+                    ObjectFactory.getObjectFactory().buildValidator(className, new HashMap());
+                    ValidatorFactory.registerValidator(name, className);
+                } catch (Exception e) {
+                    log.error("Unable to load validator class " + className);
                 }
             }
         } catch (Exception e) {

@@ -4,25 +4,15 @@
  */
 package com.opensymphony.xwork.config.impl;
 
-import com.opensymphony.xwork.config.Configuration;
-import com.opensymphony.xwork.config.ConfigurationException;
-import com.opensymphony.xwork.config.ConfigurationManager;
-import com.opensymphony.xwork.config.ConfigurationProvider;
-import com.opensymphony.xwork.config.RuntimeConfiguration;
+import com.opensymphony.xwork.config.*;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.config.entities.ResultTypeConfig;
 import com.opensymphony.xwork.config.providers.InterceptorBuilder;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -74,6 +64,10 @@ public class DefaultConfiguration implements Configuration {
     public void destroy() {
     }
 
+    public void rebuildRuntimeConfiguration() {
+        runtimeConfiguration = buildRuntimeConfiguration();
+    }
+
     /**
     * Calls the ConfigurationProviderFactory.getConfig() to tell it to reload the configuration and then calls
     * buildRuntimeConfiguration().
@@ -101,10 +95,6 @@ public class DefaultConfiguration implements Configuration {
                 packageContext.removeParent(toBeRemoved);
             }
         }
-    }
-
-    public void rebuildRuntimeConfiguration() {
-        runtimeConfiguration = buildRuntimeConfiguration();
     }
 
     /**
@@ -182,7 +172,7 @@ public class DefaultConfiguration implements Configuration {
 
         List externalRefs = baseConfig.getExternalRefs();
 
-        ActionConfig config = new ActionConfig(baseConfig.getMethodName(), baseConfig.getClazz(), params, results, interceptors, baseConfig.getExternalRefs(), packageContext.getName());
+        ActionConfig config = new ActionConfig(baseConfig.getMethodName(), baseConfig.getClassName(), params, results, interceptors, externalRefs, packageContext.getName());
 
         return config;
     }

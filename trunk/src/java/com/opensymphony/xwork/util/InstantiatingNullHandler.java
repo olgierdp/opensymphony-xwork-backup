@@ -40,7 +40,6 @@ public class InstantiatingNullHandler implements NullHandler {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String CREATE_NULL_OBJECTS = "xwork.NullHandler.createNullObjects";
-
     private static final Log LOG = LogFactory.getLog(InstantiatingNullHandler.class);
 
     //~ Instance fields ////////////////////////////////////////////////////////
@@ -99,7 +98,7 @@ public class InstantiatingNullHandler implements NullHandler {
         try {
             Class clazz = method.getParameterTypes()[0];
             Object param = createObject(context, clazz, target, property.toString());
-            method.invoke(target, new Object[]{param});
+            method.invoke(target, new Object[] {param});
 
             return param;
         } catch (Exception e) {
@@ -195,7 +194,7 @@ public class InstantiatingNullHandler implements NullHandler {
             mapping.putAll(props);
 
             for (Iterator iterator = mapping.entrySet().iterator();
-                 iterator.hasNext();) {
+                    iterator.hasNext();) {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 String propName = (String) entry.getKey();
                 String className = (String) entry.getValue();

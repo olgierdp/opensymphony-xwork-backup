@@ -4,12 +4,12 @@
  */
 package com.opensymphony.xwork.config.entities;
 
+import com.opensymphony.xwork.Action;
+import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.interceptor.Interceptor;
 
 import java.io.Serializable;
-
 import java.lang.reflect.Method;
-
 import java.util.*;
 
 
@@ -36,9 +36,9 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
     protected Map params;
     protected Map results;
     protected Method method;
+    protected String className;
     protected String methodName;
     protected String packageName;
-    private Class clazz;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
@@ -52,29 +52,33 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
     //Helper constuctor to maintain backward compatibility with objects that create ActionConfigs
     //TODO this should be removed if these changes are rolled in to xwork CVS
     public ActionConfig(String methodName, Class clazz, Map parameters, Map results, List interceptors) {
-        this(methodName, clazz, parameters, results, interceptors, Collections.EMPTY_LIST, new String());
+        this(methodName, clazz.getName(), parameters, results, interceptors);
+    }
+
+    public ActionConfig(String methodName, String className, Map parameters, Map results, List interceptors) {
+        this(methodName, className, parameters, results, interceptors, Collections.EMPTY_LIST, new String());
     }
 
     //TODO If this is commited to CVS we should put the package arg at the front of the ctor and fix
     //code that uses it
-    public ActionConfig(String methodName, Class clazz, Map parameters, Map results, List interceptors, List externalRefs, String packageName) {
+    public ActionConfig(String methodName, String className, Map parameters, Map results, List interceptors, List externalRefs, String packageName) {
         this.methodName = methodName;
         this.interceptors = interceptors;
         this.params = parameters;
         this.results = results;
-        this.clazz = clazz;
+        this.className = className;
         this.externalRefs = externalRefs;
         this.packageName = packageName;
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public void setClazz(Class clazz) {
-        this.clazz = clazz;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
-    public Class getClazz() {
-        return clazz;
+    public String getClassName() {
+        return className;
     }
 
     public List getExternalRefs() {
@@ -95,8 +99,19 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
      * @return cached instance of the action method or null if method name was not specified
      */
     public Method getMethod() throws NoSuchMethodException {
+
         if (method != null) {
             return method;
+        }
+
+        Class clazz = null;
+
+        try {
+            ActionConfig actionConfig = new ActionConfig(null, getClassName(), null, null, null);
+            Action action = ObjectFactory.getObjectFactory().buildAction(actionConfig);
+            clazz = action.getClass();
+        } catch (Exception e) { // TODO: Only doing this because buildAction() throws Exception
+            throw new NoSuchMethodException("Unable to load action: " + e.getMessage());
         }
 
         if (methodName != null) {
@@ -203,7 +218,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
 
         final ActionConfig actionConfig = (ActionConfig) o;
 
-        if ((clazz != null) ? (!clazz.equals(actionConfig.clazz)) : (actionConfig.clazz != null)) {
+        if ((className != null) ? (!className.equals(actionConfig.className)) : (actionConfig.className != null)) {
             return false;
         }
 
@@ -237,12 +252,12 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
         result = (29 * result) + ((results != null) ? results.hashCode() : 0);
         result = (29 * result) + ((method != null) ? method.hashCode() : 0);
         result = (29 * result) + ((methodName != null) ? methodName.hashCode() : 0);
-        result = (29 * result) + ((clazz != null) ? clazz.hashCode() : 0);
+        result = (29 * result) + ((className != null) ? className.hashCode() : 0);
 
         return result;
     }
 
     public String toString() {
-        return "{ActionConfig " + clazz.getName() + ((methodName != null) ? ("." + methodName + "()") : "") + "}";
+        return "{ActionConfig " + className + ((methodName != null) ? ("." + methodName + "()") : "") + "}";
     }
 }

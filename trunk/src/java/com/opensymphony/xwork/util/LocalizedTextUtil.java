@@ -27,7 +27,6 @@ public class LocalizedTextUtil {
 
     private static final List DEFAULT_RESOURCE_BUNDLES = Collections.synchronizedList(new ArrayList());
     private static final Log LOG = LogFactory.getLog(LocalizedTextUtil.class);
-
     private static boolean reloadBundles = false;
 
     static {
@@ -50,21 +49,6 @@ public class LocalizedTextUtil {
         }
     }
 
-    private static void reloadBundles(ResourceBundle resource) {
-        if (reloadBundles) {
-            try {
-                Class klass = resource.getClass().getSuperclass();
-                Field field = klass.getDeclaredField("cacheList");
-                field.setAccessible(true);
-                Object cache = field.get(null);
-                Method clearMethod = cache.getClass().getMethod("clear", new Class[0]);
-                clearMethod.invoke(cache, new Object[0]);
-            } catch (Exception e) {
-                LOG.error("Could not reload resource bundles", e);
-            }
-        }
-    }
-
     public static String findDefaultText(String aTextName, Locale locale) throws MissingResourceException {
         MissingResourceException e = null;
         List localList = new ArrayList(DEFAULT_RESOURCE_BUNDLES);
@@ -75,6 +59,7 @@ public class LocalizedTextUtil {
             try {
                 ResourceBundle bundle = findResourceBundle(bundleName, locale);
                 reloadBundles(bundle);
+
                 return bundle.getString(aTextName);
             } catch (MissingResourceException ex) {
                 e = ex;
@@ -153,6 +138,7 @@ public class LocalizedTextUtil {
             try {
                 ResourceBundle bundle = findResourceBundle(clazz.getName(), locale);
                 reloadBundles(bundle);
+
                 String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
 
                 return MessageFormat.format(message, args);
@@ -176,6 +162,7 @@ public class LocalizedTextUtil {
                         try {
                             ResourceBundle bundle = findResourceBundle(interfaces[x].getName(), locale);
                             reloadBundles(bundle);
+
                             String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
 
                             return MessageFormat.format(message, args);
@@ -187,6 +174,7 @@ public class LocalizedTextUtil {
                     try {
                         ResourceBundle bundle = findResourceBundle(clazz.getName(), locale);
                         reloadBundles(bundle);
+
                         String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
 
                         return MessageFormat.format(message, args);
@@ -206,6 +194,7 @@ public class LocalizedTextUtil {
                 String packageName = clazz.getPackage().getName();
                 ResourceBundle bundle = findResourceBundle(packageName + ".package", locale);
                 reloadBundles(bundle);
+
                 String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
 
                 return MessageFormat.format(message, args);
@@ -213,7 +202,6 @@ public class LocalizedTextUtil {
                 clazz = clazz.getSuperclass();
             }
         } while (!clazz.equals(Object.class));
-
 
         return getDefaultText(aTextName, locale, valueStack, args, defaultMessage);
     }
@@ -223,6 +211,7 @@ public class LocalizedTextUtil {
 
         try {
             reloadBundles(bundle);
+
             String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
 
             return MessageFormat.format(message, args);
@@ -246,5 +235,21 @@ public class LocalizedTextUtil {
         }
 
         return MessageFormat.format(TextParseUtil.translateVariables(defaultMessage, valueStack), args);
+    }
+
+    private static void reloadBundles(ResourceBundle resource) {
+        if (reloadBundles) {
+            try {
+                Class klass = resource.getClass().getSuperclass();
+                Field field = klass.getDeclaredField("cacheList");
+                field.setAccessible(true);
+
+                Object cache = field.get(null);
+                Method clearMethod = cache.getClass().getMethod("clear", new Class[0]);
+                clearMethod.invoke(cache, new Object[0]);
+            } catch (Exception e) {
+                LOG.error("Could not reload resource bundles", e);
+            }
+        }
     }
 }

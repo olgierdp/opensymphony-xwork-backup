@@ -35,34 +35,42 @@ public class ActionContext {
      * Constant for the name of the action being executed.
      */
     public static final String ACTION_NAME = "com.opensymphony.xwork.ActionContext.name";
+
     /**
      * Constant for the {@link com.opensymphony.xwork.util.OgnlValueStack OGNL value stack}.
      */
     public static final String VALUE_STACK = OgnlValueStack.VALUE_STACK;
+
     /**
      * Constant for the action's session.
      */
     public static final String SESSION = "com.opensymphony.xwork.ActionContext.session";
+
     /**
      * Constant for the action's application context.
      */
     public static final String APPLICATION = "com.opensymphony.xwork.ActionContext.application";
+
     /**
      * Constant for the action's parameters.
      */
     public static final String PARAMETERS = "com.opensymphony.xwork.ActionContext.parameters";
+
     /**
      * Constant for the action's locale.
      */
     public static final String LOCALE = "com.opensymphony.xwork.ActionContext.locale";
+
     /**
      * Constant for the action's type converter.
      */
     public static final String TYPE_CONVERTER = "com.opensymphony.xwork.ActionContext.typeConverter";
+
     /**
      * Constant for the action's {@link com.opensymphony.xwork.ActionInvocation invocation} context.
      */
     public static final String ACTION_INVOCATION = "com.opensymphony.xwork.ActionContext.actionInvocation";
+
     /**
      * Constant for the map of type conversion errors.
      */

@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork;
 
+import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.InterceptorConfig;
@@ -30,6 +31,10 @@ public class ObjectFactory {
 
     private static ObjectFactory FACTORY = new ObjectFactory();
 
+    //~ Instance fields ////////////////////////////////////////////////////////
+
+    private Map classes = new HashMap(); // Classes that have already been loaded
+
     //~ Constructors ///////////////////////////////////////////////////////////
 
     protected ObjectFactory() {
@@ -46,10 +51,29 @@ public class ObjectFactory {
     }
 
     /**
+     * Utility method to obtain the class matched to className. Caches look ups so that subsequent
+     * lookups will be faster.
+     *
+     * @param className The fully qualified name of the class to return
+     * @return The class itself
+     * @throws ClassNotFoundException
+     */
+    public Class getClassInstance(String className) throws ClassNotFoundException {
+        Class clazz = (Class) classes.get(className);
+
+        if (clazz == null) {
+            clazz = ClassLoaderUtil.loadClass(className, this.getClass());
+            classes.put(className, clazz);
+        }
+
+        return clazz;
+    }
+
+    /**
      * Build an Action of the given type
      */
     public Action buildAction(ActionConfig config) throws Exception {
-        return (Action) buildBean(config.getClazz());
+        return (Action) buildBean(config.getClassName());
     }
 
     /**
@@ -62,37 +86,52 @@ public class ObjectFactory {
     }
 
     /**
-     * Builds an Interceptor from the InterceptorConfig and the Map of parameters from the interceptor reference.
-     * Implementations of this method should ensure that the Interceptor is parameterized with both the parameters from
-     * the Interceptor config and the interceptor ref Map (the interceptor ref params take precedence), and that the
-     * Interceptor.init() method is called on the Interceptor instance before it is returned.
+     * Build a generic Java object of the given type.
      *
-     * @param interceptorConfig    the InterceptorConfig from the configuration
-     * @param interceptorRefParams a Map of params provided in the Interceptor reference in the Action mapping or
-     *                             InterceptorStack definition
+     * @param className the type of Object to build
      */
+    public Object buildBean(String className) throws Exception {
+        Class clazz = getClassInstance(className);
+
+        return clazz.newInstance();
+    }
+
+    /**
+         * Builds an Interceptor from the InterceptorConfig and the Map of
+         * parameters from the interceptor reference. Implementations of this method
+         * should ensure that the Interceptor is parameterized with both the
+         * parameters from the Interceptor config and the interceptor ref Map (the
+         * interceptor ref params take precedence), and that the Interceptor.init()
+         * method is called on the Interceptor instance before it is returned.
+         *
+         * @param interceptorConfig
+         *            the InterceptorConfig from the configuration
+         * @param interceptorRefParams
+         *            a Map of params provided in the Interceptor reference in the
+         *            Action mapping or InterceptorStack definition
+         */
     public Interceptor buildInterceptor(InterceptorConfig interceptorConfig, Map interceptorRefParams) throws ConfigurationException {
         Interceptor interceptor = null;
-        Class interceptorClass = interceptorConfig.getClazz();
+        String interceptorClassName = interceptorConfig.getClassName();
         String message;
         Map thisInterceptorClassParams = interceptorConfig.getParams();
         Map params = (thisInterceptorClassParams == null) ? new HashMap() : new HashMap(thisInterceptorClassParams);
         params.putAll(interceptorRefParams);
 
         try {
-            interceptor = (Interceptor) buildBean(interceptorClass);
+            interceptor = (Interceptor) buildBean(interceptorClassName);
             OgnlUtil.setProperties(params, interceptor);
             interceptor.init();
 
             return interceptor;
         } catch (InstantiationException e) {
-            message = "Unable to instantiate an instance of Interceptor class [" + interceptorClass.getName() + "].";
+            message = "Unable to instantiate an instance of Interceptor class [" + interceptorClassName + "].";
         } catch (IllegalAccessException e) {
-            message = "IllegalAccessException while attempting to instantiate an instance of Interceptor class [" + interceptorClass.getName() + "].";
+            message = "IllegalAccessException while attempting to instantiate an instance of Interceptor class [" + interceptorClassName + "].";
         } catch (ClassCastException e) {
-            message = "Class [" + interceptorClass.getName() + "] does not implement com.opensymphony.xwork.interceptor.Interceptor";
+            message = "Class [" + interceptorClassName + "] does not implement com.opensymphony.xwork.interceptor.Interceptor";
         } catch (Exception e) {
-            throw new ConfigurationException("Caught Exception while registering Interceptor class " + interceptorClass.getName(), e);
+            throw new ConfigurationException("Caught Exception while registering Interceptor class " + interceptorClassName, e);
         }
 
         throw new ConfigurationException(message);
@@ -102,11 +141,11 @@ public class ObjectFactory {
      * Build a Result using the type in the ResultConfig and set the parameters in the ResultConfig.
      */
     public Result buildResult(ResultConfig resultConfig) throws Exception {
-        Class resultClass = resultConfig.getClazz();
+        String resultClassName = resultConfig.getClassName();
         Result result = null;
 
-        if (resultClass != null) {
-            result = (Result) buildBean(resultClass);
+        if (resultClassName != null) {
+            result = (Result) buildBean(resultClassName);
             OgnlUtil.setProperties(resultConfig.getParams(), result, ActionContext.getContext().getContextMap());
         }
 
@@ -116,11 +155,11 @@ public class ObjectFactory {
     /**
      * Build a Validator of the given type and set the parameters on it
      *
-     * @param clazz  the type of Validator to build
+     * @param className  the type of Validator to build
      * @param params property name -> value Map to set onto the Validator instance
      */
-    public Validator buildValidator(Class clazz, Map params) throws Exception {
-        Validator validator = (Validator) buildBean(clazz);
+    public Validator buildValidator(String className, Map params) throws Exception {
+        Validator validator = (Validator) buildBean(className);
         OgnlUtil.setProperties(params, validator);
 
         return validator;

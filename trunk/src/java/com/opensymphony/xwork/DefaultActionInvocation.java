@@ -8,16 +8,13 @@ import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.interceptor.PreResultListener;
-import com.opensymphony.xwork.util.OgnlUtil;
 import com.opensymphony.xwork.util.OgnlValueStack;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -148,7 +145,7 @@ public class DefaultActionInvocation implements ActionInvocation {
             try {
                 newResult = ObjectFactory.getObjectFactory().buildResult(resultConfig);
             } catch (Exception e) {
-                LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClazz(), e);
+                LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClassName(), e);
                 throw e;
             }
         }
@@ -203,7 +200,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         } catch (IllegalAccessException e) {
             throw new XworkException("Illegal access to constructor, is it public?", e);
         } catch (ClassCastException e) {
-            throw new XworkException("Action class " + proxy.getConfig().getClazz().getName() + " does not implement " + Action.class.getName(), e);
+            throw new XworkException("Action class " + proxy.getConfig().getClassName() + " does not implement " + Action.class.getName(), e);
         } catch (Exception e) {
             String gripe = "";
 
@@ -211,10 +208,10 @@ public class DefaultActionInvocation implements ActionInvocation {
                 gripe = "Whoa!  No ActionProxy instance found in current ActionInvocation.  This is bad ... very bad";
             } else if (proxy.getConfig() == null) {
                 gripe = "Sheesh.  Where'd that ActionProxy get to?  I can't find it in the current ActionInvocation!?";
-            } else if (proxy.getConfig().getClazz() == null) {
+            } else if (proxy.getConfig().getClassName() == null) {
                 gripe = "No Action defined for '" + proxy.getActionName() + "' in namespace '" + proxy.getNamespace() + "'";
             } else {
-                gripe = "Unable to instantiate Action, " + proxy.getConfig().getClazz().getName() + ",  defined for '" + proxy.getActionName() + "' in namespace '" + proxy.getNamespace() + "'";
+                gripe = "Unable to instantiate Action, " + proxy.getConfig().getClassName() + ",  defined for '" + proxy.getActionName() + "' in namespace '" + proxy.getNamespace() + "'";
             }
 
             gripe += (((" -- " + e.getMessage()) != null) ? e.getMessage() : " [no message in exception]");

@@ -5,15 +5,11 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.util.ClassLoaderUtil;
-
 import com.opensymphony.xwork.ObjectFactory;
-import com.opensymphony.xwork.util.OgnlUtil;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,30 +39,30 @@ public class ValidatorFactory {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public static Validator getValidator(String type, Map params) {
-        Class clazz = (Class) validators.get(type);
+        String className = (String) validators.get(type);
 
-        if (clazz == null) {
+        if (className == null) {
             throw new IllegalArgumentException("There is no validator class mapped to the name " + type);
         }
 
         Validator validator;
 
         try {
-            validator = ObjectFactory.getObjectFactory().buildValidator(clazz, params);
+            validator = ObjectFactory.getObjectFactory().buildValidator(className, params);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IllegalArgumentException("There was a problem creating a Validator of type " + clazz.getName());
+            throw new IllegalArgumentException("There was a problem creating a Validator of type " + className);
         }
 
         return validator;
     }
 
-    public static void registerValidator(String name, Class clazz) {
+    public static void registerValidator(String name, String className) {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Registering validator of class " + clazz.getName() + " with name " + name);
+            LOG.debug("Registering validator of class " + className + " with name " + name);
         }
 
-        validators.put(name, clazz);
+        validators.put(name, className);
     }
 
     private static void parseValidators() {

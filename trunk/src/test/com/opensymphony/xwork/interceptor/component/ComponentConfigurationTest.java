@@ -5,12 +5,10 @@
 package com.opensymphony.xwork.interceptor.component;
 
 import junit.framework.TestCase;
-
 import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-
 import java.util.ArrayList;
 
 
@@ -47,6 +45,10 @@ public class ComponentConfigurationTest extends TestCase {
         ArrayList initialized = new ArrayList();
         ArrayList resources = new ArrayList();
 
+        public Object getComponent(Class enablerType) {
+            return null;
+        }
+
         public void setFallback(ComponentManager fallback) {
         }
 
@@ -63,10 +65,6 @@ public class ComponentConfigurationTest extends TestCase {
 
         public void initializeObject(Object component) {
             initialized.add(component);
-        }
-
-        public Object getComponent(Class enablerType) {
-            return null;
         }
     }
 }

@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * Allows methods to be executed under normal cirumstances, except when {@link #DENY_METHOD_EXECUTION}
- * is in the action context with a value of true.  
+ * is in the action context with a value of true.
  *
  * @author Patrick Lightbody
  */

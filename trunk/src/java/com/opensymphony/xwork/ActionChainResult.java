@@ -4,12 +4,12 @@
  */
 package com.opensymphony.xwork;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -23,7 +23,8 @@ import org.apache.commons.logging.LogFactory;
  * @version $Revision$
  */
 public class ActionChainResult implements Result {
-    
+    //~ Static fields/initializers /////////////////////////////////////////////
+
     private static final Log log = LogFactory.getLog(ActionChainResult.class);
     public static final String DEFAULT_PARAM = "actionName";
     private static final String CHAIN_HISTORY = "CHAIN_HISTORY";
@@ -80,10 +81,10 @@ public class ActionChainResult implements Result {
      * @param invocation the DefaultActionInvocation calling the action call stack
      */
     public void execute(ActionInvocation invocation) throws Exception {
-        
         if (isInChainHistory(namespace, actionName)) {
             throw new XworkException("infinite recursion detected");
         }
+
         addToHistory(namespace, actionName);
 
         HashMap extraContext = new HashMap();
@@ -103,7 +104,6 @@ public class ActionChainResult implements Result {
 
         proxy = ActionProxyFactory.getFactory().createActionProxy(this.namespace, actionName, extraContext);
         proxy.execute();
-
     }
 
     public int hashCode() {
@@ -112,22 +112,26 @@ public class ActionChainResult implements Result {
 
     private boolean isInChainHistory(String namespace, String actionName) {
         Set chainHistory = (Set) ActionContext.getContext().get(CHAIN_HISTORY);
+
         if (chainHistory == null) {
             return false;
         } else {
             return chainHistory.contains(makeKey(namespace, actionName));
         }
     }
+
     private void addToHistory(String namespace, String actionName) {
         Set chainHistory = (Set) ActionContext.getContext().get(CHAIN_HISTORY);
+
         if (chainHistory == null) {
-        	chainHistory = new HashSet();
-		}
-		ActionContext.getContext().put(CHAIN_HISTORY, chainHistory);
-		
-		chainHistory.add(makeKey(namespace, actionName));
+            chainHistory = new HashSet();
+        }
+
+        ActionContext.getContext().put(CHAIN_HISTORY, chainHistory);
+
+        chainHistory.add(makeKey(namespace, actionName));
     }
-    
+
     private String makeKey(String namespace, String actionName) {
         return namespace + "/" + actionName;
     }

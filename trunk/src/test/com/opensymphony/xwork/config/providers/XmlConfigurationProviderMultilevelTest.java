@@ -10,7 +10,6 @@ import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.interceptor.ParametersInterceptor;
-
 import junit.framework.Assert;
 
 
@@ -54,6 +53,6 @@ public class XmlConfigurationProviderMultilevelTest extends ConfigurationTestBas
         assertTrue(actionConfig.getResults().containsKey("success"));
 
         ResultConfig resultConfig = (ResultConfig) actionConfig.getResults().get("success");
-        assertEquals(ActionChainResult.class, resultConfig.getClazz());
+        assertEquals(ActionChainResult.class.getName(), resultConfig.getClassName());
     }
 }

@@ -7,13 +7,10 @@ package com.opensymphony.xwork.util;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.TestBean;
-
 import junit.framework.TestCase;
 
 import java.io.*;
-
 import java.math.BigDecimal;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,6 +54,11 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals("Rover", vs.findValue("name", String.class));
     }
 
+    public void testCallMethodOnNullObject() {
+        OgnlValueStack stack = new OgnlValueStack();
+        assertNull(stack.findValue("foo.size()"));
+    }
+
     public void testCallMethodThatThrowsExceptionTwice() {
         SimpleAction action = new SimpleAction();
         OgnlValueStack stack = new OgnlValueStack();
@@ -66,11 +68,6 @@ public class OgnlValueStackTest extends TestCase {
         assertNull(stack.findValue("exceptionMethod1()"));
         action.setThrowException(false);
         assertEquals("OK", stack.findValue("exceptionMethod()"));
-    }
-
-    public void testCallMethodOnNullObject() {
-        OgnlValueStack stack = new OgnlValueStack();
-        assertNull(stack.findValue("foo.size()"));
     }
 
     public void testCallMethodWithNullArg() {

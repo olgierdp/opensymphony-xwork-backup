@@ -9,9 +9,9 @@ import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.XWorkConverter;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.HashMap;
 
 
 /**
@@ -20,9 +20,15 @@ import java.util.HashMap;
  * Date: Nov 27, 2003 3:57:06 PM
  */
 public class ConversionErrorInterceptor extends AroundInterceptor {
-    //~ Methods ////////////////////////////////////////////////////////////////
+    //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String ORIGINAL_PROPERTY_OVERRIDE = "original.property.override";
+
+    //~ Methods ////////////////////////////////////////////////////////////////
+
+    protected Object getOverrideExpr(ActionInvocation invocation, Object value) {
+        return "'" + value + "'";
+    }
 
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }
@@ -33,6 +39,7 @@ public class ConversionErrorInterceptor extends AroundInterceptor {
         OgnlValueStack stack = invocationContext.getValueStack();
 
         HashMap fakie = null;
+
         for (Iterator iterator = conversionErrors.entrySet().iterator();
                 iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
@@ -47,6 +54,7 @@ public class ConversionErrorInterceptor extends AroundInterceptor {
                 if (fakie == null) {
                     fakie = new HashMap();
                 }
+
                 fakie.put(propertyName, getOverrideExpr(invocation, value));
             }
         }
@@ -55,18 +63,15 @@ public class ConversionErrorInterceptor extends AroundInterceptor {
             // if there were some errors, put the original (fake) values in place right before the result
             stack.getContext().put(ORIGINAL_PROPERTY_OVERRIDE, fakie);
             invocation.addPreResultListener(new PreResultListener() {
-                public void beforeResult(ActionInvocation invocation, String resultCode) {
-                    Map fakie = (Map) invocation.getInvocationContext().get(ORIGINAL_PROPERTY_OVERRIDE);
-                    if (fakie != null) {
-                        invocation.getStack().setExprOverrides(fakie);
-                    }
-                }
-            });
-        }
-    }
+                    public void beforeResult(ActionInvocation invocation, String resultCode) {
+                        Map fakie = (Map) invocation.getInvocationContext().get(ORIGINAL_PROPERTY_OVERRIDE);
 
-    protected Object getOverrideExpr(ActionInvocation invocation, Object value) {
-        return "'" + value + "'";
+                        if (fakie != null) {
+                            invocation.getStack().setExprOverrides(fakie);
+                        }
+                    }
+                });
+        }
     }
 
     protected boolean shouldAddError(String propertyName, Object value) {

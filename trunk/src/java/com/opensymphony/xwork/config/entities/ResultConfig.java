@@ -18,8 +18,8 @@ import java.util.Map;
 public class ResultConfig implements Parameterizable {
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    private Class clazz;
     private Map params;
+    private String className;
     private String name;
 
     //~ Constructors ///////////////////////////////////////////////////////////
@@ -34,18 +34,24 @@ public class ResultConfig implements Parameterizable {
 
     public ResultConfig(String name, Class clazz, Map params) {
         this.name = name;
-        this.clazz = clazz;
+        this.className = clazz.getName();
+        this.params = params;
+    }
+
+    public ResultConfig(String name, String className, Map params) {
+        this.name = name;
+        this.className = className;
         this.params = params;
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public void setClazz(Class clazz) {
-        this.clazz = clazz;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
-    public Class getClazz() {
-        return clazz;
+    public String getClassName() {
+        return className;
     }
 
     public void setName(String name) {
@@ -83,7 +89,7 @@ public class ResultConfig implements Parameterizable {
 
         final ResultConfig resultConfig = (ResultConfig) o;
 
-        if ((clazz != null) ? (!clazz.equals(resultConfig.clazz)) : (resultConfig.clazz != null)) {
+        if ((className != null) ? (!className.equals(resultConfig.className)) : (resultConfig.className != null)) {
             return false;
         }
 
@@ -101,7 +107,7 @@ public class ResultConfig implements Parameterizable {
     public int hashCode() {
         int result;
         result = ((name != null) ? name.hashCode() : 0);
-        result = (29 * result) + ((clazz != null) ? clazz.hashCode() : 0);
+        result = (29 * result) + ((className != null) ? className.hashCode() : 0);
         result = (29 * result) + ((params != null) ? params.hashCode() : 0);
 
         return result;

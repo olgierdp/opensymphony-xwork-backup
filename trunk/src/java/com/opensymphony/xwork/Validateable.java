@@ -6,7 +6,7 @@ package com.opensymphony.xwork;
 
 
 /**
- * Provides an interface in which a call for a validation check can be done. 
+ * Provides an interface in which a call for a validation check can be done.
  *
  * @author Jason Carreira
  * @see ActionSupport

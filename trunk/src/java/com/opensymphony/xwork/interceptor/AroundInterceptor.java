@@ -5,7 +5,6 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionInvocation;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -46,7 +45,7 @@ public abstract class AroundInterceptor implements Interceptor {
     protected abstract void after(ActionInvocation dispatcher, String result) throws Exception;
 
     /**
-     * Called before the invocation has been executed. 
+     * Called before the invocation has been executed.
      */
     protected abstract void before(ActionInvocation invocation) throws Exception;
 }

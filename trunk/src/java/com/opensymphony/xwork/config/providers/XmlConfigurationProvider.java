@@ -7,41 +7,23 @@ package com.opensymphony.xwork.config.providers;
 import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.util.FileManager;
 import com.opensymphony.util.TextUtils;
-
-import com.opensymphony.xwork.config.Configuration;
-import com.opensymphony.xwork.config.ConfigurationException;
-import com.opensymphony.xwork.config.ConfigurationProvider;
-import com.opensymphony.xwork.config.ConfigurationUtil;
-import com.opensymphony.xwork.config.ExternalReferenceResolver;
-import com.opensymphony.xwork.config.entities.ActionConfig;
-import com.opensymphony.xwork.config.entities.ExternalReference;
-import com.opensymphony.xwork.config.entities.InterceptorConfig;
-import com.opensymphony.xwork.config.entities.InterceptorStackConfig;
-import com.opensymphony.xwork.config.entities.PackageConfig;
-import com.opensymphony.xwork.config.entities.ResultConfig;
-import com.opensymphony.xwork.config.entities.ResultTypeConfig;
-
+import com.opensymphony.xwork.Action;
+import com.opensymphony.xwork.ObjectFactory;
+import com.opensymphony.xwork.config.*;
+import com.opensymphony.xwork.config.entities.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.util.*;
+import org.xml.sax.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 
 /**
@@ -170,11 +152,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         //methodName should be null if it's not set
         methodName = (methodName.trim().length() > 0) ? methodName.trim() : null;
 
-        Class clazz = null;
-
         try {
-            clazz = ClassLoaderUtil.loadClass(className, XmlConfigurationProvider.class);
-        } catch (ClassNotFoundException e) {
+            ActionConfig actionConfig = new ActionConfig(null, className, null, null, null);
+            Action action = ObjectFactory.getObjectFactory().buildAction(actionConfig);
+        } catch (Exception e) { // TODO: Not pretty
             LOG.error("Action class [" + className + "] not found, skipping action [" + name + "]", e);
 
             return;
@@ -194,7 +175,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         List externalrefs = buildExternalRefs(actionElement, packageContext);
 
-        ActionConfig actionConfig = new ActionConfig(methodName, clazz, actionParams, results, interceptorList, externalrefs, packageContext.getName());
+        ActionConfig actionConfig = new ActionConfig(methodName, className, actionParams, results, interceptorList, externalrefs, packageContext.getName());
         packageContext.addActionConfig(name, actionConfig);
 
         if (LOG.isDebugEnabled()) {
@@ -487,16 +468,19 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             String className = interceptorElement.getAttribute("class");
             Class clazz = null;
 
+            Map params = XmlHelper.getParams(interceptorElement);
+            InterceptorConfig config = null;
+
             try {
-                clazz = ClassLoaderUtil.loadClass(className, XmlConfigurationProvider.class);
-            } catch (ClassNotFoundException e) {
+                config = new InterceptorConfig(name, className, params);
+                ObjectFactory.getObjectFactory().buildInterceptor(config, new HashMap());
+                context.addInterceptorConfig(config);
+            } catch (ConfigurationException e) {
                 String s = "Unable to load class " + className + " for interceptor name " + name + ". This interceptor will not be available.";
                 LOG.error(s);
-                throw new ConfigurationException(s, e);
+                throw e;
             }
 
-            Map params = XmlHelper.getParams(interceptorElement);
-            InterceptorConfig config = new InterceptorConfig(name, clazz, params);
             context.addInterceptorConfig(config);
         }
 

@@ -18,8 +18,8 @@ import java.util.Map;
 public class InterceptorConfig implements Parameterizable {
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    Class clazz;
     Map params;
+    String className;
     String name;
 
     //~ Constructors ///////////////////////////////////////////////////////////
@@ -29,18 +29,24 @@ public class InterceptorConfig implements Parameterizable {
 
     public InterceptorConfig(String name, Class clazz, Map params) {
         this.name = name;
-        this.clazz = clazz;
+        this.className = clazz.getName();
+        this.params = params;
+    }
+
+    public InterceptorConfig(String name, String className, Map params) {
+        this.name = name;
+        this.className = className;
         this.params = params;
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public void setClazz(Class clazz) {
-        this.clazz = clazz;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
-    public Class getClazz() {
-        return clazz;
+    public String getClassName() {
+        return className;
     }
 
     public void setName(String name) {
@@ -78,7 +84,7 @@ public class InterceptorConfig implements Parameterizable {
 
         final InterceptorConfig interceptorConfig = (InterceptorConfig) o;
 
-        if ((clazz != null) ? (!clazz.equals(interceptorConfig.clazz)) : (interceptorConfig.clazz != null)) {
+        if ((className != null) ? (!className.equals(interceptorConfig.className)) : (interceptorConfig.className != null)) {
             return false;
         }
 
@@ -96,7 +102,7 @@ public class InterceptorConfig implements Parameterizable {
     public int hashCode() {
         int result;
         result = ((name != null) ? name.hashCode() : 0);
-        result = (29 * result) + ((clazz != null) ? clazz.hashCode() : 0);
+        result = (29 * result) + ((className != null) ? className.hashCode() : 0);
         result = (29 * result) + ((params != null) ? params.hashCode() : 0);
 
         return result;

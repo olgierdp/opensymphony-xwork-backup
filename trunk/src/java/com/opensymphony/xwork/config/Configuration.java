@@ -20,6 +20,8 @@ import java.util.Set;
 public interface Configuration {
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    public void rebuildRuntimeConfiguration();
+
     PackageConfig getPackageConfig(String name);
 
     Set getPackageConfigNames();
@@ -27,25 +29,23 @@ public interface Configuration {
     Map getPackageConfigs();
 
     /**
-     * the current runtime configuration.  currently, if changes have been made to the Configuration since the last
-     * time buildRuntimeConfiguration() was called, you'll need to make sure to
-     * @return
-     */
+ * the current runtime configuration.  currently, if changes have been made to the Configuration since the last
+ * time buildRuntimeConfiguration() was called, you'll need to make sure to
+ * @return
+ */
     RuntimeConfiguration getRuntimeConfiguration();
 
     void addPackageConfig(String name, PackageConfig packageConfig);
 
     /**
-     * allow the Configuration to clean up any resources that have been used
-     */
+ * allow the Configuration to clean up any resources that have been used
+ */
     void destroy();
 
     /**
-     * @throws ConfigurationException
-     */
+ * @throws ConfigurationException
+ */
     void reload() throws ConfigurationException;
-
-    public void rebuildRuntimeConfiguration();
 
     void removePackageConfig(String name);
 }
