@@ -27,6 +27,7 @@ public class OgnlValueStack implements Serializable {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String VALUE_STACK = "com.opensymphony.xwork.util.OgnlValueStack.ValueStack";
+    public static final String REPORT_ERRORS_ON_NO_PROP = "com.opensymphony.xwork.util.OgnlValueStack.ReportErrorsOnNoProp";
     private static CompoundRootAccessor accessor;
 
     static {
@@ -70,13 +71,21 @@ public class OgnlValueStack implements Serializable {
     }
 
     public void setValue(String expr, Object value) {
+        setValue(expr, value, false);
+    }
+
+    public void setValue(String expr, Object value, boolean throwExceptionOnFailure) {
+        Map context = getContext();
+
         try {
-            getContext().put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, expr);
+            context.put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, expr);
+            context.put(REPORT_ERRORS_ON_NO_PROP, new Boolean(throwExceptionOnFailure));
             Ognl.setValue(OgnlUtil.compile(expr), context, root, value);
         } catch (OgnlException e) {
             // ignore
         } finally {
-            getContext().remove(XWorkConverter.CONVERSION_PROPERTY_FULLNAME);
+            context.remove(XWorkConverter.CONVERSION_PROPERTY_FULLNAME);
+            context.remove(REPORT_ERRORS_ON_NO_PROP);
         }
     }
 

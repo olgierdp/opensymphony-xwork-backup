@@ -58,9 +58,13 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
             }
         }
 
-        final String msg = "No object in the CompoundRoot has a property named '" + name + "'.";
-        log.error(msg);
-        throw new RuntimeException(msg);
+        Boolean reportError = (Boolean) context.get(OgnlValueStack.REPORT_ERRORS_ON_NO_PROP);
+
+        if ((reportError != null) && (reportError.booleanValue())) {
+            final String msg = "No object in the CompoundRoot has a property named '" + name + "'.";
+            log.error(msg);
+            throw new RuntimeException(msg);
+        }
     }
 
     public Object getProperty(Map context, Object target, Object name) throws OgnlException {
