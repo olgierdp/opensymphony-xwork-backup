@@ -5,7 +5,10 @@
 package com.opensymphony.xwork.util;
 
 import ognl.Ognl;
+import ognl.OgnlContext;
 import ognl.OgnlException;
+import ognl.OgnlRuntime;
+import ognl.TypeConverter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +38,8 @@ public class OgnlUtil {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-     * Sets the object's properties using the default type converter, defaulting to not throw exceptions for problems setting the properties.
+     * Sets the object's properties using the default type converter, defaulting to not throw
+     * exceptions for problems setting the properties.
      *
      * @param props the properties being set
      * @param o the object
@@ -51,7 +55,8 @@ public class OgnlUtil {
      * @param props the properties being set
      * @param o the object
      * @param context the action context
-     * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for problems setting the properties
+     * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for
+     * problems setting the properties
      */
     public static void setProperties(Map props, Object o, Map context, boolean throwPropertyExceptions) {
         if (props == null) {
@@ -75,7 +80,9 @@ public class OgnlUtil {
     }
 
     /**
-     * Sets the properties on the object using the default context, defaulting to not throwing exceptions for problems setting the properties.
+     * Sets the properties on the object using the default context, defaulting to not throwing
+     * exceptions for problems setting the properties.
+     *
      * @param properties
      * @param o
      */
@@ -84,10 +91,12 @@ public class OgnlUtil {
     }
 
     /**
-     * Sets the properties on the object using the default context
+     * Sets the properties on the object using the default context.
+     *
      * @param properties the property map to set on the object
      * @param o the object to set the properties into
-     * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for problems setting the properties
+     * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for
+     * problems setting the properties
      */
     public static void setProperties(Map properties, Object o, boolean throwPropertyExceptions) {
         Map context = Ognl.createDefaultContext(o);
@@ -95,7 +104,9 @@ public class OgnlUtil {
     }
 
     /**
-     * Sets the named property to the supplied value on the Object, defaults to not throwing property exceptions
+     * Sets the named property to the supplied value on the Object, defaults to not throwing
+     * property exceptions.
+     *
      * @param name the name of the property to be set
      * @param value the value to set into the named property
      * @param o the object upon which to set the property
@@ -106,12 +117,14 @@ public class OgnlUtil {
     }
 
     /**
-     * Sets the named property to the supplied value on the Object
+     * Sets the named property to the supplied value on the Object.
+     *
      * @param name the name of the property to be set
      * @param value the value to set into the named property
      * @param o the object upon which to set the property
      * @param context the context which may include the TypeConverter
-     * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for problems setting the property
+     * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for
+     * problems setting the property
      */
     public static void setProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
         Ognl.setTypeConverter(context, XWorkConverter.getInstance());
@@ -122,6 +135,57 @@ public class OgnlUtil {
         internalSetProperty(name, value, o, context, throwPropertyExceptions);
 
         Ognl.setRoot(context, oldRoot);
+    }
+
+    /**
+     * Looks for the real target with the specified property given a root Object which may be a
+     * CompoundRoot.
+     *
+     * @return the real target or null if no object can be found with the specified property
+     */
+    public static Object getRealTarget(String property, Map context, Object root) throws OgnlException {
+        if (root instanceof CompoundRoot) {
+            // find real target
+            CompoundRoot cr = (CompoundRoot) root;
+
+            try {
+                for (Iterator iterator = cr.iterator(); iterator.hasNext();) {
+                    Object target = iterator.next();
+
+                    if (OgnlRuntime.hasSetProperty((OgnlContext) context, target, property)) {
+                        return target;
+                    }
+                }
+            } catch (IntrospectionException ex) {
+                throw new OgnlException("Cannot figure out real target class", ex);
+            }
+
+            return null;
+        }
+
+        return root;
+    }
+
+    /**
+     * Wrapper around Ognl.setValue() to handle type conversion for collection elements.
+     * Ideally, this should be handled by OGNL directly.
+     */
+    public static void setValue(String name, Map context, Object root, Object value) throws OgnlException {
+        if (name.endsWith("]")) {
+            String property = name.substring(0, name.lastIndexOf("["));
+            Object target = getRealTarget(property, context, root);
+
+            if (target != null) {
+                Class memberType = (Class) XWorkConverter.getInstance().getConverter(target.getClass(), XWorkConverter.CONVERSION_COLLECTION_PREFIX + property);
+
+                if (memberType != null) {
+                    TypeConverter converter = Ognl.getTypeConverter(context);
+                    value = converter.convertValue(context, target, null, property, value, memberType);
+                }
+            }
+        }
+
+        Ognl.setValue(compile(name), context, root, value);
     }
 
     public static Object compile(String expression) throws OgnlException {
@@ -137,7 +201,8 @@ public class OgnlUtil {
 
     /**
      * Copies the properties in the object "from" and sets them in the object "to"
-     * using specified type converter, or {@link com.opensymphony.xwork.util.XWorkConverter} if none is specified.
+     * using specified type converter, or {@link com.opensymphony.xwork.util.XWorkConverter} if none
+     * is specified.
      *
      * @param from the source object
      * @param to the target object
@@ -192,7 +257,7 @@ public class OgnlUtil {
 
     static void internalSetProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
         try {
-            Ognl.setValue(compile(name), context, o, value);
+            setValue(name, context, o, value);
         } catch (OgnlException e) {
             Throwable reason = e.getReason();
             String msg = "Caught OgnlException while setting property '" + name + "' on type '" + o.getClass().getName() + "'.";

@@ -37,6 +37,7 @@ public class XWorkConverter extends DefaultTypeConverter {
     public static final String REPORT_CONVERSION_ERRORS = "report.conversion.errors";
     public static final String CONVERSION_PROPERTY_FULLNAME = "conversion.property.fullName";
     public static final String CONVERSION_ERROR_PROPERTY_PREFIX = "invalid.fieldvalue.";
+    public static final String CONVERSION_COLLECTION_PREFIX = "Collection_";
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
@@ -342,7 +343,7 @@ public class XWorkConverter extends DefaultTypeConverter {
                         break;
                     }
 
-                    if (!key.startsWith("Collection_")) {
+                    if (!key.startsWith(XWorkConverter.CONVERSION_COLLECTION_PREFIX)) {
                         mapping.put(key, createTypeConverter((String) entry.getValue()));
                     } else {
                         mapping.put(key, Thread.currentThread().getContextClassLoader().loadClass((String) entry.getValue()));

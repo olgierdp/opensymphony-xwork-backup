@@ -8,14 +8,12 @@ import com.opensymphony.xwork.ObjectFactory;
 
 import ognl.NullHandler;
 import ognl.Ognl;
-import ognl.OgnlContext;
 import ognl.OgnlRuntime;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -66,24 +64,12 @@ public class InstantiatingNullHandler implements NullHandler {
         }
 
         try {
+            String propName = property.toString();
+            Object realTarget = OgnlUtil.getRealTarget(propName, context, target);
             Class clazz = null;
-            Object realTarget = target;
 
-            // find real target
-            if (target instanceof CompoundRoot) {
-                CompoundRoot root = (CompoundRoot) target;
-
-                for (Iterator iterator = root.iterator(); iterator.hasNext();) {
-                    realTarget = iterator.next();
-
-                    if (OgnlRuntime.hasSetProperty((OgnlContext) context, realTarget, property.toString())) {
-                        clazz = OgnlRuntime.getPropertyDescriptor(realTarget.getClass(), property.toString()).getPropertyType();
-
-                        break;
-                    }
-                }
-            } else {
-                clazz = OgnlRuntime.getPropertyDescriptor(realTarget.getClass(), property.toString()).getPropertyType();
+            if (realTarget != null) {
+                clazz = OgnlRuntime.getPropertyDescriptor(realTarget.getClass(), propName).getPropertyType();
             }
 
             if (clazz == null) {
@@ -91,9 +77,9 @@ public class InstantiatingNullHandler implements NullHandler {
                 return null;
             }
 
-            Object param = createObject(clazz, realTarget, property.toString());
+            Object param = createObject(clazz, realTarget, propName);
 
-            Ognl.setValue(property.toString(), context, realTarget, param);
+            Ognl.setValue(propName, context, realTarget, param);
 
             return param;
         } catch (Exception e) {
@@ -104,7 +90,7 @@ public class InstantiatingNullHandler implements NullHandler {
     }
 
     protected Class getCollectionType(Class clazz, String property) {
-        return (Class) XWorkConverter.getInstance().getConverter(clazz, "Collection_" + property);
+        return (Class) XWorkConverter.getInstance().getConverter(clazz, XWorkConverter.CONVERSION_COLLECTION_PREFIX + property);
     }
 
     private Object createObject(Class clazz, Object target, String property) throws Exception {

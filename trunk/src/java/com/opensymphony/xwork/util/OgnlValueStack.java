@@ -109,8 +109,8 @@ public class OgnlValueStack implements Serializable {
 
         try {
             context.put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, expr);
-            context.put(REPORT_ERRORS_ON_NO_PROP, new Boolean(throwExceptionOnFailure));
-            Ognl.setValue(OgnlUtil.compile(expr), context, root, value);
+            context.put(REPORT_ERRORS_ON_NO_PROP, Boolean.valueOf(throwExceptionOnFailure));
+            OgnlUtil.setValue(expr, context, root, value);
         } catch (OgnlException e) {
             // ignore
         } finally {
