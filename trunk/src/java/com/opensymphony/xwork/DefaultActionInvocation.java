@@ -23,8 +23,10 @@ import java.util.Map;
 
 
 /**
+ * The Default ActionInvocation implementation
  * @author $Author$
  * @version $Revision$
+ * @see com.opensymphony.xwork.DefaultActionProxy
  */
 public class DefaultActionInvocation implements ActionInvocation {
     //~ Static fields/initializers /////////////////////////////////////////////

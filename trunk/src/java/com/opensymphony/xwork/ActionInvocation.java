@@ -11,9 +11,12 @@ import java.io.Serializable;
 
 
 /**
- * ActionInvocation
+ * An ActionInvocation represents the execution state of an Action. It holds the Interceptors and the Action instance.
+ * By repeated re-entrant execution of the invoke() method, initially by the ActionProxy, then by the Interceptors, the
+ * Interceptors are all executed, and then the Action and the Result.
  * @author Jason Carreira
  * Created Jun 9, 2003 11:37:27 AM
+ * @see com.opensymphony.xwork.ActionProxy
  */
 public interface ActionInvocation extends Serializable {
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -24,6 +27,10 @@ public interface ActionInvocation extends Serializable {
     */
     Action getAction();
 
+    /**
+     * @return whether this ActionInvocation has executed before. This will be set after the Action and the Result have
+     * executed.
+     */
     boolean isExecuted();
 
     /**
@@ -34,6 +41,10 @@ public interface ActionInvocation extends Serializable {
     */
     ActionContext getInvocationContext();
 
+    /**
+     * Get the ActionProxy holding this ActionInvocation
+     * @return
+     */
     ActionProxy getProxy();
 
     /**
@@ -52,22 +63,24 @@ public interface ActionInvocation extends Serializable {
     */
     String getResultCode();
 
+    /**
+     * @return the ValueStack associated with this ActionInvocation
+     */
     OgnlValueStack getStack();
 
     /**
-    * Register a com.opensymphony.xwork.interceptor.PreResultListener to be notified after the Action is executed and before the
-    * Result is executed. The ActionInvocation implementation must guarantee that listeners will be called in the order
-    * in which they are registered. Listener registration and execution does not need to be thread-safe.
+    * Register a com.opensymphony.xwork.interceptor.PreResultListener to be notified after the Action is executed and
+    * before the Result is executed. The ActionInvocation implementation must guarantee that listeners will be called in
+    * the order in which they are registered. Listener registration and execution does not need to be thread-safe.
     * @param listener
     */
     void addPreResultListener(PreResultListener listener);
 
     /**
-    * Invokes the next step in processing this ActionInvocation. If there are more
-    * Interceptors, this will call the next one. If Interceptors choose not to short-circuit
-    * ActionInvocation processing and return their own return code, they will call
-    * invoke() to allow the next Interceptor to execute. If there are no more Interceptors
-    * to be applied, the Action is executed.
+    * Invokes the next step in processing this ActionInvocation. If there are more Interceptors, this will call the next
+    * one. If Interceptors choose not to short-circuit ActionInvocation processing and return their own return code,
+    * they will call invoke() to allow the next Interceptor to execute. If there are no more Interceptors to be applied,
+    * the Action is executed. If the ActionProxy getExecuteResult() method returns true, the Result is also executed.
     * @return
     * @throws Exception
     */

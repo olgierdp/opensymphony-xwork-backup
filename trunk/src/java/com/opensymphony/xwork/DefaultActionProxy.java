@@ -17,9 +17,7 @@ import java.util.Map;
 
 
 /**
- * The DefaultActionProxy is an extra layer between XWork and the action so that different proxies are possible.
- *
- * An example of this would be a remote proxy, where the layer between XWork and the action might be RMI or SOAP.
+ * The Default ActionProxy implementation
  *
  * @author $Author$
  * @version $Revision$
