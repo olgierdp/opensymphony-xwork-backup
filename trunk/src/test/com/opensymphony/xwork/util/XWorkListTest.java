@@ -4,9 +4,12 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.test.User;
+
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 
 /**
@@ -36,7 +39,6 @@ public class XWorkListTest extends TestCase {
         assertEquals("1", xworkList.get(3));
         assertEquals("2", xworkList.get(4));
         assertEquals("3", xworkList.get(5));
-
 
         // take 2, no trim
         xworkList = new XWorkList(String.class);
@@ -73,5 +75,23 @@ public class XWorkListTest extends TestCase {
         assertEquals("2", xworkList.get(2));
         assertEquals("3", xworkList.get(3));
         assertEquals("b", xworkList.get(4));
+    }
+
+    public void testSetValue() {
+        OgnlValueStack stack = new OgnlValueStack();
+        Map stackContext = stack.getContext();
+        stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+        stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+        stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+
+        User user = new User();
+        stack.push(user);
+
+        // indexed string
+        stack.setValue("list[1]", "asdf");
+        assertNotNull(user.getList());
+        assertEquals(2, user.getList().size());
+        assertEquals(String.class, user.getList().get(0).getClass());
+        assertEquals("asdf", user.getList().get(1));
     }
 }
