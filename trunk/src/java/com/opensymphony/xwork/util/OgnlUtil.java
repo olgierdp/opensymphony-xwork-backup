@@ -24,8 +24,7 @@ import java.util.Map;
  * Utility class that provides common access to the Ognl APIs for
  * setting and getting properties from objects (usually Actions).
  *
- * @author $Author$
- * @version $Revision$
+ * @author Jason Carreira
  */
 public class OgnlUtil {
     //~ Static fields/initializers /////////////////////////////////////////////
@@ -126,9 +125,7 @@ public class OgnlUtil {
     }
 
     public static Object compile(String expression) throws OgnlException {
-        Object o = null;
-
-        o = expressions.get(expression);
+        Object o = expressions.get(expression);
 
         if (o == null) {
             o = Ognl.parseExpression(expression);
@@ -153,27 +150,42 @@ public class OgnlUtil {
         Map contextTo = Ognl.createDefaultContext(to);
         Ognl.setTypeConverter(contextTo, XWorkConverter.getInstance());
 
-        BeanInfo beanInfoFrom = null;
+        BeanInfo beanInfoFrom;
+        BeanInfo beanInfoTo;
 
         try {
             beanInfoFrom = Introspector.getBeanInfo(from.getClass(), Object.class);
+            beanInfoTo = Introspector.getBeanInfo(to.getClass(), Object.class);
         } catch (IntrospectionException e) {
             log.error("An error occured", e);
 
             return;
         }
 
-        PropertyDescriptor[] pds = beanInfoFrom.getPropertyDescriptors();
+        PropertyDescriptor[] fromPds = beanInfoFrom.getPropertyDescriptors();
+        PropertyDescriptor[] toPds = beanInfoTo.getPropertyDescriptors();
+        Map toPdHash = new HashMap();
 
-        for (int i = 0; i < pds.length; i++) {
-            PropertyDescriptor pd = pds[i];
+        for (int i = 0; i < toPds.length; i++) {
+            PropertyDescriptor toPd = toPds[i];
+            toPdHash.put(toPd.getName(), toPd);
+        }
 
-            try {
-                Object expr = compile(pd.getName());
-                Object value = Ognl.getValue(expr, contextFrom, from);
-                Ognl.setValue(expr, contextTo, to, value);
-            } catch (OgnlException e) {
-                // ignore, this is OK
+        for (int i = 0; i < fromPds.length; i++) {
+            PropertyDescriptor fromPd = fromPds[i];
+
+            if (fromPd.getReadMethod() != null) {
+                PropertyDescriptor toPd = (PropertyDescriptor) toPdHash.get(fromPd.getName());
+
+                if ((toPd != null) && (toPd.getWriteMethod() != null)) {
+                    try {
+                        Object expr = OgnlUtil.compile(fromPd.getName());
+                        Object value = Ognl.getValue(expr, contextFrom, from);
+                        Ognl.setValue(expr, contextTo, to, value);
+                    } catch (OgnlException e) {
+                        // ignore, this is OK
+                    }
+                }
             }
         }
     }
