@@ -5,8 +5,7 @@
 package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.util.LocalizedTextUtil;
-
-import java.io.Serializable;
+import com.opensymphony.xwork.util.OgnlValueStack;
 
 import java.util.List;
 import java.util.Locale;
@@ -118,6 +117,28 @@ public class TextProviderSupport implements TextProvider {
             return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), defaultValue, argsArray);
         } else {
             return LocalizedTextUtil.findText(bundle, aTextName, getLocale(), defaultValue, argsArray);
+        }
+    }
+
+    /**
+     * Gets a message based on a key using the supplied args, as defined in
+     * {@link java.text.MessageFormat}, or, if the message is not found, a supplied
+     * default value is returned. Instead of using the value stack in the ActionContext
+     * this version of the getText() method uses the provided value stack.
+     *
+     * @param aTextName   the resource bundle key that is to be searched for
+     * @param defaultValue the default value which will be returned if no message is found
+     * @param args         a list args to be used in a {@link java.text.MessageFormat} message
+     * @param stack        the value stack to use for finding the text
+     * @return the message as found in the resource bundle, or defaultValue if none is found
+     */
+    public String getText(String aTextName, String defaultValue, List args, OgnlValueStack stack) {
+        Object[] argsArray = ((args != null) ? args.toArray() : null);
+
+        if (clazz != null) {
+            return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), defaultValue, argsArray, stack);
+        } else {
+            return LocalizedTextUtil.findText(bundle, aTextName, getLocale(), defaultValue, argsArray, stack);
         }
     }
 

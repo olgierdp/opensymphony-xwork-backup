@@ -171,8 +171,52 @@ public class LocalizedTextUtil {
      * @return the localized text, or null if none can be found and no defaultMessage is provided
      */
     public static String findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args) {
-        ActionContext context = ActionContext.getContext();
-        OgnlValueStack valueStack = context.getValueStack();
+        OgnlValueStack valueStack = ActionContext.getContext().getValueStack();
+        return findText(aClass, aTextName, locale, defaultMessage, args, valueStack);
+
+    }
+
+    /**
+     * Finds a localized text message for the given key, aTextName. Both the key and the message
+     * itself is evaluated as required.  The following algorithm is used to find the requested
+     * message:
+     * <p />
+     * <ol>
+     * <li>Look for message in aClass' class hierarchy.
+     * <ol>
+     * <li>Look for the message in a resource bundle for aClass</li>
+     * <li>If not found, look for the message in a resource bundle for any implemented interface</li>
+     * <li>If not found, traverse up the Class' hierarchy and repeat from the first sub-step</li>
+     * </ol></li>
+     * <li>If not found and aClass is a {@link ModelDriven} Action, then look for message in
+     * the model's class hierarchy (repeat sub-steps listed above).</li>
+     * <li>If not found, look for message in child property.  This is determined by evaluating
+     * the message key as an OGNL expression.  For example, if the key is
+     * <i>user.address.state</i>, then it will attempt to see if "user" can be resolved into an
+     * object.  If so, repeat the entire process fromthe beginning with the object's class as
+     * aClass and "address.state" as the message key.</li>
+     * <li>If not found, look for the message in aClass' package hierarchy.</li>
+     * <li>If still not found, look for the message in the default resource bundles.</li>
+     * <li>Return defaultMessage</li>
+     * </ol>
+     * <p />
+     * When looking for the message, if the key indexes a collection (e.g. user.phone[0]) and a
+     * message for that specific key cannot be found, the general form will also be looked up
+     * (i.e. user.phone[*]).
+     * <p />
+     * If a message is found, it will also be interpolated.  Anything within <code>${...}</code>
+     * will be treated as an OGNL expression and evaluated as such.
+     *
+     * @param aClass         the class whose name to use as the start point for the search
+     * @param aTextName      the key to find the text message for
+     * @param locale         the locale the message should be for
+     * @param defaultMessage the message to be returned if no text message can be found in any
+     *                       resource bundle
+     * @param valueStack the value stack to use to evaluate expressions instead of the
+     * one in the ActionContext ThreadLocal
+     * @return the localized text, or null if none can be found and no defaultMessage is provided
+     */
+    public static String findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args, OgnlValueStack valueStack) {
         String indexedTextName = null;
         if (aTextName == null) {
             LOG.warn("Trying to find text with null key!");
@@ -200,6 +244,7 @@ public class LocalizedTextUtil {
         }
 
         if (ModelDriven.class.isAssignableFrom(aClass)) {
+            ActionContext context = ActionContext.getContext();
             // search up model's class hierarchy
             ActionInvocation actionInvocation = context.getActionInvocation();
 
@@ -311,6 +356,11 @@ public class LocalizedTextUtil {
     public static String findText(ResourceBundle bundle, String aTextName, Locale locale, String defaultMessage, Object[] args) {
         OgnlValueStack valueStack = ActionContext.getContext().getValueStack();
 
+        return findText(bundle, aTextName, locale, defaultMessage, args, valueStack);
+
+    }
+
+    public static String findText(ResourceBundle bundle, String aTextName, Locale locale, String defaultMessage, Object[] args, OgnlValueStack valueStack) {
         try {
             reloadBundles(bundle);
 

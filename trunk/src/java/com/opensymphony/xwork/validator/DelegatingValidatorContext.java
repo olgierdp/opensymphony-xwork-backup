@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.*;
+import com.opensymphony.xwork.util.OgnlValueStack;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -114,6 +115,10 @@ public class DelegatingValidatorContext implements ValidatorContext {
 
     public ResourceBundle getTexts(String aBundleName) {
         return textProvider.getTexts(aBundleName);
+    }
+
+    public String getText(String key, String defaultValue, List args, OgnlValueStack stack) {
+        return textProvider.getText(key,defaultValue,args,stack);
     }
 
     public ResourceBundle getTexts() {

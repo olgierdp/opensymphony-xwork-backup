@@ -4,11 +4,11 @@
  */
 package com.opensymphony.xwork;
 
+import com.opensymphony.xwork.util.OgnlValueStack;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.Serializable;
-
 import java.util.*;
 
 
@@ -91,6 +91,10 @@ public class ActionSupport implements Action, Serializable, Validateable, Valida
 
     public ResourceBundle getTexts(String aBundleName) {
         return textProvider.getTexts(aBundleName);
+    }
+
+    public String getText(String key, String defaultValue, List args, OgnlValueStack stack) {
+        return textProvider.getText(key,defaultValue,args,stack);
     }
 
     public ResourceBundle getTexts() {

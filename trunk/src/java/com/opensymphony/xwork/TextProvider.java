@@ -4,8 +4,9 @@
  */
 package com.opensymphony.xwork;
 
+import com.opensymphony.xwork.util.OgnlValueStack;
+
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 
@@ -69,6 +70,20 @@ public interface TextProvider {
      * @return the message as found in the resource bundle, or defaultValue if none is found
      */
     String getText(String key, String defaultValue, List args);
+
+     /**
+     * Gets a message based on a key using the supplied args, as defined in
+     * {@link java.text.MessageFormat}, or, if the message is not found, a supplied
+     * default value is returned. Instead of using the value stack in the ActionContext
+     * this version of the getText() method uses the provided value stack.
+     *
+     * @param key the resource bundle key that is to be searched for
+     * @param defaultValue the default value which will be returned if no message is found
+     * @param args a list args to be used in a {@link java.text.MessageFormat} message
+     * @param stack the value stack to use for finding the text
+     * @return the message as found in the resource bundle, or defaultValue if none is found
+     */
+    String getText(String key, String defaultValue, List args, OgnlValueStack stack);
 
     /**
     * Get the named bundle, such as "com/acme/Foo".
