@@ -33,6 +33,7 @@ public class LocalizedTextUtil {
     private static final Log LOG = LogFactory.getLog(LocalizedTextUtil.class);
     private static boolean reloadBundles = false;
     private static Collection misses = new HashSet();
+    private static final Map messageFormats = new HashMap();
 
     static {
         clearDefaultResourceBundles();
@@ -69,27 +70,24 @@ public class LocalizedTextUtil {
      * @throws MissingResourceException if no message can be found for the specified key
      */
     public static String findDefaultText(String aTextName, Locale locale) throws MissingResourceException {
-        MissingResourceException e = null;
-        List localList = new ArrayList(DEFAULT_RESOURCE_BUNDLES);
+        //List localList = new ArrayList(DEFAULT_RESOURCE_BUNDLES);
+        List localList = DEFAULT_RESOURCE_BUNDLES; // it isn't sync'd, but this is so rare, let's do it anyway
 
         for (Iterator iterator = localList.iterator(); iterator.hasNext();) {
             String bundleName = (String) iterator.next();
 
-            try {
-                ResourceBundle bundle = findResourceBundle(bundleName, locale);
+            ResourceBundle bundle = findResourceBundle(bundleName, locale);
+            if (bundle != null) {
                 reloadBundles(bundle);
-
-                return bundle.getString(aTextName);
-            } catch (MissingResourceException ex) {
-                e = ex;
+                try {
+                    return bundle.getString(aTextName);
+                } catch (MissingResourceException e) {
+                    // ignore and try others
+                }
             }
         }
 
-        if (e == null) {
-            e = new MissingResourceException("Unable to find text for key " + aTextName, LocalizedTextUtil.class.getName(), aTextName);
-        }
-
-        throw e;
+        return null;
     }
 
     /**
@@ -377,13 +375,7 @@ public class LocalizedTextUtil {
      */
     private static String getDefaultMessage(String key, Locale locale, OgnlValueStack valueStack, Object[] args, String defaultMessage) {
         if (key != null) {
-            String message = null;
-
-            try {
-                message = findDefaultText(key, locale);
-            } catch (MissingResourceException ex) {
-                //ignore
-            }
+            String message = findDefaultText(key, locale);
 
             if (message == null) {
                 if (LOG.isDebugEnabled()) {
@@ -425,9 +417,14 @@ public class LocalizedTextUtil {
     }
 
     private static MessageFormat buildMessageFormat(String pattern, Locale locale) {
-        MessageFormat format = new MessageFormat("");
-        format.setLocale(locale);
-        format.applyPattern(pattern);
+        MessageFormatKey key = new MessageFormatKey(pattern, locale);
+        MessageFormat format = (MessageFormat) messageFormats.get(key);
+        if (format == null) {
+            synchronized(messageFormats) {
+                format = new MessageFormat(pattern, locale);
+                messageFormats.put(key, format);
+            }
+        }
 
         return format;
     }
@@ -510,6 +507,35 @@ public class LocalizedTextUtil {
             } catch (Exception e) {
                 LOG.error("Could not reload resource bundles", e);
             }
+        }
+    }
+
+    static class MessageFormatKey {
+        String pattern;
+        Locale locale;
+
+        public MessageFormatKey(String pattern, Locale locale) {
+            this.pattern = pattern;
+            this.locale = locale;
+        }
+
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof MessageFormatKey)) return false;
+
+            final MessageFormatKey messageFormatKey = (MessageFormatKey) o;
+
+            if (locale != null ? !locale.equals(messageFormatKey.locale) : messageFormatKey.locale != null) return false;
+            if (pattern != null ? !pattern.equals(messageFormatKey.pattern) : messageFormatKey.pattern != null) return false;
+
+            return true;
+        }
+
+        public int hashCode() {
+            int result;
+            result = (pattern != null ? pattern.hashCode() : 0);
+            result = 29 * result + (locale != null ? locale.hashCode() : 0);
+            return result;
         }
     }
 }

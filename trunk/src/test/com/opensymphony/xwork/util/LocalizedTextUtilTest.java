@@ -76,21 +76,13 @@ public class LocalizedTextUtilTest extends TestCase {
     }
 
     public void testAddDefaultResourceBundle() {
-        try {
-            LocalizedTextUtil.findDefaultText("foo.range", Locale.getDefault());
-            fail("Found message when it should not be available.");
-        } catch (MissingResourceException e) {
-        }
+        String text = LocalizedTextUtil.findDefaultText("foo.range", Locale.getDefault());
+        assertNull("Found message when it should not be available.", null);
 
         LocalizedTextUtil.addDefaultResourceBundle("com/opensymphony/xwork/SimpleAction");
 
-        try {
-            String message = LocalizedTextUtil.findDefaultText("foo.range", Locale.US);
-            assertEquals("Foo Range Message", message);
-        } catch (MissingResourceException e) {
-            e.printStackTrace();
-            fail();
-        }
+        String message = LocalizedTextUtil.findDefaultText("foo.range", Locale.US);
+        assertEquals("Foo Range Message", message);
     }
 
     public void testAddDefaultResourceBundle2() {

@@ -219,12 +219,7 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     protected Object getConverter(Class clazz, String property) {
-        // we synchronize on the class's string representation rather than the
-        // class itself since it is possible (though rare) to have two different
-        // class instances through the use of wacky classloaders. This sync
-        // prevents multiple requests from causes configuration to be loaded
-        // multiple times.
-        synchronized(clazz.toString().intern()) {
+        synchronized(clazz) {
         if ((property != null) && !noMapping.contains(clazz)) {
                 try {
                     Map mapping = (Map) mappings.get(clazz);
