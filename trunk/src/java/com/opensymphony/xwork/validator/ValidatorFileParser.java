@@ -43,7 +43,7 @@ public class ValidatorFileParser {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public static List parseActionValidatorConfigs(InputStream is) {
+    public static List parseActionValidatorConfigs(InputStream is, final String resourceName) {
         List validatorCfgs = new ArrayList();
         Document doc = null;
 
@@ -68,20 +68,20 @@ public class ValidatorFileParser {
                 });
             builder.setErrorHandler(new ErrorHandler() {
                     public void warning(SAXParseException exception) throws SAXException {
-                        log.warn(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
+                        log.warn(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + " of '" + resourceName + "')");
                     }
 
                     public void error(SAXParseException exception) throws SAXException {
-                        log.error(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
+                        log.error(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + " of '" + resourceName + "')");
                     }
 
                     public void fatalError(SAXParseException exception) throws SAXException {
-                        log.fatal(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
+                        log.fatal(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + " of '" + resourceName + "')");
                     }
                 });
             doc = builder.parse(is);
         } catch (Exception e) {
-            log.fatal("Caught exception while attempting to load validation configuration file.", e);
+            log.fatal("Caught exception while attempting to load validation configuration file '" + resourceName + "'.", e);
         }
 
         if (doc != null) {

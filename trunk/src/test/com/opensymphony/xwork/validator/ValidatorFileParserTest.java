@@ -11,7 +11,6 @@ import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 
 import junit.framework.TestCase;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.List;
@@ -28,10 +27,12 @@ import java.util.List;
 public class ValidatorFileParserTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    private static final String testFileName = "com/opensymphony/xwork/validator/validator-parser-test.xml";
+    
     public void testParser() {
-        InputStream is = ClassLoaderUtil.getResourceAsStream("com/opensymphony/xwork/validator/validator-parser-test.xml", this.getClass());
+        InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName, this.getClass());
 
-        List configs = ValidatorFileParser.parseActionValidatorConfigs(is);
+        List configs = ValidatorFileParser.parseActionValidatorConfigs(is, testFileName);
         
         assertNotNull(configs);
         assertEquals(5, configs.size());

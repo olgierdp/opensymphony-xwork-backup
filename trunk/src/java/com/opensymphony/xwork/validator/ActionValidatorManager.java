@@ -300,7 +300,7 @@ public class ActionValidatorManager {
                 is = FileManager.loadFile(fileName, clazz);
 
                 if (is != null) {
-                    retList = new ArrayList(ValidatorFileParser.parseActionValidatorConfigs(is));
+                    retList = new ArrayList(ValidatorFileParser.parseActionValidatorConfigs(is, fileName));
                 }
             } catch (Exception e) {
                 LOG.error("Caught exception while loading file " + fileName, e);
