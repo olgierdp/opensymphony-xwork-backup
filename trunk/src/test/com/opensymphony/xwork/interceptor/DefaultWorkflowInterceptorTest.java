@@ -54,6 +54,12 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         interceptor = new DefaultWorkflowInterceptor();
     }
 
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        actionMock.verify();
+        invocationMock.verify();
+    }
+
     //~ Inner Interfaces ///////////////////////////////////////////////////////
 
     private interface ValidateAction extends Action, Validateable, ValidationAware {
