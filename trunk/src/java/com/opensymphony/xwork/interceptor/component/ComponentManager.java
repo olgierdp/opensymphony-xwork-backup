@@ -13,7 +13,7 @@ package com.opensymphony.xwork.interceptor.component;
 public interface ComponentManager {
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    String COMPONENT_MANAGER_KEY = "XWorkComponentManager";
+    String COMPONENT_MANAGER_KEY = "DefaultComponentManager";
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
