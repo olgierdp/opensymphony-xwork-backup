@@ -68,6 +68,38 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         //        }
     }
 
+    public Object getComponent(Class enablerType) {
+        DefaultComponentManager dcm = this;
+
+        // loop all the DCMs and get the one that holds this enabler
+        Class resource = null;
+        while (dcm != null) {
+            resource = (Class) dcm.enablers.get(enablerType);
+
+            if (resource != null) {
+                break;
+            }
+
+            dcm = dcm.fallback;
+        }
+
+        if (resource == null)
+        {
+            // this is an unknown resource, return null;
+            return null;
+        }
+
+        // now that we have the DCM and the resource class, we can set it up
+        try {
+            ResourceEnablerPair pair = setupAndOptionallyCreateResource(dcm, resource);
+            return pair.resource;
+        } catch (Exception e) {
+            String message = "Could not load resource with enabler " + enablerType;
+            log.error(message, e);
+            throw new RuntimeException(message);
+        }
+    }
+
     private Map getResourceDependencies(Class resourceClass) {
         List interfaces = new ArrayList();
         addAllInterfaces(resourceClass, interfaces);
@@ -118,14 +150,8 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
                 DefaultComponentManager newDcm = (DefaultComponentManager) mapEntry.getValue();
 
                 try {
-                    Object newResource = newDcm.resourceInstances.get(depResource);
-
-                    if (newResource == null) {
-                        newResource = ObjectFactory.getObjectFactory().buildBean(depResource);
-                    }
-
-                    Class enabler = loadResource(newResource, depResource, newDcm);
-                    setupResource(resource, enabler, newResource);
+                    ResourceEnablerPair pair = setupAndOptionallyCreateResource(newDcm, depResource);
+                    setupResource(resource, pair.enabler, pair.resource);
                 } catch (Exception e) {
                     e.printStackTrace();
 
@@ -152,6 +178,20 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         return enabler;
     }
 
+    private ResourceEnablerPair setupAndOptionallyCreateResource(DefaultComponentManager newDcm, Class depResource) throws Exception {
+        ResourceEnablerPair pair = new ResourceEnablerPair();
+        Object newResource = newDcm.resourceInstances.get(depResource);
+
+        if (newResource == null) {
+            newResource = ObjectFactory.getObjectFactory().buildBean(depResource);
+        }
+        pair.resource = newResource;
+
+        Class enabler = loadResource(newResource, depResource, newDcm);
+        pair.enabler = enabler;
+        return pair;
+    }
+
     private void setupResource(Object resource, Class enabler, Object newResource) {
         if (enabler == null) {
             return;
@@ -166,5 +206,10 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
                 log.debug("Error invoking method for resource: " + resource.getClass().getName(), e);
             }
         }
+    }
+
+    class ResourceEnablerPair {
+        Class enabler;
+        Object resource;
     }
 }

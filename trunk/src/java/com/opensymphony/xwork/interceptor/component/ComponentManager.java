@@ -20,4 +20,6 @@ public interface ComponentManager {
     void dispose();
 
     void initializeObject(Object obj);
+
+    Object getComponent(Class enablerType);
 }

@@ -64,5 +64,9 @@ public class ComponentConfigurationTest extends TestCase {
         public void initializeObject(Object component) {
             initialized.add(component);
         }
+
+        public Object getComponent(Class enablerType) {
+            return null;
+        }
     }
 }
