@@ -39,6 +39,11 @@
                 <param name="expectedFoo">foo123</param>
             </interceptor-ref>
         </action>
+
+        <action name="TestModelDrivenValidation" class="com.opensymphony.xwork.ModelDrivenAction">
+            <interceptor-ref name="defaultStack"/>
+            <interceptor-ref name="validation"/>
+        </action>
     </package>
 
     <package name="bar" extends="default" namespace="/foo/bar">

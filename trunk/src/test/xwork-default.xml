@@ -17,6 +17,7 @@
             <interceptor name="static-params" class="com.opensymphony.xwork.interceptor.StaticParametersInterceptor"/>
             <interceptor name="model-driven" class="com.opensymphony.xwork.interceptor.ModelDrivenInterceptor"/>
             <interceptor name="component" class="com.opensymphony.xwork.interceptor.component.ComponentInterceptor"/>
+            <interceptor name="validation" class="com.opensymphony.xwork.validator.ValidationInterceptor"/>
             <interceptor name="test" class="com.opensymphony.xwork.MockInterceptor">
                 <param name="foo">expectedFoo</param>
             </interceptor>

@@ -78,13 +78,22 @@ public abstract class ValidatorSupport implements Validator {
     }
 
     protected Object getFieldValue(String name, Object object) throws ValidationException {
-        try {
-            return Ognl.getValue(OgnlUtil.compile(name), Ognl.createDefaultContext(object), object);
-        } catch (OgnlException e) {
-            final String msg = "Caught exception while getting value for field " + name;
-            log.error(msg, e);
-            throw new ValidationException(msg);
+        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+
+        boolean pop = false;
+
+        if (!stack.getRoot().contains(object)) {
+            stack.push(object);
+            pop = true;
         }
+
+        Object retVal = stack.findValue(name);
+
+        if (pop) {
+            stack.pop();
+        }
+
+        return retVal;
     }
 
     protected void addActionError(Object object) {

@@ -38,6 +38,9 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
     public void validate(Object object) throws ValidationException {
         String fieldName = getFieldName();
         Object value = this.getFieldValue(fieldName, object);
+        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        stack.push(object);
+
         String visitorContext = (context == null) ? ActionContext.getContext().getName() : context;
 
         if (value == null) {
@@ -61,6 +64,8 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         } else {
             validateObject(fieldName, value, visitorContext);
         }
+
+        stack.pop();
     }
 
     private void validateObject(String fieldName, Object o, String visitorContext) throws ValidationException {

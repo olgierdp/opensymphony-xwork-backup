@@ -34,8 +34,7 @@ public class FieldExpressionValidator extends FieldValidatorSupport {
         String fieldName = getFieldName();
 
         Boolean answer = Boolean.FALSE;
-        OgnlValueStack stack = ActionContext.getContext().getValueStack();
-        Object obj = stack.findValue(expression);
+        Object obj = getFieldValue(expression, object);
 
         if ((obj != null) && (obj instanceof Boolean)) {
             answer = (Boolean) obj;
