@@ -20,6 +20,10 @@ import java.util.*;
  * @version $Revision$
  */
 public class ChainingInterceptor extends AroundInterceptor {
+
+    Collection excludes;
+    Collection includes;
+    
     //~ Methods ////////////////////////////////////////////////////////////////
 
     protected void after(ActionInvocation invocation, String result) throws Exception {
@@ -39,9 +43,36 @@ public class ChainingInterceptor extends AroundInterceptor {
             while (iterator.hasNext()) {
                 Object o = iterator.next();
                 if (!(o instanceof Unchainable)) {
-                    OgnlUtil.copy(o, invocation.getAction(), ctxMap);
+                    OgnlUtil.copy(o, invocation.getAction(), ctxMap,excludes, includes);
                 }
             }
         }
+    }
+    
+    
+    /**
+     * @return Returns the exclusions.
+     */
+    public Collection getExcludes() {
+        return excludes;
+    }
+    /**
+     * @param excludes The exclusions to set.
+     */
+    public void setExcludes(Collection excludes) {
+        this.excludes = excludes;
+    }
+    
+    /**
+     * @return Returns the includes.
+     */
+    public Collection getIncludes() {
+        return includes;
+    }
+    /**
+     * @param includes The includes to set.
+     */
+    public void setIncludes(Collection includes) {
+        this.includes = includes;
     }
 }
