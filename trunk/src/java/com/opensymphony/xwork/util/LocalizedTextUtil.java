@@ -417,10 +417,8 @@ public class LocalizedTextUtil {
         MessageFormatKey key = new MessageFormatKey(pattern, locale);
         MessageFormat format = (MessageFormat) messageFormats.get(key);
         if (format == null) {
-            synchronized (messageFormats) {
-                format = new MessageFormat(pattern, locale);
-                messageFormats.put(key, format);
-            }
+            format = new MessageFormat(pattern, locale);
+            messageFormats.put(key, format);
         }
 
         return format;
