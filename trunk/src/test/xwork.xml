@@ -23,6 +23,9 @@
             <interceptor-ref name="defaultStack"/>
         </action>
 
+        <action name="packagelessAction" class="PackagelessAction">
+        </action>
+
         <action name="Bar" class="com.opensymphony.xwork.SimpleAction">
             <param name="foo">17</param>
             <param name="bar">23</param>

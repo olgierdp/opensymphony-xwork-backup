@@ -10,6 +10,8 @@ import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.XWorkMessages;
+import com.opensymphony.xwork.ActionProxyFactory;
+import com.opensymphony.xwork.ActionProxy;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.test.ModelDrivenAction2;
 
@@ -17,6 +19,7 @@ import junit.framework.TestCase;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Collections;
 
 
 /**
@@ -40,6 +43,19 @@ public class LocalizedTextUtilTest extends TestCase {
             String message = LocalizedTextUtil.findDefaultText("foo.range", Locale.US);
             assertEquals("Foo Range Message", message);
         } catch (MissingResourceException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    public void testAddDefaultResourceBundle2() {
+
+        LocalizedTextUtil.addDefaultResourceBundle("com/opensymphony/xwork/SimpleAction");
+
+        try {
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("/", "packagelessAction", Collections.EMPTY_MAP, false);
+            proxy.execute();
+        } catch (Exception e) {
             e.printStackTrace();
             fail();
         }

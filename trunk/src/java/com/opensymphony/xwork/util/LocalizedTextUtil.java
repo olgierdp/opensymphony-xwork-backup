@@ -199,6 +199,8 @@ public class LocalizedTextUtil {
                     String message = TextParseUtil.translateVariables(bundle.getString(aTextName), valueStack);
 
                     return MessageFormat.format(message, args);
+                } else {
+                    clazz = clazz.getSuperclass();
                 }
             } catch (MissingResourceException ex) {
                 clazz = clazz.getSuperclass();
