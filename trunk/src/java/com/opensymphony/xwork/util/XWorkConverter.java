@@ -36,6 +36,7 @@ public class XWorkConverter extends DefaultTypeConverter {
     private static final Log LOG = LogFactory.getLog(XWorkConverter.class);
     public static final String REPORT_CONVERSION_ERRORS = "report.conversion.errors";
     public static final String CONVERSION_PROPERTY_FULLNAME = "conversion.property.fullName";
+    public static final String CONVERSION_ERROR_PROPERTY_PREFIX = "invalid.fieldvalue.";
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
@@ -63,7 +64,7 @@ public class XWorkConverter extends DefaultTypeConverter {
 
     public static String getConversionErrorMessage(String propertyName, OgnlValueStack stack) {
         String defaultMessage = "Invalid field value for field \"" + propertyName + "\".";
-        String getTextExpression = "getText('invalid.fieldvalue." + propertyName + "','" + defaultMessage + "')";
+        String getTextExpression = "getText('" + CONVERSION_ERROR_PROPERTY_PREFIX + propertyName + "','" + defaultMessage + "')";
         String message = (String) stack.findValue(getTextExpression);
 
         if (message == null) {

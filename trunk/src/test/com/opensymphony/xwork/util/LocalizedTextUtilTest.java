@@ -11,9 +11,11 @@ import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.ActionProxy;
 import com.opensymphony.xwork.ActionProxyFactory;
+import com.opensymphony.xwork.ModelDriven;
 import com.opensymphony.xwork.XWorkMessages;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.test.ModelDrivenAction2;
+import com.opensymphony.xwork.test.TestBean2;
 
 import junit.framework.TestCase;
 
@@ -29,6 +31,27 @@ import java.util.MissingResourceException;
  */
 public class LocalizedTextUtilTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
+
+    public void testActionGetText() {
+        try {
+            ModelDrivenAction2 action = new ModelDrivenAction2();
+            TestBean2 bean = (TestBean2) action.getModel();
+            Bar bar = new Bar();
+            bean.setBarObj(bar);
+
+            Mock mockActionInvocation = new Mock(ActionInvocation.class);
+            mockActionInvocation.expectAndReturn("getAction", action);
+            ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
+            ActionContext.getContext().getValueStack().push(action);
+            ActionContext.getContext().getValueStack().push(action.getModel());
+
+            String message = action.getText("barObj.title");
+            assertEquals("Title:", message);
+        } catch (MissingResourceException ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage());
+        }
+    }
 
     public void testAddDefaultResourceBundle() {
         try {
@@ -90,7 +113,28 @@ public class LocalizedTextUtilTest extends TestCase {
         }
     }
 
-    public void testFindText() {
+    public void testFindTextInChildProperty() {
+        try {
+            ModelDriven action = new ModelDrivenAction2();
+            TestBean2 bean = (TestBean2) action.getModel();
+            Bar bar = new Bar();
+            bean.setBarObj(bar);
+
+            Mock mockActionInvocation = new Mock(ActionInvocation.class);
+            mockActionInvocation.expectAndReturn("getAction", action);
+            ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
+            ActionContext.getContext().getValueStack().push(action);
+            ActionContext.getContext().getValueStack().push(action.getModel());
+
+            String message = LocalizedTextUtil.findText(ModelDrivenAction2.class, "invalid.fieldvalue.barObj.title", Locale.getDefault());
+            assertEquals("Title is invalid!", message);
+        } catch (MissingResourceException ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage());
+        }
+    }
+
+    public void testFindTextInInterface() {
         try {
             Action action = new ModelDrivenAction2();
             Mock mockActionInvocation = new Mock(ActionInvocation.class);
@@ -99,6 +143,22 @@ public class LocalizedTextUtilTest extends TestCase {
 
             String message = LocalizedTextUtil.findText(ModelDrivenAction2.class, "test.foo", Locale.getDefault());
             assertEquals("Foo!", message);
+        } catch (MissingResourceException ex) {
+            ex.printStackTrace();
+            fail(ex.getMessage());
+        }
+    }
+
+    public void testFindTextInPackage() {
+        try {
+            ModelDriven action = new ModelDrivenAction2();
+
+            Mock mockActionInvocation = new Mock(ActionInvocation.class);
+            mockActionInvocation.expectAndReturn("getAction", action);
+            ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
+
+            String message = LocalizedTextUtil.findText(ModelDrivenAction2.class, "package.properties", Locale.getDefault());
+            assertEquals("It works!", message);
         } catch (MissingResourceException ex) {
             ex.printStackTrace();
             fail(ex.getMessage());
