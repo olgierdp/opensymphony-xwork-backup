@@ -33,10 +33,20 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    /**
+     * Sets whether the field name of this field validator should be prepended to the field name of
+     * the visited field to determine the full field name when an error occurs.  The default is
+     * true.
+     */
     public void setAppendPrefix(boolean appendPrefix) {
         this.appendPrefix = appendPrefix;
     }
 
+    /**
+     * Flags whether the field name of this field validator should be prepended to the field name of
+     * the visited field to determine the full field name when an error occurs.  The default is
+     * true.
+     */
     public boolean isAppendPrefix() {
         return appendPrefix;
     }
