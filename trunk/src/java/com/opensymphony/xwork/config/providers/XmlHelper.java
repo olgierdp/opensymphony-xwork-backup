@@ -36,8 +36,11 @@ public class XmlHelper {
             if ((childNode.getNodeType() == Node.ELEMENT_NODE) && "param".equals(childNode.getNodeName())) {
                 Element paramElement = (Element) childNode;
                 String paramName = paramElement.getAttribute("name");
-                String paramValue = paramElement.getChildNodes().item(0).getNodeValue();
-                params.put(paramName, paramValue);
+
+                if (paramElement.getChildNodes().item(0) != null) {
+                    String paramValue = paramElement.getChildNodes().item(0).getNodeValue();
+                    params.put(paramName, paramValue);
+                }
             }
         }
 
