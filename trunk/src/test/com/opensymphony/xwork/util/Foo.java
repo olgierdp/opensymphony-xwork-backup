@@ -30,6 +30,7 @@ public class Foo {
     long aLong;
     List cats;
     Map catMap;
+    List strings;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -119,5 +120,13 @@ public class Foo {
 
     public void setCatMap(Map catMap) {
         this.catMap = catMap;
+    }
+
+    public List getStrings() {
+        return strings;
+    }
+
+    public void setStrings(List strings) {
+        this.strings = strings;
     }
 }

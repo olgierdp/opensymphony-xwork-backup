@@ -453,6 +453,18 @@ public class OgnlValueStackTest extends TestCase {
         assertEquals("Deep null cat", ((Cat) ((Cat) foo.getCats().get(0)).getFoo().getCats().get(1)).name);
     }
 
+    public void testConvertStringArrayToList() {
+        Foo foo = new Foo();
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.push(foo);
+
+        vs.setValue("strings", new String[]{"one", "two"});
+
+        assertNotNull(foo.getStrings());
+        assertEquals("one", foo.getStrings().get(0));
+        assertEquals("two", foo.getStrings().get(1));
+    }
+
     public void testSetNullMap() {
         Foo foo = new Foo();
         OgnlValueStack vs = new OgnlValueStack();
