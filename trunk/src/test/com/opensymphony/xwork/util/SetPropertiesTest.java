@@ -12,7 +12,9 @@ import junit.framework.TestCase;
 
 import ognl.Ognl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 
@@ -42,6 +44,41 @@ public class SetPropertiesTest extends TestCase {
         OgnlUtil.setProperties(props, bar, context);
         assertNull(bar.getId());
         assertEquals(0, bar.getFieldErrors().size());
+    }
+
+    public void testSetCollectionByConverterFromArray() {
+        Foo foo = new Foo();
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+
+        XWorkConverter c = (XWorkConverter) Ognl.getTypeConverter(vs.getContext());
+        c.registerConverter(Cat.class.getName(), new FooBarConverter());
+        vs.push(foo);
+
+        vs.setValue("cats", new String[] {"1", "2"});
+        assertNotNull(foo.getCats());
+        assertEquals(2, foo.getCats().size());
+        assertEquals(Cat.class, foo.getCats().get(0).getClass());
+        assertEquals(Cat.class, foo.getCats().get(1).getClass());
+    }
+
+    public void testSetCollectionByConverterFromCollection() {
+        Foo foo = new Foo();
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+
+        XWorkConverter c = (XWorkConverter) Ognl.getTypeConverter(vs.getContext());
+        c.registerConverter(Cat.class.getName(), new FooBarConverter());
+        vs.push(foo);
+
+        HashSet s = new HashSet();
+        s.add("1");
+        s.add("2");
+        vs.setValue("cats", s);
+        assertNotNull(foo.getCats());
+        assertEquals(2, foo.getCats().size());
+        assertEquals(Cat.class, foo.getCats().get(0).getClass());
+        assertEquals(Cat.class, foo.getCats().get(1).getClass());
     }
 
     public void testValueStackSetValueEmptyStringAsLong() {

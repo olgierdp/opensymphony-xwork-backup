@@ -36,21 +36,17 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         if (toType == String.class) {
             result = doConvertToString(context, value);
         } else if (toType == boolean.class) {
-            result = doConvertToBoolean(context, value);
+            result = doConvertToBoolean(value);
         } else if (toType == Boolean.class) {
-            result = doConvertToBoolean(context, value);
+            result = doConvertToBoolean(value);
         } else if (toType.isArray()) {
             result = doConvertToArray(context, o, member, s, value, toType);
         } else if (toType == Date.class) {
             result = doConvertToDate(context, value);
-        } else if (toType == List.class) {
-            result = doConvertToList(context, value);
-        } else if (toType == Set.class) {
-            result = doConvertToSet(context, value);
-        } else if (toType == Collection.class) {
-            result = doConvertToList(context, value);
+        } else if (Collection.class.isAssignableFrom(toType)) {
+            result = doConvertToCollection(context, o, member, s, value, toType);
         } else if (toType == Class.class) {
-            result = doConvertToClass(context, value);
+            result = doConvertToClass(value);
         }
 
         if (result == null) {
@@ -105,7 +101,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return result;
     }
 
-    private Object doConvertToBoolean(Map context, Object value) {
+    private Object doConvertToBoolean(Object value) {
         if (value instanceof String) {
             String bStr = (String) value;
 
@@ -115,7 +111,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return null;
     }
 
-    private Class doConvertToClass(Map context, Object value) {
+    private Class doConvertToClass(Object value) {
         Class clazz = null;
 
         if (value instanceof String) {
@@ -127,6 +123,57 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         }
 
         return clazz;
+    }
+
+    private Collection doConvertToCollection(Map context, Object o, Member member, String prop, Object value, Class toType) {
+        Collection result = null;
+        Class memberType = String.class;
+
+        if (o != null) {
+            memberType = (Class) XWorkConverter.getInstance().getConverter(o.getClass(), "Collection_" + prop);
+
+            if (memberType == null) {
+                memberType = String.class;
+            }
+        }
+
+        if (value instanceof String[]) {
+            String[] sa = (String[]) value;
+
+            if (toType == Set.class) {
+                result = new HashSet(sa.length);
+            } else if (toType == SortedSet.class) {
+                result = new TreeSet();
+            } else {
+                result = new XWorkList(memberType, sa.length);
+            }
+
+            TypeConverter converter = Ognl.getTypeConverter(context);
+
+            for (int i = 0; i < sa.length; i++) {
+                result.add(converter.convertValue(context, o, member, prop, sa[i], memberType));
+            }
+        } else if (toType.isAssignableFrom(value.getClass())) {
+            result = (Collection) value;
+        } else if (Collection.class.isAssignableFrom(value.getClass())) {
+            Collection col = (Collection) value;
+
+            if (toType == Set.class) {
+                result = new HashSet(col.size());
+            } else if (toType == SortedSet.class) {
+                result = new TreeSet();
+            } else {
+                result = new XWorkList(memberType, col.size());
+            }
+
+            TypeConverter converter = Ognl.getTypeConverter(context);
+
+            for (Iterator it = col.iterator(); it.hasNext();) {
+                result.add(converter.convertValue(context, o, member, prop, it.next(), memberType));
+            }
+        }
+
+        return result;
     }
 
     private Object doConvertToDate(Map context, Object value) {
@@ -145,42 +192,6 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             }
         } else if (Date.class.isAssignableFrom(value.getClass())) {
             result = (Date) value;
-        }
-
-        return result;
-    }
-
-    private List doConvertToList(Map context, Object value) {
-        List result = null;
-
-        if (value instanceof String[]) {
-            String[] sa = (String[]) value;
-            result = new ArrayList(sa.length);
-
-            for (int i = 0; i < sa.length; i++) {
-                String s = sa[i];
-                result.add(s);
-            }
-        } else if (List.class.isAssignableFrom(value.getClass())) {
-            result = (List) value;
-        }
-
-        return result;
-    }
-
-    private Object doConvertToSet(Map context, Object value) {
-        Set result = null;
-
-        if (value instanceof String[]) {
-            String[] sa = (String[]) value;
-            result = new HashSet(sa.length);
-
-            for (int i = 0; i < sa.length; i++) {
-                String s = sa[i];
-                result.add(s);
-            }
-        } else if (Set.class.isAssignableFrom(value.getClass())) {
-            result = (Set) value;
         }
 
         return result;

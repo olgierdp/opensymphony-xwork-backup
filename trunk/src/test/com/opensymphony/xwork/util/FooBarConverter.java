@@ -37,6 +37,11 @@ public class FooBarConverter extends DefaultTypeConverter {
             bar.setSomethingElse(Integer.parseInt(rest));
 
             return bar;
+        } else if (toType == Cat.class) {
+            Cat cat = new Cat();
+            cat.setName((String) value);
+
+            return cat;
         }
 
         return null;
