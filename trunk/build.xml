@@ -152,7 +152,9 @@
     <target name="jar" depends="java">
         <mkdir dir="${build}"/>
 
-        <copy todir="${build.java}" file="${src.etc}/*.dtd"/>
+        <copy todir="${build.java}">
+            <fileset dir="${src.etc}" includes="*.dtd"/>
+        </copy>
 
         <jar basedir="${build.java}" jarfile="${build}/${name}-${version}.jar"/>
     </target>
