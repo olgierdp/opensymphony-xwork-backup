@@ -59,6 +59,42 @@ public interface ActionInvocation extends Serializable {
     String getResultCode();
 
     /**
+     * Sets the result code, possibly overriding the one returned by the 
+     * action.
+     * 
+     * <p>
+     * The "intended" purpose of this method is to allow PreResultListeners to
+     * override the result code returned by the Action.  
+     * </p>
+     * 
+     * <p>
+     * If this method is used before the Action executes, the Action's returned
+     * result code will override what was set.  However the Action could (if
+     * specifically coded to do so) inspect the ActionInvocation to see that
+     * someone "upstream" (e.g. an Interceptor) had suggested a value as the
+     * result, and it could therefore return the same value itself.
+     * </p>
+     * 
+     * <p>
+     * If this method is called between the Action execution and the Result 
+     * execution, then the value set here will override the result code the
+     * action had returned.   Creating an Interceptor that implements 
+     * PreResultListener will give you this oportunity.
+     * </p>
+     * 
+     * <p>
+     * If this method is called after the Result has been executed, it will 
+     * have the effect of raising an exception.
+     * </p>
+     * 
+     * @throws IllegalStateException if called after the Result has been 
+     * executed.
+     * 
+     * @see #isExecuted()
+     */
+    void setResultCode(String resultCode);
+    
+    /**
      * @return the ValueStack associated with this ActionInvocation
      */
     OgnlValueStack getStack();

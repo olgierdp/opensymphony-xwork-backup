@@ -117,6 +117,14 @@ public class DefaultActionInvocation implements ActionInvocation {
     public String getResultCode() {
         return resultCode;
     }
+    
+    public void setResultCode(String resultCode) {
+        if(isExecuted())
+            throw new IllegalStateException("Result has already been executed.");
+        
+        this.resultCode = resultCode;
+    }
+    
 
     public OgnlValueStack getStack() {
         return stack;
