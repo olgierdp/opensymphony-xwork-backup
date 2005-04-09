@@ -51,9 +51,9 @@ public abstract class AbstractLifecycleInterceptor implements Interceptor, PreRe
         String result = null;
 
         try {
-            before();
+            before(invocation);
             result = invocation.invoke();
-            after();
+            after(invocation, result);
         } catch (Exception e) {
             result = Action.ERROR;
             handleException(e);
@@ -65,15 +65,18 @@ public abstract class AbstractLifecycleInterceptor implements Interceptor, PreRe
     /**
     * Called after the Action and Result have been executed.
     * @throws Exception
-    */
-    protected void after() throws Exception {
+     * @param invocation
+     * @param result
+     */
+    protected void after(ActionInvocation invocation, String result) throws Exception {
     }
 
     /**
     * Called before the rest of the ActionInvocation is forwarded to.
     * @throws Exception
-    */
-    protected void before() throws Exception {
+     * @param invocation
+     */
+    protected void before(ActionInvocation invocation) throws Exception {
     }
 
     /**
