@@ -4,13 +4,17 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.interceptor.ChainingInterceptor;
 import com.opensymphony.xwork.test.User;
 
 import junit.framework.TestCase;
 
+import ognl.*;
 import ognl.NullHandler;
 import ognl.Ognl;
+import ognl.OgnlContext;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 
@@ -395,6 +399,45 @@ public class OgnlUtilTest extends TestCase {
         assertEquals(123456, foo.getNumber());
     }
 
+        
+    
+    public void testSetList() throws Exception {
+        ChainingInterceptor foo = new ChainingInterceptor();
+        ChainingInterceptor foo2 = new ChainingInterceptor();
+        
+        OgnlContext  context = (OgnlContext)Ognl.createDefaultContext(null);
+        SimpleNode   expression =(SimpleNode)Ognl.parseExpression("{'a','ruby','b','tom'}");
+
+       
+        Ognl.getValue(expression, context, "aksdj");
+        
+        final OgnlValueStack stack =ActionContext.getContext().getValueStack();
+
+        Object result =Ognl.getValue(OgnlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo); 
+        foo.setIncludes((Collection)result);
+        
+        System.out.println(foo.getIncludes());
+        System.out.println(foo.getIncludes().size());
+      
+        
+        Object result2 =Ognl.getValue(OgnlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo2); 
+        OgnlUtil.setProperty("includes", result2, foo2, context);
+        
+        System.out.println(foo2.getIncludes());
+        System.out.println(foo2.getIncludes().size());
+      
+        result =ActionContext.getContext().getValueStack().findValue("{\"foo\",'ruby','b','tom'}");
+        
+        foo.setIncludes((Collection)result);
+        System.out.println(result.getClass());
+        
+        System.out.println(foo.getIncludes());
+        
+        System.out.println(foo.getIncludes().size());
+        
+    }
+    
+    
     public void testStringToLong() {
         Foo foo = new Foo();
 
