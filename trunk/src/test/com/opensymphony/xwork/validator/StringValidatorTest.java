@@ -10,12 +10,10 @@ import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.test.Equidae;
 import com.opensymphony.xwork.util.OgnlValueStack;
-
 import junit.framework.TestCase;
 
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * @author Mark Woon
@@ -23,39 +21,35 @@ import java.util.Map;
 public class StringValidatorTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public void testRequiredString() {
-        try {
-            Equidae equidae = new Equidae();
+    public void testRequiredString() throws ValidationException {
+        Equidae equidae = new Equidae();
 
-            // everything should fail
-            equidae.setHorse("");
-            ActionContext.getContext().getValueStack().push(equidae);
+        // everything should fail
+        equidae.setHorse("");
+        ActionContext.getContext().getValueStack().push(equidae);
 
-            DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
-            ActionValidatorManager.validate(equidae, null, context);
+        DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
+        ActionValidatorManager.validate(equidae, null, context);
 
-            assertTrue(context.hasFieldErrors());
+        assertTrue(context.hasFieldErrors());
 
-            Map fieldErrors = context.getFieldErrors();
-            assertTrue(fieldErrors.containsKey("horse"));
-            assertEquals(2, ((List) fieldErrors.get("horse")).size());
+        Map fieldErrors = context.getFieldErrors();
+        assertTrue(fieldErrors.containsKey("horse"));
+        assertEquals(2, ((List) fieldErrors.get("horse")).size());
 
-            // trim = false should fail
-            equidae.setHorse("  ");
-            ActionContext.getContext().getValueStack().push(equidae);
-            context = new DelegatingValidatorContext(new ValidationAwareSupport());
-            ActionValidatorManager.validate(equidae, null, context);
+        // trim = false should fail
+        equidae.setHorse("  ");
+        ActionContext.getContext().getValueStack().push(equidae);
+        context = new DelegatingValidatorContext(new ValidationAwareSupport());
+        ActionValidatorManager.validate(equidae, null, context);
 
-            assertTrue(context.hasFieldErrors());
-            fieldErrors = context.getFieldErrors();
-            assertTrue(fieldErrors.containsKey("horse"));
+        assertTrue(context.hasFieldErrors());
+        fieldErrors = context.getFieldErrors();
+        assertTrue(fieldErrors.containsKey("horse"));
 
-            List errors = (List) fieldErrors.get("horse");
-            assertEquals(1, errors.size());
-            assertEquals("trim", (String) errors.get(0));
-        } catch (Exception ex) {
-            fail(ex.getMessage());
-        }
+        List errors = (List) fieldErrors.get("horse");
+        assertEquals(1, errors.size());
+        assertEquals("trim", (String) errors.get(0));
     }
 
     public void testStringLength() {
