@@ -38,6 +38,9 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
 				Object result=null;
 				Class lastClass=(Class)context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
 				String lastProperty=(String)context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
+				if (lastClass==null || lastProperty==null) {
+					return super.getProperty(context, target, name);
+				}
 				Class beanClass=XWorkConverter.getInstance()
 					.getObjectTypeDeterminer().getElementClass(lastClass,lastProperty,name);
 				for (int i=listSize; i<index; i++) {

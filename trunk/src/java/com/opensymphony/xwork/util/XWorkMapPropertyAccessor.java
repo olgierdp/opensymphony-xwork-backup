@@ -6,16 +6,11 @@
  */
 package com.opensymphony.xwork.util;
 
-import java.util.*;
-
 import com.opensymphony.xwork.ObjectFactory;
-
-import ognl.Evaluation;
 import ognl.MapPropertyAccessor;
-import ognl.Node;
-import ognl.OgnlContext;
 import ognl.OgnlException;
-import ognl.PropertyAccessor;
+
+import java.util.Map;
 
 /**
  * Implementation of PropertyAccessor that sets and gets properties by storing and looking
@@ -40,19 +35,19 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor
 			return super.getProperty(context, target, name);
 		}
 			
-		System.out.println("XWorkMapPropertyAccessor:getting map property");
-		
 		Object result=super.getProperty(context,target,name);
-		System.out.println("Tried getting from superclass");
+		
 		if (result!=null) {System.out.println(result.toString());}
 		if (result==null) 
 		{
 			System.out.println("result is null");
 			//find the key class and convert the name to that class
 			Class lastClass=(Class)context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
-			System.out.println("Last class: " + lastClass.toString());
+			
 			String lastProperty=(String)context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
-			System.out.println("Last property: " + lastProperty);
+			if (lastClass==null || lastProperty==null) {
+				return super.getProperty(context,target,name);
+			}
 			Class keyClass=_converter.getObjectTypeDeterminer()
 			.getKeyClass(lastClass,lastProperty);
 			
@@ -73,7 +68,7 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor
 				context.get(InstantiatingNullHandler.CREATE_NULL_OBJECTS)!=null)
 			{
 				Class valueClass=_converter.getObjectTypeDeterminer().getElementClass(lastClass, lastProperty,key);
-				System.out.println("Value class: " + valueClass);
+				
 				try {
 					result=ObjectFactory.getObjectFactory().buildBean(valueClass);
 					map.put(key, result);
@@ -113,15 +108,16 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor
 	private Object getKey(Map context, Object name) 
 	{
 		Class lastClass=(Class)context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
-		String lastProperty=(String)context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);		
+		String lastProperty=(String)context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
+		if (lastClass==null || lastProperty==null) {
+			return java.lang.String.class;
+		}
 		Class keyClass=_converter.getObjectTypeDeterminer()
 			.getKeyClass(lastClass,lastProperty);
 		if(keyClass==null) {
 			keyClass=java.lang.String.class;
 		}
-		System.out.println("Converting object of name " + name + 
-				" and class " + name.getClass().getName() + " to class "
-				+ keyClass.getName());
+
 		return _converter.convertValue(context, name, keyClass);
 		
 	}
