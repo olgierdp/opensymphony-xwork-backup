@@ -161,7 +161,7 @@ public class OgnlValueStack implements Serializable {
                 return findValue(expr, defaultType);
             }
 
-            return Ognl.getValue(OgnlUtil.compile(expr), context, root);
+            return OgnlUtil.getValue(expr, context, root);
         } catch (OgnlException e) {
             return null;
         } catch (Exception e) {
@@ -187,7 +187,7 @@ public class OgnlValueStack implements Serializable {
                 expr = (String) overrides.get(expr);
             }
 
-            return Ognl.getValue(OgnlUtil.compile(expr), context, root, asType);
+            return OgnlUtil.getValue(expr, context, root, asType);
         } catch (OgnlException e) {
             return null;
         } catch (Exception e) {
