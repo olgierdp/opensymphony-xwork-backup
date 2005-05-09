@@ -141,6 +141,11 @@ public class OgnlUtil {
      * @return the real target or null if no object can be found with the specified property
      */
     public static Object getRealTarget(String property, Map context, Object root) throws OgnlException {
+        //special keyword, they must be cutting the stack
+        if ("top".equals(property)) {
+            return root;
+        }
+
         if (root instanceof CompoundRoot) {
             // find real target
             CompoundRoot cr = (CompoundRoot) root;
@@ -151,8 +156,10 @@ public class OgnlUtil {
 
                     if (
                             OgnlRuntime.hasSetProperty((OgnlContext) context, target, property)
-                                    ||
-                                    OgnlRuntime.getIndexedPropertyType((OgnlContext) context, target.getClass(), property) != OgnlRuntime.INDEXED_PROPERTY_NONE
+                            ||
+                            OgnlRuntime.hasGetProperty((OgnlContext) context, target, property)
+                            ||
+                            OgnlRuntime.getIndexedPropertyType((OgnlContext) context, target.getClass(), property) != OgnlRuntime.INDEXED_PROPERTY_NONE
                             ) {
                         return target;
                     }
