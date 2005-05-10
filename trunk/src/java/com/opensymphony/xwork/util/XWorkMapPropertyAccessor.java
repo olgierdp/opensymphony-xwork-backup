@@ -34,9 +34,6 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
 
         Object result = super.getProperty(context, target, name);
 
-        if (result != null) {
-            System.out.println(result.toString());
-        }
         if (result == null) {
             //find the key class and convert the name to that class
             Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
