@@ -53,29 +53,42 @@ public class ParametersInterceptor extends AroundInterceptor {
             }
 
             ActionContext invocationContext = invocation.getInvocationContext();
-			
-            try {
-                invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-                invocationContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
-                invocationContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-                
-                if (parameters != null) {
-                    final OgnlValueStack stack = ActionContext.getContext().getValueStack();
 
-                    for (Iterator iterator = parameters.entrySet().iterator();
-                         iterator.hasNext();) {
-                        Map.Entry entry = (Map.Entry) iterator.next();
-                        String name = entry.getKey().toString();
-                        if (acceptableName(name)) {
-                            Object value = entry.getValue();
-                            stack.setValue(name, value);
-                        }
-                    }
+            if (parameters != null) {
+                try {
+                    invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+                    invocationContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+                    invocationContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+
+                    OgnlValueStack stack = ActionContext.getContext().getValueStack();
+                    setParameters(invocation.getAction(), stack, parameters);
+                } finally {
+                    invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
+                    invocationContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.FALSE);
+                    invocationContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.FALSE);
                 }
-            } finally {
-                invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
-                invocationContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.FALSE);
-                invocationContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.FALSE);
+            }
+        }
+    }
+
+    void setParameters(Object action, OgnlValueStack stack,
+            final Map parameters) {
+        ParameterNameAware parameterNameAware =
+                (action instanceof ParameterNameAware)
+                ? (ParameterNameAware) action : null;
+
+        for (Iterator iterator = parameters.entrySet().iterator();
+             iterator.hasNext();) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            String name = entry.getKey().toString();
+
+            boolean acceptableName = acceptableName(name)
+                    && (parameterNameAware == null
+                    || parameterNameAware.acceptableParameterName(name));
+
+            if (acceptableName) {
+                Object value = entry.getValue();
+                stack.setValue(name, value);
             }
         }
     }

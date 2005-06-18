@@ -24,6 +24,32 @@ import java.util.Map;
 public class ParametersInterceptorTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    public void testParameterNameAware() {
+        ParametersInterceptor pi = new ParametersInterceptor();
+        final Map actual = new HashMap();
+        OgnlValueStack stack = new OgnlValueStack() {
+            public void setValue(String expr, Object value) {
+                actual.put(expr, value);
+            }
+        };
+        final Map expected = new HashMap() {{
+            put("fooKey", "fooValue");
+            put("barKey", "barValue");
+        }};
+        Object a = new ParameterNameAware() {
+            public boolean acceptableParameterName(String parameterName) {
+                return expected.containsKey(parameterName);
+            }
+        };
+        Map parameters = new HashMap() {{
+            put("fooKey", "fooValue");
+            put("barKey", "barValue");
+            put("error", "error");
+        }};
+        pi.setParameters(a, stack, parameters);
+        assertEquals(expected, actual);                
+    }
+
     public void testDoesNotAllowMethodInvocations() {
         Map params = new HashMap();
         params.put("@java.lang.System@exit(1).dummy", "dumb value");
