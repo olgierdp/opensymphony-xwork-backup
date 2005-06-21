@@ -6,7 +6,6 @@ package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ObjectFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -32,11 +31,22 @@ public class XWorkList extends ArrayList {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private Class clazz;
+    private Collection surrogate;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
     public XWorkList(Class clazz) {
         this.clazz = clazz;
+    }
+
+    public XWorkList(Class clazz, Collection c, boolean isSurrogate) {
+        this.clazz = clazz;
+        if (isSurrogate) {
+            this.surrogate = c;
+        } else {
+            addAll(c);
+        }
+
     }
 
     public XWorkList(Class clazz, Collection c) {
@@ -57,7 +67,7 @@ public class XWorkList extends ArrayList {
      * currently at that position (if any) and any subsequent elements to the right (adds one to
      * their indices).
      * <p />
-     * This method is guaranteed to work since it will create empty beans to fill the gap between
+     * This method is guaranteed to work since it will add null elements to fill the gap between
      * the current list size and the requested index to enable the element to be set.  This method
      * also performs any necessary type conversion.
      *
@@ -65,8 +75,11 @@ public class XWorkList extends ArrayList {
      * @param element element to be inserted.
      */
     public void add(int index, Object element) {
+
         if (index >= this.size()) {
-            get(index);
+            for (int i = this.size(); i < index; i++) {
+                add(null);
+            }
         }
 
         if ((element != null) && !clazz.isAssignableFrom(element.getClass())) {
@@ -78,7 +91,6 @@ public class XWorkList extends ArrayList {
             Map context = ActionContext.getContext().getContextMap();
             element = XWorkConverter.getInstance().convertValue(context, null, null, null, element, clazz);
         }
-
         super.add(index, element);
     }
 
@@ -137,7 +149,7 @@ public class XWorkList extends ArrayList {
      * subsequent elements to the right (increases their indices).  The new elements will appear in
      * the list in the order that they are returned by the specified Collection's iterator.
      * <p />
-     * This method is guaranteed to work since it will create empty beans to fill the gap between
+     * This method is guaranteed to work since it will add null values to fill the gap between
      * the current list size and the requested index to enable the element to be set.  This method
      * also performs any necessary type conversion.
      *
@@ -148,6 +160,9 @@ public class XWorkList extends ArrayList {
     public boolean addAll(int index, Collection c) {
         if (c == null) {
             throw new NullPointerException("Collection to add is null");
+        }
+        if (c.size() == 0) {
+            return false;
         }
 
         boolean trim = false;
@@ -160,9 +175,9 @@ public class XWorkList extends ArrayList {
             add(index, it.next());
         }
 
-        if (trim) {
-            remove(this.size() - 1);
-        }
+        //if (trim) {
+        //    remove(this.size() - 1);
+        //}
 
         return true;
     }
@@ -177,15 +192,36 @@ public class XWorkList extends ArrayList {
      * @return the element at the specified position in this list.
      */
     public synchronized Object get(int index) {
-        while (index >= this.size()) {
+        if (index >= this.size()) {
+            while (index > this.size()) {
+
+                add(null);
+
+            }
             try {
-                this.add(ObjectFactory.getObjectFactory().buildBean(clazz));
+                Object toAdd = ObjectFactory.getObjectFactory().buildBean(clazz);
+                add(toAdd);
+                if (surrogate != null && toAdd != null) {
+                    surrogate.add(toAdd);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+        Object toReturn = super.get(index);
+        if (toReturn == null) {
+            try {
+                toReturn = ObjectFactory.getObjectFactory().buildBean(clazz);
+                set(index, toReturn);
+                if (this.surrogate != null && toReturn != null) {
+                    surrogate.add(toReturn);
+                }
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }
         }
-
-        return super.get(index);
+        return toReturn;
     }
 
     /**
@@ -195,7 +231,7 @@ public class XWorkList extends ArrayList {
      * the current list size and the requested index to enable the element to be set.  This method
      * also performs any necessary type conversion.
      *
-     * @param index index of element to replace.
+     * @param index   index of element to replace.
      * @param element element to be stored at the specified position.
      * @return the element previously at the specified position.
      */

@@ -19,40 +19,56 @@ import java.util.Map;
  */
 public class XWorkListPropertyAccessor extends ListPropertyAccessor {
 
+    private XWorkCollectionPropertyAccessor _sAcc = new XWorkCollectionPropertyAccessor();
+
     /* (non-Javadoc)
      * @see ognl.PropertyAccessor#getProperty(java.util.Map, java.lang.Object, java.lang.Object)
      */
     public Object getProperty(Map context, Object target, Object name)
             throws OgnlException {
 
+        if (name instanceof String) {
+            return _sAcc.getProperty(context, target, name);
+        }
+        OgnlContextState.updateCurrentPropertyPath(context, name);
+        //System.out.println("Entering XWorkListPropertyAccessor. Name: " + name);
         if (name instanceof Number
                 && context.get(InstantiatingNullHandler.CREATE_NULL_OBJECTS) != null) {
 
+            //System.out.println("Getting index from List");
             List list = (List) target;
             int index = ((Number) name).intValue();
             int listSize = list.size();
+            Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
+            String lastProperty = (String) context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
+            if (lastClass == null || lastProperty == null) {
+                return super.getProperty(context, target, name);
+            }
+            Class beanClass = XWorkConverter.getInstance()
+                    .getObjectTypeDeterminer().getElementClass(lastClass, lastProperty, name);
             if (listSize <= index) {
+                //System.out.println("adding objects to list.");
                 Object result = null;
-                Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
-                String lastProperty = (String) context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
-                if (lastClass == null || lastProperty == null) {
-                    return super.getProperty(context, target, name);
-                }
-                Class beanClass = XWorkConverter.getInstance()
-                        .getObjectTypeDeterminer().getElementClass(lastClass, lastProperty, name);
+
                 for (int i = listSize; i < index; i++) {
 
-                    list.add(i, null);
+                    list.add(null);
 
                 }
                 try {
                     list.add(index, result = ObjectFactory.getObjectFactory().buildBean(beanClass));
                 } catch (Exception exc) {
-
+                    throw new RuntimeException(exc);
                 }
                 return result;
             } else if (list.get(index) == null) {
-
+                Object result = null;
+                try {
+                    list.set(index, result = ObjectFactory.getObjectFactory().buildBean(beanClass));
+                } catch (Exception exc) {
+                    throw new RuntimeException(exc);
+                }
+                return result;
             }
         }
         return super.getProperty(context, target, name);
@@ -94,3 +110,5 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
         return XWorkConverter.getInstance().convertValue(context, value, convertToClass);
     }
 }
+
+

@@ -20,23 +20,10 @@ public class XWorkMethodAccessor extends ObjectMethodAccessor {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String DENY_METHOD_EXECUTION = "xwork.MethodAccessor.denyMethodExecution";
-    public static final String DENY_INDEXED_ACCESS_EXECUTION = "xwork.IndexedPropertyAccessor.denyMethodExecution";
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public Object callMethod(Map context, Object object, String string, Object[] objects) throws MethodFailedException {
-        //HACK - we pass indexed method access i.e. setXXX(A,B) pattern
-        if(
-            (objects.length == 2 && string.startsWith("set"))
-                ||
-            (objects.length == 1 && string.startsWith("get"))
-           ) {
-            Boolean exec = (Boolean) context.get(DENY_INDEXED_ACCESS_EXECUTION);
-            boolean e = ((exec == null) ? false : exec.booleanValue());
-            if( !e) {
-                return super.callMethod(context, object, string, objects);
-            }
-            }
         Boolean exec = (Boolean) context.get(DENY_METHOD_EXECUTION);
         boolean e = ((exec == null) ? false : exec.booleanValue());
 

@@ -141,11 +141,6 @@ public class OgnlUtil {
      * @return the real target or null if no object can be found with the specified property
      */
     public static Object getRealTarget(String property, Map context, Object root) throws OgnlException {
-        //special keyword, they must be cutting the stack
-        if ("top".equals(property)) {
-            return root;
-        }
-
         if (root instanceof CompoundRoot) {
             // find real target
             CompoundRoot cr = (CompoundRoot) root;
@@ -154,13 +149,7 @@ public class OgnlUtil {
                 for (Iterator iterator = cr.iterator(); iterator.hasNext();) {
                     Object target = iterator.next();
 
-                    if (
-                            OgnlRuntime.hasSetProperty((OgnlContext) context, target, property)
-                            ||
-                            OgnlRuntime.hasGetProperty((OgnlContext) context, target, property)
-                            ||
-                            OgnlRuntime.getIndexedPropertyType((OgnlContext) context, target.getClass(), property) != OgnlRuntime.INDEXED_PROPERTY_NONE
-                            ) {
+                    if (OgnlRuntime.hasSetProperty((OgnlContext) context, target, property)) {
                         return target;
                     }
                 }
@@ -174,51 +163,15 @@ public class OgnlUtil {
         return root;
     }
 
-    private static Object translateCompoundRoot(String name, Map context,
-                                                Object root, String hintProperty, Object hintTarget)
-            throws OgnlException {
-
-        if (!(root instanceof CompoundRoot))
-            return root;
-
-        int length = name.length();
-        int bracketPosition = -1;
-
-        // This loop tests if it's potential candidate for indexed property
-        for (int i = 0; i < length; i++) {
-            if (i > 0 && name.charAt(i) == '[') {
-                bracketPosition = i;
-                break;
-            }
-            if (!Character.isJavaIdentifierPart(name.charAt(i)))
-                break;
-
-        }
-
-        if (bracketPosition > 0) {
-            String property = name.substring(0, bracketPosition);
-
-            //reduce cost of real target lookup if we already know it
-            if (hintProperty != null && property.equals(hintProperty))
-                return hintTarget;
-
-            return getRealTarget(property, context, root);
-        }
-
-        return root;
-    }
-
-
     /**
      * Wrapper around Ognl.setValue() to handle type conversion for collection elements.
      * Ideally, this should be handled by OGNL directly.
      */
     public static void setValue(String name, Map context, Object root, Object value) throws OgnlException {
-        String property = null;
-        Object target = null;
+        OgnlContextState.clearCurrentPropertyPath(context);
         if (name.endsWith("]")) {
-            property = name.substring(0, name.lastIndexOf("["));
-            target = getRealTarget(property, context, root);
+            String property = name.substring(0, name.lastIndexOf("["));
+            Object target = getRealTarget(property, context, root);
 
             if (target != null) {
                 Class memberType = (Class) XWorkConverter.getInstance().getObjectTypeDeterminer().getElementClass(target.getClass(), property, null);
@@ -229,21 +182,9 @@ public class OgnlUtil {
                 }
             }
         }
-        //translate compound root is to extract roots object when it's probable that it deals with
-        //indexed properties, cause Ognl cannot detected indexed properties on Compound object
 
-        Ognl.setValue(compile(name), context, translateCompoundRoot(name, context, root, property, target), value);
-
+        Ognl.setValue(compile(name), context, root, value);
     }
-
-    public static Object getValue(String name, Map context, Object root) throws OgnlException {
-        return Ognl.getValue(compile(name), context, translateCompoundRoot(name, context, root, null, null));
-    }
-
-    public static Object getValue(String name, Map context, Object root, Class resultType) throws OgnlException {
-        return Ognl.getValue(compile(name), context, translateCompoundRoot(name, context, root, null, null), resultType);
-    }
-
 
     public static Object compile(String expression) throws OgnlException {
         Object o = expressions.get(expression);
@@ -268,7 +209,7 @@ public class OgnlUtil {
      * @param inclusions collection of method names to included copying  (can be null)
      *                   note if exclusions AND inclusions are supplied and not null nothing will get copied.
      */
-    public static void copy(Object from, Object to, Map context,  Collection exclusions, Collection inclusions) {
+    public static void copy(Object from, Object to, Map context, Collection exclusions, Collection inclusions) {
         Map contextFrom = Ognl.createDefaultContext(from);
         Ognl.setTypeConverter(contextFrom, XWorkConverter.getInstance());
         Map contextTo = Ognl.createDefaultContext(to);

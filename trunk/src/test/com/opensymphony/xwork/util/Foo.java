@@ -7,11 +7,10 @@ package com.opensymphony.xwork.util;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
- *
- *
  * @author <a href="mailto:plightbo@cisco.com">Pat Lightbody</a>
  * @author $Author$
  * @version $Revision$
@@ -25,6 +24,7 @@ public class Foo {
     List cats;
     List moreCats;
     List strings;
+    Set barSet;
     Map catMap;
     Map anotherCatMap;
     String title;
@@ -91,30 +91,49 @@ public class Foo {
     public int getNumber() {
         return number;
     }
-	/**
-	 * @return Returns the anotherCatMap.
-	 */
-	public Map getAnotherCatMap() {
-		return anotherCatMap;
-	}
-	/**
-	 * @param anotherCatMap The anotherCatMap to set.
-	 */
-	public void setAnotherCatMap(Map anotherCatMap) {
-		this.anotherCatMap = anotherCatMap;
-	}
-	/**
-	 * @return Returns the moreCats.
-	 */
-	public List getMoreCats() {
-		return moreCats;
-	}
-	/**
-	 * @param moreCats The moreCats to set.
-	 */
-	public void setMoreCats(List moreCats) {
-		this.moreCats = moreCats;
-	}
+
+    /**
+     * @return Returns the anotherCatMap.
+     */
+    public Map getAnotherCatMap() {
+        return anotherCatMap;
+    }
+
+    /**
+     * @param anotherCatMap The anotherCatMap to set.
+     */
+    public void setAnotherCatMap(Map anotherCatMap) {
+        this.anotherCatMap = anotherCatMap;
+    }
+
+    /**
+     * @return Returns the moreCats.
+     */
+    public List getMoreCats() {
+        return moreCats;
+    }
+
+    /**
+     * @param moreCats The moreCats to set.
+     */
+    public void setMoreCats(List moreCats) {
+        this.moreCats = moreCats;
+    }
+
+    /**
+     * @return Returns the catSet.
+     */
+    public Set getBarSet() {
+        return barSet;
+    }
+
+    /**
+     * @param catSet The catSet to set.
+     */
+    public void setBarSet(Set catSet) {
+        this.barSet = catSet;
+    }
+
     public void setPoints(long[] points) {
         this.points = points;
     }

@@ -32,22 +32,26 @@ public class ParametersInterceptorTest extends TestCase {
                 actual.put(expr, value);
             }
         };
-        final Map expected = new HashMap() {{
-            put("fooKey", "fooValue");
-            put("barKey", "barValue");
-        }};
+        final Map expected = new HashMap() {
+            {
+                put("fooKey", "fooValue");
+                put("barKey", "barValue");
+            }
+        };
         Object a = new ParameterNameAware() {
             public boolean acceptableParameterName(String parameterName) {
                 return expected.containsKey(parameterName);
             }
         };
-        Map parameters = new HashMap() {{
-            put("fooKey", "fooValue");
-            put("barKey", "barValue");
-            put("error", "error");
-        }};
-        pi.setParameters(a, stack, parameters);
-        assertEquals(expected, actual);                
+        Map parameters = new HashMap() {
+            {
+                put("fooKey", "fooValue");
+                put("barKey", "barValue");
+                put("error", "error");
+            }
+        };
+        pi.setParameters(a, stack, new ActionContext(stack.getContext()), parameters);
+        assertEquals(expected, actual);
     }
 
     public void testDoesNotAllowMethodInvocations() {
