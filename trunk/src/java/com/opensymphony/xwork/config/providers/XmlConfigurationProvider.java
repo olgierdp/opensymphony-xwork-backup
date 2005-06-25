@@ -7,30 +7,24 @@ package com.opensymphony.xwork.config.providers;
 import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.util.FileManager;
 import com.opensymphony.util.TextUtils;
-
 import com.opensymphony.xwork.Action;
-import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.ActionSupport;
+import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.config.*;
 import com.opensymphony.xwork.config.entities.*;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import org.xml.sax.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 
 /**
@@ -99,28 +93,28 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
             db = dbf.newDocumentBuilder();
             db.setEntityResolver(new EntityResolver() {
-                    public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-                        if ("-//OpenSymphony Group//XWork 1.0//EN".equals(publicId)) {
-                            return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.0.dtd", XmlConfigurationProvider.class));
-                        }
-
-                        return null;
+                public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+                    if ("-//OpenSymphony Group//XWork 1.0//EN".equals(publicId)) {
+                        return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.1.dtd", XmlConfigurationProvider.class));
                     }
-                });
+
+                    return null;
+                }
+            });
             db.setErrorHandler(new ErrorHandler() {
-                    public void warning(SAXParseException exception) throws SAXException {
-                    }
+                public void warning(SAXParseException exception) throws SAXException {
+                }
 
-                    public void error(SAXParseException exception) throws SAXException {
-                        LOG.error(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
-                        throw exception;
-                    }
+                public void error(SAXParseException exception) throws SAXException {
+                    LOG.error(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
+                    throw exception;
+                }
 
-                    public void fatalError(SAXParseException exception) throws SAXException {
-                        LOG.fatal(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
-                        throw exception;
-                    }
-                });
+                public void fatalError(SAXParseException exception) throws SAXException {
+                    LOG.fatal(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
+                    throw exception;
+                }
+            });
             loadConfigurationFile(configFileName, db);
         } catch (Exception e) {
             LOG.fatal("Could not load XWork configuration file, failing", e);
@@ -129,10 +123,11 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     }
 
     /**
-    * Tells whether the ConfigurationProvider should reload its configuration. This method should only be called
-    * if ConfigurationManager.isReloadingConfigs() is true.
-    * @return true if the file has been changed since the last time we read it
-    */
+     * Tells whether the ConfigurationProvider should reload its configuration. This method should only be called
+     * if ConfigurationManager.isReloadingConfigs() is true.
+     *
+     * @return true if the file has been changed since the last time we read it
+     */
     public boolean needsReload() {
         boolean needsReload = FileManager.fileNeedsReloading(configFileName);
         Iterator fileNameIterator = includedFileNames.iterator();
@@ -166,8 +161,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             if (ObjectFactory.getObjectFactory().isNoArgConstructorRequired()) {
                 ActionConfig actionConfig = new ActionConfig(null, className, null, null, null);
                 ObjectFactory.getObjectFactory().buildAction(actionConfig);
-            }
-            else {
+            } else {
                 ObjectFactory.getObjectFactory().getClassInstance(className);
             }
         } catch (Exception e) { // TODO: Not pretty
@@ -199,8 +193,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     }
 
     /**
-    * Create a PackageConfig from an XML element representing it.
-    */
+     * Create a PackageConfig from an XML element representing it.
+     */
     protected void addPackage(Element packageElement) throws ConfigurationException {
         PackageConfig newPackage = buildPackageContext(packageElement);
 
@@ -310,10 +304,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     }
 
     /**
-    * This method builds a package context by looking for the parents of this new package.
-    *
-    * If no parents are found, it will return a root package.
-    */
+     * This method builds a package context by looking for the parents of this new package.
+     * <p/>
+     * If no parents are found, it will return a root package.
+     */
     protected PackageConfig buildPackageContext(Element packageElement) {
         String parent = packageElement.getAttribute("extends");
         String abstractVal = packageElement.getAttribute("abstract");
@@ -328,7 +322,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         if (!("".equals(externalReferenceResolver))) {
             try {
-                erResolver = (ExternalReferenceResolver)ObjectFactory.getObjectFactory().buildBean(externalReferenceResolver); 
+                erResolver = (ExternalReferenceResolver) ObjectFactory.getObjectFactory().buildBean(externalReferenceResolver);
             } catch (ClassNotFoundException e) {
                 //TODO this should be localized
                 String msg = "Could not find External Reference Resolver: " + externalReferenceResolver + ". " + e.getMessage();
@@ -360,8 +354,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     }
 
     /**
-    * Build a map of ResultConfig objects from below a given XML element.
-    */
+     * Build a map of ResultConfig objects from below a given XML element.
+     */
     protected Map buildResults(Element element, PackageConfig packageContext) {
         NodeList resultEls = element.getElementsByTagName("result");
 
@@ -399,7 +393,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 HashMap params = XmlHelper.getParams(resultElement);
 
                 if (params.size() == 0) // maybe we just have a body - therefore a default parameter
-                 {
+                {
                     // if <result ...>something</result> then we add a parameter of 'something' as this is the most used result param
                     if ((resultElement.getChildNodes().getLength() == 1) && (resultElement.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE)) {
                         params = new HashMap();
@@ -432,8 +426,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     }
 
     /**
-    * Load all of the global results for this package from the XML element.
-    */
+     * Load all of the global results for this package from the XML element.
+     */
     protected void loadGlobalResults(PackageConfig packageContext, Element packageElement) {
         NodeList globalResultList = packageElement.getElementsByTagName("global-results");
 
@@ -577,12 +571,13 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     }
 
     /**
-    * Looks up the Interceptor Class from the interceptor-ref name and creates an instance, which is added to the
-    * provided List, or, if this is a ref to a stack, it adds the Interceptor instances from the List to this stack.
-    * @param interceptorRefElement Element to pull interceptor ref data from
-    * @param context The PackageConfig to lookup the interceptor from
-    * @return A list of Interceptor objects
-    */
+     * Looks up the Interceptor Class from the interceptor-ref name and creates an instance, which is added to the
+     * provided List, or, if this is a ref to a stack, it adds the Interceptor instances from the List to this stack.
+     *
+     * @param interceptorRefElement Element to pull interceptor ref data from
+     * @param context               The PackageConfig to lookup the interceptor from
+     * @return A list of Interceptor objects
+     */
     private List lookupInterceptorReference(PackageConfig context, Element interceptorRefElement) throws ConfigurationException {
         String refName = interceptorRefElement.getAttribute("name");
         Map refParams = XmlHelper.getParams(interceptorRefElement);
