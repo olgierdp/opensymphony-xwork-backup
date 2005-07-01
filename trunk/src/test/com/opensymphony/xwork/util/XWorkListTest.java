@@ -19,13 +19,13 @@ public class XWorkListTest extends TestCase {
 
     public void testAddAllIndex() {
         XWorkList xworkList = new XWorkList(String.class);
-        xworkList.add(new String[]{"a"});
+        xworkList.add(new String[] {"a"});
         xworkList.add("b");
 
         ArrayList addList = new ArrayList();
-        addList.add(new String[]{"1"});
-        addList.add(new String[]{"2"});
-        addList.add(new String[]{"3"});
+        addList.add(new String[] {"1"});
+        addList.add(new String[] {"2"});
+        addList.add(new String[] {"3"});
 
         // trim
         xworkList.addAll(3, addList);
@@ -39,13 +39,13 @@ public class XWorkListTest extends TestCase {
 
         // take 2, no trim
         xworkList = new XWorkList(String.class);
-        xworkList.add(new String[]{"a"});
+        xworkList.add(new String[] {"a"});
         xworkList.add("b");
 
         addList = new ArrayList();
-        addList.add(new String[]{"1"});
-        addList.add(new String[]{"2"});
-        addList.add(new String[]{"3"});
+        addList.add(new String[] {"1"});
+        addList.add(new String[] {"2"});
+        addList.add(new String[] {"3"});
 
         xworkList.addAll(2, addList);
         assertEquals(5, xworkList.size());
@@ -57,13 +57,13 @@ public class XWorkListTest extends TestCase {
 
         // take 3, insert
         xworkList = new XWorkList(String.class);
-        xworkList.add(new String[]{"a"});
+        xworkList.add(new String[] {"a"});
         xworkList.add("b");
 
         addList = new ArrayList();
-        addList.add(new String[]{"1"});
-        addList.add(new String[]{"2"});
-        addList.add(new String[]{"3"});
+        addList.add(new String[] {"1"});
+        addList.add(new String[] {"2"});
+        addList.add(new String[] {"3"});
 
         xworkList.addAll(1, addList);
         assertEquals(5, xworkList.size());
@@ -73,4 +73,17 @@ public class XWorkListTest extends TestCase {
         assertEquals("3", xworkList.get(3));
         assertEquals("b", xworkList.get(4));
     }
+
+//    public void testAddBars() {
+//        XWorkList xworkList = new XWorkList(Bar.class);
+//
+//        xworkList.set(5,"Bar:5");
+//
+//        assertEquals(6,xworkList.size());
+//        Bar expectedBar = new Bar();
+//        expectedBar.setTitle("Bar");
+//        expectedBar.setSomethingElse(5);
+//        assertEquals(expectedBar,xworkList.get(5));
+//        assertTrue(xworkList.get(6) != null);
+//    }
 }

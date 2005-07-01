@@ -13,7 +13,6 @@ import com.opensymphony.xwork.util.XWorkMethodAccessor;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.TreeMap;
 
 
 /**
@@ -62,7 +61,7 @@ public class ParametersInterceptor extends AroundInterceptor {
                     invocationContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
                     OgnlValueStack stack = ActionContext.getContext().getValueStack();
-                    setParameters(invocation.getAction(), stack, invocationContext, parameters);
+                    setParameters(invocation.getAction(), stack, parameters);
                 } finally {
                     invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
                     invocationContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.FALSE);
@@ -72,27 +71,13 @@ public class ParametersInterceptor extends AroundInterceptor {
         }
     }
 
-    /**
-     * @param value
-     * @return whether this Object is null or it is a String of whitespace
-     */
-    private boolean isNullOrBlankValue(Object value) {
-        if (value == null ||
-                (value instanceof String && value.toString().trim().equals(""))) {
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    void setParameters(Object action, OgnlValueStack stack, ActionContext invocationContext, final Map parameters) {
+    void setParameters(Object action, OgnlValueStack stack,
+            final Map parameters) {
         ParameterNameAware parameterNameAware =
                 (action instanceof ParameterNameAware)
                 ? (ParameterNameAware) action : null;
 
-        Map orderedParams = new TreeMap(parameters);
-
-        for (Iterator iterator = orderedParams.entrySet().iterator();
+        for (Iterator iterator = parameters.entrySet().iterator();
              iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String name = entry.getKey().toString();
@@ -103,13 +88,7 @@ public class ParametersInterceptor extends AroundInterceptor {
 
             if (acceptableName) {
                 Object value = entry.getValue();
-                if (isNullOrBlankValue(value)) {
-                    invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
-                }
                 stack.setValue(name, value);
-                if (isNullOrBlankValue(value)) {
-                    invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-                }
             }
         }
     }

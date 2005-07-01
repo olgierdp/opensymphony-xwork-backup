@@ -38,9 +38,9 @@ public class OgnlValueStack implements Serializable {
         OgnlRuntime.setPropertyAccessor(CompoundRoot.class, accessor);
         OgnlRuntime.setPropertyAccessor(Object.class, new XWorkObjectPropertyAccessor());
         OgnlRuntime.setPropertyAccessor(Map.class, new XWorkMapPropertyAccessor());
-        OgnlRuntime.setPropertyAccessor(Set.class, new XWorkCollectionPropertyAccessor());
         OgnlRuntime.setPropertyAccessor(List.class, new XWorkListPropertyAccessor());
-        //OgnlRuntime.setPropertyAccessor(ArrayList.class, new XWorkListPropertyAccessor());
+        OgnlRuntime.setPropertyAccessor(ArrayList.class, new XWorkListPropertyAccessor());
+        OgnlRuntime.setPropertyAccessor(XWorkList.class,new ListPropertyAccessor());
         OgnlRuntime.setPropertyAccessor(Iterator.class, new XWorkIteratorPropertyAccessor());
         OgnlRuntime.setPropertyAccessor(Enumeration.class, new XWorkEnumerationAcccessor());
         OgnlRuntime.setMethodAccessor(Object.class, new XWorkMethodAccessor());
@@ -94,7 +94,6 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Sets the default type to convert to if no type is provided when getting a value.
-     *
      * @param defaultType
      */
     public void setDefaultType(Class defaultType) {
@@ -107,8 +106,6 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Get the CompoundRoot which holds the objects pushed onto the stack
-     *
-     * @return
      */
     public CompoundRoot getRoot() {
         return root;
@@ -116,8 +113,7 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Attempts to set a property on a bean in the stack with the given expression using the default search order.
-     *
-     * @param expr  the expression defining the path to the property to be set.
+     * @param expr the expression defining the path to the property to be set.
      * @param value the value to be set into the neamed property
      */
     public void setValue(String expr, Object value) {
@@ -126,11 +122,10 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Attempts to set a property on a bean in the stack with the given expression using the default search order.
-     *
-     * @param expr                    the expression defining the path to the property to be set.
-     * @param value                   the value to be set into the neamed property
+     * @param expr the expression defining the path to the property to be set.
+     * @param value the value to be set into the neamed property
      * @param throwExceptionOnFailure a flag to tell whether an exception should be thrown if there is no property with
-     *                                the given name.
+     * the given name.
      */
     public void setValue(String expr, Object value, boolean throwExceptionOnFailure) {
         Map context = getContext();
@@ -140,7 +135,6 @@ public class OgnlValueStack implements Serializable {
             context.put(REPORT_ERRORS_ON_NO_PROP, new Boolean(throwExceptionOnFailure));
             OgnlUtil.setValue(expr, context, root, value);
         } catch (OgnlException e) {
-            e.printStackTrace();
             // ignore
         } finally {
             context.remove(XWorkConverter.CONVERSION_PROPERTY_FULLNAME);
@@ -150,7 +144,6 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Find a value by evaluating the given expression against the stack in the default search order.
-     *
      * @param expr the expression giving the path of properties to navigate to find the property value to return
      * @return the result of evaluating the expression
      */
@@ -168,7 +161,7 @@ public class OgnlValueStack implements Serializable {
                 return findValue(expr, defaultType);
             }
 
-            return Ognl.getValue(OgnlUtil.compile(expr), context, root);
+            return OgnlUtil.getValue(expr, context, root);
         } catch (OgnlException e) {
             return null;
         } catch (Exception e) {
@@ -180,8 +173,7 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Find a value by evaluating the given expression against the stack in the default search order.
-     *
-     * @param expr   the expression giving the path of properties to navigate to find the property value to return
+     * @param expr the expression giving the path of properties to navigate to find the property value to return
      * @param asType the type to convert the return value to
      * @return the result of evaluating the expression
      */
@@ -195,7 +187,7 @@ public class OgnlValueStack implements Serializable {
                 expr = (String) overrides.get(expr);
             }
 
-            return Ognl.getValue(OgnlUtil.compile(expr), context, root, asType);
+            return OgnlUtil.getValue(expr, context, root, asType);
         } catch (OgnlException e) {
             return null;
         } catch (Exception e) {
@@ -207,7 +199,6 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Get the object on the top of the stack without changing the stack.
-     *
      * @see com.opensymphony.xwork.util.CompoundRoot#peek()
      */
     public Object peek() {
@@ -216,9 +207,8 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Get the object on the top of the stack and remove it from the stack.
-     *
-     * @return the object on the top of the stack
      * @see com.opensymphony.xwork.util.CompoundRoot#pop()
+     * @return the object on the top of the stack
      */
     public Object pop() {
         return root.pop();
@@ -226,7 +216,6 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Put this object onto the top of the stack
-     *
      * @param o the object to be pushed onto the stack
      * @see com.opensymphony.xwork.util.CompoundRoot#push(java.lang.Object)
      */
@@ -236,7 +225,6 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Get the number of objects in the stack
-     *
      * @return the number of objects in the stack
      */
     public int size() {
