@@ -1,4 +1,4 @@
-commons-logging.jar - Apache Commons Logging version ???
+commons-logging.jar - Apache Commons Logging version 1.0.4
 mail.jar - Mail API version ???
 ognl.jar - OGNL version 2.6.7
 oscore.jar - OSCore version 2.2.4
