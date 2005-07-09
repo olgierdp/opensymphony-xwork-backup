@@ -61,4 +61,16 @@ public interface ActionProxy {
      * @see com.opensymphony.xwork.ActionInvocation
      */
     String execute() throws Exception;
+
+    /**
+     * Sets the method to execute for the action invocation.
+     *
+     * @param method the string name of the method to invoke
+     */
+    void setMethod(String method);
+
+    /**
+     * Returns the method to execute, or null if no method has been specified (meaning "execute" will be invoked)
+     */
+    String getMethod();
 }

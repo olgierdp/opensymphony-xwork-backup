@@ -35,6 +35,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     protected Map extraContext;
     protected String actionName;
     protected String namespace;
+    protected String method;
     protected boolean executeResult;
 
     //~ Constructors ///////////////////////////////////////////////////////////
@@ -119,6 +120,14 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
         }
 
         return retCode;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
     }
 
     protected void prepare() throws Exception {

@@ -287,7 +287,9 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     protected String invokeAction(Action action, ActionConfig actionConfig) throws Exception {
-        if (proxy.getConfig().getMethodName() == null) {
+        String methodName = proxy.getMethod();
+
+        if (proxy.getConfig().getMethodName() == null && methodName == null) {
             return getAction().execute();
         } else {
             if (LOG.isDebugEnabled()) {
@@ -295,7 +297,12 @@ public class DefaultActionInvocation implements ActionInvocation {
             }
 
             try {
-                Method method = actionConfig.getMethod(action.getClass());
+                Method method;
+                if (methodName == null) {
+                    method = actionConfig.getMethod(action.getClass());
+                } else {
+                    method = getAction().getClass().getMethod(methodName, new Class[0]);
+                }
 
                 if (action instanceof Proxy) {
                     try {
