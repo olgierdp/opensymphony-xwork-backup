@@ -18,7 +18,8 @@
             <interceptor name="workflow" class="com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor"/>
             <interceptor name="prepare" class="com.opensymphony.xwork.interceptor.PrepareInterceptor"/>
             <interceptor name="conversionError" class="com.opensymphony.xwork.interceptor.ConversionErrorInterceptor"/>
-
+			<interceptor name="alias" class="com.opensymphony.xwork.interceptor.AliasInterceptor"/>
+  
             <interceptor-stack name="defaultStack">
                 <interceptor-ref name="static-params"/>
                 <interceptor-ref name="params"/>
