@@ -426,6 +426,7 @@ public class LocalizedTextUtil {
         if (format == null) {
             format = new MessageFormat(pattern);
             format.setLocale(locale);
+            format.applyPattern(pattern);
             messageFormats.put(key, format);
         }
 
