@@ -43,7 +43,7 @@ public class ValidationAwareSupport implements ValidationAware, Serializable {
     }
 
     public synchronized Map getFieldErrors() {
-        return new LinkedHashMap(internalGetFieldErrors());
+        return new HashMap(internalGetFieldErrors());
     }
 
     public synchronized void addActionError(String anErrorMessage) {
@@ -100,7 +100,7 @@ public class ValidationAwareSupport implements ValidationAware, Serializable {
 
     private Map internalGetFieldErrors() {
         if (fieldErrors == null) {
-            fieldErrors = new LinkedHashMap();
+            fieldErrors = new HashMap();
         }
 
         return fieldErrors;
