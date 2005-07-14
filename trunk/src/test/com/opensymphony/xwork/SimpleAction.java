@@ -155,4 +155,15 @@ public class SimpleAction extends ActionSupport {
 
         return SUCCESS;
     }
+
+    public void setAliasSource(String s) {
+    }
+
+    public Object getAliasSource() {
+        return null;
+    }
+
+    public Object getAliasDest() {
+        return null;
+    }
 }
