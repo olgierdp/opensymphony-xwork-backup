@@ -32,6 +32,11 @@ public class SimpleAction extends ActionSupport {
     private int bar;
     private int baz;
     private int foo;
+    
+    private String aliasSource;
+    private String aliasDest;
+    
+    
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
@@ -114,6 +119,24 @@ public class SimpleAction extends ActionSupport {
         return settings;
     }
 
+
+    public String getAliasDest() {
+        return aliasDest;
+    }
+
+    public void setAliasDest(String aliasDest) {
+        this.aliasDest = aliasDest;
+    }
+
+    public String getAliasSource() {
+        return aliasSource;
+    }
+
+    public void setAliasSource(String aliasSource) {
+        this.aliasSource = aliasSource;
+    }
+
+    
     public void setSomeList(ArrayList someList) {
         this.someList = someList;
     }
@@ -154,16 +177,5 @@ public class SimpleAction extends ActionSupport {
         someList.add("kerry");
 
         return SUCCESS;
-    }
-
-    public void setAliasSource(String s) {
-    }
-
-    public Object getAliasSource() {
-        return null;
-    }
-
-    public Object getAliasDest() {
-        return null;
     }
 }
