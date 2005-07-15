@@ -53,7 +53,12 @@ public class ConfigurationManager {
     public static synchronized Configuration getConfiguration() {
         if (configurationInstance == null) {
             configurationInstance = new DefaultConfiguration();
-            configurationInstance.reload();
+            try {
+                configurationInstance.reload();
+            } catch (ConfigurationException e) {
+                configurationInstance = null;
+                throw e;
+            }
         } else {
             conditionalReload();
         }

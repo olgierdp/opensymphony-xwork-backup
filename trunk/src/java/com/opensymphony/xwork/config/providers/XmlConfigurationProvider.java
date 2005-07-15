@@ -373,9 +373,17 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     resultName = Action.SUCCESS;
                 }
 
+                // there is no result type, so let's inherit from the parent package
                 if (!TextUtils.stringSet(resultType)) {
                     resultType = packageContext.getFullDefaultResultType();
+
+                    // now check if there is a result type now
+                    if (!TextUtils.stringSet(resultType)) {
+                        // uh-oh, we have a problem
+                        LOG.error("No result type specified for result named '" + resultName + "', perhaps the parent package does not specify the result type?");
+                    }
                 }
+
 
                 ResultTypeConfig config = (ResultTypeConfig) packageContext.getAllResultTypeConfigs().get(resultType);
 
