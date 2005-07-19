@@ -2,3 +2,9 @@ commons-logging.jar - Apache Commons Logging version 1.0.4
 mail.jar - Mail API version ???
 ognl.jar - OGNL version 2.6.7
 oscore.jar - OSCore version 2.2.4
+cglib.jar - CGLIB 2.1_2 to support Spring
+ spring-aop.jar
+ spring-beans.jar
+ spring-context.jar
+ spring-core.jar
+ spring-web.jar -> Spring 1.2.2 jars 

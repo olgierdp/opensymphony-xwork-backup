@@ -143,7 +143,12 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="spring" level="project" />
     <orderEntryProperties />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ACTIVE_VCS_NAME" value="CVS" />
+    <option name="USE_PROJECT_VCS" value="false" />
   </component>
 </module>
 

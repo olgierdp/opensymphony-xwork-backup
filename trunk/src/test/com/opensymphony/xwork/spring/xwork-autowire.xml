@@ -1,0 +1,21 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.0//EN"
+"file:///temp/ross/xwork/src/test/java/com/atlassian/xwork/pserver/xwork-1.0.dtd">
+
+<xwork>
+    <package name="default">
+        <result-types>
+            <result-type name="null"
+class="com.opensymphony.xwork.result.NullResult" default="true"/>
+        </result-types>
+
+        <interceptors>
+            <interceptor name="autowire" class="com.opensymphony.xwork.spring.interceptor.ActionAutowiringInterceptor">
+              <param name="autowireStrategy">@org.springframework.beans.factory.config.AutowireCapableBeanFactory@AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE</param>
+            </interceptor>
+        </interceptors>
+
+        <default-interceptor-ref name="autowire"/>
+
+       <action name="simpleAction" class="com.opensymphony.xwork.SimpleAction"/>
+    </package>
+</xwork>

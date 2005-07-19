@@ -1,0 +1,23 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.0//EN" "file:///temp/ross/xwork/src/test/java/com/atlassian/xwork/ext/xwork-1.0.dtd">
+
+<xwork>
+    <package name="default">
+        <result-types>
+            <result-type name="null" class="com.opensymphony.xwork.result.NullResult" default="true"/>
+        </result-types>
+
+        <interceptors>
+			<interceptor name="reference-resolver" class="com.opensymphony.xwork.interceptor.ExternalReferencesInterceptor"/>
+        </interceptors>
+
+        <default-interceptor-ref name="reference-resolver"/>
+
+		<action name="simpleAction" class="simple-action"/>
+
+        <action name="dependencyAction" class="dependency-action"/>
+
+        <action name="proxiedAction" class="proxied-action"/>
+
+        <action name="autoProxiedAction" class="auto-proxied-action"/>
+    </package>
+</xwork>
