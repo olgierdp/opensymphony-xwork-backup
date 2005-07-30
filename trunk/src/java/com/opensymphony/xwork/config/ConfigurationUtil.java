@@ -5,7 +5,6 @@
 package com.opensymphony.xwork.config;
 
 import com.opensymphony.xwork.config.entities.PackageConfig;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -17,8 +16,9 @@ import java.util.StringTokenizer;
 
 /**
  * ConfigurationUtil
+ *
  * @author Jason Carreira
- * Created May 23, 2003 11:22:49 PM
+ *         Created May 23, 2003 11:22:49 PM
  */
 public class ConfigurationUtil {
     //~ Static fields/initializers /////////////////////////////////////////////

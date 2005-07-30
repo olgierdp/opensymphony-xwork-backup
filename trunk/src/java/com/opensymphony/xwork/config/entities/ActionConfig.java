@@ -42,8 +42,8 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
     //~ Constructors ///////////////////////////////////////////////////////////
 
     public ActionConfig() {
-        params = new HashMap();
-        results = new HashMap();
+        params = new TreeMap();
+        results = new TreeMap();
         interceptors = new ArrayList();
         externalRefs = new ArrayList();
     }
@@ -95,9 +95,9 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
     /**
      * Returns cached instance of the action method or null if method name was not specified
      *
-     * @return cached instance of the action method or null if method name was not specified
      * @param actionClass - passed in to check that the Action class hasn't changed since last time.
-     * This is really a hack to get around a problem with proxied Actions in Spring.
+     *                    This is really a hack to get around a problem with proxied Actions in Spring.
+     * @return cached instance of the action method or null if method name was not specified
      */
     public Method getMethod(Class actionClass) throws NoSuchMethodException {
         if (!actionClass.equals(cachedClass)) {
@@ -119,7 +119,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
                 }
             }
         } else // return default execute() method if method name is not specified
-         {
+        {
             method = cachedClass.getMethod("execute", new Class[0]);
         }
 
@@ -159,7 +159,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
 
     public Map getParams() {
         if (params == null) {
-            params = new HashMap();
+            params = new TreeMap();
         }
 
         return params;
@@ -171,7 +171,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
 
     public Map getResults() {
         if (results == null) {
-            results = new HashMap();
+            results = new TreeMap();
         }
 
         return results;

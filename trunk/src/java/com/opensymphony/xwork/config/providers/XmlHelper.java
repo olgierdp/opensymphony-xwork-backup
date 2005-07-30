@@ -8,7 +8,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -21,8 +22,8 @@ import java.util.HashMap;
 public class XmlHelper {
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public static HashMap getParams(Element paramsElement) {
-        HashMap params = new HashMap();
+    public static Map getParams(Element paramsElement) {
+        TreeMap params = new TreeMap();
 
         if (paramsElement == null) {
             return params;

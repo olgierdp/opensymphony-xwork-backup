@@ -5,19 +5,11 @@
 package com.opensymphony.xwork.config.entities;
 
 import com.opensymphony.util.TextUtils;
-
 import com.opensymphony.xwork.config.ExternalReferenceResolver;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -32,11 +24,11 @@ public class PackageConfig {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private ExternalReferenceResolver externalRefResolver = null;
-    private Map actionConfigs = new HashMap();
-    private Map globalResultConfigs = new HashMap();
-    private Map interceptorConfigs = new HashMap();
-    private Map resultTypeConfigs = new HashMap();
-    private Set parents = new HashSet();
+    private Map actionConfigs = new TreeMap();
+    private Map globalResultConfigs = new TreeMap();
+    private Map interceptorConfigs = new TreeMap();
+    private Map resultTypeConfigs = new TreeMap();
+    private Set parents = new TreeSet();
     private String defaultInterceptorRef;
     private String defaultResultType;
     private String name;
@@ -83,13 +75,14 @@ public class PackageConfig {
     }
 
     /**
-    * returns the Map of all the ActionConfigs available in the current package.
-    * ActionConfigs defined in ancestor packages will be included in this Map.
-    * @return a Map of ActionConfig Objects with the action name as the key
-    * @see com.opensymphony.xwork.config.entities.ActionConfig
-    */
+     * returns the Map of all the ActionConfigs available in the current package.
+     * ActionConfigs defined in ancestor packages will be included in this Map.
+     *
+     * @return a Map of ActionConfig Objects with the action name as the key
+     * @see ActionConfig
+     */
     public Map getAllActionConfigs() {
-        Map retMap = new HashMap();
+        Map retMap = new TreeMap();
 
         if (!parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
@@ -104,13 +97,14 @@ public class PackageConfig {
     }
 
     /**
-    * returns the Map of all the global ResultConfigs available in the current package.
-    * Global ResultConfigs defined in ancestor packages will be included in this Map.
-    * @return a Map of Result Objects with the result name as the key
-    * @see com.opensymphony.xwork.config.entities.ResultConfig
-    */
+     * returns the Map of all the global ResultConfigs available in the current package.
+     * Global ResultConfigs defined in ancestor packages will be included in this Map.
+     *
+     * @return a Map of Result Objects with the result name as the key
+     * @see ResultConfig
+     */
     public Map getAllGlobalResults() {
-        Map retMap = new HashMap();
+        Map retMap = new TreeMap();
 
         if (!parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
@@ -125,14 +119,15 @@ public class PackageConfig {
     }
 
     /**
-    * returns the Map of all InterceptorConfigs and InterceptorStackConfigs available in the current package.
-    * InterceptorConfigs defined in ancestor packages will be included in this Map.
-    * @return a Map of InterceptorConfig and InterceptorStackConfig Objects with the ref-name as the key
-    * @see com.opensymphony.xwork.config.entities.InterceptorConfig
-    * @see com.opensymphony.xwork.config.entities.InterceptorStackConfig
-    */
+     * returns the Map of all InterceptorConfigs and InterceptorStackConfigs available in the current package.
+     * InterceptorConfigs defined in ancestor packages will be included in this Map.
+     *
+     * @return a Map of InterceptorConfig and InterceptorStackConfig Objects with the ref-name as the key
+     * @see InterceptorConfig
+     * @see InterceptorStackConfig
+     */
     public Map getAllInterceptorConfigs() {
-        Map retMap = new HashMap();
+        Map retMap = new TreeMap();
 
         if (!parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
@@ -147,13 +142,14 @@ public class PackageConfig {
     }
 
     /**
-    * returns the Map of all the ResultTypeConfigs available in the current package.
-    * ResultTypeConfigs defined in ancestor packages will be included in this Map.
-    * @return a Map of ResultTypeConfig Objects with the result type name as the key
-    * @see com.opensymphony.xwork.config.entities.ResultTypeConfig
-    */
+     * returns the Map of all the ResultTypeConfigs available in the current package.
+     * ResultTypeConfigs defined in ancestor packages will be included in this Map.
+     *
+     * @return a Map of ResultTypeConfig Objects with the result type name as the key
+     * @see ResultTypeConfig
+     */
     public Map getAllResultTypeConfigs() {
-        Map retMap = new HashMap();
+        Map retMap = new TreeMap();
 
         if (!parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
@@ -176,16 +172,17 @@ public class PackageConfig {
     }
 
     /**
-    * sets the default Result type for this package
-    * @param defaultResultType
-    */
+     * sets the default Result type for this package
+     *
+     * @param defaultResultType
+     */
     public void setDefaultResultType(String defaultResultType) {
         this.defaultResultType = defaultResultType;
     }
 
     /**
-    * Returns the default result type for this package.
-    */
+     * Returns the default result type for this package.
+     */
     public String getDefaultResultType() {
         return defaultResultType;
     }
@@ -200,6 +197,7 @@ public class PackageConfig {
     /**
      * Gets the Reference resolver for this package.  If the resolver for this package is
      * not specified, the method will try and find one on one of the parent packages
+     *
      * @return Returns the externalRefResolver.
      */
     public ExternalReferenceResolver getExternalRefResolver() {
@@ -222,10 +220,9 @@ public class PackageConfig {
     }
 
     /**
-    * gets the default interceptor-ref name. If this is not set on this PackageConfig, it searches the parent
-    * PackageConfigs in order until it finds one.
-    * @return
-    */
+     * gets the default interceptor-ref name. If this is not set on this PackageConfig, it searches the parent
+     * PackageConfigs in order until it finds one.
+     */
     public String getFullDefaultInterceptorRef() {
         if ((defaultInterceptorRef == null) && !parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
@@ -242,11 +239,11 @@ public class PackageConfig {
     }
 
     /**
-    * Returns the default result type for this package.
-    *
-    * If there is no default result type, but this package has parents - we will try to
-    * look up the default result type of a parent.
-    */
+     * Returns the default result type for this package.
+     * <p/>
+     * If there is no default result type, but this package has parents - we will try to
+     * look up the default result type of a parent.
+     */
     public String getFullDefaultResultType() {
         if ((defaultResultType == null) && !parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
@@ -263,20 +260,22 @@ public class PackageConfig {
     }
 
     /**
-    * gets the global ResultConfigs local to this package
-    * @return a Map of ResultConfig objects keyed by result name
-    * @see com.opensymphony.xwork.config.entities.ResultConfig
-    */
+     * gets the global ResultConfigs local to this package
+     *
+     * @return a Map of ResultConfig objects keyed by result name
+     * @see ResultConfig
+     */
     public Map getGlobalResultConfigs() {
         return globalResultConfigs;
     }
 
     /**
-    * gets the InterceptorConfigs and InterceptorStackConfigs local to this package
-    * @return a Map of InterceptorConfig and InterceptorStackConfig objects keyed by ref-name
-    * @see com.opensymphony.xwork.config.entities.InterceptorConfig
-    * @see com.opensymphony.xwork.config.entities.InterceptorStackConfig
-    */
+     * gets the InterceptorConfigs and InterceptorStackConfigs local to this package
+     *
+     * @return a Map of InterceptorConfig and InterceptorStackConfig objects keyed by ref-name
+     * @see InterceptorConfig
+     * @see InterceptorStackConfig
+     */
     public Map getInterceptorConfigs() {
         return interceptorConfigs;
     }
@@ -306,10 +305,11 @@ public class PackageConfig {
     }
 
     /**
-    * gets the ResultTypeConfigs local to this package
-    * @return a Map of ResultTypeConfig objects keyed by result name
-    * @see com.opensymphony.xwork.config.entities.ResultTypeConfig
-    */
+     * gets the ResultTypeConfigs local to this package
+     *
+     * @return a Map of ResultTypeConfig objects keyed by result name
+     * @see ResultTypeConfig
+     */
     public Map getResultTypeConfigs() {
         return resultTypeConfigs;
     }

@@ -23,6 +23,7 @@ public interface ConfigurationProvider {
 
     /**
      * Tells whether the ConfigurationProvider should reload its configuration
+     *
      * @return
      */
     public boolean needsReload();

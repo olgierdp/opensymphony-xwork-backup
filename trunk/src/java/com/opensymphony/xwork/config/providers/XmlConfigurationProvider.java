@@ -41,7 +41,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private Configuration configuration;
-    private Set includedFileNames = new HashSet();
+    private Set includedFileNames = new TreeSet();
     private String configFileName = "xwork.xml";
 
     //~ Constructors ///////////////////////////////////////////////////////////
@@ -170,7 +170,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             return;
         }
 
-        HashMap actionParams = XmlHelper.getParams(actionElement);
+        Map actionParams = XmlHelper.getParams(actionElement);
 
         Map results;
 
@@ -359,7 +359,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     protected Map buildResults(Element element, PackageConfig packageContext) {
         NodeList resultEls = element.getElementsByTagName("result");
 
-        Map results = new HashMap();
+        Map results = new TreeMap();
 
         for (int i = 0; i < resultEls.getLength(); i++) {
             Element resultElement = (Element) resultEls.item(i);
@@ -398,13 +398,13 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     LOG.error("Result type '" + resultType + "' is invalid. Modify your xwork.xml file.");
                 }
 
-                HashMap params = XmlHelper.getParams(resultElement);
+                Map params = XmlHelper.getParams(resultElement);
 
                 if (params.size() == 0) // maybe we just have a body - therefore a default parameter
                 {
                     // if <result ...>something</result> then we add a parameter of 'something' as this is the most used result param
                     if ((resultElement.getChildNodes().getLength() == 1) && (resultElement.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE)) {
-                        params = new HashMap();
+                        params = new TreeMap();
 
                         try {
                             String paramName = (String) resultClass.getField("DEFAULT_PARAM").get(null);
@@ -496,7 +496,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
             try {
                 config = new InterceptorConfig(name, className, params);
-                ObjectFactory.getObjectFactory().buildInterceptor(config, new HashMap());
+                ObjectFactory.getObjectFactory().buildInterceptor(config, new TreeMap());
                 context.addInterceptorConfig(config);
             } catch (ConfigurationException e) {
                 String s = "Unable to load class " + className + " for interceptor name " + name + ". This interceptor will not be available.";

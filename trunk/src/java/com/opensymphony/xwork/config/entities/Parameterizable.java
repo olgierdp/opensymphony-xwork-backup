@@ -10,12 +10,12 @@ import java.util.Map;
 /**
  * Actions implementing Parameterizable will receive a map of the static
  * parameters defined in the Action configuration.
- * <p>
+ * <p/>
  * The {@link com.opensymphony.xwork.interceptor.StaticParametersInterceptor}
  * must be in the Action's interceptor queue for this to work.
  *
  * @author Jason Carreira
- * Created Jun 2, 2003 9:56:10 PM
+ *         Created Jun 2, 2003 9:56:10 PM
  */
 public interface Parameterizable {
     //~ Methods ////////////////////////////////////////////////////////////////

@@ -9,7 +9,6 @@ import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.entities.InterceptorConfig;
 import com.opensymphony.xwork.config.entities.InterceptorStackConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

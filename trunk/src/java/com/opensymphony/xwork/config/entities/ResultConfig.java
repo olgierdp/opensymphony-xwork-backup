@@ -4,8 +4,8 @@
  */
 package com.opensymphony.xwork.config.entities;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -25,11 +25,11 @@ public class ResultConfig implements Parameterizable {
     //~ Constructors ///////////////////////////////////////////////////////////
 
     public ResultConfig() {
-        params = new HashMap();
+        params = new TreeMap();
     }
 
     public ResultConfig(String name, Class clazz) {
-        this(name, clazz, new HashMap());
+        this(name, clazz, new TreeMap());
     }
 
     public ResultConfig(String name, Class clazz, Map params) {
@@ -68,7 +68,7 @@ public class ResultConfig implements Parameterizable {
 
     public Map getParams() {
         if (params == null) {
-            params = new HashMap();
+            params = new TreeMap();
         }
 
         return params;

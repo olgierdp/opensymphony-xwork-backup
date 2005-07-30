@@ -4,8 +4,8 @@
  */
 package com.opensymphony.xwork.config.entities;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -63,7 +63,7 @@ public class InterceptorConfig implements Parameterizable {
 
     public Map getParams() {
         if (params == null) {
-            params = new HashMap();
+            params = new TreeMap();
         }
 
         return params;
