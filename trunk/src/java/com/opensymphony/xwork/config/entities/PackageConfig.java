@@ -16,7 +16,7 @@ import java.util.*;
  * @author $Author$
  * @version $Revision$
  */
-public class PackageConfig {
+public class PackageConfig implements Comparable {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log LOG = LogFactory.getLog(PackageConfig.class);
@@ -425,5 +425,14 @@ public class PackageConfig {
 
     public String toString() {
         return "{PackageConfig Name:" + name + " namespace:" + namespace + " abstract:" + isAbstract + " parents:" + parents + "}";
+    }
+
+    public int compareTo(Object o) {
+        PackageConfig other = (PackageConfig) o;
+        String full = namespace + "!" + name;
+        String otherFull = other.namespace + "!" + name;
+
+        // note, this isn't perfect (could come from different parents), but it is "good enough"
+        return full.compareTo(otherFull);
     }
 }
