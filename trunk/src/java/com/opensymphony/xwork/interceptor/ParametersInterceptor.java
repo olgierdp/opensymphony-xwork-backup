@@ -49,7 +49,7 @@ public class ParametersInterceptor extends AroundInterceptor {
             final Map parameters = ActionContext.getContext().getParameters();
 
             if (log.isDebugEnabled()) {
-                log.debug("Setting params " + parameters);
+                log.debug("Setting params " + getParameterLogMap(parameters));
             }
 
             ActionContext invocationContext = invocation.getInvocationContext();
@@ -72,10 +72,10 @@ public class ParametersInterceptor extends AroundInterceptor {
     }
 
     void setParameters(Object action, OgnlValueStack stack,
-            final Map parameters) {
+                       final Map parameters) {
         ParameterNameAware parameterNameAware =
                 (action instanceof ParameterNameAware)
-                ? (ParameterNameAware) action : null;
+                        ? (ParameterNameAware) action : null;
 
         for (Iterator iterator = parameters.entrySet().iterator();
              iterator.hasNext();) {
@@ -92,6 +92,35 @@ public class ParametersInterceptor extends AroundInterceptor {
             }
         }
     }
+
+    private String getParameterLogMap(Map parameters) {
+        if (parameters == null) {
+            return "NONE";
+        }
+
+        StringBuffer logEntry = new StringBuffer();
+        for (Iterator i = parameters.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            logEntry.append(String.valueOf(entry.getKey()));
+            logEntry.append(" => ");
+            if (entry.getValue() instanceof Object[]) {
+                Object[] valueArray = (Object[]) entry.getValue();
+                logEntry.append("[ ");
+                for (int a = 0,b = valueArray.length; a < b - 1; a++) {
+                    logEntry.append(valueArray[a]);
+                    logEntry.append(String.valueOf(valueArray[a]));
+                    logEntry.append(", ");
+                }
+                logEntry.append(String.valueOf(valueArray[valueArray.length]));
+                logEntry.append(" ] ");
+            } else {
+                logEntry.append(String.valueOf(entry.getValue()));
+            }
+
+        }
+        return logEntry.toString();
+    }
+
 
     protected boolean acceptableName(String name) {
         if (name.indexOf('=') != -1 || name.indexOf(',') != -1 || name.indexOf('#') != -1) {
