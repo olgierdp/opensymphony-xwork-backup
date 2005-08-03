@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * OGNL TypeConverter for WebWork.
  *
- * @author <a href="mailto:plightbo@hotmail.com">Pat Lightbody</a>
+ * @author <a href="mailto:plightbo@gmail.com">Pat Lightbody</a>
  */
 public class XWorkConverter extends DefaultTypeConverter {
     //~ Static fields/initializers /////////////////////////////////////////////
