@@ -5,9 +5,7 @@
 package com.opensymphony.xwork;
 
 import com.opensymphony.util.ClassLoaderUtil;
-
 import com.opensymphony.xwork.config.ConfigurationException;
-import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.InterceptorConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.interceptor.Interceptor;
@@ -21,8 +19,8 @@ import java.util.Map;
 /**
  * ObjectFactory is responsible for building the core framework objects. Users may register their own implementation of
  * the ObjectFactory to control instantiation of these Objects.
- *
- * This default implementation uses the {@link #buildBean(java.lang.Class) buildBean} method to create all classes
+ * <p/>
+ * This default implementation uses the {@link #buildBean(Class) buildBean} method to create all classes
  * (interceptors, actions, results, etc).
  *
  * @author Jason Carreira
@@ -81,13 +79,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Build an Action of the given type
-     */
-    public Action buildAction(ActionConfig config) throws Exception {
-        return (Action) buildBean(config.getClassName());
-    }
-
-    /**
      * Build a generic Java object of the given type.
      *
      * @param clazz the type of Object to build
@@ -108,19 +99,17 @@ public class ObjectFactory {
     }
 
     /**
-         * Builds an Interceptor from the InterceptorConfig and the Map of
-         * parameters from the interceptor reference. Implementations of this method
-         * should ensure that the Interceptor is parameterized with both the
-         * parameters from the Interceptor config and the interceptor ref Map (the
-         * interceptor ref params take precedence), and that the Interceptor.init()
-         * method is called on the Interceptor instance before it is returned.
-         *
-         * @param interceptorConfig
-         *            the InterceptorConfig from the configuration
-         * @param interceptorRefParams
-         *            a Map of params provided in the Interceptor reference in the
-         *            Action mapping or InterceptorStack definition
-         */
+     * Builds an Interceptor from the InterceptorConfig and the Map of
+     * parameters from the interceptor reference. Implementations of this method
+     * should ensure that the Interceptor is parameterized with both the
+     * parameters from the Interceptor config and the interceptor ref Map (the
+     * interceptor ref params take precedence), and that the Interceptor.init()
+     * method is called on the Interceptor instance before it is returned.
+     *
+     * @param interceptorConfig    the InterceptorConfig from the configuration
+     * @param interceptorRefParams a Map of params provided in the Interceptor reference in the
+     *                             Action mapping or InterceptorStack definition
+     */
     public Interceptor buildInterceptor(InterceptorConfig interceptorConfig, Map interceptorRefParams) throws ConfigurationException {
         String interceptorClassName = interceptorConfig.getClassName();
         Map thisInterceptorClassParams = interceptorConfig.getParams();
@@ -166,8 +155,8 @@ public class ObjectFactory {
     /**
      * Build a Validator of the given type and set the parameters on it
      *
-     * @param className  the type of Validator to build
-     * @param params property name -> value Map to set onto the Validator instance
+     * @param className the type of Validator to build
+     * @param params    property name -> value Map to set onto the Validator instance
      */
     public Validator buildValidator(String className, Map params) throws Exception {
         Validator validator = (Validator) buildBean(className);

@@ -160,7 +160,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         try {
             if (ObjectFactory.getObjectFactory().isNoArgConstructorRequired()) {
                 ActionConfig actionConfig = new ActionConfig(null, className, null, null, null);
-                ObjectFactory.getObjectFactory().buildAction(actionConfig);
+                ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName());
             } else {
                 ObjectFactory.getObjectFactory().getClassInstance(className);
             }

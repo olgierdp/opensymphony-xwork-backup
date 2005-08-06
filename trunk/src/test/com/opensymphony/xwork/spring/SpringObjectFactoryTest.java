@@ -30,12 +30,10 @@ import org.springframework.context.support.StaticApplicationContext;
 
 import java.util.HashMap;
 
-
 // TODO: Document properly
 
 /**
  * @author Simon Stewart
- *
  */
 public class SpringObjectFactoryTest extends XWorkTestCase {
     //~ Instance fields ////////////////////////////////////////////////////////
@@ -57,7 +55,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
     public void testFallsBackToDefaultObjectFactoryActionSearching() throws Exception {
         ActionConfig actionConfig = new ActionConfig(null, ModelDrivenAction.class.getName(), new HashMap(), new HashMap(), null);
 
-        Action action = ObjectFactory.getObjectFactory().buildAction(actionConfig);
+        Object action = ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName());
 
         assertEquals(ModelDrivenAction.class, action.getClass());
     }
@@ -87,7 +85,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         sac.registerPrototype("simple-action", SimpleAction.class, new MutablePropertyValues());
 
         ActionConfig actionConfig = new ActionConfig(null, "simple-action", new HashMap(), new HashMap(), null);
-        Action action = ObjectFactory.getObjectFactory().buildAction(actionConfig);
+        Object action = ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName());
 
         assertEquals(SimpleAction.class, action.getClass());
     }
@@ -118,80 +116,80 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
 
         assertEquals(ExpressionValidator.class, validator.getClass());
     }
-    
+
     public void testShouldAutowireObjectsObtainedFromTheObjectFactoryByFullClassName() throws Exception {
-    	sac.getBeanFactory().registerSingleton("bean", new TestBean());
-    	TestBean bean = (TestBean) sac.getBean("bean");
-    	
-    	SimpleAction action = (SimpleAction) ObjectFactory.getObjectFactory().buildBean(SimpleAction.class.getName());
-    	
-    	assertEquals(bean, action.getBean());
+        sac.getBeanFactory().registerSingleton("bean", new TestBean());
+        TestBean bean = (TestBean) sac.getBean("bean");
+
+        SimpleAction action = (SimpleAction) ObjectFactory.getObjectFactory().buildBean(SimpleAction.class.getName());
+
+        assertEquals(bean, action.getBean());
     }
-    
+
     public void testShouldGiveReferenceToAppContextIfBeanIsApplicationContextAwareAndNotInstantiatedViaSpring() throws Exception {
-    	Foo foo = (Foo) ObjectFactory.getObjectFactory().buildBean(Foo.class.getName());
-    	
-    	assertTrue("Expected app context to have been set", foo.isApplicationContextSet());
+        Foo foo = (Foo) ObjectFactory.getObjectFactory().buildBean(Foo.class.getName());
+
+        assertTrue("Expected app context to have been set", foo.isApplicationContextSet());
     }
-    
+
     public static class Foo implements ApplicationContextAware {
-    	boolean applicationContextSet = false;
-    	
-		public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-			applicationContextSet = true;
-		}
-		
-		public boolean isApplicationContextSet() {
-			return applicationContextSet;
-		}
+        boolean applicationContextSet = false;
+
+        public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+            applicationContextSet = true;
+        }
+
+        public boolean isApplicationContextSet() {
+            return applicationContextSet;
+        }
     }
-    
+
     public void testShouldAutowireObjectsObtainedFromTheObjectFactoryByClass() throws Exception {
-    	sac.getBeanFactory().registerSingleton("bean", new TestBean());
-    	TestBean bean = (TestBean) sac.getBean("bean");
-    	
-    	SimpleAction action = (SimpleAction) ObjectFactory.getObjectFactory().buildBean(SimpleAction.class);
-    	
-    	assertEquals(bean, action.getBean());
+        sac.getBeanFactory().registerSingleton("bean", new TestBean());
+        TestBean bean = (TestBean) sac.getBean("bean");
+
+        SimpleAction action = (SimpleAction) ObjectFactory.getObjectFactory().buildBean(SimpleAction.class);
+
+        assertEquals(bean, action.getBean());
     }
-    
+
     public void testShouldGiveReferenceToAppContextIfBeanIsLoadedByClassApplicationContextAwareAndNotInstantiatedViaSpring() throws Exception {
-    	Foo foo = (Foo) ObjectFactory.getObjectFactory().buildBean(Foo.class);
-    	
-    	assertTrue("Expected app context to have been set", foo.isApplicationContextSet());
+        Foo foo = (Foo) ObjectFactory.getObjectFactory().buildBean(Foo.class);
+
+        assertTrue("Expected app context to have been set", foo.isApplicationContextSet());
     }
-    
+
     public void testLookingUpAClassInstanceDelegatesToSpring() throws Exception {
-    	sac.registerPrototype("simple-action", SimpleAction.class, new MutablePropertyValues());
-    	
-    	Class clazz = ObjectFactory.getObjectFactory().getClassInstance("simple-action");
-    	
-    	assertNotNull("Nothing returned", clazz);
-    	assertEquals("Expected to have instance of SimpleAction returned", SimpleAction.class, clazz);
+        sac.registerPrototype("simple-action", SimpleAction.class, new MutablePropertyValues());
+
+        Class clazz = ObjectFactory.getObjectFactory().getClassInstance("simple-action");
+
+        assertNotNull("Nothing returned", clazz);
+        assertEquals("Expected to have instance of SimpleAction returned", SimpleAction.class, clazz);
     }
-    
+
     public void testLookingUpAClassInstanceFallsBackToTheDefaultObjectFactoryIfSpringBeanNotFound() throws Exception {
-    	Class clazz = ObjectFactory.getObjectFactory().getClassInstance(SimpleAction.class.getName());
-    	
-    	assertNotNull("Nothing returned", clazz);
-    	assertEquals("Expected to have instance of SimpleAction returned", SimpleAction.class, clazz);
+        Class clazz = ObjectFactory.getObjectFactory().getClassInstance(SimpleAction.class.getName());
+
+        assertNotNull("Nothing returned", clazz);
+        assertEquals("Expected to have instance of SimpleAction returned", SimpleAction.class, clazz);
     }
-    
+
     public void testSetAutowireStrategy() throws Exception {
-      SpringObjectFactory objectFactory = (SpringObjectFactory)ObjectFactory.getObjectFactory();
-      assertEquals(objectFactory.getAutowireStrategy(), AutowireCapableBeanFactory.AUTOWIRE_BY_NAME);
-      
-      objectFactory.setAutowireStrategy(AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE);
-      
-      sac.getBeanFactory().registerSingleton("bean", new TestBean());
-      TestBean bean = (TestBean) sac.getBean("bean");
-      
-      sac.registerPrototype("simple-action", SimpleAction.class, new MutablePropertyValues());
-      
-      ActionConfig actionConfig = new ActionConfig(null, "simple-action", new HashMap(), new HashMap(), null);
-      SimpleAction simpleAction = (SimpleAction)objectFactory.buildAction(actionConfig);
-      objectFactory.autoWireBean(simpleAction);
-      assertEquals(simpleAction.getBean(), bean);
+        SpringObjectFactory objectFactory = (SpringObjectFactory) ObjectFactory.getObjectFactory();
+        assertEquals(objectFactory.getAutowireStrategy(), AutowireCapableBeanFactory.AUTOWIRE_BY_NAME);
+
+        objectFactory.setAutowireStrategy(AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE);
+
+        sac.getBeanFactory().registerSingleton("bean", new TestBean());
+        TestBean bean = (TestBean) sac.getBean("bean");
+
+        sac.registerPrototype("simple-action", SimpleAction.class, new MutablePropertyValues());
+
+        ActionConfig actionConfig = new ActionConfig(null, "simple-action", new HashMap(), new HashMap(), null);
+        SimpleAction simpleAction = (SimpleAction) objectFactory.buildBean(actionConfig.getClassName());
+        objectFactory.autoWireBean(simpleAction);
+        assertEquals(simpleAction.getBean(), bean);
     }
 
     public void testShouldUseConstructorBasedInjectionWhenCreatingABeanFromAClassName() throws Exception {
@@ -220,7 +218,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         ActionConfig actionConfig = new ActionConfig();
         actionConfig.setClassName(ConstructorAction.class.getName());
 
-        ConstructorAction action = (ConstructorAction) ObjectFactory.getObjectFactory().buildAction(actionConfig);
+        ConstructorAction action = (ConstructorAction) ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName());
 
         assertNotNull("Bean should not be null", action);
         assertNotNull("Action should have been added via DI", action.getAction());
@@ -230,15 +228,15 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         sac.registerSingleton("debugInterceptor", DebugInterceptor.class, new MutablePropertyValues());
 
         MutablePropertyValues values = new MutablePropertyValues();
-        values.addPropertyValue("beanNames", new String[] { "*Action" });
-        values.addPropertyValue("interceptorNames", new String[] {"debugInterceptor"});
+        values.addPropertyValue("beanNames", new String[]{"*Action"});
+        values.addPropertyValue("interceptorNames", new String[]{"debugInterceptor"});
         sac.registerSingleton("proxyFactory", BeanNameAutoProxyCreator.class, values);
 
         sac.refresh();
 
         ActionConfig actionConfig = new ActionConfig();
         actionConfig.setClassName(SimpleAction.class.getName());
-        Action action = (Action) ObjectFactory.getObjectFactory().buildAction(actionConfig);
+        Action action = (Action) ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName());
 
         assertNotNull("Bean should not be null", action);
         System.out.println("Action class is: " + action.getClass().getName());

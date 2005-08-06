@@ -35,7 +35,7 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     //~ Instance fields ////////////////////////////////////////////////////////
 
-    protected Action action;
+    protected Object action;
     protected ActionProxy proxy;
     protected List preResultListeners;
     protected Map extraContext;
@@ -199,13 +199,11 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected void createAction() {
         // load action
         try {
-            action = ObjectFactory.getObjectFactory().buildAction(proxy.getConfig());
+            action = ObjectFactory.getObjectFactory().buildBean(proxy.getConfig().getClassName());
         } catch (InstantiationException e) {
             throw new XworkException("Unable to intantiate Action!", e);
         } catch (IllegalAccessException e) {
             throw new XworkException("Illegal access to constructor, is it public?", e);
-        } catch (ClassCastException e) {
-            throw new XworkException("Action class " + proxy.getConfig().getClassName() + " does not implement " + Action.class.getName(), e);
         } catch (Exception e) {
             String gripe = "";
 
