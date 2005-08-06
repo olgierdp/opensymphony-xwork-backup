@@ -93,7 +93,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
             db = dbf.newDocumentBuilder();
             db.setEntityResolver(new EntityResolver() {
-                public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+                public InputSource resolveEntity(String publicId, String systemId) {
                     if ("-//OpenSymphony Group//XWork 1.0//EN".equals(publicId)) {
                         return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.1.dtd", XmlConfigurationProvider.class));
                     }
@@ -102,7 +102,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
             });
             db.setErrorHandler(new ErrorHandler() {
-                public void warning(SAXParseException exception) throws SAXException {
+                public void warning(SAXParseException exception) {
                 }
 
                 public void error(SAXParseException exception) throws SAXException {
@@ -235,7 +235,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             String def = resultTypeElement.getAttribute("default");
 
             try {
-                Class clazz = ClassLoaderUtil.loadClass(className, XmlConfigurationProvider.class);
+                Class clazz = ObjectFactory.getObjectFactory().getClassInstance(className);
                 ResultTypeConfig resultType = new ResultTypeConfig(name, clazz);
                 packageContext.addResultTypeConfig(resultType);
 
@@ -255,9 +255,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         List refs = new ArrayList();
         NodeList externalRefList = element.getElementsByTagName("external-ref");
 
-        String refName = null;
+        String refName;
         String refValue = null;
-        String requiredTemp = null;
+        String requiredTemp;
         boolean required;
 
         for (int i = 0; i < externalRefList.getLength(); i++) {
@@ -409,7 +409,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                         try {
                             String paramName = (String) resultClass.getField("DEFAULT_PARAM").get(null);
                             String paramValue = resultElement.getChildNodes().item(0).getNodeValue();
-                            if (paramValue != null) paramValue = paramValue.trim();
+                            if (paramValue != null) {
+                                paramValue = paramValue.trim();
+                            }
                             params.put(paramName, paramValue);
                         } catch (Throwable t) {
                         }
@@ -492,7 +494,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             String className = interceptorElement.getAttribute("class");
 
             Map params = XmlHelper.getParams(interceptorElement);
-            InterceptorConfig config = null;
+            InterceptorConfig config;
 
             try {
                 config = new InterceptorConfig(name, className, params);
