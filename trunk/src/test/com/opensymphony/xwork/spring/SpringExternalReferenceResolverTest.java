@@ -3,7 +3,6 @@
  */
 package com.opensymphony.xwork.spring;
 
-import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionProxy;
 import com.opensymphony.xwork.ActionProxyFactory;
 import com.opensymphony.xwork.XWorkTestCase;
@@ -18,8 +17,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * @author Mike
  */
-public class SpringExternalReferenceResolverTest extends XWorkTestCase
-{
+public class SpringExternalReferenceResolverTest extends XWorkTestCase {
     ApplicationContext applicationContext;
 
     public void setUp() throws Exception {
@@ -59,7 +57,7 @@ public class SpringExternalReferenceResolverTest extends XWorkTestCase
         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
                 null, "TestExternalRefResolver", null);
 
-        Action action = proxy.getAction();
+        Object action = proxy.getAction();
         assertNotNull("Action should be null", action);
         assertTrue("Action should be an ExternalReferenceAction",
                 action instanceof ExternalReferenceAction);
@@ -89,7 +87,7 @@ public class SpringExternalReferenceResolverTest extends XWorkTestCase
      * Test that required dependacies cause exception when not found and
      * non-dependant do not TestExternalRefResolver2 has two external-refs, one
      * of which doesn't exist but is also not required
-     * 
+     *
      * @throws Exception
      */
     public void testResolverRespectsRequiredDependancies() throws Exception {
@@ -97,7 +95,7 @@ public class SpringExternalReferenceResolverTest extends XWorkTestCase
 
         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
                 null, "TestExternalRefResolver2", null);
-        Action action = proxy.getAction();
+        Object action = proxy.getAction();
         assertNotNull("Action should be null", action);
         assertTrue("Action should be an ExternalReferenceAction",
                 action instanceof ExternalReferenceAction);
@@ -132,7 +130,7 @@ public class SpringExternalReferenceResolverTest extends XWorkTestCase
     /**
      * The TestExternalRefResolver4 has a external-ref declared without the
      * actual external ref defined
-     * 
+     *
      * @throws Exception
      */
     public void testResolutionBasedOnTypeOnly() throws Exception {
@@ -157,7 +155,7 @@ public class SpringExternalReferenceResolverTest extends XWorkTestCase
      * The TestExternalRefResolver5 is defined in a child package which doesn't
      * have an external reference resolver defined on it, so the resolver should
      * be used from its parent
-     * 
+     *
      * @throws Exception
      */
     public void testResolverOnParentPackage() throws Exception {

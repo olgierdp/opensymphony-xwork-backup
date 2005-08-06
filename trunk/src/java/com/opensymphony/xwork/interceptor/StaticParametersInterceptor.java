@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork.interceptor;
 
-import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.config.entities.ActionConfig;
@@ -20,7 +19,7 @@ import java.util.Map;
  * configuration by treating the Action as a bean.  If the  Action is
  * {@link Parameterizable}, a map of the static parameters will be also be
  * passed directly to the Action.
- * <p>
+ * <p/>
  * Parameters are defined with &lt;param&gt; elements within the Action
  * configuration.
  *
@@ -35,7 +34,7 @@ public class StaticParametersInterceptor extends AroundInterceptor {
 
     protected void before(ActionInvocation invocation) throws Exception {
         ActionConfig config = invocation.getProxy().getConfig();
-        Action action = invocation.getAction();
+        Object action = invocation.getAction();
 
         final Map parameters = config.getParams();
 
@@ -52,7 +51,7 @@ public class StaticParametersInterceptor extends AroundInterceptor {
             final OgnlValueStack stack = ActionContext.getContext().getValueStack();
 
             for (Iterator iterator = parameters.entrySet().iterator();
-                    iterator.hasNext();) {
+                 iterator.hasNext();) {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 stack.setValue(entry.getKey().toString(), entry.getValue());
             }

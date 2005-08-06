@@ -9,10 +9,11 @@ import com.opensymphony.xwork.config.entities.ActionConfig;
 
 /**
  * ActionProxy is an extra layer between XWork and the action so that different proxies are possible.
- *
+ * <p/>
  * An example of this would be a remote proxy, where the layer between XWork and the action might be RMI or SOAP.
+ *
  * @author Jason Carreira
- * Created Jun 9, 2003 11:27:55 AM
+ *         Created Jun 9, 2003 11:27:55 AM
  */
 public interface ActionProxy {
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -20,7 +21,7 @@ public interface ActionProxy {
     /**
      * @return the Action instance for this Proxy
      */
-    Action getAction();
+    Object getAction();
 
     /**
      * @return the alias name this ActionProxy is mapped to
@@ -34,6 +35,7 @@ public interface ActionProxy {
 
     /**
      * Sets whether this ActionProxy should also execute the Result after executing the Action
+     *
      * @param executeResult
      */
     void setExecuteResult(boolean executeResult);
@@ -56,9 +58,10 @@ public interface ActionProxy {
     /**
      * Execute this ActionProxy. This will set the ActionContext from the ActionInvocation into the ActionContext
      * ThreadLocal before invoking the ActionInvocation, then set the old ActionContext back into the ThreadLocal.
+     *
      * @return the result code returned from executing the ActionInvocation
      * @throws Exception
-     * @see com.opensymphony.xwork.ActionInvocation
+     * @see ActionInvocation
      */
     String execute() throws Exception;
 

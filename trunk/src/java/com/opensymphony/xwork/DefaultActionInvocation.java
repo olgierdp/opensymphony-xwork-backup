@@ -66,7 +66,7 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public Action getAction() {
+    public Object getAction() {
         return action;
     }
 
@@ -117,14 +117,14 @@ public class DefaultActionInvocation implements ActionInvocation {
     public String getResultCode() {
         return resultCode;
     }
-    
+
     public void setResultCode(String resultCode) {
-        if(isExecuted())
+        if (isExecuted())
             throw new IllegalStateException("Result has already been executed.");
-        
+
         this.resultCode = resultCode;
     }
-    
+
 
     public OgnlValueStack getStack() {
         return stack;
@@ -286,45 +286,45 @@ public class DefaultActionInvocation implements ActionInvocation {
         interceptors = interceptorList.iterator();
     }
 
-    protected String invokeAction(Action action, ActionConfig actionConfig) throws Exception {
+    protected String invokeAction(Object action, ActionConfig actionConfig) throws Exception {
         String methodName = proxy.getMethod();
 
         if (proxy.getConfig().getMethodName() == null && methodName == null) {
-            return getAction().execute();
-        } else {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Executing action method = " + actionConfig.getMethodName());
+            methodName = "execute";
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Executing action method = " + actionConfig.getMethodName());
+        }
+
+        try {
+            Method method;
+            if (methodName == null) {
+                method = actionConfig.getMethod(action.getClass());
+            } else {
+                method = getAction().getClass().getMethod(methodName, new Class[0]);
             }
 
-            try {
-                Method method;
-                if (methodName == null) {
-                    method = actionConfig.getMethod(action.getClass());
-                } else {
-                    method = getAction().getClass().getMethod(methodName, new Class[0]);
+            if (action instanceof Proxy) {
+                try {
+                    return (String) Proxy.getInvocationHandler(action).invoke(action, method, new Object[0]);
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                    throw new Exception("Error invoking on proxy: " + throwable.getMessage());
                 }
+            } else {
+                return (String) method.invoke(action, new Object[0]);
+            }
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException("Method '" + actionConfig.getMethodName() + "()' is not defined in action '" + getAction().getClass() + "'");
+        } catch (InvocationTargetException e) {
+            // We try to return the source exception.
+            Throwable t = e.getTargetException();
 
-                if (action instanceof Proxy) {
-                    try {
-                        return (String) Proxy.getInvocationHandler(action).invoke(action, method, new Object[0]);
-                    } catch (Throwable throwable) {
-                        throwable.printStackTrace();
-                        throw new Exception("Error invoking on proxy: " + throwable.getMessage());
-                    }
-                } else {
-                    return (String) method.invoke(action, new Object[0]);
-                }
-            } catch (NoSuchMethodException e) {
-                throw new IllegalArgumentException("Method '" + actionConfig.getMethodName() + "()' is not defined in action '" + getAction().getClass() + "'");
-            } catch (InvocationTargetException e) {
-                // We try to return the source exception.
-                Throwable t = e.getTargetException();
-
-                if (t instanceof Exception) {
-                    throw (Exception) t;
-                } else {
-                    throw e;
-                }
+            if (t instanceof Exception) {
+                throw (Exception) t;
+            } else {
+                throw e;
             }
         }
     }

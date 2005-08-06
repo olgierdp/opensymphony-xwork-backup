@@ -10,10 +10,12 @@
  */
 package com.opensymphony.xwork.config;
 
-import com.opensymphony.xwork.*;
+import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.xwork.ActionProxy;
+import com.opensymphony.xwork.ActionProxyFactory;
+import com.opensymphony.xwork.ExternalReferenceAction;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
-
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -21,9 +23,9 @@ import java.util.HashMap;
 
 /**
  * @author Ross
- *
- * Test support for external-ref tag in xwork.xml.  This tag allows objects from 'external' sources
- * to be used by an action
+ *         <p/>
+ *         Test support for external-ref tag in xwork.xml.  This tag allows objects from 'external' sources
+ *         to be used by an action
  */
 public class ExternalReferenceResolverTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -45,6 +47,7 @@ public class ExternalReferenceResolverTest extends TestCase {
     /**
      * The TestExternalRefResolver5 is defined in a child package which doesn't have an external
      * reference resolver defined on it, so the resolver should be used from its parent
+     *
      * @throws Exception
      */
     public void testResolverOnParentPackage() throws Exception {
@@ -61,11 +64,12 @@ public class ExternalReferenceResolverTest extends TestCase {
     /**
      * Test that the ActionInvocation implementation uses the resolver to resolve
      * external references
+     *
      * @throws Exception because it wants to!
      */
     public void testResolverResolvesDependancies() throws Exception {
         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "TestExternalRefResolver", null);
-        Action action = proxy.getAction();
+        Object action = proxy.getAction();
         assertNotNull("Action should be null", action);
         assertTrue("Action should be an ExternalReferenceAction", action instanceof ExternalReferenceAction);
 
@@ -81,11 +85,12 @@ public class ExternalReferenceResolverTest extends TestCase {
     /**
      * Test that required dependacies cause exception when not found and non-dependant do not
      * TestExternalRefResolver2 has two external-refs, one of which doesn't exist but is also not required
+     *
      * @throws Exception
      */
     public void testResolverRespectsRequiredDependancies() throws Exception {
         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "TestExternalRefResolver2", null);
-        Action action = proxy.getAction();
+        Object action = proxy.getAction();
         assertNotNull("Action should be null", action);
         assertTrue("Action should be an ExternalReferenceAction", action instanceof ExternalReferenceAction);
 

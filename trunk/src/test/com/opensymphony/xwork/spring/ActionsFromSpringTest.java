@@ -11,7 +11,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Test loading actions from the Spring Application Context.
- * 
+ *
  * @author Simon Stewart
  */
 public class ActionsFromSpringTest extends XWorkTestCase {
@@ -24,7 +24,7 @@ public class ActionsFromSpringTest extends XWorkTestCase {
         SpringObjectFactory springObjectFactory = new SpringObjectFactory();
         springObjectFactory.setApplicationContext(appContext);
         ObjectFactory.setObjectFactory(springObjectFactory);
-        
+
         // Set up XWork
         XmlConfigurationProvider c = new XmlConfigurationProvider("com/opensymphony/xwork/spring/actionContext-xwork.xml");
         ConfigurationManager.addConfigurationProvider(c);
@@ -33,33 +33,33 @@ public class ActionsFromSpringTest extends XWorkTestCase {
 
     public void testLoadSimpleAction() throws Exception {
         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "simpleAction", null);
-        Action action = proxy.getAction();
-        
+        Object action = proxy.getAction();
+
         Action expected = (Action) appContext.getBean("simple-action");
-        
+
         assertEquals(expected.getClass(), action.getClass());
     }
-    
+
     public void testLoadActionWithDependencies() throws Exception {
         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "dependencyAction", null);
         SimpleAction action = (SimpleAction) proxy.getAction();
-        
+
         assertEquals("injected", action.getBlah());
     }
-     
+
     public void testProxiedActionIsNotStateful() throws Exception {
         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "proxiedAction", null);
         SimpleAction action = (SimpleAction) proxy.getAction();
-        
+
         action.setBlah("Hello World");
-        
+
         proxy = ActionProxyFactory.getFactory().createActionProxy(null, "proxiedAction", null);
         action = (SimpleAction) proxy.getAction();
-        
+
         // If the action is a singleton, this test will fail
         SimpleAction sa = new SimpleAction();
         assertEquals(sa.getBlah(), action.getBlah());
-        
+
         // And if the advice is not being applied, this will be SUCCESS.
         String result = action.execute();
         assertEquals(Action.INPUT, result);
@@ -67,9 +67,9 @@ public class ActionsFromSpringTest extends XWorkTestCase {
 
     public void testAutoProxiedAction() throws Exception {
         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "autoProxiedAction", null);
-        
+
         SimpleAction action = (SimpleAction) proxy.getAction();
-        
+
         String result = action.execute();
         assertEquals(Action.INPUT, result);
     }

@@ -8,13 +8,12 @@ import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.util.LocalizedTextUtil;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.io.Serializable;
 import java.util.Locale;
 import java.util.Map;
-import java.io.Serializable;
 
 
 /**
@@ -41,11 +40,11 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     //~ Constructors ///////////////////////////////////////////////////////////
 
     /**
-    * This constructor is private so the builder methods (create*) should be used to create an DefaultActionProxy.
-    *
-    * The reason for the builder methods is so that you can use a subclass to create your own DefaultActionProxy instance
-    * (like a RMIActionProxy).
-    */
+     * This constructor is private so the builder methods (create*) should be used to create an DefaultActionProxy.
+     * <p/>
+     * The reason for the builder methods is so that you can use a subclass to create your own DefaultActionProxy instance
+     * (like a RMIActionProxy).
+     */
     protected DefaultActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult) throws Exception {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Creating an DefaultActionProxy for namespace " + namespace + " and action name " + actionName);
@@ -62,13 +61,13 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
             String message;
 
             if ((namespace != null) && (namespace.trim().length() > 0)) {
-                message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[] {
-                            namespace, actionName
-                        });
+                message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
+                        namespace, actionName
+                });
             } else {
-                message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[] {
-                            actionName
-                        });
+                message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
+                        actionName
+                });
             }
 
             throw new ConfigurationException(message);
@@ -79,7 +78,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public Action getAction() {
+    public Object getAction() {
         return invocation.getAction();
     }
 

@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork.validator;
 
-import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.interceptor.AroundInterceptor;
 
@@ -33,7 +32,7 @@ public class ValidationInterceptor extends AroundInterceptor {
      * @throws Exception if an error occurs validating the action.
      */
     protected void before(ActionInvocation invocation) throws Exception {
-        Action action = invocation.getAction();
+        Object action = invocation.getAction();
         String context = invocation.getProxy().getActionName();
 
         if (log.isDebugEnabled()) {

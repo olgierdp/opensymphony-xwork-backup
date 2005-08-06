@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork.util;
 
-import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.ModelDriven;
@@ -106,7 +105,7 @@ public class LocalizedTextUtil {
     }
 
     public static ResourceBundle findResourceBundle(String aBundleName, Locale locale) {
-        synchronized(misses) {
+        synchronized (misses) {
             try {
                 if (!misses.contains(aBundleName)) {
                     return ResourceBundle.getBundle(aBundleName, locale, Thread.currentThread().getContextClassLoader());
@@ -133,7 +132,7 @@ public class LocalizedTextUtil {
      * Finds a localized text message for the given key, aTextName. Both the key and the message
      * itself is evaluated as required.  The following algorithm is used to find the requested
      * message:
-     * <p />
+     * <p/>
      * <ol>
      * <li>Look for message in aClass' class hierarchy.
      * <ol>
@@ -152,11 +151,11 @@ public class LocalizedTextUtil {
      * <li>If still not found, look for the message in the default resource bundles.</li>
      * <li>Return defaultMessage</li>
      * </ol>
-     * <p />
+     * <p/>
      * When looking for the message, if the key indexes a collection (e.g. user.phone[0]) and a
      * message for that specific key cannot be found, the general form will also be looked up
      * (i.e. user.phone[*]).
-     * <p />
+     * <p/>
      * If a message is found, it will also be interpolated.  Anything within <code>${...}</code>
      * will be treated as an OGNL expression and evaluated as such.
      *
@@ -177,7 +176,7 @@ public class LocalizedTextUtil {
      * Finds a localized text message for the given key, aTextName. Both the key and the message
      * itself is evaluated as required.  The following algorithm is used to find the requested
      * message:
-     * <p />
+     * <p/>
      * <ol>
      * <li>Look for message in aClass' class hierarchy.
      * <ol>
@@ -196,11 +195,11 @@ public class LocalizedTextUtil {
      * <li>If still not found, look for the message in the default resource bundles.</li>
      * <li>Return defaultMessage</li>
      * </ol>
-     * <p />
+     * <p/>
      * When looking for the message, if the key indexes a collection (e.g. user.phone[0]) and a
      * message for that specific key cannot be found, the general form will also be looked up
      * (i.e. user.phone[*]).
-     * <p />
+     * <p/>
      * If a message is found, it will also be interpolated.  Anything within <code>${...}</code>
      * will be treated as an OGNL expression and evaluated as such.
      *
@@ -247,7 +246,7 @@ public class LocalizedTextUtil {
 
             // ActionInvocation may be null if we're being run from a Sitemesh filter, so we won't get model texts if this is null
             if (actionInvocation != null) {
-                Action action = actionInvocation.getAction();
+                Object action = actionInvocation.getAction();
                 Object model = ((ModelDriven) action).getModel();
                 if (model != null) {
                     msg = findMessage(model.getClass(), aTextName, indexedTextName, locale, args, null, valueStack);
@@ -338,11 +337,11 @@ public class LocalizedTextUtil {
     /**
      * Finds a localized text message for the given key, aTextName, in the specified resource bundle
      * with aTextName as the default message.
-     * <p />
+     * <p/>
      * If a message is found, it will also be interpolated.  Anything within <code>${...}</code>
      * will be treated as an OGNL expression and evaluated as such.
      *
-     * @see #findText(java.util.ResourceBundle, java.lang.String, java.util.Locale, java.lang.String, java.lang.Object[])
+     * @see #findText(java.util.ResourceBundle, String, java.util.Locale, String, Object[])
      */
     public static String findText(ResourceBundle bundle, String aTextName, Locale locale) {
         return findText(bundle, aTextName, locale, aTextName, new Object[0]);
@@ -351,7 +350,7 @@ public class LocalizedTextUtil {
     /**
      * Finds a localized text message for the given key, aTextName, in the specified resource
      * bundle.
-     * <p />
+     * <p/>
      * If a message is found, it will also be interpolated.  Anything within <code>${...}</code>
      * will be treated as an OGNL expression and evaluated as such.
      */
@@ -508,7 +507,7 @@ public class LocalizedTextUtil {
                 field.setAccessible(true);
 
                 Object cache = field.get(null);
-                synchronized(cache) {
+                synchronized (cache) {
                     Method clearMethod = cache.getClass().getMethod("clear", new Class[0]);
                     clearMethod.invoke(cache, new Object[0]);
                 }
@@ -521,11 +520,11 @@ public class LocalizedTextUtil {
     public static void reset() {
         clearDefaultResourceBundles();
 
-        synchronized(misses) {
+        synchronized (misses) {
             misses.clear();
         }
 
-        synchronized(messageFormats) {
+        synchronized (messageFormats) {
             messageFormats.clear();
         }
     }

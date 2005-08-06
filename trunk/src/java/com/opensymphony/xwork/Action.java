@@ -5,15 +5,14 @@
 package com.opensymphony.xwork;
 
 /**
- * All Actions must minimally implement this interface, which exposes
- * the execute() method.
- *
- * @author $Author$
- * @version $Revision$
+ * All actions may implement this interface, which exposes
+ * the execute() method. However, as of XWork 1.1, this is
+ * not required and is only here to assist users. You are
+ * free to create POJOs that honor the same contract
+ * defined by this interface without actually implementing
+ * the interface.
  */
 public interface Action {
-    //~ Static fields/initializers /////////////////////////////////////////////
-
     /**
      * The action execution was successful. Show result
      * view to the end user.
@@ -42,7 +41,7 @@ public interface Action {
      * to provide defaults for a form. The
      * form associated with the handler should be
      * shown to the end user.
-     *
+     * <p/>
      * This result is also used if the given input
      * params are invalid, meaning the user
      * should try providing input again.
@@ -61,11 +60,11 @@ public interface Action {
     /**
      * Where the logic of the action is executed.
      *
-     * @return     a string representing the logical result of the execution.
-     * See constants in this interface for a list of standard result values.
-     * @exception   java.lang.Exception  thrown if a system level exception occurs.
-     * Application level exceptions should be handled by returning
-     * an error value, such as Action.ERROR.
+     * @return a string representing the logical result of the execution.
+     *         See constants in this interface for a list of standard result values.
+     * @throws Exception thrown if a system level exception occurs.
+     *                             Application level exceptions should be handled by returning
+     *                             an error value, such as Action.ERROR.
      */
     public String execute() throws Exception;
 }

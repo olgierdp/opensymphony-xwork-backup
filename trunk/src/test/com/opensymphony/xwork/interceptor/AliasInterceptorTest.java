@@ -7,7 +7,7 @@ package com.opensymphony.xwork.interceptor;
 import com.opensymphony.xwork.ActionProxy;
 import com.opensymphony.xwork.ActionProxyFactory;
 import com.opensymphony.xwork.SimpleAction;
-import junit.framework.TestCase;
+import com.opensymphony.xwork.XWorkTestCase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +32,7 @@ import java.util.Map;
  *         <interceptor-ref name="alias"/>
  *         </action>
  */
-public class AliasInterceptorTest extends TestCase {
+public class AliasInterceptorTest extends XWorkTestCase {
     //~ Instance fields ////////////////////////////////////////////////////////
 
 

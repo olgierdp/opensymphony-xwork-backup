@@ -13,16 +13,16 @@ import com.opensymphony.xwork.ValidationAware;
 /**
  * An interceptor that does some basic validation workflow before allowing the interceptor chain to continue.
  * The order of execution in the workflow is:
- *
+ * <p/>
  * <ol>
- *  <li>If the action being executed implements {@link Validateable}, the action's
- *      {@link Validateable#validate() validate} method is called.</li>
- *  <li>Next, if the action implements {@link ValidationAware}, the action's
- *      {@link ValidationAware#hasErrors() hasErrors} method is called. If this
- *      method returns true, this interceptor stops the chain from continuing and
- *      immediately returns {@link Action#INPUT}</li>
+ * <li>If the action being executed implements {@link Validateable}, the action's
+ * {@link Validateable#validate() validate} method is called.</li>
+ * <li>Next, if the action implements {@link ValidationAware}, the action's
+ * {@link ValidationAware#hasErrors() hasErrors} method is called. If this
+ * method returns true, this interceptor stops the chain from continuing and
+ * immediately returns {@link Action#INPUT}</li>
  * </ol>
- *
+ * <p/>
  * <i>Note: if the action doesn't implement either interface, this interceptor effectively does nothing.</i>
  *
  * @author Jason Carreira
@@ -37,7 +37,7 @@ public class DefaultWorkflowInterceptor implements Interceptor {
     }
 
     public String intercept(ActionInvocation invocation) throws Exception {
-        Action action = invocation.getAction();
+        Object action = invocation.getAction();
 
         if (action instanceof Validateable) {
             Validateable validateable = (Validateable) action;

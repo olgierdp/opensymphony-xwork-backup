@@ -4,16 +4,16 @@
  */
 package com.opensymphony.xwork.interceptor;
 
-import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.Preparable;
 
 
 /**
  * PrepareInterceptor calls prepare() on Actions which implement com.opensymphony.xwork.Preparable
+ *
  * @author Jason Carreira
  * @see com.opensymphony.xwork.Preparable
- * Date: Nov 5, 2003 2:33:11 AM
+ *      Date: Nov 5, 2003 2:33:11 AM
  */
 public class PrepareInterceptor extends AroundInterceptor {
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ public class PrepareInterceptor extends AroundInterceptor {
     }
 
     protected void before(ActionInvocation invocation) throws Exception {
-        Action action = invocation.getAction();
+        Object action = invocation.getAction();
 
         if (action instanceof Preparable) {
             ((Preparable) action).prepare();
