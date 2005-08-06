@@ -49,6 +49,10 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = doConvertToDate(context, value);
         } else if (Collection.class.isAssignableFrom(toType)) {
             result = doConvertToCollection(context, o, member, s, value, toType);
+        } else if (toType == Character.class) {
+            result = doConvertToCharacter(value);
+        } else if (toType == char.class) {
+            result = doConvertToCharacter(value);
         } else if (Number.class.isAssignableFrom(toType)) {
             result = doConvertToNumber(context, value, toType);
         } else if (toType == Class.class) {
@@ -74,9 +78,9 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     }
 
     private Locale getLocale(Map context) {
-    	if (context == null) {
-    		return Locale.getDefault();
-    	}
+        if (context == null) {
+            return Locale.getDefault();
+        }
 
         Locale locale = (Locale) context.get(ActionContext.LOCALE);
 
@@ -92,9 +96,9 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
      *
      * @param fromObject
      * @param propertyName
-     * @param toType     the type of Collection to create
-     * @param memberType the type of object elements in this collection must be
-     * @param size       the initial size of the collection (ignored if 0 or less)
+     * @param toType       the type of Collection to create
+     * @param memberType   the type of object elements in this collection must be
+     * @param size         the initial size of the collection (ignored if 0 or less)
      * @return a Collection of the specified type
      */
     private Collection createCollection(Object fromObject, String propertyName, Class toType, Class memberType, int size) {
@@ -154,6 +158,16 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return result;
     }
 
+    private Object doConvertToCharacter(Object value) {
+        if (value instanceof String) {
+            String cStr = (String) value;
+
+            return (cStr.length() > 0) ? new Character(cStr.charAt(0)) : null;
+        }
+
+        return null;
+    }
+
     private Object doConvertToBoolean(Object value) {
         if (value instanceof String) {
             String bStr = (String) value;
@@ -184,8 +198,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
         if (o != null) {
             //memberType = (Class) XWorkConverter.getInstance().getConverter(o.getClass(), XWorkConverter.CONVERSION_COLLECTION_PREFIX + prop);
-        	memberType = XWorkConverter.getInstance().getObjectTypeDeterminer().getElementClass(o.getClass(), prop,null);
-        	
+            memberType = XWorkConverter.getInstance().getObjectTypeDeterminer().getElementClass(o.getClass(), prop, null);
+
             if (memberType == null) {
                 memberType = String.class;
             }
