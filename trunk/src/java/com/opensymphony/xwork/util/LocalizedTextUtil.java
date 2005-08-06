@@ -29,7 +29,7 @@ public class LocalizedTextUtil {
     private static List DEFAULT_RESOURCE_BUNDLES = null;
     private static final Log LOG = LogFactory.getLog(LocalizedTextUtil.class);
     private static boolean reloadBundles = false;
-    private static Collection misses = new HashSet();
+    private static final Collection misses = new HashSet();
     private static final Map messageFormats = new HashMap();
 
     static {
@@ -106,12 +106,14 @@ public class LocalizedTextUtil {
     }
 
     public static ResourceBundle findResourceBundle(String aBundleName, Locale locale) {
-        try {
-            if (!misses.contains(aBundleName)) {
-                return ResourceBundle.getBundle(aBundleName, locale, Thread.currentThread().getContextClassLoader());
+        synchronized(misses) {
+            try {
+                if (!misses.contains(aBundleName)) {
+                    return ResourceBundle.getBundle(aBundleName, locale, Thread.currentThread().getContextClassLoader());
+                }
+            } catch (MissingResourceException ex) {
+                misses.add(aBundleName);
             }
-        } catch (MissingResourceException ex) {
-            misses.add(aBundleName);
         }
 
         return null;
@@ -506,8 +508,10 @@ public class LocalizedTextUtil {
                 field.setAccessible(true);
 
                 Object cache = field.get(null);
-                Method clearMethod = cache.getClass().getMethod("clear", new Class[0]);
-                clearMethod.invoke(cache, new Object[0]);
+                synchronized(cache) {
+                    Method clearMethod = cache.getClass().getMethod("clear", new Class[0]);
+                    clearMethod.invoke(cache, new Object[0]);
+                }
             } catch (Exception e) {
                 LOG.error("Could not reload resource bundles", e);
             }
@@ -516,8 +520,14 @@ public class LocalizedTextUtil {
 
     public static void reset() {
         clearDefaultResourceBundles();
-        misses.clear();
-        messageFormats.clear();
+
+        synchronized(misses) {
+            misses.clear();
+        }
+
+        synchronized(messageFormats) {
+            messageFormats.clear();
+        }
     }
 
     static class MessageFormatKey {
