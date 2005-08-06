@@ -5,21 +5,18 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.util.ClassLoaderUtil;
-
 import com.opensymphony.xwork.ObjectFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
-
 import java.util.HashMap;
 import java.util.Map;
 
 
 /**
  * ValidatorFactory
- *
+ * <p/>
  * Created : Jan 20, 2003 12:11:11 PM
  *
  * @author Jason Carreira
@@ -48,7 +45,7 @@ public class ValidatorFactory {
     public static Validator getValidator(ValidatorConfig cfg) {
 
         String className = lookupRegisteredValidatorType(cfg.getType());
-        
+
         Validator validator;
 
         try {
@@ -65,7 +62,7 @@ public class ValidatorFactory {
         if (validator instanceof ShortCircuitableValidator) {
             ((ShortCircuitableValidator) validator).setShortCircuit(cfg.isShortCircuit());
         }
-        
+
         return validator;
     }
 
@@ -76,7 +73,7 @@ public class ValidatorFactory {
 
         validators.put(name, className);
     }
-    
+
     public static String lookupRegisteredValidatorType(String name) {
         // lookup the validator class mapped to the type name
         String className = (String) validators.get(name);
@@ -84,7 +81,7 @@ public class ValidatorFactory {
         if (className == null) {
             throw new IllegalArgumentException("There is no validator class mapped to the name " + name);
         }
-        
+
         return className;
     }
 
@@ -94,6 +91,10 @@ public class ValidatorFactory {
         }
 
         InputStream is = ClassLoaderUtil.getResourceAsStream("validators.xml", ValidatorFactory.class);
+        if (is == null) {
+            is = ClassLoaderUtil.getResourceAsStream("com/opensymphony/xwork/validator/validators/default.xml",
+                    ValidatorFactory.class);
+        }
 
         if (is != null) {
             ValidatorFileParser.parseValidatorDefinitions(is);
