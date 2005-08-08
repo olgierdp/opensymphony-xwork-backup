@@ -26,20 +26,10 @@ import java.util.Map;
  * @author Jason Carreira
  */
 public class ObjectFactory {
-    //~ Static fields/initializers /////////////////////////////////////////////
-
     private static ObjectFactory FACTORY = new ObjectFactory();
-
-    //~ Instance fields ////////////////////////////////////////////////////////
-
-    private Map classes = new HashMap(); // Classes that have already been loaded
-
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     protected ObjectFactory() {
     }
-
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public static void setObjectFactory(ObjectFactory factory) {
         FACTORY = factory;
@@ -68,14 +58,7 @@ public class ObjectFactory {
      * @throws ClassNotFoundException
      */
     public Class getClassInstance(String className) throws ClassNotFoundException {
-        Class clazz = (Class) classes.get(className);
-
-        if (clazz == null) {
-            clazz = ClassLoaderUtil.loadClass(className, this.getClass());
-            classes.put(className, clazz);
-        }
-
-        return clazz;
+        return ClassLoaderUtil.loadClass(className, this.getClass());
     }
 
     /**
