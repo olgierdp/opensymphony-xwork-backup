@@ -300,7 +300,18 @@ public class DefaultActionInvocation implements ActionInvocation {
             if (methodName == null) {
                 method = actionConfig.getMethod(action.getClass());
             } else {
-                method = getAction().getClass().getMethod(methodName, new Class[0]);
+                try {
+                    method = getAction().getClass().getMethod(methodName, new Class[0]);
+                } catch (NoSuchMethodException e) {
+                    // hmm -- OK, try doXxx instead
+                    try {
+                        String altMethodName = "do" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
+                        method = getAction().getClass().getMethod(altMethodName, new Class[0]);
+                    } catch (NoSuchMethodException e1) {
+                        // throw the original one
+                        throw e;
+                    }
+                }
             }
 
             if (action instanceof Proxy) {

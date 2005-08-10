@@ -4,34 +4,25 @@
  */
 package com.opensymphony.xwork.interceptor.component;
 
+import com.opensymphony.xwork.ObjectFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.*;
 
 
 /**
- *
- *
  * @author joew@thoughtworks.com
  * @author $Author$
  * @version $Revision$
@@ -52,20 +43,23 @@ public class ComponentConfiguration implements Serializable {
     }
 
     /**
-    * Configure a newly instantiated component manager by initializing all of the required components for the
-    * current configuration and setting up the component enablers.
-    *
-    * @param componentManager
-    */
+     * Configure a newly instantiated component manager by initializing all of the required components for the
+     * current configuration and setting up the component enablers.
+     *
+     * @param componentManager
+     */
     public void configure(ComponentManager componentManager, String scope) {
+        componentManager.reset();
         for (Iterator iterator = getComponents(scope).iterator();
-                iterator.hasNext();) {
+             iterator.hasNext();) {
             ComponentDefinition componentDefinition = (ComponentDefinition) iterator.next();
 
             Class resource = loadClass(componentDefinition.className);
             Class enabler = loadClass(componentDefinition.enablerClass);
             componentManager.addEnabler(resource, enabler);
         }
+        componentManager.setConfig(this);
+        componentManager.setScope(scope);
     }
 
     public boolean hasComponents(String scope) {
@@ -98,7 +92,7 @@ public class ComponentConfiguration implements Serializable {
                 String enabler = null;
 
                 for (int j = 0; j < componentElementChildren.getLength();
-                        j++) {
+                     j++) {
                     Node elementChildNode = componentElementChildren.item(j);
 
                     if (elementChildNode instanceof Element) {
@@ -131,7 +125,7 @@ public class ComponentConfiguration implements Serializable {
 
     private Class loadClass(String enablerClass) {
         try {
-            return Class.forName(enablerClass);
+            return ObjectFactory.getObjectFactory().getClassInstance(enablerClass);
         } catch (ClassNotFoundException e) {
             log.fatal("Cannot load class : " + enablerClass, e);
             throw new RuntimeException("Cannot load class : " + enablerClass);

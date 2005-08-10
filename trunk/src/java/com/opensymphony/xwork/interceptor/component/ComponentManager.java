@@ -30,4 +30,12 @@ public interface ComponentManager {
     void registerInstance(Class componentType, Object instance);
 
     Object getComponentInstance(Class componentType);
+
+    ComponentConfiguration getConfig();
+
+    void setConfig(ComponentConfiguration config);
+
+    void setScope(String scope);
+
+    void reset();
 }

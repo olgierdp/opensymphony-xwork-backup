@@ -4,13 +4,14 @@
  */
 package com.opensymphony.xwork.interceptor.component;
 
+import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.xwork.ObjectFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.io.File;
 import java.io.Serializable;
-
+import java.net.URL;
 import java.util.*;
 
 
@@ -31,7 +32,10 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
     private DefaultComponentManager fallback;
     private List loadOrder = new ArrayList();
     private Map resourceInstances = new HashMap();
+    private Map dependentResources = new HashMap();
     private Set alreadyLoaded = new HashSet();
+    private ComponentConfiguration config;
+    private String scope;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -42,7 +46,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         Class resource = null;
 
         while (dcm != null) {
-            resource = (Class) dcm.enablers.get(enablerType);
+            resource = getPossibleResource(dcm, enablerType, true);
 
             if (resource != null) {
                 break;
@@ -71,6 +75,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
     public void setFallback(ComponentManager fallback) {
         if (fallback instanceof DefaultComponentManager) {
             this.fallback = (DefaultComponentManager) fallback;
+            this.config = fallback.getConfig();
         } else {
             throw new RuntimeException("Fallback must be an instance of DefaultConfigurationManager");
         }
@@ -143,6 +148,27 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         }
     }
 
+    public ComponentConfiguration getConfig() {
+        return config;
+    }
+
+    public void setConfig(ComponentConfiguration config) {
+        this.config = config;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public void reset() {
+        enablers.clear();
+        enablers2.clear();
+        loadOrder.clear();
+        resourceInstances.clear();
+        alreadyLoaded.clear();
+        dependentResources.clear();
+    }
+
     private Map getResourceDependencies(Class resourceClass) {
         List interfaces = new ArrayList();
         addAllInterfaces(resourceClass, interfaces);
@@ -153,9 +179,9 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
             Class anInterface = (Class) iterator.next();
 
             DefaultComponentManager dcm = this;
-
             while (dcm != null) {
-                Class possibleResource = (Class) dcm.enablers.get(anInterface);
+                dcm.resolveDependencies();
+                Class possibleResource = getPossibleResource(dcm, anInterface, true);
 
                 if (possibleResource != null) {
                     dependencies.put(possibleResource, dcm);
@@ -168,6 +194,24 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         }
 
         return dependencies;
+    }
+
+    private Class getPossibleResource(DefaultComponentManager dcm, Class anInterface, boolean retry) {
+        for (Iterator iterator = dcm.enablers.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            Class key = (Class) entry.getKey();
+            if (anInterface.equals(key)) {
+                return (Class) entry.getValue();
+            } else if (retry && anInterface.getName().equals(key.getName())) {
+                // looks like we should reload!
+                log.warn("Re-configuration IoC for scope " + dcm.scope);
+                dcm.dispose();
+                config.configure(dcm, dcm.scope);
+                return getPossibleResource(dcm, anInterface, false);
+            }
+        }
+
+        return null;
     }
 
     private void addAllInterfaces(Class clazz, List allInterfaces) {
@@ -187,7 +231,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
             Map resources = getResourceDependencies(clazz);
 
             for (Iterator iterator = resources.entrySet().iterator();
-                    iterator.hasNext();) {
+                 iterator.hasNext();) {
                 Map.Entry mapEntry = (Map.Entry) iterator.next();
                 Class depResource = (Class) mapEntry.getKey();
                 DefaultComponentManager newDcm = (DefaultComponentManager) mapEntry.getValue();
@@ -211,6 +255,17 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
                 initializable.init();
             }
 
+            if (resource instanceof ResourceAware) {
+                ResourceAware ra = (ResourceAware) resource;
+                Set dr = ra.getDependentResources();
+                HashMap times = new HashMap();
+                for (Iterator iterator = dr.iterator(); iterator.hasNext();) {
+                    String name = (String) iterator.next();
+                    times.put(name, new Long(getLastModified(name)));
+                }
+                dcm.dependentResources.put(ra, times);
+            }
+
             dcm.resourceInstances.put(clazz, resource);
             dcm.loadOrder.add(resource);
         }
@@ -219,6 +274,16 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         Class enabler = (Class) dcm.enablers2.get(clazz);
 
         return enabler;
+    }
+
+    private long getLastModified(String name) {
+        try {
+            URL url = ClassLoaderUtil.getResource(name, getClass());
+            File file = new File(url.toURI());
+            return file.lastModified();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     private ResourceEnablerPair setupAndOptionallyCreateResource(DefaultComponentManager newDcm, Class depResource) throws Exception {
@@ -243,7 +308,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         }
 
         try {
-            enabler.getMethods()[0].invoke(resource, new Object[] {newResource});
+            enabler.getMethods()[0].invoke(resource, new Object[]{newResource});
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -253,7 +318,26 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         }
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
+    private void resolveDependencies() {
+        for (Iterator iterator = dependentResources.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            ResourceAware ra = (ResourceAware) entry.getKey();
+            Map times = (Map) entry.getValue();
+
+            Set dr = ra.getDependentResources();
+            for (Iterator iterator1 = dr.iterator(); iterator1.hasNext();) {
+                String name = (String) iterator1.next();
+                long lastTime = ((Long) times.get(name)).longValue();
+                long lastMod = getLastModified(name);
+                if (lastTime < lastMod) {
+                    // reload this DCM
+                    dispose();
+                    config.configure(DefaultComponentManager.this, scope);
+                    break;
+                }
+            }
+        }
+    }
 
     class ResourceEnablerPair {
         Class enabler;

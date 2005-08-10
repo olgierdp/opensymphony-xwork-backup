@@ -5,12 +5,10 @@
 package com.opensymphony.xwork.interceptor.component;
 
 import junit.framework.TestCase;
-
 import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-
 import java.util.ArrayList;
 
 
@@ -69,7 +67,20 @@ public class ComponentConfigurationTest extends TestCase {
         }
 
         public Object getComponentInstance(Class componentType) {
-            return null; 
+            return null;
+        }
+
+        public ComponentConfiguration getConfig() {
+            return null;
+        }
+
+        public void setConfig(ComponentConfiguration config) {
+        }
+
+        public void setScope(String scope) {
+        }
+
+        public void reset() {
         }
     }
 }
