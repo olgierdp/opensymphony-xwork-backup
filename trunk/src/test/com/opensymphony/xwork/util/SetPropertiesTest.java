@@ -9,18 +9,17 @@
 package com.opensymphony.xwork.util;
 
 import junit.framework.TestCase;
-
 import ognl.Ognl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 
 /**
  * @author CameronBraid
- *
  */
 public class SetPropertiesTest extends TestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
@@ -55,7 +54,7 @@ public class SetPropertiesTest extends TestCase {
         c.registerConverter(Cat.class.getName(), new FooBarConverter());
         vs.push(foo);
 
-        vs.setValue("cats", new String[] {"1", "2"});
+        vs.setValue("cats", new String[]{"1", "2"});
         assertNotNull(foo.getCats());
         assertEquals(2, foo.getCats().size());
         assertEquals(Cat.class, foo.getCats().get(0).getClass());
@@ -93,42 +92,102 @@ public class SetPropertiesTest extends TestCase {
 
         bar.setId(null);
 
-        vs.setValue("id", new String[] {""});
+        vs.setValue("id", new String[]{""});
         assertNull(bar.getId());
         assertEquals(0, bar.getFieldErrors().size());
     }
-    public void testAddingToCollectionsWithObjects() {
+    public void testAddingToListsWithObjects() {
 		Foo foo=new Foo();
 		foo.setMoreCats(new ArrayList());
-		String spielname="Spielen";
+		String spielname="Spielen";    	
 		OgnlValueStack vs = new OgnlValueStack();
 		vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 		vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
 		vs.push(foo);
-		vs.setValue("moreCats[1].name", spielname);
-		Object setCat=foo.getMoreCats().get(1);
+		vs.setValue("moreCats[2].name", spielname);
+		Object setCat=foo.getMoreCats().get(2);
 		assertNotNull(setCat);
 		assertTrue(setCat instanceof Cat);
 		assertTrue(((Cat)setCat).getName().equals(spielname));
-
+		//now try to set a lower number
+		//to test setting after a higher one
+		//has been created
+		spielname="paws";
+		vs.setValue("moreCats[0].name", spielname);
+		setCat=foo.getMoreCats().get(0);
+		assertNotNull(setCat);
+		assertTrue(setCat instanceof Cat);
+		assertTrue(((Cat)setCat).getName().equals(spielname));
+		
+    
     }
+
     public void testAddingToMapsWithObjects() {
-    	Foo foo=new Foo();
-		foo.setAnotherCatMap(new HashMap());
-		String spielname="Spielen";
-		OgnlValueStack vs = new OgnlValueStack();
-		vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-		vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-		vs.push(foo);
-		vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-		vs.setValue("anotherCatMap[\"3\"].name", spielname);
-		Object setCat=foo.getAnotherCatMap().get(new Long(3));
-		assertNotNull(setCat);
-		assertTrue(setCat instanceof Cat);
-		assertTrue(((Cat)setCat).getName().equals(spielname));
+        Foo foo = new Foo();
+        foo.setAnotherCatMap(new HashMap());
+        String spielname = "Spielen";
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+        vs.push(foo);
+        vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        vs.setValue("anotherCatMap[\"3\"].name", spielname);
+        Object setCat = foo.getAnotherCatMap().get(new Long(3));
+        assertNotNull(setCat);
+        assertTrue(setCat instanceof Cat);
+        assertTrue(((Cat) setCat).getName().equals(spielname));
 
 
     }
 
+    public void testAddingAndModifyingSetsWithObjects() {
+        OgnlValueStack vs = new OgnlValueStack();
+        Foo foo = new Foo();
+        HashSet barSet = new HashSet();
+        foo.setBarSet(barSet);
+        Bar bar1 = new Bar();
+        bar1.setId(new Long(11));
+        barSet.add(bar1);
+        Bar bar2 = new Bar();
+        bar2.setId(new Long(22));
+        barSet.add(bar2);
+        //try modifying bar1 and bar2
+        //check the logs here to make sure
+        //the Map is being created
+        OgnlContextState.setCreatingNullObjects(vs.getContext(), true);
+        OgnlContextState.setReportingConversionErrors(vs.getContext(), true);
+        vs.push(foo);
+        String bar1Title = "The Phantom Menace";
+        String bar2Title = "The Clone Wars";
+        vs.setValue("barSet['22'].title", bar2Title);
+        vs.setValue("barSet['11'].title", bar1Title);
+        Iterator barSetIter = barSet.iterator();
+        while (barSetIter.hasNext()) {
+            Bar next = (Bar) barSetIter.next();
+            if (next.getId().intValue() == 22) {
+                assertEquals(bar2Title, next.getTitle());
+            } else {
+                assertEquals(bar1Title, next.getTitle());
+            }
+        }
+        //now test adding
+        String bar3Title = "Revenge of the Sith";
+        String bar4Title = "A New Hope";
+        vs.setValue("barSet.makeNew[4].title", bar4Title, true);
+        vs.setValue("barSet.makeNew[0].title", bar3Title, true);
+        assertEquals(4, barSet.size());
+        barSetIter = barSet.iterator();
 
+        while (barSetIter.hasNext()) {
+            Bar next = (Bar) barSetIter.next();
+            if (next.getId() == null) {
+                assertNotNull(next.getTitle());
+                assertTrue(next.getTitle().equals(bar4Title)
+                        || next.getTitle().equals(bar3Title));
+            }
+        }
+
+    }
+    
+    
 }

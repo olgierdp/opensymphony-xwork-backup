@@ -46,7 +46,7 @@ public class ParametersInterceptorTest extends TestCase {
             put("barKey", "barValue");
             put("error", "error");
         }};
-        pi.setParameters(a, stack, parameters);
+        pi.setParameters(a, stack, parameters, null);
         assertEquals(expected, actual);
     }
 

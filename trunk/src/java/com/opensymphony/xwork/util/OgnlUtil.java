@@ -214,6 +214,7 @@ public class OgnlUtil {
      * Ideally, this should be handled by OGNL directly.
      */
     public static void setValue(String name, Map context, Object root, Object value) throws OgnlException {
+    	OgnlContextState.clearCurrentPropertyPath(context);
         String property = null;
         Object target = null;
         if (name.endsWith("]")) {

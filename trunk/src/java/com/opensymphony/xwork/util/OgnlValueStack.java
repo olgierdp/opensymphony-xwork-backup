@@ -38,8 +38,9 @@ public class OgnlValueStack implements Serializable {
         OgnlRuntime.setPropertyAccessor(CompoundRoot.class, accessor);
         OgnlRuntime.setPropertyAccessor(Object.class, new XWorkObjectPropertyAccessor());
         OgnlRuntime.setPropertyAccessor(Map.class, new XWorkMapPropertyAccessor());
+        OgnlRuntime.setPropertyAccessor(Set.class, new XWorkCollectionPropertyAccessor());
         OgnlRuntime.setPropertyAccessor(List.class, new XWorkListPropertyAccessor());
-        OgnlRuntime.setPropertyAccessor(ArrayList.class, new XWorkListPropertyAccessor());
+        //OgnlRuntime.setPropertyAccessor(ArrayList.class, new XWorkListPropertyAccessor());
         OgnlRuntime.setPropertyAccessor(XWorkList.class,new ListPropertyAccessor());
         OgnlRuntime.setPropertyAccessor(Iterator.class, new XWorkIteratorPropertyAccessor());
         OgnlRuntime.setPropertyAccessor(Enumeration.class, new XWorkEnumerationAcccessor());
@@ -225,6 +226,7 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Get the number of objects in the stack
+s
      * @return the number of objects in the stack
      */
     public int size() {

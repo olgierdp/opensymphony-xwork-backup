@@ -7,6 +7,7 @@ package com.opensymphony.xwork.util;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -25,6 +26,7 @@ public class Foo {
     List cats;
     List moreCats;
     List strings;
+    Set barSet;
     Map catMap;
     Map anotherCatMap;
     String title;
@@ -114,6 +116,19 @@ public class Foo {
 	 */
 	public void setMoreCats(List moreCats) {
 		this.moreCats = moreCats;
+	}
+	
+	/**
+	 * @return Returns the catSet.
+	 */
+	public Set getBarSet() {
+		return barSet;
+	}
+	/**
+	 * @param catSet The catSet to set.
+	 */
+	public void setBarSet(Set catSet) {
+		this.barSet = catSet;
 	}
     public void setPoints(long[] points) {
         this.points = points;

@@ -73,17 +73,4 @@ public class XWorkListTest extends TestCase {
         assertEquals("3", xworkList.get(3));
         assertEquals("b", xworkList.get(4));
     }
-
-//    public void testAddBars() {
-//        XWorkList xworkList = new XWorkList(Bar.class);
-//
-//        xworkList.set(5,"Bar:5");
-//
-//        assertEquals(6,xworkList.size());
-//        Bar expectedBar = new Bar();
-//        expectedBar.setTitle("Bar");
-//        expectedBar.setSomethingElse(5);
-//        assertEquals(expectedBar,xworkList.get(5));
-//        assertTrue(xworkList.get(6) != null);
-//    }
 }

@@ -339,37 +339,40 @@ public class XWorkConverter extends DefaultTypeConverter {
                     }
                     if (LOG.isDebugEnabled()) {LOG.debug(key + ":"+ entry.getValue());}
 
+                    if (key.startsWith(DefaultObjectTypeDeterminer.KEY_PROPERTY_PREFIX)) {
+                        mapping.put(key, entry.getValue());
+                    }
                     //for properties of classes
-                    if (!(key.startsWith(DefaultObjectTypeDeterminer.ELEMENT_PREFIX) ||
+                    else if (!(key.startsWith(DefaultObjectTypeDeterminer.ELEMENT_PREFIX) ||
                             key.startsWith(DefaultObjectTypeDeterminer.KEY_PREFIX) ||
                             key.startsWith(DefaultObjectTypeDeterminer.DEPRECATED_ELEMENT_PREFIX))
-                    	) {
-                    	mapping.put(key, createTypeConverter((String) entry.getValue()));
-                    }
+                    ) {
+                        mapping.put(key, createTypeConverter((String) entry.getValue()));
+                    }	
                     //for keys of Maps
                     else if (key.startsWith(DefaultObjectTypeDeterminer.KEY_PREFIX)) {
 
-                    	Class converterClass=Thread.currentThread().getContextClassLoader().loadClass((String) entry.getValue());
-                    	if (LOG.isDebugEnabled()) {
-                  			LOG.debug("Converter class: " + converterClass);
-                    	}
-                    	//check if the converter is a type converter if it is one
-                    	//then just put it in the map as is. Otherwise
-                    	//put a value in for the type converter of the class
-                    	if (converterClass.isAssignableFrom(TypeConverter.class)) {
+                        Class converterClass = Thread.currentThread().getContextClassLoader().loadClass((String) entry.getValue());
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Converter class: " + converterClass);
+                        }
+                        //check if the converter is a type converter if it is one
+                        //then just put it in the map as is. Otherwise
+                        //put a value in for the type converter of the class
+                        if (converterClass.isAssignableFrom(TypeConverter.class)) {
 
-							mapping.put(key, createTypeConverter((String) entry.getValue()));
+                            mapping.put(key, createTypeConverter((String) entry.getValue()));
 
 
-                    	}	else {
+                        } else {
 
-							mapping.put(key, converterClass);
-							if (LOG.isDebugEnabled()) {
-                    		LOG.debug("Object placed in mapping for key "
-                    			+ key
-                    			+ " is "
-                    			+ mapping.get(key));
-							}
+                            mapping.put(key, converterClass);
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("Object placed in mapping for key "
+                                        + key
+                                        + " is "
+                                        + mapping.get(key));
+                            }
 
                     	}
 
