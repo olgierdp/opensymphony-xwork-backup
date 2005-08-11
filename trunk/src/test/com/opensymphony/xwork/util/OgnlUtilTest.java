@@ -6,10 +6,9 @@ package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.interceptor.ChainingInterceptor;
 import com.opensymphony.xwork.test.User;
-
-import junit.framework.TestCase;
 
 import ognl.*;
 import ognl.NullHandler;
@@ -30,7 +29,7 @@ import java.util.*;
  * @author $author$
  * @version $Revision$
  */
-public class OgnlUtilTest extends TestCase {
+public class OgnlUtilTest extends XWorkTestCase {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testCanSetADependentObject() {
