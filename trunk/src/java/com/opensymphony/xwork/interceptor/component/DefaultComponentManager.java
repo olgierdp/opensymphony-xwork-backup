@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.File;
 import java.io.Serializable;
 import java.net.URL;
+import java.net.URI;
 import java.util.*;
 
 
@@ -279,7 +280,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
     private long getLastModified(String name) {
         try {
             URL url = ClassLoaderUtil.getResource(name, getClass());
-            File file = new File(url.toURI());
+            File file = new File(new URI(url.toExternalForm()));
             return file.lastModified();
         } catch (Exception e) {
             return 0;
