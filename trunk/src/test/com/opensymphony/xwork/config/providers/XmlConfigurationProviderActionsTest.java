@@ -8,10 +8,7 @@ import com.opensymphony.xwork.MockInterceptor;
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.config.ConfigurationProvider;
-import com.opensymphony.xwork.config.entities.ActionConfig;
-import com.opensymphony.xwork.config.entities.InterceptorConfig;
-import com.opensymphony.xwork.config.entities.PackageConfig;
-import com.opensymphony.xwork.config.entities.ResultConfig;
+import com.opensymphony.xwork.config.entities.*;
 import com.opensymphony.xwork.interceptor.TimerInterceptor;
 import com.opensymphony.xwork.mock.MockResult;
 
@@ -32,6 +29,7 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private List interceptors;
+    private List exceptionMappings;
     private Map params;
     private Map results;
 
@@ -60,6 +58,17 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
 
         ActionConfig fooAction = new ActionConfig(null, SimpleAction.class, params, results, interceptors);
 
+        // fooBar action is a little more complex, two params, a result and an interceptor stack
+        params = new HashMap();
+        params.put("foo", "18");
+        params.put("bar", "24");
+        results.put("success", new ResultConfig("success", MockResult.class, new HashMap()));
+
+        ExceptionMappingConfig exceptionConfig = new ExceptionMappingConfig("runtime", "java.lang.RuntimeException", "exception");
+        exceptionMappings.add(exceptionConfig);
+
+        ActionConfig fooBarAction = new ActionConfig(null, SimpleAction.class, params, results, interceptors, exceptionMappings);
+
         // TestInterceptorParam action tests that an interceptor worked
         HashMap interceptorParams = new HashMap();
         interceptorParams.put("expectedFoo", "expectedFooValue");
@@ -87,9 +96,10 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         Map actionConfigs = pkg.getActionConfigs();
 
         // assertions
-        assertEquals(4, actionConfigs.size());
+        assertEquals(5, actionConfigs.size());
         assertEquals(barAction, actionConfigs.get("Bar"));
         assertEquals(fooAction, actionConfigs.get("Foo"));
+        assertEquals(fooBarAction, actionConfigs.get("FooBar"));
         assertEquals(intAction, actionConfigs.get("TestInterceptorParam"));
         assertEquals(intOverAction, actionConfigs.get("TestInterceptorParamOverride"));
     }
@@ -99,5 +109,6 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         params = new HashMap();
         results = new HashMap();
         interceptors = new ArrayList();
+        exceptionMappings = new ArrayList();
     }
 }

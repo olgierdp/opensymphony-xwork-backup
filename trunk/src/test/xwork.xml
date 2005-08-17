@@ -1,6 +1,6 @@
 <!DOCTYPE xwork PUBLIC
     "-//OpenSymphony Group//XWork 1.0//EN"
-    "http://www.opensymphony.com/xwork/xwork-1.0.dtd"
+    "http://www.opensymphony.com/xwork/xwork-1.1.dtd"
  >
  <!-- "file:///temp/ross/xwork/src/etc/xwork-1.0.dtd"  -->
 
@@ -101,6 +101,10 @@
                 <interceptor-ref name="defaultStack"/>
             </interceptor-stack>
         </interceptors>
+
+        <global-exception-mappings>
+            <exception-mapping name="foo" exception="com.opensymphony.TestException" result="foo"/>
+        </global-exception-mappings>
 
         <action name="Bar" class="com.opensymphony.xwork.SimpleAction">
             <interceptor-ref name="barDefaultStack"/>

@@ -184,7 +184,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         List externalrefs = buildExternalRefs(actionElement, packageContext);
 
-        ActionConfig actionConfig = new ActionConfig(methodName, className, actionParams, results, interceptorList, externalrefs, packageContext.getName());
+        List exceptionMappings = buildExceptionMappings(actionElement, packageContext);
+
+        ActionConfig actionConfig = new ActionConfig(methodName, className, actionParams, results, interceptorList, externalrefs, exceptionMappings, packageContext.getName());
         packageContext.addActionConfig(name, actionConfig);
 
         if (LOG.isDebugEnabled()) {
@@ -213,6 +215,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         // load the global result list for this package
         loadGlobalResults(newPackage, packageElement);
+
+        // load the global exception handler list for this package
+        loadGobalExceptionMappings(newPackage, packageElement);
 
         // get actions
         NodeList actionList = packageElement.getElementsByTagName("action");
@@ -426,6 +431,38 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         return results;
     }
 
+    /**
+     * Build a map of ResultConfig objects from below a given XML element.
+     */
+    protected List buildExceptionMappings(Element element, PackageConfig packageContext) {
+        NodeList exceptionMappingEls = element.getElementsByTagName("exception-mapping");
+
+        List exceptionMappings = new ArrayList();
+
+        for (int i = 0; i < exceptionMappingEls.getLength(); i++) {
+            Element ehElement = (Element) exceptionMappingEls.item(i);
+
+            if (ehElement.getParentNode().equals(element)) {
+                String emName = ehElement.getAttribute("name");
+                String exceptionClassName = ehElement.getAttribute("exception");
+                String exceptionResult = ehElement.getAttribute("result");
+
+                Map params = XmlHelper.getParams(ehElement);
+
+                if (!TextUtils.stringSet(emName)) {
+                    emName = exceptionResult;
+                }
+
+                ExceptionMappingConfig ehConfig = new ExceptionMappingConfig(emName, exceptionClassName, exceptionResult, params);
+                exceptionMappings.add(ehConfig);
+            }
+        }
+
+        return exceptionMappings;
+    }
+
+
+
     protected void loadDefaultInterceptorRef(PackageConfig packageContext, Element element) {
         NodeList resultTypeList = element.getElementsByTagName("default-interceptor-ref");
 
@@ -445,6 +482,19 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             Element globalResultElement = (Element) globalResultList.item(0);
             Map results = buildResults(globalResultElement, packageContext);
             packageContext.addGlobalResultConfigs(results);
+        }
+    }
+
+    /**
+     * Load all of the global results for this package from the XML element.
+     */
+    protected void loadGobalExceptionMappings(PackageConfig packageContext, Element packageElement) {
+        NodeList globalExceptionMappingList = packageElement.getElementsByTagName("global-exception-mappings");
+
+        if (globalExceptionMappingList.getLength() > 0) {
+            Element globalExceptionMappingElement = (Element) globalExceptionMappingList.item(0);
+            List exceptionMappings = buildExceptionMappings(globalExceptionMappingElement, packageContext);
+            packageContext.addGlobalExceptionMappingConfigs(exceptionMappings);
         }
     }
 

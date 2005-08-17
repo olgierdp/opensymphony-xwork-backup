@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ELEMENT xwork (package|include)*>
 
-<!ELEMENT package (result-types?, interceptors?, default-interceptor-ref?, global-results?, action*)>
+<!ELEMENT package (result-types?, interceptors?, default-interceptor-ref?, global-results?, global-exception-mappings?, action*)>
 <!ATTLIST package
     name CDATA #REQUIRED
     extends CDATA #IMPLIED
@@ -50,7 +50,9 @@
 
 <!ELEMENT global-results (result+)>
 
-<!ELEMENT action (param|result|interceptor-ref|external-ref)*>
+<!ELEMENT global-exception-mappings (exception-mapping+)>
+
+<!ELEMENT action (param|result|interceptor-ref|exception-mapping|external-ref)*>
 <!ATTLIST action
     name CDATA #REQUIRED
     class CDATA #IMPLIED
@@ -67,6 +69,13 @@
 <!ATTLIST result
     name CDATA #IMPLIED
     type CDATA #IMPLIED
+>
+
+<!ELEMENT exception-mapping (#PCDATA|param)*>
+<!ATTLIST exception-mapping
+    name CDATA #IMPLIED
+    exception CDATA #REQUIRED
+    result CDATA #REQUIRED
 >
 
 <!ELEMENT include (#PCDATA)>

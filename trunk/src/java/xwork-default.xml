@@ -1,4 +1,4 @@
-<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.0//EN" "http://www.opensymphony.com/xwork/xwork-1.0.dtd">
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.0//EN" "http://www.opensymphony.com/xwork/xwork-1.1.dtd">
 
 <xwork>
     <package name="xwork-default">
@@ -17,7 +17,7 @@
             <interceptor name="validation" class="com.opensymphony.xwork.validator.ValidationInterceptor"/>
             <interceptor name="workflow" class="com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor"/>
             <interceptor name="prepare" class="com.opensymphony.xwork.interceptor.PrepareInterceptor"/>
-            <interceptor name="conversionError" class="com.opensymphony.xwork.interceptor.ConversionErrorInterceptor"/>
+            <interceptor name="conversionError"  class="com.opensymphony.xwork.interceptor.ConversionErrorInterceptor"/>
 			<interceptor name="alias" class="com.opensymphony.xwork.interceptor.AliasInterceptor"/>
   
             <interceptor-stack name="defaultStack">

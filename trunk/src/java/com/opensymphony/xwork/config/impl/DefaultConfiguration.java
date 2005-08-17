@@ -175,7 +175,10 @@ public class DefaultConfiguration implements Configuration {
 
         List externalRefs = baseConfig.getExternalRefs();
 
-        ActionConfig config = new ActionConfig(baseConfig.getMethodName(), baseConfig.getClassName(), params, results, interceptors, externalRefs, packageContext.getName());
+        List exceptionMappings = baseConfig.getExceptionMappings();
+        exceptionMappings.addAll(packageContext.getAllExceptionMappingConfigs());
+
+        ActionConfig config = new ActionConfig(baseConfig.getMethodName(), baseConfig.getClassName(), params, results, interceptors, externalRefs, exceptionMappings, packageContext.getName());
 
         return config;
     }

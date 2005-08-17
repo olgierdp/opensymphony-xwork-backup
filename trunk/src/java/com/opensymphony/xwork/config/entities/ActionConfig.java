@@ -33,6 +33,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
     protected List interceptors;
     protected Map params;
     protected Map results;
+    protected List exceptionMappings;
     protected Method method;
     protected String className;
     protected String methodName;
@@ -46,6 +47,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
         results = new TreeMap();
         interceptors = new ArrayList();
         externalRefs = new ArrayList();
+        exceptionMappings = new ArrayList();
     }
 
     //Helper constuctor to maintain backward compatibility with objects that create ActionConfigs
@@ -54,19 +56,32 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
         this(methodName, clazz.getName(), parameters, results, interceptors);
     }
 
+    public ActionConfig(String methodName, Class clazz, Map parameters, Map results, List interceptors, List exceptionMappings) {
+        this(methodName, clazz.getName(), parameters, results, interceptors, exceptionMappings);
+    }
+
     public ActionConfig(String methodName, String className, Map parameters, Map results, List interceptors) {
         this(methodName, className, parameters, results, interceptors, Collections.EMPTY_LIST, new String());
+    }
+
+    public ActionConfig(String methodName, String className, Map parameters, Map results, List interceptors, List exceptionMappings) {
+        this(methodName, className, parameters, results, interceptors, Collections.EMPTY_LIST, exceptionMappings, new String());
     }
 
     //TODO If this is commited to CVS we should put the package arg at the front of the ctor and fix
     //code that uses it
     public ActionConfig(String methodName, String className, Map parameters, Map results, List interceptors, List externalRefs, String packageName) {
+        this(methodName, className, parameters, results, interceptors, externalRefs, Collections.EMPTY_LIST, packageName);
+    }
+
+    public ActionConfig(String methodName, String className, Map parameters, Map results, List interceptors, List externalRefs, List exceptionMappings, String packageName) {
         this.methodName = methodName;
         this.interceptors = interceptors;
         this.params = parameters;
         this.results = results;
         this.className = className;
         this.externalRefs = externalRefs;
+        this.exceptionMappings = exceptionMappings;
         this.packageName = packageName;
     }
 
@@ -82,6 +97,10 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
 
     public List getExternalRefs() {
         return externalRefs;
+    }
+
+    public List getExceptionMappings() {
+        return exceptionMappings;
     }
 
     public List getInterceptors() {
@@ -183,6 +202,14 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
 
     public void addExternalRefs(List externalRefs) {
         getExternalRefs().addAll(externalRefs);
+    }
+
+    public void addExceptionMapping(ExceptionMappingConfig exceptionMapping) {
+        getExceptionMappings().add(exceptionMapping);
+    }
+
+    public void addExceptionMappings(List exceptionMappings) {
+        getExceptionMappings().addAll(exceptionMappings);
     }
 
     public void addInterceptor(Interceptor interceptor) {

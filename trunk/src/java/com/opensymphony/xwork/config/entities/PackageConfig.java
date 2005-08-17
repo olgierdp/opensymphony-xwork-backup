@@ -28,6 +28,7 @@ public class PackageConfig implements Comparable {
     private Map globalResultConfigs = new TreeMap();
     private Map interceptorConfigs = new TreeMap();
     private Map resultTypeConfigs = new TreeMap();
+    private List globalExceptionMappingConfigs = new ArrayList();
     private Set parents = new TreeSet();
     private String defaultInterceptorRef;
     private String defaultResultType;
@@ -162,6 +163,29 @@ public class PackageConfig implements Comparable {
 
         return retMap;
     }
+
+    /**
+     * returns the List of all the ExceptionMappingConfigs available in the current package.
+     * ExceptionMappingConfigs defined in ancestor packages will be included in this list.
+     *
+     * @return a List of ExceptionMappingConfigs Objects with the result type name as the key
+     * @see ExceptionMappingConfig
+     */
+    public List getAllExceptionMappingConfigs() {
+        List allExceptionMappings = new ArrayList();
+
+        if (!parents.isEmpty()) {
+            for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
+                PackageConfig parentContext = (PackageConfig) iterator.next();
+                allExceptionMappings.addAll(parentContext.getAllExceptionMappingConfigs());
+            }
+        }
+
+        allExceptionMappings.addAll(getGlobalExceptionMappingConfigs());
+
+        return allExceptionMappings;
+    }
+
 
     public void setDefaultInterceptorRef(String name) {
         defaultInterceptorRef = name;
@@ -314,6 +338,16 @@ public class PackageConfig implements Comparable {
         return resultTypeConfigs;
     }
 
+    /**
+     * gets the ExceptionMappingConfigs local to this package
+     *
+     * @return a Map of ExceptionMappingConfig objects keyed by result name
+     * @see ExceptionMappingConfig
+     */
+    public List getGlobalExceptionMappingConfigs() {
+        return globalExceptionMappingConfigs;
+    }
+
     public void addActionConfig(String name, ActionConfig action) {
         actionConfigs.put(name, action);
     }
@@ -331,6 +365,14 @@ public class PackageConfig implements Comparable {
 
     public void addGlobalResultConfigs(Map resultConfigs) {
         globalResultConfigs.putAll(resultConfigs);
+    }
+
+    public void addExceptionMappingConfig(ExceptionMappingConfig exceptionMappingConfig) {
+        globalExceptionMappingConfigs.add(exceptionMappingConfig);
+    }
+
+    public void addGlobalExceptionMappingConfigs(List exceptionMappingConfigs) {
+        globalExceptionMappingConfigs.addAll(exceptionMappingConfigs);
     }
 
     public void addInterceptorConfig(InterceptorConfig config) {
@@ -400,6 +442,10 @@ public class PackageConfig implements Comparable {
             return false;
         }
 
+        if ((globalExceptionMappingConfigs != null) ? (!globalExceptionMappingConfigs.equals(packageConfig.globalExceptionMappingConfigs)) : (packageConfig.globalExceptionMappingConfigs != null)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -412,6 +458,7 @@ public class PackageConfig implements Comparable {
         result = (29 * result) + ((globalResultConfigs != null) ? globalResultConfigs.hashCode() : 0);
         result = (29 * result) + ((interceptorConfigs != null) ? interceptorConfigs.hashCode() : 0);
         result = (29 * result) + ((resultTypeConfigs != null) ? resultTypeConfigs.hashCode() : 0);
+        result = (29 * result) + ((globalExceptionMappingConfigs != null) ? globalExceptionMappingConfigs.hashCode() : 0);
         result = (29 * result) + ((defaultResultType != null) ? defaultResultType.hashCode() : 0);
         result = (29 * result) + ((namespace != null) ? namespace.hashCode() : 0);
         result = (29 * result) + (isAbstract ? 1 : 0);
