@@ -77,7 +77,7 @@ public class ParametersInterceptor extends AroundInterceptor {
                        ActionContext invocationContext) {
         ParameterNameAware parameterNameAware =
                 (action instanceof ParameterNameAware)
-                        ? (ParameterNameAware) action : null;
+                ? (ParameterNameAware) action : null;
 
         for (Iterator iterator = (new TreeMap(parameters)).entrySet().iterator();
              iterator.hasNext();) {
@@ -90,13 +90,13 @@ public class ParametersInterceptor extends AroundInterceptor {
 
             if (acceptableName) {
                 Object value = entry.getValue();
-                if (isNullOrBlankValue(value) && invocationContext!=null) {
+                if (isNullOrBlankValue(value) && invocationContext != null) {
                     invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
-                }                
+                }
                 stack.setValue(name, value);
-                if (isNullOrBlankValue(value) && invocationContext!=null) {
+                if (isNullOrBlankValue(value) && invocationContext != null) {
                     invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-                }                
+                }
             }
         }
     }
@@ -107,19 +107,20 @@ public class ParametersInterceptor extends AroundInterceptor {
         }
 
         StringBuffer logEntry = new StringBuffer();
-        for (Iterator i = parameters.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
+        for (Iterator paramIter = parameters.entrySet().iterator(); paramIter.hasNext();) {
+            Map.Entry entry = (Map.Entry) paramIter.next();
             logEntry.append(String.valueOf(entry.getKey()));
             logEntry.append(" => ");
             if (entry.getValue() instanceof Object[]) {
                 Object[] valueArray = (Object[]) entry.getValue();
                 logEntry.append("[ ");
-                for (int a = 0,b = valueArray.length; a < b - 1; a++) {
-                    logEntry.append(valueArray[a]);
-                    logEntry.append(String.valueOf(valueArray[a]));
+                for (int indexA = 0; indexA < (valueArray.length - 1); indexA++) {
+                    Object valueAtIndex = valueArray[indexA];
+                    logEntry.append(valueAtIndex);
+                    logEntry.append(String.valueOf(valueAtIndex));
                     logEntry.append(", ");
                 }
-                logEntry.append(String.valueOf(valueArray[valueArray.length]));
+                logEntry.append(String.valueOf(valueArray[valueArray.length - 1]));
                 logEntry.append(" ] ");
             } else {
                 logEntry.append(String.valueOf(entry.getValue()));
@@ -137,16 +138,17 @@ public class ParametersInterceptor extends AroundInterceptor {
             return true;
         }
     }
+
     /**
-	 * @param value
-	 * @return whether this Object is null or it is a String of whitespace
-	 */
-	private boolean isNullOrBlankValue(Object value) {
-		if (value==null || 
-				(value instanceof String && value.toString().trim().equals(""))) {
-			return true;
-		}	else {
-			return true;
-		}
-	}    
+     * @param value
+     * @return whether this Object is null or it is a String of whitespace
+     */
+    private boolean isNullOrBlankValue(Object value) {
+        if (value == null ||
+                (value instanceof String && value.toString().trim().equals(""))) {
+            return true;
+        } else {
+            return true;
+        }
+    }
 }
