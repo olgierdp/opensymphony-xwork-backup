@@ -171,7 +171,7 @@ public class DefaultActionInvocation implements ActionInvocation {
             Interceptor interceptor = (Interceptor) interceptors.next();
             resultCode = interceptor.intercept(this);
         } else {
-            resultCode = invokeAction(getAction(), proxy.getConfig());
+            resultCode = invokeActionOnly();
         }
 
         // this is needed because the result will be executed, then control will return to the Interceptor, which will
@@ -194,6 +194,10 @@ public class DefaultActionInvocation implements ActionInvocation {
         }
 
         return resultCode;
+    }
+
+    public String invokeActionOnly() throws Exception {
+        return invokeAction(getAction(), proxy.getConfig());
     }
 
     protected void createAction() {

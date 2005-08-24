@@ -59,6 +59,10 @@ public class TestActionInvocation implements ActionInvocation {
     }
 
     public String invoke() throws Exception {
+        return invokeActionOnly();
+    }
+
+    public String invokeActionOnly() throws Exception {
         executed = true;
         Method method = action.getClass().getMethod("execute", new Class[0]);
         return (String) method.invoke(action, new Object[0]);

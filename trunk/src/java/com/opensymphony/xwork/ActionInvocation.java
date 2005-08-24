@@ -113,4 +113,11 @@ public interface ActionInvocation extends Serializable {
      * the Action is executed. If the ActionProxy getExecuteResult() method returns true, the Result is also executed.
      */
     String invoke() throws Exception;
+
+    /**
+     * Invokes only the action (not interceptors or results). This is useful in rare situations where advanced usage
+     * with the interceptor/action/result workflow is being manipulated for certain functionality. Specifically,
+     * WebWork's execAndWait interceptor takes advantage of this method.
+     */
+    String invokeActionOnly() throws Exception;
 }
