@@ -6,6 +6,7 @@ package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.util.OgnlValueStack;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -14,19 +15,19 @@ import java.util.Map;
 /**
  * The ActionContext is the context in which an {@link Action} is executed. Each context is basically a
  * container of objects an action needs for execution like the session, parameters, locale, etc. <p>
- *
+ * <p/>
  * The ActionContext is thread local which means that values stored in the ActionContext are
- * unique per thread. See the {@link java.lang.ThreadLocal} class for more information. The benefit of
+ * unique per thread. See the {@link ThreadLocal} class for more information. The benefit of
  * this is you don't need to worry about a user specific action context, you just get it:
- *
+ * <p/>
  * <ul><code>ActionContext context = ActionContext.getContext();</code></ul>
- *
+ * <p/>
  * Finally, because of the thread local usage you don't need to worry about making your actions thread safe.
  *
  * @author Patrick Lightbody
  * @author Bill Lynch (docs)
  */
-public class ActionContext {
+public class ActionContext implements Serializable {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     static ThreadLocal actionContext = new ActionContextThreadLocal();
@@ -186,7 +187,7 @@ public class ActionContext {
      * Gets the map of conversion errors which occurred when executing the action.
      *
      * @return the map of conversion errors which occurred when executing the action or an empty map if
-     *      there were no errors.
+     *         there were no errors.
      */
     public Map getConversionErrors() {
         Map errors = (Map) get(CONVERSION_ERRORS);
@@ -257,7 +258,7 @@ public class ActionContext {
      * parameters otherwise.
      *
      * @return a Map of HttpServletRequest parameters or a multipart map when in a servlet environment, or a
-     *      generic Map of parameters otherwise.
+     *         generic Map of parameters otherwise.
      */
     public Map getParameters() {
         return (Map) get(PARAMETERS);
@@ -310,7 +311,7 @@ public class ActionContext {
     /**
      * Stores a value in the current ActionContext. The value can be looked up using the key.
      *
-     * @param key the key of the value.
+     * @param key   the key of the value.
      * @param value the value to be stored.
      */
     public void put(Object key, Object value) {

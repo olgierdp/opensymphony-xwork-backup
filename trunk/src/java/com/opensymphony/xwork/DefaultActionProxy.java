@@ -20,7 +20,9 @@ import java.util.Map;
  * The Default ActionProxy implementation
  *
  * @author $Author$
+ * @author Revised by <a href="mailto:hu_pengfei@yahoo.com.cn">Henry Hu</a>
  * @version $Revision$
+ * @since 2005-8-6
  */
 public class DefaultActionProxy implements ActionProxy, Serializable {
     //~ Static fields/initializers /////////////////////////////////////////////
@@ -107,19 +109,28 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     }
 
     public String execute() throws Exception {
-        ActionContext nestedContext = ActionContext.getContext();
+
+        ActionContext nestedContext = null;
+
+        String executed = ActionGlobalContext.getContext().getActionExecuted();
+        if (executed != null)
+            nestedContext = ActionContext.getContext();
+
         ActionContext.setContext(invocation.getInvocationContext());
 
         String retCode = null;
 
         try {
             retCode = invocation.invoke();
+            ActionGlobalContext.getContext().setActionExecuted("Executed");
         } finally {
-            ActionContext.setContext(nestedContext);
+            if (executed != null)
+                ActionContext.setContext(nestedContext);
         }
 
         return retCode;
     }
+
 
     public String getMethod() {
         return method;
