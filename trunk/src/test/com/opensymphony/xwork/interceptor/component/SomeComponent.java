@@ -11,11 +11,12 @@ package com.opensymphony.xwork.interceptor.component;
  * @author $Author$
  * @version $Revision$
  */
-public class SomeComponent implements FooAware, BarAware, Initializable, Disposable {
+public class SomeComponent implements FooAware, BarAware, SuperChild, Initializable, Disposable {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     Bar bar;
     Foo foo;
+	Super superlative;
     boolean disposeCalled;
     boolean initCalled;
 
@@ -35,6 +36,14 @@ public class SomeComponent implements FooAware, BarAware, Initializable, Disposa
 
     public Foo getFoo() {
         return foo;
+    }
+
+    public void setSuper(Super superlative) {
+        this.superlative = superlative;
+    }
+
+    public Super getSuper() {
+        return superlative;
     }
 
     public void dispose() {

@@ -222,7 +222,16 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
 
         Class[] interfaces = clazz.getInterfaces();
         allInterfaces.addAll(Arrays.asList(interfaces));
+        addAllInterfaces(interfaces, allInterfaces);
         addAllInterfaces(clazz.getSuperclass(), allInterfaces);
+    }
+
+    private void addAllInterfaces(Class[] clazzes, List allInterfaces) {
+        if (clazzes != null) {
+            for (int i = 0; i < clazzes.length; i++) {
+                addAllInterfaces(clazzes[i], allInterfaces);
+            }
+        }
     }
 
     private Class loadResource(Object resource, Class clazz, DefaultComponentManager dcm) {

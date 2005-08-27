@@ -23,7 +23,7 @@ public class DefaultComponentManagerTest extends TestCase {
 
     public void testFoo() throws IOException, SAXException {
         ComponentConfiguration cc = new ComponentConfiguration();
-        String configText = "<components>\n" + "<component>\n" + "<class>" + Foo.class.getName() + "</class>\n" + "<scope>foo</scope>\n" + "<enabler>" + FooAware.class.getName() + "</enabler>\n" + "</component>\n" + "<component>\n" + "<class>" + Bar.class.getName() + "</class>\n" + "<scope>bar</scope>\n" + "<enabler>" + BarAware.class.getName() + "</enabler>\n" + "</component>\n" + "</components>\n";
+        String configText = "<components>\n" + "<component>\n" + "<class>" + Foo.class.getName() + "</class>\n" + "<scope>foo</scope>\n" + "<enabler>" + FooAware.class.getName() + "</enabler>\n" + "</component>\n" + "<component>\n" + "<class>" + Bar.class.getName() + "</class>\n" + "<scope>bar</scope>\n" + "<enabler>" + BarAware.class.getName() + "</enabler>\n" + "</component>\n" + "<component>\n" + "<class>" + Super.class.getName() + "</class>\n" + "<scope>bar</scope>\n" + "<enabler>" + SuperAware.class.getName() + "</enabler>\n" + "</component>\n" + "</components>\n";
 
         cc.loadFromXml(new ByteArrayInputStream(configText.getBytes()));
 
@@ -41,6 +41,7 @@ public class DefaultComponentManagerTest extends TestCase {
         assertFalse(component.disposeCalled);
         assertNotNull(component.foo);
         assertNotNull(component.bar);
+        assertNotNull(component.superlative);
         assertEquals(component.bar, component.foo.bar);
 
         dcmFoo.dispose();
