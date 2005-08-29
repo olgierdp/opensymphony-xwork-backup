@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * I18nInterceptor
@@ -67,18 +68,21 @@ public class I18nInterceptor implements Interceptor {
         }
 
         //save it in session
-        if (requested_locale != null) {
-            Locale locale = (requested_locale instanceof Locale) ?
-                    (Locale) requested_locale : localeFromString(requested_locale.toString());
-            if (log.isDebugEnabled()) log.debug("store locale=" + locale);
-            if (locale != null) invocation.getInvocationContext().getSession().put(attributeName, locale);
-        }
+        Map session = invocation.getInvocationContext().getSession();
+        if (session != null) {
+            if (requested_locale != null) {
+                Locale locale = (requested_locale instanceof Locale) ?
+                        (Locale) requested_locale : localeFromString(requested_locale.toString());
+                if (log.isDebugEnabled()) log.debug("store locale=" + locale);
+                if (locale != null) session.put(attributeName, locale);
+            }
 
-        //set locale for action
-        Object locale = invocation.getInvocationContext().getSession().get(attributeName);
-        if (locale != null && locale instanceof Locale) {
-            if (log.isDebugEnabled()) log.debug("apply locale=" + locale);
-            invocation.getInvocationContext().setLocale((Locale) locale);
+            //set locale for action
+            Object locale = session.get(attributeName);
+            if (locale != null && locale instanceof Locale) {
+                if (log.isDebugEnabled()) log.debug("apply locale=" + locale);
+                invocation.getInvocationContext().setLocale((Locale) locale);
+            }
         }
 
         if (log.isDebugEnabled()) {
