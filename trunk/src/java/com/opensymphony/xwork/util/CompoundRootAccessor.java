@@ -5,12 +5,10 @@
 package com.opensymphony.xwork.util;
 
 import ognl.*;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.beans.IntrospectionException;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,6 +43,9 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     OgnlRuntime.setProperty(ognlContext, o, name, value);
 
                     return;
+                } else if (o instanceof Map) {
+                    Map map = (Map) o;
+                    map.put(name, value);
                 }
             } catch (OgnlException e) {
                 if (e.getReason() != null) {
@@ -53,6 +54,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     throw new RuntimeException(msg);
                 }
             } catch (IntrospectionException e) {
+                // this is OK if this happens, we'll just keep trying the next
             }
         }
 
@@ -94,8 +96,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
                 try {
                     if ((OgnlRuntime.hasGetProperty(ognlContext, o, name)) || ((o instanceof Map) && ((Map) o).containsKey(name))) {
-                        Object value = OgnlRuntime.getProperty(ognlContext, o, name);
-                        return value;
+                        return OgnlRuntime.getProperty(ognlContext, o, name);
                     }
                 } catch (OgnlException e) {
                     if (e.getReason() != null) {
@@ -104,6 +105,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                         throw new RuntimeException(msg);
                     }
                 } catch (IntrospectionException e) {
+                    // this is OK if this happens, we'll just keep trying the next
                 }
             }
 
