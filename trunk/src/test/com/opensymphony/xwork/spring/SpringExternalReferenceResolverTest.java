@@ -4,7 +4,6 @@
 package com.opensymphony.xwork.spring;
 
 import com.opensymphony.xwork.ActionProxy;
-import com.opensymphony.xwork.ActionProxyFactory;
 import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.ExternalReferenceResolver;
@@ -54,7 +53,7 @@ public class SpringExternalReferenceResolverTest extends XWorkTestCase {
             throws Exception {
         initialiseReferenceResolver();
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = AbstractActionProxyFactory.getFactory().createActionProxy(
                 null, "TestExternalRefResolver", null);
 
         Object action = proxy.getAction();
@@ -93,7 +92,7 @@ public class SpringExternalReferenceResolverTest extends XWorkTestCase {
     public void testResolverRespectsRequiredDependancies() throws Exception {
         initialiseReferenceResolver();
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = AbstractActionProxyFactory.getFactory().createActionProxy(
                 null, "TestExternalRefResolver2", null);
         Object action = proxy.getAction();
         assertNotNull("Action should be null", action);
@@ -113,7 +112,7 @@ public class SpringExternalReferenceResolverTest extends XWorkTestCase {
 
         //now test that a required dependacy that is missing will throw an
         // exception
-        proxy = ActionProxyFactory.getFactory().createActionProxy(null,
+        proxy = AbstractActionProxyFactory.getFactory().createActionProxy(null,
                 "TestExternalRefResolver3", null);
         action = proxy.getAction();
         assertNotNull("Action should be null", action);
@@ -136,7 +135,7 @@ public class SpringExternalReferenceResolverTest extends XWorkTestCase {
     public void testResolutionBasedOnTypeOnly() throws Exception {
         initialiseReferenceResolver();
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = AbstractActionProxyFactory.getFactory().createActionProxy(
                 null, "TestExternalRefResolver4", null);
 
         ExternalReferenceAction erAction = (ExternalReferenceAction) proxy
@@ -161,7 +160,7 @@ public class SpringExternalReferenceResolverTest extends XWorkTestCase {
     public void testResolverOnParentPackage() throws Exception {
         initialiseReferenceResolver();
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = AbstractActionProxyFactory.getFactory().createActionProxy(
                 "test/", "TestExternalRefResolver5", null);
 
         ExternalReferenceAction erAction = (ExternalReferenceAction) proxy

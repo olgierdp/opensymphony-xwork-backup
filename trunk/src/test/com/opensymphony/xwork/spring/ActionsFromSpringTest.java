@@ -32,7 +32,7 @@ public class ActionsFromSpringTest extends XWorkTestCase {
     }
 
     public void testLoadSimpleAction() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "simpleAction", null);
+        ActionProxy proxy = AbstractActionProxyFactory.getFactory().createActionProxy(null, "simpleAction", null);
         Object action = proxy.getAction();
 
         Action expected = (Action) appContext.getBean("simple-action");
@@ -41,19 +41,19 @@ public class ActionsFromSpringTest extends XWorkTestCase {
     }
 
     public void testLoadActionWithDependencies() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "dependencyAction", null);
+        ActionProxy proxy = AbstractActionProxyFactory.getFactory().createActionProxy(null, "dependencyAction", null);
         SimpleAction action = (SimpleAction) proxy.getAction();
 
         assertEquals("injected", action.getBlah());
     }
 
     public void testProxiedActionIsNotStateful() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "proxiedAction", null);
+        ActionProxy proxy = AbstractActionProxyFactory.getFactory().createActionProxy(null, "proxiedAction", null);
         SimpleAction action = (SimpleAction) proxy.getAction();
 
         action.setBlah("Hello World");
 
-        proxy = ActionProxyFactory.getFactory().createActionProxy(null, "proxiedAction", null);
+        proxy = AbstractActionProxyFactory.getFactory().createActionProxy(null, "proxiedAction", null);
         action = (SimpleAction) proxy.getAction();
 
         // If the action is a singleton, this test will fail
@@ -66,7 +66,7 @@ public class ActionsFromSpringTest extends XWorkTestCase {
     }
 
     public void testAutoProxiedAction() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "autoProxiedAction", null);
+        ActionProxy proxy = AbstractActionProxyFactory.getFactory().createActionProxy(null, "autoProxiedAction", null);
 
         SimpleAction action = (SimpleAction) proxy.getAction();
 
