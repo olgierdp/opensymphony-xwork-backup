@@ -24,11 +24,20 @@ public class SpringProxyableObjectFactory extends SpringObjectFactory {
     private List skipBeanNames = new ArrayList();
 
     public Object buildBean(String beanName) throws Exception {
+        if (log.isDebugEnabled()) {
+            log.debug("Building bean for name " + beanName);
+        }
         if (!skipBeanNames.contains(beanName)) {
             ApplicationContext anAppContext = getApplicationContext();
             try {
+                if (log.isDebugEnabled()) {
+                    log.debug("Trying the application context... appContext = " + anAppContext + ",\n bean name = " + beanName);
+                }
                 return anAppContext.getBean(beanName);
             } catch (NoSuchBeanDefinitionException e) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Did not find bean definition for bean named " + beanName + ", creating a new one...");
+                }
                 if (autoWiringFactory instanceof BeanDefinitionRegistry) {
                     try {
                         Class clazz = Class.forName(beanName);
@@ -54,7 +63,7 @@ public class SpringProxyableObjectFactory extends SpringObjectFactory {
         if (log.isDebugEnabled()) {
             log.debug("Returning autowired instance created by default ObjectFactory");
         }
-        return autoWireBean(super.buildBean(beanName));
+        return autoWireBean(super.buildBean(beanName), autoWiringFactory);
     }
 
     /**

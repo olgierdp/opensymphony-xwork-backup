@@ -21,12 +21,12 @@ import java.util.Map;
  * Simple implementation of the ObjectFactory that makes use of Spring's
  * application context if one has been configured, before falling back on the
  * default mechanism of instantiating a new class using the class name.
- * 
+ *
  * In order to use this class in your application, you will need to instantiate
  * a copy of this class and set it as XWork's ObjectFactory before the xwork.xml
  * file is parsed. In a servlet environment, this could be done using a
  * ServletContextListener.
- * 
+ *
  * @author Simon Stewart (sms@lateral.net)
  */
 public class SpringObjectFactory extends ObjectFactory implements
@@ -42,7 +42,7 @@ public class SpringObjectFactory extends ObjectFactory implements
 	protected ApplicationContext appContext;
 
 	protected AutowireCapableBeanFactory autoWiringFactory;
-  
+
     protected int autowireStrategy = AutowireCapableBeanFactory.AUTOWIRE_BY_NAME;
 
 	private Map classes = new HashMap();
@@ -53,7 +53,7 @@ public class SpringObjectFactory extends ObjectFactory implements
 	/**
 	 * Set the Spring ApplicationContext that should be used to look beans up
 	 * with.
-	 * 
+	 *
 	 * @param appContext
 	 *            The Spring ApplicationContext that should be used to look
 	 *            beans up with.
@@ -61,12 +61,12 @@ public class SpringObjectFactory extends ObjectFactory implements
 	public void setApplicationContext(ApplicationContext appContext)
 			throws BeansException {
 		this.appContext = appContext;
-		findAutoWiringBeanFactory(this.appContext);
+		autoWiringFactory = findAutoWiringBeanFactory(this.appContext);
 	}
-  
+
   /**
-   * Sets the autowiring strategy 
-   * 
+   * Sets the autowiring strategy
+   *
    * @param autowireStrategy
    */
   public void setAutowireStrategy(int autowireStrategy) {
@@ -100,27 +100,27 @@ public class SpringObjectFactory extends ObjectFactory implements
 	 * If the given context is assignable to AutowireCapbleBeanFactory or
 	 * contains a parent or a factory that is, then set the autoWiringFactory
 	 * appropriately.
-	 * 
+	 *
 	 * @param context
 	 */
-	private void findAutoWiringBeanFactory(ApplicationContext context) {
+	protected AutowireCapableBeanFactory findAutoWiringBeanFactory(ApplicationContext context) {
 		if (context instanceof AutowireCapableBeanFactory) {
 			// Check the context
-			autoWiringFactory = (AutowireCapableBeanFactory) context;
+			return (AutowireCapableBeanFactory) context;
 		} else if (context instanceof ConfigurableApplicationContext) {
 			// Try and grab the beanFactory
-			autoWiringFactory = ((ConfigurableApplicationContext) context)
-					.getBeanFactory();
+			return ((ConfigurableApplicationContext) context).getBeanFactory();
 		} else if (context.getParent() != null) {
 			// And if all else fails, try again with the parent context
-			findAutoWiringBeanFactory(context.getParent());
+			return findAutoWiringBeanFactory(context.getParent());
 		}
-	}
+        return null;
+    }
 
 	/**
 	 * Looks up beans using Spring's application context before falling back to
 	 * the method defined in the {@link ObjectFactory}.
-	 * 
+	 *
 	 * @param beanName
 	 *            The name of the bean to look up in the application context
 	 * @return A bean from Spring or the result of calling the overridden
@@ -154,13 +154,18 @@ public class SpringObjectFactory extends ObjectFactory implements
       // We don't need to call the init-method since one won't be registered.
       bean = autoWiringFactory.applyBeanPostProcessorsAfterInitialization(bean, bean.getClass().getName());
 
-      return autoWireBean(bean);
+      return autoWireBean(bean, autoWiringFactory);
 	}
+
+    public Object autoWireBean(Object bean) {
+        return autoWireBean(bean, autoWiringFactory);
+    }
 
   /**
    * @param bean
+   * @param autoWiringFactory
    */
-	public Object autoWireBean(Object bean) {
+	public Object autoWireBean(Object bean, AutowireCapableBeanFactory autoWiringFactory) {
 		if (autoWiringFactory != null) {
 			autoWiringFactory.autowireBeanProperties(bean,
 					autowireStrategy, false);
@@ -174,7 +179,7 @@ public class SpringObjectFactory extends ObjectFactory implements
 
 	public Class getClassInstance(String className) throws ClassNotFoundException {
 		Class clazz = (Class) classes.get(className);
-		
+
 		if (clazz == null) {
 			if (appContext.containsBean(className)) {
 				clazz = appContext.getBean(className).getClass();
@@ -183,10 +188,10 @@ public class SpringObjectFactory extends ObjectFactory implements
 			}
 			classes.put(className, clazz);
 		}
-		
+
 		return clazz;
 	}
-	
+
 	/**
 	 * This method sets the ObjectFactory used by XWork to this object. It's
 	 * best used as the "init-method" of a Spring bean definition in order to
