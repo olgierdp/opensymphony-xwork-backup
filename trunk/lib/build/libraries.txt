@@ -1,8 +1,0 @@
-clover.jar - Clover 1.2.3
-junit.jar - JUnit 3.8.1
-mockobjects-alt-jdk1.3.jar - Mock objects library (0.09dev)
-mockobjects-core.jar - Mock objects library (0.09dev)
-mockobjects-jdk1.3.jar - Mock objects library (0.09dev)
-servlet.jar - Servlet API version 2.3
-velocity.jar - Apache Velocity version ???
-jsch.jar - JCraft 0.1.17

@@ -2,9 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="http://www.jayasoft.fr/org/ivyrep/ivy-doc.xsl"?>
 <ivy-module version="1.0">
     <info organisation="opensymphony" module="xwork"
-          revision="@VERSION@"
-          status="@STATUS@"
-          publication="@PUBLICATION@">
+          revision="1.1-beta-1"
+          status="integration"
+          publication="20050829053520">
         <license name="Apache" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
         <ivyauthor name="opensymphony" url="http://www.opensymphony.com/"/>
 
@@ -12,18 +12,28 @@
             XWork is an command-pattern framework that is used to power WebWork as well as other applications. XWork
             provides an Inversion of Control container, a powerful expression language, data type conversion,
             validation, and pluggable configuration.
+            <br/>
         </description>
     </info>
     <configurations>
+        <conf name="build" description="Build-time requirements only"/>
         <conf name="default" description="The xwork jar file"/>
+        <conf name="spring" description="The xwork jar file with Spring integration"/>
     </configurations>
     <publications>
         <artifact name="xwork" type="jar" conf="default"/>
     </publications>
     <dependencies>
-        <dependency org="opensymphony" name="oscore" rev="2.2.5+"/>
+        <dependency org="mockobjects" name="mockobjects-core" rev="0.09" conf="build->*"/>
+        <dependency org="mockobjects" name="mockobjects-jdk1.3" rev="0.09" conf="build->*"/>
+        <dependency org="mockobjects" name="mockobjects-alt-jdk1.3" rev="0.09" conf="build->*"/>
+        <dependency org="clover" name="clover" rev="1.3.9" conf="build->*"/>
+        <dependency org="junit" name="junit" rev="3.8.1" conf="build->*"/>
+        <dependency org="opensymphony" name="oscore" rev="2.2.4"/>
         <dependency org="ognl" name="ognl" rev="2.6.7"/>
         <dependency org="apache" name="commons-logging" rev="1.0.4"/>
+        <dependency org="springframework" name="spring" rev="1.2.3"
+                    conf="spring->spring-aop,spring-beans,spring-context,spring-core,spring-web"/>
         <dependency org="sun" name="javamail" rev="1.3.2"/>
     </dependencies>
 </ivy-module>

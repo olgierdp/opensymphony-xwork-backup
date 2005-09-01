@@ -5,4 +5,14 @@
     <!-- common opensymphony build -->
     <property name="common.build" value="../opensymphony/common/osbuild.xml"/>
     <import file="${common.build}"/>
+
+    <target name="resolve" description="--> retreive dependencies with ivy">
+        <taskdef name="ivy-configure" classname="fr.jayasoft.ivy.ant.IvyConfigure"/>
+        <taskdef name="ivy-resolve" classname="fr.jayasoft.ivy.ant.IvyResolve"/>
+        <taskdef name="ivy-retrieve" classname="fr.jayasoft.ivy.ant.IvyRetrieve"/>
+        <taskdef name="ivy-publish" classname="fr.jayasoft.ivy.ant.IvyPublish"/>
+        <taskdef name="ivy-report" classname="fr.jayasoft.ivy.ant.IvyReport"/>
+
+        <ivy-retrieve/>
+    </target>
 </project>
