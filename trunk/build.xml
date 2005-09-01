@@ -6,13 +6,19 @@
     <property name="common.build" value="../opensymphony/common/osbuild.xml"/>
     <import file="${common.build}"/>
 
-    <target name="resolve" description="--> retreive dependencies with ivy">
+    <target name="init" depends="common.init">
         <taskdef name="ivy-configure" classname="fr.jayasoft.ivy.ant.IvyConfigure"/>
         <taskdef name="ivy-resolve" classname="fr.jayasoft.ivy.ant.IvyResolve"/>
         <taskdef name="ivy-retrieve" classname="fr.jayasoft.ivy.ant.IvyRetrieve"/>
         <taskdef name="ivy-publish" classname="fr.jayasoft.ivy.ant.IvyPublish"/>
         <taskdef name="ivy-report" classname="fr.jayasoft.ivy.ant.IvyReport"/>
+        <taskdef name="ivy-deliver" classname="fr.jayasoft.ivy.ant.IvyDeliver"/>
 
         <ivy-retrieve/>
+    </target>
+
+    <target name="ivyrep.copy-ivy" depends="init">
+        <ivy-deliver deliverpattern="${ivyrep.path}/opensymphony/${name}/[artifact]-[revision].[ext]"
+                     pubrevision="${version}-${TIME}" pubdate="${TIME}"/>
     </target>
 </project>

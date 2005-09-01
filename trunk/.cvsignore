@@ -11,3 +11,4 @@ maven.log
 bin
 build-*.xml
 ioc-src.zip
+ivyrep.properties
