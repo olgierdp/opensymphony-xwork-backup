@@ -17,6 +17,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class ActionsFromSpringTest {
     private ApplicationContext appContext;
 
+    public void testFoo() {
+        // TODO: jason, you suck
+    }
+
     protected void setUp() throws Exception {
         //super.setUp();
         // Set up Spring and the ObjectFactory
