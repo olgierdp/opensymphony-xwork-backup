@@ -3,7 +3,7 @@
  */
 package com.opensymphony.xwork.spring;
 
-import com.opensymphony.xwork.ObjectFactory;
+import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
 import org.springframework.context.ApplicationContext;
@@ -14,15 +14,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  *
  * @author Simon Stewart
  */
-public class ActionsFromSpringTest {
+public class ActionsFromSpringTest extends XWorkTestCase {
     private ApplicationContext appContext;
 
-    public void testFoo() {
-        // TODO: jason, you suck
-    }
-
     protected void setUp() throws Exception {
-        //super.setUp();
+        super.setUp();
         // Set up Spring and the ObjectFactory
         appContext = new ClassPathXmlApplicationContext("com/opensymphony/xwork/spring/actionContext-spring.xml");
         SpringObjectFactory springObjectFactory = new SpringObjectFactory();
@@ -35,46 +31,46 @@ public class ActionsFromSpringTest {
         ConfigurationManager.getConfiguration().reload();
     }
 
-//    public void testLoadSimpleAction() throws Exception {
-//        ActionProxy proxy = AbstractActionProxyFactory.getFactory().createActionProxy(null, "simpleAction", null);
-//        Object action = proxy.getAction();
-//
-//        Action expected = (Action) appContext.getBean("simple-action");
-//
-//        assertEquals(expected.getClass(), action.getClass());
-//    }
+    public void testLoadSimpleAction() throws Exception {
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "simpleAction", null);
+        Object action = proxy.getAction();
 
-//    public void testLoadActionWithDependencies() throws Exception {
-//        ActionProxy proxy = AbstractActionProxyFactory.getFactory().createActionProxy(null, "dependencyAction", null);
-//        SimpleAction action = (SimpleAction) proxy.getAction();
-//
-//        assertEquals("injected", action.getBlah());
-//    }
+        Action expected = (Action) appContext.getBean("simple-action");
 
-//    public void testProxiedActionIsNotStateful() throws Exception {
-//        ActionProxy proxy = AbstractActionProxyFactory.getFactory().createActionProxy(null, "proxiedAction", null);
-//        SimpleAction action = (SimpleAction) proxy.getAction();
-//
-//        action.setBlah("Hello World");
-//
-//        proxy = AbstractActionProxyFactory.getFactory().createActionProxy(null, "proxiedAction", null);
-//        action = (SimpleAction) proxy.getAction();
-//
-//        // If the action is a singleton, this test will fail
-//        SimpleAction sa = new SimpleAction();
-//        assertEquals(sa.getBlah(), action.getBlah());
-//
-//        // And if the advice is not being applied, this will be SUCCESS.
-//        String result = action.execute();
-//        assertEquals(Action.INPUT, result);
-//    }
+        assertEquals(expected.getClass(), action.getClass());
+    }
 
-//    public void testAutoProxiedAction() throws Exception {
-//        ActionProxy proxy = AbstractActionProxyFactory.getFactory().createActionProxy(null, "autoProxiedAction", null);
-//
-//        SimpleAction action = (SimpleAction) proxy.getAction();
-//
-//        String result = action.execute();
-//        assertEquals(Action.INPUT, result);
-//    }
+    public void testLoadActionWithDependencies() throws Exception {
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "dependencyAction", null);
+        SimpleAction action = (SimpleAction) proxy.getAction();
+
+        assertEquals("injected", action.getBlah());
+    }
+
+    public void testProxiedActionIsNotStateful() throws Exception {
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "proxiedAction", null);
+        SimpleAction action = (SimpleAction) proxy.getAction();
+
+        action.setBlah("Hello World");
+
+        proxy = ActionProxyFactory.getFactory().createActionProxy(null, "proxiedAction", null);
+        action = (SimpleAction) proxy.getAction();
+
+        // If the action is a singleton, this test will fail
+        SimpleAction sa = new SimpleAction();
+        assertEquals(sa.getBlah(), action.getBlah());
+
+        // And if the advice is not being applied, this will be SUCCESS.
+        String result = action.execute();
+        assertEquals(Action.INPUT, result);
+    }
+
+    public void testAutoProxiedAction() throws Exception {
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "autoProxiedAction", null);
+
+        SimpleAction action = (SimpleAction) proxy.getAction();
+
+        String result = action.execute();
+        assertEquals(Action.INPUT, result);
+    }
 }

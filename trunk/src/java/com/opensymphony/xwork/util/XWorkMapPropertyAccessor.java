@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
     private static final String[] INDEX_ACCESS_PROPS = new String[]
-    {"size", "isEmpty", "keys", "values"};
+            {"size", "isEmpty", "keys", "values"};
 
     private static final XWorkConverter _converter = XWorkConverter.getInstance();
     private static final XWorkCollectionPropertyAccessor _cAcc = new XWorkCollectionPropertyAccessor();
@@ -100,7 +100,9 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
         Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
         String lastProperty = (String) context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
         if (lastClass == null || lastProperty == null) {
-            return java.lang.String.class;
+            // return java.lang.String.class;
+            // commented out the above -- it makes absolutely no sense for when setting basic maps!
+            return name;
         }
         Class keyClass = _converter.getObjectTypeDeterminer()
                 .getKeyClass(lastClass, lastProperty);
