@@ -21,4 +21,13 @@
         <ivy-deliver deliverpattern="${ivyrep.path}/opensymphony/${name}/[artifact]-[revision].[ext]"
                      pubrevision="${version}-${TIME}" pubdate="${TIME}"/>
     </target>
+
+    <target name="jar" depends="common.jar">
+        <jar basedir="${src.java}" jarfile="${build}/${name}-${version}-src.jar">
+            <manifest>
+                <attribute name="Implementation-Title" value="${fullname}"/>
+                <attribute name="Implementation-Version" value="${version}"/>
+            </manifest>
+        </jar>
+    </target>
 </project>
