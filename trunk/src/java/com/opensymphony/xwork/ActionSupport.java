@@ -94,7 +94,7 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
     }
 
     public String getText(String key, String defaultValue, List args, OgnlValueStack stack) {
-        return textProvider.getText(key,defaultValue,args,stack);
+        return textProvider.getText(key, defaultValue, args, stack);
     }
 
     public ResourceBundle getTexts() {
@@ -111,6 +111,10 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
 
     public void addFieldError(String fieldName, String errorMessage) {
         validationAware.addFieldError(fieldName, errorMessage);
+    }
+
+    public String doInput() throws Exception {
+        return INPUT;
     }
 
     public String doDefault() throws Exception {
