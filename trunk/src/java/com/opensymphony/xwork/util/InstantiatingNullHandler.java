@@ -5,17 +5,13 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.ObjectFactory;
-
 import ognl.NullHandler;
 import ognl.Ognl;
 import ognl.OgnlRuntime;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -91,26 +87,27 @@ public class InstantiatingNullHandler implements NullHandler {
         return null;
     }
 
+    protected Class getCollectionType(Class clazz, String property) {
+        return (Class) XWorkConverter.getInstance().getConverter(clazz, XWorkConverter.CONVERSION_COLLECTION_PREFIX + property);
+    }
 
     private Object createObject(Class clazz, Object target, String property) throws Exception {
         if (Collection.class.isAssignableFrom(clazz)) {
-            /*Class collectionType = getCollectionType(target.getClass(), property);
+            Class collectionType = getCollectionType(target.getClass(), property);
 
             if (collectionType == null) {
                 return null;
             }
 
-            return new XWorkList(collectionType);*/
-        	return new ArrayList();
+            return new XWorkList(collectionType);
         } else if (clazz == Map.class) {
-            /*Class collectionType = getCollectionType(target.getClass(), property);
+            Class collectionType = getCollectionType(target.getClass(), property);
 
             if (collectionType == null) {
                 return null;
             }
 
-            return new XWorkMap(collectionType);*/
-        	return new HashMap();
+            return new XWorkMap(collectionType);
         }
 
         return ObjectFactory.getObjectFactory().buildBean(clazz);

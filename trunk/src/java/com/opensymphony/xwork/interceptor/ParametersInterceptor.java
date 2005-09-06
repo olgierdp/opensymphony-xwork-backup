@@ -62,7 +62,7 @@ public class ParametersInterceptor extends AroundInterceptor {
                     invocationContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
                     OgnlValueStack stack = ActionContext.getContext().getValueStack();
-                    setParameters(invocation.getAction(), stack, parameters, invocationContext);
+                    setParameters(invocation.getAction(), stack, parameters);
                 } finally {
                     invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
                     invocationContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.FALSE);
@@ -73,11 +73,10 @@ public class ParametersInterceptor extends AroundInterceptor {
     }
 
     void setParameters(Object action, OgnlValueStack stack,
-                       final Map parameters,
-                       ActionContext invocationContext) {
+                       final Map parameters) {
         ParameterNameAware parameterNameAware =
                 (action instanceof ParameterNameAware)
-                ? (ParameterNameAware) action : null;
+                        ? (ParameterNameAware) action : null;
 
         for (Iterator iterator = (new TreeMap(parameters)).entrySet().iterator();
              iterator.hasNext();) {
@@ -90,13 +89,7 @@ public class ParametersInterceptor extends AroundInterceptor {
 
             if (acceptableName) {
                 Object value = entry.getValue();
-                if (isNullOrBlankValue(value) && invocationContext != null) {
-                    invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
-                }
                 stack.setValue(name, value);
-                if (isNullOrBlankValue(value) && invocationContext != null) {
-                    invocationContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-                }
             }
         }
     }

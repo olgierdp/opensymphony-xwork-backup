@@ -10,7 +10,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -36,12 +38,7 @@ public class OgnlValueStack implements Serializable {
     public static void reset() {
         accessor = new CompoundRootAccessor();
         OgnlRuntime.setPropertyAccessor(CompoundRoot.class, accessor);
-        OgnlRuntime.setPropertyAccessor(Object.class, new XWorkObjectPropertyAccessor());
-        OgnlRuntime.setPropertyAccessor(Map.class, new XWorkMapPropertyAccessor());
-        OgnlRuntime.setPropertyAccessor(Set.class, new XWorkCollectionPropertyAccessor());
-        OgnlRuntime.setPropertyAccessor(List.class, new XWorkListPropertyAccessor());
-        //OgnlRuntime.setPropertyAccessor(ArrayList.class, new XWorkListPropertyAccessor());
-        OgnlRuntime.setPropertyAccessor(XWorkList.class, new ListPropertyAccessor());
+        OgnlRuntime.setPropertyAccessor(Object.class, new ObjectAccessor());
         OgnlRuntime.setPropertyAccessor(Iterator.class, new XWorkIteratorPropertyAccessor());
         OgnlRuntime.setPropertyAccessor(Enumeration.class, new XWorkEnumerationAcccessor());
         OgnlRuntime.setMethodAccessor(Object.class, new XWorkMethodAccessor());

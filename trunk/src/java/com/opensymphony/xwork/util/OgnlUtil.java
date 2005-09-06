@@ -156,10 +156,10 @@ public class OgnlUtil {
 
                     if (
                             OgnlRuntime.hasSetProperty((OgnlContext) context, target, property)
-                            ||
-                            OgnlRuntime.hasGetProperty((OgnlContext) context, target, property)
-                            ||
-                            OgnlRuntime.getIndexedPropertyType((OgnlContext) context, target.getClass(), property) != OgnlRuntime.INDEXED_PROPERTY_NONE
+                                    ||
+                                    OgnlRuntime.hasGetProperty((OgnlContext) context, target, property)
+                                    ||
+                                    OgnlRuntime.getIndexedPropertyType((OgnlContext) context, target.getClass(), property) != OgnlRuntime.INDEXED_PROPERTY_NONE
                             ) {
                         return target;
                     }
@@ -214,13 +214,9 @@ public class OgnlUtil {
      * Ideally, this should be handled by OGNL directly.
      */
     public static void setValue(String name, Map context, Object root, Object value) throws OgnlException {
-    	OgnlContextState.clearCurrentPropertyPath(context);
         String property = null;
         Object target = null;
         if (name.endsWith("]")) {
-            property = name.substring(0, name.lastIndexOf("["));
-            target = getRealTarget(property, context, root);
-
             if (target != null) {
                 Class memberType = (Class) XWorkConverter.getInstance().getObjectTypeDeterminer().getElementClass(target.getClass(), property, null);
 
@@ -234,7 +230,6 @@ public class OgnlUtil {
         //indexed properties, cause Ognl cannot detected indexed properties on Compound object
 
         Ognl.setValue(compile(name), context, translateCompoundRoot(name, context, root, property, target), value);
-
     }
 
     public static Object getValue(String name, Map context, Object root) throws OgnlException {
@@ -247,7 +242,7 @@ public class OgnlUtil {
 
 
     public static Object compile(String expression) throws OgnlException {
-        synchronized(expressions) {
+        synchronized (expressions) {
             Object o = expressions.get(expression);
 
             if (o == null) {
@@ -271,7 +266,7 @@ public class OgnlUtil {
      * @param inclusions collection of method names to included copying  (can be null)
      *                   note if exclusions AND inclusions are supplied and not null nothing will get copied.
      */
-    public static void copy(Object from, Object to, Map context,  Collection exclusions, Collection inclusions) {
+    public static void copy(Object from, Object to, Map context, Collection exclusions, Collection inclusions) {
         Map contextFrom = Ognl.createDefaultContext(from);
         Ognl.setTypeConverter(contextFrom, XWorkConverter.getInstance());
         Map contextTo = Ognl.createDefaultContext(to);
@@ -364,7 +359,7 @@ public class OgnlUtil {
     }
 
     public static BeanInfo getBeanInfo(Object from) throws IntrospectionException {
-        synchronized(beanInfoCache) {
+        synchronized (beanInfoCache) {
             BeanInfo beanInfo;
             beanInfo = (BeanInfo) beanInfoCache.get(from.getClass());
             if (beanInfo == null) {
