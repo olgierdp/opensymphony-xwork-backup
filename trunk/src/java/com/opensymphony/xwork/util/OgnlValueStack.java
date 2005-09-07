@@ -24,12 +24,11 @@ import java.util.Map;
  * @author Patrick Lightbody
  */
 public class OgnlValueStack implements Serializable {
-    //~ Static fields/initializers /////////////////////////////////////////////
-
     public static final String VALUE_STACK = "com.opensymphony.xwork.util.OgnlValueStack.ValueStack";
     public static final String REPORT_ERRORS_ON_NO_PROP = "com.opensymphony.xwork.util.OgnlValueStack.ReportErrorsOnNoProp";
     private static CompoundRootAccessor accessor;
     private static Log LOG = LogFactory.getLog(OgnlValueStack.class);
+    private static boolean devMode = false;
 
     static {
         reset();
@@ -44,6 +43,10 @@ public class OgnlValueStack implements Serializable {
         OgnlRuntime.setMethodAccessor(Object.class, new XWorkMethodAccessor());
         OgnlRuntime.setMethodAccessor(CompoundRoot.class, accessor);
         OgnlRuntime.setNullHandler(Object.class, new InstantiatingNullHandler());
+    }
+
+    public static void setDevMode(boolean devMode) {
+        OgnlValueStack.devMode = devMode;
     }
 
     public static class ObjectAccessor extends ObjectPropertyAccessor {
@@ -117,7 +120,7 @@ public class OgnlValueStack implements Serializable {
      * @param value the value to be set into the neamed property
      */
     public void setValue(String expr, Object value) {
-        setValue(expr, value, false);
+        setValue(expr, value, devMode);
     }
 
     /**
@@ -136,8 +139,14 @@ public class OgnlValueStack implements Serializable {
             context.put(REPORT_ERRORS_ON_NO_PROP, (throwExceptionOnFailure) ? Boolean.TRUE : Boolean.FALSE);
             OgnlUtil.setValue(expr, context, root, value);
         } catch (OgnlException e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Error setting value", e);
+            if (throwExceptionOnFailure) {
+                String msg = "Error setting expr '" + expr + "' with value '" + value + "'";
+                LOG.error(msg, e);
+                throw new RuntimeException(msg, e);
+            } else {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Error setting value", e);
+                }
             }
         } finally {
             context.remove(XWorkConverter.CONVERSION_PROPERTY_FULLNAME);

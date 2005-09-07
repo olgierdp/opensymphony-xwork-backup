@@ -46,6 +46,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 } else if (o instanceof Map) {
                     Map map = (Map) o;
                     map.put(name, value);
+                    return;
                 }
             } catch (OgnlException e) {
                 if (e.getReason() != null) {
