@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.DefaultTextProvider;
 import ognl.*;
 import org.apache.commons.logging.Log;
@@ -28,7 +29,6 @@ public class OgnlValueStack implements Serializable {
     public static final String REPORT_ERRORS_ON_NO_PROP = "com.opensymphony.xwork.util.OgnlValueStack.ReportErrorsOnNoProp";
     private static CompoundRootAccessor accessor;
     private static Log LOG = LogFactory.getLog(OgnlValueStack.class);
-    private static boolean devMode = false;
 
     static {
         reset();
@@ -43,10 +43,6 @@ public class OgnlValueStack implements Serializable {
         OgnlRuntime.setMethodAccessor(Object.class, new XWorkMethodAccessor());
         OgnlRuntime.setMethodAccessor(CompoundRoot.class, accessor);
         OgnlRuntime.setNullHandler(Object.class, new InstantiatingNullHandler());
-    }
-
-    public static void setDevMode(boolean devMode) {
-        OgnlValueStack.devMode = devMode;
     }
 
     public static class ObjectAccessor extends ObjectPropertyAccessor {
@@ -120,7 +116,13 @@ public class OgnlValueStack implements Serializable {
      * @param value the value to be set into the neamed property
      */
     public void setValue(String expr, Object value) {
-        setValue(expr, value, devMode);
+        boolean report = false;
+        Boolean devMode = (Boolean) context.get(ActionContext.DEV_MODE);
+        if (devMode != null) {
+            report = devMode.booleanValue();
+        }
+
+        setValue(expr, value, report);
     }
 
     /**

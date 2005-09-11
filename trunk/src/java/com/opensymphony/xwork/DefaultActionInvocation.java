@@ -29,11 +29,7 @@ import java.util.Map;
  * @see com.opensymphony.xwork.DefaultActionProxy
  */
 public class DefaultActionInvocation implements ActionInvocation {
-    //~ Static fields/initializers /////////////////////////////////////////////
-
     private static final Log LOG = LogFactory.getLog(DefaultActionInvocation.class);
-
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     protected Object action;
     protected ActionProxy proxy;
@@ -46,8 +42,6 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected String resultCode;
     protected boolean executed = false;
     protected boolean pushAction = true;
-
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     protected DefaultActionInvocation(ActionProxy proxy) throws Exception {
         this(proxy, null);
@@ -63,8 +57,6 @@ public class DefaultActionInvocation implements ActionInvocation {
         this.pushAction = pushAction;
         init();
     }
-
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public Object getAction() {
         return action;
@@ -285,6 +277,15 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         // get a new List so we don't get problems with the iterator if someone changes the list
         List interceptorList = new ArrayList(proxy.getConfig().getInterceptors());
+        Boolean devMode = (Boolean) contextMap.get(ActionContext.DEV_MODE);
+        if (devMode != null && devMode.booleanValue()) {
+            List list = new ArrayList();
+            for (Iterator iterator = interceptorList.iterator(); iterator.hasNext();) {
+                Interceptor interceptor = (Interceptor) iterator.next();
+                proxy.getConfig().get
+            }
+        }
+
         interceptors = interceptorList.iterator();
     }
 

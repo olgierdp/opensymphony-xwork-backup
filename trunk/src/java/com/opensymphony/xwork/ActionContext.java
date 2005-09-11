@@ -28,9 +28,14 @@ import java.util.Map;
  * @author Bill Lynch (docs)
  */
 public class ActionContext implements Serializable {
-    //~ Static fields/initializers /////////////////////////////////////////////
-
     static ThreadLocal actionContext = new ActionContextThreadLocal();
+
+    /**
+     * Constant that indicates the action is running under a "development mode".
+     * This mode provides more feedback that is useful for developers but probably
+     * too verbose/error prone for production.
+     */
+    public static final String DEV_MODE = "__devMode";
 
     /**
      * Constant for the name of the action being executed.
