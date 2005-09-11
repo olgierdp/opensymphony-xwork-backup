@@ -321,7 +321,7 @@ public class DefaultActionInvocation implements ActionInvocation {
                 return (String) method.invoke(action, new Object[0]);
             }
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Method '" + actionConfig.getMethodName() + "()' is not defined in action '" + getAction().getClass() + "'");
+            throw new IllegalArgumentException("Neither " + methodName + "() nor it's doXxx() equivalent is defined in action " + getAction().getClass() + "");
         } catch (InvocationTargetException e) {
             // We try to return the source exception.
             Throwable t = e.getTargetException();
