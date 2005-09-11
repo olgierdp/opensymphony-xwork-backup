@@ -462,7 +462,6 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     }
 
 
-
     protected void loadDefaultInterceptorRef(PackageConfig packageContext, Element element) {
         NodeList resultTypeList = element.getElementsByTagName("default-interceptor-ref");
 
@@ -551,12 +550,11 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 ObjectFactory.getObjectFactory().buildInterceptor(config, new TreeMap());
                 context.addInterceptorConfig(config);
             } catch (ConfigurationException e) {
-                String s = "Unable to load class " + className + " for interceptor name " + name + ". This interceptor will not be available.";
+                String s = "Unable to load class " + className + " for interceptor name " + name + ". " +
+                        "This interceptor will not be available.\n" +
+                        "Cause: " + e.getMessage();
                 LOG.error(s);
-                throw e;
             }
-
-            context.addInterceptorConfig(config);
         }
 
         loadInterceptorStacks(element, context);

@@ -100,6 +100,7 @@ public class ObjectFactory {
         params.putAll(interceptorRefParams);
 
         String message;
+        Throwable cause;
 
         try {
             Interceptor interceptor = (Interceptor) buildBean(interceptorClassName);
@@ -108,16 +109,23 @@ public class ObjectFactory {
 
             return interceptor;
         } catch (InstantiationException e) {
+            cause = e;
             message = "Unable to instantiate an instance of Interceptor class [" + interceptorClassName + "].";
         } catch (IllegalAccessException e) {
+            cause = e;
             message = "IllegalAccessException while attempting to instantiate an instance of Interceptor class [" + interceptorClassName + "].";
         } catch (ClassCastException e) {
+            cause = e;
             message = "Class [" + interceptorClassName + "] does not implement com.opensymphony.xwork.interceptor.Interceptor";
         } catch (Exception e) {
-            throw new ConfigurationException("Caught Exception while registering Interceptor class " + interceptorClassName, e);
+            cause = e;
+            message = "Caught Exception while registering Interceptor class " + interceptorClassName;
+        } catch (NoClassDefFoundError e) {
+            cause = e;
+            message = "Could not load class " + interceptorClassName + ". Perhaps it exists but certain dependencies are not available?";
         }
 
-        throw new ConfigurationException(message);
+        throw new ConfigurationException(message, cause);
     }
 
     /**
