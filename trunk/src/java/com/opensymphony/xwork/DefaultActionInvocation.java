@@ -277,15 +277,6 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         // get a new List so we don't get problems with the iterator if someone changes the list
         List interceptorList = new ArrayList(proxy.getConfig().getInterceptors());
-        Boolean devMode = (Boolean) contextMap.get(ActionContext.DEV_MODE);
-        if (devMode != null && devMode.booleanValue()) {
-            List list = new ArrayList();
-            for (Iterator iterator = interceptorList.iterator(); iterator.hasNext();) {
-                Interceptor interceptor = (Interceptor) iterator.next();
-                proxy.getConfig().get
-            }
-        }
-
         interceptors = interceptorList.iterator();
     }
 
