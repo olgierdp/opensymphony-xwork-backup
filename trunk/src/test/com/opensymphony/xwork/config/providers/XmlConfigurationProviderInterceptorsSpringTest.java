@@ -36,20 +36,6 @@ public class XmlConfigurationProviderInterceptorsSpringTest extends Configuratio
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
-    public void testConfigurationExceptionThrownWhenInterceptorReferenceNotResolved() {
-        final String filename = "com/opensymphony/xwork/config/providers/xwork-test-interceptors-spring.xml";
-
-        ConfigurationProvider provider = buildConfigurationProvider(filename);
-
-        // execute the configuration
-        try {
-            provider.init(configuration);
-            fail("ConfigurationException expected when interceptor class does not exist");
-        } catch (ConfigurationException ce) {
-            // Expected
-        }
-    }
-
     public void testInterceptorsLoadedFromSpringApplicationContext() throws ConfigurationException {
         sac.registerSingleton("timer-interceptor", TimerInterceptor.class, new MutablePropertyValues());
 
