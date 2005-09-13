@@ -91,7 +91,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertEquals("two", foo.getStrings().get(1));
     }
 
-    public void fix_testFindValueWithConversion() {
+    public void testFindValueWithConversion() {
 
         // register converter
         TestBean2 tb2 = new TestBean2();
@@ -413,7 +413,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertEquals(123, foo.getChild().getBar().getSomethingElse());
     }
 
-    public void fix_testSetNullList() {
+    public void testSetNullList() {
         Foo foo = new Foo();
         OgnlValueStack vs = new OgnlValueStack();
         vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
@@ -434,7 +434,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertEquals("Deep null cat", ((Cat) ((Cat) foo.getCats().get(0)).getFoo().getCats().get(1)).name);
     }
 
-    public void fix_testSetNullMap() {
+    public void testSetNullMap() {
         Foo foo = new Foo();
         OgnlValueStack vs = new OgnlValueStack();
         vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);

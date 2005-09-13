@@ -38,8 +38,8 @@ public class XWorkMapTest extends TestCase {
         stack.setValue("map['bar']", new String[] {"qwerty"});
         assertNotNull(user.getMap());
         assertEquals(2, user.getMap().size());
-        assertEquals(String.class, user.getMap().get("bar").getClass());
-        assertEquals("qwerty", user.getMap().get("bar"));
+        assertEquals(String[].class, user.getMap().get("bar").getClass());
+        assertEquals("qwerty", ((String[]) user.getMap().get("bar"))[0]);
     }
 
     public void testTypeConversion() {

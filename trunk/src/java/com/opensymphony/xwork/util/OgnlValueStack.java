@@ -11,9 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.Serializable;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -40,6 +38,9 @@ public class OgnlValueStack implements Serializable {
         OgnlRuntime.setPropertyAccessor(Object.class, new ObjectAccessor());
         OgnlRuntime.setPropertyAccessor(Iterator.class, new XWorkIteratorPropertyAccessor());
         OgnlRuntime.setPropertyAccessor(Enumeration.class, new XWorkEnumerationAcccessor());
+        OgnlRuntime.setPropertyAccessor(List.class, new XWorkListPropertyAccessor());
+        OgnlRuntime.setPropertyAccessor(Map.class, new XWorkMapPropertyAccessor());
+        OgnlRuntime.setPropertyAccessor(Set.class, new XWorkCollectionPropertyAccessor());
         OgnlRuntime.setMethodAccessor(Object.class, new XWorkMethodAccessor());
         OgnlRuntime.setMethodAccessor(CompoundRoot.class, accessor);
         OgnlRuntime.setNullHandler(Object.class, new InstantiatingNullHandler());
@@ -49,6 +50,10 @@ public class OgnlValueStack implements Serializable {
         public Object getProperty(Map map, Object o, Object o1) throws OgnlException {
             Object obj = super.getProperty(map, o, o1);
             link(map, o.getClass(), (String) o1);
+
+            map.put(XWorkConverter.LAST_BEAN_CLASS_ACCESSED, o.getClass());
+            map.put(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED, o1.toString());
+            OgnlContextState.updateCurrentPropertyPath(map, o1);
             return obj;
         }
 
@@ -151,6 +156,7 @@ public class OgnlValueStack implements Serializable {
                 }
             }
         } finally {
+            OgnlContextState.clear(context);
             context.remove(XWorkConverter.CONVERSION_PROPERTY_FULLNAME);
             context.remove(REPORT_ERRORS_ON_NO_PROP);
         }
@@ -183,6 +189,8 @@ public class OgnlValueStack implements Serializable {
             LOG.warn("Caught an exception while evaluating expression '" + expr + "' against value stack", e);
 
             return null;
+        } finally {
+            OgnlContextState.clear(context);
         }
     }
 
@@ -210,6 +218,8 @@ public class OgnlValueStack implements Serializable {
             LOG.warn("Caught an exception while evaluating expression '" + expr + "' against value stack", e);
 
             return null;
+        } finally {
+            OgnlContextState.clear(context);
         }
     }
 

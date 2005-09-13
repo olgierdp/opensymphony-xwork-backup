@@ -140,7 +140,7 @@ public class SetPropertiesTest extends TestCase {
 
     }
 
-    public void fix_testAddingAndModifyingSetsWithObjects() {
+    public void testAddingAndModifyingSetsWithObjects() {
         OgnlValueStack vs = new OgnlValueStack();
         Foo foo = new Foo();
         HashSet barSet = new HashSet();

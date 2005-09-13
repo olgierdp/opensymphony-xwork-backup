@@ -109,6 +109,10 @@ public class XWorkConverter extends DefaultTypeConverter {
         //
         TypeConverter tc = null;
 
+        if (toClass == value.getClass()) {
+            return value;
+        }
+
         // allow this method to be called without any context
         // i.e. it can be called with as little as "Object value" and "Class toClass"
         if (target != null) {

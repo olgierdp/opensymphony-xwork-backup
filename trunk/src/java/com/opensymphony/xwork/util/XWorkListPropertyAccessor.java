@@ -7,10 +7,7 @@ import com.opensymphony.xwork.ObjectFactory;
 import ognl.ListPropertyAccessor;
 import ognl.OgnlException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Gabriel Zimmerman
@@ -86,6 +83,29 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
         String lastProperty = (String) context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
         Class convertToClass = XWorkConverter.getInstance()
                 .getObjectTypeDeterminer().getElementClass(lastClass, lastProperty, name);
+
+        if (name instanceof String && value.getClass().isArray()) {
+            // looks like the input game in the form of "someList.foo" and
+            // we are expected to define the index values ourselves.
+            // So let's do it:
+
+            Collection c = (Collection) target;
+            Object[] values = (Object[]) value;
+            for (int i = 0; i < values.length; i++) {
+                Object v = values[i];
+                try {
+                    Object o = ObjectFactory.getObjectFactory().buildBean(convertToClass);
+                    OgnlUtil.setValue((String) name, context, o, v);
+                    c.add(o);
+                } catch (Exception e) {
+                    // what to do?
+                }
+            }
+
+            // we don't want to do the normal list property setting now, since we've already done the work
+            // just return instead
+            return;
+        }
 
         Object realValue = getRealValue(context, value, convertToClass);
 

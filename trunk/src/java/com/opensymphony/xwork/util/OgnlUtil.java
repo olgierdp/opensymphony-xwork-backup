@@ -174,70 +174,21 @@ public class OgnlUtil {
         return root;
     }
 
-    private static Object translateCompoundRoot(String name, Map context,
-                                                Object root, String hintProperty, Object hintTarget)
-            throws OgnlException {
-
-        if (!(root instanceof CompoundRoot))
-            return root;
-
-        int length = name.length();
-        int bracketPosition = -1;
-
-        // This loop tests if it's potential candidate for indexed property
-        for (int i = 0; i < length; i++) {
-            if (i > 0 && name.charAt(i) == '[') {
-                bracketPosition = i;
-                break;
-            }
-            if (!Character.isJavaIdentifierPart(name.charAt(i)))
-                break;
-
-        }
-
-        if (bracketPosition > 0) {
-            String property = name.substring(0, bracketPosition);
-
-            //reduce cost of real target lookup if we already know it
-            if (hintProperty != null && property.equals(hintProperty))
-                return hintTarget;
-
-            return getRealTarget(property, context, root);
-        }
-
-        return root;
-    }
-
 
     /**
      * Wrapper around Ognl.setValue() to handle type conversion for collection elements.
      * Ideally, this should be handled by OGNL directly.
      */
     public static void setValue(String name, Map context, Object root, Object value) throws OgnlException {
-        String property = null;
-        Object target = null;
-        if (name.endsWith("]")) {
-            if (target != null) {
-                Class memberType = (Class) XWorkConverter.getInstance().getObjectTypeDeterminer().getElementClass(target.getClass(), property, null);
-
-                if (memberType != null) {
-                    TypeConverter converter = Ognl.getTypeConverter(context);
-                    value = converter.convertValue(context, target, null, property, value, memberType);
-                }
-            }
-        }
-        //translate compound root is to extract roots object when it's probable that it deals with
-        //indexed properties, cause Ognl cannot detected indexed properties on Compound object
-
-        Ognl.setValue(compile(name), context, translateCompoundRoot(name, context, root, property, target), value);
+        Ognl.setValue(compile(name), context, root, value);
     }
 
     public static Object getValue(String name, Map context, Object root) throws OgnlException {
-        return Ognl.getValue(compile(name), context, translateCompoundRoot(name, context, root, null, null));
+        return Ognl.getValue(compile(name), context, root);
     }
 
     public static Object getValue(String name, Map context, Object root, Class resultType) throws OgnlException {
-        return Ognl.getValue(compile(name), context, translateCompoundRoot(name, context, root, null, null), resultType);
+        return Ognl.getValue(compile(name), context, root, resultType);
     }
 
 

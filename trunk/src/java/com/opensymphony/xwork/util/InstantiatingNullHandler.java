@@ -11,9 +11,8 @@ import ognl.OgnlRuntime;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.beans.PropertyDescriptor;
 
 
 /**
@@ -50,8 +49,7 @@ public class InstantiatingNullHandler implements NullHandler {
     }
 
     public Object nullPropertyValue(Map context, Object target, Object property) {
-        Boolean create = (Boolean) context.get(CREATE_NULL_OBJECTS);
-        boolean c = ((create == null) ? false : create.booleanValue());
+        boolean c = OgnlContextState.isCreatingNullObjects(context);
 
         if (!c) {
             return null;
@@ -67,7 +65,12 @@ public class InstantiatingNullHandler implements NullHandler {
             Class clazz = null;
 
             if (realTarget != null) {
-                clazz = OgnlRuntime.getPropertyDescriptor(realTarget.getClass(), propName).getPropertyType();
+                PropertyDescriptor pd = OgnlRuntime.getPropertyDescriptor(realTarget.getClass(), propName);
+                if (pd == null) {
+                    return null;
+                }
+                
+                clazz = pd.getPropertyType();
             }
 
             if (clazz == null) {
@@ -93,21 +96,9 @@ public class InstantiatingNullHandler implements NullHandler {
 
     private Object createObject(Class clazz, Object target, String property) throws Exception {
         if (Collection.class.isAssignableFrom(clazz)) {
-            Class collectionType = getCollectionType(target.getClass(), property);
-
-            if (collectionType == null) {
-                return null;
-            }
-
-            return new XWorkList(collectionType);
+            return new ArrayList();
         } else if (clazz == Map.class) {
-            Class collectionType = getCollectionType(target.getClass(), property);
-
-            if (collectionType == null) {
-                return null;
-            }
-
-            return new XWorkMap(collectionType);
+            return new HashMap();
         }
 
         return ObjectFactory.getObjectFactory().buildBean(clazz);
