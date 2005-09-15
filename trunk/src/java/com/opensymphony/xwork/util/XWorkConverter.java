@@ -109,7 +109,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         //
         TypeConverter tc = null;
 
-        if (toClass == value.getClass()) {
+        if ((value != null) && (toClass == value.getClass())) {
             return value;
         }
 
