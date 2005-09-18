@@ -14,11 +14,9 @@ import java.util.List;
  * Time: 12:40:02 PM
  */
 public class ExceptionMappingInterceptor implements Interceptor {
-    //~ Static fields
-    public static final String EXCEPTION_KEY = "EXCEPTION";
     //~ Instance fields ////////////////////////////////////////////////////////
-
     protected Log log = LogFactory.getLog(this.getClass());
+    private Throwable exception;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -36,10 +34,15 @@ public class ExceptionMappingInterceptor implements Interceptor {
         } catch (Throwable t) {
             List exceptionMappings = invocation.getProxy().getConfig().getExceptionMappings();
             result = this.findResultFromExceptions(exceptionMappings, t);
-            invocation.getStack().setValue(EXCEPTION_KEY, t);
+            exception = t;
+            invocation.getStack().push(this);
         }
 
         return result;
+    }
+
+    public Throwable getException() {
+        return exception;
     }
 
     private String findResultFromExceptions(List exceptionMappings, Throwable t) {
@@ -82,5 +85,7 @@ public class ExceptionMappingInterceptor implements Interceptor {
         }
         return getDepth(exceptionMapping, exceptionClass.getSuperclass(), depth + 1);
     }
+
+
 
 }
