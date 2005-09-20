@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.util.TextUtils;
+
 
 /**
  * Utility class for text parsing.
@@ -24,19 +26,17 @@ public class TextParseUtil {
      * @return the parsed expression
      */
     public static String translateVariables(String expression, OgnlValueStack stack) {
-        return translateVariables('$', expression, stack);
+        return translateVariables('$', expression, stack, String.class).toString();
     }
 
-    public static String translateVariables(char open, String expression, OgnlValueStack stack) {
-        return translateVariables(open, expression, stack, String.class).toString();
+    public static Object translateVariables(char open, String expression, OgnlValueStack stack) {
+        return translateVariables(open, expression, stack, Object.class);
     }
 
     public static Object translateVariables(char open, String expression, OgnlValueStack stack, Class asType) {
         // deal with the "pure" expressions first!
-        expression = expression.trim();
-        if (expression.startsWith(open + "{") && expression.endsWith("}")) {
-            return stack.findValue(expression.substring(2, expression.length() - 1), asType);
-        }
+        //expression = expression.trim();
+        Object result = expression;
 
         while (true) {
             int start = expression.indexOf(open + "{");
@@ -60,17 +60,30 @@ public class TextParseUtil {
 
                 Object o = stack.findValue(var, asType);
 
+                String left = expression.substring(0, start);
+                String right = expression.substring(end + 1);
                 if (o != null) {
-                    expression = expression.substring(0, start) + o + expression.substring(end + 1);
+                    if (TextUtils.stringSet(left)) {
+                        result = left + o;
+                    } else {
+                        result = o;
+                    }
+
+                    if (TextUtils.stringSet(right)) {
+                        result = result + right;
+                    }
+
+                    expression = left + o + right;
                 } else {
                     // the variable doesn't exist, so don't display anything
-                    expression = expression.substring(0, start) + expression.substring(end + 1);
+                    result = left + right;
+                    expression = left + right;
                 }
             } else {
                 break;
             }
         }
 
-        return XWorkConverter.getInstance().convertValue(stack.getContext(), expression, asType);
+        return XWorkConverter.getInstance().convertValue(stack.getContext(), result, asType);
     }
 }

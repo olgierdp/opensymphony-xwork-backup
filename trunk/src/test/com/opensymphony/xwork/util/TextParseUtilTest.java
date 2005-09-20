@@ -2,7 +2,6 @@ package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.XWorkTestCase;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +28,13 @@ public class TextParseUtilTest extends XWorkTestCase {
         s = TextParseUtil.translateVariables("foo: ${1", stack);
         assertEquals("foo: ${1", s);
 
-        s =  TextParseUtil.translateVariables("${{1, 2, 3}}", stack);
+        s =  TextParseUtil.translateVariables('$', "${{1, 2, 3}}", stack);
         assertTrue("List not returned when parsing a 'pure' list", s instanceof List);
+
+        s =  TextParseUtil.translateVariables('$', "${1} two ${3}", stack);
+        assertEquals("1 two 3", s);
+
+        s = TextParseUtil.translateVariables("count must be between ${123} and ${456}, current value is ${98765}.", stack);
+        assertEquals("count must be between 123 and 456, current value is 98765.", s);
     }
 }
