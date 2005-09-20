@@ -130,18 +130,18 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
 
     public void setMethod(String method) {
         this.method = method;
+
+        // if the method is set to null, use the one from the configuration
+        // if the one from the configuration is also null, use "execute"
+        if (!TextUtils.stringSet(this.method)) {
+            this.method = config.getMethodName();
+            if (!TextUtils.stringSet(method)) {
+                this.method = "execute";
+            }
+        }
     }
 
     protected void prepare() throws Exception {
         invocation = ActionProxyFactory.getFactory().createActionInvocation(this, extraContext);
-
-        // if the method is set to null, use the one from the configuration
-        // if the one from the configuration is also null, use "execute"
-        if (!TextUtils.stringSet(method)) {
-            method = config.getMethodName();
-            if (!TextUtils.stringSet(method)) {
-                method = "execute";
-            }
-        }
     }
 }
