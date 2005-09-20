@@ -33,11 +33,7 @@ import java.util.Map;
  *         </action>
  */
 public class AliasInterceptorTest extends XWorkTestCase {
-    //~ Instance fields ////////////////////////////////////////////////////////
-
-
     public void testAliasPropertiesCopied() throws Exception {
-
         Map params = new HashMap();
         params.put("aliasSource", "source here");
 
@@ -50,10 +46,8 @@ public class AliasInterceptorTest extends XWorkTestCase {
 
     }
 
-
     protected void setUp() throws Exception {
         super.setUp();
-
     }
 }
 

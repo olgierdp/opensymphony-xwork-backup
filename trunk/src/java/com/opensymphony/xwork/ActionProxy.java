@@ -66,7 +66,8 @@ public interface ActionProxy {
     String execute() throws Exception;
 
     /**
-     * Sets the method to execute for the action invocation.
+     * Sets the method to execute for the action invocation. If no method is specified, the method provided by
+     * in the action's configuration will be used.
      *
      * @param method the string name of the method to invoke
      */

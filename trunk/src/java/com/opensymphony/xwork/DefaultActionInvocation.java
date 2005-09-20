@@ -148,11 +148,11 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         Result newResult = null;
 
-        if (resultConfig == null) {
+        if (false) {
             // no result mapped -- that's OK. we'll just assume it is just short-hand notation
             // ie: redirect:foo.jsp or test.ftl
             PackageConfig pc = ConfigurationManager.getConfiguration().getPackageConfig(config.getPackageName());
-            String resultType = pc.getDefaultResultType();
+            String resultType = pc.getFullDefaultResultType();
 
             Map params = Collections.EMPTY_MAP;
             int colon = resultCode.indexOf(':');
@@ -176,14 +176,16 @@ public class DefaultActionInvocation implements ActionInvocation {
             }
         }
 
-        try {
-            newResult = ObjectFactory.getObjectFactory().buildResult(resultConfig);
-        } catch (Exception e) {
-            LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClassName(), e);
-            throw e;
+        if (resultConfig != null) {
+            try {
+                return ObjectFactory.getObjectFactory().buildResult(resultConfig);
+            } catch (Exception e) {
+                LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClassName(), e);
+                throw e;
+            }
+        } else {
+            return null;
         }
-
-        return newResult;
     }
 
     public String invoke() throws Exception {
@@ -315,30 +317,22 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected String invokeAction(Object action, ActionConfig actionConfig) throws Exception {
         String methodName = proxy.getMethod();
 
-        if (proxy.getConfig().getMethodName() == null && methodName == null) {
-            methodName = "execute";
-        }
-
         if (LOG.isDebugEnabled()) {
             LOG.debug("Executing action method = " + actionConfig.getMethodName());
         }
 
         try {
             Method method;
-            if (methodName == null) {
-                method = actionConfig.getMethod(action.getClass());
-            } else {
+            try {
+                method = getAction().getClass().getMethod(methodName, new Class[0]);
+            } catch (NoSuchMethodException e) {
+                // hmm -- OK, try doXxx instead
                 try {
-                    method = getAction().getClass().getMethod(methodName, new Class[0]);
-                } catch (NoSuchMethodException e) {
-                    // hmm -- OK, try doXxx instead
-                    try {
-                        String altMethodName = "do" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
-                        method = getAction().getClass().getMethod(altMethodName, new Class[0]);
-                    } catch (NoSuchMethodException e1) {
-                        // throw the original one
-                        throw e;
-                    }
+                    String altMethodName = "do" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
+                    method = getAction().getClass().getMethod(altMethodName, new Class[0]);
+                } catch (NoSuchMethodException e1) {
+                    // throw the original one
+                    throw e;
                 }
             }
 

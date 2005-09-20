@@ -7,7 +7,6 @@ package com.opensymphony.xwork.config.entities;
 import com.opensymphony.xwork.interceptor.Interceptor;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.util.*;
 
 
@@ -34,11 +33,9 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
     protected Map params;
     protected Map results;
     protected List exceptionMappings;
-    protected Method method;
     protected String className;
     protected String methodName;
     protected String packageName;
-    protected Class cachedClass;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
@@ -109,40 +106,6 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
         }
 
         return interceptors;
-    }
-
-    /**
-     * Returns cached instance of the action method or null if method name was not specified
-     *
-     * @param actionClass - passed in to check that the Action class hasn't changed since last time.
-     *                    This is really a hack to get around a problem with proxied Actions in Spring.
-     * @return cached instance of the action method or null if method name was not specified
-     */
-    public Method getMethod(Class actionClass) throws NoSuchMethodException {
-        if (!actionClass.equals(cachedClass)) {
-            cachedClass = actionClass;
-            method = null;
-        }
-        if (method != null) {
-            return method;
-        }
-
-        if (methodName != null) {
-            try {
-                method = cachedClass.getMethod(methodName, new Class[0]);
-            } catch (NoSuchMethodException e) {
-                try {
-                    method = cachedClass.getMethod("do" + String.valueOf(methodName.charAt(0)).toUpperCase() + methodName.substring(1), new Class[0]);
-                } catch (NoSuchMethodException e1) {
-                    throw e;
-                }
-            }
-        } else // return default execute() method if method name is not specified
-        {
-            method = cachedClass.getMethod("execute", new Class[0]);
-        }
-
-        return method;
     }
 
     public void setMethodName(String methodName) {
@@ -247,10 +210,6 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
             return false;
         }
 
-        if ((method != null) ? (!method.equals(actionConfig.method)) : (actionConfig.method != null)) {
-            return false;
-        }
-
         if ((methodName != null) ? (!methodName.equals(actionConfig.methodName)) : (actionConfig.methodName != null)) {
             return false;
         }
@@ -271,9 +230,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
         result = ((interceptors != null) ? interceptors.hashCode() : 0);
         result = (29 * result) + ((params != null) ? params.hashCode() : 0);
         result = (29 * result) + ((results != null) ? results.hashCode() : 0);
-        result = (29 * result) + ((method != null) ? method.hashCode() : 0);
         result = (29 * result) + ((methodName != null) ? methodName.hashCode() : 0);
-        result = (29 * result) + ((className != null) ? className.hashCode() : 0);
 
         return result;
     }

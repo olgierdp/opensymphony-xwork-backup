@@ -8,6 +8,7 @@ import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.util.LocalizedTextUtil;
+import com.opensymphony.util.TextUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,11 +26,7 @@ import java.util.Map;
  * @since 2005-8-6
  */
 public class DefaultActionProxy implements ActionProxy, Serializable {
-    //~ Static fields/initializers /////////////////////////////////////////////
-
     private static final Log LOG = LogFactory.getLog(DefaultActionProxy.class);
-
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     protected ActionConfig config;
     protected ActionInvocation invocation;
@@ -38,8 +35,6 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     protected String namespace;
     protected String method;
     protected boolean executeResult;
-
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     /**
      * This constructor is private so the builder methods (create*) should be used to create an DefaultActionProxy.
@@ -78,8 +73,6 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
         prepare();
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
-
     public Object getAction() {
         return invocation.getAction();
     }
@@ -109,7 +102,6 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     }
 
     public String execute() throws Exception {
-
         ActionContext nestedContext = null;
 
         String executed = ActionGlobalContext.getContext().getActionExecuted();
@@ -142,5 +134,14 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
 
     protected void prepare() throws Exception {
         invocation = ActionProxyFactory.getFactory().createActionInvocation(this, extraContext);
+
+        // if the method is set to null, use the one from the configuration
+        // if the one from the configuration is also null, use "execute"
+        if (!TextUtils.stringSet(method)) {
+            method = config.getMethodName();
+            if (!TextUtils.stringSet(method)) {
+                method = "execute";
+            }
+        }
     }
 }
