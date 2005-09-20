@@ -6,6 +6,9 @@ package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
+import com.opensymphony.xwork.config.entities.PackageConfig;
+import com.opensymphony.xwork.config.entities.ResultTypeConfig;
+import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.interceptor.PreResultListener;
 import com.opensymphony.xwork.util.OgnlValueStack;
@@ -15,10 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -138,17 +138,49 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     public Result createResult() throws Exception {
-        Map results = proxy.getConfig().getResults();
-        ResultConfig resultConfig = (ResultConfig) results.get(resultCode);
+        ActionConfig config = proxy.getConfig();
+        Map results = config.getResults();
+
+        ResultConfig resultConfig;
+        synchronized (config) {
+            resultConfig = (ResultConfig) results.get(resultCode);
+        }
+
         Result newResult = null;
 
-        if (resultConfig != null) {
-            try {
-                newResult = ObjectFactory.getObjectFactory().buildResult(resultConfig);
-            } catch (Exception e) {
-                LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClassName(), e);
-                throw e;
+        if (resultConfig == null) {
+            // no result mapped -- that's OK. we'll just assume it is just short-hand notation
+            // ie: redirect:foo.jsp or test.ftl
+            PackageConfig pc = ConfigurationManager.getConfiguration().getPackageConfig(config.getPackageName());
+            String resultType = pc.getDefaultResultType();
+
+            Map params = Collections.EMPTY_MAP;
+            int colon = resultCode.indexOf(':');
+            if (colon != -1) {
+                resultType = resultCode.substring(0, colon);
             }
+            ResultTypeConfig rtc = (ResultTypeConfig) pc.getAllResultTypeConfigs().get(resultType);
+
+            String defaultParam = resultCode.substring(colon + 1);
+            if (defaultParam != null) {
+                String paramName = (String) rtc.getClazz().getField("DEFAULT_PARAM").get(null);
+                if (paramName != null) {
+                    params = Collections.singletonMap(paramName, defaultParam);
+                }
+            }
+
+            resultConfig = new ResultConfig(resultCode, rtc.getClazz(), params);
+
+            synchronized (config) {
+                config.addResultConfig(resultConfig);
+            }
+        }
+
+        try {
+            newResult = ObjectFactory.getObjectFactory().buildResult(resultConfig);
+        } catch (Exception e) {
+            LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClassName(), e);
+            throw e;
         }
 
         return newResult;

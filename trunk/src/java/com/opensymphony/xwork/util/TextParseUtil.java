@@ -28,6 +28,16 @@ public class TextParseUtil {
     }
 
     public static String translateVariables(char open, String expression, OgnlValueStack stack) {
+        return translateVariables(open, expression, stack, String.class).toString();
+    }
+
+    public static Object translateVariables(char open, String expression, OgnlValueStack stack, Class asType) {
+        // deal with the "pure" expressions first!
+        expression = expression.trim();
+        if (expression.startsWith(open + "{") && expression.endsWith("}")) {
+            return stack.findValue(expression.substring(2, expression.length() - 1), asType);
+        }
+
         while (true) {
             int start = expression.indexOf(open + "{");
             int length = expression.length();
@@ -48,7 +58,7 @@ public class TextParseUtil {
             if ((start != -1) && (end != -1) && (count == 0)) {
                 String var = expression.substring(start + 2, end);
 
-                Object o = stack.findValue(var, String.class);
+                Object o = stack.findValue(var, asType);
 
                 if (o != null) {
                     expression = expression.substring(0, start) + o + expression.substring(end + 1);
@@ -61,6 +71,6 @@ public class TextParseUtil {
             }
         }
 
-        return expression;
+        return XWorkConverter.getInstance().convertValue(stack.getContext(), expression, asType);
     }
 }

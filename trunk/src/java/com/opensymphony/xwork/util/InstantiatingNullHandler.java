@@ -90,10 +90,6 @@ public class InstantiatingNullHandler implements NullHandler {
         return null;
     }
 
-    protected Class getCollectionType(Class clazz, String property) {
-        return (Class) XWorkConverter.getInstance().getConverter(clazz, XWorkConverter.CONVERSION_COLLECTION_PREFIX + property);
-    }
-
     private Object createObject(Class clazz, Object target, String property) throws Exception {
         if (Collection.class.isAssignableFrom(clazz)) {
             return new ArrayList();
