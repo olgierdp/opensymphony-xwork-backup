@@ -1,7 +1,6 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.ActionSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -73,25 +72,33 @@ public class I18nInterceptor implements Interceptor {
             if (requested_locale != null) {
                 Locale locale = (requested_locale instanceof Locale) ?
                         (Locale) requested_locale : localeFromString(requested_locale.toString());
-                if (log.isDebugEnabled()) log.debug("store locale=" + locale);
-                if (locale != null) session.put(attributeName, locale);
+                if (log.isDebugEnabled()) {
+                    log.debug("store locale=" + locale);
+                }
+
+                if (locale != null) {
+                    session.put(attributeName, locale);
+                }
             }
 
             //set locale for action
             Object locale = session.get(attributeName);
             if (locale != null && locale instanceof Locale) {
-                if (log.isDebugEnabled()) log.debug("apply locale=" + locale);
+                if (log.isDebugEnabled()) {
+                    log.debug("apply locale=" + locale);
+                }
+
                 invocation.getInvocationContext().setLocale((Locale) locale);
             }
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("before Locale=" + ((ActionSupport) invocation.getAction()).getLocale());
+            log.debug("before Locale=" + invocation.getStack().findValue("locale"));
         }
 
         final String result = invocation.invoke();
         if (log.isDebugEnabled()) {
-            log.debug("after Locale=" + ((ActionSupport) invocation.getAction()).getLocale());
+            log.debug("after Locale=" + invocation.getStack().findValue("locale"));
         }
 
         if (log.isDebugEnabled()) {
