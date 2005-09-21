@@ -4,11 +4,11 @@
  */
 package com.opensymphony.xwork;
 
-import com.opensymphony.xwork.config.entities.ActionConfig;
-import com.opensymphony.xwork.config.entities.ResultConfig;
-import com.opensymphony.xwork.config.entities.PackageConfig;
-import com.opensymphony.xwork.config.entities.ResultTypeConfig;
 import com.opensymphony.xwork.config.ConfigurationManager;
+import com.opensymphony.xwork.config.entities.ActionConfig;
+import com.opensymphony.xwork.config.entities.PackageConfig;
+import com.opensymphony.xwork.config.entities.ResultConfig;
+import com.opensymphony.xwork.config.entities.ResultTypeConfig;
 import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.interceptor.PreResultListener;
 import com.opensymphony.xwork.util.OgnlValueStack;
@@ -229,7 +229,7 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected void createAction() {
         // load action
         try {
-            action = ObjectFactory.getObjectFactory().buildBean(proxy.getConfig().getClassName());
+            action = ObjectFactory.getObjectFactory().buildAction(proxy.getActionName(), proxy.getNamespace(), proxy.getConfig());
         } catch (InstantiationException e) {
             throw new XworkException("Unable to intantiate Action!", e);
         } catch (IllegalAccessException e) {

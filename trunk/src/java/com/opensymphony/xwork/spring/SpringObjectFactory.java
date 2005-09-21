@@ -4,6 +4,7 @@
 package com.opensymphony.xwork.spring;
 
 import com.opensymphony.xwork.ObjectFactory;
+import com.opensymphony.xwork.config.entities.ActionConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -21,7 +22,7 @@ import java.util.Map;
  * Simple implementation of the ObjectFactory that makes use of Spring's
  * application context if one has been configured, before falling back on the
  * default mechanism of instantiating a new class using the class name.
- *
+ * <p/>
  * In order to use this class in your application, you will need to instantiate
  * a copy of this class and set it as XWork's ObjectFactory before the xwork.xml
  * file is parsed. In a servlet environment, this could be done using a
@@ -29,176 +30,178 @@ import java.util.Map;
  *
  * @author Simon Stewart (sms@lateral.net)
  */
-public class SpringObjectFactory extends ObjectFactory implements
-		ApplicationContextAware {
-	//~ Static fields/initializers
-	// /////////////////////////////////////////////
+public class SpringObjectFactory extends ObjectFactory implements ApplicationContextAware {
+    private static final Log log = LogFactory.getLog(SpringObjectFactory.class);
 
-	private static final Log log = LogFactory.getLog(SpringObjectFactory.class);
-
-	//~ Instance fields
-	// ////////////////////////////////////////////////////////
-
-	protected ApplicationContext appContext;
-
-	protected AutowireCapableBeanFactory autoWiringFactory;
-
+    protected ApplicationContext appContext;
+    protected AutowireCapableBeanFactory autoWiringFactory;
     protected int autowireStrategy = AutowireCapableBeanFactory.AUTOWIRE_BY_NAME;
+    private Map classes = new HashMap();
 
-	private Map classes = new HashMap();
-
-	//~ Methods
-	// ////////////////////////////////////////////////////////////////
-
-	/**
-	 * Set the Spring ApplicationContext that should be used to look beans up
-	 * with.
-	 *
-	 * @param appContext
-	 *            The Spring ApplicationContext that should be used to look
-	 *            beans up with.
-	 */
-	public void setApplicationContext(ApplicationContext appContext)
-			throws BeansException {
-		this.appContext = appContext;
-		autoWiringFactory = findAutoWiringBeanFactory(this.appContext);
-	}
-
-  /**
-   * Sets the autowiring strategy
-   *
-   * @param autowireStrategy
-   */
-  public void setAutowireStrategy(int autowireStrategy) {
-    switch (autowireStrategy) {
-      case AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT:
-        log.info("Setting autowire strategy to autodetect");
-        this.autowireStrategy = autowireStrategy;
-        break;
-      case AutowireCapableBeanFactory.AUTOWIRE_BY_NAME:
-        log.info("Setting autowire strategy to name");
-        this.autowireStrategy = autowireStrategy;
-        break;
-      case AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE:
-        log.info("Setting autowire strategy to type");
-        this.autowireStrategy = autowireStrategy;
-        break;
-      case AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR:
-        log.info("Setting autowire strategy to constructor");
-        this.autowireStrategy = autowireStrategy;
-        break;
-      default: throw new IllegalStateException("Invalid autowire type set");
+    /**
+     * Set the Spring ApplicationContext that should be used to look beans up
+     * with.
+     *
+     * @param appContext The Spring ApplicationContext that should be used to look
+     *                   beans up with.
+     */
+    public void setApplicationContext(ApplicationContext appContext)
+            throws BeansException {
+        this.appContext = appContext;
+        autoWiringFactory = findAutoWiringBeanFactory(this.appContext);
     }
-  }
+
+    /**
+     * Sets the autowiring strategy
+     *
+     * @param autowireStrategy
+     */
+    public void setAutowireStrategy(int autowireStrategy) {
+        switch (autowireStrategy) {
+            case AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT:
+                log.info("Setting autowire strategy to autodetect");
+                this.autowireStrategy = autowireStrategy;
+                break;
+            case AutowireCapableBeanFactory.AUTOWIRE_BY_NAME:
+                log.info("Setting autowire strategy to name");
+                this.autowireStrategy = autowireStrategy;
+                break;
+            case AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE:
+                log.info("Setting autowire strategy to type");
+                this.autowireStrategy = autowireStrategy;
+                break;
+            case AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR:
+                log.info("Setting autowire strategy to constructor");
+                this.autowireStrategy = autowireStrategy;
+                break;
+            default:
+                throw new IllegalStateException("Invalid autowire type set");
+        }
+    }
 
     public int getAutowireStrategy() {
         return autowireStrategy;
     }
 
 
-	/**
-	 * If the given context is assignable to AutowireCapbleBeanFactory or
-	 * contains a parent or a factory that is, then set the autoWiringFactory
-	 * appropriately.
-	 *
-	 * @param context
-	 */
-	protected AutowireCapableBeanFactory findAutoWiringBeanFactory(ApplicationContext context) {
-		if (context instanceof AutowireCapableBeanFactory) {
-			// Check the context
-			return (AutowireCapableBeanFactory) context;
-		} else if (context instanceof ConfigurableApplicationContext) {
-			// Try and grab the beanFactory
-			return ((ConfigurableApplicationContext) context).getBeanFactory();
-		} else if (context.getParent() != null) {
-			// And if all else fails, try again with the parent context
-			return findAutoWiringBeanFactory(context.getParent());
-		}
+    /**
+     * If the given context is assignable to AutowireCapbleBeanFactory or
+     * contains a parent or a factory that is, then set the autoWiringFactory
+     * appropriately.
+     *
+     * @param context
+     */
+    protected AutowireCapableBeanFactory findAutoWiringBeanFactory(ApplicationContext context) {
+        if (context instanceof AutowireCapableBeanFactory) {
+            // Check the context
+            return (AutowireCapableBeanFactory) context;
+        } else if (context instanceof ConfigurableApplicationContext) {
+            // Try and grab the beanFactory
+            return ((ConfigurableApplicationContext) context).getBeanFactory();
+        } else if (context.getParent() != null) {
+            // And if all else fails, try again with the parent context
+            return findAutoWiringBeanFactory(context.getParent());
+        }
         return null;
     }
 
-	/**
-	 * Looks up beans using Spring's application context before falling back to
-	 * the method defined in the {@link ObjectFactory}.
-	 *
-	 * @param beanName
-	 *            The name of the bean to look up in the application context
-	 * @return A bean from Spring or the result of calling the overridden
-	 *         method.
-   * @throws Exception
-	 */
-	public Object buildBean(String beanName) throws Exception {
-		try {
-			return appContext.getBean(beanName);
-		} catch (NoSuchBeanDefinitionException e) {
+    public Object buildAction(String actionName, String namespace, ActionConfig config) throws Exception {
+        String uniqueName = actionName;
+        if (namespace != null && !namespace.equals("")) {
+            uniqueName = namespace + "/" + actionName;
+        }
+        uniqueName = "action:" + uniqueName;
+
+        try {
+            // see if it is defined in spring - if so, use it
+            return appContext.getBean(uniqueName);
+        } catch (NoSuchBeanDefinitionException e) {
+            // ok, no big deal, we fall back to the definition in the configuration
+            return buildBean(config.getClassName());
+        }
+    }
+
+    /**
+     * Looks up beans using Spring's application context before falling back to
+     * the method defined in the {@link ObjectFactory}.
+     *
+     * @param beanName The name of the bean to look up in the application context
+     * @return A bean from Spring or the result of calling the overridden
+     *         method.
+     * @throws Exception
+     */
+    public Object buildBean(String beanName) throws Exception {
+        try {
+            return appContext.getBean(beanName);
+        } catch (NoSuchBeanDefinitionException e) {
             Class beanClazz = getClassInstance(beanName);
-			return buildBean(beanClazz);
-		}
-	}
+            return buildBean(beanClazz);
+        }
+    }
 
-  /**
-   * @param clazz
-   * @throws Exception
-   */
-	public Object buildBean(Class clazz) throws Exception {
-      Object bean = null;
+    /**
+     * @param clazz
+     * @throws Exception
+     */
+    public Object buildBean(Class clazz) throws Exception {
+        Object bean;
 
-      try {
-          bean = autoWiringFactory.autowire(clazz, AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR, false);
-      } catch (UnsatisfiedDependencyException e) {
-          // Fall back
-          bean = super.buildBean(clazz);
-      }
+        try {
+            bean = autoWiringFactory.autowire(clazz, AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR, false);
+        } catch (UnsatisfiedDependencyException e) {
+            // Fall back
+            bean = super.buildBean(clazz);
+        }
 
-      bean = autoWiringFactory.applyBeanPostProcessorsBeforeInitialization(bean, bean.getClass().getName());
-      // We don't need to call the init-method since one won't be registered.
-      bean = autoWiringFactory.applyBeanPostProcessorsAfterInitialization(bean, bean.getClass().getName());
+        bean = autoWiringFactory.applyBeanPostProcessorsBeforeInitialization(bean, bean.getClass().getName());
+        // We don't need to call the init-method since one won't be registered.
+        bean = autoWiringFactory.applyBeanPostProcessorsAfterInitialization(bean, bean.getClass().getName());
 
-      return autoWireBean(bean, autoWiringFactory);
-	}
+        return autoWireBean(bean, autoWiringFactory);
+    }
 
     public Object autoWireBean(Object bean) {
         return autoWireBean(bean, autoWiringFactory);
     }
 
-  /**
-   * @param bean
-   * @param autoWiringFactory
-   */
-	public Object autoWireBean(Object bean, AutowireCapableBeanFactory autoWiringFactory) {
-		if (autoWiringFactory != null) {
-			autoWiringFactory.autowireBeanProperties(bean,
-					autowireStrategy, false);
-		}
-		if (bean instanceof ApplicationContextAware) {
-			((ApplicationContextAware) bean).setApplicationContext(appContext);
-		}
+    /**
+     * @param bean
+     * @param autoWiringFactory
+     */
+    public Object autoWireBean(Object bean, AutowireCapableBeanFactory autoWiringFactory) {
+        if (autoWiringFactory != null) {
+            autoWiringFactory.autowireBeanProperties(bean,
+                    autowireStrategy, false);
+        }
+        if (bean instanceof ApplicationContextAware) {
+            ((ApplicationContextAware) bean).setApplicationContext(appContext);
+        }
 
-		return bean;
-	}
+        return bean;
+    }
 
-	public Class getClassInstance(String className) throws ClassNotFoundException {
-		Class clazz = (Class) classes.get(className);
+    public Class getClassInstance(String className) throws ClassNotFoundException {
+        Class clazz = (Class) classes.get(className);
 
-		if (clazz == null) {
-			if (appContext.containsBean(className)) {
-				clazz = appContext.getBean(className).getClass();
-			} else {
-				clazz = super.getClassInstance(className);
-			}
-			classes.put(className, clazz);
-		}
+        if (clazz == null) {
+            if (appContext.containsBean(className)) {
+                clazz = appContext.getBean(className).getClass();
+            } else {
+                clazz = super.getClassInstance(className);
+            }
+            classes.put(className, clazz);
+        }
 
-		return clazz;
-	}
+        return clazz;
+    }
 
-	/**
-	 * This method sets the ObjectFactory used by XWork to this object. It's
-	 * best used as the "init-method" of a Spring bean definition in order to
-	 * hook Spring and XWork together properly (as an alternative to the
-	 * com.opensymphony.webwork.spring.lifecycle.SpringObjectFactoryListener)
-	 */
-	public void initObjectFactory() {
-		ObjectFactory.setObjectFactory(this);
-	}
+    /**
+     * This method sets the ObjectFactory used by XWork to this object. It's
+     * best used as the "init-method" of a Spring bean definition in order to
+     * hook Spring and XWork together properly (as an alternative to the
+     * com.opensymphony.webwork.spring.lifecycle.SpringObjectFactoryListener)
+     */
+    public void initObjectFactory() {
+        ObjectFactory.setObjectFactory(this);
+    }
 }

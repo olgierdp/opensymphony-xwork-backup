@@ -6,6 +6,7 @@ package com.opensymphony.xwork;
 
 import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.xwork.config.ConfigurationException;
+import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.InterceptorConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.interceptor.Interceptor;
@@ -59,6 +60,10 @@ public class ObjectFactory {
      */
     public Class getClassInstance(String className) throws ClassNotFoundException {
         return ClassLoaderUtil.loadClass(className, this.getClass());
+    }
+
+    public Object buildAction(String actionName, String namespace, ActionConfig config) throws Exception {
+        return buildBean(config.getClassName());
     }
 
     /**
