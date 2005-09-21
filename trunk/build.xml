@@ -22,6 +22,17 @@
                      pubrevision="${version}-${TIME}" pubdate="${TIME}"/>
     </target>
 
+    <target name="precompile">
+        <compile srcdir="tiger/src/java" destdir="tiger/build/java" source="1.5" target="1.5"/>
+    </target>
+
+    <target name="predist">
+        <!-- build up xwork-tiger jar -->
+        <jar destfile="dist/${name}-tiger-${version}.jar">
+            <fileset dir="tiger/build/java"/>
+        </jar>
+    </target>
+
     <target name="jar" depends="common.jar">
         <jar basedir="${src.java}" jarfile="${build}/${name}-${version}-src.jar">
             <manifest>
@@ -29,5 +40,11 @@
                 <attribute name="Implementation-Version" value="${version}"/>
             </manifest>
         </jar>
+    </target>
+
+    <target name="ivyrep" depends="common.ivyrep">
+        <antcall target="common.ivyrep">
+            <param name="name" value="${name}-tiger"/>
+        </antcall>
     </target>
 </project>
