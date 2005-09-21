@@ -22,8 +22,9 @@
                      pubrevision="${version}-${TIME}" pubdate="${TIME}"/>
     </target>
 
-    <target name="precompile">
-        <compile srcdir="tiger/src/java" destdir="tiger/build/java" source="1.5" target="1.5"/>
+    <target name="compile" depends="common.compile">
+        <compile srcdir="tiger/src/java" destdir="tiger/build/java" classpath="${build.java}" source="1.5"
+                 target="1.5"/>
     </target>
 
     <target name="predist">

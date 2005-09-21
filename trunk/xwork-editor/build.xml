@@ -1,7 +1,0 @@
-<project name="xwork-editor" default="jar" basedir=".">
-    <!-- overridden properties (must be before the import!) -->
-    <property name="src.test" value="src/test"/>
-
-    <property name="common.build" value="../../opensymphony/common/osbuild.xml"/>
-    <import file="${common.build}"/>
-</project>
