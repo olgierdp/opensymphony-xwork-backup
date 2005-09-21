@@ -6,7 +6,6 @@ package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ObjectFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -20,20 +19,15 @@ import java.util.Map;
  * A simple list that guarantees that inserting and retrieving objects will always work regardless
  * of the current size of the list.  Upon insertion, type conversion is also performed if necessary.
  * Empty beans will be created to fill the gap between the current list size and the requested index
- * using ObjectFactory's {@link ObjectFactory#buildBean(java.lang.Class) buildBean} method.
+ * using ObjectFactory's {@link ObjectFactory#buildBean(Class) buildBean} method.
  *
  * @author Patrick Lightbody
+ * @deprecated Native support for expanding lists and maps is provided in XWork 1.1, so this is no longer needed.
  */
 public class XWorkList extends ArrayList {
-    //~ Static fields/initializers /////////////////////////////////////////////
-
     private static final Log LOG = LogFactory.getLog(XWorkConverter.class);
 
-    //~ Instance fields ////////////////////////////////////////////////////////
-
     private Class clazz;
-
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public XWorkList(Class clazz) {
         this.clazz = clazz;
@@ -50,13 +44,11 @@ public class XWorkList extends ArrayList {
         this.clazz = clazz;
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
-
     /**
      * Inserts the specified element at the specified position in this list. Shifts the element
      * currently at that position (if any) and any subsequent elements to the right (adds one to
      * their indices).
-     * <p />
+     * <p/>
      * This method is guaranteed to work since it will create empty beans to fill the gap between
      * the current list size and the requested index to enable the element to be set.  This method
      * also performs any necessary type conversion.
@@ -84,7 +76,7 @@ public class XWorkList extends ArrayList {
 
     /**
      * Appends the specified element to the end of this list.
-     * <p />
+     * <p/>
      * This method performs any necessary type conversion.
      *
      * @param element element to be appended to this list.
@@ -110,7 +102,7 @@ public class XWorkList extends ArrayList {
      * operation is undefined if the specified Collection is modified while the operation is in
      * progress.  (This implies that the behavior of this call is undefined if the specified
      * Collection is this list, and this list is nonempty.)
-     * <p />
+     * <p/>
      * This method performs any necessary type conversion.
      *
      * @param c the elements to be inserted into this list.
@@ -136,7 +128,7 @@ public class XWorkList extends ArrayList {
      * specified position.  Shifts the element currently at that position (if any) and any
      * subsequent elements to the right (increases their indices).  The new elements will appear in
      * the list in the order that they are returned by the specified Collection's iterator.
-     * <p />
+     * <p/>
      * This method is guaranteed to work since it will create empty beans to fill the gap between
      * the current list size and the requested index to enable the element to be set.  This method
      * also performs any necessary type conversion.
@@ -169,7 +161,7 @@ public class XWorkList extends ArrayList {
 
     /**
      * Returns the element at the specified position in this list.
-     * <p />
+     * <p/>
      * An object is guaranteed to be returned since it will create empty beans to fill the gap
      * between the current list size and the requested index.
      *
@@ -190,12 +182,12 @@ public class XWorkList extends ArrayList {
 
     /**
      * Replaces the element at the specified position in this list with the specified element.
-     * <p />
+     * <p/>
      * This method is guaranteed to work since it will create empty beans to fill the gap between
      * the current list size and the requested index to enable the element to be set.  This method
      * also performs any necessary type conversion.
      *
-     * @param index index of element to replace.
+     * @param index   index of element to replace.
      * @param element element to be stored at the specified position.
      * @return the element previously at the specified position.
      */

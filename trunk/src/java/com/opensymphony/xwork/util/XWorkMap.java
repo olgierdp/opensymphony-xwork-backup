@@ -20,19 +20,14 @@ import java.util.Map;
  *
  * @author Patrick Lightbody
  * @author Mark Woon
+ * @deprecated Native support for expanding lists and maps is provided in XWork 1.1, so this is no longer needed.
  */
 public class XWorkMap extends HashMap {
-    //~ Instance fields ////////////////////////////////////////////////////////
-
     private Class clazz;
-
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public XWorkMap(Class clazz) {
         this.clazz = clazz;
     }
-
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Returns the value to which the specified key is mapped in this identity hash map.  If there
