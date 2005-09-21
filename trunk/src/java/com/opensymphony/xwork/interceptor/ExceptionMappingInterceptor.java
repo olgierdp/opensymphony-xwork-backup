@@ -31,11 +31,16 @@ public class ExceptionMappingInterceptor implements Interceptor {
 
         try {
             result = invocation.invoke();
-        } catch (Throwable t) {
+        } catch (Exception e) {
             List exceptionMappings = invocation.getProxy().getConfig().getExceptionMappings();
-            result = this.findResultFromExceptions(exceptionMappings, t);
-            exception = t;
-            invocation.getStack().push(this);
+            String mappedResult = this.findResultFromExceptions(exceptionMappings, e);
+            if (mappedResult != null) {
+                result = mappedResult;
+                this.exception = e;
+                invocation.getStack().push(this);
+            } else {
+                throw e;
+            }
         }
 
         return result;
