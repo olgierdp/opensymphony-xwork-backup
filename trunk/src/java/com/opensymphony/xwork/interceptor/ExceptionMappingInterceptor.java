@@ -16,7 +16,6 @@ import java.util.List;
 public class ExceptionMappingInterceptor implements Interceptor {
     //~ Instance fields ////////////////////////////////////////////////////////
     protected Log log = LogFactory.getLog(this.getClass());
-    private Throwable exception;
 
     //~ Methods ////////////////////////////////////////////////////////////////
 
@@ -36,8 +35,7 @@ public class ExceptionMappingInterceptor implements Interceptor {
             String mappedResult = this.findResultFromExceptions(exceptionMappings, e);
             if (mappedResult != null) {
                 result = mappedResult;
-                this.exception = e;
-                invocation.getStack().push(this);
+                invocation.getStack().push(new ExceptionHolder(e));
             } else {
                 throw e;
             }
@@ -46,9 +44,6 @@ public class ExceptionMappingInterceptor implements Interceptor {
         return result;
     }
 
-    public Throwable getException() {
-        return exception;
-    }
 
     private String findResultFromExceptions(List exceptionMappings, Throwable t) {
         String result = null;
