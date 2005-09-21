@@ -9,6 +9,8 @@ package com.opensymphony.xwork.interceptor.component;
  * @author joew@thoughtworks.com
  * @author $Author$
  * @version $Revision$
+ * @deprecated XWork IoC has been deprecated in favor of Spring.
+ *             Please refer to the Spring-WebWork integration documentation for more info.
  */
 public interface ComponentManager {
     //~ Instance fields ////////////////////////////////////////////////////////

@@ -11,8 +11,8 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
 import java.io.Serializable;
-import java.net.URL;
 import java.net.URI;
+import java.net.URL;
 import java.util.*;
 
 
@@ -20,6 +20,8 @@ import java.util.*;
  * @author joew@thoughtworks.com
  * @author $Author$
  * @version $Revision$
+ * @deprecated XWork IoC has been deprecated in favor of Spring.
+ *             Please refer to the Spring-WebWork integration documentation for more info.
  */
 public class DefaultComponentManager implements ComponentManager, Serializable {
     //~ Static fields/initializers /////////////////////////////////////////////
