@@ -5,6 +5,7 @@
 package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.util.OgnlValueStack;
+import com.uwyn.rife.continuations.ContinuableObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -16,7 +17,7 @@ import java.util.*;
  * Provides a default implementation for the most common actions.
  * See the documentation for all the interfaces this class implements for more detailed information.
  */
-public class ActionSupport implements Action, Validateable, ValidationAware, TextProvider, LocaleProvider, Serializable {
+public class ActionSupport implements Action, Validateable, ValidationAware, TextProvider, LocaleProvider, Serializable, ContinuableObject {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     protected transient static final Log LOG = LogFactory.getLog(ActionSupport.class);
@@ -156,5 +157,12 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
      * Subclasses should override this method to provide validations.
      */
     public void validate() {
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    public void pause(String result) {
     }
 }

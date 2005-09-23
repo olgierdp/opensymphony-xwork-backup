@@ -11,8 +11,13 @@ import com.opensymphony.xwork.config.entities.InterceptorConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.util.OgnlUtil;
+import com.opensymphony.xwork.util.XWorkContinuationConfig;
 import com.opensymphony.xwork.validator.Validator;
+import com.uwyn.rife.continuations.ContinuationConfig;
+import com.uwyn.rife.continuations.ContinuationInstrumentor;
+import com.uwyn.rife.continuations.util.ClassByteUtil;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +32,19 @@ import java.util.Map;
  * @author Jason Carreira
  */
 public class ObjectFactory {
+    private static ContinuationsClassLoader ccl;
     private static ObjectFactory FACTORY = new ObjectFactory();
+    private static String continuationPackage;
+
+    public static void setContinuationPackage(String continuationPackage) {
+        ContinuationConfig.setInstance(new XWorkContinuationConfig());
+        ObjectFactory.continuationPackage = continuationPackage;
+        ObjectFactory.ccl = new ContinuationsClassLoader(continuationPackage, Thread.currentThread().getContextClassLoader());
+    }
+
+    public static String getContinuationPackage() {
+        return continuationPackage;
+    }
 
     protected ObjectFactory() {
     }
@@ -59,6 +76,10 @@ public class ObjectFactory {
      * @throws ClassNotFoundException
      */
     public Class getClassInstance(String className) throws ClassNotFoundException {
+        if (ccl != null) {
+            return ccl.loadClass(className);
+        }
+
         return ClassLoaderUtil.loadClass(className, this.getClass());
     }
 
@@ -159,5 +180,49 @@ public class ObjectFactory {
         OgnlUtil.setProperties(params, validator);
 
         return validator;
+    }
+
+    static class ContinuationsClassLoader extends ClassLoader {
+        private String base;
+        private ClassLoader parent;
+
+        public ContinuationsClassLoader(String base, ClassLoader parent) {
+            super(parent);
+            this.base = base;
+            this.parent = parent;
+        }
+
+        public Class loadClass(String name) throws ClassNotFoundException {
+            if (validName(name)) {
+                if (findLoadedClass(name) == null) {
+                    try {
+                        byte[] bytes = ClassByteUtil.getBytes(name, parent);
+                        if (bytes == null) {
+                            return super.loadClass(name);
+                        }
+
+                        byte[] resume_bytes = ContinuationInstrumentor.instrument(bytes, name, false);
+
+                        if (resume_bytes != null) {
+                            bytes = resume_bytes;
+                        }
+
+                        return defineClass(name, bytes, 0, bytes.length);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return super.loadClass(name);
+        }
+
+        private boolean validName(String name) {
+            if (name.startsWith(base + ".")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 }

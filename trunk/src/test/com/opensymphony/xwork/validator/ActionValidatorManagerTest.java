@@ -6,27 +6,23 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.TestBean;
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.test.DataAware2;
 import com.opensymphony.xwork.test.SimpleAction2;
 import com.opensymphony.xwork.test.SimpleAction3;
 import com.opensymphony.xwork.test.User;
-import com.opensymphony.xwork.validator.validators.DateRangeFieldValidator;
-import com.opensymphony.xwork.validator.validators.ExpressionValidator;
-import com.opensymphony.xwork.validator.validators.IntRangeFieldValidator;
-import com.opensymphony.xwork.validator.validators.RequiredFieldValidator;
-import com.opensymphony.xwork.validator.validators.RequiredStringValidator;
-
-import junit.framework.TestCase;
+import com.opensymphony.xwork.validator.validators.*;
 
 import java.util.List;
 
 
 /**
  * ActionValidatorManagerTest
+ *
  * @author Jason Carreira
- * Created Jun 9, 2003 11:03:01 AM
+ *         Created Jun 9, 2003 11:03:01 AM
  */
-public class ActionValidatorManagerTest extends TestCase {
+public class ActionValidatorManagerTest extends XWorkTestCase {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     protected final String alias = "validationAlias";

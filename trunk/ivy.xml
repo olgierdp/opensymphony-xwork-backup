@@ -33,6 +33,7 @@
 
         <dependency org="opensymphony" name="oscore" rev="2.2.4"/>
         <dependency org="ognl" name="ognl" rev="2.6.7"/>
+        <dependency org="rife" name="rife-continuations" rev="0.0.1"/>
         <dependency org="apache" name="commons-logging" rev="1.0.4"/>
         <dependency org="springframework" name="spring" rev="1.2.3"
                     conf="spring->spring-aop,spring-beans,spring-context,spring-core,spring-web"/>

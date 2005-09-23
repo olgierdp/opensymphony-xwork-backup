@@ -11,7 +11,13 @@ import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.config.entities.ResultTypeConfig;
 import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.interceptor.PreResultListener;
+import com.opensymphony.xwork.util.OgnlUtil;
 import com.opensymphony.xwork.util.OgnlValueStack;
+import com.uwyn.rife.continuations.ContinuableObject;
+import com.uwyn.rife.continuations.ContinuationConfig;
+import com.uwyn.rife.continuations.ContinuationContext;
+import com.uwyn.rife.continuations.ContinuationManager;
+import com.uwyn.rife.continuations.exceptions.PauseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -29,6 +35,14 @@ import java.util.*;
  * @see com.opensymphony.xwork.DefaultActionProxy
  */
 public class DefaultActionInvocation implements ActionInvocation {
+    public static ContinuationManager m;
+
+    static {
+        if (ContinuationConfig.getInstance() != null) {
+            m = new ContinuationManager();
+        }
+    }
+
     private static final Log LOG = LogFactory.getLog(DefaultActionInvocation.class);
 
     protected Object action;
@@ -250,6 +264,30 @@ public class DefaultActionInvocation implements ActionInvocation {
             gripe += (((" -- " + e.getMessage()) != null) ? e.getMessage() : " [no message in exception]");
             throw new XworkException(gripe, e);
         }
+
+        prepareContinuation();
+    }
+
+    private void prepareContinuation() {
+        if (action instanceof ContinuableObject) {
+            ContinuationContext.createInstance((ContinuableObject) action);
+        }
+
+        try {
+            String id = (String) stack.getContext().get("__continue");
+            stack.getContext().remove("__continue");
+            if (id != null) {
+                ContinuationContext context = m.getContext(id);
+                if (context != null) {
+                    ContinuationContext.setContext(context);
+                    // copy over the values
+                    Object original = context.getContinuable();
+                    OgnlUtil.copy(original, action, getStack().getContext());
+                }
+            }
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
     }
 
     protected Map createContextMap() {
@@ -352,7 +390,16 @@ public class DefaultActionInvocation implements ActionInvocation {
             // We try to return the source exception.
             Throwable t = e.getTargetException();
 
-            if (t instanceof Exception) {
+            if (t instanceof PauseException) {
+                // continuations in effect!
+                PauseException pe = ((PauseException) t);
+                ContinuationContext context = pe.getContext();
+                String result = (String) pe.getParameters();
+                getStack().getContext().put("__continue", context.getId());
+                m.addContext(context);
+
+                return result;
+            } else if (t instanceof Exception) {
                 throw (Exception) t;
             } else {
                 throw e;
