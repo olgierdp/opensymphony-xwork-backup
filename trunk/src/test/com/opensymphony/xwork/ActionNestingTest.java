@@ -10,7 +10,6 @@ import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.util.OgnlValueStack;
-import junit.framework.TestCase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +21,7 @@ import java.util.Map;
  * @author Jason Carreira
  *         Created Mar 5, 2003 2:02:01 PM
  */
-public class ActionNestingTest extends TestCase {
+public class ActionNestingTest extends XWorkTestCase {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String VALUE = "myValue";

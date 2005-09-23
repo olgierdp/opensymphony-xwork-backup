@@ -27,7 +27,7 @@ public class GenericsObjectTypeDeterminer implements ObjectTypeDeterminer {
 
     public String getKeyProperty(Class parentClass, String property) {
         Field field = OgnlRuntime.getField(parentClass, property);
-        KeyProperty annotation = null; //field.getAnnotation(KeyProperty.class);
+        KeyProperty annotation = field.getAnnotation(KeyProperty.class);
         if (annotation != null) {
             return annotation.value();
         }
