@@ -4,7 +4,6 @@
 package com.opensymphony.xwork.spring;
 
 import com.opensymphony.xwork.ObjectFactory;
-import com.opensymphony.xwork.config.entities.ActionConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -103,22 +102,6 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
             return findAutoWiringBeanFactory(context.getParent());
         }
         return null;
-    }
-
-    public Object buildAction(String actionName, String namespace, ActionConfig config) throws Exception {
-        String uniqueName = actionName;
-        if (namespace != null && !namespace.equals("")) {
-            uniqueName = namespace + "/" + actionName;
-        }
-        uniqueName = "action:" + uniqueName;
-
-        try {
-            // see if it is defined in spring - if so, use it
-            return appContext.getBean(uniqueName);
-        } catch (NoSuchBeanDefinitionException e) {
-            // ok, no big deal, we fall back to the definition in the configuration
-            return buildBean(config.getClassName());
-        }
     }
 
     /**
