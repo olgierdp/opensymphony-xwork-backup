@@ -43,6 +43,12 @@
         </jar>
     </target>
 
+    <target name="docs.impl" depends="common.docs.impl">
+        <copy todir="${dist.docs}">
+            <fileset dir="${src.java}" includes="*.dtd"/>
+        </copy>
+    </target>
+
     <target name="ivyrep" depends="common.ivyrep">
         <antcall target="common.ivyrep">
             <param name="name" value="${name}-tiger"/>
