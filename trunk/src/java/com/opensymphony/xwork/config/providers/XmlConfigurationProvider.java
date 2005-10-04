@@ -157,16 +157,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             className = ActionSupport.class.getName();
         }
 
-        try {
-            if (ObjectFactory.getObjectFactory().isNoArgConstructorRequired()) {
-                ActionConfig actionConfig = new ActionConfig(null, className, null, null, null);
-                ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName());
-            } else {
-                ObjectFactory.getObjectFactory().getClassInstance(className);
-            }
-        } catch (Exception e) { // TODO: Not pretty
-            LOG.error("Action class [" + className + "] not found, skipping action [" + name + "]", e);
-
+        if (!verifyAction(className, name)) {
             return;
         }
 
@@ -191,6 +182,23 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("Loaded " + (TextUtils.stringSet(packageContext.getNamespace()) ? (packageContext.getNamespace() + "/") : "") + name + " in '" + packageContext.getName() + "' package:" + actionConfig);
+        }
+    }
+
+    protected boolean verifyAction(String className, String name) {
+        try {
+            if (ObjectFactory.getObjectFactory().isNoArgConstructorRequired()) {
+                ActionConfig actionConfig = new ActionConfig(null, className, null, null, null);
+                ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName());
+            } else {
+                ObjectFactory.getObjectFactory().getClassInstance(className);
+            }
+
+            return true;
+        } catch (Exception e) { // TODO: Not pretty
+            LOG.error("Action class [" + className + "] not found, skipping action [" + name + "]", e);
+
+            return false;
         }
     }
 
@@ -239,21 +247,31 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             String className = resultTypeElement.getAttribute("class");
             String def = resultTypeElement.getAttribute("default");
 
-            try {
-                Class clazz = ObjectFactory.getObjectFactory().getClassInstance(className);
-                ResultTypeConfig resultType = new ResultTypeConfig(name, clazz);
-                packageContext.addResultTypeConfig(resultType);
+            Class clazz = verifyResultType(className);
+            if (clazz == null) {
+                return;
+            }
 
-                // set the default result type
-                if ("true".equals(def)) {
-                    packageContext.setDefaultResultType(name);
-                }
-            } catch (ClassNotFoundException e) {
-                LOG.error("Result class [" + className + "] doesn't exist (ClassNotFoundException), ignoring");
-            } catch (NoClassDefFoundError e) {
-                LOG.error("Result class [" + className + "] doesn't exist (NoClassDefFoundError), ignoring");
+            ResultTypeConfig resultType = new ResultTypeConfig(name, clazz);
+            packageContext.addResultTypeConfig(resultType);
+
+            // set the default result type
+            if ("true".equals(def)) {
+                packageContext.setDefaultResultType(name);
             }
         }
+    }
+
+    protected Class verifyResultType(String className) {
+        try {
+            return ObjectFactory.getObjectFactory().getClassInstance(className);
+        } catch (ClassNotFoundException e) {
+            LOG.error("Result class [" + className + "] doesn't exist (ClassNotFoundException), ignoring");
+        } catch (NoClassDefFoundError e) {
+            LOG.error("Result class [" + className + "] doesn't exist (NoClassDefFoundError), ignoring");
+        }
+
+        return null;
     }
 
     protected List buildExternalRefs(Element element, PackageConfig context) throws ConfigurationException {
@@ -543,21 +561,28 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             String className = interceptorElement.getAttribute("class");
 
             Map params = XmlHelper.getParams(interceptorElement);
-            InterceptorConfig config;
-
-            try {
-                config = new InterceptorConfig(name, className, params);
-                ObjectFactory.getObjectFactory().buildInterceptor(config, new TreeMap());
-                context.addInterceptorConfig(config);
-            } catch (ConfigurationException e) {
-                String s = "Unable to load class " + className + " for interceptor name " + name + ". " +
-                        "This interceptor will not be available.\n" +
-                        "Cause: " + e.getMessage();
-                LOG.error(s);
+            InterceptorConfig config = new InterceptorConfig(name, className, params);
+            if (!verifyInterceptor(className, name, config)) {
+                return;
             }
+
+            context.addInterceptorConfig(config);
         }
 
         loadInterceptorStacks(element, context);
+    }
+
+    protected boolean verifyInterceptor(String className, String name, InterceptorConfig config) {
+        try {
+            ObjectFactory.getObjectFactory().buildInterceptor(config, new TreeMap());
+            return true;
+        } catch (ConfigurationException e) {
+            String s = "Unable to load class " + className + " for interceptor name " + name + ". " +
+                    "This interceptor will not be available.\n" +
+                    "Cause: " + e.getMessage();
+            LOG.error(s);
+            return false;
+        }
     }
 
     //    protected void loadPackages(Element rootElement) throws ConfigurationException {
