@@ -10,50 +10,25 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * TimerInterceptor
- * <p/>
- * Created : Jan 9, 2003 1:15:53 AM
+ * SNIPPET START: description
+ * This interceptor logs the amount of time in milliseconds. In order for this interceptor to work properly, the
+ * logging framework must be set to at least the
+ * <a href="http://jakarta.apache.org/commons/logging/api/org/apache/commons/logging/Log.html">INFO</a> level.
+ * This interceptor relies on the
+ * <a href="http://jakarta.apache.org/commons/logging/">Commons Logging API</a> to report its execution-time value.
+ * END SNIPPET: description
  *
  * @author Jason Carreira
  */
 public class TimerInterceptor implements Interceptor {
-
     private static final Log log = LogFactory.getLog(TimerInterceptor.class);
 
-
-    /**
-     * Called to let an interceptor clean up any resources it has allocated.
-     */
     public void destroy() {
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof TimerInterceptor)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public int hashCode() {
-        return 10;
-    }
-
-    /**
-     * Called after an Interceptor is created, but before any requests are processed using the intercept() methodName. This
-     * gives the Interceptor a chance to initialize any needed resources.
-     */
     public void init() {
     }
 
-    /**
-     * Allows the Interceptor to do some processing on the request before and/or after the rest of the processing of the
-     * request by the DefaultActionInvocation or to short-circuit the processing and just return a String return code.
-     */
     public String intercept(ActionInvocation invocation) throws Exception {
         if (log.isInfoEnabled()) {
             long startTime = System.currentTimeMillis();
