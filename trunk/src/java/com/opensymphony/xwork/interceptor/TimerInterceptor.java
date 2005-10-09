@@ -10,13 +10,22 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * SNIPPET START: description
+ * START SNIPPET: description
  * This interceptor logs the amount of time in milliseconds. In order for this interceptor to work properly, the
  * logging framework must be set to at least the
  * <a href="http://jakarta.apache.org/commons/logging/api/org/apache/commons/logging/Log.html">INFO</a> level.
  * This interceptor relies on the
  * <a href="http://jakarta.apache.org/commons/logging/">Commons Logging API</a> to report its execution-time value.
  * END SNIPPET: description
+ *
+ * <pre>
+ * START SNIPPET: example
+ *  &lt;action name="SomeAction" class="com.examples.SomeAction"&gt;
+ *      &lt;interceptor-ref name="timer"/&gt;
+ *      &lt;result name="success" type="freemarker"&gt;good_result.ftl&lt;/result&gt;
+ *  &lt;/action&gt;
+ * END SNIPPET: example
+ * </pre>
  *
  * @author Jason Carreira
  */
