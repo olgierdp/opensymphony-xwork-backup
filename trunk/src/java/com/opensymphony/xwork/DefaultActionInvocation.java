@@ -13,6 +13,7 @@ import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.interceptor.PreResultListener;
 import com.opensymphony.xwork.util.OgnlUtil;
 import com.opensymphony.xwork.util.OgnlValueStack;
+import com.opensymphony.xwork.util.XWorkContinuationConfig;
 import com.uwyn.rife.continuations.ContinuableObject;
 import com.uwyn.rife.continuations.ContinuationConfig;
 import com.uwyn.rife.continuations.ContinuationContext;
@@ -274,8 +275,8 @@ public class DefaultActionInvocation implements ActionInvocation {
         }
 
         try {
-            String id = (String) stack.getContext().get("__continue");
-            stack.getContext().remove("__continue");
+            String id = (String) stack.getContext().get(XWorkContinuationConfig.CONTINUE_KEY);
+            stack.getContext().remove(XWorkContinuationConfig.CONTINUE_KEY);
             if (id != null) {
                 ContinuationContext context = m.getContext(id);
                 if (context != null) {
@@ -395,7 +396,7 @@ public class DefaultActionInvocation implements ActionInvocation {
                 PauseException pe = ((PauseException) t);
                 ContinuationContext context = pe.getContext();
                 String result = (String) pe.getParameters();
-                getStack().getContext().put("__continue", context.getId());
+                getStack().getContext().put(XWorkContinuationConfig.CONTINUE_KEY, context.getId());
                 m.addContext(context);
 
                 return result;

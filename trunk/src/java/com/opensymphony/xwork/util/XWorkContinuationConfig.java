@@ -8,6 +8,9 @@ import com.uwyn.rife.continuations.ContinuationConfig;
  * Time: 7:39:30 AM
  */
 public class XWorkContinuationConfig extends ContinuationConfig {
+    public static final String CONTINUE_PARAM = "continue";
+    public static final String CONTINUE_KEY = "__continue";
+
     public String getContinuableClassInternalName() {
         return "com.opensymphony.xwork.ActionSupport";
     }
