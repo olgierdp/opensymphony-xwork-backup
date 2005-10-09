@@ -20,10 +20,10 @@ import org.apache.commons.logging.LogFactory;
  *
  * <pre>
  * START SNIPPET: example
- *  &lt;action name="SomeAction" class="com.examples.SomeAction"&gt;
- *      &lt;interceptor-ref name="timer"/&gt;
- *      &lt;result name="success" type="freemarker"&gt;good_result.ftl&lt;/result&gt;
- *  &lt;/action&gt;
+ * &lt;action name="SomeAction" class="com.examples.SomeAction"&gt;
+ *     &lt;interceptor-ref name="timer"/&gt;
+ *     &lt;result name="success" type="freemarker"&gt;good_result.ftl&lt;/result&gt;
+ * &lt;/action&gt;
  * END SNIPPET: example
  * </pre>
  *
