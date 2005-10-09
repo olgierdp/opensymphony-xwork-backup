@@ -27,7 +27,6 @@ import java.util.*;
  * @author <a href="mailto:plightbo@cisco.com">Pat Lightbody</a>
  */
 public class XWorkBasicConverter extends DefaultTypeConverter {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public Object convertValue(Map context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;

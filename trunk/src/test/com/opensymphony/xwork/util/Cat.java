@@ -13,17 +13,14 @@ import java.util.List;
  * @version $Revision$
  */
 public class Cat {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String SCIENTIFIC_NAME = "Feline";
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     Foo foo;
     List kittens;
     String name;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setFoo(Foo foo) {
         this.foo = foo;

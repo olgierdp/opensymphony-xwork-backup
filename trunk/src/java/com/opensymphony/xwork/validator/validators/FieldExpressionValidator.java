@@ -14,11 +14,9 @@ import com.opensymphony.xwork.validator.ValidationException;
  * @version $Revision$
  */
 public class FieldExpressionValidator extends FieldValidatorSupport {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private String expression;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setExpression(String expression) {
         this.expression = expression;

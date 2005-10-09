@@ -23,15 +23,13 @@ import java.util.Collection;
  * properties, Collections of Objects, or Arrays.
  *
  * @author Jason Carreira
- * Created Aug 2, 2003 10:27:48 PM
+ *         Created Aug 2, 2003 10:27:48 PM
  */
 public class VisitorFieldValidator extends FieldValidatorSupport {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private String context;
     private boolean appendPrefix = true;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Sets whether the field name of this field validator should be prepended to the field name of
@@ -111,7 +109,6 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         stack.pop();
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
 
     private class AppendingValidatorContext extends DelegatingValidatorContext {
         Object o;
@@ -128,6 +125,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
 
         /**
          * Translates a simple field name into a full field name in Ognl syntax
+         *
          * @param fieldName
          * @return
          */

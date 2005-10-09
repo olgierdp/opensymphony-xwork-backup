@@ -16,7 +16,6 @@ import com.opensymphony.xwork.Preparable;
  *      Date: Nov 5, 2003 2:33:11 AM
  */
 public class PrepareInterceptor extends AroundInterceptor {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }

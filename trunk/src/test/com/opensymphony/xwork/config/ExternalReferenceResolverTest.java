@@ -28,7 +28,6 @@ import java.util.HashMap;
  *         to be used by an action
  */
 public class ExternalReferenceResolverTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * test that resolver has been loaded and given to the package config

@@ -5,7 +5,6 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionInvocation;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -16,11 +15,9 @@ import org.apache.commons.logging.LogFactory;
  * @author Jason Carreira
  */
 public abstract class AroundInterceptor implements Interceptor {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     protected Log log = LogFactory.getLog(this.getClass());
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void destroy() {
     }

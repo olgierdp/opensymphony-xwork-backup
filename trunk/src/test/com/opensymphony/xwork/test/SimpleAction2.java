@@ -9,15 +9,14 @@ import com.opensymphony.xwork.SimpleAction;
 
 /**
  * SimpleAction2
+ *
  * @author Jason Carreira
- * Created Jun 14, 2003 9:51:12 PM
+ *         Created Jun 14, 2003 9:51:12 PM
  */
 public class SimpleAction2 extends SimpleAction {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private int count;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setCount(int count) {
         this.count = count;

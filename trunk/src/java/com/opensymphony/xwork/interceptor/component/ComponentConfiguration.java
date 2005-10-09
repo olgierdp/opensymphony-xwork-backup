@@ -28,15 +28,12 @@ import java.util.*;
  * @version $Revision$
  */
 public class ComponentConfiguration implements Serializable {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log log = LogFactory.getLog(ComponentConfiguration.class);
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Map componentsByScope = new HashMap();
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void addComponentDefinition(String className, String scope, String enablerClass) {
         getComponents(scope).add(new ComponentDefinition(className, enablerClass));
@@ -132,7 +129,6 @@ public class ComponentConfiguration implements Serializable {
         }
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
 
     private class ComponentDefinition implements Serializable {
         private String className;

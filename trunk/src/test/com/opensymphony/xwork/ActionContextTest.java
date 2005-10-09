@@ -18,18 +18,15 @@ import java.util.Map;
  *         Created Feb 26, 2003 11:22:50 PM
  */
 public class ActionContextTest extends TestCase {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final String APPLICATION_KEY = "com.opensymphony.xwork.ActionContextTest.application";
     private static final String SESSION_KEY = "com.opensymphony.xwork.ActionContextTest.session";
     private static final String PARAMETERS_KEY = "com.opensymphony.xwork.ActionContextTest.params";
     private static final String ACTION_NAME = "com.opensymphony.xwork.ActionContextTest.actionName";
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     ActionContext context;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setUp() {
         OgnlValueStack valueStack = new OgnlValueStack();

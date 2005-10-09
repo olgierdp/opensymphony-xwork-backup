@@ -26,14 +26,12 @@ import java.util.Map;
  * To change this template use Options | File Templates.
  */
 public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private List interceptors;
     private List exceptionMappings;
     private Map params;
     private Map results;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testActions() throws Exception {
         final String filename = "com/opensymphony/xwork/config/providers/xwork-test-actions.xml";

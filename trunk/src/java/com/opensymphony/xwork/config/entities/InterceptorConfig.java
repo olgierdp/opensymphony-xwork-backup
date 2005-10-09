@@ -16,13 +16,11 @@ import java.util.TreeMap;
  * To change this template use Options | File Templates.
  */
 public class InterceptorConfig implements Parameterizable {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     Map params;
     String className;
     String name;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public InterceptorConfig() {
     }
@@ -39,7 +37,6 @@ public class InterceptorConfig implements Parameterizable {
         this.params = params;
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setClassName(String className) {
         this.className = className;
@@ -84,7 +81,8 @@ public class InterceptorConfig implements Parameterizable {
 
         final InterceptorConfig interceptorConfig = (InterceptorConfig) o;
 
-        if ((className != null) ? (!className.equals(interceptorConfig.className)) : (interceptorConfig.className != null)) {
+        if ((className != null) ? (!className.equals(interceptorConfig.className)) : (interceptorConfig.className != null))
+        {
             return false;
         }
 

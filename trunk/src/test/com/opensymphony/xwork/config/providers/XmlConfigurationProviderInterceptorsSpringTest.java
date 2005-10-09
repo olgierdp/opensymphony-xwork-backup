@@ -4,12 +4,6 @@
  */
 package com.opensymphony.xwork.config.providers;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.beans.MutablePropertyValues;
-import org.springframework.context.support.StaticApplicationContext;
-
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationManager;
@@ -18,6 +12,11 @@ import com.opensymphony.xwork.config.entities.InterceptorConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.interceptor.TimerInterceptor;
 import com.opensymphony.xwork.spring.SpringObjectFactory;
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.context.support.StaticApplicationContext;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -28,13 +27,11 @@ import com.opensymphony.xwork.spring.SpringObjectFactory;
  * To change this template use Options | File Templates.
  */
 public class XmlConfigurationProviderInterceptorsSpringTest extends ConfigurationTestBase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     InterceptorConfig timerInterceptor = new InterceptorConfig("timer", TimerInterceptor.class, new HashMap());
     ObjectFactory objectFactory = ObjectFactory.getObjectFactory();
     StaticApplicationContext sac;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testInterceptorsLoadedFromSpringApplicationContext() throws ConfigurationException {
         sac.registerSingleton("timer-interceptor", TimerInterceptor.class, new MutablePropertyValues());

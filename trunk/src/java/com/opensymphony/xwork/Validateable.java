@@ -13,7 +13,6 @@ package com.opensymphony.xwork;
  * @see com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor
  */
 public interface Validateable {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     void validate();
 }

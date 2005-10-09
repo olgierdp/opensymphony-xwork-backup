@@ -9,13 +9,11 @@ package com.opensymphony.xwork.test;
  * @author Mark Woon
  */
 public class Equidae {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private String cow;
     private String donkey;
     private String horse;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setCow(String cow) {
         this.cow = cow;

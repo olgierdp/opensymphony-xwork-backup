@@ -12,7 +12,6 @@ package com.opensymphony.xwork.config;
  * @version $Revision$
  */
 public interface ConfigurationProvider {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void destroy();
 

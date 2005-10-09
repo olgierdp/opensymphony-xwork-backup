@@ -4,7 +4,10 @@
  */
 package com.opensymphony.xwork.util;
 
-import ognl.*;
+import ognl.Ognl;
+import ognl.OgnlContext;
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -26,13 +29,11 @@ import java.util.Map;
  * @author Jason Carreira
  */
 public class OgnlUtil {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log log = LogFactory.getLog(OgnlUtil.class);
     private static HashMap expressions = new HashMap();
     private static HashMap beanInfoCache = new HashMap();
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Sets the object's properties using the default type converter, defaulting to not throw

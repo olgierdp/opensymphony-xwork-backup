@@ -12,10 +12,6 @@ import java.util.Map;
  * @author Gabe
  */
 public class XWorkObjectPropertyAccessor extends ObjectPropertyAccessor {
-
-    /* (non-Javadoc)
-     * @see ognl.PropertyAccessor#getProperty(java.util.Map, java.lang.Object, java.lang.Object)
-     */
     public Object getProperty(Map context, Object target, Object oname)
             throws OgnlException {
         //set the last set objects in the context

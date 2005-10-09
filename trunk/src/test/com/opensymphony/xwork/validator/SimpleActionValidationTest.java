@@ -9,7 +9,6 @@ import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.validators.ValidatorSupport;
-
 import junit.framework.TestCase;
 
 import java.util.*;
@@ -23,11 +22,9 @@ import java.util.*;
  * @author Jason Carreira
  */
 public class SimpleActionValidationTest extends TestCase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Locale origLocale;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testAliasValidation() {
         HashMap params = new HashMap();

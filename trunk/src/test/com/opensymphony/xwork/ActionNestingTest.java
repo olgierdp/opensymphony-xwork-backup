@@ -22,7 +22,6 @@ import java.util.Map;
  *         Created Mar 5, 2003 2:02:01 PM
  */
 public class ActionNestingTest extends XWorkTestCase {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String VALUE = "myValue";
     public static final String NESTED_VALUE = "myNestedValue";
@@ -33,11 +32,9 @@ public class ActionNestingTest extends XWorkTestCase {
     public static final String NO_STACK_ACTION_NAME = "NoStackNestedAction";
     public static final String STACK_ACTION_NAME = "StackNestedAction";
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private ActionContext context;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public String getMyProperty() {
         return VALUE;
@@ -100,7 +97,6 @@ public class ActionNestingTest extends XWorkTestCase {
         assertEquals(3, stack.size());
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
 
     class NestedTestConfigurationProvider implements ConfigurationProvider {
         public void destroy() {

@@ -4,22 +4,19 @@
  */
 package com.opensymphony.xwork.validator.validators;
 
-import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.ValidationException;
 
 
 /**
  * ExpressionValidator
+ *
  * @author Jason Carreira
- * Created Feb 15, 2003 9:59:04 PM
+ *         Created Feb 15, 2003 9:59:04 PM
  */
 public class ExpressionValidator extends ValidatorSupport {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private String expression;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setExpression(String expression) {
         this.expression = expression;

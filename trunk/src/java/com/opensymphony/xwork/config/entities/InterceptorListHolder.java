@@ -16,7 +16,6 @@ import java.util.List;
  *         Created Jun 1, 2003 1:02:48 AM
  */
 public interface InterceptorListHolder {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     void addInterceptor(Interceptor interceptor);
 

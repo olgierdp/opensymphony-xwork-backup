@@ -14,7 +14,6 @@ import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.Foo;
 import com.opensymphony.xwork.config.entities.ExternalReference;
 import com.opensymphony.xwork.util.OgnlUtil;
-
 import ognl.Ognl;
 
 import java.util.HashMap;
@@ -27,11 +26,7 @@ import java.util.Map;
  * Test resolver
  */
 public class TestExternalReferenceResolver implements ExternalReferenceResolver {
-    //~ Instance fields ////////////////////////////////////////////////////////
-
     private Map references;
-
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public TestExternalReferenceResolver() {
         references = new HashMap();
@@ -40,11 +35,6 @@ public class TestExternalReferenceResolver implements ExternalReferenceResolver 
         references.put("myFoo", new Foo("Little Foo"));
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
-
-    /* (non-Javadoc)
-     * @see com.opensymphony.xwork.config.ExternalReferenceResolver#resolveReference(java.lang.String)
-     */
     public void resolveReferences(ActionInvocation invocation) throws ReferenceResolverException {
         List refs = invocation.getProxy().getConfig().getExternalRefs();
 

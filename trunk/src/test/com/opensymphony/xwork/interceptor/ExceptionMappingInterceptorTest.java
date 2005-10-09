@@ -1,12 +1,12 @@
 package com.opensymphony.xwork.interceptor;
 
-import junit.framework.TestCase;
+import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork.*;
-import com.opensymphony.xwork.validator.ValidationException;
-import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.ExceptionMappingConfig;
-import com.mockobjects.dynamic.Mock;
+import com.opensymphony.xwork.util.OgnlValueStack;
+import com.opensymphony.xwork.validator.ValidationException;
+import junit.framework.TestCase;
 
 import java.util.HashMap;
 
@@ -16,14 +16,12 @@ import java.util.HashMap;
  * Time: 9:05:05 PM
  */
 public class ExceptionMappingInterceptorTest extends TestCase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     ActionInvocation invocation;
     ExceptionMappingInterceptor interceptor;
     Mock mockInvocation;
     OgnlValueStack stack;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testThrownExceptionMatching() throws Exception {
         this.setUpWithExceptionMappings();
@@ -31,7 +29,7 @@ public class ExceptionMappingInterceptorTest extends TestCase {
         Mock action = new Mock(Action.class);
         Exception exception = new XworkException("test");
         mockInvocation.expectAndThrow("invoke", exception);
-        mockInvocation.matchAndReturn("getAction", ((Action)action.proxy()));
+        mockInvocation.matchAndReturn("getAction", ((Action) action.proxy()));
         String result = interceptor.intercept(invocation);
         assertNotNull(stack.findValue("exception"));
         assertEquals(stack.findValue("exception"), exception);
@@ -44,7 +42,7 @@ public class ExceptionMappingInterceptorTest extends TestCase {
         Mock action = new Mock(Action.class);
         Exception exception = new ValidationException("test");
         mockInvocation.expectAndThrow("invoke", exception);
-        mockInvocation.matchAndReturn("getAction", ((Action)action.proxy()));
+        mockInvocation.matchAndReturn("getAction", ((Action) action.proxy()));
         String result = interceptor.intercept(invocation);
         assertNotNull(stack.findValue("exception"));
         assertEquals(stack.findValue("exception"), exception);
@@ -56,7 +54,7 @@ public class ExceptionMappingInterceptorTest extends TestCase {
 
         Mock action = new Mock(Action.class);
         mockInvocation.expectAndReturn("invoke", Action.SUCCESS);
-        mockInvocation.matchAndReturn("getAction", ((Action)action.proxy()));
+        mockInvocation.matchAndReturn("getAction", ((Action) action.proxy()));
         String result = interceptor.intercept(invocation);
         assertEquals(result, Action.SUCCESS);
         assertNull(stack.findValue("exception"));
@@ -68,7 +66,7 @@ public class ExceptionMappingInterceptorTest extends TestCase {
         Mock action = new Mock(Action.class);
         Exception exception = new Exception("test");
         mockInvocation.expectAndThrow("invoke", exception);
-        mockInvocation.matchAndReturn("getAction", ((Action)action.proxy()));
+        mockInvocation.matchAndReturn("getAction", ((Action) action.proxy()));
 
         try {
             interceptor.intercept(invocation);
@@ -82,7 +80,7 @@ public class ExceptionMappingInterceptorTest extends TestCase {
         ActionConfig actionConfig = new ActionConfig();
         Mock actionProxy = new Mock(ActionProxy.class);
         actionProxy.expectAndReturn("getConfig", actionConfig);
-        mockInvocation.expectAndReturn("getProxy", ((ActionProxy)actionProxy.proxy()));
+        mockInvocation.expectAndReturn("getProxy", ((ActionProxy) actionProxy.proxy()));
         invocation = (ActionInvocation) mockInvocation.proxy();
     }
 
@@ -102,7 +100,7 @@ public class ExceptionMappingInterceptorTest extends TestCase {
         actionConfig.addExceptionMapping(new ExceptionMappingConfig("throwable", "java.lang.Throwable", "throwable"));
         Mock actionProxy = new Mock(ActionProxy.class);
         actionProxy.expectAndReturn("getConfig", actionConfig);
-        mockInvocation.expectAndReturn("getProxy", ((ActionProxy)actionProxy.proxy()));
+        mockInvocation.expectAndReturn("getProxy", ((ActionProxy) actionProxy.proxy()));
 
         invocation = (ActionInvocation) mockInvocation.proxy();
     }

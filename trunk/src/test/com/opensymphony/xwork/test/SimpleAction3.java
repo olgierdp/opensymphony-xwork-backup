@@ -14,12 +14,10 @@ import com.opensymphony.xwork.util.Bar;
  * @author Mark Woon
  */
 public class SimpleAction3 extends SimpleAction implements DataAware {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Bar bar;
     private String data;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setBarObj(Bar b) {
         bar = b;

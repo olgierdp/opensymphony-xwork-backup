@@ -34,17 +34,14 @@ import java.util.*;
  * @version $Revision$
  */
 public class XmlConfigurationProvider implements ConfigurationProvider {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log LOG = LogFactory.getLog(XmlConfigurationProvider.class);
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Configuration configuration;
     private Set includedFileNames = new TreeSet();
     private String configFileName = "xwork.xml";
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public XmlConfigurationProvider() {
     }
@@ -53,7 +50,6 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         this.configFileName = filename;
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void destroy() {
     }
@@ -69,7 +65,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         final XmlConfigurationProvider xmlConfigurationProvider = (XmlConfigurationProvider) o;
 
-        if ((configFileName != null) ? (!configFileName.equals(xmlConfigurationProvider.configFileName)) : (xmlConfigurationProvider.configFileName != null)) {
+        if ((configFileName != null) ? (!configFileName.equals(xmlConfigurationProvider.configFileName)) : (xmlConfigurationProvider.configFileName != null))
+        {
             return false;
         }
 
@@ -426,7 +423,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 if (params.size() == 0) // maybe we just have a body - therefore a default parameter
                 {
                     // if <result ...>something</result> then we add a parameter of 'something' as this is the most used result param
-                    if ((resultElement.getChildNodes().getLength() == 1) && (resultElement.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE)) {
+                    if ((resultElement.getChildNodes().getLength() == 1) && (resultElement.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE))
+                    {
                         params = new TreeMap();
 
                         try {

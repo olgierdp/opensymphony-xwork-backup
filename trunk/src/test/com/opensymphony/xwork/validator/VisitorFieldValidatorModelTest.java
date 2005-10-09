@@ -8,7 +8,6 @@ import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.test.TestBean2;
 import com.opensymphony.xwork.util.OgnlValueStack;
-
 import junit.framework.TestCase;
 
 import java.util.*;
@@ -16,16 +15,15 @@ import java.util.*;
 
 /**
  * VisitorFieldValidatorModelTest
+ *
  * @author Jason Carreira
- * Date: Mar 18, 2004 2:51:42 PM
+ *         Date: Mar 18, 2004 2:51:42 PM
  */
 public class VisitorFieldValidatorModelTest extends TestCase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     protected VisitorValidatorModelAction action;
     private Locale origLocale;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setUp() {
         origLocale = Locale.getDefault();

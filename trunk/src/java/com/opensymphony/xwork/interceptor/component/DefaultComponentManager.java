@@ -24,11 +24,9 @@ import java.util.*;
  *             Please refer to the Spring-WebWork integration documentation for more info.
  */
 public class DefaultComponentManager implements ComponentManager, Serializable {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log log = LogFactory.getLog(DefaultComponentManager.class);
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     Map enablers = new HashMap();
     Map enablers2 = new HashMap();
@@ -40,7 +38,6 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
     private ComponentConfiguration config;
     private String scope;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public Object getComponent(Class enablerType) {
         DefaultComponentManager dcm = this;

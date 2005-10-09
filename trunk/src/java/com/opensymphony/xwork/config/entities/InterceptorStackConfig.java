@@ -19,12 +19,10 @@ import java.util.List;
  * To change this template use Options | File Templates.
  */
 public class InterceptorStackConfig implements InterceptorListHolder {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private List interceptors;
     private String name;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public InterceptorStackConfig() {
         this.interceptors = new ArrayList();
@@ -35,7 +33,6 @@ public class InterceptorStackConfig implements InterceptorListHolder {
         this.name = name;
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public Collection getInterceptors() {
         return interceptors;
@@ -68,7 +65,8 @@ public class InterceptorStackConfig implements InterceptorListHolder {
 
         final InterceptorStackConfig interceptorStackConfig = (InterceptorStackConfig) o;
 
-        if ((interceptors != null) ? (!interceptors.equals(interceptorStackConfig.interceptors)) : (interceptorStackConfig.interceptors != null)) {
+        if ((interceptors != null) ? (!interceptors.equals(interceptorStackConfig.interceptors)) : (interceptorStackConfig.interceptors != null))
+        {
             return false;
         }
 

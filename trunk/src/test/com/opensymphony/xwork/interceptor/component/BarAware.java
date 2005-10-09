@@ -6,13 +6,10 @@ package com.opensymphony.xwork.interceptor.component;
 
 
 /**
- *
- *
  * @author $Author$
  * @version $Revision$
  */
 public interface BarAware {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setBar(Bar bar);
 }

@@ -11,10 +11,8 @@
 package com.opensymphony.xwork;
 
 import com.mockobjects.dynamic.Mock;
-
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.util.OgnlValueStack;
-
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -23,12 +21,11 @@ import java.util.Map;
 
 /**
  * @author CameronBraid
- *
- * To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Generation - Code and Comments
+ *         <p/>
+ *         To change the template for this generated type comment go to
+ *         Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class ChainResultTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testNamespaceAndActionExpressionEvaluation() throws Exception {
         ActionChainResult result = new ActionChainResult();
@@ -80,7 +77,6 @@ public class ChainResultTest extends TestCase {
         ConfigurationManager.getConfiguration().reload();
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
 
     private class NamespaceActionNameTestActionProxyFactory extends ActionProxyFactory {
         private ActionProxy returnVal;

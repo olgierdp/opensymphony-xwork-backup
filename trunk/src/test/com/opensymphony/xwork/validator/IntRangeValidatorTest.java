@@ -10,7 +10,6 @@ import com.opensymphony.xwork.ActionProxyFactory;
 import com.opensymphony.xwork.ValidationAware;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
-
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -20,13 +19,12 @@ import java.util.Map;
 
 /**
  * IntRangeValidatorTest
- *
+ * <p/>
  * Created : Jan 21, 2003 12:16:01 AM
  *
  * @author Jason Carreira
  */
 public class IntRangeValidatorTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testRangeValidation() {
         HashMap params = new HashMap();

@@ -19,7 +19,6 @@ import java.util.Map;
  * @author Mark Woon
  */
 public class StringValidatorTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testRequiredString() throws ValidationException {
         Equidae equidae = new Equidae();

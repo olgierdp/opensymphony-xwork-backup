@@ -67,14 +67,12 @@ public class OgnlValueStack implements Serializable {
         context.put("__link", new Object[]{clazz, name});
     }
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     CompoundRoot root;
     transient Map context;
     Class defaultType;
     Map overrides;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public OgnlValueStack() {
         setRoot(new CompoundRoot());
@@ -85,7 +83,6 @@ public class OgnlValueStack implements Serializable {
         setRoot(new CompoundRoot(vs.getRoot()));
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public static CompoundRootAccessor getAccessor() {
         return accessor;

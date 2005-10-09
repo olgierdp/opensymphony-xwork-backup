@@ -15,7 +15,6 @@ import java.util.Map;
  * @author Mark Woon
  */
 public class User implements UserMarker {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Collection collection;
     private List list;
@@ -24,7 +23,6 @@ public class User implements UserMarker {
     private String email2;
     private String name;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setCollection(Collection collection) {
         this.collection = collection;

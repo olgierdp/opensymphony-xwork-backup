@@ -13,11 +13,9 @@ import com.opensymphony.xwork.validator.ValidationException;
  * the String before performing the length check.  If unspecified, the String will be trimmed.
  */
 public class RequiredStringValidator extends FieldValidatorSupport {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private boolean doTrim = true;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setTrim(boolean trim) {
         doTrim = trim;

@@ -9,16 +9,15 @@ import java.util.Date;
 
 /**
  * DateRangeFieldValidator
+ *
  * @author Jason Carreira
- * Created Feb 9, 2003 1:23:42 AM
+ *         Created Feb 9, 2003 1:23:42 AM
  */
 public class DateRangeFieldValidator extends AbstractRangeValidator {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Date max;
     private Date min;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setMax(Date max) {
         this.max = max;

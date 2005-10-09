@@ -20,7 +20,6 @@ import java.util.TreeMap;
  * To change this template use Options | File Templates.
  */
 public class XmlHelper {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public static Map getParams(Element paramsElement) {
         TreeMap params = new TreeMap();

@@ -5,7 +5,6 @@
 package com.opensymphony.xwork.interceptor.component;
 
 import junit.framework.TestCase;
-
 import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
@@ -13,13 +12,10 @@ import java.io.IOException;
 
 
 /**
- *
- *
  * @author $Author$
  * @version $Revision$
  */
 public class DefaultComponentManagerTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testFoo() throws IOException, SAXException {
         ComponentConfiguration cc = new ComponentConfiguration();

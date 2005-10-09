@@ -9,7 +9,6 @@ import com.opensymphony.xwork.ValidationAware;
 import com.opensymphony.xwork.ValidationAwareSupport;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.validators.ConversionErrorFieldValidator;
-
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -19,21 +18,19 @@ import java.util.Map;
 
 /**
  * ConversionErrorFieldValidatorTest
+ *
  * @author Jason Carreira
- * Date: Nov 28, 2003 3:45:37 PM
+ *         Date: Nov 28, 2003 3:45:37 PM
  */
 public class ConversionErrorFieldValidatorTest extends TestCase {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final String defaultFooMessage = "Invalid field value for field \"foo\".";
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private ActionContext oldContext;
     private ConversionErrorFieldValidator validator;
     private ValidationAware validationAware;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setUp() {
         oldContext = ActionContext.getContext();

@@ -17,11 +17,9 @@ import java.util.Map;
  * Time: 7:13:37 AM
  */
 public class XWorkEnumerationAcccessor extends EnumerationPropertyAccessor {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     ObjectPropertyAccessor opa = new ObjectPropertyAccessor();
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setProperty(Map context, Object target, Object name, Object value) throws OgnlException {
         opa.setProperty(context, target, name, value);

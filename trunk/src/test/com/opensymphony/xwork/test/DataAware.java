@@ -13,7 +13,6 @@ import com.opensymphony.xwork.util.Bar;
  * @author Mark Woon
  */
 public interface DataAware {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     void setBarObj(Bar b);
 

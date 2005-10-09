@@ -22,7 +22,6 @@ import java.util.Map;
  * @author Jason Carreira
  */
 public class ParametersInterceptorTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testParameterNameAware() {
         ParametersInterceptor pi = new ParametersInterceptor();

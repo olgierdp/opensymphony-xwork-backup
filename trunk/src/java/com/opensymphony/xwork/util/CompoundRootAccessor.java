@@ -20,12 +20,10 @@ import java.util.Map;
  * @version $Revision$
  */
 public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, ClassResolver {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private final static Log log = LogFactory.getLog(CompoundRootAccessor.class);
     private static Map invalidMethods = new HashMap();
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setProperty(Map context, Object target, Object name, Object value) throws OgnlException {
         CompoundRoot root = (CompoundRoot) target;
@@ -96,7 +94,8 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 }
 
                 try {
-                    if ((OgnlRuntime.hasGetProperty(ognlContext, o, name)) || ((o instanceof Map) && ((Map) o).containsKey(name))) {
+                    if ((OgnlRuntime.hasGetProperty(ognlContext, o, name)) || ((o instanceof Map) && ((Map) o).containsKey(name)))
+                    {
                         return OgnlRuntime.getProperty(ognlContext, o, name);
                     }
                 } catch (OgnlException e) {
@@ -201,7 +200,6 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         return classes;
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
 
     static class MethodCall {
         Class clazz;

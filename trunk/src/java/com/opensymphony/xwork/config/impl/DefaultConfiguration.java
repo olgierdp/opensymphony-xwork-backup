@@ -22,22 +22,18 @@ import java.util.*;
  *         Created Feb 24, 2003 7:38:06 AM
  */
 public class DefaultConfiguration implements Configuration {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     protected static final Log LOG = LogFactory.getLog(DefaultConfiguration.class);
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     // Programmatic Action Conifigurations
     private Map packageContexts = new TreeMap();
     private RuntimeConfiguration runtimeConfiguration;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public DefaultConfiguration() {
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public PackageConfig getPackageConfig(String name) {
         return (PackageConfig) packageContexts.get(name);
@@ -183,7 +179,6 @@ public class DefaultConfiguration implements Configuration {
         return config;
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
 
     private class RuntimeConfigurationImpl implements RuntimeConfiguration {
         private Map namespaceActionConfigs;

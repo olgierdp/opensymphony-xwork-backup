@@ -11,21 +11,20 @@ import java.io.Serializable;
  * All results (except for NONE) of an Action are mapped to a View implementation.
  * Examples of Views might be:
  * <ul>
- *  <li>SwingPanelView - pops up a new Swing panel</li>
- *  <li>ActionChainView - executes another action</li>
- *  <li>SerlvetRedirectView - redirects the HTTP response to a URL</li>
- *  <li>ServletDispatcherView - dispatches the HTTP response to a URL</li>
+ * <li>SwingPanelView - pops up a new Swing panel</li>
+ * <li>ActionChainView - executes another action</li>
+ * <li>SerlvetRedirectView - redirects the HTTP response to a URL</li>
+ * <li>ServletDispatcherView - dispatches the HTTP response to a URL</li>
  * </ul>
  *
  * @author $Author$
  * @version $Revision$
  */
 public interface Result extends Serializable {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-    * Represents a generic interface for all action execution results, whether that be displaying a webpage, generating
-    * an email, sending a JMS message, etc.
-    */
+     * Represents a generic interface for all action execution results, whether that be displaying a webpage, generating
+     * an email, sending a JMS message, etc.
+     */
     public void execute(ActionInvocation invocation) throws Exception;
 }

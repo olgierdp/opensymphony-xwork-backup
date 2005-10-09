@@ -11,18 +11,13 @@ package com.opensymphony.xwork.util;
 import junit.framework.TestCase;
 import ognl.Ognl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 
 /**
  * @author CameronBraid
  */
 public class SetPropertiesTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testOgnlUtilEmptyStringAsLong() {
         Bar bar = new Bar();
@@ -37,7 +32,7 @@ public class SetPropertiesTest extends TestCase {
         assertNull(bar.getId());
         assertEquals(0, bar.getFieldErrors().size());
 
-        props.put("id", new String[] {""});
+        props.put("id", new String[]{""});
 
         bar.setId(null);
         OgnlUtil.setProperties(props, bar, context);
@@ -96,30 +91,31 @@ public class SetPropertiesTest extends TestCase {
         assertNull(bar.getId());
         assertEquals(0, bar.getFieldErrors().size());
     }
+
     public void fix_testAddingToListsWithObjects() {
-		Foo foo=new Foo();
-		foo.setMoreCats(new ArrayList());
-		String spielname="Spielen";    	
-		OgnlValueStack vs = new OgnlValueStack();
-		vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-		vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-		vs.push(foo);
-		vs.setValue("moreCats[2].name", spielname);
-		Object setCat=foo.getMoreCats().get(2);
-		assertNotNull(setCat);
-		assertTrue(setCat instanceof Cat);
-		assertTrue(((Cat)setCat).getName().equals(spielname));
-		//now try to set a lower number
-		//to test setting after a higher one
-		//has been created
-		spielname="paws";
-		vs.setValue("moreCats[0].name", spielname);
-		setCat=foo.getMoreCats().get(0);
-		assertNotNull(setCat);
-		assertTrue(setCat instanceof Cat);
-		assertTrue(((Cat)setCat).getName().equals(spielname));
-		
-    
+        Foo foo = new Foo();
+        foo.setMoreCats(new ArrayList());
+        String spielname = "Spielen";
+        OgnlValueStack vs = new OgnlValueStack();
+        vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+        vs.push(foo);
+        vs.setValue("moreCats[2].name", spielname);
+        Object setCat = foo.getMoreCats().get(2);
+        assertNotNull(setCat);
+        assertTrue(setCat instanceof Cat);
+        assertTrue(((Cat) setCat).getName().equals(spielname));
+        //now try to set a lower number
+        //to test setting after a higher one
+        //has been created
+        spielname = "paws";
+        vs.setValue("moreCats[0].name", spielname);
+        setCat = foo.getMoreCats().get(0);
+        assertNotNull(setCat);
+        assertTrue(setCat instanceof Cat);
+        assertTrue(((Cat) setCat).getName().equals(spielname));
+
+
     }
 
     public void fix_testAddingToMapsWithObjects() {
@@ -188,6 +184,6 @@ public class SetPropertiesTest extends TestCase {
         }
 
     }
-    
-    
+
+
 }

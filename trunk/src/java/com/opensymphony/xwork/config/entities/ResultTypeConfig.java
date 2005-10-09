@@ -13,12 +13,10 @@ package com.opensymphony.xwork.config.entities;
  * To change this template use Options | File Templates.
  */
 public class ResultTypeConfig {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Class clazz;
     private String name;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public ResultTypeConfig() {
     }
@@ -28,7 +26,6 @@ public class ResultTypeConfig {
         this.clazz = clazz;
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setClazz(Class clazz) {
         this.clazz = clazz;

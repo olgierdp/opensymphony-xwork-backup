@@ -11,7 +11,6 @@ package com.opensymphony.xwork.test;
  * @author Mark Woon
  */
 public interface DataAware2 extends DataAware {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setBling(String bling);
 

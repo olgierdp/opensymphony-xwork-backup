@@ -17,13 +17,11 @@ import com.opensymphony.xwork.validator.ValidationException;
  * @author Mark Woon
  */
 public class StringLengthFieldValidator extends FieldValidatorSupport {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private boolean doTrim = true;
     private int maxLength = -1;
     private int minLength = -1;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setMaxLength(int maxLength) {
         this.maxLength = maxLength;

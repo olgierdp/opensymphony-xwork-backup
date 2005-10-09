@@ -12,7 +12,6 @@ package com.opensymphony.xwork;
  * @version $Revision$
  */
 public class SimpleFooAction implements Action {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public String execute() throws Exception {
         return SUCCESS;

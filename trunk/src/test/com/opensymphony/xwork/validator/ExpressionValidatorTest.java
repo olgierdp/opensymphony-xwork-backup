@@ -4,16 +4,10 @@
  */
 package com.opensymphony.xwork.validator;
 
-import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.ActionProxy;
-import com.opensymphony.xwork.ActionProxyFactory;
-import com.opensymphony.xwork.TestBean;
-import com.opensymphony.xwork.ValidationAware;
-import com.opensymphony.xwork.ValidationAwareSupport;
+import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.util.OgnlValueStack;
-
 import junit.framework.TestCase;
 
 import java.util.Collection;
@@ -24,11 +18,11 @@ import java.util.Map;
 
 /**
  * ExpressionValidatorTest
+ *
  * @author Jason Carreira
- * Created Feb 15, 2003 10:42:22 PM
+ *         Created Feb 15, 2003 10:42:22 PM
  */
 public class ExpressionValidatorTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testExpressionValidationOfStringLength() throws ValidationException {
         TestBean bean = new TestBean();

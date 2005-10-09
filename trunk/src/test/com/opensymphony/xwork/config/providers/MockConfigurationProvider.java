@@ -29,7 +29,6 @@ import java.util.List;
  * @version $Revision$
  */
 public class MockConfigurationProvider implements ConfigurationProvider {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String FOO_ACTION_NAME = "foo";
     public static final String MODEL_DRIVEN_PARAM_TEST = "modelParamTest";
@@ -38,7 +37,6 @@ public class MockConfigurationProvider implements ConfigurationProvider {
     public static final String VALIDATION_ALIAS_NAME = "validationAlias";
     public static final String VALIDATION_SUBPROPERTY_NAME = "subproperty";
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Allows the configuration to clean up any resources used

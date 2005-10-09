@@ -15,10 +15,9 @@ import java.util.Locale;
  * internationalized messages from resource bundles.
  *
  * @author Jason Carreira
- * Date: Oct 29, 2003 9:11:22 PM
+ *         Date: Oct 29, 2003 9:11:22 PM
  */
 public interface LocaleProvider {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     Locale getLocale();
 }

@@ -17,13 +17,11 @@ package com.opensymphony.xwork.config.entities;
  *         Encapsulates an external reference in the xwork configuration
  */
 public class ExternalReference {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private String externalRef;
     private String name;
     private boolean required = true;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     /**
      * default constructor
@@ -42,7 +40,6 @@ public class ExternalReference {
         this.required = required;
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * @param externalRef The externalRef to set.

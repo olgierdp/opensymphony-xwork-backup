@@ -5,35 +5,31 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.util.ClassLoaderUtil;
-
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
-
 import junit.framework.TestCase;
 
 import java.io.InputStream;
-
 import java.util.List;
 
 
 /**
  * ValidatorFileParserTest
- *
+ * <p/>
  * Created : Jan 20, 2003 3:41:26 PM
  *
  * @author Jason Carreira
  * @author James House
  */
 public class ValidatorFileParserTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     private static final String testFileName = "com/opensymphony/xwork/validator/validator-parser-test.xml";
-    
+
     public void testParser() {
         InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName, this.getClass());
 
         List configs = ValidatorFileParser.parseActionValidatorConfigs(is, testFileName);
-        
+
         assertNotNull(configs);
         assertEquals(5, configs.size());
 

@@ -25,11 +25,9 @@ import java.util.Map;
  * To change this template use Options | File Templates.
  */
 public class InterceptorBuilder {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log LOG = LogFactory.getLog(InterceptorBuilder.class);
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Builds a list of interceptors referenced by the refName in the supplied PackageConfig.

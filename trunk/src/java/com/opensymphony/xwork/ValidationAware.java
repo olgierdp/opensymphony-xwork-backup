@@ -15,7 +15,6 @@ import java.util.Map;
  * @version $Revision$
  */
 public interface ValidationAware {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Set the Collection of Action-level String error messages.

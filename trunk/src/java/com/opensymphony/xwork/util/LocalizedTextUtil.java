@@ -23,7 +23,6 @@ import java.util.*;
  * @author Mark Woon
  */
 public class LocalizedTextUtil {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static List DEFAULT_RESOURCE_BUNDLES = null;
     private static final Log LOG = LogFactory.getLog(LocalizedTextUtil.class);
@@ -35,7 +34,6 @@ public class LocalizedTextUtil {
         clearDefaultResourceBundles();
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public static void clearDefaultResourceBundles() {
         DEFAULT_RESOURCE_BUNDLES = Collections.synchronizedList(new ArrayList());
@@ -544,8 +542,10 @@ public class LocalizedTextUtil {
 
             final MessageFormatKey messageFormatKey = (MessageFormatKey) o;
 
-            if (locale != null ? !locale.equals(messageFormatKey.locale) : messageFormatKey.locale != null) return false;
-            if (pattern != null ? !pattern.equals(messageFormatKey.pattern) : messageFormatKey.pattern != null) return false;
+            if (locale != null ? !locale.equals(messageFormatKey.locale) : messageFormatKey.locale != null)
+                return false;
+            if (pattern != null ? !pattern.equals(messageFormatKey.pattern) : messageFormatKey.pattern != null)
+                return false;
 
             return true;
         }

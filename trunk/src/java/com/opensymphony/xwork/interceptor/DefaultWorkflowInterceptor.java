@@ -28,7 +28,6 @@ import com.opensymphony.xwork.ValidationAware;
  * @author Jason Carreira
  */
 public class DefaultWorkflowInterceptor implements Interceptor {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void destroy() {
     }

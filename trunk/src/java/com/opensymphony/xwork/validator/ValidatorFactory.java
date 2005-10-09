@@ -23,7 +23,6 @@ import java.util.Map;
  * @author James House
  */
 public class ValidatorFactory {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static Map validators = new HashMap();
     private static Log LOG = LogFactory.getLog(ValidatorFactory.class);
@@ -32,12 +31,10 @@ public class ValidatorFactory {
         parseValidators();
     }
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     private ValidatorFactory() {
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Get a Validator that matches the given configuration.

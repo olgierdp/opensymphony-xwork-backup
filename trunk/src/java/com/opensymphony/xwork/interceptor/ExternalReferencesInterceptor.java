@@ -18,13 +18,12 @@ import com.opensymphony.xwork.config.entities.PackageConfig;
 
 /**
  * @author Ross
- *
- * Resolves external references using the <code>ExternalReferenceResolver</code> configured on the package
- * Reference Resolution is encapsulated in an interceptor so that the user can configure when references should
- * be resloved
+ *         <p/>
+ *         Resolves external references using the <code>ExternalReferenceResolver</code> configured on the package
+ *         Reference Resolution is encapsulated in an interceptor so that the user can configure when references should
+ *         be resloved
  */
 public class ExternalReferencesInterceptor extends AroundInterceptor {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }

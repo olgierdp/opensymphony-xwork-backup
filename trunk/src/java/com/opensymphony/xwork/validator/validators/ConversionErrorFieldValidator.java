@@ -13,18 +13,19 @@ import java.util.Map;
 
 /**
  * ConversionErrorFieldValidator
+ *
  * @author Jason Carreira
- * Date: Nov 28, 2003 1:58:49 PM
+ *         Date: Nov 28, 2003 1:58:49 PM
  */
 public class ConversionErrorFieldValidator extends FieldValidatorSupport {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-    * The validation implementation must guarantee that setValidatorContext will
-    * be called with a non-null ValidatorContext before validate is called.
-    * @param object
-    * @throws ValidationException
-    */
+     * The validation implementation must guarantee that setValidatorContext will
+     * be called with a non-null ValidatorContext before validate is called.
+     *
+     * @param object
+     * @throws ValidationException
+     */
     public void validate(Object object) throws ValidationException {
         String fieldName = getFieldName();
         String fullFieldName = getValidatorContext().getFullFieldName(fieldName);

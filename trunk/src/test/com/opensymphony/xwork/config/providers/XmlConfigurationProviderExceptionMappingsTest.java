@@ -1,19 +1,19 @@
 package com.opensymphony.xwork.config.providers;
 
-import com.opensymphony.xwork.config.ConfigurationException;
-import com.opensymphony.xwork.config.ConfigurationProvider;
-import com.opensymphony.xwork.config.entities.ResultConfig;
-import com.opensymphony.xwork.config.entities.ActionConfig;
-import com.opensymphony.xwork.config.entities.PackageConfig;
-import com.opensymphony.xwork.config.entities.ExceptionMappingConfig;
 import com.opensymphony.xwork.ActionChainResult;
 import com.opensymphony.xwork.SimpleAction;
+import com.opensymphony.xwork.config.ConfigurationException;
+import com.opensymphony.xwork.config.ConfigurationProvider;
+import com.opensymphony.xwork.config.entities.ActionConfig;
+import com.opensymphony.xwork.config.entities.ExceptionMappingConfig;
+import com.opensymphony.xwork.config.entities.PackageConfig;
+import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.mock.MockResult;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: Matthew E. Porter (matthew dot porter at metissian dot com)
@@ -21,7 +21,6 @@ import java.util.List;
  * Time: 2:05:36 PM
  */
 public class XmlConfigurationProviderExceptionMappingsTest extends ConfigurationTestBase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testActions() throws ConfigurationException {
         final String filename = "com/opensymphony/xwork/config/providers/xwork-test-exception-mappings.xml";

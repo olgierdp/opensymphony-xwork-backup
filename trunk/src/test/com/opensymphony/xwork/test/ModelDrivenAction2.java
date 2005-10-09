@@ -13,11 +13,9 @@ import com.opensymphony.xwork.ModelDrivenAction;
  * @author Mark Woon
  */
 public class ModelDrivenAction2 extends ModelDrivenAction {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private TestBean2 model = new TestBean2();
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * @return the model to be pushed onto the ValueStack after the Action itself

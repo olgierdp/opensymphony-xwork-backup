@@ -40,7 +40,6 @@ import java.util.TreeMap;
  * @author Patrick Lightbody
  */
 public class ParametersInterceptor extends AroundInterceptor {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }

@@ -5,18 +5,16 @@
 package com.opensymphony.xwork.util;
 
 import com.mockobjects.dynamic.Mock;
-
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.test.ModelDrivenAction2;
 import com.opensymphony.xwork.test.TestBean2;
-
 import junit.framework.TestCase;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.Date;
 
 
 /**
@@ -26,7 +24,6 @@ import java.util.Date;
  *         Created Apr 20, 2003 12:07:17 AM
  */
 public class LocalizedTextUtilTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testActionGetText() {
         try {
@@ -50,7 +47,7 @@ public class LocalizedTextUtilTest extends TestCase {
     }
 
     public void testNullKeys() {
-        LocalizedTextUtil.findText(this.getClass(),null,Locale.getDefault());
+        LocalizedTextUtil.findText(this.getClass(), null, Locale.getDefault());
     }
 
     public void testActionGetTextXXX() {
@@ -181,9 +178,9 @@ public class LocalizedTextUtilTest extends TestCase {
 
     public void testParameterizedDefaultMessage() {
         try {
-            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[] {
+            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
                     "AddUser"
-                });
+            });
             assertEquals("There is no Action mapped for action name AddUser", message);
         } catch (MissingResourceException e) {
             e.printStackTrace();
@@ -193,9 +190,9 @@ public class LocalizedTextUtilTest extends TestCase {
 
     public void testParameterizedDefaultMessageWithPackage() {
         try {
-            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[] {
+            String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
                     "blah", "AddUser"
-                });
+            });
             assertEquals("There is no Action mapped for namespace blah and action name AddUser", message);
         } catch (MissingResourceException e) {
             e.printStackTrace();
@@ -205,9 +202,9 @@ public class LocalizedTextUtilTest extends TestCase {
 
     public void testLocalizedDateFormatIsUsed() {
         LocalizedTextUtil.addDefaultResourceBundle("com/opensymphony/xwork/util/LocalizedTextUtilTest");
-        Object[] params = new Object[] {new Date()};
-        String usDate = LocalizedTextUtil.findDefaultText("test.format.date",Locale.US,params);
-        String germanDate = LocalizedTextUtil.findDefaultText("test.format.date",Locale.GERMANY,params);
+        Object[] params = new Object[]{new Date()};
+        String usDate = LocalizedTextUtil.findDefaultText("test.format.date", Locale.US, params);
+        String germanDate = LocalizedTextUtil.findDefaultText("test.format.date", Locale.GERMANY, params);
         assertFalse(usDate.equals(germanDate));
     }
 

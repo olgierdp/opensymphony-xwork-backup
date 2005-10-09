@@ -9,13 +9,10 @@ import java.util.List;
 
 
 /**
- *
- *
  * @author $Author$
  * @version $Revision$
  */
 public class CompoundRoot extends ArrayList {
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public CompoundRoot() {
     }
@@ -24,7 +21,6 @@ public class CompoundRoot extends ArrayList {
         super(list);
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public CompoundRoot cutStack(int index) {
         return new CompoundRoot(subList(index, size()));

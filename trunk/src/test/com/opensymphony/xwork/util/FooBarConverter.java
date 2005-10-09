@@ -11,14 +11,11 @@ import java.util.Map;
 
 
 /**
- *
- *
  * @author <a href="mailto:plightbo@cisco.com">Pat Lightbody</a>
  * @author $Author$
  * @version $Revision$
  */
 public class FooBarConverter extends DefaultTypeConverter {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public Object convertValue(Map context, Object value, Class toType) {
         if (toType == String.class) {
@@ -49,9 +46,6 @@ public class FooBarConverter extends DefaultTypeConverter {
         return null;
     }
 
-    /* (non-Javadoc)
-    * @see ognl.TypeConverter#convertValue(java.util.Map, java.lang.Object, java.lang.reflect.Member, java.lang.String, java.lang.Object, java.lang.Class)
-    */
     public Object convertValue(Map context, Object source, Member member, String property, Object value, Class toClass) {
         return convertValue(context, value, toClass);
     }

@@ -7,16 +7,15 @@ package com.opensymphony.xwork;
 
 /**
  * ModelDrivenAction
+ *
  * @author Jason Carreira
- * Created Apr 8, 2003 6:27:29 PM
+ *         Created Apr 8, 2003 6:27:29 PM
  */
 public class ModelDrivenAction extends ActionSupport implements ModelDriven {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private String foo;
     private TestBean model = new TestBean();
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setFoo(String foo) {
         this.foo = foo;
@@ -27,8 +26,8 @@ public class ModelDrivenAction extends ActionSupport implements ModelDriven {
     }
 
     /**
-    * @return the model to be pushed onto the ValueStack after the Action itself
-    */
+     * @return the model to be pushed onto the ValueStack after the Action itself
+     */
     public Object getModel() {
         return model;
     }

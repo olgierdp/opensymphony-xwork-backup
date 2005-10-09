@@ -9,12 +9,12 @@ import com.opensymphony.xwork.validator.ValidationException;
 
 /**
  * AbstractRangeValidator
+ *
  * @author Jason Carreira
  * @author Cameron Braid
- * Created Feb 9, 2003 1:16:28 AM
+ *         Created Feb 9, 2003 1:16:28 AM
  */
 public abstract class AbstractRangeValidator extends FieldValidatorSupport {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void validate(Object object) throws ValidationException {
         Object obj = getFieldValue(getFieldName(), object);

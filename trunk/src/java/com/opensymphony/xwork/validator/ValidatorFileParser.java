@@ -32,11 +32,9 @@ import java.util.Map;
  * @author James House
  */
 public class ValidatorFileParser {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log log = LogFactory.getLog(ValidatorFileParser.class);
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public static List parseActionValidatorConfigs(InputStream is, final String resourceName) {
         List validatorCfgs = new ArrayList();
@@ -140,7 +138,7 @@ public class ValidatorFileParser {
 
             // ensure that the type is valid...
             ValidatorFactory.lookupRegisteredValidatorType(validatorType);
-            
+
             ValidatorConfig vCfg = new ValidatorConfig(validatorType, params);
 
             vCfg.setShortCircuit(Boolean.valueOf(validatorElement.getAttribute("short-circuit")).booleanValue());

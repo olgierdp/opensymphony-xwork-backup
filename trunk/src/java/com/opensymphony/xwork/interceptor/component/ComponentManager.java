@@ -13,11 +13,9 @@ package com.opensymphony.xwork.interceptor.component;
  *             Please refer to the Spring-WebWork integration documentation for more info.
  */
 public interface ComponentManager {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     String COMPONENT_MANAGER_KEY = "DefaultComponentManager";
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     Object getComponent(Class enablerType);
 

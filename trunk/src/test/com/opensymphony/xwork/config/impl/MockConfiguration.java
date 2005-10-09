@@ -22,11 +22,9 @@ import java.util.Set;
  * To change this template use Options | File Templates.
  */
 public class MockConfiguration implements Configuration {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Map packages = new HashMap();
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public PackageConfig getPackageConfig(String name) {
         return (PackageConfig) packages.get(name);

@@ -27,7 +27,6 @@ import java.util.Map;
  * To change this template use Options | File Templates.
  */
 public class XmlConfigurationProviderResultsTest extends ConfigurationTestBase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testActions() throws ConfigurationException {
         final String filename = "com/opensymphony/xwork/config/providers/xwork-test-results.xml";

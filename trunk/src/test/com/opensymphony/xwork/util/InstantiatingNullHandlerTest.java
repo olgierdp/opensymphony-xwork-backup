@@ -6,11 +6,6 @@ package com.opensymphony.xwork.util;
 
 import junit.framework.TestCase;
 
-import ognl.OgnlContext;
-
-import java.util.List;
-import java.util.Map;
-
 
 /**
  * DOCUMENT ME!
@@ -19,11 +14,10 @@ import java.util.Map;
  * @version $Revision$
  */
 public class InstantiatingNullHandlerTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
-	public void testBlank() {
-	
-	}
+    public void testBlank() {
+
+    }
     /*public void testInheritance() {
         Tiger t = new Tiger();
         CompoundRoot root = new CompoundRoot();

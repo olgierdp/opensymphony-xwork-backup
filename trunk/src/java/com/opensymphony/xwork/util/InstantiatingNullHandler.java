@@ -11,8 +11,8 @@ import ognl.OgnlRuntime;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.*;
 import java.beans.PropertyDescriptor;
+import java.util.*;
 
 
 /**
@@ -37,12 +37,10 @@ import java.beans.PropertyDescriptor;
  * @author Patrick Lightbody
  */
 public class InstantiatingNullHandler implements NullHandler {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String CREATE_NULL_OBJECTS = "xwork.NullHandler.createNullObjects";
     private static final Log LOG = LogFactory.getLog(InstantiatingNullHandler.class);
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public Object nullMethodResult(Map context, Object target, String methodName, Object[] args) {
         return null;
@@ -69,7 +67,7 @@ public class InstantiatingNullHandler implements NullHandler {
                 if (pd == null) {
                     return null;
                 }
-                
+
                 clazz = pd.getPropertyType();
             }
 

@@ -7,7 +7,6 @@ package com.opensymphony.xwork;
 import com.opensymphony.xwork.interceptor.component.ComponentInterceptor;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.TextParseUtil;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -27,13 +26,11 @@ import java.util.Set;
  * @version $Revision$
  */
 public class ActionChainResult implements Result {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log log = LogFactory.getLog(ActionChainResult.class);
     public static final String DEFAULT_PARAM = "actionName";
     private static final String CHAIN_HISTORY = "CHAIN_HISTORY";
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private ActionProxy proxy;
     private String actionName;
@@ -44,7 +41,6 @@ public class ActionChainResult implements Result {
      */
     private String namespace;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setActionName(String actionName) {
         this.actionName = actionName;
@@ -75,7 +71,8 @@ public class ActionChainResult implements Result {
 
         final ActionChainResult actionChainResult = (ActionChainResult) o;
 
-        if ((actionName != null) ? (!actionName.equals(actionChainResult.actionName)) : (actionChainResult.actionName != null)) {
+        if ((actionName != null) ? (!actionName.equals(actionChainResult.actionName)) : (actionChainResult.actionName != null))
+        {
             return false;
         }
 

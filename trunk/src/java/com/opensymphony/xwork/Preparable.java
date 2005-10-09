@@ -7,17 +7,17 @@ package com.opensymphony.xwork;
 
 /**
  * Preparable Actions will have their prepare() method called if the PrepareInterceptor is applied to the ActionConfig
+ *
  * @author Jason Carreira
  * @see com.opensymphony.xwork.interceptor.PrepareInterceptor
- * Date: Nov 5, 2003 2:28:47 AM
+ *      Date: Nov 5, 2003 2:28:47 AM
  */
 public interface Preparable {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * This method is called to allow the action to prepare itself.
      *
-     * @exception   java.lang.Exception  thrown if a system level exception occurs.
+     * @throws Exception thrown if a system level exception occurs.
      */
     void prepare() throws Exception;
 }

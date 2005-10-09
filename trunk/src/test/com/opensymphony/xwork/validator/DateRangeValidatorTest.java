@@ -9,7 +9,6 @@ import com.opensymphony.xwork.ActionProxyFactory;
 import com.opensymphony.xwork.ValidationAware;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
-
 import junit.framework.TestCase;
 
 import java.util.Iterator;
@@ -25,11 +24,9 @@ import java.util.Map;
  *         Created Feb 9, 2003 1:25:42 AM
  */
 public class DateRangeValidatorTest extends TestCase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Locale origLocale;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Tests whether the date range validation is working. Should produce an validation error,

@@ -4,27 +4,25 @@
  */
 package com.opensymphony.xwork.validator.validators;
 
+import com.opensymphony.xwork.validator.ValidationException;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.opensymphony.xwork.validator.ValidationException;
-
 
 /**
- * StringRegexValidator checks that a given String field, if not empty, 
+ * StringRegexValidator checks that a given String field, if not empty,
  * matches the configured regular expression.
- * 
+ *
+ * @author jhouse
  * @see #setRegex(String)
  * @see #setCaseSensitive(boolean)
- * 
- * @author jhouse
  */
 public class StringRegexValidator extends FieldValidatorSupport {
-    
+
     private String regex = ".";
     private boolean caseSensitive = true;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void validate(Object object) throws ValidationException {
         String fieldName = getFieldName();
@@ -39,16 +37,16 @@ public class StringRegexValidator extends FieldValidatorSupport {
                 return;
             }
         }
-        
+
         Pattern pattern = null;
-        if(isCaseSensitive())
+        if (isCaseSensitive())
             pattern = Pattern.compile(getRegex());
         else
             pattern = Pattern.compile(getRegex(), Pattern.CASE_INSENSITIVE);
 
         Matcher matcher = pattern.matcher(value);
-        
-        if(!matcher.matches()) {
+
+        if (!matcher.matches()) {
             addFieldError(fieldName, object);
         }
     }
@@ -68,22 +66,21 @@ public class StringRegexValidator extends FieldValidatorSupport {
     }
 
     /**
-     * @return Returns whether the expression should be matched against in 
-     * a case-sensitive way.  Default is <code>true</code>.
+     * @return Returns whether the expression should be matched against in
+     *         a case-sensitive way.  Default is <code>true</code>.
      */
     public boolean isCaseSensitive() {
         return caseSensitive;
     }
 
     /**
-     * Sets whether the expression should be matched against in 
+     * Sets whether the expression should be matched against in
      * a case-sensitive way.  Default is <code>true</code>.
      */
     public void setCaseSensitive(boolean caseSensitive) {
         this.caseSensitive = caseSensitive;
     }
-    
-    
+
 
 }
 

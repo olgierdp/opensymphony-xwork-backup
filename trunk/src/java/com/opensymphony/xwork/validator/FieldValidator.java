@@ -14,10 +14,10 @@ package com.opensymphony.xwork.validator;
  * @version $Revision$
  */
 public interface FieldValidator extends Validator {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Sets the field name to validate with this FieldValidator
+     *
      * @param fieldName
      */
     void setFieldName(String fieldName);

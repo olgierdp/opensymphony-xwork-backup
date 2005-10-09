@@ -10,7 +10,6 @@ import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.interceptor.ParametersInterceptor;
-
 import junit.framework.Assert;
 
 
@@ -21,7 +20,6 @@ import junit.framework.Assert;
  * @version $Revision$
  */
 public class XmlConfigurationProviderMultilevelTest extends ConfigurationTestBase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * attempt to load an xwork.xml file that has multilevel levels of inheritance and verify that the interceptors are

@@ -6,7 +6,6 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.ConfigurationManager;
-
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -16,15 +15,15 @@ import java.util.Map;
 
 /**
  * ModelDrivenValidationTest
+ *
  * @author Jason Carreira
- * Created Oct 1, 2003 10:08:25 AM
+ *         Created Oct 1, 2003 10:08:25 AM
  */
 public class ModelDrivenValidationTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testModelDrivenValidation() throws Exception {
         Map params = new HashMap();
-        params.put("count", new String[] {"11"});
+        params.put("count", new String[]{"11"});
 
         Map context = new HashMap();
         context.put(ActionContext.PARAMETERS, params);

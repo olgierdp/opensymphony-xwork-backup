@@ -7,7 +7,6 @@ package com.opensymphony.xwork;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.util.OgnlValueStack;
-
 import junit.framework.TestCase;
 
 import java.util.Locale;
@@ -15,11 +14,11 @@ import java.util.Locale;
 
 /**
  * LocaleAwareTest
+ *
  * @author Jason Carreira
- * Created Feb 10, 2003 6:13:13 PM
+ *         Created Feb 10, 2003 6:13:13 PM
  */
 public class LocaleAwareTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testGetText() {
         try {

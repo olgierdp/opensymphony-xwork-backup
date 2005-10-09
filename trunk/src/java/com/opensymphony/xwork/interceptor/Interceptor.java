@@ -19,7 +19,6 @@ import com.opensymphony.xwork.ActionInvocation;
  * @author Jason Carreira
  */
 public interface Interceptor {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Called to let an interceptor clean up any resources it has allocated.

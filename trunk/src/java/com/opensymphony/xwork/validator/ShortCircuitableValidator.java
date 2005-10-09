@@ -12,14 +12,13 @@ package com.opensymphony.xwork.validator;
  * @author Mark Woon
  */
 public interface ShortCircuitableValidator {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Sets whether this field validator should short circuit the validator queue
      * it's in if validation fails.
      *
      * @param shortcircuit true if this field validator should short circuit on
-     * failure, false otherwise
+     *                     failure, false otherwise
      */
     public void setShortCircuit(boolean shortcircuit);
 
@@ -28,7 +27,7 @@ public interface ShortCircuitableValidator {
      * it's in if validation fails.
      *
      * @return true if this field validator should short circuit on failure,
-     * false otherwise
+     *         false otherwise
      */
     public boolean isShortCircuit();
 }

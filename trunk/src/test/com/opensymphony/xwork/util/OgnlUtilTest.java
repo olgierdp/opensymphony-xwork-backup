@@ -5,21 +5,14 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.XworkException;
 import com.opensymphony.xwork.XWorkTestCase;
+import com.opensymphony.xwork.XworkException;
 import com.opensymphony.xwork.interceptor.ChainingInterceptor;
 import com.opensymphony.xwork.test.User;
-
 import ognl.*;
-import ognl.NullHandler;
-import ognl.Ognl;
-import ognl.OgnlContext;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import java.util.*;
 
 
@@ -30,57 +23,56 @@ import java.util.*;
  * @version $Revision$
  */
 public class OgnlUtilTest extends XWorkTestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testCanSetADependentObject() {
         String dogName = "fido";
 
         OgnlRuntime.setNullHandler(Owner.class, new NullHandler() {
-                public Object nullMethodResult(Map map, Object o, String s, Object[] objects) {
-                    System.out.println("nullMethodResult");
+            public Object nullMethodResult(Map map, Object o, String s, Object[] objects) {
+                System.out.println("nullMethodResult");
 
-                    return null;
-                }
+                return null;
+            }
 
-                public Object nullPropertyValue(Map map, Object o, Object o1) {
-                    System.out.println("nullPropertyValue");
-                    System.out.println("map -- " + map);
-                    System.out.println("o   -- " + o);
-                    System.out.println("o1  -- " + o1.getClass().getName());
+            public Object nullPropertyValue(Map map, Object o, Object o1) {
+                System.out.println("nullPropertyValue");
+                System.out.println("map -- " + map);
+                System.out.println("o   -- " + o);
+                System.out.println("o1  -- " + o1.getClass().getName());
 
-                    String methodName = o1.toString();
-                    String getter = "set" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
-                    Method[] methods = o.getClass().getDeclaredMethods();
-                    System.out.println(getter);
+                String methodName = o1.toString();
+                String getter = "set" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
+                Method[] methods = o.getClass().getDeclaredMethods();
+                System.out.println(getter);
 
-                    for (int i = 0; i < methods.length; i++) {
-                        String name = methods[i].getName();
+                for (int i = 0; i < methods.length; i++) {
+                    String name = methods[i].getName();
 
-                        if (!getter.equals(name) || (methods[i].getParameterTypes().length != 1)) {
-                            continue;
-                        } else {
-                            Class clazz = methods[i].getParameterTypes()[0];
+                    if (!getter.equals(name) || (methods[i].getParameterTypes().length != 1)) {
+                        continue;
+                    } else {
+                        Class clazz = methods[i].getParameterTypes()[0];
 
-                            try {
-                                Object param = clazz.newInstance();
-                                methods[i].invoke(o, new Object[] {param});
+                        try {
+                            Object param = clazz.newInstance();
+                            methods[i].invoke(o, new Object[]{param});
 
-                                return param;
-                            } catch (InstantiationException e) {
-                                e.printStackTrace(); //To change body of catch statement use Options | File Templates.
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace(); //To change body of catch statement use Options | File Templates.
-                            } catch (IllegalArgumentException e) {
-                                e.printStackTrace(); //To change body of catch statement use Options | File Templates.
-                            } catch (InvocationTargetException e) {
-                                e.printStackTrace(); //To change body of catch statement use Options | File Templates.
-                            }
+                            return param;
+                        } catch (InstantiationException e) {
+                            e.printStackTrace(); //To change body of catch statement use Options | File Templates.
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace(); //To change body of catch statement use Options | File Templates.
+                        } catch (IllegalArgumentException e) {
+                            e.printStackTrace(); //To change body of catch statement use Options | File Templates.
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace(); //To change body of catch statement use Options | File Templates.
                         }
                     }
-
-                    return null;
                 }
-            });
+
+                return null;
+            }
+        });
 
         Owner owner = new Owner();
         Map context = Ognl.createDefaultContext(owner);
@@ -128,7 +120,7 @@ public class OgnlUtilTest extends XWorkTestCase {
 
         foo1.setTitle("blah");
         foo1.setNumber(1);
-        foo1.setPoints(new long[] {1, 2, 3});
+        foo1.setPoints(new long[]{1, 2, 3});
         foo1.setBirthday(cal.getTime());
         foo1.setUseful(false);
 
@@ -140,35 +132,35 @@ public class OgnlUtilTest extends XWorkTestCase {
         assertEquals(foo1.getBirthday(), foo2.getBirthday());
         assertEquals(foo1.isUseful(), foo2.isUseful());
     }
-    
-    
+
+
     public void testIncudeExcludes() {
-        
+
         Foo foo1 = new Foo();
         Foo foo2 = new Foo();
-        
-            Calendar cal = Calendar.getInstance();
-            cal.clear();
-            cal.set(Calendar.MONTH, Calendar.FEBRUARY);
-            cal.set(Calendar.DAY_OF_MONTH, 12);
-            cal.set(Calendar.YEAR, 1982);
 
-            foo1.setPoints(new long[] {1, 2, 3});
-            foo1.setBirthday(cal.getTime());
-            foo1.setUseful(false);
-	
-        	
-        foo1.setTitle("foo1 title");	
+        Calendar cal = Calendar.getInstance();
+        cal.clear();
+        cal.set(Calendar.MONTH, Calendar.FEBRUARY);
+        cal.set(Calendar.DAY_OF_MONTH, 12);
+        cal.set(Calendar.YEAR, 1982);
+
+        foo1.setPoints(new long[]{1, 2, 3});
+        foo1.setBirthday(cal.getTime());
+        foo1.setUseful(false);
+
+
+        foo1.setTitle("foo1 title");
         foo1.setNumber(1);
-        
-        foo2.setTitle("foo2 title");	
+
+        foo2.setTitle("foo2 title");
         foo2.setNumber(2);
 
         Map context = Ognl.createDefaultContext(foo1);
 
         List excludes = new ArrayList();
-    	excludes.add("title");
-    	excludes.add("number");
+        excludes.add("title");
+        excludes.add("number");
 
         OgnlUtil.copy(foo1, foo2, context, excludes, null);
         // these values should remain unchanged in foo2
@@ -179,21 +171,20 @@ public class OgnlUtilTest extends XWorkTestCase {
         assertEquals(foo1.getPoints(), foo2.getPoints());
         assertEquals(foo1.getBirthday(), foo2.getBirthday());
         assertEquals(foo1.isUseful(), foo2.isUseful());
-        
-        
-        
+
+
         Bar b1 = new Bar();
         Bar b2 = new Bar();
-        
+
         b1.setTitle("bar1 title");
         b1.setSomethingElse(10);
-        
-        
+
+
         b1.setId(new Long(1));
-        
+
         b2.setTitle("");
         b2.setId(new Long(2));
-        
+
         context = Ognl.createDefaultContext(b1);
         List includes = new ArrayList();
         includes.add("title");
@@ -203,12 +194,12 @@ public class OgnlUtilTest extends XWorkTestCase {
         // includes properties got copied
         assertEquals(b1.getTitle(), b2.getTitle());
         assertEquals(b1.getSomethingElse(), b2.getSomethingElse());
-      
+
         // id properties did not
         assertEquals(b2.getId(), new Long(2));
-        
+
     }
-    
+
 
     public void testCopyUnevenObjects() {
         Foo foo = new Foo();
@@ -224,7 +215,7 @@ public class OgnlUtilTest extends XWorkTestCase {
 
         foo.setTitle("blah");
         foo.setNumber(1);
-        foo.setPoints(new long[] {1, 2, 3});
+        foo.setPoints(new long[]{1, 2, 3});
         foo.setBirthday(cal.getTime());
         foo.setUseful(false);
 
@@ -303,7 +294,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         user.setList(new ArrayList());
         user.getList().add("");
 
-        String[] foo = new String[] {"asdf"};
+        String[] foo = new String[]{"asdf"};
         stack.setValue("list[0]", foo);
         assertNotNull(user.getList());
         assertEquals(1, user.getList().size());
@@ -369,7 +360,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         Map context = Ognl.createDefaultContext(foo);
 
         Map props = new HashMap();
-        props.put("points", new String[] {"1", "2"});
+        props.put("points", new String[]{"1", "2"});
         OgnlUtil.setProperties(props, foo, context);
 
         assertNotNull(foo.getPoints());
@@ -398,45 +389,44 @@ public class OgnlUtilTest extends XWorkTestCase {
         assertEquals(123456, foo.getNumber());
     }
 
-        
-    
+
     public void testSetList() throws Exception {
         ChainingInterceptor foo = new ChainingInterceptor();
         ChainingInterceptor foo2 = new ChainingInterceptor();
-        
-        OgnlContext  context = (OgnlContext)Ognl.createDefaultContext(null);
-        SimpleNode   expression =(SimpleNode)Ognl.parseExpression("{'a','ruby','b','tom'}");
 
-       
+        OgnlContext context = (OgnlContext) Ognl.createDefaultContext(null);
+        SimpleNode expression = (SimpleNode) Ognl.parseExpression("{'a','ruby','b','tom'}");
+
+
         Ognl.getValue(expression, context, "aksdj");
-        
-        final OgnlValueStack stack =ActionContext.getContext().getValueStack();
 
-        Object result =Ognl.getValue(OgnlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo); 
-        foo.setIncludes((Collection)result);
-        
+        final OgnlValueStack stack = ActionContext.getContext().getValueStack();
+
+        Object result = Ognl.getValue(OgnlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo);
+        foo.setIncludes((Collection) result);
+
         System.out.println(foo.getIncludes());
         System.out.println(foo.getIncludes().size());
-      
-        
-        Object result2 =Ognl.getValue(OgnlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo2); 
+
+
+        Object result2 = Ognl.getValue(OgnlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo2);
         OgnlUtil.setProperty("includes", result2, foo2, context);
-        
+
         System.out.println(foo2.getIncludes());
         System.out.println(foo2.getIncludes().size());
-      
-        result =ActionContext.getContext().getValueStack().findValue("{\"foo\",'ruby','b','tom'}");
-        
-        foo.setIncludes((Collection)result);
+
+        result = ActionContext.getContext().getValueStack().findValue("{\"foo\",'ruby','b','tom'}");
+
+        foo.setIncludes((Collection) result);
         System.out.println(result.getClass());
-        
+
         System.out.println(foo.getIncludes());
-        
+
         System.out.println(foo.getIncludes().size());
-        
+
     }
-    
-    
+
+
     public void testStringToLong() {
         Foo foo = new Foo();
 
@@ -448,14 +438,13 @@ public class OgnlUtilTest extends XWorkTestCase {
         OgnlUtil.setProperties(props, foo, context);
         assertEquals(123, foo.getALong());
 
-        props.put("aLong", new String[] {"123"});
+        props.put("aLong", new String[]{"123"});
 
         foo.setALong(0);
         OgnlUtil.setProperties(props, foo, context);
         assertEquals(123, foo.getALong());
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
 
     public static class Email {
         String address;

@@ -18,7 +18,6 @@ import java.util.Set;
  * To change this template use Options | File Templates.
  */
 public interface Configuration {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void rebuildRuntimeConfiguration();
 

@@ -18,7 +18,6 @@ import java.util.Map;
  *         Created Jun 2, 2003 9:56:10 PM
  */
 public interface Parameterizable {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void addParam(String name, Object value);
 

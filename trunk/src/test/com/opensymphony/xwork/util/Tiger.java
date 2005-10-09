@@ -14,11 +14,9 @@ import java.util.List;
  * @version $Revision$
  */
 public class Tiger extends Cat {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     List dogs;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setDogs(List dogs) {
         this.dogs = dogs;

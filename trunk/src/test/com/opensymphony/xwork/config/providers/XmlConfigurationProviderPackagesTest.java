@@ -17,7 +17,6 @@ import com.opensymphony.xwork.config.entities.PackageConfig;
  * To change this template use Options | File Templates.
  */
 public class XmlConfigurationProviderPackagesTest extends ConfigurationTestBase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testBadInheritance() throws ConfigurationException {
         final String filename = "com/opensymphony/xwork/config/providers/xwork-test-bad-inheritance.xml";

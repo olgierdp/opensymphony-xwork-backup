@@ -16,11 +16,9 @@ import java.util.Properties;
  * @version $Revision$
  */
 public class SimpleAction extends ActionSupport {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String COMMAND_RETURN_CODE = "com.opensymphony.xwork.SimpleAction.CommandInvoked";
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private ArrayList someList = new ArrayList();
     private Date date = new Date();
@@ -32,18 +30,14 @@ public class SimpleAction extends ActionSupport {
     private int bar;
     private int baz;
     private int foo;
-    
+
     private String aliasSource;
     private String aliasDest;
-    
-    
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public SimpleAction() {
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setBar(int bar) {
         this.bar = bar;
@@ -82,7 +76,7 @@ public class SimpleAction extends ActionSupport {
     }
 
     public boolean[] getBools() {
-        boolean[] b = new boolean[] {true, false, false, true};
+        boolean[] b = new boolean[]{true, false, false, true};
 
         return b;
     }
@@ -136,7 +130,7 @@ public class SimpleAction extends ActionSupport {
         this.aliasSource = aliasSource;
     }
 
-    
+
     public void setSomeList(ArrayList someList) {
         this.someList = someList;
     }

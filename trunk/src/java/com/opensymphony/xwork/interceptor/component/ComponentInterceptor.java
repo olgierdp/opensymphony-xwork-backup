@@ -10,18 +10,14 @@ import com.opensymphony.xwork.interceptor.AroundInterceptor;
 
 
 /**
- *
- *
  * @author joew@thoughtworks.com
  * @author $Author$
  * @version $Revision$
  */
 public class ComponentInterceptor extends AroundInterceptor {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String COMPONENT_MANAGER = "com.opensymphony.xwork.interceptor.component.ComponentManager";
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }

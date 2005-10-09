@@ -7,18 +7,16 @@ package com.opensymphony.xwork.validator.validators;
 
 /**
  * IntRangeFieldValidator
- *
+ * <p/>
  * Created : Jan 20, 2003 11:36:43 PM
  *
  * @author Jason Carreira
  */
 public class IntRangeFieldValidator extends AbstractRangeValidator {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     Integer max = null;
     Integer min = null;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setMax(Integer max) {
         this.max = max;

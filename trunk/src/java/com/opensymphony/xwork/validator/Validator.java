@@ -7,11 +7,11 @@ package com.opensymphony.xwork.validator;
 
 /**
  * Validator
+ *
  * @author Jason Carreira
- * Created Feb 15, 2003 3:55:51 PM
+ *         Created Feb 15, 2003 3:55:51 PM
  */
 public interface Validator {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     void setDefaultMessage(String message);
 
@@ -25,6 +25,7 @@ public interface Validator {
 
     /**
      * This method will be called before validate with a non-null ValidatorContext.
+     *
      * @param validatorContext
      */
     void setValidatorContext(ValidatorContext validatorContext);
@@ -34,6 +35,7 @@ public interface Validator {
     /**
      * The validation implementation must guarantee that setValidatorContext will
      * be called with a non-null ValidatorContext before validate is called.
+     *
      * @param object
      * @throws ValidationException
      */

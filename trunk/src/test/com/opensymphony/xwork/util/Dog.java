@@ -13,11 +13,9 @@ import java.io.Serializable;
  * @version $Revision$
  */
 public class Dog implements Serializable {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String SCIENTIFIC_NAME = "Canine";
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     Cat hates;
     String name;
@@ -25,7 +23,6 @@ public class Dog implements Serializable {
     boolean male;
     int age;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setAge(int age) {
         this.age = age;

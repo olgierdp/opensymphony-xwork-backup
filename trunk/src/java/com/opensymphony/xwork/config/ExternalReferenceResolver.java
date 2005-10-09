@@ -17,7 +17,6 @@ import com.opensymphony.xwork.ActionInvocation;
  * Resolves references declared in the action configuration from an external source
  */
 public interface ExternalReferenceResolver {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void resolveReferences(ActionInvocation invocation) throws ReferenceResolverException;
 }

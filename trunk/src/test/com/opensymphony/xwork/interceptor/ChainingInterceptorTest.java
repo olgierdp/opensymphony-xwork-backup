@@ -5,10 +5,8 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.mockobjects.dynamic.Mock;
-
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.util.OgnlValueStack;
-
 import junit.framework.TestCase;
 
 import java.util.Date;
@@ -22,14 +20,12 @@ import java.util.HashMap;
  *         Date: Nov 22, 2003 3:11:41 PM
  */
 public class ChainingInterceptorTest extends TestCase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     ActionInvocation invocation;
     ChainingInterceptor interceptor;
     Mock mockInvocation;
     OgnlValueStack stack;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testActionErrorsCanBeAddedAfterChain() throws Exception {
         SimpleAction action1 = new SimpleAction();
@@ -72,7 +68,6 @@ public class ChainingInterceptorTest extends TestCase {
         interceptor = new ChainingInterceptor();
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
 
     private class TestBeanAction extends TestBean implements Action {
         public String execute() throws Exception {

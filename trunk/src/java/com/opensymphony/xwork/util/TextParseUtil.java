@@ -11,10 +11,9 @@ import com.opensymphony.util.TextUtils;
  * Utility class for text parsing.
  *
  * @author Jason Carreira
- * Created Feb 10, 2003 8:55:11 PM
+ *         Created Feb 10, 2003 8:55:11 PM
  */
 public class TextParseUtil {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Converts all instances of ${...} in <code>expression</code> to the value returned

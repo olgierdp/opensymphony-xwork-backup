@@ -13,20 +13,17 @@ package com.opensymphony.xwork;
 
 /**
  * @author Mike
- *
- * To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Generation - Code and Comments
+ *         <p/>
+ *         To change the template for this generated type comment go to Window -
+ *         Preferences - Java - Code Generation - Code and Comments
  */
 public class ExternalReferenceAction implements Action {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Foo foo;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
-     * @param foo
-     *            The foo to set.
+     * @param foo The foo to set.
      */
     public void setFoo(Foo foo) {
         this.foo = foo;

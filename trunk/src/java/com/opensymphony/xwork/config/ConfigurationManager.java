@@ -22,7 +22,6 @@ import java.util.List;
  *         Created Mar 1, 2003 1:06:04 AM
  */
 public class ConfigurationManager {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     protected static final Log LOG = LogFactory.getLog(ConfigurationManager.class);
     protected static Configuration configurationInstance;
@@ -32,12 +31,10 @@ public class ConfigurationManager {
         destroyConfiguration();
     }
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     private ConfigurationManager() {
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public static synchronized void setConfiguration(Configuration configuration) {
         configurationInstance = configuration;

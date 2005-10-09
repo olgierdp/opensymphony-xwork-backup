@@ -31,14 +31,12 @@ import java.util.Map;
  * To change this template use Options | File Templates.
  */
 public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestBase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     InterceptorConfig loggingInterceptor = new InterceptorConfig("logging", LoggingInterceptor.class, new HashMap());
     InterceptorConfig mockInterceptor = new InterceptorConfig("mock", MockInterceptor.class, new HashMap());
     InterceptorConfig timerInterceptor = new InterceptorConfig("timer", TimerInterceptor.class, new HashMap());
     ObjectFactory objectFactory = ObjectFactory.getObjectFactory();
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testBasicInterceptors() throws ConfigurationException {
         final String filename = "com/opensymphony/xwork/config/providers/xwork-test-interceptors-basic.xml";

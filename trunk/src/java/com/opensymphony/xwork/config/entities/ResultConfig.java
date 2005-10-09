@@ -16,13 +16,11 @@ import java.util.TreeMap;
  * To change this template use Options | File Templates.
  */
 public class ResultConfig implements Parameterizable {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Map params;
     private String className;
     private String name;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public ResultConfig() {
         params = new TreeMap();
@@ -44,7 +42,6 @@ public class ResultConfig implements Parameterizable {
         this.params = params;
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setClassName(String className) {
         this.className = className;

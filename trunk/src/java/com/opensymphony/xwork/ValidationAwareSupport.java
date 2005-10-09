@@ -14,13 +14,11 @@ import java.util.*;
  * @author Jason Carreira
  */
 public class ValidationAwareSupport implements ValidationAware, Serializable {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Collection actionErrors;
     private Collection actionMessages;
     private Map fieldErrors;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public synchronized void setActionErrors(Collection errorMessages) {
         this.actionErrors = errorMessages;

@@ -11,7 +11,6 @@ import com.opensymphony.xwork.validator.ShortCircuitableValidator;
 import com.opensymphony.xwork.validator.ValidationException;
 import com.opensymphony.xwork.validator.Validator;
 import com.opensymphony.xwork.validator.ValidatorContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -22,7 +21,6 @@ import org.apache.commons.logging.LogFactory;
  * @author Jason Carreira
  */
 public abstract class ValidatorSupport implements Validator, ShortCircuitableValidator {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     protected final Log log = LogFactory.getLog(this.getClass());
     protected String defaultMessage = "";
@@ -30,7 +28,6 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
     private ValidatorContext validatorContext;
     private boolean shortCircuit;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setDefaultMessage(String message) {
         this.defaultMessage = message;

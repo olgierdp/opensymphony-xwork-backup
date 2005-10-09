@@ -16,7 +16,6 @@ import com.opensymphony.xwork.config.entities.ActionConfig;
  *         Created Jun 9, 2003 11:27:55 AM
  */
 public interface ActionProxy {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * @return the Action instance for this Proxy

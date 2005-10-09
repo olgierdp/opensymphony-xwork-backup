@@ -21,16 +21,13 @@ import java.util.StringTokenizer;
  *         Created May 23, 2003 11:22:49 PM
  */
 public class ConfigurationUtil {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log LOG = LogFactory.getLog(ConfigurationUtil.class);
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     private ConfigurationUtil() {
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public static List buildParentsFromString(Configuration configuration, String parent) {
         if ((parent == null) || (parent.equals(""))) {

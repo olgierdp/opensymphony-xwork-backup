@@ -5,31 +5,27 @@
 package com.opensymphony.xwork.validator.validators;
 
 
-
 /**
- * EmailValidator checks that a given String field, if not empty, 
+ * EmailValidator checks that a given String field, if not empty,
  * is a valid email address.
- * 
- * <p>
+ * <p/>
+ * <p/>
  * The regular expression used to validate that the string is an email address
  * is:
  * </p>
  * <pre>
  * "\\b(^(\\S+@).+((\\.com)|(\\.net)|(\\.org)|(\\.info)|(\\.edu)|(\\.mil)|(\\.gov)|(\\.biz)|(\\.ws)|(\\.us)|(\\.tv)|(\\.cc)|(\\..{2,2}))$)\\b"
  * </pre>
- * 
+ *
  * @author jhouse
  */
 public class EmailValidator extends StringRegexValidator {
 
-    public static final String emailAddressPattern = 
-        "\\b(^(\\S+@).+((\\.com)|(\\.net)|(\\.org)|(\\.info)|(\\.edu)|(\\.mil)|(\\.gov)|(\\.biz)|(\\.ws)|(\\.us)|(\\.tv)|(\\.cc)|(\\..{2,2}))$)\\b";
+    public static final String emailAddressPattern =
+            "\\b(^(\\S+@).+((\\.com)|(\\.net)|(\\.org)|(\\.info)|(\\.edu)|(\\.mil)|(\\.gov)|(\\.biz)|(\\.ws)|(\\.us)|(\\.tv)|(\\.cc)|(\\..{2,2}))$)\\b";
 
-    
-    //~ Methods ////////////////////////////////////////////////////////////////
 
-    public EmailValidator()
-    {
+    public EmailValidator() {
         setRegex(emailAddressPattern);
         setCaseSensitive(false);
     }

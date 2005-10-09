@@ -7,11 +7,11 @@ package com.opensymphony.xwork;
 
 /**
  * XworkMessages
+ *
  * @author Jason Carreira
- * Created Apr 20, 2003 12:10:52 AM
+ *         Created Apr 20, 2003 12:10:52 AM
  */
 public interface XWorkMessages {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String ACTION_EXECUTION_ERROR = "xwork.error.action.execution";
     public static final String MISSING_ACTION_EXCEPTION = "xwork.exception.missing-action";

@@ -6,17 +6,13 @@ package com.opensymphony.xwork.interceptor.component;
 
 
 /**
- *
- *
  * @author $Author$
  * @version $Revision$
  */
 public class Foo implements BarAware {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     Bar bar;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setBar(Bar bar) {
         this.bar = bar;

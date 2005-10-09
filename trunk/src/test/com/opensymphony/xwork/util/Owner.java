@@ -12,11 +12,9 @@ package com.opensymphony.xwork.util;
  * @version $Revision$
  */
 public class Owner {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Dog dog;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setDog(Dog dog) {
         this.dog = dog;

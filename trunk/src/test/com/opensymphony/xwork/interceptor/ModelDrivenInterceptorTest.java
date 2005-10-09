@@ -5,10 +5,11 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.mockobjects.dynamic.Mock;
-
-import com.opensymphony.xwork.*;
+import com.opensymphony.xwork.Action;
+import com.opensymphony.xwork.ActionInvocation;
+import com.opensymphony.xwork.ActionSupport;
+import com.opensymphony.xwork.ModelDriven;
 import com.opensymphony.xwork.util.OgnlValueStack;
-
 import junit.framework.TestCase;
 
 import java.util.Date;
@@ -19,14 +20,12 @@ import java.util.Date;
  * @version $Revision$
  */
 public class ModelDrivenInterceptorTest extends TestCase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     Action action;
     Mock mockActionInvocation;
     ModelDrivenInterceptor modelDrivenInterceptor;
     Object model;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testModelDrivenGetsPushedOntoStack() throws Exception {
         OgnlValueStack stack = new OgnlValueStack();
@@ -58,7 +57,6 @@ public class ModelDrivenInterceptorTest extends TestCase {
         mockActionInvocation.verify();
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
 
     public class ModelDrivenAction extends ActionSupport implements ModelDriven {
         public Object getModel() {

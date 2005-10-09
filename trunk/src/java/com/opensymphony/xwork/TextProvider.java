@@ -18,18 +18,17 @@ import java.util.ResourceBundle;
  * bundle associated with each superclass as well. It will stop once a bundle is
  * found that contains the given text. This gives a cascading style that allow
  * global texts to be defined for an application base class.
- *
+ * <p/>
  * You can override {@link LocaleProvider#getLocale()} to change the behaviour of how
  * to choose locale for the bundles that are returned. Typically you would
  * use the {@link LocaleProvider} interface to get the users configured locale.
  *
+ * @author Jason Carreira
+ *         Created Feb 10, 2003 9:55:48 AM
  * @see LocaleProvider
  * @see TextProviderSupport
- * @author Jason Carreira
- * Created Feb 10, 2003 9:55:48 AM
  */
 public interface TextProvider {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Gets a message based on a message key, or null if no message is found.
@@ -43,7 +42,7 @@ public interface TextProvider {
      * Gets a message based on a key, or, if the message is not found, a supplied
      * default value is returned.
      *
-     * @param key the resource bundle key that is to be searched for
+     * @param key          the resource bundle key that is to be searched for
      * @param defaultValue the default value which will be returned if no message is found
      * @return the message as found in the resource bundle, or defaultValue if none is found
      */
@@ -53,7 +52,7 @@ public interface TextProvider {
      * Gets a message based on a key using the supplied args, as defined in
      * {@link java.text.MessageFormat}, or null if no message is found.
      *
-     * @param key the resource bundle key that is to be searched for
+     * @param key  the resource bundle key that is to be searched for
      * @param args a list args to be used in a {@link java.text.MessageFormat} message
      * @return the message as found in the resource bundle, or null if none is found.
      */
@@ -64,36 +63,36 @@ public interface TextProvider {
      * {@link java.text.MessageFormat}, or, if the message is not found, a supplied
      * default value is returned.
      *
-     * @param key the resource bundle key that is to be searched for
+     * @param key          the resource bundle key that is to be searched for
      * @param defaultValue the default value which will be returned if no message is found
-     * @param args a list args to be used in a {@link java.text.MessageFormat} message
+     * @param args         a list args to be used in a {@link java.text.MessageFormat} message
      * @return the message as found in the resource bundle, or defaultValue if none is found
      */
     String getText(String key, String defaultValue, List args);
 
-     /**
+    /**
      * Gets a message based on a key using the supplied args, as defined in
      * {@link java.text.MessageFormat}, or, if the message is not found, a supplied
      * default value is returned. Instead of using the value stack in the ActionContext
      * this version of the getText() method uses the provided value stack.
      *
-     * @param key the resource bundle key that is to be searched for
+     * @param key          the resource bundle key that is to be searched for
      * @param defaultValue the default value which will be returned if no message is found
-     * @param args a list args to be used in a {@link java.text.MessageFormat} message
-     * @param stack the value stack to use for finding the text
+     * @param args         a list args to be used in a {@link java.text.MessageFormat} message
+     * @param stack        the value stack to use for finding the text
      * @return the message as found in the resource bundle, or defaultValue if none is found
      */
     String getText(String key, String defaultValue, List args, OgnlValueStack stack);
 
     /**
-    * Get the named bundle, such as "com/acme/Foo".
-    *
-    * @param bundleName the name of the resource bundle, such as "com/acme/Foo"
-    */
+     * Get the named bundle, such as "com/acme/Foo".
+     *
+     * @param bundleName the name of the resource bundle, such as "com/acme/Foo"
+     */
     ResourceBundle getTexts(String bundleName);
 
     /**
-    * Get the resource bundle associated with the implementing class (usually an action).
-    */
+     * Get the resource bundle associated with the implementing class (usually an action).
+     */
     ResourceBundle getTexts();
 }

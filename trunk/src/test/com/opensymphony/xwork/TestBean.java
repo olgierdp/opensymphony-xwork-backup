@@ -9,22 +9,20 @@ import java.util.Date;
 
 /**
  * TestBean
+ *
  * @author Jason Carreira
- * Created Aug 4, 2003 12:39:53 AM
+ *         Created Aug 4, 2003 12:39:53 AM
  */
 public class TestBean {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Date birth;
     private String name;
     private int count;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public TestBean() {
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setBirth(Date birth) {
         this.birth = birth;

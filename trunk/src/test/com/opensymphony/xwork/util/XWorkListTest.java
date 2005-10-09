@@ -15,17 +15,16 @@ import java.util.ArrayList;
  * @author Mark Woon
  */
 public class XWorkListTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testAddAllIndex() {
         XWorkList xworkList = new XWorkList(String.class);
-        xworkList.add(new String[] {"a"});
+        xworkList.add(new String[]{"a"});
         xworkList.add("b");
 
         ArrayList addList = new ArrayList();
-        addList.add(new String[] {"1"});
-        addList.add(new String[] {"2"});
-        addList.add(new String[] {"3"});
+        addList.add(new String[]{"1"});
+        addList.add(new String[]{"2"});
+        addList.add(new String[]{"3"});
 
         // trim
         xworkList.addAll(3, addList);
@@ -39,13 +38,13 @@ public class XWorkListTest extends TestCase {
 
         // take 2, no trim
         xworkList = new XWorkList(String.class);
-        xworkList.add(new String[] {"a"});
+        xworkList.add(new String[]{"a"});
         xworkList.add("b");
 
         addList = new ArrayList();
-        addList.add(new String[] {"1"});
-        addList.add(new String[] {"2"});
-        addList.add(new String[] {"3"});
+        addList.add(new String[]{"1"});
+        addList.add(new String[]{"2"});
+        addList.add(new String[]{"3"});
 
         xworkList.addAll(2, addList);
         assertEquals(5, xworkList.size());
@@ -57,13 +56,13 @@ public class XWorkListTest extends TestCase {
 
         // take 3, insert
         xworkList = new XWorkList(String.class);
-        xworkList.add(new String[] {"a"});
+        xworkList.add(new String[]{"a"});
         xworkList.add("b");
 
         addList = new ArrayList();
-        addList.add(new String[] {"1"});
-        addList.add(new String[] {"2"});
-        addList.add(new String[] {"3"});
+        addList.add(new String[]{"1"});
+        addList.add(new String[]{"2"});
+        addList.add(new String[]{"3"});
 
         xworkList.addAll(1, addList);
         assertEquals(5, xworkList.size());

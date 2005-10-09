@@ -14,7 +14,6 @@ import com.opensymphony.xwork.validator.ValidationException;
  * @version $Revision$
  */
 public class RequiredFieldValidator extends FieldValidatorSupport {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void validate(Object object) throws ValidationException {
         String fieldName = getFieldName();

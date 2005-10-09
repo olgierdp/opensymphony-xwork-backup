@@ -26,7 +26,6 @@ import java.util.*;
  * @version $Revision$
  */
 public class ActionConfig implements InterceptorListHolder, Parameterizable, Serializable {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     protected List externalRefs;
     protected List interceptors;
@@ -37,7 +36,6 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
     protected String methodName;
     protected String packageName;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public ActionConfig() {
         params = new TreeMap();
@@ -82,7 +80,6 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
         this.packageName = packageName;
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setClassName(String className) {
         this.className = className;
@@ -206,7 +203,8 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
             return false;
         }
 
-        if ((interceptors != null) ? (!interceptors.equals(actionConfig.interceptors)) : (actionConfig.interceptors != null)) {
+        if ((interceptors != null) ? (!interceptors.equals(actionConfig.interceptors)) : (actionConfig.interceptors != null))
+        {
             return false;
         }
 

@@ -19,7 +19,6 @@ import java.io.Serializable;
  * @see com.opensymphony.xwork.ActionProxy
  */
 public interface ActionInvocation extends Serializable {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Get the Action associated with this ActionInvocation

@@ -5,26 +5,23 @@
 package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.util.OgnlValueStack;
-
 import junit.framework.Assert;
 
 
 /**
  * NestedAction
+ *
  * @author Jason Carreira
- * Created Mar 5, 2003 3:08:19 PM
+ *         Created Mar 5, 2003 3:08:19 PM
  */
 public class NestedAction implements Action {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private String nestedProperty = ActionNestingTest.NESTED_VALUE;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public NestedAction() {
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public String getNestedProperty() {
         return nestedProperty;

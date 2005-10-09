@@ -5,7 +5,6 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.test.User;
-
 import junit.framework.TestCase;
 
 import java.util.Map;
@@ -15,7 +14,6 @@ import java.util.Map;
  * @author Mark Woon
  */
 public class XWorkMapTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testPutValue() {
         OgnlValueStack stack = new OgnlValueStack();
@@ -35,7 +33,7 @@ public class XWorkMapTest extends TestCase {
         assertEquals("asdf", user.getMap().get("foo"));
 
         // type conversion
-        stack.setValue("map['bar']", new String[] {"qwerty"});
+        stack.setValue("map['bar']", new String[]{"qwerty"});
         assertNotNull(user.getMap());
         assertEquals(2, user.getMap().size());
         assertEquals(String[].class, user.getMap().get("bar").getClass());
@@ -44,7 +42,7 @@ public class XWorkMapTest extends TestCase {
 
     public void testTypeConversion() {
         XWorkMap map = new XWorkMap(String.class);
-        String[] test = new String[] {"qwerty"};
+        String[] test = new String[]{"qwerty"};
         map.put("foo", test);
         assertEquals(1, map.size());
         assertEquals("qwerty", map.get("foo"));

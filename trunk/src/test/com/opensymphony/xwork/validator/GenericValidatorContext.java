@@ -14,19 +14,16 @@ import java.util.*;
  * @author Matthew Payne
  */
 public class GenericValidatorContext extends DelegatingValidatorContext {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Collection actionErrors;
     private Collection actionMessages;
     private Map fieldErrors;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public GenericValidatorContext(Object object) {
         super(object);
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public synchronized void setActionErrors(Collection errorMessages) {
         this.actionErrors = errorMessages;

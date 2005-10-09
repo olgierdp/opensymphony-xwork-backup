@@ -18,16 +18,13 @@ import java.util.*;
  * See the documentation for all the interfaces this class implements for more detailed information.
  */
 public class ActionSupport implements Action, Validateable, ValidationAware, TextProvider, LocaleProvider, Serializable, ContinuableObject {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     protected transient static final Log LOG = LogFactory.getLog(ActionSupport.class);
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private transient final TextProvider textProvider = new TextProviderSupport(getClass(), this);
     private final ValidationAware validationAware = new ValidationAwareSupport();
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setActionErrors(Collection errorMessages) {
         validationAware.setActionErrors(errorMessages);

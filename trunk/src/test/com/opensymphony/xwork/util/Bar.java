@@ -8,20 +8,16 @@ import com.opensymphony.xwork.ActionSupport;
 
 
 /**
- *
- *
  * @author <a href="mailto:plightbo@cisco.com">Pat Lightbody</a>
  * @author $Author$
  * @version $Revision$
  */
 public class Bar extends ActionSupport {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     Long id;
     String title;
     int somethingElse;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setId(Long id) {
         this.id = id;
@@ -47,7 +43,7 @@ public class Bar extends ActionSupport {
         return title;
     }
 
-	public String toString() {
-		return getTitle() + ":" + getSomethingElse();
-	}
+    public String toString() {
+        return getTitle() + ":" + getSomethingElse();
+    }
 }

@@ -14,7 +14,6 @@ import com.opensymphony.xwork.XworkException;
  *         Created Feb 24, 2003 8:15:08 AM
  */
 public class ConfigurationException extends XworkException {
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     /**
      * Constructs a <code>ConfigurationException</code> with no detail  message.

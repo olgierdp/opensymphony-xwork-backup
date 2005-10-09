@@ -17,7 +17,6 @@ import java.util.ArrayList;
  * @version $Revision$
  */
 public class ComponentConfigurationTest extends TestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testLoadFromXml() throws IOException, SAXException {
         ComponentConfiguration cc = new ComponentConfiguration();
@@ -36,7 +35,6 @@ public class ComponentConfigurationTest extends TestCase {
         assertEquals(1, dcm2.resources.size());
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
 
     public class DumbComponentManager implements ComponentManager {
         ArrayList enablers = new ArrayList();

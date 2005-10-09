@@ -7,7 +7,9 @@ import com.opensymphony.xwork.ObjectFactory;
 import ognl.ListPropertyAccessor;
 import ognl.OgnlException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Gabriel Zimmerman
@@ -20,9 +22,6 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
 
     private XWorkCollectionPropertyAccessor _sAcc = new XWorkCollectionPropertyAccessor();
 
-    /* (non-Javadoc)
-     * @see ognl.PropertyAccessor#getProperty(java.util.Map, java.lang.Object, java.lang.Object)
-     */
     public Object getProperty(Map context, Object target, Object name)
             throws OgnlException {
 
@@ -72,10 +71,6 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
         return super.getProperty(context, target, name);
     }
 
-
-    /* (non-Javadoc)
-     * @see ognl.PropertyAccessor#setProperty(java.util.Map, java.lang.Object, java.lang.Object, java.lang.Object)
-     */
     public void setProperty(Map context, Object target, Object name, Object value)
             throws OgnlException {
 

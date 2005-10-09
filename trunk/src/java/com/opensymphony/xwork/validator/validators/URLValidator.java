@@ -15,7 +15,6 @@ import com.opensymphony.xwork.validator.ValidationException;
  * @version $Revision$
  */
 public class URLValidator extends FieldValidatorSupport {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void validate(Object object) throws ValidationException {
         String fieldName = getFieldName();

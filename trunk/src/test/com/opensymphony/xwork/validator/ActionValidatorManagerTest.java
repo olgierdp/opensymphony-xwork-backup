@@ -23,11 +23,9 @@ import java.util.List;
  *         Created Jun 9, 2003 11:03:01 AM
  */
 public class ActionValidatorManagerTest extends XWorkTestCase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     protected final String alias = "validationAlias";
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testBuildValidatorKey() {
         String validatorKey = ActionValidatorManager.buildValidatorKey(SimpleAction.class, alias);

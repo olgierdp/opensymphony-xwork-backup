@@ -6,23 +6,20 @@ package com.opensymphony.xwork.config;
 
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
-
 import com.opensymphony.util.FileManager;
-
 import junit.framework.TestCase;
 
 
 /**
  * ConfigurationManagerTest
+ *
  * @author Jason Carreira
- * Created May 6, 2003 10:59:59 PM
+ *         Created May 6, 2003 10:59:59 PM
  */
 public class ConfigurationManagerTest extends TestCase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     Mock configProviderMock;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testConfigurationReload() {
         FileManager.setReloadingConfigs(true);

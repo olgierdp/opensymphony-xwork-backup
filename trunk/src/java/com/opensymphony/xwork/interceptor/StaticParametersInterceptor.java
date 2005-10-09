@@ -27,7 +27,6 @@ import java.util.Map;
  * @version $Revision$
  */
 public class StaticParametersInterceptor extends AroundInterceptor {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     protected void after(ActionInvocation invocation, String result) throws Exception {
     }

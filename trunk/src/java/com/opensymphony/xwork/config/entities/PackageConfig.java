@@ -17,11 +17,9 @@ import java.util.*;
  * @version $Revision$
  */
 public class PackageConfig implements Comparable {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log LOG = LogFactory.getLog(PackageConfig.class);
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private ExternalReferenceResolver externalRefResolver = null;
     private Map actionConfigs = new TreeMap();
@@ -36,7 +34,6 @@ public class PackageConfig implements Comparable {
     private String namespace = "";
     private boolean isAbstract = false;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public PackageConfig() {
     }
@@ -61,7 +58,6 @@ public class PackageConfig implements Comparable {
         }
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setAbstract(boolean isAbstract) {
         this.isAbstract = isAbstract;
@@ -410,19 +406,23 @@ public class PackageConfig implements Comparable {
             return false;
         }
 
-        if ((actionConfigs != null) ? (!actionConfigs.equals(packageConfig.actionConfigs)) : (packageConfig.actionConfigs != null)) {
+        if ((actionConfigs != null) ? (!actionConfigs.equals(packageConfig.actionConfigs)) : (packageConfig.actionConfigs != null))
+        {
             return false;
         }
 
-        if ((defaultResultType != null) ? (!defaultResultType.equals(packageConfig.defaultResultType)) : (packageConfig.defaultResultType != null)) {
+        if ((defaultResultType != null) ? (!defaultResultType.equals(packageConfig.defaultResultType)) : (packageConfig.defaultResultType != null))
+        {
             return false;
         }
 
-        if ((globalResultConfigs != null) ? (!globalResultConfigs.equals(packageConfig.globalResultConfigs)) : (packageConfig.globalResultConfigs != null)) {
+        if ((globalResultConfigs != null) ? (!globalResultConfigs.equals(packageConfig.globalResultConfigs)) : (packageConfig.globalResultConfigs != null))
+        {
             return false;
         }
 
-        if ((interceptorConfigs != null) ? (!interceptorConfigs.equals(packageConfig.interceptorConfigs)) : (packageConfig.interceptorConfigs != null)) {
+        if ((interceptorConfigs != null) ? (!interceptorConfigs.equals(packageConfig.interceptorConfigs)) : (packageConfig.interceptorConfigs != null))
+        {
             return false;
         }
 
@@ -438,11 +438,13 @@ public class PackageConfig implements Comparable {
             return false;
         }
 
-        if ((resultTypeConfigs != null) ? (!resultTypeConfigs.equals(packageConfig.resultTypeConfigs)) : (packageConfig.resultTypeConfigs != null)) {
+        if ((resultTypeConfigs != null) ? (!resultTypeConfigs.equals(packageConfig.resultTypeConfigs)) : (packageConfig.resultTypeConfigs != null))
+        {
             return false;
         }
 
-        if ((globalExceptionMappingConfigs != null) ? (!globalExceptionMappingConfigs.equals(packageConfig.globalExceptionMappingConfigs)) : (packageConfig.globalExceptionMappingConfigs != null)) {
+        if ((globalExceptionMappingConfigs != null) ? (!globalExceptionMappingConfigs.equals(packageConfig.globalExceptionMappingConfigs)) : (packageConfig.globalExceptionMappingConfigs != null))
+        {
             return false;
         }
 

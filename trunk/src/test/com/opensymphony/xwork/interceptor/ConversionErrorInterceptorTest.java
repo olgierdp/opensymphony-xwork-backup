@@ -6,13 +6,11 @@ package com.opensymphony.xwork.interceptor;
 
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
-
 import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.util.OgnlValueStack;
-
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -21,11 +19,11 @@ import java.util.Map;
 
 /**
  * ConversionErrorInterceptorTest
+ *
  * @author Jason Carreira
- * Date: Nov 27, 2003 4:48:09 PM
+ *         Date: Nov 27, 2003 4:48:09 PM
  */
 public class ConversionErrorInterceptorTest extends TestCase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     protected ActionContext context;
     protected ActionInvocation invocation;
@@ -34,7 +32,6 @@ public class ConversionErrorInterceptorTest extends TestCase {
     protected Mock mockInvocation;
     protected OgnlValueStack stack;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testFieldErrorAdded() throws Exception {
         conversionErrors.put("foo", new Long(123));

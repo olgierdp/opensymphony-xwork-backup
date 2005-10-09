@@ -5,27 +5,24 @@
 package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.interceptor.Interceptor;
-
 import junit.framework.Assert;
 
 
 /**
  * MockInterceptor
+ *
  * @author Jason Carreira
- * Created Apr 21, 2003 9:04:06 PM
+ *         Created Apr 21, 2003 9:04:06 PM
  */
 public class MockInterceptor implements Interceptor {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     public static final String DEFAULT_FOO_VALUE = "fooDefault";
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private String expectedFoo = DEFAULT_FOO_VALUE;
     private String foo = DEFAULT_FOO_VALUE;
     private boolean executed = false;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public boolean isExecuted() {
         return executed;
@@ -48,8 +45,8 @@ public class MockInterceptor implements Interceptor {
     }
 
     /**
-    * Called to let an interceptor clean up any resources it has allocated.
-    */
+     * Called to let an interceptor clean up any resources it has allocated.
+     */
     public void destroy() {
     }
 
@@ -68,7 +65,8 @@ public class MockInterceptor implements Interceptor {
             return false;
         }
 
-        if ((expectedFoo != null) ? (!expectedFoo.equals(testInterceptor.expectedFoo)) : (testInterceptor.expectedFoo != null)) {
+        if ((expectedFoo != null) ? (!expectedFoo.equals(testInterceptor.expectedFoo)) : (testInterceptor.expectedFoo != null))
+        {
             return false;
         }
 
@@ -89,20 +87,20 @@ public class MockInterceptor implements Interceptor {
     }
 
     /**
-    * Called after an Interceptor is created, but before any requests are processed using the intercept() methodName. This
-    * gives the Interceptor a chance to initialize any needed resources.
-    */
+     * Called after an Interceptor is created, but before any requests are processed using the intercept() methodName. This
+     * gives the Interceptor a chance to initialize any needed resources.
+     */
     public void init() {
     }
 
     /**
-    * Allows the Interceptor to do some processing on the request before and/or after the rest of the processing of the
-    * request by the DefaultActionInvocation or to short-circuit the processing and just return a String return code.
-    *
-    * @param invocation
-    * @return
-    * @throws Exception
-    */
+     * Allows the Interceptor to do some processing on the request before and/or after the rest of the processing of the
+     * request by the DefaultActionInvocation or to short-circuit the processing and just return a String return code.
+     *
+     * @param invocation
+     * @return
+     * @throws Exception
+     */
     public String intercept(ActionInvocation invocation) throws Exception {
         executed = true;
         Assert.assertNotSame(DEFAULT_FOO_VALUE, foo);

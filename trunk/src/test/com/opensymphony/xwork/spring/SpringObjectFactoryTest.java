@@ -36,11 +36,9 @@ import java.util.HashMap;
  * @author Simon Stewart
  */
 public class SpringObjectFactoryTest extends XWorkTestCase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     StaticApplicationContext sac;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setUp() throws Exception {
         super.setUp();

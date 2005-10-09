@@ -13,18 +13,17 @@ import java.util.List;
 
 /**
  * VisitorValidatorTestAction
+ *
  * @author Jason Carreira
- * Created Aug 4, 2003 1:00:04 AM
+ *         Created Aug 4, 2003 1:00:04 AM
  */
 public class VisitorValidatorTestAction extends ActionSupport {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private List testBeanList = new ArrayList();
     private String context;
     private TestBean bean = new TestBean();
     private TestBean[] testBeanArray;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public VisitorValidatorTestAction() {
         testBeanArray = new TestBean[5];
@@ -35,7 +34,6 @@ public class VisitorValidatorTestAction extends ActionSupport {
         }
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setBean(TestBean bean) {
         this.bean = bean;

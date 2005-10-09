@@ -82,11 +82,9 @@ public class ActionContext implements Serializable {
      */
     public static final String CONVERSION_ERRORS = "com.opensymphony.xwork.ActionContext.conversionErrors";
 
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     Map context;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     /**
      * Creates a new ActionContext initialized with another context.
@@ -97,7 +95,6 @@ public class ActionContext implements Serializable {
         this.context = context;
     }
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Sets the action invocation (the execution state).
@@ -323,7 +320,6 @@ public class ActionContext implements Serializable {
         context.put(key, value);
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
 
     private static class ActionContextThreadLocal extends ThreadLocal {
         protected Object initialValue() {

@@ -21,7 +21,6 @@ import com.opensymphony.xwork.util.OgnlValueStack;
  * @version $Revision$
  */
 public class ModelDrivenInterceptor extends AroundInterceptor {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }

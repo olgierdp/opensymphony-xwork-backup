@@ -5,22 +5,20 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.mockobjects.dynamic.Mock;
-
 import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.Validateable;
 import com.opensymphony.xwork.ValidationAware;
-
 import junit.framework.TestCase;
 
 
 /**
  * DefaultWorkflowInterceptorTest
+ *
  * @author Jason Carreira
- * Created Aug 29, 2003 1:51:00 PM
+ *         Created Aug 29, 2003 1:51:00 PM
  */
 public class DefaultWorkflowInterceptorTest extends TestCase {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     DefaultWorkflowInterceptor interceptor;
     private ActionInvocation invocation;
@@ -28,7 +26,6 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
     private Mock invocationMock;
     private ValidateAction action;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void testInvokesActionInvocationIfNoErrors() throws Exception {
         actionMock.expectAndReturn("hasErrors", false);
@@ -60,7 +57,6 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         invocationMock.verify();
     }
 
-    //~ Inner Interfaces ///////////////////////////////////////////////////////
 
     private interface ValidateAction extends Action, Validateable, ValidationAware {
     }

@@ -14,10 +14,8 @@ import java.util.List;
  * Time: 12:40:02 PM
  */
 public class ExceptionMappingInterceptor implements Interceptor {
-    //~ Instance fields ////////////////////////////////////////////////////////
     protected Log log = LogFactory.getLog(this.getClass());
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void destroy() {
     }
@@ -85,7 +83,6 @@ public class ExceptionMappingInterceptor implements Interceptor {
         }
         return getDepth(exceptionMapping, exceptionClass.getSuperclass(), depth + 1);
     }
-
 
 
 }

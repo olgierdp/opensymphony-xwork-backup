@@ -15,13 +15,11 @@ import com.opensymphony.xwork.util.Cat;
  * @author Mark Woon
  */
 public class TestBean2 extends TestBean implements DataAware {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private Bar bar;
     private String data;
     private Cat cat;
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setBarObj(Bar b) {
         bar = b;

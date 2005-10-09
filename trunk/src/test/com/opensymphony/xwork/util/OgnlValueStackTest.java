@@ -18,7 +18,6 @@ import java.util.Map;
  * @version $Revision$
  */
 public class OgnlValueStackTest extends XWorkTestCase {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * @return null
@@ -33,7 +32,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         Dog dog = new Dog();
         dog.setAge(12);
         dog.setName("Rover");
-        dog.setChildAges(new int[] {1, 2});
+        dog.setChildAges(new int[]{1, 2});
 
         vs.push(dog);
         assertEquals("1, 2", vs.findValue("childAges", String.class));
@@ -556,7 +555,6 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertTrue(conversionErrors.containsKey("count"));
     }
 
-    //~ Inner Classes //////////////////////////////////////////////////////////
 
     class BadJavaBean {
         private int count;

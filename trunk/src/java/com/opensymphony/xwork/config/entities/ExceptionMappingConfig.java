@@ -9,14 +9,12 @@ import java.util.TreeMap;
  * Time: 3:51:50 PM
  */
 public class ExceptionMappingConfig {
-    //~ Instance fields ////////////////////////////////////////////////////////
 
     private String name;
     private String exceptionClassName;
     private String result;
     private Map params;
 
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     public ExceptionMappingConfig() {
     }
@@ -83,15 +81,18 @@ public class ExceptionMappingConfig {
             return false;
         }
 
-        if ((exceptionClassName != null) ? (!exceptionClassName.equals(exceptionMappingConfig.exceptionClassName)) : (exceptionMappingConfig.exceptionClassName != null)) {
+        if ((exceptionClassName != null) ? (!exceptionClassName.equals(exceptionMappingConfig.exceptionClassName)) : (exceptionMappingConfig.exceptionClassName != null))
+        {
             return false;
         }
 
-        if ((result != null) ? (!result.equals(exceptionMappingConfig.result)) : (exceptionMappingConfig.result != null)) {
+        if ((result != null) ? (!result.equals(exceptionMappingConfig.result)) : (exceptionMappingConfig.result != null))
+        {
             return false;
         }
 
-        if ((params != null) ? (!params.equals(exceptionMappingConfig.params)) : (exceptionMappingConfig.params != null)) {
+        if ((params != null) ? (!params.equals(exceptionMappingConfig.params)) : (exceptionMappingConfig.params != null))
+        {
             return false;
         }
 

@@ -10,7 +10,6 @@ package com.opensymphony.xwork.interceptor.component;
  * @version $Revision$
  */
 public interface SuperAware {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setSuper(Super foo);
 }

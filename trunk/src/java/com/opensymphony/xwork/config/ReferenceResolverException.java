@@ -20,7 +20,6 @@ import com.opensymphony.xwork.XworkException;
  *         Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class ReferenceResolverException extends XworkException {
-    //~ Constructors ///////////////////////////////////////////////////////////
 
     /**
      *

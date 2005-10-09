@@ -5,26 +5,23 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionInvocation;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
 /**
  * LoggingInterceptor
- *
+ * <p/>
  * Created : Jan 9, 2003 1:23:03 AM
  *
  * @author Jason Carreira
  */
 public class LoggingInterceptor extends AroundInterceptor {
-    //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log log = LogFactory.getLog(LoggingInterceptor.class);
     private static final String FINISH_MESSAGE = "Finishing execution stack for action ";
     private static final String START_MESSAGE = "Starting execution stack for action ";
 
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public boolean equals(Object o) {
         if (this == o) {

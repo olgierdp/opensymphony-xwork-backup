@@ -16,7 +16,6 @@ import com.opensymphony.xwork.Result;
  * To change this template use Options | File Templates.
  */
 public class MockResult implements Result {
-    //~ Methods ////////////////////////////////////////////////////////////////
 
     public boolean equals(Object o) {
         if (this == o) {
