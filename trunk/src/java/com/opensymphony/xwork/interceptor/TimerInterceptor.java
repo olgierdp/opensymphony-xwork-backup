@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  *     &lt;interceptor-ref name="timer"/&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
-
+ *
  * &lt;!-- records action's execution time as well as other interceptors--&gt;
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
  *     &lt;interceptor-ref name="timer"/&gt;
