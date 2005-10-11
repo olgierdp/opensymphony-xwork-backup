@@ -60,4 +60,12 @@ public class LoggingInterceptor extends AroundInterceptor {
             log.info(message.toString());
         }
     }
+
+    public int hashCode() {
+        return 11;
+    }
+
+    public boolean equals(Object obj) {
+        return obj instanceof LoggingInterceptor;
+    }
 }

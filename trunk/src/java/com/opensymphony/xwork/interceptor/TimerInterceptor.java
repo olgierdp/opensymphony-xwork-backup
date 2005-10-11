@@ -68,4 +68,12 @@ public class TimerInterceptor implements Interceptor {
             return invocation.invoke();
         }
     }
+
+    public int hashCode() {
+        return 11;
+    }
+
+    public boolean equals(Object obj) {
+        return obj instanceof TimerInterceptor;
+    }
 }
