@@ -161,36 +161,6 @@ public class DefaultActionInvocation implements ActionInvocation {
             resultConfig = (ResultConfig) results.get(resultCode);
         }
 
-        Result newResult = null;
-
-        if (false) {
-            // no result mapped -- that's OK. we'll just assume it is just short-hand notation
-            // ie: redirect:foo.jsp or test.ftl
-            PackageConfig pc = ConfigurationManager.getConfiguration().getPackageConfig(config.getPackageName());
-            String resultType = pc.getFullDefaultResultType();
-
-            Map params = Collections.EMPTY_MAP;
-            int colon = resultCode.indexOf(':');
-            if (colon != -1) {
-                resultType = resultCode.substring(0, colon);
-            }
-            ResultTypeConfig rtc = (ResultTypeConfig) pc.getAllResultTypeConfigs().get(resultType);
-
-            String defaultParam = resultCode.substring(colon + 1);
-            if (defaultParam != null) {
-                String paramName = (String) rtc.getClazz().getField("DEFAULT_PARAM").get(null);
-                if (paramName != null) {
-                    params = Collections.singletonMap(paramName, defaultParam);
-                }
-            }
-
-            resultConfig = new ResultConfig(resultCode, rtc.getClazz(), params);
-
-            synchronized (config) {
-                config.addResultConfig(resultConfig);
-            }
-        }
-
         if (resultConfig != null) {
             try {
                 return ObjectFactory.getObjectFactory().buildResult(resultConfig);
