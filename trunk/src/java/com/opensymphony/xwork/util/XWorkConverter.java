@@ -53,6 +53,7 @@ import java.util.*;
  * <!-- END SNIPPET: i18n-note -->
  *
  * @author <a href="mailto:plightbo@gmail.com">Pat Lightbody</a>
+ * @see XWorkBasicConverter
  */
 public class XWorkConverter extends DefaultTypeConverter {
     private static XWorkConverter instance;

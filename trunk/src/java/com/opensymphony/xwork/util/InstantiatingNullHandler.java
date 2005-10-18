@@ -16,22 +16,39 @@ import java.util.*;
 
 
 /**
- * Normally does nothing, but if {@link #CREATE_NULL_OBJECTS} is in the action context
- * with a value of true, then this class will attempt to create null objects when Ognl
- * requests null objects be created.
- * <p/>
- * The following rules are used:
+ * <!-- START SNIPPET: javadoc -->
+ *
+ * Provided that the key {@link #CREATE_NULL_OBJECTS} is in the action context with a value of true (this key is set
+ * only during the execution of the {@link com.opensymphony.xwork.interceptor.ParametersInterceptor}, OGNL expressions
+ * that have caused a NullPointerException will be temporarily stopped for evaluation while the system automatically
+ * tries to solve the null references by automatically creating the object.
+ *
+ * <p/> The following rules are used when handling null references:
+ *
  * <ul>
- * <li>If the null property is a simple bean with a no-arg constructor, it will simply be
- * created using ObjectFactory's {@link ObjectFactory#buildBean(java.lang.Class) buildBean} method.</li>
- * <li>If the property is declared <i>exactly</i> as a {@link Collection} or {@link List}, then this class
- * will look in the conversion property file (see {@link XWorkConverter}) for an entry
- * with a key of the form "Collection_[propertyName]". Using the value of this key as
- * the class type in which the collection will be holding, an {@link XWorkList} will be
- * created, allowing simple dynamic insertion.</li>
- * <li>If the property is declared as a {@link Map}, then the same rules are applied for
- * list, except that an {@link XWorkMap} will be created instead.</li>
+ *
+ * <li>If the property is declared <i>exactly</i> as a {@link Collection} or {@link List}, then an ArrayList shall be
+ * returned and assigned to the null references.</li>
+ *
+ * <li>If the property is declared as a {@link Map}, then a HashMap will be returned and assigned to the null
+ * references.</li>
+ *
+ * <li>If the null property is a simple bean with a no-arg constructor, it will simply be created using the {@link
+ * ObjectFactory#buildBean(Class)} method.</li>
+ *
  * </ul>
+ *
+ * <!-- END SNIPPET: javadoc -->
+ *
+ * <!-- START SNIPPET: example -->
+ *
+ * For example, if a form element has a text field named <b>person.name</b> and the expression <i>person</i> evaluates
+ * to null, then this class will be invoked. Because the <i>person</i> expression evaluates to a <i>Person</i> class, a
+ * new Person is created and assigned to the null reference. Finally, the name is set on that object and the overall
+ * effect is that the system automatically created a Person object for you, set it by calling setPerson() and then
+ * finally called getPerson().setName() as you would typically expect.
+ *
+ * <!-- END SNIPPET: example>
  *
  * @author Matt Ho
  * @author Patrick Lightbody
