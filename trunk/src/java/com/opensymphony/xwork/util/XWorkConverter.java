@@ -19,7 +19,40 @@ import java.util.*;
 
 
 /**
- * OGNL TypeConverter for WebWork.
+ * <!-- START SNIPPET: javadoc -->
+ *
+ * Type conversion is great for situations where you need to turn a String in to a more complex object. Because the web
+ * is type-agnostic (everything is a string in HTTP), WebWork's type conversion features are very useful. For instance,
+ * if you were prompting a user to enter in coordinates in the form of a string (such as "3, 22"), you could have
+ * WebWork do the conversion both from String to Point and from Point to String.
+ *
+ * <p/> Using this "point" example, if your action (or another compound object in which you are setting properties on)
+ * has a corresponding className-conversion.properties file, WebWork will use the configured type converters for
+ * conversion to and from strings. So turning "3, 22" in to new Point(3, 22) is done by merely adding the following
+ * entry to <b>ClassName-conversion.properties</b>:
+ *
+ * <pre>
+ * point = com.acme.PointConverter
+ * # note: PointerConverter must implement ognl.TypeConverter
+ * #          or extend ognl.DefaultTypeConverter</pre>
+ *
+ * <p/> Your type converter should be sure to check what class type it is being requested to convert. Because it is used
+ * for both to and from strings, you will need to split the conversion method in to two parts: one that turns Strings in
+ * to Points, and one that turns Points in to Strings.
+ *
+ * <p/> After this is done, you can now reference your point (using &lt;ww:property value="post"/&gt; in JSP or ${point}
+ * in FreeMarker) and it will be printed as "3, 22" again. As such, if you submit this back to an action, it will be
+ * converted back to a Point once again.
+ *
+ * <!-- END SNIPPET: javadoc -->
+ *
+ * <!-- START SNIPPET: i18n-note -->
+ *
+ * Type conversion should not be used as a substitute for i18n. It is not recommended to use this feature to print out
+ * properly formatted dates. Rather, you should use the i18n features of WebWork (and consult the JavaDocs for JDK's
+ * MessageFormat object) to see how a properly formatted date should be displayed.
+ *
+ * <!-- END SNIPPET: i18n-note -->
  *
  * @author <a href="mailto:plightbo@gmail.com">Pat Lightbody</a>
  */
@@ -128,7 +161,8 @@ public class XWorkConverter extends DefaultTypeConverter {
         }
 
         if (tc == null) {
-            if (toClass.equals(String.class) && (value != null) && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class))) {
+            if (toClass.equals(String.class) && (value != null) && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class)))
+            {
                 // when converting to a string, use the source target's class's converter
                 tc = lookup(value.getClass());
             } else {
@@ -170,8 +204,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      * Looks for a TypeConverter in the default mappings.
      *
      * @param className name of the class the TypeConverter must handle
-     * @return a TypeConverter to handle the specified class or null if none can
-     *         be found
+     * @return a TypeConverter to handle the specified class or null if none can be found
      */
     public TypeConverter lookup(String className) {
         if (unknownMappings.contains(className)) {
@@ -207,8 +240,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      * Looks for a TypeConverter in the default mappings.
      *
      * @param clazz the class the TypeConverter must handle
-     * @return a TypeConverter to handle the specified class or null if none can
-     *         be found
+     * @return a TypeConverter to handle the specified class or null if none can be found
      */
     public TypeConverter lookup(Class clazz) {
         return lookup(clazz.getName());
@@ -311,9 +343,8 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     /**
-     * Looks for converter mappings for the specified class and adds it to an
-     * existing map.  Only new converters are added.  If a converter is defined
-     * on a key that already exists, the converter is ignored.
+     * Looks for converter mappings for the specified class and adds it to an existing map.  Only new converters are
+     * added.  If a converter is defined on a key that already exists, the converter is ignored.
      *
      * @param mapping an existing map to add new converter mappings to
      * @param clazz   class to look for converter mappings for
@@ -390,10 +421,9 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     /**
-     * Looks for converter mappings for the specified class, traversing up its
-     * class hierarchy and interfaces and adding any additional mappings it may
-     * find.  Mappings lower in the hierarchy have priority over those higher
-     * in the hierarcy.
+     * Looks for converter mappings for the specified class, traversing up its class hierarchy and interfaces and adding
+     * any additional mappings it may find.  Mappings lower in the hierarchy have priority over those higher in the
+     * hierarcy.
      *
      * @param clazz the class to look for converter mappings for
      * @return the converter mappings
@@ -464,12 +494,11 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     /**
-     * Recurses through a class' interfaces and class hierarchy looking for a
-     * TypeConverter in the default mapping that can handle the specified class.
+     * Recurses through a class' interfaces and class hierarchy looking for a TypeConverter in the default mapping that
+     * can handle the specified class.
      *
      * @param clazz the class the TypeConverter must handle
-     * @return a TypeConverter to handle the specified class or null if none can
-     *         be found
+     * @return a TypeConverter to handle the specified class or null if none can be found
      */
     private TypeConverter lookupSuper(Class clazz) {
         TypeConverter result = null;
