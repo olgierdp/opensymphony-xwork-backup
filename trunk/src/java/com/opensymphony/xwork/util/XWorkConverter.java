@@ -42,7 +42,17 @@ import java.util.*;
  * in FreeMarker) and it will be printed as "3, 22" again. As such, if you submit this back to an action, it will be
  * converted back to a Point once again.
  *
+ * <p/> In some situations you may wish to apply a type converter globally. This can be done by editing the file
+ * <b>xwork-conversion.properties</b> in the root of your class path (typically WEB-INF/classes) and providing a
+ * property in the form of the class name of the object you wish to convert on the left hand side and the class name of
+ * the type converter on the right hand side. For example, providing a type converter for all Point objects would mean
+ * adding the following entry:
+ *
+ * <p/><b>com.acme.Point = com.acme.PointConverter</b>
+ *
  * <!-- END SNIPPET: javadoc -->
+ *
+ * <p/>
  *
  * <!-- START SNIPPET: i18n-note -->
  *
@@ -51,6 +61,29 @@ import java.util.*;
  * MessageFormat object) to see how a properly formatted date should be displayed.
  *
  * <!-- END SNIPPET: i18n-note -->
+ *
+ * <p/>
+ *
+ * <!-- START SNIPPET: error-reporting -->
+ *
+ * Any error that occurs during type conversion may or may not wish to be reported. For example, reporting that the
+ * input "abc" could not be converted to a number might be important. On the other hand, reporting that an empty string,
+ * "", cannot be converted to a number might not be important - especially in a web environment where it is hard to
+ * distinguish between a user not entering a value vs. entering a blank value.
+ *
+ * <p/> By default, all conversion errors are reported using the generic i18n key <b>xwork.default.invalid.fieldvalue</b>,
+ * which you can override (the default text is <i>Invalid field value for field "xxx"</i>, where xxx is the field name)
+ * in your global i18n resource bundle.
+ *
+ * <p/>However, sometimes you may wish to override this message on a per-field basis. You can do this by adding an i18n
+ * key associated with just your action (Action.properties) using the pattern <b>invalid.fieldvalue.xxx</b>, where xxx
+ * is the field name.
+ *
+ * <p/>It is important to know that none of these errors are actually reported directly. Rather, they are added to a map
+ * called <i>conversionErrors</i> in the ActionContext. There are several ways this map can then be accessed and the
+ * errors can be reported accordingly.
+ *
+ * <!-- END SNIPPET: error-reporting -->
  *
  * @author <a href="mailto:plightbo@gmail.com">Pat Lightbody</a>
  * @see XWorkBasicConverter
@@ -76,6 +109,7 @@ public class XWorkConverter extends DefaultTypeConverter {
 
     private XWorkConverter() {
         try {
+            // note: this file is deprecated
             loadConversionProps("xwork-default-conversion.properties");
         } catch (Exception e) {
         }
