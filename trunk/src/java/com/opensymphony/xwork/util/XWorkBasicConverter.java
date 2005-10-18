@@ -24,8 +24,8 @@ import java.util.*;
 /**
  * <!-- START SNIPPET: javadoc -->
  *
- * WebWork will automatically handle most common type conversion for you. This includes suppor for converting to and
- * from Strings to:
+ * WebWork will automatically handle the most common type conversion for you. This includes support for converting to
+ * and from Strings for each of the following:
  *
  * <ul>
  *
@@ -45,6 +45,10 @@ import java.util.*;
  * created</li>
  *
  * </ul>
+ *
+ * <p/> Note that with arrays the type conversion will defer to the type of the array elements and try to convert each
+ * item individually. As with any other type conversion, if the conversion can't be performed the standard type
+ * conversion error reporting is used to indicate a problem occured while processing the type conversion.
  *
  * <!-- END SNIPPET: javadoc -->
  *
