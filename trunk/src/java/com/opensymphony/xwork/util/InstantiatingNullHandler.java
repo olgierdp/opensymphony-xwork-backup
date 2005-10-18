@@ -19,7 +19,7 @@ import java.util.*;
  * <!-- START SNIPPET: javadoc -->
  *
  * Provided that the key {@link #CREATE_NULL_OBJECTS} is in the action context with a value of true (this key is set
- * only during the execution of the {@link com.opensymphony.xwork.interceptor.ParametersInterceptor}, OGNL expressions
+ * only during the execution of the {@link com.opensymphony.xwork.interceptor.ParametersInterceptor}), OGNL expressions
  * that have caused a NullPointerException will be temporarily stopped for evaluation while the system automatically
  * tries to solve the null references by automatically creating the object.
  *
