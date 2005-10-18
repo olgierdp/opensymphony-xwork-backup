@@ -27,14 +27,12 @@ import java.util.*;
  * WebWork do the conversion both from String to Point and from Point to String.
  *
  * <p/> Using this "point" example, if your action (or another compound object in which you are setting properties on)
- * has a corresponding className-conversion.properties file, WebWork will use the configured type converters for
+ * has a corresponding ClassName-conversion.properties file, WebWork will use the configured type converters for
  * conversion to and from strings. So turning "3, 22" in to new Point(3, 22) is done by merely adding the following
- * entry to <b>ClassName-conversion.properties</b>:
+ * entry to <b>ClassName-conversion.properties</b> (Note that the PointConverter should impl the ognl.TypeConverter
+ * interface):
  *
- * <pre>
- * point = com.acme.PointConverter
- * # note: PointerConverter must implement ognl.TypeConverter
- * #          or extend ognl.DefaultTypeConverter</pre>
+ * <p/><b>point = com.acme.PointConverter</b>
  *
  * <p/> Your type converter should be sure to check what class type it is being requested to convert. Because it is used
  * for both to and from strings, you will need to split the conversion method in to two parts: one that turns Strings in
