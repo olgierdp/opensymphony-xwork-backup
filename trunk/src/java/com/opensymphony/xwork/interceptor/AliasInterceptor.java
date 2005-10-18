@@ -35,7 +35,7 @@ import java.util.Map;
  * <!-- END SNIPPET: example -->
  * </pre>
  * 
- * The aim of this Interceptor is to covert different named parameters.
+ * The aim of this Interceptor is to convert different named parameters.
  * Act as the glue between actions sharing similiar parameter intents, but different naming
  * It can get helpful when chaining but could also convert request parameters
  * <p/>
