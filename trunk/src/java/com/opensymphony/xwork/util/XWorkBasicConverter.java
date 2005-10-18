@@ -22,9 +22,33 @@ import java.util.*;
 
 
 /**
- * Default type converter for XWork.
+ * <!-- START SNIPPET: javadoc -->
  *
- * @author <a href="mailto:plightbo@cisco.com">Pat Lightbody</a>
+ * WebWork will automatically handle most common type conversion for you. This includes suppor for converting to and
+ * from Strings to:
+ *
+ * <ul>
+ *
+ * <li>String</li>
+ *
+ * <li>boolean / Boolean</li>
+ *
+ * <li>char / Character</li>
+ *
+ * <li>int / Integer, float / Float, long / Long, double / Double</li>
+ *
+ * <li>dates - uses the SHORT format for the Locale associated with the current request</li>
+ *
+ * <li>arrays - assuming the individual strings can be coverted to the individual items</li>
+ *
+ * <li>collections - if not object type can be determined, it is assumed to be a String and a new ArrayList is
+ * created</li>
+ *
+ * </ul>
+ *
+ * <!-- END SNIPPET: javadoc -->
+ *
+ * @author <a href="mailto:plightbo@gmail.com">Pat Lightbody</a>
  */
 public class XWorkBasicConverter extends DefaultTypeConverter {
 
