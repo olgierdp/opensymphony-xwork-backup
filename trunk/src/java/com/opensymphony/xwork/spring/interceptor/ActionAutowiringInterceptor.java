@@ -15,6 +15,29 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
+ * <!-- START SNIPPET: description -->
+ * TODO: Give a description of the Interceptor.
+ * <!-- END SNIPPET: description -->
+ *
+ * <!-- START SNIPPET: parameters -->
+ * TODO: Describe the paramters for this Interceptor.
+ * <!-- END SNIPPET: parameters -->
+ *
+ * <!-- START SNIPPET: extending -->
+ * TODO: Discuss some possible extension of the Interceptor.
+ * <!-- END SNIPPET: extending -->
+ *
+ * <pre>
+ * <!-- START SNIPPET: example -->
+ * &lt;!-- TODO: Describe how the Interceptor reference will effect execution --&gt;
+ * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
+ *      TODO: fill in the interceptor reference.
+ *     &lt;interceptor-ref name=""/&gt;
+ *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
+ * &lt;/action&gt;
+ * <!-- END SNIPPET: example -->
+ * </pre>
+ * 
  * Autowires action classes to Spring beans.  The strategy for autowiring the beans can be configured
  * by setting the parameter on the interceptor.  Actions that need access to the <code>ActionContext</code>
  * can implements the <code>ApplicationContextAware</code> interface.  The context will also be placed on

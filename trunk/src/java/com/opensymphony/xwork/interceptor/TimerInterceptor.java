@@ -18,6 +18,14 @@ import org.apache.commons.logging.LogFactory;
  * <a href="http://jakarta.apache.org/commons/logging/">Commons Logging API</a> to report its execution-time value.
  * <!-- END SNIPPET: description -->
  *
+ * <!-- START SNIPPET: parameters -->
+ * TODO: Describe the paramters for this Interceptor.
+ * <!-- END SNIPPET: parameters -->
+ *
+ * <!-- START SNIPPET: extending -->
+ * TODO: Discuss some possible extension of the Interceptor.
+ * <!-- END SNIPPET: extending -->
+ *
  * <pre>
  * <!-- START SNIPPET: example -->
  * &lt;!-- records only the action's execution time --&gt;

@@ -17,6 +17,29 @@ import java.util.TreeMap;
 
 
 /**
+ * <!-- START SNIPPET: description -->
+ * TODO: Give a description of the Interceptor.
+ * <!-- END SNIPPET: description -->
+ *
+ * <!-- START SNIPPET: parameters -->
+ * TODO: Describe the paramters for this Interceptor.
+ * <!-- END SNIPPET: parameters -->
+ *
+ * <!-- START SNIPPET: extending -->
+ * TODO: Discuss some possible extension of the Interceptor.
+ * <!-- END SNIPPET: extending -->
+ *
+ * <pre>
+ * <!-- START SNIPPET: example -->
+ * &lt;!-- TODO: Describe how the Interceptor reference will effect execution --&gt;
+ * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
+ *      TODO: fill in the interceptor reference.
+ *     &lt;interceptor-ref name=""/&gt;
+ *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
+ * &lt;/action&gt;
+ * <!-- END SNIPPET: example -->
+ * </pre>
+ *
  * An interceptor that gets the parameters Map from the action context and calls
  * {@link OgnlValueStack#setValue(java.lang.String, java.lang.Object) setValue} on
  * the value stack with the property name being the key in the map, and the value
