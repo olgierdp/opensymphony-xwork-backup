@@ -14,6 +14,14 @@ import org.apache.commons.logging.LogFactory;
  * This interceptor logs the the start and end of the execution an action (in English-only, not internationalized).
  * <!-- END SNIPPET: description -->
  *
+ * <!-- START SNIPPET: parameters -->
+ * There are no parameters for this interceptor.
+ * <!-- END SNIPPET: parameters -->
+ *
+ * <!-- START SNIPPET: extending -->
+ * There are no obvious extensions to the existing interceptor.
+ * <!-- END SNIPPET: extending -->
+ *
  * <pre>
  * <!-- START SNIPPET: example -->
  * &lt;!-- prints out a message before and after the immediate action execution --&gt;
