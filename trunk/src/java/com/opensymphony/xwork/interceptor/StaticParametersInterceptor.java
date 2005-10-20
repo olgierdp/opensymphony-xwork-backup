@@ -16,38 +16,46 @@ import java.util.Map;
 
 /**
  * <!-- START SNIPPET: description -->
- * TODO: Give a description of the Interceptor.
+ *
+ * This interceptor populates the action with the static parameters defined in the action configuration. If the action
+ * implements {@link Parameterizable}, a map of the static parameters will be also be passed directly to the action.
+ *
+ * <p/> Parameters are typically defined with &lt;param&gt; elements within xwork.xml.
+ *
  * <!-- END SNIPPET: description -->
  *
+ * <p/> <u>Interceptor parameters:</u>
+ *
  * <!-- START SNIPPET: parameters -->
- * TODO: Describe the paramters for this Interceptor.
+ *
+ * <ul>
+ *
+ * <li>None</li>
+ *
+ * </ul>
+ *
  * <!-- END SNIPPET: parameters -->
  *
+ * <p/> <u>Extending the interceptor:</u>
+ *
  * <!-- START SNIPPET: extending -->
- * TODO: Discuss some possible extension of the Interceptor.
+ *
+ * <p/>There are no extension points to this interceptor.
+ *
  * <!-- END SNIPPET: extending -->
+ *
+ * <p/> <u>Example code:</u>
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * &lt;!-- TODO: Describe how the Interceptor reference will effect execution --&gt;
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
- *      TODO: fill in the interceptor reference.
- *     &lt;interceptor-ref name=""/&gt;
+ *     &lt;interceptor-ref name="static-params"/&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
  * <!-- END SNIPPET: example -->
  * </pre>
  *
- * Populates the Action with the static parameters defined in the Action
- * configuration by treating the Action as a bean.  If the  Action is
- * {@link Parameterizable}, a map of the static parameters will be also be
- * passed directly to the Action.
- * <p/>
- * Parameters are defined with &lt;param&gt; elements within the Action
- * configuration.
- *
- * @author $Author$
- * @version $Revision$
+ * @author Patrick Lightbody
  */
 public class StaticParametersInterceptor extends AroundInterceptor {
 
