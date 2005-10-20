@@ -21,7 +21,8 @@ import java.util.TreeMap;
  *
  * This interceptor gets all parameters from {@link ActionContext#getParameters()} and sets them on the value stack by
  * calling {@link OgnlValueStack#setValue(String, Object)}, typically resulting in the values submitted in a form
- * request being applied to an action in the value stack.
+ * request being applied to an action in the value stack. Note that the parameter map must contain a String key and
+ * often containers a String[] for the value.
  *
  * <p/> Because parameter names are effectively OGNL statements, it is important that security be taken in to account.
  * This interceptor will not apply any values in the parameters map if the expression contains an assignment (=),
@@ -29,13 +30,22 @@ import java.util.TreeMap;
  * #acceptableName(String)} method. In addition to this method, if the action being invoked implements the {@link
  * ParameterNameAware} interface, the action will be consulted to determine if the parameter should be set.
  *
- * <p/> In addition to these restrictions  
+ * <p/> In addition to these restrictions, a flag ({@link XWorkMethodAccessor#DENY_METHOD_EXECUTION}) is set such that
+ * no methods are allowed to be invoked. That means that any expression such as <i>person.doSomething()</i> or
+ * <i>person.getName()</i> will be explicitely forbidden. This is needed to make sure that your application is not
+ * exposed to attacks by malicious users.
  *
+ * <p/> While this interceptor is being invoked, a flag ({@link InstantiatingNullHandler#CREATE_NULL_OBJECTS}) is turned
+ * on to ensure that any null reference is automatically created - if possible. See the type conversion documentation
+ * and the {@link InstantiatingNullHandler} javadocs for more information.
  *
+ * <p/> Finally, a third flag ({@link XWorkConverter#REPORT_CONVERSION_ERRORS}) is set that indicates any errors when
+ * converting the the values to their final data type (String[] -&gt; int) an unrecoverable error occured. With this
+ * flag set, the type conversion errors will be reported in the action context. See the type conversion documentation
+ * and the {@link XWorkConverter} javadocs for more information.
  *
- * <p/> Conversion errors, method execution, null props
- *
- * <p/> Logging...
+ * <p/> If you are looking for detailed logging information about your parameters, turn on DEBUG level logging for this
+ * interceptor. A detailed log of all the parameter keys and values will be reported.
  *
  * <!-- END SNIPPET: description -->
  *
@@ -71,17 +81,6 @@ import java.util.TreeMap;
  * &lt;/action&gt;
  * <!-- END SNIPPET: example -->
  * </pre>
- *
- * An interceptor that gets the parameters Map from the action context and calls {@link
- * OgnlValueStack#setValue(java.lang.String, java.lang.Object) setValue} on the value stack with the property name being
- * the key in the map, and the value being the associated value in the map. <p/> This interceptor sets up a few special
- * conditions before setting the values on the stack: <p/> <ul> <li>It turns on null object handling, meaning if the
- * property "foo" is null and value is set on "foo.bar", then the foo object will be created as explained in {@link
- * InstantiatingNullHandler}.</li> <li>It also turns off the ability to allow methods to be executed, which is done as a
- * security protection. This includes both static and non-static methods, as explained in {@link
- * XWorkMethodAccessor}.</li> <li>Turns on reporting of type conversion errors, which are otherwise not normally
- * reported. It is important to report them here because this input is expected to be directly from the user.</li>
- * </ul>
  *
  * @author Patrick Lightbody
  */
