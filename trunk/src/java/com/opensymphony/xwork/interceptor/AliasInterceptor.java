@@ -13,46 +13,63 @@ import java.util.Map;
 
 /**
  * <!-- START SNIPPET: description -->
- * TODO: Give a description of the Interceptor.
+ *
+ * The aim of this Interceptor is to alias a named parameter to a different named parameter. By acting as the glue
+ * between actions sharing similiar parameters (but with different names), it can help greatly with action chaining.
+ *
+ * <p/>  Action's alias expressions should be in the form of  #{ "name1" : "alias1", "name2" : "alias2" }. This means
+ * that assuming an action (or something else in the stack) has a value for the expression named <i>name1</i> and the
+ * action this interceptor is applied to has a setter named <i>alias1</i>, <i>alias1</i> will be set with the value from
+ * <i>name1</i>.
+ *
  * <!-- END SNIPPET: description -->
  *
+ * <p/> <u>Interceptor parameters:</u>
+ *
  * <!-- START SNIPPET: parameters -->
- * TODO: Describe the paramters for this Interceptor.
+ *
+ * <ul>
+ *
+ * <li>aliasesKey (optional) - the name of the action parameter to look for the alias map (by default this is
+ * <i>aliases</i>).</li>
+ *
+ * </ul>
+ *
  * <!-- END SNIPPET: parameters -->
  *
+ * <p/> <u>Extending the interceptor:</u>
+ *
+ * <p/>
+ *
  * <!-- START SNIPPET: extending -->
- * TODO: Discuss some possible extension of the Interceptor.
+ *
+ * This interceptor does not have any known extension points.
+ *
  * <!-- END SNIPPET: extending -->
+ *
+ * <p/> <u>Example code:</u>
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * &lt;!-- TODO: Describe how the Interceptor reference will effect execution --&gt;
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
- *      TODO: fill in the interceptor reference.
- *     &lt;interceptor-ref name=""/&gt;
+ *     &lt;!-- The value for the foo parameter will be applied as if it were named bar --&gt;
+ *     &lt;param name="aliases"&gt;#{ 'foo' : 'bar' }&lt;/param&gt;
+ *
+ *     &lt;!-- note: the alias interceptor is included with the defaultStack in webwork-default.xml --&gt;
+ *     &lt;interceptor-ref name="alias"/&gt;
+ *     &lt;interceptor-ref name="basicStack"/&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
  * <!-- END SNIPPET: example -->
  * </pre>
- * 
- * The aim of this Interceptor is to convert different named parameters.
- * Act as the glue between actions sharing similiar parameter intents, but different naming
- * It can get helpful when chaining but could also convert request parameters
- * <p/>
- * action's aliases expression should be in the form of  #{ "name1" : "alias1", "name2" : "alias2" }
- * e.g. assuming action1(or something else in the stack) has a getter named "name1" and the action this interceptor
- * is applied to has a setter named "alias1", "alias1" will be set with the value from "name1"
  *
  * @author Matthew Payne
  */
-
 public class AliasInterceptor extends AroundInterceptor {
     private static final Log log = LogFactory.getLog(AliasInterceptor.class);
-
     private static final String DEFAULT_ALIAS_KEY = "aliases";
 
-    String aliasesKey = DEFAULT_ALIAS_KEY;
-
+    protected String aliasesKey = DEFAULT_ALIAS_KEY;
 
     public void setAliasesKey(String aliasesKey) {
         this.aliasesKey = aliasesKey;
@@ -66,14 +83,15 @@ public class AliasInterceptor extends AroundInterceptor {
 
     protected void before(ActionInvocation invocation) throws Exception {
         ActionConfig config = invocation.getProxy().getConfig();
-        
+        ActionContext ac = invocation.getInvocationContext();
+
         // get the action's parameters
         final Map parameters = config.getParams();
 
         if (parameters.containsKey(aliasesKey)) {
 
             String aliasExpression = (String) parameters.get(aliasesKey);
-            OgnlValueStack stack = ActionContext.getContext().getValueStack();
+            OgnlValueStack stack = ac.getValueStack();
             Object obj = stack.findValue(aliasExpression);
 
             if (obj != null && obj instanceof Map) {
@@ -86,16 +104,11 @@ public class AliasInterceptor extends AroundInterceptor {
                     String alias = (String) entry.getValue();
                     Object value = stack.findValue(name);
                     stack.setValue(alias, value);
-
                 }
-
             } else {
                 log.debug("invalid alias expression:" + aliasesKey);
             }
-
-
         }
-
     }
 
     protected void after(ActionInvocation invocation, String result) throws Exception {
