@@ -9,29 +9,57 @@ import java.util.Map;
 
 /**
  * <!-- START SNIPPET: description -->
- * TODO: Give a description of the Interceptor.
+ *
+ * An interceptor that handles setting the locale specified in a session as the locale for the current action request.
+ * In addition, this interceptor will look for a specific HTTP request parameter and set the locale to whatever value is
+ * provided. This means that this interceptor can be used to allow for your application to dynamically change the locale
+ * for the user's session. This is very useful for applications that require multi-lingual support and want the user to
+ * be able to set his or her language preference at any point. The locale parameter is removed during the execution of
+ * this interceptor, ensuring that properties aren't set on an action (such as request_locale) that have no typical
+ * corresponding setter in your action.
+ *
+ * <p/>For example, using the default parameter name, a request to <b>foo.action?request_locale=en_US</b>, then the
+ * locale for US English is saved in the user's session and will be used for all future requests.
+ *
  * <!-- END SNIPPET: description -->
  *
+ * <p/> <u>Interceptor parameters:</u>
+ *
  * <!-- START SNIPPET: parameters -->
- * TODO: Describe the paramters for this Interceptor.
+ *
+ * <ul>
+ *
+ * <li>parameterName (optional) - the name of the HTTP request parameter that dictates the locale to switch to and save
+ * in the session. By default this is <b>request_locale</b></li>
+ *
+ * <li>attributeName (optional) - the name of the session key to store the selected locale. By default this is
+ * <b>WW_TRANS_I18N_LOCALE</b></li>
+ *
+ * </ul>
+ *
  * <!-- END SNIPPET: parameters -->
  *
+ * <p/> <u>Extending the interceptor:</u>
+ *
+ * <p/>
+ *
  * <!-- START SNIPPET: extending -->
- * TODO: Discuss some possible extension of the Interceptor.
+ *
+ * There are no known extensions points for this interceptor.
+ *
  * <!-- END SNIPPET: extending -->
+ *
+ * <p/> <u>Example code:</u>
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * &lt;!-- TODO: Describe how the Interceptor reference will effect execution --&gt;
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
- *      TODO: fill in the interceptor reference.
- *     &lt;interceptor-ref name=""/&gt;
+ *     &lt;interceptor-ref name="i18n"/&gt;
+ *     &lt;interceptor-ref name="basicStack"/&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
  * <!-- END SNIPPET: example -->
  * </pre>
- *
- * I18nInterceptor
  *
  * @author Aleksei Gopachenko
  */
@@ -44,10 +72,10 @@ public class I18nInterceptor implements Interceptor {
     protected String parameterName = DEFAULT_PARAMETER;
     protected String attributeName = DEFAULT_SESSION_ATTRIBUTE;
 
-    /**
-     */
     public I18nInterceptor() {
-        if (log.isDebugEnabled()) log.debug("new I18nInterceptor()");
+        if (log.isDebugEnabled()) {
+            log.debug("new I18nInterceptor()");
+        }
     }
 
     public void setParameterName(String parameterName) {
@@ -58,20 +86,14 @@ public class I18nInterceptor implements Interceptor {
         this.attributeName = attributeName;
     }
 
-    /**
-     */
     public void init() {
         if (log.isDebugEnabled()) log.debug("init()");
     }
 
-    /**
-     */
     public void destroy() {
         if (log.isDebugEnabled()) log.debug("destroy()");
     }
 
-    /**
-     */
     public String intercept(ActionInvocation invocation) throws Exception {
         if (log.isDebugEnabled()) {
             log.debug("intercept '"
@@ -80,8 +102,10 @@ public class I18nInterceptor implements Interceptor {
         }
 
         //get requested locale
-        Object requested_locale = invocation.getInvocationContext().getParameters().get(parameterName);
-        if (requested_locale != null && requested_locale.getClass().isArray() && ((Object[]) requested_locale).length == 1) {
+        Map params = invocation.getInvocationContext().getParameters();
+        Object requested_locale = params.remove(parameterName);
+        if (requested_locale != null && requested_locale.getClass().isArray()
+                && ((Object[]) requested_locale).length == 1) {
             requested_locale = ((Object[]) requested_locale)[0];
         }
 
@@ -131,7 +155,7 @@ public class I18nInterceptor implements Interceptor {
         return result;
     }
 
-    Locale localeFromString(String localeStr) {
+    private Locale localeFromString(String localeStr) {
         if ((localeStr == null) || (localeStr.trim().length() == 0) || (localeStr.equals("_"))) {
             return Locale.getDefault();
         }
@@ -160,5 +184,4 @@ public class I18nInterceptor implements Interceptor {
         localeStr = localeStr.substring(index + 1);
         return new Locale(language, country, localeStr);
     }
-
 }

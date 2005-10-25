@@ -10,31 +10,70 @@ import java.util.List;
 
 /**
  * <!-- START SNIPPET: description -->
- * TODO: Give a description of the Interceptor.
+ *
+ * This interceptor forms the core functionality of the exception handling feature. Exception handling allows you to map
+ * an exception to a result code, just as if the action returned a result code instead of throwing an unexpected
+ * exception. When an exception is encountered, it is wrapped with an {@link ExceptionHolder} and pushed on the stack,
+ * providing easy access to the exception from within your result.
+ *
+ * <b>Note:</b> While you can configure exception mapping in your configuration file at any point, the configuration
+ * will not have any effect if this interceptor is not in the interceptor stack for your actions. It is recommended that
+ * you make this interceptor the first interceptor on the stack, ensuring that it has full access to catch any exception
+ * - even those caused by other interceptors.
+ *
  * <!-- END SNIPPET: description -->
  *
+ * <p/> <u>Interceptor parameters:</u>
+ *
  * <!-- START SNIPPET: parameters -->
- * TODO: Describe the paramters for this Interceptor.
+ *
+ * <ul>
+ *
+ * <li>None</li>
+ *
+ * </ul>
+ *
  * <!-- END SNIPPET: parameters -->
  *
+ * <p/> <u>Extending the interceptor:</u>
+ *
+ * <p/>
+ *
  * <!-- START SNIPPET: extending -->
- * TODO: Discuss some possible extension of the Interceptor.
+ *
+ * There are no known extension points.
+ *
  * <!-- END SNIPPET: extending -->
+ *
+ * <p/> <u>Example code:</u>
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * &lt;!-- TODO: Describe how the Interceptor reference will effect execution --&gt;
- * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
- *      TODO: fill in the interceptor reference.
- *     &lt;interceptor-ref name=""/&gt;
- *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
- * &lt;/action&gt;
+ * &lt;xwork&gt;
+ *     &lt;include file="webwork-default.xml"/&gt;
+ *
+ *     &lt;package name="default" extends="webwork-default"&gt;
+ *         &lt;global-results&gt;
+ *             &lt;result name="success" type="freemarker"&gt;error.ftl&lt;/result&gt;
+ *         &lt;/global-results&gt;
+ *
+ *         &lt;global-exception-mappings&gt;
+ *             &lt;exception-mapping exception="java.lang.Exception" result="error"/&gt;
+ *         &lt;/global-exception-mappings&gt;
+ *
+ *         &lt;action name="test"&gt;
+ *             &lt;interceptor-ref name="exception"/&gt;
+ *             &lt;interceptor-ref name="basicStack"/&gt;
+ *             &lt;exception-mapping exception="com.acme.CustomException" result="custom_error"/&gt;
+ *             &lt;result name="custom_error"&gt;custom_error.ftl&lt;/result&gt;
+ *             &lt;result name="success" type="freemarker"&gt;test.ftl&lt;/result&gt;
+ *         &lt;/action&gt;
+ *     &lt;/package&gt;
+ * &lt;/xwork&gt;
  * <!-- END SNIPPET: example -->
  * </pre>
- * 
- * User: Matthew E. Porter (matthew dot porter at metissian dot com)
- * Date: Aug 14, 2005
- * Time: 12:40:02 PM
+ *
+ * @author Matthew E. Porter (matthew dot porter at metissian dot com) Date: Aug 14, 2005 Time: 12:40:02 PM
  */
 public class ExceptionMappingInterceptor implements Interceptor {
     protected Log log = LogFactory.getLog(this.getClass());
@@ -47,7 +86,7 @@ public class ExceptionMappingInterceptor implements Interceptor {
     }
 
     public String intercept(ActionInvocation invocation) throws Exception {
-        String result = null;
+        String result;
 
         try {
             result = invocation.invoke();
@@ -64,7 +103,6 @@ public class ExceptionMappingInterceptor implements Interceptor {
 
         return result;
     }
-
 
     private String findResultFromExceptions(List exceptionMappings, Throwable t) {
         String result = null;
@@ -85,10 +123,8 @@ public class ExceptionMappingInterceptor implements Interceptor {
         return result;
     }
 
-
     /**
-     * Return the depth to the superclass matching.
-     * 0 means ex matches exactly. Returns -1 if there's no match.
+     * Return the depth to the superclass matching. 0 means ex matches exactly. Returns -1 if there's no match.
      * Otherwise, returns depth. Lowest depth wins.
      */
     public int getDepth(String exceptionMapping, Throwable t) {
@@ -106,6 +142,4 @@ public class ExceptionMappingInterceptor implements Interceptor {
         }
         return getDepth(exceptionMapping, exceptionClass.getSuperclass(), depth + 1);
     }
-
-
 }

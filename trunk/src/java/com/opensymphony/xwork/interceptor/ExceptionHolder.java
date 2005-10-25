@@ -5,9 +5,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * User: Matthew E. Porter (matthew dot porter at metissian dot com)
- * Date: Sep 21, 2005
- * Time: 3:09:12 PM
+ * <!-- START SNIPPET: javadoc -->
+ *
+ * A simple wrapper around an exception, providing an easy way to print out the stack trace of the exception as well as
+ * a way to get a handle on the exception itself.
+ *
+ * <!-- END SNIPPET: javadoc -->
+ *
+ * @author Matthew E. Porter (matthew dot porter at metissian dot com) Date: Sep 21, 2005 Time: 3:09:12 PM
  */
 public class ExceptionHolder {
     private Exception exception;
@@ -39,5 +44,4 @@ public class ExceptionHolder {
 
         return exceptionStack;
     }
-
 }

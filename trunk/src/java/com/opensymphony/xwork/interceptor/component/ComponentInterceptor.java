@@ -7,27 +7,46 @@ package com.opensymphony.xwork.interceptor.component;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.interceptor.AroundInterceptor;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 /**
  * <!-- START SNIPPET: description -->
- * TODO: Give a description of the Interceptor.
+ *
+ * A simple interceptor that applies the WebWork IOC container {@link ComponentManager} against the executing action. Note, WebWork IOC is deprecated and it is highly recommended that you look at alternative solutions, such as Spring.
+ *
  * <!-- END SNIPPET: description -->
  *
+ * <p/> <u>Interceptor parameters:</u>
+ *
  * <!-- START SNIPPET: parameters -->
- * TODO: Describe the paramters for this Interceptor.
+ *
+ * <ul>
+ *
+ * <li>None</li>
+ *
+ * </ul>
+ *
  * <!-- END SNIPPET: parameters -->
  *
+ * <p/> <u>Extending the interceptor:</u>
+ *
+ * <p/>
+ *
  * <!-- START SNIPPET: extending -->
- * TODO: Discuss some possible extension of the Interceptor.
+ *
+ * There are no known extension points to this interceptor.
+ *
  * <!-- END SNIPPET: extending -->
+ *
+ * <p/> <u>Example code:</u>
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * &lt;!-- TODO: Describe how the Interceptor reference will effect execution --&gt;
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
- *      TODO: fill in the interceptor reference.
- *     &lt;interceptor-ref name=""/&gt;
+ *     &lt;interceptor-ref name="componentStack"/&gt;
+ *     &lt;interceptor-ref name="basicStack"/&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
  * <!-- END SNIPPET: example -->
@@ -35,12 +54,16 @@ import com.opensymphony.xwork.interceptor.AroundInterceptor;
  *
  * @author joew@thoughtworks.com
  * @author $Author$
+ * @deprecated WebWork's IoC has been deprecated, please use an alternative such as Spring.
  * @version $Revision$
  */
 public class ComponentInterceptor extends AroundInterceptor {
-
     public static final String COMPONENT_MANAGER = "com.opensymphony.xwork.interceptor.component.ComponentManager";
+    private static final Log LOG = LogFactory.getLog(ComponentInterceptor.class);
 
+    public void init() {
+        LOG.info("WebWork's IoC has been deprecated, please use an alternative such as Spring");
+    }
 
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }

@@ -10,46 +10,65 @@ import com.opensymphony.xwork.interceptor.AroundInterceptor;
 
 /**
  * <!-- START SNIPPET: description -->
- * TODO: Give a description of the Interceptor.
+ *
+ * This interceptor runs the action through the standard validation framework, which in turn checks the action against
+ * any validation rules (found in files such as <i>ActionClass-validation.xml</i>) and adds field-level and action-level
+ * error messages (provided that the action implements {@link com.opensymphony.xwork.ValidationAware}). This interceptor
+ * is often one of the last (or second to last) interceptors applied in a stack, as it assumes that all values have
+ * already been set on the action.
+ *
+ * <p/>Note that this has nothing to do with the {@link com.opensymphony.xwork.Validateable} interface and simply adds
+ * error messages to the action. The workflow of the action request does not change due to this interceptor. Rather,
+ * this interceptor is often used in conjuction with the <b>workflow</b> interceptor.
+ *
  * <!-- END SNIPPET: description -->
  *
+ * <p/> <u>Interceptor parameters:</u>
+ *
  * <!-- START SNIPPET: parameters -->
- * TODO: Describe the paramters for this Interceptor.
+ *
+ * <ul>
+ *
+ * <li>None</li>
+ *
+ * </ul>
+ *
  * <!-- END SNIPPET: parameters -->
  *
+ * <p/> <u>Extending the interceptor:</u>
+ *
+ * <p/>
+ *
  * <!-- START SNIPPET: extending -->
- * TODO: Discuss some possible extension of the Interceptor.
+ *
+ * There are no known extension points for this interceptor.
+ *
  * <!-- END SNIPPET: extending -->
+ *
+ * <p/> <u>Example code:</u>
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * &lt;!-- TODO: Describe how the Interceptor reference will effect execution --&gt;
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
- *      TODO: fill in the interceptor reference.
- *     &lt;interceptor-ref name=""/&gt;
+ *     &lt;interceptor-ref name="params"/&gt;
+ *     &lt;interceptor-ref name="validation"/&gt;
+ *     &lt;interceptor-ref name="workflow"/&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
  * <!-- END SNIPPET: example -->
  * </pre>
  *
- * Validates an action. This interceptor extends the {@link AroundInterceptor} and implements only the
- * {@link AroundInterceptor#before(com.opensymphony.xwork.ActionInvocation)} method. This class
- * simply calls the {@link ActionValidatorManager#validate(java.lang.Object, java.lang.String)} method
- * with the given Action and its context.
- *
  * @author Jason Carreira
+ * @see ActionValidatorManager
+ * @see com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor
  */
 public class ValidationInterceptor extends AroundInterceptor {
 
-    /**
-     * Does nothing in this implementation.
-     */
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }
 
     /**
-     * Gets the current action and its context and calls
-     * {@link ActionValidatorManager#validate(java.lang.Object, java.lang.String)}.
+     * Gets the current action and its context and calls {@link ActionValidatorManager#validate(Object, String)}.
      *
      * @param invocation the execution state of the Action.
      * @throws Exception if an error occurs validating the action.
