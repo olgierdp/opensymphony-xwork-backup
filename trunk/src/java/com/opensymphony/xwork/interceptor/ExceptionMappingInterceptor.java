@@ -18,8 +18,8 @@ import java.util.List;
  *
  * <b>Note:</b> While you can configure exception mapping in your configuration file at any point, the configuration
  * will not have any effect if this interceptor is not in the interceptor stack for your actions. It is recommended that
- * you make this interceptor the first interceptor on the stack, ensuring that it has full access to catch any exception
- * - even those caused by other interceptors.
+ * you make this interceptor the first interceptor on the stack, ensuring that it has full access to catch any
+ * exception, even those caused by other interceptors.
  *
  * <!-- END SNIPPET: description -->
  *
