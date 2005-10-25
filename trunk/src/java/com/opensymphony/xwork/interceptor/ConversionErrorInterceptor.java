@@ -6,6 +6,7 @@ package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
+import com.opensymphony.xwork.ValidationAware;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.XWorkConverter;
 
@@ -17,7 +18,13 @@ import java.util.Map;
 /**
  * <!-- START SNIPPET: description -->
  *
- * TODO: Give a description of the Interceptor.
+ * This interceptor adds any error found in the {@link ActionContext}'s conversionErrors map as a field error (provided
+ * that the action implements {@link ValidationAware}). In addition, any field that contains a validation error has its
+ * original value saved such that any subsequent requests for that value return the original value rather than the value
+ * in the action. This is important because if the value "abc" is submitted and can't be converted to an int, we want to
+ * display the original string ("abc") again rather than the int value (likely 0, which would make very little sense to
+ * the user).
+ *
  *
  * <!-- END SNIPPET: description -->
  *
@@ -27,7 +34,7 @@ import java.util.Map;
  *
  * <ul>
  *
- * <li></li>
+ * <li>None</li>
  *
  * </ul>
  *
@@ -39,7 +46,10 @@ import java.util.Map;
  *
  * <!-- START SNIPPET: extending -->
  *
- * TODO: Discuss some possible extension of the Interceptor.
+ * Because this interceptor is not web-specific, it abstracts the logic for whether an error should be added. This
+ * allows for web-specific interceptors to use more complex logic in the {@link #shouldAddError} method for when a value
+ * has a conversion error but is null or empty or otherwise indicates that the value was never actually entered by the
+ * user.
  *
  * <!-- END SNIPPET: extending -->
  *
@@ -47,10 +57,9 @@ import java.util.Map;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * &lt;!-- TODO: Describe how the Interceptor reference will effect execution --&gt;
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
- *      TODO: fill in the interceptor reference.
- *     &lt;interceptor-ref name=""/&gt;
+ *     &lt;interceptor-ref name="params"/&gt;
+ *     &lt;interceptor-ref name="conversionError"/&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
  * <!-- END SNIPPET: example -->
@@ -58,13 +67,12 @@ import java.util.Map;
  *
  * ConversionErrorInterceptor adds conversion errors from the ActionContext to the Action's field errors
  *
+ * Date: Nov 27, 2003 3:57:06 PM
+ *
  * @author Jason Carreira
- *         Date: Nov 27, 2003 3:57:06 PM
  */
 public class ConversionErrorInterceptor extends AroundInterceptor {
-
     public static final String ORIGINAL_PROPERTY_OVERRIDE = "original.property.override";
-
 
     protected Object getOverrideExpr(ActionInvocation invocation, Object value) {
         return "'" + value + "'";
@@ -88,8 +96,11 @@ public class ConversionErrorInterceptor extends AroundInterceptor {
 
             if (shouldAddError(propertyName, value)) {
                 String message = XWorkConverter.getConversionErrorMessage(propertyName, stack);
-                String addFieldErrorExpression = "addFieldError('" + propertyName + "','" + message + "')";
-                stack.findValue(addFieldErrorExpression);
+
+                if (invocation.getAction() instanceof ValidationAware) {
+                    ValidationAware va = (ValidationAware) invocation.getAction();
+                    va.addFieldError(propertyName, message);
+                }
 
                 if (fakie == null) {
                     fakie = new HashMap();
