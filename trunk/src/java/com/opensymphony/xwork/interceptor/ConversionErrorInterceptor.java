@@ -97,8 +97,9 @@ public class ConversionErrorInterceptor extends AroundInterceptor {
             if (shouldAddError(propertyName, value)) {
                 String message = XWorkConverter.getConversionErrorMessage(propertyName, stack);
 
-                if (invocation.getAction() instanceof ValidationAware) {
-                    ValidationAware va = (ValidationAware) invocation.getAction();
+                Object action = invocation.getAction();
+                if (action instanceof ValidationAware) {
+                    ValidationAware va = (ValidationAware) action;
                     va.addFieldError(propertyName, message);
                 }
 

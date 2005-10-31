@@ -6,10 +6,7 @@ package com.opensymphony.xwork.interceptor;
 
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
-import com.opensymphony.xwork.Action;
-import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.SimpleAction;
+import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import junit.framework.TestCase;
 
@@ -23,7 +20,7 @@ import java.util.Map;
  * @author Jason Carreira
  *         Date: Nov 27, 2003 4:48:09 PM
  */
-public class ConversionErrorInterceptorTest extends TestCase {
+public class ConversionErrorInterceptorTest extends XWorkTestCase {
 
     protected ActionContext context;
     protected ActionInvocation invocation;
@@ -37,6 +34,7 @@ public class ConversionErrorInterceptorTest extends TestCase {
         conversionErrors.put("foo", new Long(123));
 
         SimpleAction action = new SimpleAction();
+        mockInvocation.expectAndReturn("getAction", action);
         stack.push(action);
         assertNull(action.getFieldErrors().get("foo"));
         interceptor.intercept(invocation);
