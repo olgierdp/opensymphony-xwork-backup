@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
+import java.io.IOException;
 import java.lang.reflect.Member;
 import java.util.*;
 
@@ -508,7 +509,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         return (TypeConverter) ObjectFactory.getObjectFactory().buildBean(conversionClass);
     }
 
-    private void loadConversionProps(String propsName) throws Exception {
+    public void loadConversionProps(String propsName) throws IOException {
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(propsName);
         Properties props = new Properties();
         props.load(is);
