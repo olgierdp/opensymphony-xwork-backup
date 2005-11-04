@@ -111,12 +111,12 @@ public class XWorkConverter extends DefaultTypeConverter {
     private XWorkConverter() {
         try {
             // note: this file is deprecated
-            loadConversionProps("xwork-default-conversion.properties");
+            loadConversionProperties("xwork-default-conversion.properties");
         } catch (Exception e) {
         }
 
         try {
-            loadConversionProps("xwork-conversion.properties");
+            loadConversionProperties("xwork-conversion.properties");
         } catch (Exception e) {
         }
     }
@@ -509,7 +509,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         return (TypeConverter) ObjectFactory.getObjectFactory().buildBean(conversionClass);
     }
 
-    public void loadConversionProps(String propsName) throws IOException {
+    public void loadConversionProperties(String propsName) throws IOException {
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(propsName);
         Properties props = new Properties();
         props.load(is);
