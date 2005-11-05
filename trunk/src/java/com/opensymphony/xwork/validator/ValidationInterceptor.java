@@ -15,7 +15,8 @@ import com.opensymphony.xwork.interceptor.AroundInterceptor;
  * any validation rules (found in files such as <i>ActionClass-validation.xml</i>) and adds field-level and action-level
  * error messages (provided that the action implements {@link com.opensymphony.xwork.ValidationAware}). This interceptor
  * is often one of the last (or second to last) interceptors applied in a stack, as it assumes that all values have
- * already been set on the action.
+ * already been set on the action. This interceptor does nothing if the name of the method being invoked is
+ * <b>input</b>. For example, a request to <b>foo!input.action</b> would be skipped by this request.
  *
  * <p/>Note that this has nothing to do with the {@link com.opensymphony.xwork.Validateable} interface and simply adds
  * error messages to the action. The workflow of the action request does not change due to this interceptor. Rather,
@@ -82,6 +83,8 @@ public class ValidationInterceptor extends AroundInterceptor {
                     + invocation.getProxy().getNamespace() + "/" + invocation.getProxy().getActionName() + ".");
         }
 
-        ActionValidatorManager.validate(action, context);
+        if (!"input".equals(invocation.getProxy().getMethod())) {
+            ActionValidatorManager.validate(action, context);
+        }
     }
 }

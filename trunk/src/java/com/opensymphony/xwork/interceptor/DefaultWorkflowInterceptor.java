@@ -13,8 +13,9 @@ import com.opensymphony.xwork.ValidationAware;
 /**
  * <!-- START SNIPPET: description -->
  *
- * An interceptor that does some basic validation workflow before allowing the interceptor chain to continue. The order
- * of execution in the workflow is:
+ * An interceptor that does some basic validation workflow before allowing the interceptor chain to continue. This
+ * interceptor does nothing if the name of the method being invoked is <b>input</b>. For example, a request to
+ * <b>foo!input.action</b> would be skipped by this request. The order of execution in the workflow is:
  *
  * <ol>
  *
@@ -79,18 +80,21 @@ public class DefaultWorkflowInterceptor implements Interceptor {
     }
 
     public String intercept(ActionInvocation invocation) throws Exception {
-        Object action = invocation.getAction();
+        if (!"input".equals(invocation.getProxy().getMethod())) {
 
-        if (action instanceof Validateable) {
-            Validateable validateable = (Validateable) action;
-            validateable.validate();
-        }
+            Object action = invocation.getAction();
 
-        if (action instanceof ValidationAware) {
-            ValidationAware validationAwareAction = (ValidationAware) action;
+            if (action instanceof Validateable) {
+                Validateable validateable = (Validateable) action;
+                validateable.validate();
+            }
 
-            if (validationAwareAction.hasErrors()) {
-                return Action.INPUT;
+            if (action instanceof ValidationAware) {
+                ValidationAware validationAwareAction = (ValidationAware) action;
+
+                if (validationAwareAction.hasErrors()) {
+                    return Action.INPUT;
+                }
             }
         }
 
