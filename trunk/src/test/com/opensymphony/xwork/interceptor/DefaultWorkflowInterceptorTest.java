@@ -5,10 +5,7 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.mockobjects.dynamic.Mock;
-import com.opensymphony.xwork.Action;
-import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.Validateable;
-import com.opensymphony.xwork.ValidationAware;
+import com.opensymphony.xwork.*;
 import junit.framework.TestCase;
 
 
@@ -47,6 +44,9 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         action = (ValidateAction) actionMock.proxy();
         invocationMock = new Mock(ActionInvocation.class);
         invocationMock.expectAndReturn("getAction", action);
+        ActionProxy proxy = new MockActionProxy();
+        proxy.setMethod("execute");
+        invocationMock.expectAndReturn("getProxy", proxy);
         invocation = (ActionInvocation) invocationMock.proxy();
         interceptor = new DefaultWorkflowInterceptor();
     }
