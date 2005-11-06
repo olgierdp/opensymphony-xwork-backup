@@ -18,14 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Simple implementation of the ObjectFactory that makes use of Spring's
- * application context if one has been configured, before falling back on the
- * default mechanism of instantiating a new class using the class name.
- * <p/>
- * In order to use this class in your application, you will need to instantiate
- * a copy of this class and set it as XWork's ObjectFactory before the xwork.xml
- * file is parsed. In a servlet environment, this could be done using a
- * ServletContextListener.
+ * Simple implementation of the ObjectFactory that makes use of Spring's application context if one has been configured,
+ * before falling back on the default mechanism of instantiating a new class using the class name. <p/> In order to use
+ * this class in your application, you will need to instantiate a copy of this class and set it as XWork's ObjectFactory
+ * before the xwork.xml file is parsed. In a servlet environment, this could be done using a ServletContextListener.
  *
  * @author Simon Stewart (sms@lateral.net)
  */
@@ -38,11 +34,9 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
     private Map classes = new HashMap();
 
     /**
-     * Set the Spring ApplicationContext that should be used to look beans up
-     * with.
+     * Set the Spring ApplicationContext that should be used to look beans up with.
      *
-     * @param appContext The Spring ApplicationContext that should be used to look
-     *                   beans up with.
+     * @param appContext The Spring ApplicationContext that should be used to look beans up with.
      */
     public void setApplicationContext(ApplicationContext appContext)
             throws BeansException {
@@ -84,9 +78,8 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
 
 
     /**
-     * If the given context is assignable to AutowireCapbleBeanFactory or
-     * contains a parent or a factory that is, then set the autoWiringFactory
-     * appropriately.
+     * If the given context is assignable to AutowireCapbleBeanFactory or contains a parent or a factory that is, then
+     * set the autoWiringFactory appropriately.
      *
      * @param context
      */
@@ -105,12 +98,11 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
     }
 
     /**
-     * Looks up beans using Spring's application context before falling back to
-     * the method defined in the {@link ObjectFactory}.
+     * Looks up beans using Spring's application context before falling back to the method defined in the {@link
+     * ObjectFactory}.
      *
      * @param beanName The name of the bean to look up in the application context
-     * @return A bean from Spring or the result of calling the overridden
-     *         method.
+     * @return A bean from Spring or the result of calling the overridden method.
      * @throws Exception
      */
     public Object buildBean(String beanName) throws Exception {
@@ -164,6 +156,8 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
     }
 
     public Class getClassInstance(String className) throws ClassNotFoundException {
+        // this cache of classes is needed because Spring sucks at dealing with situations where the
+        // class instance changes (such as WebWork's QuickStart) 
         Class clazz = (Class) classes.get(className);
 
         if (clazz == null) {
@@ -179,9 +173,8 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
     }
 
     /**
-     * This method sets the ObjectFactory used by XWork to this object. It's
-     * best used as the "init-method" of a Spring bean definition in order to
-     * hook Spring and XWork together properly (as an alternative to the
+     * This method sets the ObjectFactory used by XWork to this object. It's best used as the "init-method" of a Spring
+     * bean definition in order to hook Spring and XWork together properly (as an alternative to the
      * com.opensymphony.webwork.spring.lifecycle.SpringObjectFactoryListener)
      */
     public void initObjectFactory() {
