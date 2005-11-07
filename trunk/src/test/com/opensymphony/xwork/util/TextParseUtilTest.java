@@ -28,13 +28,13 @@ public class TextParseUtilTest extends XWorkTestCase {
         s = TextParseUtil.translateVariables("foo: ${1", stack);
         assertEquals("foo: ${1", s);
 
-        s =  TextParseUtil.translateVariables('$', "${{1, 2, 3}}", stack);
+        s =  TextParseUtil.translateVariables('$', "${{1, 2, 3}}", stack, Object.class);
         assertTrue("List not returned when parsing a 'pure' list", s instanceof List);
 
-        s =  TextParseUtil.translateVariables('$', "${1} two ${3}", stack);
+        s =  TextParseUtil.translateVariables('$', "${1} two ${3}", stack, Object.class);
         assertEquals("1 two 3", s);
 
-        s = TextParseUtil.translateVariables("count must be between ${123} and ${456}, current value is ${98765}.", stack);
+        s = TextParseUtil.translateVariables('$', "count must be between ${123} and ${456}, current value is ${98765}.", stack, Object.class);
         assertEquals("count must be between 123 and 456, current value is 98765.", s);
     }
 }

@@ -28,8 +28,8 @@ public class TextParseUtil {
         return translateVariables('$', expression, stack, String.class).toString();
     }
 
-    public static Object translateVariables(char open, String expression, OgnlValueStack stack) {
-        return translateVariables(open, expression, stack, Object.class);
+    public static String translateVariables(char open, String expression, OgnlValueStack stack) {
+        return translateVariables(open, expression, stack, String.class).toString();
     }
 
     public static Object translateVariables(char open, String expression, OgnlValueStack stack, Class asType) {
