@@ -102,30 +102,33 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
      * ObjectFactory}.
      *
      * @param beanName The name of the bean to look up in the application context
-     * @return A bean from Spring or the result of calling the overridden method.
+     * @param extraContext
+     * @return A bean from Spring or the result of calling the overridden
+     *         method.
      * @throws Exception
      */
-    public Object buildBean(String beanName) throws Exception {
+    public Object buildBean(String beanName, Map extraContext) throws Exception {
         try {
             return appContext.getBean(beanName);
         } catch (NoSuchBeanDefinitionException e) {
             Class beanClazz = getClassInstance(beanName);
-            return buildBean(beanClazz);
+            return buildBean(beanClazz, extraContext);
         }
     }
 
     /**
      * @param clazz
+     * @param extraContext
      * @throws Exception
      */
-    public Object buildBean(Class clazz) throws Exception {
+    public Object buildBean(Class clazz, Map extraContext) throws Exception {
         Object bean;
 
         try {
             bean = autoWiringFactory.autowire(clazz, AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR, false);
         } catch (UnsatisfiedDependencyException e) {
             // Fall back
-            bean = super.buildBean(clazz);
+            bean = super.buildBean(clazz, extraContext);
         }
 
         bean = autoWiringFactory.applyBeanPostProcessorsBeforeInitialization(bean, bean.getClass().getName());

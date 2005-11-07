@@ -64,7 +64,7 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
                 Class valueClass = _converter.getObjectTypeDeterminer().getElementClass(lastClass, lastProperty, key);
 
                 try {
-                    result = ObjectFactory.getObjectFactory().buildBean(valueClass);
+                    result = ObjectFactory.getObjectFactory().buildBean(valueClass, context);
                     map.put(key, result);
                 } catch (Exception exc) {
 
@@ -78,7 +78,6 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
     /**
      * @param array
      * @param name
-     * @return
      */
     private boolean contains(String[] array, String name) {
         for (int i = 0; i < array.length; i++) {

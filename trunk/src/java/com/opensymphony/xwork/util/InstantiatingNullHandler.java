@@ -93,7 +93,7 @@ public class InstantiatingNullHandler implements NullHandler {
                 return null;
             }
 
-            Object param = createObject(clazz, realTarget, propName);
+            Object param = createObject(clazz, realTarget, propName, context);
 
             Ognl.setValue(propName, context, realTarget, param);
 
@@ -105,13 +105,13 @@ public class InstantiatingNullHandler implements NullHandler {
         return null;
     }
 
-    private Object createObject(Class clazz, Object target, String property) throws Exception {
+    private Object createObject(Class clazz, Object target, String property, Map context) throws Exception {
         if (Collection.class.isAssignableFrom(clazz)) {
             return new ArrayList();
         } else if (clazz == Map.class) {
             return new HashMap();
         }
 
-        return ObjectFactory.getObjectFactory().buildBean(clazz);
+        return ObjectFactory.getObjectFactory().buildBean(clazz, context);
     }
 }

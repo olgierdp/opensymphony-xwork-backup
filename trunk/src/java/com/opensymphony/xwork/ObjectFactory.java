@@ -26,7 +26,7 @@ import java.util.Map;
  * ObjectFactory is responsible for building the core framework objects. Users may register their own implementation of
  * the ObjectFactory to control instantiation of these Objects.
  * <p/>
- * This default implementation uses the {@link #buildBean(Class) buildBean} method to create all classes
+ * This default implementation uses the {@link #buildBean(Class,java.util.Map) buildBean} method to create all classes
  * (interceptors, actions, results, etc).
  *
  * @author Jason Carreira
@@ -83,16 +83,26 @@ public class ObjectFactory {
         return ClassLoaderUtil.loadClass(className, this.getClass());
     }
 
-    public Object buildAction(String actionName, String namespace, ActionConfig config) throws Exception {
-        return buildBean(config.getClassName());
+    /**
+     * Build an instance of the action class to handle a web request
+     * @param actionName the name the action configuration is set up with in the configuration
+     * @param namespace the namespace the action is configured in
+     * @param config the action configuration found in the config for the actionName / namespace
+     * @param extraContext a Map of extra context which uses the same keys as the {@link com.opensymphony.xwork.ActionContext}
+     * @return
+     * @throws Exception
+     */
+    public Object buildAction(String actionName, String namespace, ActionConfig config, Map extraContext) throws Exception {
+        return buildBean(config.getClassName(), extraContext);
     }
 
     /**
      * Build a generic Java object of the given type.
      *
      * @param clazz the type of Object to build
+     * @param extraContext a Map of extra context which uses the same keys as the {@link com.opensymphony.xwork.ActionContext}
      */
-    public Object buildBean(Class clazz) throws Exception {
+    public Object buildBean(Class clazz, Map extraContext) throws Exception {
         return clazz.newInstance();
     }
 
@@ -100,8 +110,9 @@ public class ObjectFactory {
      * Build a generic Java object of the given type.
      *
      * @param className the type of Object to build
+     * @param extraContext a Map of extra context which uses the same keys as the {@link com.opensymphony.xwork.ActionContext}
      */
-    public Object buildBean(String className) throws Exception {
+    public Object buildBean(String className, Map extraContext) throws Exception {
         Class clazz = getClassInstance(className);
 
         return clazz.newInstance();
@@ -129,7 +140,8 @@ public class ObjectFactory {
         Throwable cause;
 
         try {
-            Interceptor interceptor = (Interceptor) buildBean(interceptorClassName);
+            // interceptor instances are long-lived and used across user sessions, so don't try to pass in any extra context
+            Interceptor interceptor = (Interceptor) buildBean(interceptorClassName, null);
             OgnlUtil.setProperties(params, interceptor);
             interceptor.init();
 
@@ -156,14 +168,17 @@ public class ObjectFactory {
 
     /**
      * Build a Result using the type in the ResultConfig and set the parameters in the ResultConfig.
+     *
+     * @param resultConfig the ResultConfig found for the action with the result code returned
+     * @param extraContext a Map of extra context which uses the same keys as the {@link com.opensymphony.xwork.ActionContext}
      */
-    public Result buildResult(ResultConfig resultConfig) throws Exception {
+    public Result buildResult(ResultConfig resultConfig, Map extraContext) throws Exception {
         String resultClassName = resultConfig.getClassName();
         Result result = null;
 
         if (resultClassName != null) {
-            result = (Result) buildBean(resultClassName);
-            OgnlUtil.setProperties(resultConfig.getParams(), result, ActionContext.getContext().getContextMap());
+            result = (Result) buildBean(resultClassName, extraContext);
+            OgnlUtil.setProperties(resultConfig.getParams(), result, extraContext);
         }
 
         return result;
@@ -174,9 +189,10 @@ public class ObjectFactory {
      *
      * @param className the type of Validator to build
      * @param params    property name -> value Map to set onto the Validator instance
+     * @param extraContext a Map of extra context which uses the same keys as the {@link com.opensymphony.xwork.ActionContext}
      */
-    public Validator buildValidator(String className, Map params) throws Exception {
-        Validator validator = (Validator) buildBean(className);
+    public Validator buildValidator(String className, Map params, Map extraContext) throws Exception {
+        Validator validator = (Validator) buildBean(className, null);
         OgnlUtil.setProperties(params, validator);
 
         return validator;

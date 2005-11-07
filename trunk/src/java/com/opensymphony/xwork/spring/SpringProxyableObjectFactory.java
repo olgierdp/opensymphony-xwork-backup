@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * SpringProxyableObjectFactory
@@ -23,12 +24,12 @@ public class SpringProxyableObjectFactory extends SpringObjectFactory {
 
     private List skipBeanNames = new ArrayList();
 
-    public Object buildBean(String beanName) throws Exception {
+    public Object buildBean(String beanName, Map extraContext) throws Exception {
         if (log.isDebugEnabled()) {
             log.debug("Building bean for name " + beanName);
         }
         if (!skipBeanNames.contains(beanName)) {
-            ApplicationContext anAppContext = getApplicationContext();
+            ApplicationContext anAppContext = getApplicationContext(extraContext);
             try {
                 if (log.isDebugEnabled()) {
                     log.debug("Trying the application context... appContext = " + anAppContext + ",\n bean name = " + beanName);
@@ -63,7 +64,7 @@ public class SpringProxyableObjectFactory extends SpringObjectFactory {
         if (log.isDebugEnabled()) {
             log.debug("Returning autowired instance created by default ObjectFactory");
         }
-        return autoWireBean(super.buildBean(beanName), autoWiringFactory);
+        return autoWireBean(super.buildBean(beanName, extraContext), autoWiringFactory);
     }
 
     /**
@@ -71,8 +72,9 @@ public class SpringProxyableObjectFactory extends SpringObjectFactory {
      * Note that this application context should see any changes made to the
      * {@link autoWiringFactory}, so the application context should be either
      * the original or a child context of the original.
+     * @param context
      */
-    protected ApplicationContext getApplicationContext() {
+    protected ApplicationContext getApplicationContext(Map context) {
         return appContext;
     }
 }

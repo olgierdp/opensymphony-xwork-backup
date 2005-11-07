@@ -8,7 +8,6 @@ import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.util.OgnlValueStack;
-import junit.framework.TestCase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +35,7 @@ public class ConversionErrorInterceptorTest extends XWorkTestCase {
         SimpleAction action = new SimpleAction();
         mockInvocation.expectAndReturn("getAction", action);
         stack.push(action);
+        mockInvocation.matchAndReturn("getAction",action);
         assertNull(action.getFieldErrors().get("foo"));
         interceptor.intercept(invocation);
         assertTrue(action.hasFieldErrors());

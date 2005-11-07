@@ -26,6 +26,11 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
             throws OgnlException {
 
         if (name instanceof String) {
+            if (name.equals("isEmpty")
+                        || name.equals("size")
+                        || name.equals("iterator")) {
+                return super.getProperty(context, target, name);
+            }
             return _sAcc.getProperty(context, target, name);
         }
         OgnlContextState.updateCurrentPropertyPath(context, name);
@@ -53,7 +58,7 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
 
                 }
                 try {
-                    list.add(index, result = ObjectFactory.getObjectFactory().buildBean(beanClass));
+                    list.add(index, result = ObjectFactory.getObjectFactory().buildBean(beanClass, context));
                 } catch (Exception exc) {
                     throw new RuntimeException(exc);
                 }
@@ -61,7 +66,7 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
             } else if (list.get(index) == null) {
                 Object result = null;
                 try {
-                    list.set(index, result = ObjectFactory.getObjectFactory().buildBean(beanClass));
+                    list.set(index, result = ObjectFactory.getObjectFactory().buildBean(beanClass, context));
                 } catch (Exception exc) {
                     throw new RuntimeException(exc);
                 }
@@ -89,7 +94,7 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
             for (int i = 0; i < values.length; i++) {
                 Object v = values[i];
                 try {
-                    Object o = ObjectFactory.getObjectFactory().buildBean(convertToClass);
+                    Object o = ObjectFactory.getObjectFactory().buildBean(convertToClass, context);
                     OgnlUtil.setValue((String) name, context, o, v);
                     c.add(o);
                 } catch (Exception e) {

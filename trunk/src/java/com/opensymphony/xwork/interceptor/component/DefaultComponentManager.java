@@ -300,7 +300,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         Object newResource = newDcm.resourceInstances.get(depResource);
 
         if (newResource == null) {
-            newResource = ObjectFactory.getObjectFactory().buildBean(depResource);
+            newResource = ObjectFactory.getObjectFactory().buildBean(depResource, null);
         }
 
         pair.resource = newResource;

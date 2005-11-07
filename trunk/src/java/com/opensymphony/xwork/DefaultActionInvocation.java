@@ -4,11 +4,8 @@
  */
 package com.opensymphony.xwork;
 
-import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.entities.ActionConfig;
-import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
-import com.opensymphony.xwork.config.entities.ResultTypeConfig;
 import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.interceptor.PreResultListener;
 import com.opensymphony.xwork.util.OgnlUtil;
@@ -163,7 +160,7 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         if (resultConfig != null) {
             try {
-                return ObjectFactory.getObjectFactory().buildResult(resultConfig);
+                return ObjectFactory.getObjectFactory().buildResult(resultConfig, invocationContext.getContextMap());
             } catch (Exception e) {
                 LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClassName(), e);
                 throw e;
@@ -211,10 +208,10 @@ public class DefaultActionInvocation implements ActionInvocation {
         return invokeAction(getAction(), proxy.getConfig());
     }
 
-    protected void createAction() {
+    protected void createAction(Map contextMap) {
         // load action
         try {
-            action = ObjectFactory.getObjectFactory().buildAction(proxy.getActionName(), proxy.getNamespace(), proxy.getConfig());
+            action = ObjectFactory.getObjectFactory().buildAction(proxy.getActionName(), proxy.getNamespace(), proxy.getConfig(), contextMap);
         } catch (InstantiationException e) {
             throw new XworkException("Unable to intantiate Action!", e);
         } catch (IllegalAccessException e) {
@@ -309,7 +306,7 @@ public class DefaultActionInvocation implements ActionInvocation {
     private void init() throws Exception {
         Map contextMap = createContextMap();
 
-        createAction();
+        createAction(contextMap);
 
         if (pushAction) {
             stack.push(action);

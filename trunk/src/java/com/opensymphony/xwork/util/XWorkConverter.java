@@ -506,7 +506,8 @@ public class XWorkConverter extends DefaultTypeConverter {
     private TypeConverter createTypeConverter(String className) throws Exception {
         Class conversionClass = Thread.currentThread().getContextClassLoader().loadClass(className);
 
-        return (TypeConverter) ObjectFactory.getObjectFactory().buildBean(conversionClass);
+        // type converters are used across users
+        return (TypeConverter) ObjectFactory.getObjectFactory().buildBean(conversionClass, null);
     }
 
     public void loadConversionProperties(String propsName) throws IOException {
@@ -547,9 +548,8 @@ public class XWorkConverter extends DefaultTypeConverter {
                 for (int i = 0; i < interfaces.length; i++) {
                     if (defaultMappings.containsKey(interfaces[i].getName())) {
                         result = (TypeConverter) defaultMappings.get(interfaces[i].getName());
+                        break;
                     }
-
-                    break;
                 }
 
                 if (result == null) {
@@ -563,9 +563,6 @@ public class XWorkConverter extends DefaultTypeConverter {
         return result;
     }
 
-    /**
-     * @return
-     */
     public ObjectTypeDeterminer getObjectTypeDeterminer() {
         return keyElementDeterminer;
     }

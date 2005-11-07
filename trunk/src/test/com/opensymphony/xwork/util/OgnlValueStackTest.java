@@ -16,6 +16,7 @@ import java.util.Map;
 /**
  * @author $Author$
  * @version $Revision$
+ * @noinspection ALL
  */
 public class OgnlValueStackTest extends XWorkTestCase {
 

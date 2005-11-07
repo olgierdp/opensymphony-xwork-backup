@@ -186,7 +186,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         try {
             if (ObjectFactory.getObjectFactory().isNoArgConstructorRequired()) {
                 ActionConfig actionConfig = new ActionConfig(null, className, null, null, null);
-                ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName());
+                ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName(), null);
             } else {
                 ObjectFactory.getObjectFactory().getClassInstance(className);
             }
@@ -342,7 +342,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         if (!("".equals(externalReferenceResolver))) {
             try {
-                erResolver = (ExternalReferenceResolver) ObjectFactory.getObjectFactory().buildBean(externalReferenceResolver);
+                erResolver = (ExternalReferenceResolver) ObjectFactory.getObjectFactory().buildBean(externalReferenceResolver, null);
             } catch (ClassNotFoundException e) {
                 //TODO this should be localized
                 String msg = "Could not find External Reference Resolver: " + externalReferenceResolver + ". " + e.getMessage();

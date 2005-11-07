@@ -47,7 +47,8 @@ public class ValidatorFactory {
 
         try {
             // instantiate the validator, and set configured parameters
-            validator = ObjectFactory.getObjectFactory().buildValidator(className, cfg.getParams());
+            //todo - can this use the ThreadLocal?
+            validator = ObjectFactory.getObjectFactory().buildValidator(className, cfg.getParams(), null); // ActionContext.getContext().getContextMap());
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException("There was a problem creating a Validator of type " + className);

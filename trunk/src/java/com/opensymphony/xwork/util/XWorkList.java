@@ -19,7 +19,7 @@ import java.util.Map;
  * A simple list that guarantees that inserting and retrieving objects will always work regardless
  * of the current size of the list.  Upon insertion, type conversion is also performed if necessary.
  * Empty beans will be created to fill the gap between the current list size and the requested index
- * using ObjectFactory's {@link ObjectFactory#buildBean(Class) buildBean} method.
+ * using ObjectFactory's {@link ObjectFactory#buildBean(Class,java.util.Map) buildBean} method.
  *
  * @author Patrick Lightbody
  * @deprecated Native support for expanding lists and maps is provided in XWork 1.1, so this is no longer needed.
@@ -171,7 +171,8 @@ public class XWorkList extends ArrayList {
     public synchronized Object get(int index) {
         while (index >= this.size()) {
             try {
-                this.add(ObjectFactory.getObjectFactory().buildBean(clazz));
+                //todo
+                this.add(ObjectFactory.getObjectFactory().buildBean(clazz, null)); //ActionContext.getContext().getContextMap()));
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }

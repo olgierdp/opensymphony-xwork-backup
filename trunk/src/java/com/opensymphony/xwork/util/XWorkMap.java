@@ -16,7 +16,7 @@ import java.util.Map;
  * A simple map that guarantees that retrieving objects will never return null and insertions will
  * perform type conversion if necessary.  Empty beans will be created for any key that would
  * normally returned null using ObjectFactory's
- * {@link ObjectFactory#buildBean(java.lang.Class) buildBean} method.
+ * {@link ObjectFactory#buildBean(Class,java.util.Map) buildBean} method.
  *
  * @author Patrick Lightbody
  * @author Mark Woon
@@ -43,7 +43,8 @@ public class XWorkMap extends HashMap {
 
         if (o == null) {
             try {
-                o = ObjectFactory.getObjectFactory().buildBean(clazz);
+                //todo - can this use the ThreadLocal?
+                o = ObjectFactory.getObjectFactory().buildBean(clazz, null); // ActionContext.getContext().getContextMap());
                 this.put(key, o);
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());

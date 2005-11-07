@@ -53,7 +53,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
     public void testFallsBackToDefaultObjectFactoryActionSearching() throws Exception {
         ActionConfig actionConfig = new ActionConfig(null, ModelDrivenAction.class.getName(), new HashMap(), new HashMap(), null);
 
-        Object action = ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName());
+        Object action = ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName(), null);
 
         assertEquals(ModelDrivenAction.class, action.getClass());
     }
@@ -68,13 +68,13 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
 
     public void testFallsBackToDefaultObjectFactoryResultBuilding() throws Exception {
         ResultConfig rConfig = new ResultConfig(Action.SUCCESS, ActionChainResult.class.getName(), null);
-        Result result = ObjectFactory.getObjectFactory().buildResult(rConfig);
+        Result result = ObjectFactory.getObjectFactory().buildResult(rConfig, ActionContext.getContext().getContextMap());
 
         assertEquals(ActionChainResult.class, result.getClass());
     }
 
     public void testFallsBackToDefaultObjectFactoryValidatorBuilding() throws Exception {
-        Validator validator = ObjectFactory.getObjectFactory().buildValidator(RequiredStringValidator.class.getName(), new HashMap());
+        Validator validator = ObjectFactory.getObjectFactory().buildValidator(RequiredStringValidator.class.getName(), new HashMap(), null);
 
         assertEquals(RequiredStringValidator.class, validator.getClass());
     }
@@ -83,7 +83,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         sac.registerPrototype("simple-action", SimpleAction.class, new MutablePropertyValues());
 
         ActionConfig actionConfig = new ActionConfig(null, "simple-action", new HashMap(), new HashMap(), null);
-        Object action = ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName());
+        Object action = ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName(), null);
 
         assertEquals(SimpleAction.class, action.getClass());
     }
@@ -102,7 +102,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         sac.registerPrototype("chaining-result", ActionChainResult.class, new MutablePropertyValues());
 
         ResultConfig rConfig = new ResultConfig(Action.SUCCESS, "chaining-result", null);
-        Result result = ObjectFactory.getObjectFactory().buildResult(rConfig);
+        Result result = ObjectFactory.getObjectFactory().buildResult(rConfig, ActionContext.getContext().getContextMap());
 
         assertEquals(ActionChainResult.class, result.getClass());
     }
@@ -110,7 +110,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
     public void testObtainValidatorBySpringName() throws Exception {
         sac.registerPrototype("expression-validator", ExpressionValidator.class, new MutablePropertyValues());
 
-        Validator validator = ObjectFactory.getObjectFactory().buildValidator("expression-validator", new HashMap());
+        Validator validator = ObjectFactory.getObjectFactory().buildValidator("expression-validator", new HashMap(), null);
 
         assertEquals(ExpressionValidator.class, validator.getClass());
     }
@@ -119,13 +119,13 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         sac.getBeanFactory().registerSingleton("bean", new TestBean());
         TestBean bean = (TestBean) sac.getBean("bean");
 
-        SimpleAction action = (SimpleAction) ObjectFactory.getObjectFactory().buildBean(SimpleAction.class.getName());
+        SimpleAction action = (SimpleAction) ObjectFactory.getObjectFactory().buildBean(SimpleAction.class.getName(), null);
 
         assertEquals(bean, action.getBean());
     }
 
     public void testShouldGiveReferenceToAppContextIfBeanIsApplicationContextAwareAndNotInstantiatedViaSpring() throws Exception {
-        Foo foo = (Foo) ObjectFactory.getObjectFactory().buildBean(Foo.class.getName());
+        Foo foo = (Foo) ObjectFactory.getObjectFactory().buildBean(Foo.class.getName(), null);
 
         assertTrue("Expected app context to have been set", foo.isApplicationContextSet());
     }
@@ -146,13 +146,13 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         sac.getBeanFactory().registerSingleton("bean", new TestBean());
         TestBean bean = (TestBean) sac.getBean("bean");
 
-        SimpleAction action = (SimpleAction) ObjectFactory.getObjectFactory().buildBean(SimpleAction.class);
+        SimpleAction action = (SimpleAction) ObjectFactory.getObjectFactory().buildBean(SimpleAction.class, null);
 
         assertEquals(bean, action.getBean());
     }
 
     public void testShouldGiveReferenceToAppContextIfBeanIsLoadedByClassApplicationContextAwareAndNotInstantiatedViaSpring() throws Exception {
-        Foo foo = (Foo) ObjectFactory.getObjectFactory().buildBean(Foo.class);
+        Foo foo = (Foo) ObjectFactory.getObjectFactory().buildBean(Foo.class, null);
 
         assertTrue("Expected app context to have been set", foo.isApplicationContextSet());
     }
@@ -185,7 +185,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         sac.registerPrototype("simple-action", SimpleAction.class, new MutablePropertyValues());
 
         ActionConfig actionConfig = new ActionConfig(null, "simple-action", new HashMap(), new HashMap(), null);
-        SimpleAction simpleAction = (SimpleAction) objectFactory.buildBean(actionConfig.getClassName());
+        SimpleAction simpleAction = (SimpleAction) objectFactory.buildBean(actionConfig.getClassName(), null);
         objectFactory.autoWireBean(simpleAction);
         assertEquals(simpleAction.getBean(), bean);
     }
@@ -194,7 +194,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         SpringObjectFactory factory = (SpringObjectFactory) ObjectFactory.getObjectFactory();
         sac.registerSingleton("actionBean", SimpleAction.class, new MutablePropertyValues());
 
-        ConstructorBean bean = (ConstructorBean) factory.buildBean(ConstructorBean.class);
+        ConstructorBean bean = (ConstructorBean) factory.buildBean(ConstructorBean.class, null);
 
         assertNotNull("Bean should not be null", bean);
         assertNotNull("Action should have been added via DI", bean.getAction());
@@ -205,7 +205,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         sac.registerSingleton("firstActionBean", SimpleAction.class, new MutablePropertyValues());
         sac.registerSingleton("secondActionBean", SimpleAction.class, new MutablePropertyValues());
 
-        ConstructorBean bean = (ConstructorBean) factory.buildBean(ConstructorBean.class);
+        ConstructorBean bean = (ConstructorBean) factory.buildBean(ConstructorBean.class, null);
 
         assertNotNull("Bean should have been created using default constructor", bean);
         assertNull("Not expecting this to have been set", bean.getAction());
@@ -216,7 +216,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         ActionConfig actionConfig = new ActionConfig();
         actionConfig.setClassName(ConstructorAction.class.getName());
 
-        ConstructorAction action = (ConstructorAction) ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName());
+        ConstructorAction action = (ConstructorAction) ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName(), null);
 
         assertNotNull("Bean should not be null", action);
         assertNotNull("Action should have been added via DI", action.getAction());
@@ -234,7 +234,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
 
         ActionConfig actionConfig = new ActionConfig();
         actionConfig.setClassName(SimpleAction.class.getName());
-        Action action = (Action) ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName());
+        Action action = (Action) ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName(), null);
 
         assertNotNull("Bean should not be null", action);
         System.out.println("Action class is: " + action.getClass().getName());

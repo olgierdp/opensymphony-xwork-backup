@@ -111,7 +111,7 @@ public class ValidatorFileParser {
 
                 try {
                     // catch any problems here
-                    ObjectFactory.getObjectFactory().buildValidator(className, new HashMap());
+                    ObjectFactory.getObjectFactory().buildValidator(className, new HashMap(), null);
                     ValidatorFactory.registerValidator(name, className);
                 } catch (Exception e) {
                     log.error("Unable to load validator class " + className);
