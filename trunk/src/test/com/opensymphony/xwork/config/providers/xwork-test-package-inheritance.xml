@@ -4,11 +4,19 @@
  >
 
 <xwork>
-    <package name="default" />
+    <package name="default" namespace="/default">
+        <action name="default" class="com.opensymphony.xwork.ActionSupport"/>
+    </package>
 
-    <package name="abstractPackage" abstract="true" />
+    <package name="abstractPackage" abstract="true">
+        <action name="abstract" class="com.opensymphony.xwork.ActionSupport"/>
+    </package>
 
-    <package name="singleInheritance" extends="default" />
+    <package name="singleInheritance" namespace="/single" extends="default">
+        <action name="single" class="com.opensymphony.xwork.ActionSupport"/>
+    </package>
 
-    <package name="multipleInheritance" extends="default,abstractPackage, singleInheritance" />
+    <package name="multipleInheritance" namespace="/multiple" extends="default,abstractPackage,singleInheritance">
+        <action name="multiple" class="com.opensymphony.xwork.ActionSupport"/>
+    </package>
 </xwork>

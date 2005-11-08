@@ -27,7 +27,7 @@ public class PackageConfig implements Comparable {
     private Map interceptorConfigs = new TreeMap();
     private Map resultTypeConfigs = new TreeMap();
     private List globalExceptionMappingConfigs = new ArrayList();
-    private Set parents = new TreeSet();
+    private Set parents = new HashSet();
     private String defaultInterceptorRef;
     private String defaultResultType;
     private String name;
@@ -479,7 +479,7 @@ public class PackageConfig implements Comparable {
     public int compareTo(Object o) {
         PackageConfig other = (PackageConfig) o;
         String full = namespace + "!" + name;
-        String otherFull = other.namespace + "!" + name;
+        String otherFull = other.namespace + "!" + other.name;
 
         // note, this isn't perfect (could come from different parents), but it is "good enough"
         return full.compareTo(otherFull);

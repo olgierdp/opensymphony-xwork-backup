@@ -5,8 +5,11 @@
 package com.opensymphony.xwork.config.providers;
 
 import com.opensymphony.xwork.config.ConfigurationException;
+import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.entities.PackageConfig;
+
+import java.util.List;
 
 
 /**
@@ -56,26 +59,40 @@ public class XmlConfigurationProviderPackagesTest extends ConfigurationTestBase 
         final String filename = "com/opensymphony/xwork/config/providers/xwork-test-package-inheritance.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
 
-        // setup our expectations
-        PackageConfig defaultPackage = new PackageConfig("default");
-
-        PackageConfig abstractPackage = new PackageConfig("abstractPackage", null, true, null);
-
-        PackageConfig singleInheritancePackage = new PackageConfig("singleInheritance");
-        singleInheritancePackage.addParent(defaultPackage);
-
-        PackageConfig multInheritancePackage = new PackageConfig("multipleInheritance");
-        multInheritancePackage.addParent(defaultPackage);
-        multInheritancePackage.addParent(abstractPackage);
-        multInheritancePackage.addParent(singleInheritancePackage);
-
         provider.init(configuration);
 
         // test expectations
         assertEquals(4, configuration.getPackageConfigs().size());
-        assertEquals(defaultPackage, configuration.getPackageConfig("default"));
-        assertEquals(abstractPackage, configuration.getPackageConfig("abstractPackage"));
-        assertEquals(singleInheritancePackage, configuration.getPackageConfig("singleInheritance"));
-        assertEquals(multInheritancePackage, configuration.getPackageConfig("multipleInheritance"));
+        PackageConfig defaultPackage = configuration.getPackageConfig("default");
+        assertNotNull(defaultPackage);
+        assertEquals("default",defaultPackage.getName());
+        PackageConfig abstractPackage = configuration.getPackageConfig("abstractPackage");
+        assertNotNull(abstractPackage);
+        assertEquals("abstractPackage", abstractPackage.getName());
+        PackageConfig singlePackage = configuration.getPackageConfig("singleInheritance");
+        assertNotNull(singlePackage);
+        assertEquals("singleInheritance", singlePackage.getName());
+        assertEquals(1, singlePackage.getParents().size());
+        assertEquals(defaultPackage, singlePackage.getParents().get(0));
+        PackageConfig multiplePackage = configuration.getPackageConfig("multipleInheritance");
+        assertNotNull(multiplePackage);
+        assertEquals("multipleInheritance", multiplePackage.getName());
+        assertEquals(3, multiplePackage.getParents().size());
+        List multipleParents = multiplePackage.getParents();
+        assertTrue(multipleParents.contains(defaultPackage));
+        assertTrue(multipleParents.contains(abstractPackage));
+        assertTrue(multipleParents.contains(singlePackage));
+
+        ConfigurationManager.addConfigurationProvider(provider);
+
+        assertNotNull(ConfigurationManager.getConfiguration().getRuntimeConfiguration().getActionConfig("/multiple", "default"));
+        assertNotNull(ConfigurationManager.getConfiguration().getRuntimeConfiguration().getActionConfig("/multiple", "abstract"));
+        assertNotNull(ConfigurationManager.getConfiguration().getRuntimeConfiguration().getActionConfig("/multiple", "single"));
+        assertNotNull(ConfigurationManager.getConfiguration().getRuntimeConfiguration().getActionConfig("/multiple", "multiple"));
+        assertNotNull(ConfigurationManager.getConfiguration().getRuntimeConfiguration().getActionConfig("/single", "default"));
+        assertNull(ConfigurationManager.getConfiguration().getRuntimeConfiguration().getActionConfig("/single", "abstract"));
+        assertNotNull(ConfigurationManager.getConfiguration().getRuntimeConfiguration().getActionConfig("/single", "single"));
+        assertNull(ConfigurationManager.getConfiguration().getRuntimeConfiguration().getActionConfig("/single", "multiple"));
+
     }
 }
