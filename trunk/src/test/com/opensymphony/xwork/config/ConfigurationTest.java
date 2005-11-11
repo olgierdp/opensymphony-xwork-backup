@@ -19,7 +19,7 @@ import java.util.HashMap;
  *
  * @author Jason Carreira
  */
-public class ConfigurationTest extends TestCase {
+public class ConfigurationTest extends XWorkTestCase {
 
     public void testAbstract() {
         try {
