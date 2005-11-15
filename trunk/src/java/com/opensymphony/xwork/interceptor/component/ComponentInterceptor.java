@@ -61,8 +61,11 @@ public class ComponentInterceptor extends AroundInterceptor {
     public static final String COMPONENT_MANAGER = "com.opensymphony.xwork.interceptor.component.ComponentManager";
     private static final Log LOG = LogFactory.getLog(ComponentInterceptor.class);
 
-    public void init() {
+    static {
         LOG.info("WebWork's IoC has been deprecated, please use an alternative such as Spring");
+    }
+
+    public void init() {
     }
 
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
