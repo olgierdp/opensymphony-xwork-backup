@@ -130,8 +130,7 @@
     <target name="jar" depends="compile" description="build the project jar file">
         <mkdir dir="${build}"/>
 
-        <jar basedir="${build.java}" excludes="${jar.excludes}" jarfile="${build}/${name}-${version}.jar"
-             manifest="${jar.manifest}">
+        <jar basedir="${build.java}" excludes="${jar.excludes}" jarfile="${build}/${name}-${version}.jar">
             <manifest>
                 <attribute name="Implementation-Title" value="${fullname}"/>
                 <attribute name="Implementation-Version" value="${version}"/>
