@@ -561,7 +561,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             Map params = XmlHelper.getParams(interceptorElement);
             InterceptorConfig config = new InterceptorConfig(name, className, params);
             if (!verifyInterceptor(className, name, config)) {
-                return;
+                continue;
             }
 
             context.addInterceptorConfig(config);
