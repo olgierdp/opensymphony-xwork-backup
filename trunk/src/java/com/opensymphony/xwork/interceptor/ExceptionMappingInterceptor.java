@@ -41,7 +41,9 @@ import java.util.List;
  *
  * <!-- START SNIPPET: extending -->
  *
- * There are no known extension points.
+ * If you want to add custom handling for publishing the Exception, you may override
+ * {@link #publishException(com.opensymphony.xwork.ActionInvocation, ExceptionHolder)}. The default implementation
+ * pushes the given ExceptionHolder on value stack. A custom implementation could add additional logging etc.
  *
  * <!-- END SNIPPET: extending -->
  *
@@ -95,7 +97,7 @@ public class ExceptionMappingInterceptor implements Interceptor {
             String mappedResult = this.findResultFromExceptions(exceptionMappings, e);
             if (mappedResult != null) {
                 result = mappedResult;
-                invocation.getStack().push(new ExceptionHolder(e));
+                publishException(invocation, new ExceptionHolder(e));
             } else {
                 throw e;
             }
@@ -141,5 +143,16 @@ public class ExceptionMappingInterceptor implements Interceptor {
             return -1;
         }
         return getDepth(exceptionMapping, exceptionClass.getSuperclass(), depth + 1);
+    }
+
+    /**
+     * Default implementation to handle ExceptionHolder publishing. Pushes given ExceptionHolder on the stack.
+     * Subclasses may override this to customize publishing.
+     *
+     * @param invocation The invocation to publish Exception for.
+     * @param exceptionHolder The exceptionHolder wrapping the Exception to publish.
+     */
+    protected void publishException(ActionInvocation invocation, ExceptionHolder exceptionHolder) {
+        invocation.getStack().push(exceptionHolder);
     }
 }
