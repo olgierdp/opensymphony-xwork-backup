@@ -20,6 +20,7 @@ import java.util.List;
  * ActionValidatorManagerTest
  *
  * @author Jason Carreira
+ * @author tm_jee ( tm_jee (at) yahoo.co.uk )
  *         Created Jun 9, 2003 11:03:01 AM
  */
 public class ActionValidatorManagerTest extends XWorkTestCase {
@@ -86,31 +87,35 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
     public void testGetValidatorsFromInterface() {
         List validatorList = ActionValidatorManager.getValidators(SimpleAction3.class, alias);
 
+       
+        
+        
         // 8 in the class hierarchy + 1 in the interface + 1 in interface alias
         assertEquals(10, validatorList.size());
 
-        final FieldValidator barValidator1 = (FieldValidator) validatorList.get(0);
+        // action-level validator comes first
+        final Validator expressionValidator = (Validator) validatorList.get(0);
+        assertTrue(expressionValidator instanceof ExpressionValidator);
+        
+        final FieldValidator barValidator1 = (FieldValidator) validatorList.get(1);
         assertEquals("bar", barValidator1.getFieldName());
         assertTrue(barValidator1 instanceof RequiredFieldValidator);
 
-        final FieldValidator barValidator2 = (FieldValidator) validatorList.get(1);
+        final FieldValidator barValidator2 = (FieldValidator) validatorList.get(2);
         assertEquals("bar", barValidator2.getFieldName());
         assertTrue(barValidator2 instanceof IntRangeFieldValidator);
 
-        final FieldValidator dateValidator = (FieldValidator) validatorList.get(2);
+        final FieldValidator dateValidator = (FieldValidator) validatorList.get(3);
         assertEquals("date", dateValidator.getFieldName());
         assertTrue(dateValidator instanceof DateRangeFieldValidator);
 
-        final FieldValidator fooValidator = (FieldValidator) validatorList.get(3);
+        final FieldValidator fooValidator = (FieldValidator) validatorList.get(4);
         assertEquals("foo", fooValidator.getFieldName());
         assertTrue(fooValidator instanceof IntRangeFieldValidator);
 
-        final FieldValidator bazValidator = (FieldValidator) validatorList.get(4);
+        final FieldValidator bazValidator = (FieldValidator) validatorList.get(5);
         assertEquals("baz", bazValidator.getFieldName());
         assertTrue(bazValidator instanceof IntRangeFieldValidator);
-
-        final Validator expressionValidator = (Validator) validatorList.get(5);
-        assertTrue(expressionValidator instanceof ExpressionValidator);
 
         final FieldValidator bazValidator1 = (FieldValidator) validatorList.get(6);
         assertEquals("baz", bazValidator1.getFieldName());
@@ -160,7 +165,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
         assertFalse(validatorList.size() == validatorList2.size());
     }
 
-    public void testShortCircuit1() {
+    public void testSkipUserMarkerActionLevelShortCircuit() {
         // get validators
         List validatorList = ActionValidatorManager.getValidators(User.class, null);
         assertEquals(10, validatorList.size());
@@ -190,7 +195,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
             assertTrue(context.hasActionErrors());
             l = (List) context.getActionErrors();
             assertNotNull(l);
-            assertEquals(1, l.size());
+            assertEquals(2, l.size()); // both expression test failed see User-validation.xml
             assertEquals("Email does not start with mark", l.get(0));
         } catch (ValidationException ex) {
             ex.printStackTrace();
@@ -198,7 +203,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
         }
     }
 
-    public void testShortCircuit2() {
+    public void testSkipAllActionLevelShortCircuit2() {
         // get validators
         List validatorList = ActionValidatorManager.getValidators(User.class, null);
         assertEquals(10, validatorList.size());
@@ -206,35 +211,69 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
         try {
             User user = new User();
             user.setName("Mark");
-            user.setEmail("bad_email@foo.com");
-            user.setEmail2(null);
+            // * mark both email to starts with mark to get pass the action-level validator,
+            // so we could concentrate on testing the field-level validators (User-validation.xml)
+            // * make both email the same to pass the action-level validator at 
+            // UserMarker-validation.xml
+            user.setEmail("mark_bad_email_for_field_val@foo.com");
+            user.setEmail2("mark_bad_email_for_field_val@foo.com");
 
             ValidatorContext context = new GenericValidatorContext(user);
             ActionValidatorManager.validate(user, null, context);
             assertTrue(context.hasFieldErrors());
 
             // check field errors
+            // we have an error in this field level, email does not ends with mycompany.com
             List l = (List) context.getFieldErrors().get("email");
-
-            // shouldn't have any because action error prevents validation of anything else
-            assertNull(l);
-            l = (List) context.getFieldErrors().get("email2");
             assertNotNull(l);
-            assertEquals(1, l.size());
-            assertEquals("You must enter a value for email2.", l.get(0));
+            assertEquals(1, l.size()); // because email-field-val is short-circuit
+            assertEquals("Email not from the right company.", l.get(0));
 
+            
             // check action errors
-            assertTrue(context.hasActionErrors());
             l = (List) context.getActionErrors();
-            assertNotNull(l);
-            assertEquals(1, l.size());
-            assertEquals("Email not the same as email2", l.get(0));
+            assertFalse(context.hasActionErrors());
+            assertEquals(0, l.size());
+            
+            
         } catch (ValidationException ex) {
             ex.printStackTrace();
             fail("Validation error: " + ex.getMessage());
         }
     }
 
+    
+    public void testActionLevelShortCircuit() throws Exception {
+    	
+    	List validatorList = ActionValidatorManager.getValidators(User.class, null);
+        assertEquals(10, validatorList.size());
+        
+        User user = new User();
+        // all fields will trigger error, but sc of action-level, cause it to not appear
+        user.setName(null);		
+        user.setEmail("tmjee(at)yahoo.co.uk");
+        user.setEmail("tm_jee(at)yahoo.co.uk");
+        
+        ValidatorContext context = new GenericValidatorContext(user);
+        ActionValidatorManager.validate(user, null, context);
+    	
+    	// check field level errors
+        // shouldn't have any because action error prevents validation of anything else
+        List l = (List) context.getFieldErrors().get("email2");
+        assertNull(l);
+    	
+    	
+        // check action errors
+        assertTrue(context.hasActionErrors());
+        l = (List) context.getActionErrors();
+        assertNotNull(l);
+        // we only get one, because UserMarker-validation.xml action-level validator
+        // already sc it   :-)
+        assertEquals(1, l.size()); 
+        assertEquals("Email not the same as email2", l.get(0));
+    }
+    
+    
     public void testShortCircuitNoErrors() {
         // get validators
         List validatorList = ActionValidatorManager.getValidators(User.class, null);
