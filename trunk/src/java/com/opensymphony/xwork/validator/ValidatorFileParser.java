@@ -26,16 +26,25 @@ import java.util.Map;
 
 
 /**
- * ValidatorFileParser
+ * Parse the validation file (eg. MyAction-validation.xml, MyAction-actionAlias-validation.xml)
+ * to return a List of ValidatorConfig encapsulating the validator information.
  *
  * @author Jason Carreira
  * @author James House
+ * @author tm_jee ( tm_jee (at) yahoo.co.uk )
+ * @see com.opensymphony.xwork.validator.ValidatorConfig
  */
 public class ValidatorFileParser {
 
     private static final Log log = LogFactory.getLog(ValidatorFileParser.class);
 
-
+    /**
+     * Parse resource for a list of ValidatorConfig objects.
+     * 
+     * @param is input stream to the resource
+     * @param resourceName file name of the resource 
+     * @return List list of ValidatorConfig
+     */
     public static List parseActionValidatorConfigs(InputStream is, final String resourceName) {
         List validatorCfgs = new ArrayList();
         Document doc = null;
@@ -80,7 +89,7 @@ public class ValidatorFileParser {
         if (doc != null) {
             NodeList fieldNodes = doc.getElementsByTagName("field");
 
-            // BUG: ww-970: Let validator be parsed first and hence added to 
+            // BUG: xw-305: Let validator be parsed first and hence added to 
             // the beginning of list and therefore evaluated first, so short-circuting
             // it will not cause field-leve validator to be kicked off.
             {NodeList validatorNodes = doc.getElementsByTagName("validator");
