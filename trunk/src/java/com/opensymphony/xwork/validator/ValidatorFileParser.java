@@ -80,6 +80,12 @@ public class ValidatorFileParser {
         if (doc != null) {
             NodeList fieldNodes = doc.getElementsByTagName("field");
 
+            // BUG: ww-970: Let validator be parsed first and hence added to 
+            // the beginning of list and therefore evaluated first, so short-circuting
+            // it will not cause field-leve validator to be kicked off.
+            {NodeList validatorNodes = doc.getElementsByTagName("validator");
+            addValidatorConfigs(validatorNodes, new HashMap(), validatorCfgs);}
+            
             for (int i = 0; i < fieldNodes.getLength(); i++) {
                 Element fieldElement = (Element) fieldNodes.item(i);
                 String fieldName = fieldElement.getAttribute("name");
@@ -89,9 +95,6 @@ public class ValidatorFileParser {
                 NodeList validatorNodes = fieldElement.getElementsByTagName("field-validator");
                 addValidatorConfigs(validatorNodes, extraParams, validatorCfgs);
             }
-
-            NodeList validatorNodes = doc.getElementsByTagName("validator");
-            addValidatorConfigs(validatorNodes, new HashMap(), validatorCfgs);
         }
 
         return validatorCfgs;
