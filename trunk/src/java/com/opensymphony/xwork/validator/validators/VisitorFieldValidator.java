@@ -23,6 +23,7 @@ import java.util.Collection;
  * properties, Collections of Objects, or Arrays.
  *
  * @author Jason Carreira
+ * @author Rainer Hermanns
  *         Created Aug 2, 2003 10:27:48 PM
  */
 public class VisitorFieldValidator extends FieldValidatorSupport {
@@ -60,14 +61,14 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
     public void validate(Object object) throws ValidationException {
         String fieldName = getFieldName();
         Object value = this.getFieldValue(fieldName, object);
-        OgnlValueStack stack = ActionContext.getContext().getValueStack();
-        stack.push(object);
-
-        String visitorContext = (context == null) ? ActionContext.getContext().getName() : context;
-
         if (value == null) {
             return;
         }
+        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+
+        stack.push(object);
+
+        String visitorContext = (context == null) ? ActionContext.getContext().getName() : context;
 
         if (value instanceof Collection) {
             Collection coll = (Collection) value;
