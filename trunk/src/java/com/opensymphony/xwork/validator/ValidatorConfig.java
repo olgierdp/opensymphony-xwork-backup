@@ -11,6 +11,7 @@ import java.util.Map;
  * 
  * 
  * @author James House
+ * @author Rainer Hermanns
  */
 public class ValidatorConfig {
 
@@ -24,7 +25,7 @@ public class ValidatorConfig {
     }
     
     /**
-     * @param type
+     * @param validatorType
      * @param params
      */
     public ValidatorConfig(String validatorType, Map params) {
@@ -98,7 +99,7 @@ public class ValidatorConfig {
     }
     
     /**
-     * @param type The type of validator to configure.
+     * @param validatorType The type of validator to configure.
      */
     public void setType(String validatorType) {
         this.type = validatorType;
