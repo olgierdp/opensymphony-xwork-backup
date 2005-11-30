@@ -92,7 +92,7 @@ public class SetPropertiesTest extends TestCase {
         assertEquals(0, bar.getFieldErrors().size());
     }
 
-    public void fix_testAddingToListsWithObjects() {
+    public void testAddingToListsWithObjects() {
         Foo foo = new Foo();
         foo.setMoreCats(new ArrayList());
         String spielname = "Spielen";
@@ -118,7 +118,7 @@ public class SetPropertiesTest extends TestCase {
 
     }
 
-    public void fix_testAddingToMapsWithObjects() {
+    public void testAddingToMapsWithObjects() {
         Foo foo = new Foo();
         foo.setAnotherCatMap(new HashMap());
         String spielname = "Spielen";
@@ -155,8 +155,8 @@ public class SetPropertiesTest extends TestCase {
         vs.push(foo);
         String bar1Title = "The Phantom Menace";
         String bar2Title = "The Clone Wars";
-        vs.setValue("barSet['22'].title", bar2Title);
-        vs.setValue("barSet['11'].title", bar1Title);
+        vs.setValue("barSet(22).title", bar2Title);
+        vs.setValue("barSet(11).title", bar1Title);
         Iterator barSetIter = barSet.iterator();
         while (barSetIter.hasNext()) {
             Bar next = (Bar) barSetIter.next();

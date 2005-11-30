@@ -157,7 +157,7 @@ public class XWorkCollectionPropertyAccessor extends SetPropertyAccessor {
 
     public void setProperty(Map arg0, Object arg1, Object arg2, Object arg3)
             throws OgnlException {
-        // TODO Auto-generated method stub
+        
         super.setProperty(arg0, arg1, arg2, arg3);
     }
 }

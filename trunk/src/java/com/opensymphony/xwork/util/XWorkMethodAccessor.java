@@ -6,7 +6,13 @@ package com.opensymphony.xwork.util;
 
 import ognl.MethodFailedException;
 import ognl.ObjectMethodAccessor;
+import ognl.Ognl;
+import ognl.OgnlContext;
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
 
+import java.beans.PropertyDescriptor;
+import java.util.Collection;
 import java.util.Map;
 
 
@@ -23,6 +29,36 @@ public class XWorkMethodAccessor extends ObjectMethodAccessor {
 
 
     public Object callMethod(Map context, Object object, String string, Object[] objects) throws MethodFailedException {
+
+        //Collection property accessing
+        //this if statement ensures that ognl
+        //statements of the form someBean.mySet('keyPropVal')
+        //return the set element with value of the keyProp given
+        
+        if (objects.length==1 
+                && context instanceof OgnlContext) {
+            try {
+              OgnlContext ogContext=(OgnlContext)context;
+              if (OgnlRuntime.hasSetProperty(ogContext, object, string))  {
+                  	PropertyDescriptor descriptor=OgnlRuntime.getPropertyDescriptor(object.getClass(), string);
+                  	Class propertyType=descriptor.getPropertyType();
+                  	if ((Collection.class).isAssignableFrom(propertyType)) {
+                  	    //go directly through OgnlRuntime here
+                  	    //so that property strings are not cleared
+                  	    //i.e. OgnlUtil should be used initially, OgnlRuntime
+                  	    //thereafter
+
+                  	    Object propVal=OgnlRuntime.getProperty(ogContext, object, string);
+                  	    return OgnlRuntime.getProperty(ogContext,propVal,objects[0]);
+                  	}
+              }
+            }	catch (Exception oe) {
+                //this exception should theoretically never happen
+                //log it
+            }
+
+        }
+
         //HACK - we pass indexed method access i.e. setXXX(A,B) pattern
         if (
                 (objects.length == 2 && string.startsWith("set"))

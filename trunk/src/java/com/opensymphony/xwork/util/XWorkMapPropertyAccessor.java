@@ -24,12 +24,9 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
             {"size", "isEmpty", "keys", "values"};
 
     private static final XWorkConverter _converter = XWorkConverter.getInstance();
-    private static final XWorkCollectionPropertyAccessor _cAcc = new XWorkCollectionPropertyAccessor();
-
+ 
     public Object getProperty(Map context, Object target, Object name) throws OgnlException {
-        if (target instanceof Collection) {
-            return _cAcc.getProperty(context, target, name);
-        }
+
         OgnlContextState.updateCurrentPropertyPath(context, name);
         // if this is one of the regular index access
         // properties then just let the superclass deal with the
