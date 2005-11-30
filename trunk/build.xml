@@ -48,7 +48,7 @@
     </target>
 
     <target name="ivyrep" depends="common.ivyrep">
-        <antcall target="common.ivyrep">
+        <antcall target="common.ivyrep" inheritrefs="no" inheritall="no">
             <param name="name" value="${name}-tiger"/>
         </antcall>
     </target>
