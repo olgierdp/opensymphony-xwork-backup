@@ -305,7 +305,9 @@
 
     <target name="website" depends="javadocs, docs.impl"/>
 
-    <target name="ivyrep" depends="jar">
+    <target name="ivyrep" depends="jar, ivyrep.impl"/>
+
+    <target name="ivyrep.impl">
         <tstamp>
             <format property="TIME" pattern="yyyyMMddHHmmss"/>
         </tstamp>
