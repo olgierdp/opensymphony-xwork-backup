@@ -21,13 +21,16 @@
     </target>
 
     <target name="compile" depends="common.compile">
-        <compile srcdir="tiger/src/java" destdir="tiger/build/java" classpath="${build.java}" source="1.5"
-                 target="1.5"/>
     </target>
 
-    <target name="predist">
-        <!-- build up xwork-tiger jar -->
-        <jar destfile="dist/${name}-tiger-${version}.jar">
+    <target name="predist" depends="tiger"/>
+
+    <target name="tiger">
+        <compile srcdir="tiger/src/java" destdir="tiger/build/java" classpath="${build.java}" source="1.5"
+                 target="1.5"/>
+
+        <mkdir dir="${dist}"/>
+        <jar destfile="${dist}/${name}-tiger-${version}.jar">
             <fileset dir="tiger/build/java"/>
         </jar>
     </target>
