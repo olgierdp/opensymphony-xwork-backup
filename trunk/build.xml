@@ -23,14 +23,15 @@
     <target name="compile" depends="common.compile">
     </target>
 
-    <target name="predist" depends="tiger"/>
+    <target name="predist" depends="tiger">
+        <copy file="%{build}/${name}-tiger-${version}.jar" todir="${dist}"/>
+    </target>
 
     <target name="tiger">
         <compile srcdir="tiger/src/java" destdir="tiger/build/java" classpath="${build.java}" source="1.5"
                  target="1.5"/>
 
-        <mkdir dir="${dist}"/>
-        <jar destfile="${dist}/${name}-tiger-${version}.jar">
+        <jar destfile="${build}/${name}-tiger-${version}.jar">
             <fileset dir="tiger/build/java"/>
         </jar>
     </target>
