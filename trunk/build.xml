@@ -15,7 +15,7 @@
         <ivy-retrieve/>
     </target>
 
-    <target name="ivyrep.copy-ivy" depends="init">
+    <target name="ivyrep.copy-ivy" depends="init" unless="noivyxml">
         <ivy-deliver deliverpattern="${ivyrep.path}/opensymphony/${name}/[artifact]-[revision].[ext]"
                      pubrevision="${version}-${TIME}" pubdate="${TIME}"/>
     </target>
@@ -54,6 +54,7 @@
     <target name="ivyrep" depends="common.ivyrep">
         <antcall target="ivyrep.impl" inheritrefs="no" inheritall="no">
             <param name="name" value="${name}-tiger"/>
+            <param name="noivyxml" value="yes"/>
         </antcall>
     </target>
 </project>
