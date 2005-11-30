@@ -12,12 +12,7 @@ import junit.framework.TestCase;
  * Time: 8:13:51 AM
  */
 public abstract class XWorkTestCase extends TestCase {
-    ObjectFactory oldObjectFactory;
-
     protected void setUp() throws Exception {
-        // save the old object factory in case
-        oldObjectFactory = ObjectFactory.getObjectFactory();
-
         // Reset the value stack
         OgnlValueStack stack = new OgnlValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
@@ -37,7 +32,7 @@ public abstract class XWorkTestCase extends TestCase {
 
     protected void tearDown() throws Exception {
         // reset the old object factory
-        ObjectFactory.setObjectFactory(oldObjectFactory);
+        ObjectFactory.setObjectFactory(new ObjectFactory());
         
         //  clear out configuration
         ConfigurationManager.destroyConfiguration();
