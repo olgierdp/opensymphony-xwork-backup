@@ -25,6 +25,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.lang.reflect.Modifier;
 
 
 /**
@@ -184,17 +185,21 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
     protected boolean verifyAction(String className, String name) {
         try {
+            Class clazz = ObjectFactory.getObjectFactory().getClassInstance(className);
             if (ObjectFactory.getObjectFactory().isNoArgConstructorRequired()) {
-                ActionConfig actionConfig = new ActionConfig(null, className, null, null, null);
-                ObjectFactory.getObjectFactory().buildBean(actionConfig.getClassName(), null);
-            } else {
-                ObjectFactory.getObjectFactory().getClassInstance(className);
+                if (!Modifier.isPublic(clazz.getModifiers())) {
+                    LOG.error("Action class [" + className + "] is not public, skipping action [" + name + "]");
+                    return false;
+                }
+                clazz.getConstructor(new Class[] {});
             }
-
             return true;
-        } catch (Exception e) { // TODO: Not pretty
+        } catch (ClassNotFoundException e) {
             LOG.error("Action class [" + className + "] not found, skipping action [" + name + "]", e);
-
+            return false;
+        } catch (NoSuchMethodException e) {
+            LOG.error("Action class [" + className + "] does not have a public no-arg constructor,"
+                    + " skipping action [" + name + "]", e);
             return false;
         }
     }
