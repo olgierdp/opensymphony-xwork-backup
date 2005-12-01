@@ -565,27 +565,11 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
             Map params = XmlHelper.getParams(interceptorElement);
             InterceptorConfig config = new InterceptorConfig(name, className, params);
-            if (!verifyInterceptor(className, name, config)) {
-                continue;
-            }
 
             context.addInterceptorConfig(config);
         }
 
         loadInterceptorStacks(element, context);
-    }
-
-    protected boolean verifyInterceptor(String className, String name, InterceptorConfig config) {
-        try {
-            ObjectFactory.getObjectFactory().buildInterceptor(config, new TreeMap());
-            return true;
-        } catch (ConfigurationException e) {
-            String s = "Unable to load class " + className + " for interceptor name " + name + ". " +
-                    "This interceptor will not be available.\n" +
-                    "Cause: " + e.getMessage();
-            LOG.error(s);
-            return false;
-        }
     }
 
     //    protected void loadPackages(Element rootElement) throws ConfigurationException {
