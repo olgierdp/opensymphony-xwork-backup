@@ -137,13 +137,13 @@
                 <attribute name="Implementation-Vendor" value="OpenSymphony"/>
             </manifest>
         </jar>
-        <!--        <jar basedir="${src.java}" jarfile="${build}/${name}-${version}-src.jar">
-           <manifest>
-               <attribute name="Implementation-Title" value="${fullname}" />
-               <attribute name="Implementation-Version" value="${version}" />
-               <attribute name="Implementation-Vendor" value="OpenSymphony" />
-           </manifest>
-       </jar> -->
+        <jar basedir="${src.java}" jarfile="${build}/${name}-${version}-src.jar">
+            <manifest>
+                <attribute name="Implementation-Title" value="${fullname}"/>
+                <attribute name="Implementation-Version" value="${version}"/>
+                <attribute name="Implementation-Vendor" value="OpenSymphony"/>
+            </manifest>
+        </jar>
     </target>
 
     <target name="src-jar" depends="init" description="build a jar of the project source code">
@@ -331,13 +331,19 @@
             <arg line="${files}"/>
         </exec>
 
-        <!-- copy over the new build -->
+        <!-- copy over the new build and source -->
         <copy file="${build}/${name}-${version}.jar"
               tofile="${ivyrep.path}/opensymphony/${name}/${name}-${version}-${TIME}.jar"/>
+        <copy file="${build}/${name}-${version}-src.jar"
+              tofile="${ivyrep.path}/opensymphony/${name}/${name}-${version}-${TIME}-src.jar"/>
         <echo>svn add (jar)</echo>
         <exec executable="svn">
             <arg value="add"/>
             <arg value="${ivyrep.path}/opensymphony/${name}/${name}-${version}-${TIME}.jar"/>
+        </exec>
+        <exec executable="svn">
+            <arg value="add"/>
+            <arg value="${ivyrep.path}/opensymphony/${name}/${name}-${version}-${TIME}-src.jar"/>
         </exec>
 
         <antcall target="ivyrep.copy-ivy"/>

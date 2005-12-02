@@ -34,14 +34,9 @@
         <jar destfile="${build}/${name}-tiger-${version}.jar">
             <fileset dir="tiger/build/java"/>
         </jar>
-    </target>
 
-    <target name="jar" depends="common.jar">
-        <jar basedir="${src.java}" jarfile="${build}/${name}-${version}-src.jar">
-            <manifest>
-                <attribute name="Implementation-Title" value="${fullname}"/>
-                <attribute name="Implementation-Version" value="${version}"/>
-            </manifest>
+        <jar destfile="${build}/${name}-tiger-${version}-src.jar">
+            <fileset dir="tiger/src/java"/>
         </jar>
     </target>
 
