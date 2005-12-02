@@ -35,7 +35,7 @@
             <fileset dir="tiger/build/java"/>
         </jar>
 
-        <jar destfile="${build}/${name}-tiger-${version}-src.jar">
+        <jar destfile="${build}/${name}-tiger-src-${version}.jar">
             <fileset dir="tiger/src/java"/>
         </jar>
     </target>

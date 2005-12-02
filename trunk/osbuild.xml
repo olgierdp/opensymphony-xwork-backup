@@ -137,7 +137,7 @@
                 <attribute name="Implementation-Vendor" value="OpenSymphony"/>
             </manifest>
         </jar>
-        <jar basedir="${src.java}" jarfile="${build}/${name}-${version}-src.jar">
+        <jar basedir="${src.java}" jarfile="${build}/${name}-src-${version}.jar">
             <manifest>
                 <attribute name="Implementation-Title" value="${fullname}"/>
                 <attribute name="Implementation-Version" value="${version}"/>
@@ -322,6 +322,7 @@
         <!-- delete the old timestamped builds and commit -->
         <fileset dir="${ivyrep.path}/opensymphony/${name}" id="filesref">
             <include name="${name}-${version}-*"/>
+            <include name="${name}-src-${version}-*"/>
             <include name="ivy-${version}-*"/>
         </fileset>
         <pathconvert property="files" refid="filesref" pathsep=" "/>
@@ -334,8 +335,8 @@
         <!-- copy over the new build and source -->
         <copy file="${build}/${name}-${version}.jar"
               tofile="${ivyrep.path}/opensymphony/${name}/${name}-${version}-${TIME}.jar"/>
-        <copy file="${build}/${name}-${version}-src.jar"
-              tofile="${ivyrep.path}/opensymphony/${name}/${name}-${version}-${TIME}-src.jar"/>
+        <copy file="${build}/${name}-src-${version}.jar"
+              tofile="${ivyrep.path}/opensymphony/${name}/${name}-src-${version}-${TIME}.jar"/>
         <echo>svn add (jar)</echo>
         <exec executable="svn">
             <arg value="add"/>
@@ -343,7 +344,7 @@
         </exec>
         <exec executable="svn">
             <arg value="add"/>
-            <arg value="${ivyrep.path}/opensymphony/${name}/${name}-${version}-${TIME}-src.jar"/>
+            <arg value="${ivyrep.path}/opensymphony/${name}/${name}-src-${version}-${TIME}.jar"/>
         </exec>
 
         <antcall target="ivyrep.copy-ivy"/>
