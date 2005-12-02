@@ -18,10 +18,12 @@
     <configurations>
         <conf name="build" description="Build-time requirements only" visibility="private"/>
         <conf name="default" description="The xwork jar file"/>
+        <conf name="source" description="The xwork source files packaged as a jar"/>
         <conf name="spring" description="The xwork jar file with Spring integration"/>
     </configurations>
     <publications>
         <artifact name="xwork" type="jar" conf="default"/>
+        <artifact name="xwork-src" type="jar" conf="source"/>
     </publications>
     <dependencies>
         <!-- build -->
