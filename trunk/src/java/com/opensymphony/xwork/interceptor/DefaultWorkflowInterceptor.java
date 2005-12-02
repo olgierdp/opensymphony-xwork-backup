@@ -8,14 +8,27 @@ import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.Validateable;
 import com.opensymphony.xwork.ValidationAware;
+import com.opensymphony.xwork.util.TextParseUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.util.Collections;
+import java.util.Set;
 
 
 /**
  * <!-- START SNIPPET: description -->
  *
- * An interceptor that does some basic validation workflow before allowing the interceptor chain to continue. This
- * interceptor does nothing if the name of the method being invoked is <b>input</b>. For example, a request to
- * <b>foo!input.action</b> would be skipped by this request. The order of execution in the workflow is:
+ * An interceptor that does some basic validation workflow before allowing the interceptor chain to continue.
+ *
+ * <p/>This interceptor does nothing if the name of the method being invoked
+ * is specified in the <b>excludeMethods</b> parameter. <b>excludeMethods</b>
+ * accepts a comma-delimited list of method names. For example, requests to
+ * <b>foo!input.action</b> and <b>foo!back.action</b> will be skipped by this
+ * interceptor if you set the <b>excludeMethods</b> parameter to "input,
+ * back".
+ *
+ * <p/>The order of execution in the workflow is:
  *
  * <ol>
  *
@@ -73,31 +86,38 @@ import com.opensymphony.xwork.ValidationAware;
  */
 public class DefaultWorkflowInterceptor implements Interceptor {
 
-    public void destroy() {
-    }
+    Log log = LogFactory.getLog(this.getClass());
 
-    public void init() {
+    Set excludeMethods = Collections.EMPTY_SET;
+
+    public void setExcludeMethods(String excludeMethods) {
+        this.excludeMethods = TextParseUtil.commaDelimitedStringToSet(excludeMethods);
     }
 
     public String intercept(ActionInvocation invocation) throws Exception {
-        if (!"input".equals(invocation.getProxy().getMethod())) {
+        if (excludeMethods.contains(invocation.getProxy().getMethod())) {
+            log.debug("Skipping workflow. Method found in exclude list.");
+            return invocation.invoke();
+        }
 
-            Object action = invocation.getAction();
+        Object action = invocation.getAction();
 
-            if (action instanceof Validateable) {
-                Validateable validateable = (Validateable) action;
-                validateable.validate();
-            }
+        if (action instanceof Validateable) {
+            Validateable validateable = (Validateable) action;
+            validateable.validate();
+        }
 
-            if (action instanceof ValidationAware) {
-                ValidationAware validationAwareAction = (ValidationAware) action;
+        if (action instanceof ValidationAware) {
+            ValidationAware validationAwareAction = (ValidationAware) action;
 
-                if (validationAwareAction.hasErrors()) {
-                    return Action.INPUT;
-                }
+            if (validationAwareAction.hasErrors()) {
+                return Action.INPUT;
             }
         }
 
         return invocation.invoke();
     }
+
+    public void destroy() {}
+    public void init() {}
 }

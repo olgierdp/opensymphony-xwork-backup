@@ -3,6 +3,8 @@ package com.opensymphony.xwork.util;
 import com.opensymphony.xwork.XWorkTestCase;
 
 import java.util.List;
+import java.util.HashSet;
+import java.util.Arrays;
 
 /**
  * User: plightbo
@@ -36,5 +38,11 @@ public class TextParseUtilTest extends XWorkTestCase {
 
         s = TextParseUtil.translateVariables('$', "count must be between ${123} and ${456}, current value is ${98765}.", stack, Object.class);
         assertEquals("count must be between 123 and 456, current value is 98765.", s);
+    }
+
+    public void testCommaDelimitedStringToSet() {
+        assertEquals(0, TextParseUtil.commaDelimitedStringToSet("").size());
+        assertEquals(new HashSet(Arrays.asList(new String[] { "foo", "bar", "tee" })),
+                TextParseUtil.commaDelimitedStringToSet(" foo, bar,tee"));
     }
 }

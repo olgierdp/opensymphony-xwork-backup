@@ -26,24 +26,32 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
 
     public void testInvokesActionInvocationIfNoErrors() throws Exception {
         actionMock.expectAndReturn("hasErrors", false);
-
+        actionMock.expect("validate");
         final String result = "testing123";
         invocationMock.expectAndReturn("invoke", result);
+        invocationMock.expectAndReturn("getAction", action);
         assertEquals(result, interceptor.intercept(invocation));
     }
 
     public void testReturnsInputWithoutExecutingIfHasErrors() throws Exception {
         actionMock.expectAndReturn("hasErrors", true);
+        actionMock.expect("validate");
+        invocationMock.expectAndReturn("getAction", action);
         assertEquals(Action.INPUT, interceptor.intercept(invocation));
+    }
+
+    public void testExcludesMethod() throws Exception {
+        interceptor.setExcludeMethods("execute");
+        final String result = "testing123";
+        invocationMock.expectAndReturn("invoke", result);
+        assertEquals(result, interceptor.intercept(invocation));
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         actionMock = new Mock(ValidateAction.class);
-        actionMock.expect("validate");
         action = (ValidateAction) actionMock.proxy();
         invocationMock = new Mock(ActionInvocation.class);
-        invocationMock.expectAndReturn("getAction", action);
         ActionProxy proxy = new MockActionProxy();
         proxy.setMethod("execute");
         invocationMock.expectAndReturn("getProxy", proxy);

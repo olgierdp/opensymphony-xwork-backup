@@ -6,6 +6,9 @@ package com.opensymphony.xwork.util;
 
 import com.opensymphony.util.TextUtils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
  * Utility class for text parsing.
@@ -84,5 +87,16 @@ public class TextParseUtil {
         }
 
         return XWorkConverter.getInstance().convertValue(stack.getContext(), result, asType);
+    }
+
+    public static Set commaDelimitedStringToSet(String s) {
+        Set set = new HashSet();
+        String[] split = s.split(",");
+        for (int i = 0; i < split.length; i++) {
+            String trimmed = split[i].trim();
+            if (trimmed.length() > 0)
+                set.add(trimmed);
+        }
+        return set;
     }
 }
