@@ -123,33 +123,32 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
         assertTrue(v8 instanceof ExpressionValidator);
 
         final FieldValidator v9 = (FieldValidator) validatorList.get(9);
-        assertEquals("cute", v9.getFieldName());
+        assertEquals("datefield", v9.getFieldName());
         assertTrue(v9 instanceof DateRangeFieldValidator);
 
         final FieldValidator v10 = (FieldValidator) validatorList.get(10);
-        assertEquals("cute", v10.getFieldName());
+        assertEquals("emailaddress", v10.getFieldName());
         assertTrue(v10 instanceof EmailValidator);
 
         final FieldValidator v11 = (FieldValidator) validatorList.get(11);
-        assertEquals("cute", v11.getFieldName());
+        assertEquals("intfield", v11.getFieldName());
         assertTrue(v11 instanceof IntRangeFieldValidator);
 
         final FieldValidator v12 = (FieldValidator) validatorList.get(12);
-        assertEquals("cute", v12.getFieldName());
+        assertEquals("customfield", v12.getFieldName());
         assertTrue(v12 instanceof RequiredFieldValidator);
 
         final FieldValidator v13 = (FieldValidator) validatorList.get(13);
-        assertEquals("cute", v13.getFieldName());
+        assertEquals("stringisrequired", v13.getFieldName());
         assertTrue(v13 instanceof RequiredStringValidator);
 
         final FieldValidator v14 = (FieldValidator) validatorList.get(14);
-        assertEquals("cute", v14.getFieldName());
+        assertEquals("needstringlength", v14.getFieldName());
         assertTrue(v14 instanceof StringLengthFieldValidator);
 
         final FieldValidator v15 = (FieldValidator) validatorList.get(15);
-        assertEquals("cute", v15.getFieldName());
+        assertEquals("hreflocation", v15.getFieldName());
         assertTrue(v15 instanceof URLValidator);
-
 
         final FieldValidator v16 = (FieldValidator) validatorList.get(16);
         assertEquals("data", v16.getFieldName());
