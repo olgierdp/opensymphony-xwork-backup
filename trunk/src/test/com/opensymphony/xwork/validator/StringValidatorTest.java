@@ -28,7 +28,7 @@ public class StringValidatorTest extends TestCase {
         ActionContext.getContext().getValueStack().push(equidae);
 
         DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManager.validate(equidae, null, context);
+        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
 
         assertTrue(context.hasFieldErrors());
 
@@ -40,7 +40,7 @@ public class StringValidatorTest extends TestCase {
         equidae.setHorse("  ");
         ActionContext.getContext().getValueStack().push(equidae);
         context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManager.validate(equidae, null, context);
+        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
 
         assertTrue(context.hasFieldErrors());
         fieldErrors = context.getFieldErrors();
@@ -60,7 +60,7 @@ public class StringValidatorTest extends TestCase {
             ActionContext.getContext().getValueStack().push(equidae);
 
             DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
-            ActionValidatorManager.validate(equidae, null, context);
+            ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
             assertTrue(context.hasFieldErrors());
 
             Map fieldErrors = context.getFieldErrors();
@@ -84,7 +84,7 @@ public class StringValidatorTest extends TestCase {
             equidae.setDonkey("asdf  ");
             ActionContext.getContext().getValueStack().push(equidae);
             context = new DelegatingValidatorContext(new ValidationAwareSupport());
-            ActionValidatorManager.validate(equidae, null, context);
+            ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
             assertTrue(context.hasFieldErrors());
 
             fieldErrors = context.getFieldErrors();
@@ -103,7 +103,7 @@ public class StringValidatorTest extends TestCase {
             equidae.setDonkey("asdfasdf");
             ActionContext.getContext().getValueStack().push(equidae);
             context = new DelegatingValidatorContext(new ValidationAwareSupport());
-            ActionValidatorManager.validate(equidae, null, context);
+            ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
             assertTrue(context.hasFieldErrors());
 
             fieldErrors = context.getFieldErrors();
@@ -118,7 +118,7 @@ public class StringValidatorTest extends TestCase {
             equidae.setDonkey("asdfasdf   ");
             ActionContext.getContext().getValueStack().push(equidae);
             context = new DelegatingValidatorContext(new ValidationAwareSupport());
-            ActionValidatorManager.validate(equidae, null, context);
+            ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
             assertTrue(context.hasFieldErrors());
 
             fieldErrors = context.getFieldErrors();
@@ -137,7 +137,7 @@ public class StringValidatorTest extends TestCase {
             equidae.setDonkey("asdfasdfasdf");
             ActionContext.getContext().getValueStack().push(equidae);
             context = new DelegatingValidatorContext(new ValidationAwareSupport());
-            ActionValidatorManager.validate(equidae, null, context);
+            ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
             assertTrue(context.hasFieldErrors());
 
             fieldErrors = context.getFieldErrors();

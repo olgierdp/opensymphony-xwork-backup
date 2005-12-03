@@ -25,6 +25,7 @@ import java.util.*;
  * @author Jason Carreira
  * @author Mark Woon
  * @author James House
+ * @author Rainer Hermanns
  */
 public class ActionValidatorManager {
 
@@ -64,7 +65,7 @@ public class ActionValidatorManager {
             Validator validator = ValidatorFactory.getValidator(cfg);
             validators.add(validator);
         }
-        
+
         return validators;
     }
 
@@ -200,7 +201,7 @@ public class ActionValidatorManager {
     }
 
     /**
-     * <p>This method 'collects' all the validator configurations for a given 
+     * <p>This method 'collects' all the validator configurations for a given
      * action invocation.</p>
      *
      * <p>It will traverse up the class hierarchy looking for validators for every super class

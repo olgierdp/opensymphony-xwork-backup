@@ -70,6 +70,7 @@ import java.util.Collections;
  * </pre>
  *
  * @author Jason Carreira
+ * @author Rainer Hermanns
  * @see ActionValidatorManager
  * @see com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor
  */
@@ -104,6 +105,6 @@ public class ValidationInterceptor extends AroundInterceptor {
                     + invocation.getProxy().getNamespace() + "/" + invocation.getProxy().getActionName() + ".");
         }
 
-        ActionValidatorManager.validate(action, context);
+        ActionValidatorManagerFactory.getInstance().validate(action, context);
     }
 }

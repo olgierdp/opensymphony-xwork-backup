@@ -41,7 +41,7 @@ public class VisitorFieldValidatorModelTest extends TestCase {
     }
 
     public void testModelFieldErrorsAddedWithoutFieldPrefix() throws Exception {
-        ActionValidatorManager.validate(action, null);
+        ActionValidatorManagerFactory.getInstance().validate(action, null);
         assertTrue(action.hasFieldErrors());
 
         Map fieldErrors = action.getFieldErrors();
@@ -67,7 +67,7 @@ public class VisitorFieldValidatorModelTest extends TestCase {
         action.setBean(bean);
         assertTrue(action.getBean() instanceof TestBean2);
 
-        ActionValidatorManager.validate(action, null);
+        ActionValidatorManagerFactory.getInstance().validate(action, null);
         assertTrue(action.hasFieldErrors());
 
         Map fieldErrors = action.getFieldErrors();

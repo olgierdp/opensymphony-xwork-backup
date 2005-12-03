@@ -30,7 +30,7 @@ public class ExpressionValidatorTest extends TestCase {
         ActionContext.getContext().getValueStack().push(bean);
 
         DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManager.validate(bean, "expressionValidation", context);
+        ActionValidatorManagerFactory.getInstance().validate(bean, "expressionValidation", context);
         assertTrue(context.hasFieldErrors());
 
         final Map fieldErrors = context.getFieldErrors();
@@ -42,7 +42,7 @@ public class ExpressionValidatorTest extends TestCase {
 
         bean.setName("abcdefg");
         context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManager.validate(bean, "expressionValidation", context);
+        ActionValidatorManagerFactory.getInstance().validate(bean, "expressionValidation", context);
         assertFalse(context.hasFieldErrors());
     }
 

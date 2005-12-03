@@ -6,10 +6,7 @@ package com.opensymphony.xwork.validator.validators;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.util.OgnlValueStack;
-import com.opensymphony.xwork.validator.ActionValidatorManager;
-import com.opensymphony.xwork.validator.DelegatingValidatorContext;
-import com.opensymphony.xwork.validator.ValidationException;
-import com.opensymphony.xwork.validator.ValidatorContext;
+import com.opensymphony.xwork.validator.*;
 
 import java.util.Collection;
 
@@ -106,7 +103,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
             validatorContext = new DelegatingValidatorContext(parent, DelegatingValidatorContext.makeTextProvider(o, parent), parent);
         }
 
-        ActionValidatorManager.validate(o, visitorContext, validatorContext);
+        ActionValidatorManagerFactory.getInstance().validate(o, visitorContext, validatorContext);
         stack.pop();
     }
 

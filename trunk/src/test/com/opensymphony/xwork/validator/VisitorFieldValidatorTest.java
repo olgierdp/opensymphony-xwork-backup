@@ -144,6 +144,6 @@ public class VisitorFieldValidatorTest extends TestCase {
     private void validate(String context) throws ValidationException {
         ActionContext actionContext = ActionContext.getContext();
         actionContext.setName(context);
-        ActionValidatorManager.validate(action, context);
+        ActionValidatorManagerFactory.getInstance().validate(action, context);
     }
 }
