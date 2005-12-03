@@ -91,7 +91,7 @@ import java.util.*;
  */
 public class XWorkConverter extends DefaultTypeConverter {
     private static XWorkConverter instance;
-    private static final Log LOG = LogFactory.getLog(XWorkConverter.class);
+    protected static final Log LOG = LogFactory.getLog(XWorkConverter.class);
     public static final String REPORT_CONVERSION_ERRORS = "report.conversion.errors";
     public static final String CONVERSION_PROPERTY_FULLNAME = "conversion.property.fullName";
     public static final String CONVERSION_ERROR_PROPERTY_PREFIX = "invalid.fieldvalue.";
@@ -108,7 +108,7 @@ public class XWorkConverter extends DefaultTypeConverter {
     ObjectTypeDeterminer keyElementDeterminer = ObjectTypeDeterminerFactory.getInstance();
 
 
-    private XWorkConverter() {
+    protected XWorkConverter() {
         try {
             // note: this file is deprecated
             loadConversionProperties("xwork-default-conversion.properties");
@@ -139,7 +139,18 @@ public class XWorkConverter extends DefaultTypeConverter {
 
     public static XWorkConverter getInstance() {
         if (instance == null) {
-            instance = new XWorkConverter();
+            try {
+                Class clazz = Thread.currentThread().getContextClassLoader().loadClass("com.opensymphony.xwork.util.AnnotationXWorkConverter");
+                instance = (XWorkConverter) clazz.newInstance();
+                LOG.info("Detected AnnotationXWorkConverter, initializing it...");
+            } catch (ClassNotFoundException e) {
+                // this is fine, just fall back to the default object type determiner
+            } catch (Exception e) {
+                LOG.error("Exception when trying to create new AnnotationXWorkConverter", e);
+            }
+            if ( instance == null ) {
+                instance = new XWorkConverter();
+            }
         }
 
         return instance;
@@ -383,7 +394,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      * @param mapping an existing map to add new converter mappings to
      * @param clazz   class to look for converter mappings for
      */
-    private void addConverterMapping(Map mapping, Class clazz) {
+    void addConverterMapping(Map mapping, Class clazz) {
         try {
             InputStream is = FileManager.loadFile(buildConverterFilename(clazz), clazz);
 
@@ -503,7 +514,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         return mapping;
     }
 
-    private TypeConverter createTypeConverter(String className) throws Exception {
+    TypeConverter createTypeConverter(String className) throws Exception {
         Class conversionClass = Thread.currentThread().getContextClassLoader().loadClass(className);
 
         // type converters are used across users
@@ -535,7 +546,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      * @param clazz the class the TypeConverter must handle
      * @return a TypeConverter to handle the specified class or null if none can be found
      */
-    private TypeConverter lookupSuper(Class clazz) {
+    TypeConverter lookupSuper(Class clazz) {
         TypeConverter result = null;
 
         if (clazz != null) {
