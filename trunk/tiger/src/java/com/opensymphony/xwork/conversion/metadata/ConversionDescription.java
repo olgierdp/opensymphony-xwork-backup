@@ -7,7 +7,7 @@ package com.opensymphony.xwork.conversion.metadata;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.opensymphony.xwork.conversion.annotations.ConversionRule;
-import com.opensymphony.xwork.conversion.annotations.ConversionType;
+import com.opensymphony.xwork.util.DefaultObjectTypeDeterminer;
 
 import java.io.StringWriter;
 import java.io.PrintWriter;
@@ -26,10 +26,10 @@ public class ConversionDescription {
     protected static Log log = null;
 
 
-    /**
-     * Key used for type conversion of collections.
-     */
-    String COLLECTION_PREFIX = "Collection_";
+    public static final String KEY_PREFIX = "Key_";
+    public static final String ELEMENT_PREFIX = "Element_";
+    public static final String KEY_PROPERTY_PREFIX = "KeyProperty_";
+    public static final String DEPRECATED_ELEMENT_PREFIX = "Collection_";
 
     /**
      * Key used for type conversion of maps.
@@ -37,8 +37,9 @@ public class ConversionDescription {
     String MAP_PREFIX = "Map_";
 
     public String property;
-    public String typeConverter;
+    public String typeConverter = "";
     public String rule = "";
+    public String value = "";
     public String fullQualifiedClassName;
     public String type = null;
 
@@ -86,7 +87,13 @@ public class ConversionDescription {
     public void setRule(String rule) {
         if (rule != null && rule.length() > 0) {
             if (rule.equals(ConversionRule.COLLECTION.toString())) {
-                this.rule = COLLECTION_PREFIX;
+                this.rule = DefaultObjectTypeDeterminer.DEPRECATED_ELEMENT_PREFIX;
+            } else if (rule.equals(ConversionRule.ELEMENT.toString())) {
+                this.rule = DefaultObjectTypeDeterminer.ELEMENT_PREFIX;
+            } else if (rule.equals(ConversionRule.KEY.toString())) {
+                this.rule = DefaultObjectTypeDeterminer.KEY_PREFIX;
+            } else if (rule.equals(ConversionRule.KEY_PROPERTY.toString())) {
+                this.rule = DefaultObjectTypeDeterminer.KEY_PROPERTY_PREFIX;
             } else if (rule.equals(ConversionRule.MAP.toString())) {
                 this.rule = MAP_PREFIX;
             }
@@ -102,6 +109,14 @@ public class ConversionDescription {
         return type;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     /**
      * Returns the conversion description as property entry.
      * <p>
@@ -109,6 +124,7 @@ public class ConversionDescription {
      * property.name = converter.className<br/>
      * Collection_property.name = converter.className<br/>
      * Map_property.name = converter.className
+     * KeyProperty_name = id
      * </p>
      *
      * @return the conversion description as property entry.
@@ -121,8 +137,11 @@ public class ConversionDescription {
             writer.print(rule);
             writer.print(property);
             writer.print("=");
-            writer.print(typeConverter);
-
+            if ( rule.startsWith(DefaultObjectTypeDeterminer.KEY_PROPERTY_PREFIX) && value != null && value.length() > 0 ) {
+                writer.print(value);
+            } else {
+                writer.print(typeConverter);
+            }
         } finally {
             if (writer != null) {
                 writer.flush();

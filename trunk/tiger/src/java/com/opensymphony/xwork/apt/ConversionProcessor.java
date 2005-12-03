@@ -108,7 +108,9 @@ public class ConversionProcessor extends AbstractProcessor {
                     result.setRule(value.getValue().toString());
                 } else if ("converter".equals(name)) {
                     result.setTypeConverter(value.getValue().toString());
-                } else if ("property".equals(name)) {
+                } else if ("message".equals(name)) {
+                    result.setValue(value.getValue().toString());
+                } else if ("key".equals(name)) {
                     String s = value.getValue().toString();
                     if ( s != null && s.length() > 0 ) {
                         result.setProperty(s);

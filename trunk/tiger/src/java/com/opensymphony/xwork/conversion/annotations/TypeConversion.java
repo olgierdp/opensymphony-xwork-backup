@@ -31,18 +31,21 @@ import java.lang.annotation.*;
 public @interface TypeConversion {
 
     /**
-     * The optional property name used within TYPE or PACKAGE level annotations.
+     * The optional key name used within TYPE level annotations.
+     * Defaults to the property name.
      */
-    String property() default "";
+    String key() default "";
 
     /**
      * The ConversionType can be either APPLICATION or CLASS.
-     * Defaults to APPLICATION.
+     * Defaults to CLASS.
+     *
+     * Note: If you use ConversionType.APPLICATION, you can not set a value!
      */
     ConversionType type() default ConversionType.CLASS;
 
     /**
-     * The ConversionRule can be a property, a Collection or a Map.
+     * The ConversionRule can be a PROPERTY, KEY, KEY_PROPERTY, ELEMENT, COLLECTION (deprecated) or a MAP.
      * Note: Collection and Map vonversion rules can be determined via com.opensymphony.xwork.util.GenericsObjectTypeDeterminer.
      *
      * @see com.opensymphony.xwork.util.GenericsObjectTypeDeterminer
@@ -51,7 +54,16 @@ public @interface TypeConversion {
 
     /**
      * The class of the TypeConverter to be used as converter.
+     *
+     * Note: This can not be used with ConversionRule.KEY_PROPERTY! 
      */
-    Class converter();
+    String converter() default "";
+
+    /**
+     * If used with ConversionRule.KEY_PROPERTY specify a value here!
+     *
+     * Note: If you use ConversionType.APPLICATION, you can not set a value!
+     */
+    String value() default "";
 
 }

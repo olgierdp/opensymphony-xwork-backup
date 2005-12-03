@@ -12,7 +12,7 @@ package com.opensymphony.xwork.conversion.annotations;
  */
 public enum ConversionRule {
 
-    PROPERTY, COLLECTION, MAP;
+    PROPERTY, COLLECTION, MAP, KEY, KEY_PROPERTY, ELEMENT;
 
     @Override
     public String toString() {
