@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork.validator;
 
-import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -18,8 +17,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.opensymphony.xwork.validator.annotations.*;
-import com.opensymphony.xwork.apt.Generator;
-import com.sun.mirror.declaration.MethodDeclaration;
 
 /**
  * <code>AnnotationValidationConfigurationBuilder</code>
@@ -52,8 +49,6 @@ public class AnnotationValidationConfigurationBuilder {
 
         if (o instanceof Method) {
             Method method = (Method) o;
-            String name = method.getName();
-
             fieldName = resolvePropertyName(method);
 
             annotations = method.getAnnotations();
@@ -731,7 +726,7 @@ public class AnnotationValidationConfigurationBuilder {
         return vCfg;
     }
 
-    public static List buildAnnotationClassValidatorConfigs(Class aClass) {
+    public static List<ValidatorConfig> buildAnnotationClassValidatorConfigs(Class aClass) {
 
         List<ValidatorConfig> result = new ArrayList<ValidatorConfig>();
 
