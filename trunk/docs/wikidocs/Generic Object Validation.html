@@ -19,7 +19,7 @@
 				    </div>
 
 				    <p class="paragraph">XWork&#039;s validation framework is not just limited to Actions.  It can be used to validate virtually any object.  Once you&#039;ve set up your validator config file (<b class="strong">validators.xml</b>) and your validation rules (<b class="strong">ClassName-validation.xml</b>), all it takes are a couple lines of code:</p><div class="code"><div class="codeContent">
-<pre><span class="java&#45;object">String</span> context = <span class="java&#45;keyword">null</span>;&#10;ValidatorContext context = <span class="java&#45;keyword">new</span> DelegatingValidatorContext(objectToValidate);&#10;ActionValidatorManager.validate(objectToValidate, <span class="java&#45;keyword">null</span>, context);</pre>
+<pre><span class="java&#45;object">String</span> context = <span class="java&#45;keyword">null</span>;&#10;ValidatorContext context = <span class="java&#45;keyword">new</span> DelegatingValidatorContext(objectToValidate);&#10;ActionValidatorFactory.getInstance().validate(objectToValidate, <span class="java&#45;keyword">null</span>, context);</pre>
 </div></div><p class="paragraph">This will cause any errors to be logged (where it gets logged to depends on how commons-logging is configured).</p>Ideally, you would either implement your own ValidatorContext to handle how error messages are logged and evaluated, or have your objects that are to be evaluated implement ValidationAware, TextProvider and/or LocaleProvider.<p class="paragraph">Matthew Payne has a JUnit demo of this at <a href="http://www.sutternow.com/index.do?post=51fe0c00fc17aec500fc33f6bb8e006e" title="Visit page outside Confluence">&#104;ttp://www.sutternow.com/index.do?post=51fe0c00fc17aec500fc33f6bb8e006e</a>.</p>
 
 				    
