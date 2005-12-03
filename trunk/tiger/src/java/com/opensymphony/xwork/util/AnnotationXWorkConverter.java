@@ -119,7 +119,7 @@ public class AnnotationXWorkConverter extends XWorkConverter {
      * @param mapping an existing map to add new converter mappings to
      * @param clazz   class to look for converter mappings for
      */
-    protected void addConverterMapping(Map mapping, Class clazz) {
+    void addConverterMapping(Map mapping, Class clazz) {
 
         try {
             InputStream is = FileManager.loadFile(buildConverterFilename(clazz), clazz);
