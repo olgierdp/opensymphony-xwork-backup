@@ -125,7 +125,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
          * Translates a simple field name into a full field name in Ognl syntax
          *
          * @param fieldName
-         * @return
+         * @return field name in OGNL syntax
          */
         public String getFullFieldName(String fieldName) {
             return field + "." + fieldName;
