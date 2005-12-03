@@ -1,10 +1,16 @@
 /*
- * Copyright (c) 2005 Your Corporation. All Rights Reserved.
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
  */
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.XWorkTestCase;
+import com.opensymphony.xwork.SimpleAnnotationAction;
+import com.opensymphony.xwork.test.AnnotationDataAware2;
+import com.opensymphony.xwork.test.SimpleAnnotationAction2;
+import com.opensymphony.xwork.test.SimpleAnnotationAction3;
+import com.opensymphony.xwork.test.AnnotationUser;
 import com.opensymphony.xwork.validator.validators.*;
 
 import java.util.List;

@@ -1,24 +1,32 @@
 /*
- * Copyright (c) 2005 Your Corporation. All Rights Reserved.
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
  */
-package com.opensymphony.xwork.validator;
+package com.opensymphony.xwork.test;
 
 import com.opensymphony.xwork.util.Bar;
 import com.opensymphony.xwork.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork.validator.annotations.Validation;
 import com.opensymphony.xwork.validator.annotations.RequiredStringValidator;
+import com.opensymphony.xwork.conversion.annotations.TypeConversion;
+import com.opensymphony.xwork.conversion.annotations.Conversion;
 
 
 /**
  * Implemented by SimpleAction3 and TestBean2 to test class hierarchy traversal.
  *
  * @author Mark Woon
+ * @author Rainer Hermanns
  */
 @Validation()
+@Conversion()
 public interface AnnotationDataAware {
 
     void setBarObj(Bar b);
 
+    @TypeConversion(
+            key = "barObj", converter = "com.opensymphony.xwork.util.FooBarConverter"
+    )
     Bar getBarObj();
 
     @RequiredFieldValidator(message = "You must enter a value for data.")

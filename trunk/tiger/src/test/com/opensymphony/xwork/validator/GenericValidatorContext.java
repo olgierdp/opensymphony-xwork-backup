@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2005 Your Corporation. All Rights Reserved.
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
  */
 package com.opensymphony.xwork.validator;
 
@@ -11,6 +12,7 @@ import java.util.*;
  *
  * @author Mark Woon
  * @author Matthew Payne
+ * @author Rainer Hermanns
  */
 public class GenericValidatorContext extends DelegatingValidatorContext {
 

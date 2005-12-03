@@ -1,6 +1,13 @@
-/* com.opensymphony.xwork.apt.AptRunnerResult, created Aug 13, 2005 */
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork.apt;
 
+/**
+ * @author Rainer Hermanns
+ * @author Nils Hartmann
+ */
 public class AptRunnerResult {
 	
 	private final String _command;

@@ -1,7 +1,8 @@
 /*
- * Copyright (c) 2005 Your Corporation. All Rights Reserved.
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
  */
-package com.opensymphony.xwork.validator;
+package com.opensymphony.xwork.test;
 
 import com.opensymphony.xwork.validator.annotations.*;
 
@@ -9,23 +10,8 @@ import com.opensymphony.xwork.validator.annotations.*;
  * Marker interface to help test hierarchy traversal.
  *
  * @author Mark Woon
+ * @author Rainer Hermanns
  */
-/*
-    <field name="email">
-        <field-validator type="required" short-circuit="true">
-            <message>You must enter a value for email.</message>
-        </field-validator>
-    </field>
-    <field name="email2">
-        <field-validator type="required" short-circuit="true">
-            <message>You must enter a value for email2.</message>
-        </field-validator>
-    </field>
-    <validator type="expression" short-circuit="true">
-        <param name="expression">email.equals(email2)</param>
-        <message>Email not the same as email2</message>
-    </validator>
-*/
 @Validation(
         validations = @Validations(
                 requiredFields = {

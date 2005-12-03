@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2005 aixcept (Rainer Hermanns). All Rights Reserved.
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
  */
 package com.opensymphony.xwork.conversion;
 
@@ -34,7 +35,7 @@ public class ConversionTestAction implements Action {
         return convertInt;
     }
 
-    @TypeConversion(type = ConversionType.APPLICATION, converter = XWorkBasicConverter.class)
+    @TypeConversion(type = ConversionType.APPLICATION, converter = "com.opensymphony.xwork.util.XWorkBasicConverter")
     public void setConvertInt( String convertInt ) {
         this.convertInt = convertInt;
     }
@@ -43,7 +44,7 @@ public class ConversionTestAction implements Action {
         return convertDouble;
     }
 
-    @TypeConversion(converter = XWorkBasicConverter.class)
+    @TypeConversion(converter = "com.opensymphony.xwork.util.XWorkBasicConverter")
     public void setConvertDouble( String convertDouble ) {
         this.convertDouble = convertDouble;
     }
@@ -52,7 +53,7 @@ public class ConversionTestAction implements Action {
         return users;
     }
 
-    @TypeConversion(rule = ConversionRule.COLLECTION, converter = String.class)
+    @TypeConversion(rule = ConversionRule.COLLECTION, converter = "java.lang.String")
     public void setUsers( List users ) {
         this.users = users;
     }
@@ -61,7 +62,7 @@ public class ConversionTestAction implements Action {
         return keyValues;
     }
 
-    @TypeConversion(rule = ConversionRule.MAP, converter = BigInteger.class)
+    @TypeConversion(rule = ConversionRule.MAP, converter = "java.math.BigInteger")
     public void setKeyValues( HashMap keyValues ) {
         this.keyValues = keyValues;
     }
@@ -75,7 +76,7 @@ public class ConversionTestAction implements Action {
      *                   Application level exceptions should be handled by returning
      *                   an error value, such as Action.ERROR.
      */
-    @TypeConversion(type = ConversionType.APPLICATION, property = "java.util.Date", converter = XWorkBasicConverter.class)
+    @TypeConversion(type = ConversionType.APPLICATION, key = "java.util.Date", converter = "com.opensymphony.xwork.util.XWorkBasicConverter")
     public String execute() throws Exception {
         return SUCCESS;
     }

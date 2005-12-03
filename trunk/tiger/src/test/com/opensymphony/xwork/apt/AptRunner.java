@@ -1,4 +1,7 @@
-/* com.opensymphony.xwork.apt.AptRunner, created Jul 22, 2005 */
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork.apt;
 
 import java.io.BufferedReader;

@@ -1,4 +1,7 @@
-/* com.opensymphony.xwork.apt.AbstractAptTestCase, created Jul 22, 2005 */
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork.apt;
 
 import java.io.File;
@@ -22,8 +25,8 @@ public class AbstractAptTestCase extends TestCase {
 
     protected static final Log log = LogFactory.getLog(AbstractAptTestCase.class);
 
-    public final static String SOURCE_DIR="src/test";
-    public final static String DEST_DIR="build/test_dest";
+    public final static String SOURCE_DIR="tiger/src/test";
+    public final static String DEST_DIR="tiger/build/test_dest";
 
     public AbstractAptTestCase(String name) {
         super(name);

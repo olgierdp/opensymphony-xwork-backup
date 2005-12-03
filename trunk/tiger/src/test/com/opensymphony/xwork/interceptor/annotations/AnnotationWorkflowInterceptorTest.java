@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork.interceptor.annotations;
 
 import java.util.Arrays;
@@ -16,6 +20,7 @@ import com.opensymphony.xwork.config.entities.PackageConfig;
 
 /**
  * @author Zsolt Szasz, zsolt at lorecraft dot com
+ * @author Rainer Hermanns
  */
 public class AnnotationWorkflowInterceptorTest extends TestCase {
 	private static final String ANNOTATED_ACTION = "annotatedAction";

@@ -1,9 +1,14 @@
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork.interceptor.annotations;
 
 import com.opensymphony.xwork.Action;
 
 /**
  * @author Zsolt Szasz, zsolt at lorecraft dot com
+ * @author Rainer Hermanns
  */
 public class ShortcircuitedAction extends BaseAnnotatedAction {	
 	@Before

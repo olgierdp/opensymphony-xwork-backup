@@ -1,9 +1,13 @@
 /*
- * Copyright (c) 2005 Your Corporation. All Rights Reserved.
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
  */
-package com.opensymphony.xwork.validator;
+package com.opensymphony.xwork.test;
 
 import com.opensymphony.xwork.validator.annotations.*;
+import com.opensymphony.xwork.util.KeyProperty;
+import com.opensymphony.xwork.conversion.annotations.TypeConversion;
+import com.opensymphony.xwork.conversion.annotations.ConversionRule;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,17 +18,8 @@ import java.util.Map;
  * Test bean.
  *
  * @author Mark Woon
+ * @author Rainer Hermanns
  */
-/*
-<validator type="expression">
-    <param name="expression">email.startsWith('mark')</param>
-    <message>Email does not start with mark</message>
-</validator>
-<validator type="expression">
-    <param name="expression">email2.startsWith('mark')</param>
-    <message>Email2 does not start with mark</message>
-</validator>
-*/
 @Validation(
         validations = @Validations(
                 expressions = {
@@ -51,17 +46,6 @@ public class AnnotationUser implements AnnotationUserMarker {
         return collection;
     }
 
-    /*
-    <field name="email">
-        <field-validator type="email" short-circuit="true">
-            <message>Not a valid e-mail.</message>
-        </field-validator>
-        <field-validator type="fieldexpression">
-            <param name="expression">email.endsWith('mycompany.com')</param>
-            <message>Email not from the right company.</message>
-        </field-validator>
-    </field>
-    */
     @EmailValidator(shortCircuit = true, message = "Not a valid e-mail.")
     @FieldExpressionValidator(expression = "email.endsWith('mycompany.com')", message = "Email not from the right company.")
     public void setEmail(String email) {
@@ -72,17 +56,6 @@ public class AnnotationUser implements AnnotationUserMarker {
         return email;
     }
 
-    /*
-    <field name="email2">
-        <field-validator type="email">
-            <message>Not a valid e-mail2.</message>
-        </field-validator>
-        <field-validator type="fieldexpression">
-            <param name="expression">email.endsWith('mycompany.com')</param>
-            <message>Email2 not from the right company.</message>
-        </field-validator>
-    </field>
-    */
     @EmailValidator(message = "Not a valid e-mail2.")
     @FieldExpressionValidator(expression = "email2.endsWith('mycompany.com')", message = "Email2 not from the right company.")
     public void setEmail2(String email) {
@@ -97,10 +70,13 @@ public class AnnotationUser implements AnnotationUserMarker {
         list = l;
     }
 
+    @KeyProperty( value = "name")
+    @TypeConversion( converter = "java.lang.String", rule = ConversionRule.COLLECTION)
     public List getList() {
         return list;
     }
 
+    @TypeConversion( converter = "java.lang.String", rule = ConversionRule.MAP)
     public void setMap(Map m) {
         map = m;
     }
@@ -109,13 +85,6 @@ public class AnnotationUser implements AnnotationUserMarker {
         return map;
     }
 
-    /*
-    <field name="name">
-        <field-validator type="required">
-            <message key="name.key">You must enter a value for name.</message>
-        </field-validator>
-    </field>
-    */
     @RequiredFieldValidator(key = "name.key", message = "You must enter a value for name.")
     public void setName(String name) {
         this.name = name;

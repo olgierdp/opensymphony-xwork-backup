@@ -1,9 +1,15 @@
-/* com.opensymphony.xwork.apt.ComponentProcessorTest, created Aug 13, 2005 */
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork.apt;
 
 import java.io.File;
 import java.util.Properties;
 
+/**
+ * @author Rainer Hermanns
+ */
 public class ConversionProcessorTest extends AbstractAptTestCase {
 	
 	public ConversionProcessorTest(String name) {
