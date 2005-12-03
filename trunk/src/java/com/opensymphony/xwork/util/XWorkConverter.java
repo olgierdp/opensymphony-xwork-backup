@@ -87,6 +87,7 @@ import java.util.*;
  * <!-- END SNIPPET: error-reporting -->
  *
  * @author <a href="mailto:plightbo@gmail.com">Pat Lightbody</a>
+ * @author Rainer Hermanns
  * @see XWorkBasicConverter
  */
 public class XWorkConverter extends DefaultTypeConverter {
