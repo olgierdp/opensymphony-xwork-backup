@@ -11,11 +11,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.opensymphony.xwork.validator.annotations.*;
+import com.opensymphony.xwork.apt.Generator;
+import com.sun.mirror.declaration.MethodDeclaration;
 
 /**
  * <code>AnnotationValidationConfigurationBuilder</code>
@@ -27,6 +31,10 @@ import com.opensymphony.xwork.validator.annotations.*;
 public class AnnotationValidationConfigurationBuilder {
 
     private static final Log log = LogFactory.getLog(AnnotationValidationConfigurationBuilder.class);
+
+    private static final Pattern SETTER_PATTERN = Pattern.compile("set([A-Z][A-Za-z0-9]*)$");
+    private static final Pattern GETTER_PATTERN = Pattern.compile("(get|is|has)([A-Z][A-Za-z0-9]*)$");
+
 
 
     private static List<ValidatorConfig> processAnnotations(Object o) {
@@ -46,7 +54,7 @@ public class AnnotationValidationConfigurationBuilder {
             Method method = (Method) o;
             String name = method.getName();
 
-            fieldName = Introspector.decapitalize(name.substring(3));
+            fieldName = resolvePropertyName(method);
 
             annotations = method.getAnnotations();
         }
@@ -400,7 +408,7 @@ public class AnnotationValidationConfigurationBuilder {
 
         return vCfg;
     }
-    
+
     private static ValidatorConfig processStringRegexValidatorAnnotation(StringRegexValidator v, String fieldName) {
         String validatorType = "stringregex";
 
@@ -745,6 +753,30 @@ public class AnnotationValidationConfigurationBuilder {
 
         return result;
 
+    }
+
+    /**
+     * Returns the property name for a method.
+     * This method is independant from property fields.
+     *
+     * @param method The method to get the property name for.
+     * @return the property name for given method; null if non could be resolved.
+     */
+    public static String resolvePropertyName(Method method) {
+
+        Matcher matcher = SETTER_PATTERN.matcher(method.getName());
+        if (matcher.matches() && method.getParameterTypes().length == 1) {
+            String raw = matcher.group(1);
+            return raw.substring(0, 1).toLowerCase() + raw.substring(1);
+        }
+
+        matcher = GETTER_PATTERN.matcher(method.getName());
+        if (matcher.matches() && method.getParameterTypes().length == 0) {
+            String raw = matcher.group(2);
+            return raw.substring(0, 1).toLowerCase() + raw.substring(1);
+        }
+
+        return null;
     }
 
 }
