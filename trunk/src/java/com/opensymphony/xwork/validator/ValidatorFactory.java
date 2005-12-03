@@ -53,11 +53,11 @@ import java.util.Map;
  * </p>
  * 
  * <p><b>Note:</b> 
- * <!-- START SNIPPET: turnOnValidators -->
+ * <!-- START SNIPPET: turningOnValidators -->
  * The default validationWorkflowStack already includes this.<br/>
  * All that is required to enable validation for an Action is to put the 
  * ValidationInterceptor in the interceptor refs of the action (see xwork.xml) like so:
- * <!-- END SNIPPET: turnOnValidators -->
+ * <!-- END SNIPPET: turningOnValidators -->
  * </p>
  * 
  * <pre>
