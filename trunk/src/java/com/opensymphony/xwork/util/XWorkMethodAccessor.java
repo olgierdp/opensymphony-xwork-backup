@@ -10,6 +10,7 @@ import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
+import ognl.PropertyAccessor;
 
 import java.beans.PropertyDescriptor;
 import java.util.Collection;
@@ -49,12 +50,17 @@ public class XWorkMethodAccessor extends ObjectMethodAccessor {
                   	    //thereafter
 
                   	    Object propVal=OgnlRuntime.getProperty(ogContext, object, string);
-                  	    return OgnlRuntime.getProperty(ogContext,propVal,objects[0]);
+                  	    //use the Collection property accessor instead of the individual property accessor, because 
+                  	    //in the case of Lists otherwise the index property could be used
+                  	    PropertyAccessor accessor=OgnlRuntime.getPropertyAccessor(Collection.class);
+                  	    
+                  	    return accessor.getProperty(ogContext,propVal,objects[0]);
                   	}
               }
             }	catch (Exception oe) {
                 //this exception should theoretically never happen
                 //log it
+                oe.printStackTrace();
             }
 
         }

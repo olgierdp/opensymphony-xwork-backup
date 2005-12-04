@@ -136,17 +136,23 @@ public class SetPropertiesTest extends TestCase {
 
     }
 
-    public void testAddingAndModifyingSetsWithObjects() {
+    
+    public void testAddingAndModifyingCollectionWithObjects() {
+        doTestAddingAndModifyingCollectionWithObjects(new HashSet());
+        doTestAddingAndModifyingCollectionWithObjects(new ArrayList());
+        
+    }
+    public void doTestAddingAndModifyingCollectionWithObjects(Collection barColl) {
         OgnlValueStack vs = new OgnlValueStack();
         Foo foo = new Foo();
-        HashSet barSet = new HashSet();
-        foo.setBarSet(barSet);
+        
+        foo.setBarCollection(barColl);
         Bar bar1 = new Bar();
         bar1.setId(new Long(11));
-        barSet.add(bar1);
+        barColl.add(bar1);
         Bar bar2 = new Bar();
         bar2.setId(new Long(22));
-        barSet.add(bar2);
+        barColl.add(bar2);
         //try modifying bar1 and bar2
         //check the logs here to make sure
         //the Map is being created
@@ -155,9 +161,9 @@ public class SetPropertiesTest extends TestCase {
         vs.push(foo);
         String bar1Title = "The Phantom Menace";
         String bar2Title = "The Clone Wars";
-        vs.setValue("barSet(22).title", bar2Title);
-        vs.setValue("barSet(11).title", bar1Title);
-        Iterator barSetIter = barSet.iterator();
+        vs.setValue("barCollection(22).title", bar2Title);
+        vs.setValue("barCollection(11).title", bar1Title);
+        Iterator barSetIter = barColl.iterator();
         while (barSetIter.hasNext()) {
             Bar next = (Bar) barSetIter.next();
             if (next.getId().intValue() == 22) {
@@ -169,10 +175,10 @@ public class SetPropertiesTest extends TestCase {
         //now test adding
         String bar3Title = "Revenge of the Sith";
         String bar4Title = "A New Hope";
-        vs.setValue("barSet.makeNew[4].title", bar4Title, true);
-        vs.setValue("barSet.makeNew[0].title", bar3Title, true);
-        assertEquals(4, barSet.size());
-        barSetIter = barSet.iterator();
+        vs.setValue("barCollection.makeNew[4].title", bar4Title, true);
+        vs.setValue("barCollection.makeNew[0].title", bar3Title, true);
+        assertEquals(4, barColl.size());
+        barSetIter = barColl.iterator();
 
         while (barSetIter.hasNext()) {
             Bar next = (Bar) barSetIter.next();
