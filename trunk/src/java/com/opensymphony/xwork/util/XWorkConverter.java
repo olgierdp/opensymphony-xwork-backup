@@ -20,6 +20,10 @@ import java.util.*;
 
 
 /**
+ * XWorkConverter is a singleton used by many of the WebWork's Ognl extention points,
+ * such as InstantiatingNullHandler, XWorkListPropertyAccessor etc to do object 
+ * conversion.
+ * 
  * <!-- START SNIPPET: javadoc -->
  *
  * Type conversion is great for situations where you need to turn a String in to a more complex object. Because the web
@@ -176,6 +180,16 @@ public class XWorkConverter extends DefaultTypeConverter {
         return convertValue(map, null, null, null, o, aClass);
     }
 
+    /**
+     * Convert value from one form to another.
+     * Minimum requirement of arguments:
+     * <ul>
+     * 		<li>supplying context, toClass and value</li>
+     * 		<li>supplying context, target and value.</li>
+     * </ul>
+     * 
+     * @see ognl.TypeConverter#convertValue(java.util.Map, java.lang.Object, java.lang.reflect.Member, java.lang.String, java.lang.Object, java.lang.Class)
+     */
     public Object convertValue(Map context, Object target, Member member, String property, Object value, Class toClass) {
         //
         // Process the conversion using the default mappings, if one exists
