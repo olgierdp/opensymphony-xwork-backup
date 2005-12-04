@@ -12,9 +12,12 @@ import ognl.Ognl;
 import ognl.TypeConverter;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -23,36 +26,38 @@ import java.util.*;
 
 /**
  * <!-- START SNIPPET: javadoc -->
- *
+ * <p/>
  * WebWork will automatically handle the most common type conversion for you. This includes support for converting to
  * and from Strings for each of the following:
- *
+ * <p/>
  * <ul>
- *
+ * <p/>
  * <li>String</li>
- *
+ * <p/>
  * <li>boolean / Boolean</li>
- *
+ * <p/>
  * <li>char / Character</li>
- *
+ * <p/>
  * <li>int / Integer, float / Float, long / Long, double / Double</li>
- *
+ * <p/>
  * <li>dates - uses the SHORT format for the Locale associated with the current request</li>
- *
+ * <p/>
  * <li>arrays - assuming the individual strings can be coverted to the individual items</li>
- *
+ * <p/>
  * <li>collections - if not object type can be determined, it is assumed to be a String and a new ArrayList is
  * created</li>
- *
+ * <p/>
  * </ul>
- *
+ * <p/>
  * <p/> Note that with arrays the type conversion will defer to the type of the array elements and try to convert each
  * item individually. As with any other type conversion, if the conversion can't be performed the standard type
  * conversion error reporting is used to indicate a problem occured while processing the type conversion.
- *
+ * <p/>
  * <!-- END SNIPPET: javadoc -->
  *
  * @author <a href="mailto:plightbo@gmail.com">Pat Lightbody</a>
+ * @author Mike Mosiewicz
+ * @author Rainer Hermanns
  */
 public class XWorkBasicConverter extends DefaultTypeConverter {
 
@@ -72,8 +77,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = doConvertToBoolean(value);
         } else if (toType.isArray()) {
             result = doConvertToArray(context, o, member, s, value, toType);
-        } else if (toType == Date.class) {
-            result = doConvertToDate(context, value);
+        } else if (Date.class.isAssignableFrom(toType)) {
+            result = doConvertToDate(context, value, toType);
         } else if (Collection.class.isAssignableFrom(toType)) {
             result = doConvertToCollection(context, o, member, s, value, toType);
         } else if (toType == Character.class) {
@@ -259,17 +264,28 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return result;
     }
 
-    private Object doConvertToDate(Map context, Object value) {
+    private Object doConvertToDate(Map context, Object value, Class toType) {
         Date result = null;
 
         if (value instanceof String) {
             String sa = (String) value;
             Locale locale = getLocale(context);
 
-            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+            DateFormat df =
+                    java.sql.Time.class == toType ?
+                            DateFormat.getTimeInstance(DateFormat.MEDIUM, locale) :
+                            DateFormat.getDateInstance(DateFormat.SHORT, locale);
 
             try {
                 result = df.parse(sa);
+                if (! (Date.class == toType)) {
+                    try {
+                        Constructor constructor = toType.getConstructor(new Class[]{long.class});
+                        return constructor.newInstance(new Object[]{new Long(result.getTime())});
+                    } catch (Exception e) {
+                        throw new XworkException("Couldn't create class " + toType + " using default (long) constructor", e);
+                    }
+                }
             } catch (ParseException e) {
                 throw new XworkException("Could not parse date", e);
             }
@@ -348,7 +364,9 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
             result = TextUtils.join(", ", intArray);
         } else if (value instanceof Date) {
-            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, getLocale(context));
+            DateFormat df = value instanceof java.sql.Time ?
+                    DateFormat.getTimeInstance(DateFormat.MEDIUM, getLocale(context)) :
+                    DateFormat.getDateInstance(DateFormat.SHORT, getLocale(context));
             result = df.format(value);
         } else if (value instanceof String[]) {
             result = TextUtils.join(", ", (String[]) value);

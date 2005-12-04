@@ -77,10 +77,21 @@ public class XWorkConverterTest extends TestCase {
 
         SimpleDateFormat format = new SimpleDateFormat("mm/dd/yyyy hh:mm:ss");
         Date date = format.parse("01/10/2001 00:00:00");
+
+        SimpleDateFormat formatt = new SimpleDateFormat("hh:mm:ss");
+        java.sql.Time datet = new java.sql.Time( formatt.parse("10:11:12").getTime());
+
         String dateStr = (String) converter.convertValue(context, null, null, null, date, String.class);
+        String datetStr = (String) converter.convertValue(context, null, null, null, datet, String.class);
+
         Date date2 = (Date) converter.convertValue(context, null, null, null, dateStr, Date.class);
         assertEquals(date, date2);
-    }
+        java.sql.Date date3 = (java.sql.Date) converter.convertValue(context, null, null, null, dateStr, java.sql.Date.class);
+        assertEquals(date, date3);
+        java.sql.Timestamp ts = (java.sql.Timestamp) converter.convertValue(context, null, null, null, dateStr, java.sql.Timestamp.class);
+        assertEquals(date, ts);
+        java.sql.Time time1= (java.sql.Time) converter.convertValue(context, null, null, null, datetStr, java.sql.Time.class);
+        assertEquals(datet, time1);    }
 
     public void testFieldErrorMessageAddedForComplexProperty() {
         SimpleAction action = new SimpleAction();
