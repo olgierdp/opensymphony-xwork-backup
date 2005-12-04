@@ -17,6 +17,7 @@ import java.util.Map;
 
 /**
  * @author $Author$
+ * @author Rainer Hermanns
  * @version $Revision$
  */
 public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, ClassResolver {
@@ -102,7 +103,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     if (e.getReason() != null) {
                         final String msg = "Caught an Ognl exception while getting property " + name;
                         log.error(msg, e);
-                        throw new RuntimeException(msg);
+                        throw new RuntimeException(msg, e.getReason());
                     }
                 } catch (IntrospectionException e) {
                     // this is OK if this happens, we'll just keep trying the next
