@@ -65,7 +65,7 @@ public class InstantiatingNullHandler implements NullHandler {
     }
 
     public Object nullPropertyValue(Map context, Object target, Object property) {
-    	LOG.debug("Entering nullPropertyValue [target="+target+", property="+property+"]");
+    	LOG.debug("Entering nullPropertyValue [context="+context+", target="+target+", property="+property+"]");
     	boolean c = OgnlContextState.isCreatingNullObjects(context);
 
         if (!c) {

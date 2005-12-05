@@ -132,6 +132,7 @@ public class LocalizedTextUtilTest extends TestCase {
             bean.setBarObj(bar);
 
             Mock mockActionInvocation = new Mock(ActionInvocation.class);
+            mockActionInvocation.expectAndReturn("hashCode", 0);
             mockActionInvocation.expectAndReturn("getAction", action);
             ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
             ActionContext.getContext().getValueStack().push(action);
