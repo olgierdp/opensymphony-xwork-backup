@@ -60,11 +60,19 @@ public class InstantiatingNullHandler implements NullHandler {
 
 
     public Object nullMethodResult(Map context, Object target, String methodName, Object[] args) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Entering nullMethodResult ");
+        }
+
         return null;
     }
 
     public Object nullPropertyValue(Map context, Object target, Object property) {
-    	boolean c = OgnlContextState.isCreatingNullObjects(context);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Entering nullPropertyValue [target="+target+", property="+property+"]");
+        }
+
+        boolean c = OgnlContextState.isCreatingNullObjects(context);
 
         if (!c) {
             return null;
