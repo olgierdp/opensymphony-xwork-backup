@@ -49,7 +49,7 @@ import org.springframework.web.context.WebApplicationContext;
 public class ActionAutowiringInterceptor extends AroundInterceptor implements ApplicationContextAware {
     private static final Log log = LogFactory.getLog(ActionAutowiringInterceptor.class);
 
-    public static final String APPLICATION_CONTEXT = "org.opensymphony.xwork.spring.interceptor.ActionAutowiringInterceptor.applicationContext";
+    public static final String APPLICATION_CONTEXT = "com.opensymphony.xwork.spring.interceptor.ActionAutowiringInterceptor.applicationContext";
 
     private boolean initialized = false;
     private ApplicationContext context;
