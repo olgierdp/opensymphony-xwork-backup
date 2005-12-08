@@ -5,11 +5,11 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.util.TextParseUtil;
 import com.opensymphony.xwork.interceptor.AroundInterceptor;
+import com.opensymphony.xwork.util.TextParseUtil;
 
-import java.util.Set;
 import java.util.Collections;
+import java.util.Set;
 
 
 /**
@@ -21,12 +21,10 @@ import java.util.Collections;
  * is often one of the last (or second to last) interceptors applied in a stack, as it assumes that all values have
  * already been set on the action.
  *
- * <p/>This interceptor does nothing if the name of the method being invoked
- * is specified in the <b>excludeMethods</b> parameter. <b>excludeMethods</b>
- * accepts a comma-delimited list of method names. For example, requests to
- * <b>foo!input.action</b> and <b>foo!back.action</b> will be skipped by this
- * interceptor if you set the <b>excludeMethods</b> parameter to "input,
- * back".
+ * <p/>This interceptor does nothing if the name of the method being invoked is specified in the <b>excludeMethods</b>
+ * parameter. <b>excludeMethods</b> accepts a comma-delimited list of method names. For example, requests to
+ * <b>foo!input.action</b> and <b>foo!back.action</b> will be skipped by this interceptor if you set the
+ * <b>excludeMethods</b> parameter to "input, back".
  *
  * <p/>Note that this has nothing to do with the {@link com.opensymphony.xwork.Validateable} interface and simply adds
  * error messages to the action. The workflow of the action request does not change due to this interceptor. Rather,

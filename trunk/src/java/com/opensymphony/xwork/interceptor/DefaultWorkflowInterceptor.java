@@ -21,12 +21,10 @@ import java.util.Set;
  *
  * An interceptor that does some basic validation workflow before allowing the interceptor chain to continue.
  *
- * <p/>This interceptor does nothing if the name of the method being invoked
- * is specified in the <b>excludeMethods</b> parameter. <b>excludeMethods</b>
- * accepts a comma-delimited list of method names. For example, requests to
- * <b>foo!input.action</b> and <b>foo!back.action</b> will be skipped by this
- * interceptor if you set the <b>excludeMethods</b> parameter to "input,
- * back".
+ * <p/>This interceptor does nothing if the name of the method being invoked is specified in the <b>excludeMethods</b>
+ * parameter. <b>excludeMethods</b> accepts a comma-delimited list of method names. For example, requests to
+ * <b>foo!input.action</b> and <b>foo!back.action</b> will be skipped by this interceptor if you set the
+ * <b>excludeMethods</b> parameter to "input, back".
  *
  * <p/>The order of execution in the workflow is:
  *
@@ -118,6 +116,9 @@ public class DefaultWorkflowInterceptor implements Interceptor {
         return invocation.invoke();
     }
 
-    public void destroy() {}
-    public void init() {}
+    public void destroy() {
+    }
+
+    public void init() {
+    }
 }

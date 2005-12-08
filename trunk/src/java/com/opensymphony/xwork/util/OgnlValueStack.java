@@ -161,6 +161,10 @@ public class OgnlValueStack implements Serializable {
         }
     }
 
+    public String findString(String expr) {
+        return (String) findValue(expr, String.class);
+    }
+
     /**
      * Find a value by evaluating the given expression against the stack in the default search order.
      *
