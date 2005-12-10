@@ -177,9 +177,9 @@ import java.util.Map;
  * messages based on the Locale of the user making the request (or whatever Locale 
  * you've set into the LocaleAware Action). After either retrieving the message from 
  * the ResourceBundle using the Key value, or using the Default message, the current 
- * Validator is pushed onto the ValueStack, then the message is parsed for ${...} 
+ * Validator is pushed onto the ValueStack, then the message is parsed for \$\{...\} 
  * sections which are replaced with the evaluated value of the string between the 
- * ${ and }. This allows you to parameterize your messages with values from the 
+ * \$\{ and \}. This allows you to parameterize your messages with values from the 
  * Validator, the Action, or both. Here is an example of a parameterized message:
  * This will pull the min and max parameters from the IntRangeFieldValidator and 
  * the value of bar from the Action.
