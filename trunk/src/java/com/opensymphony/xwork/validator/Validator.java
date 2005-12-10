@@ -264,7 +264,7 @@ package com.opensymphony.xwork.validator;
  * it will causes Field validators for email field and Field validators for email2 
  * field to not be validated as well.</p>
  * 
- * <p><b>Usefull Information:
+ * <p><b>Usefull Information:</b>
  * More complecated validation should probably be done in the validate() 
  * method on the action itself (assuming the action implements Validatable 
  * interface which ActionSupport already does).</p>
