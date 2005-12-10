@@ -182,7 +182,7 @@ public class LocalizedTextUtilTest extends TestCase {
             String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
                     "AddUser"
             });
-            assertEquals("There is no Action mapped for action name AddUser", message);
+            assertEquals("There is no Action mapped for action name AddUser. Check if there is such an action name defined in xwork.xml and also if the such an action class exists. Check also the log to see if the action class is successfully loaded.", message);
         } catch (MissingResourceException e) {
             e.printStackTrace();
             fail();
@@ -194,7 +194,7 @@ public class LocalizedTextUtilTest extends TestCase {
             String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
                     "blah", "AddUser"
             });
-            assertEquals("There is no Action mapped for namespace blah and action name AddUser", message);
+            assertEquals("There is no Action mapped for namespace blah and action name AddUser. Check if there is such an action name with such namespace defined in the xwork.xml and also if such an action class exists. Check also the log to see if the action class is successfully loaded.", message);
         } catch (MissingResourceException e) {
             e.printStackTrace();
             fail();
