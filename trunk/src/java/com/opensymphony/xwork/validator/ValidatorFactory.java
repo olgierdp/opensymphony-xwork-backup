@@ -159,7 +159,7 @@ import java.util.Map;
  * Here we can see the configuration of validators for the SimpleAction class. 
  * Validators (and field-validators) must have a type attribute, which refers 
  * to a name of an Validator registered with the ValidatorFactory as above. 
- * Validator elements may also have <param> elements with name and value attributes 
+ * Validator elements may also have &lt;param&gt; elements with name and value attributes 
  * to set arbitrary parameters into the Validator instance. See below for discussion 
  * of the message element.
  * <!-- END SNIPPET: validationRules2 -->
