@@ -166,9 +166,9 @@ import java.util.Map;
  * </p>
  * 
  * 
- * <p>
+ * 
  * <!-- START SNIPPET: validationRules3 -->
- * Each Validator or Field-Validator element must define one message element inside 
+ * <p>Each Validator or Field-Validator element must define one message element inside 
  * the validator element body. The message element has 1 attributes, key which is not 
  * required. The body of the message tag is taken as the default message which should 
  * be added to the Action if the validator fails.Key gives a message key to look up 
@@ -180,11 +180,26 @@ import java.util.Map;
  * Validator is pushed onto the ValueStack, then the message is parsed for \$\{...\} 
  * sections which are replaced with the evaluated value of the string between the 
  * \$\{ and \}. This allows you to parameterize your messages with values from the 
- * Validator, the Action, or both. Here is an example of a parameterized message:
- * This will pull the min and max parameters from the IntRangeFieldValidator and 
- * the value of bar from the Action.
+ * Validator, the Action, or both.</p>
+ * 
+ *
+ * <p>If the validator fails, the validator is pushed onto the ValueStack and the 
+ * message – either the default or the locale-specific one if the key attribute is 
+ * defined (and such a message exists) – is parsed for ${...} sections which are 
+ * replaced with the evaluated value of the string between the ${ and }. This 
+ * allows you to parameterize your messages with values from the validator, the 
+ * Action, or both. </p>
+ * 
+ * <p><b>NOTE:</b>Since validation rules are in an XML file, you must make sure 
+ * you escape special characters. For example, notice that in the expression 
+ * validator rule above we use "&gt;" instead of ">". Consult a resource on XML 
+ * for the full list of characters that must be escaped. The most commonly used 
+ * characters that must be escaped are: & (use &amp;), > (user &gt;), and < (use &lt;).</p>
+ *  
+ * <p>Here is an example of a parameterized message:</p>
+ * <p>This will pull the min and max parameters from the IntRangeFieldValidator and 
+ * the value of bar from the Action.</p>
  * <!-- END SNIPPET: validationRules3 -->
- * </p>
  * 
  * <pre>
  * <!-- START SNIPPET: exValidationRules3 -->
