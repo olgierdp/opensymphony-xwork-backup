@@ -33,11 +33,11 @@ public class XWorkMapTest extends TestCase {
         assertEquals("asdf", user.getMap().get("foo"));
 
         // type conversion
-        stack.setValue("map['bar']", new String[]{"qwerty"});
+        stack.setValue("map['bar']", new String[]{"qwerty","qwertz"});
         assertNotNull(user.getMap());
         assertEquals(2, user.getMap().size());
-        assertEquals(String[].class, user.getMap().get("bar").getClass());
-        assertEquals("qwerty", ((String[]) user.getMap().get("bar"))[0]);
+        assertEquals(String.class, user.getMap().get("bar").getClass());
+        assertEquals("qwerty, qwertz", user.getMap().get("bar"));
     }
 
     public void testTypeConversion() {
