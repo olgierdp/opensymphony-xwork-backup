@@ -12,16 +12,57 @@ import java.util.Collection;
 
 
 /**
- * The VisitorFieldValidator allows you to forward validation to object
+ * <!-- START SNIPPET: javadoc -->
+ * <p>The VisitorFieldValidator allows you to forward validation to object
  * properties of your action using the object's own validation files.  This
  * allows you to use the ModelDriven development pattern and manage your
  * validations for your models in one place, where they belong, next to your
  * model classes.  The VisitorFieldValidator can handle either simple Object
- * properties, Collections of Objects, or Arrays.
+ * properties, Collections of Objects, or Arrays.</p>
+ *<!-- END SNIPPET: javadoc -->
+ *
+ *
+ * <!-- START SNIPPET: parameters -->
+ * <ul>
+ *    <li>fieldName - field name if plain-validator syntax is used, not needed if field-validator syntax is used</li>
+ *    <li>context - the context of which validation should take place. Optional</li>
+ *    <li>appendPrefix - the prefix to be added to field. Optional </li>
+ * </ul>
+ * <!-- END SNIPPET: parameters -->
+ *
+ * <pre>
+ * <!-- START SNIPPET: example -->
+ *    &lt;validators&gt;
+ *        &lt;!-- Plain Validator Syntax --&gt;
+ *        &lt;validator type="visitor"&gt;
+ *            &lt;param name="fieldName"&gt;user&lt;/param&gt;
+ *            &lt;param name="context"&gt;myContext&lt;/param&gt;
+ *            &lt;param name="appendPrefix"&gt;true&lt;/param&gt;
+ *        &lt;/validator&gt;
+ *        
+ *        &lt;!-- Field Validator Syntax --&gt;
+ *        &lt;field name="user"&gt;
+ *           &lt;field-validator type="visitor"&gt;
+ *              &lt;param name="context"&gt;myContext&lt;/param&gt;
+ *              &lt;param name="appendPrefix"&gt;true&lt;/param&gt;
+ *           &lt;/field-validator&gt;
+ *        &lt;/field&gt;
+ *    &lt;/validators&gt;
+ * <!-- END SNIPPET: example -->
+ * </pre>
+ * 
+ * <!-- START SNIPPET: explanation -->
+ * <p>In the example above, if the acion's getUser() method return User object, WebWork
+ * will look for User-myContext-validation.xml for the validators. Since appednPrefix is true,
+ * every field name will be prefixed with 'user' such that if the actual field name for 'name' is  
+ * 'user.name' </p>
+ * <!-- END SNIPPET: explanation -->
+ * 
+ * 
  *
  * @author Jason Carreira
  * @author Rainer Hermanns
- *         Created Aug 2, 2003 10:27:48 PM
+ * @version $Date$ $Id$
  */
 public class VisitorFieldValidator extends FieldValidatorSupport {
 
