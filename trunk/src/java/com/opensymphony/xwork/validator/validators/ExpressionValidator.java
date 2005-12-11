@@ -18,7 +18,7 @@ import com.opensymphony.xwork.validator.ValidationException;
  * <ul>
  * 	 <li>expression - the Ognl expression to be evaluated against the stack (Must evaluate to a Boolean)</li>
  * </ul>
- * <!-- END SNIPPET: prameters -->
+ * <!-- END SNIPPET: parameters -->
  *
  * 
  * <pre>
