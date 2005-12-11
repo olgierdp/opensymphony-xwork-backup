@@ -30,7 +30,7 @@ import com.opensymphony.xwork.validator.ValidationException;
  *        &lt;!-- Field Validator Syntax --&gt;
  *        &lt;field name="myStrangePostcode"&gt;
  *            &lt;field-validator type="regex"&gt;
- *               &lt;param name="expression"&lt;&gt;![CDATA[([aAbBcCdD][123][eEfFgG][456])]]&gt;&lt;/param&gt;
+ *               &lt;param name="expression"&gt;&lt;![CDATA[([aAbBcCdD][123][eEfFgG][456])]]&gt;&lt;/param&gt;
  *            &lt;/field-validator&gt;
  *        &lt;/field&gt;
  *    &lt;/validators&gt;
