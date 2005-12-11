@@ -13,6 +13,9 @@ import ognl.OgnlException;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Implementation of PropertyAccessor that sets and gets properties by storing and looking
  * up values in Maps.
@@ -20,12 +23,19 @@ import java.util.Map;
  * @author Gabriel Zimmerman
  */
 public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
+
+    private static final Log _log = LogFactory.getLog(XWorkMapPropertyAccessor.class);
+
     private static final String[] INDEX_ACCESS_PROPS = new String[]
             {"size", "isEmpty", "keys", "values"};
 
     private static final XWorkConverter _converter = XWorkConverter.getInstance();
- 
+
     public Object getProperty(Map context, Object target, Object name) throws OgnlException {
+
+        if (_log.isDebugEnabled()) {
+            _log.debug("Entering getProperty ("+context+","+target+","+name+")");
+        }
 
         OgnlContextState.updateCurrentPropertyPath(context, name);
         // if this is one of the regular index access
@@ -87,10 +97,28 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
     }
 
     public void setProperty(Map context, Object target, Object name, Object value) throws OgnlException {
+        if (_log.isDebugEnabled()) {
+     		_log.debug("Entering setProperty("+context+","+target+","+name+","+value+")");
+     	}
+        
         Object key = getKey(context, name);
         Map map = (Map) target;
-        map.put(key, value);
-    }
+        map.put(key, getValue(context, value));
+     }
+
+     private Object getValue(Map context, Object value) {
+         Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
+         String lastProperty = (String) context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
+         if (lastClass == null || lastProperty == null) {
+             return value;
+         }
+         Class elementClass = _converter.getObjectTypeDeterminer()
+                 .getElementClass(lastClass, lastProperty, null);
+         if (elementClass == null) {
+             return value; // nothing is specified, we assume it will be the value passed in.
+         }
+         return _converter.convertValue(context, value, elementClass);
+}
 
     private Object getKey(Map context, Object name) {
         Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
