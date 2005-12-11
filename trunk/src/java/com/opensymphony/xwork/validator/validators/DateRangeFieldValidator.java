@@ -8,10 +8,48 @@ import java.util.Date;
 
 
 /**
- * DateRangeFieldValidator
+ * <p>
+ * <!-- START SNIPPET: javadoc -->
+ * Field Validator that checks if the date supplied is within a specific range.
+ * <!-- END SNIPPET: javadoc -->
+ * </p>
+ * 
+ * <!-- START SNIPPET: parameters -->
+ * <ul>
+ * 		<li>fieldName - The field name this validator is validating. Required if using Plain-Validator Syntax otherwise not required</li>
+ *      <li>min - the min date range. If not specified will not be checked.</li>
+ *      <li>max - the max date range. If not specified will not be checked.</li>
+ * </ul>
+ * <!-- END SNIPPET: parameters -->
+ * 
+ * 
+ * <pre>
+ * <!-- START SNIPPET: examples -->
+ *    &lt;validators>
+ *    		&lt;!-- Plain Validator syntax --&gt;
+ *    		&lt;validator type="date"&gt;
+ *    	        &lt;param name="fieldName"&gt;birthday&lt;/param&gt;
+ *              &lt;param name="min"&gt;01/01/1990&lt;/param&gt;
+ *              &lt;param name="max"&gt;01/01/2000&lt;/param&gt;
+ *              &lt;message&gt;Birthday must be within ${min} and ${max}&lt;/message&gt;
+ *    		&lt;/validator&gt;
+ *    
+ *          &lt;!-- Field Validator Syntax --&gt;
+ *          &lt;field name="birthday"&gt;
+ *          	&lt;field-validator type="date"&gt;
+ *           	    &lt;param name="min"&gt;01/01/1990&lt;/param&gt;
+ *                  &lt;param name="max"&gt;01/01/2000&lt;/param&gt;
+ *                  &lt;message&gt;Birthday must be within ${min} and ${max}&lt;/message&gt;
+ *          	&lt;/field&gt;
+ *          &lt;/field&gt;
+ *    
+ *    &lt;/validators&gt;
+ * <!-- END SNIPPET: examples -->
+ * </pre>
+ * 
  *
  * @author Jason Carreira
- *         Created Feb 9, 2003 1:23:42 AM
+ * @version $Date$ $Id$
  */
 public class DateRangeFieldValidator extends AbstractRangeValidator {
 

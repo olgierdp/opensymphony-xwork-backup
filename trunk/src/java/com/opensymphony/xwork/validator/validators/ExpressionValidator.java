@@ -8,7 +8,30 @@ import com.opensymphony.xwork.validator.ValidationException;
 
 
 /**
- * ExpressionValidator
+ * <p>
+ * <!-- START SNIPPET: javadoc -->
+ * A Non-Field Level validator that validates based on regular expression supplied.
+ * <!-- END SNIPPET: javadoc -->
+ * </p>
+ * 
+ * <!-- START SNIPPET: parameters -->
+ * <ul>
+ * 	 <li>expression - the Ognl expression to be evaluated against the stack (Must evaluate to a Boolean)</li>
+ * </ul>
+ * <!-- END SNIPPET: prameters -->
+ *
+ * 
+ * <pre>
+ * <!-- START SNIPPET: example -->
+ *     &lt;validators&gt;
+ *           &lt;validator type="expression"&gt;
+ *              &lt;param name="expression"&gt; .... &lt;/param&gt;
+ *              &lt;message&gt;Failed to meet Ognl Expression  .... &lt;/message&gt;
+ *           &lt;/validator&gt;
+ *     &lt;/validators&gt;
+ * <!-- END SNIPPET: example -->
+ * </pre>
+ * 
  *
  * @author Jason Carreira
  *         Created Feb 15, 2003 9:59:04 PM

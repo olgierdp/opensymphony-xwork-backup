@@ -9,10 +9,38 @@ import com.opensymphony.xwork.validator.ValidationException;
 
 
 /**
+ * <!-- START SNIPPET: javadoc -->
  * URLValidator checks that a given field is a String and a valid URL
+ * <!-- END SNIPPET: javadoc -->
+ * 
+ * 
+ * <!-- START SNIPPET: parameters -->
+ * <ul>
+ * 		<li>fieldName - The field name this validator is validating. Required if using Plain-Validator Syntax otherwise not required</li>
+ * </ul>
+ * <!-- END SNIPPET: parameters -->
+ *
+ *
+ * <pre>
+ * <!-- START SNIPPET: examples -->
+ *     &lt;validators&gt;
+ *          &lt;!-- Plain Validator Syntax --&gt;
+ *          &lt;validator type="url"&gt;
+ *              &lt;param name="fieldName"&gt;myHomePage&lt;/param&gt;
+ *              &lt;message&gt;Invalid homepage url&lt;/message&gt;
+ *          &lt;/validator&gt;
+ *          
+ *          &lt;!-- Field Validator Syntax --&gt;
+ *          &lt;field name="myHomepage"&gt;
+ *              &lt;message&gt;Invalid homepage url&lt;/message&gt;
+ *          &lt;/field&gt;
+ *     &lt;/validators&gt;
+ * <!-- END SNIPPET: examples -->
+ * </pre>
+ *
  *
  * @author $Author$
- * @version $Revision$
+ * @version $Date$ $Revision$
  */
 public class URLValidator extends FieldValidatorSupport {
 

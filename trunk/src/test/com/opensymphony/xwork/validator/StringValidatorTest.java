@@ -17,9 +17,21 @@ import java.util.Map;
 
 /**
  * @author Mark Woon
+ * @author tm_jee (tm_jee (at) yahoo.co.uk )
  */
 public class StringValidatorTest extends TestCase {
 
+	public void testRequiredStringWithNullValue() throws Exception {
+		Equidae equidae = new Equidae();
+		equidae.setHorse(null);
+		
+		DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
+		ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+		
+		assertTrue(context.hasFieldErrors());
+	}
+	
+	
     public void testRequiredString() throws ValidationException {
         Equidae equidae = new Equidae();
 

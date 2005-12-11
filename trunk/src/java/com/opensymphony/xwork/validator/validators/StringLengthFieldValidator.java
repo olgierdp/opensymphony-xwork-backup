@@ -7,14 +7,54 @@ package com.opensymphony.xwork.validator.validators;
 import com.opensymphony.xwork.validator.ValidationException;
 
 /**
+ * <p>
+ * <!-- START SNIPPET: javadoc -->
  * StringLengthFieldValidator checks that a String field is of a certain length.  If the "minLength"
  * parameter is specified, it will make sure that the String has at least that many characters.  If
  * the "maxLength" parameter is specified, it will make sure that the String has at most that many
  * characters.  The "trim" parameter determines whether it will {@link String#trim() trim} the
  * String before performing the length check.  If unspecified, the String will be trimmed.
+ * <!-- END SNIPPET: javadoc -->
+ * </p>
+ * 
+ * 
+ * <!-- START SNIPPET: parameters -->
+ * <ul>
+ * 	  <li>fieldName - The field name this validator is validating. Required if using Plain-Validator Syntax otherwise not required</li>
+ *    <li>maxLength - The max length of the field value. Default ignore.</li>
+ *    <li>minLength - The min length of the field value. Default ignore.</li>
+ *    <li>trim - Trim the field value before evaluating its min/max length. Default true</li>
+ * </ul>
+ * <!-- END SNIPPET: parameters -->
+ * 
+ * 
+ * <pre>
+ * <!--START SNIPPET: example -->
+ *		&lt;validators&gt;
+ *          &lt;!-- Plain Validator Syntax --&gt;
+ * 			&lt;validator type="stringlength"&gt;
+ * 				&lt;param name="fieldName"&gt;myPurchaseCode&lt;/param&gt;
+ * 				&lt;param name="minLength"&gt;10&lt;/param&gt;
+ *              &lt;param name="maxLength"&gt;10&lt;/param&gt;
+ *              &lt;param name="trim"&gt;true&lt;/param&gt;
+ *              &lt;message&gt;Your purchase code needs to be 10 characters long&lt;/message&gt;		
+ *          &lt;/validator&gt;
+ * 
+ * 			&lt;!-- Field Validator Syntax --&gt;
+ * 			&lt;field name="myPurchaseCode"&gt;
+ * 				&lt;param name="minLength"&gt;10&lt;/param&gt;
+ *              &lt;param name="maxLength&gt;10&lt;/param&gt;
+ *              &lt;param name="trim"&gt;true&lt;/param&gt;
+ *              &lt;message&gt;Your purchase code needs to be 10 characters long&lt;/message&gt;
+ * 			&lt;/field-name&gt;
+ *      &lt;/validators&gt;
+ * <!-- END SNIPPET: example -->
+ * </pre>
+ * 
  *
  * @author Jason Carreira
  * @author Mark Woon
+ * @version $Date$ $Id$
  */
 public class StringLengthFieldValidator extends FieldValidatorSupport {
 
