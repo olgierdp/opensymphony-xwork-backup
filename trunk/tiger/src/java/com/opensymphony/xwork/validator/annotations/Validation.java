@@ -8,12 +8,13 @@ import java.lang.annotation.*;
 
 /**
  * <!-- START SNIPPET: description -->
+ * If you want to use annotation based validation, you have to annotate the class or interface with Validation Annotation.
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- *
+ *  <p/>The Validation annotation must be applied at Type level.
  * <!-- END SNIPPET: usage -->
  *
  * <p/> <u>Annotation parameters:</u>
