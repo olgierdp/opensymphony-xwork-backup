@@ -16,14 +16,51 @@ import java.util.Set;
 
 
 /**
- * A special kind of view that invokes GenericDispatch (using the previously existing
- * ActionContext) and executes another action. This view takes one required parameter:
+ * <!-- START SNIPPET: description -->
+ *
+ * This result invokes an entire other action, complete with it's own interceptor stack and result.
+ *
+ * <!-- END SNIPPET: description -->
+ *
+ * <b>This result type takes the following parameters:</b>
+ *
+ * <!-- START SNIPPET: params -->
+ *
  * <ul>
- * <li><b>actionName</b> - the name of the action that will be chained to</li>
+ *
+ * <li><b>actionName (default)</b> - the name of the action that will be chained to</li>
+ *
+ * <li><b>namespace</b> - used to determine which namespace the Action is in that we're chaining. If namespace is null,
+ * this defaults to the current namespace</li>
+ *
  * </ul>
  *
- * @author $Author$
- * @version $Revision$
+ * <!-- END SNIPPET: params -->
+ *
+ * <b>Example:</b>
+ *
+ * <pre><!-- START SNIPPET: example -->
+ * &lt;package name="public" extends="webwork-default"&gt;
+ *     &lt;!-- Chain creatAccount to login, using the default parameter --&gt;
+ *     &lt;action name="createAccount" class="..."&gt;
+ *         &lt;result type="chain"&gt;login&lt;/result&gt;
+ *     &lt;/action&gt;
+ *
+ *     &lt;action name="login" class="..."&gt;
+ *         &lt;!-- Chain to another namespace --&gt;
+ *         &lt;result type="chain"&gt;
+ *             &lt;param name="actionName"&gt;dashboard&lt;/param&gt;
+ *             &lt;param name="namespace"&gt;/secure&lt;/param&gt;
+ *         &lt;/result&gt;
+ *     &lt;/action&gt;
+ * &lt;/package&gt;
+ *
+ * &lt;package name="secure" extends="webwork-default" namespace="/secure"&gt;
+ *     &lt;action name="dashboard" class="..."&gt;
+ *         &lt;result&gt;dashboard.jsp&lt;/result&gt;
+ *     &lt;/action&gt;
+ * &lt;/package&gt;
+ * <!-- END SNIPPET: example --></pre>
  */
 public class ActionChainResult implements Result {
 
@@ -35,10 +72,6 @@ public class ActionChainResult implements Result {
     private ActionProxy proxy;
     private String actionName;
 
-    /**
-     * used to determine which namespace the Action is in that we're chaining
-     * to.  if namespace is null, this defaults to the current namespace.
-     */
     private String namespace;
 
 
@@ -46,12 +79,6 @@ public class ActionChainResult implements Result {
         this.actionName = actionName;
     }
 
-    /**
-     * sets the namespace of the Action that we're chaining to.  if namespace
-     * is null, this defaults to the current namespace.
-     *
-     * @param namespace the name of the namespace we're chaining to
-     */
     public void setNamespace(String namespace) {
         this.namespace = namespace;
     }
