@@ -7,9 +7,32 @@ package com.opensymphony.xwork.conversion.annotations;
 import java.lang.annotation.*;
 
 /**
- * <code>Conversion</code>
+ * <!-- START SNIPPET: description -->
+ * <p/>The Conversion annotation must be applied at Type level.
+ * <!-- END SNIPPET: description -->
  *
- * A marker annotations for conversions at type level.
+ * <p/> <u>Annotation parameters:</u>
+ *
+ * <!-- START SNIPPET: parameters -->
+ *
+ * <ul>
+ *
+ * <li>conversion (optional) - used for Type Conversions applied at Type level.</li>
+ *
+ * </ul>
+ *
+ * <!-- END SNIPPET: parameters -->
+ *
+ * <p/> <u>Example code:</u>
+ *
+ * <pre>
+ * <!-- START SNIPPET: example -->
+ * @Conversion()
+ * public class ConversionAction implements Action {
+ * }
+ *
+ * <!-- END SNIPPET: example -->
+ * </pre>
  *
  * @author Rainer Hermanns
  * @version $Id$
