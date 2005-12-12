@@ -36,9 +36,9 @@ import java.util.*;
  *
  * <ul>
  *
- * <li>excludes (optioanl) - the list of parameter names to exclude from copying (all others will be included).</li>
+ * <li>excludes (optional) - the list of parameter names to exclude from copying (all others will be included).</li>
  *
- * <li>includes (optioanl) - the list of parameter names to include when copying (all others will be excluded).</li>
+ * <li>includes (optional) - the list of parameter names to include when copying (all others will be excluded).</li>
  *
  * </ul>
  *
