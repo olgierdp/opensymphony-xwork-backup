@@ -15,7 +15,7 @@ import java.lang.annotation.*;
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- * The Before annotation can be applied at method level.
+ * The After annotation can be applied at method level.
  *
  * <!-- END SNIPPET: usage -->
  *
