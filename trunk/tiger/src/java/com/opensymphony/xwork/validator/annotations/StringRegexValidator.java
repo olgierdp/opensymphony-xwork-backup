@@ -19,23 +19,25 @@ import java.lang.annotation.*;
  * <p/> <u>Annotation parameters:</u>
  *
  * <!-- START SNIPPET: parameters -->
- * <table>
- * <thead>
+ * <table class='confluenceTable'>
  * <tr>
- * <th>Parameter</th>
- * <th>Required</th>
- * <th>Default</th>
- * <th>Description</th>
+ * <th class='confluenceTh'> Parameter </th>
+ * <th class='confluenceTh'> Required </th>
+ * <th class='confluenceTh'> Default </th>
+ * <th class='confluenceTh'> Notes </th>
  * </tr>
- * </thead>
- * <tbody>
  * <tr>
- * <td>param</td>
- * <td>required</td>
- * <td>default</td>
- * <td>description</td>
+ * <td class='confluenceTd'> regex</td>
+ * <td class='confluenceTd'> yes </td>
+ * <td class='confluenceTd'> "." </td>
+ * <td class='confluenceTd'> String property.  The Regular Expression for which to check a match.  </td>
  * </tr>
- * </tbody>
+ * <tr>
+ * <td class='confluenceTd'> caseSensitive</td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> true </td>
+ * <td class='confluenceTd'> Whether the matching of alpha characters in the expression should be done case-sensitively. </td>
+ * </tr>
  * </table>
  * <!-- END SNIPPET: parameters -->
  *
@@ -43,6 +45,7 @@ import java.lang.annotation.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * @StringRegexValidator(message = "Default message", key = "i18n.key", shortCircuit = true, regex = "a regular expression", caseSensitive = true)
  * <!-- END SNIPPET: example -->
  * </pre>
  *

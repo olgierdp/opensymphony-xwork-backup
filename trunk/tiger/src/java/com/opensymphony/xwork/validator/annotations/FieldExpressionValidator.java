@@ -22,23 +22,19 @@ import java.lang.annotation.*;
  * <p/> <u>Annotation parameters:</u>
  *
  * <!-- START SNIPPET: parameters -->
- * <table>
- * <thead>
+ * <table class='confluenceTable'>
  * <tr>
- * <th>Parameter</th>
- * <th>Required</th>
- * <th>Default</th>
- * <th>Description</th>
+ * <th class='confluenceTh'> Parameter </th>
+ * <th class='confluenceTh'> Required </th>
+ * <th class='confluenceTh'> Default </th>
+ * <th class='confluenceTh'> Notes </th>
  * </tr>
- * </thead>
- * <tbody>
  * <tr>
- * <td>param</td>
- * <td>required</td>
- * <td>default</td>
- * <td>description</td>
+ * <td class='confluenceTd'> expression </td>
+ * <td class='confluenceTd'> yes </td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'> An OGNL expression that returns a boolean value.  </td>
  * </tr>
- * </tbody>
  * </table>
  * <!-- END SNIPPET: parameters -->
  *
@@ -46,6 +42,7 @@ import java.lang.annotation.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * @FieldExpressionValidator(message = "Default message", key = "i18n.key", shortCircuit = true, expression = "an OGNL expression")
  * <!-- END SNIPPET: example -->
  * </pre>
  *

@@ -21,30 +21,38 @@ import java.lang.annotation.*;
  * <p/> <u>Annotation parameters:</u>
  *
  * <!-- START SNIPPET: parameters -->
- * <table>
- * <thead>
+ * <table class='confluenceTable'>
  * <tr>
- * <th>Parameter</th>
- * <th>Required</th>
- * <th>Default</th>
- * <th>Description</th>
+ * <th class='confluenceTh'> Parameter </th>
+ * <th class='confluenceTh'> Required </th>
+ *
+ * <th class='confluenceTh'> Default </th>
+ * <th class='confluenceTh'> Notes </th>
  * </tr>
- * </thead>
- * <tbody>
  * <tr>
- * <td>param</td>
- * <td>required</td>
- * <td>default</td>
- * <td>description</td>
+ * <td class='confluenceTd'> min </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'> Integer property.  The minimum the number must be. </td>
  * </tr>
- * </tbody>
+ * <tr>
+ * <td class='confluenceTd'> max </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'> Integer property.  The maximum number can be. </td>
+ * </tr>
  * </table>
+ *
+ * <p>If neither <em>min</em> nor <em>max</em> is set, nothing will be done.</p>
+ *
+ * <p>The values for min and max must be inserted as String values so that "0" can be handled as a possible value.</p>
  * <!-- END SNIPPET: parameters -->
  *
  * <p/> <u>Example code:</u>
  *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * @IntRangeFieldValidator(message = "Default message", key = "i18n.key", shortCircuit = true, min = "0", max = "42")
  * <!-- END SNIPPET: example -->
  * </pre>
  *

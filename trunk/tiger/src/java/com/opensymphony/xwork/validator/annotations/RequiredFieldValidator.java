@@ -44,6 +44,7 @@ import java.lang.annotation.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * @RequiredFieldValidator(message = "Default message", key = "i18n.key", shortCircuit = true)
  * <!-- END SNIPPET: example -->
  * </pre>
  *

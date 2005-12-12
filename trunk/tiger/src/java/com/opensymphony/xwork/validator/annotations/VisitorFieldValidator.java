@@ -27,23 +27,25 @@ import java.lang.annotation.*;
  * <p/> <u>Annotation parameters:</u>
  *
  * <!-- START SNIPPET: parameters -->
- * <table>
- * <thead>
+ * <table class='confluenceTable'>
  * <tr>
- * <th>Parameter</th>
- * <th>Required</th>
- * <th>Default</th>
- * <th>Description</th>
+ * <th class='confluenceTh'> Parameter </th>
+ * <th class='confluenceTh'> Required </th>
+ * <th class='confluenceTh'> Default </th>
+ * <th class='confluenceTh'> Notes </th>
  * </tr>
- * </thead>
- * <tbody>
  * <tr>
- * <td>param</td>
- * <td>required</td>
- * <td>default</td>
- * <td>description</td>
+ * <td class='confluenceTd'> context </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> action alias </td>
+ * <td class='confluenceTd'> Determines the context to use for validating the Object property. If not defined, the context of the Action validation is propogated to the Object property validation.  In the case of Action validation, this context is the Action alias.  </td>
  * </tr>
- * </tbody>
+ * <tr>
+ * <td class='confluenceTd'> appendPrefix </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> true </td>
+ * <td class='confluenceTd'> Determines whether the field name of this field validator should be prepended to the field name of the visited field to determine the full field name when an error occurs.  For example, suppose that the bean being validated has a "name" property.  If <em>appendPrefix</em> is true, then the field error will be stored under the field "bean.name".  If <em>appendPrefix</em> is false, then the field error will be stored under the field "name".  <br clear="all" /> <img class="emoticon" src="/images/icons/emoticons/warning.gif" height="16" width="16" align="absmiddle" alt="" border="0"/> If you are using the VisitorFieldValidator to validate the model from a ModelDriven Action, you should set <em>appendPrefix</em> to false unless you are using "model.name" to reference the properties on your model. </td>
+ * </tr>
  * </table>
  * <!-- END SNIPPET: parameters -->
  *
@@ -51,6 +53,7 @@ import java.lang.annotation.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * @VisitorFieldValidator(message = "Default message", key = "i18n.key", shortCircuit = true, context = "action alias", appendPrefix = true)
  * <!-- END SNIPPET: example -->
  * </pre>
  *
