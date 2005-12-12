@@ -7,9 +7,46 @@ package com.opensymphony.xwork.validator.annotations;
 import java.lang.annotation.*;
 
 /**
- * <code>RequiredStringValidator</code>
- *
+ * <!-- START SNIPPET: description -->
  * This validator checks that a String field is not empty (i.e. non-null with a length > 0).
+ * <!-- END SNIPPET: description -->
+ *
+ * <p/> <u>Annotation usage:</u>
+ *
+ * <!-- START SNIPPET: usage -->
+ *
+ * <!-- END SNIPPET: usage -->
+ *
+ * <p/> <u>Annotation parameters:</u>
+ *
+ * <!-- START SNIPPET: parameters -->
+ * <table>
+ * <thead>
+ * <tr>
+ * <th>Parameter</th>
+ * <th>Required</th>
+ * <th>Default</th>
+ * <th>Description</th>
+ * </tr>
+ * </thead>
+ * <tbody>
+ * <tr>
+ * <td>param</td>
+ * <td>required</td>
+ * <td>default</td>
+ * <td>description</td>
+ * </tr>
+ * </tbody>
+ * </table>
+ * <!-- END SNIPPET: parameters -->
+ *
+ * <p/> <u>Example code:</u>
+ *
+ * <pre>
+ * <!-- START SNIPPET: example -->
+ * <!-- END SNIPPET: example -->
+ * </pre>
+ *
  *
  * @author Rainer Hermanns
  * @version $Id$

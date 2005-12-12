@@ -7,11 +7,47 @@ package com.opensymphony.xwork.validator.annotations;
 import java.lang.annotation.*;
 
 /**
- * <code>FieldExpressionValidator</code>
- *
+ * <!-- START SNIPPET: description -->
  * This validator uses an OGNL expression to perform its validator.
  * The error message will be added to the field if the expression returns
  * false when it is evaluated against the value stack.
+ * <!-- END SNIPPET: description -->
+ *
+ * <p/> <u>Annotation usage:</u>
+ *
+ * <!-- START SNIPPET: usage -->
+ *
+ * <!-- END SNIPPET: usage -->
+ *
+ * <p/> <u>Annotation parameters:</u>
+ *
+ * <!-- START SNIPPET: parameters -->
+ * <table>
+ * <thead>
+ * <tr>
+ * <th>Parameter</th>
+ * <th>Required</th>
+ * <th>Default</th>
+ * <th>Description</th>
+ * </tr>
+ * </thead>
+ * <tbody>
+ * <tr>
+ * <td>param</td>
+ * <td>required</td>
+ * <td>default</td>
+ * <td>description</td>
+ * </tr>
+ * </tbody>
+ * </table>
+ * <!-- END SNIPPET: parameters -->
+ *
+ * <p/> <u>Example code:</u>
+ *
+ * <pre>
+ * <!-- START SNIPPET: example -->
+ * <!-- END SNIPPET: example -->
+ * </pre>
  *
  * @author Rainer Hermanns
  * @version $Id$

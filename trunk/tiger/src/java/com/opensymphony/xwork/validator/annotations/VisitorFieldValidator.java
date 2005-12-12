@@ -7,8 +7,7 @@ package com.opensymphony.xwork.validator.annotations;
 import java.lang.annotation.*;
 
 /**
- * <code>VisitorFieldValidator</code>
- *
+ * <!-- START SNIPPET: description -->
  * The validator allows you to forward validator to object properties of your action
  * using the objects own validator files. This allows you to use the ModelDriven development
  * pattern and manage your validations for your models in one place, where they belong, next to
@@ -17,6 +16,43 @@ import java.lang.annotation.*;
  * The VisitorFieldValidator can handle either simple Object properties, Collections of Objects, or Arrays.
  * The error message for the VisitorFieldValidator will be appended in front of validator messages added
  * by the validations for the Object message.
+ * <!-- END SNIPPET: description -->
+ *
+ * <p/> <u>Annotation usage:</u>
+ *
+ * <!-- START SNIPPET: usage -->
+ *
+ * <!-- END SNIPPET: usage -->
+ *
+ * <p/> <u>Annotation parameters:</u>
+ *
+ * <!-- START SNIPPET: parameters -->
+ * <table>
+ * <thead>
+ * <tr>
+ * <th>Parameter</th>
+ * <th>Required</th>
+ * <th>Default</th>
+ * <th>Description</th>
+ * </tr>
+ * </thead>
+ * <tbody>
+ * <tr>
+ * <td>param</td>
+ * <td>required</td>
+ * <td>default</td>
+ * <td>description</td>
+ * </tr>
+ * </tbody>
+ * </table>
+ * <!-- END SNIPPET: parameters -->
+ *
+ * <p/> <u>Example code:</u>
+ *
+ * <pre>
+ * <!-- START SNIPPET: example -->
+ * <!-- END SNIPPET: example -->
+ * </pre>
  *
  * @author Rainer Hermanns
  * @version $Id$
