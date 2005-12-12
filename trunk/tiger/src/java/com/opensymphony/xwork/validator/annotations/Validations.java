@@ -14,34 +14,103 @@ import java.lang.annotation.Target;
 
 /**
  * <!-- START SNIPPET: description -->
+ * <p>If you want to use several annotations of the same type, these annotation must be nested within the @Validations() annotation.</p>
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- *
+ * <p/>Used at METHOD level.
  * <!-- END SNIPPET: usage -->
  *
  * <p/> <u>Annotation parameters:</u>
  *
  * <!-- START SNIPPET: parameters -->
- * <table>
- * <thead>
+ * <table class='confluenceTable'>
+ *
  * <tr>
- * <th>Parameter</th>
- * <th>Required</th>
- * <th>Default</th>
- * <th>Description</th>
+ * <th class='confluenceTh'> Parameter </th>
+ * <th class='confluenceTh'> Required </th>
+ * <th class='confluenceTh'> Notes </th>
  * </tr>
- * </thead>
- * <tbody>
  * <tr>
- * <td>param</td>
- * <td>required</td>
- * <td>default</td>
- * <td>description</td>
+ * <td class='confluenceTd'> requiredFields </td>
+ * <td class='confluenceTd'> no </td>
+ *
+ * <td class='confluenceTd'> Add list of RequiredFieldValidators  </td>
  * </tr>
- * </tbody>
+ * <tr>
+ * <td class='confluenceTd'> customValidators </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of CustomValidators </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> conversionErrorFields </td>
+ *
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of ConversionErrorFieldValidators </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> dateRangeFields </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of DateRangeFieldValidators </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> emails </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of EmailValidators </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> fieldExpressions </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of FieldExpressionValidators </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> intRangeFields </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of IntRangeFieldValidators </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> requiredFields </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of RequiredFieldValidators </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> requiredStrings </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of RequiredStringValidators </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> stringLengthFields </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of StringLengthFieldValidators </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> urls </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of UrlValidators </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> visitorFields </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of VisitorFieldValidators </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> stringRegexs </td>
+ *
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of StringRegexValidator </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> regexFields </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of RegexFieldValidator </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> expressions </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'> Add list of ExpressionValidator </td>
+ * </tr>
  * </table>
  * <!-- END SNIPPET: parameters -->
  *
@@ -49,6 +118,32 @@ import java.lang.annotation.Target;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * @Validations(
+ *           requiredFields =
+ *                   {@RequiredFieldValidator(type = ValidatorType.SIMPLE, fieldName = "customfield", message = "You must enter a value for field.")},
+ *           requiredStrings =
+ *                   {@RequiredStringValidator(type = ValidatorType.SIMPLE, fieldName = "stringisrequired", message = "You must enter a value for string.")},
+ *           emails =
+ *                   { @EmailValidator(type = ValidatorType.SIMPLE, fieldName = "emailaddress", message = "You must enter a value for email.")},
+ *           urls =
+ *                   { @UrlValidator(type = ValidatorType.SIMPLE, fieldName = "hreflocation", message = "You must enter a value for email.")},
+ *           stringLengthFields =
+ *                   {@StringLengthFieldValidator(type = ValidatorType.SIMPLE, trim = true, minLength="10" , maxLength = "12", fieldName = "needstringlength", message = "You must enter a stringlength.")},
+ *           intRangeFields =
+ *                   { @IntRangeFieldValidator(type = ValidatorType.SIMPLE, fieldName = "intfield", min = "6", max = "10", message = "bar must be between ${min} and ${max}, current value is ${bar}.")},
+ *           dateRangeFields =
+ *                   {@DateRangeFieldValidator(type = ValidatorType.SIMPLE, fieldName = "datefield", min = "-1", max = "99", message = "bar must be between ${min} and ${max}, current value is ${bar}.")},
+ *           expressions = {
+ *               @ExpressionValidator(expression = "foo &gt; 1", message = "Foo must be greater than Bar 1. Foo = ${foo}, Bar = ${bar}."),
+ *               @ExpressionValidator(expression = "foo &gt; 2", message = "Foo must be greater than Bar 2. Foo = ${foo}, Bar = ${bar}."),
+ *               @ExpressionValidator(expression = "foo &gt; 3", message = "Foo must be greater than Bar 3. Foo = ${foo}, Bar = ${bar}."),
+ *               @ExpressionValidator(expression = "foo &gt; 4", message = "Foo must be greater than Bar 4. Foo = ${foo}, Bar = ${bar}."),
+ *               @ExpressionValidator(expression = "foo &gt; 5", message = "Foo must be greater than Bar 5. Foo = ${foo}, Bar = ${bar}.")
+ *   }
+ *   )
+ *   public String execute() throws Exception {
+ *       return SUCCESS;
+ *   }
  * <!-- END SNIPPET: example -->
  * </pre>
  *

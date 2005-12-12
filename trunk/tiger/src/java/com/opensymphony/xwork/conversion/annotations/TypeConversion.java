@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 
 /**
  * <!-- START SNIPPET: description -->
- * <p/>This annotations is used for class and application wide conversion rules.
+ * <p/>This annotation is used for class and application wide conversion rules.
  * <p>
  * Class wide conversion:<br/>
  * The conversion rules will be assembled in a file called <code>XXXAction-conversion.properties</code>
