@@ -8,19 +8,36 @@ import java.lang.annotation.*;
 
 /**
  * <!-- START SNIPPET: description -->
- * <p/>The Conversion annotation must be applied at Type level.
+ * <p/>A marker annotation for type conversions at Type level.
  * <!-- END SNIPPET: description -->
+ *
+ * <p/> <u>Annotation usage:</u>
+ *
+ * <!-- START SNIPPET: usage -->
+ * <p/>The Conversion annotation must be applied at Type level.
+ * <!-- END SNIPPET: usage -->
  *
  * <p/> <u>Annotation parameters:</u>
  *
  * <!-- START SNIPPET: parameters -->
- *
- * <ul>
- *
- * <li>conversion (optional) - used for Type Conversions applied at Type level.</li>
- *
- * </ul>
- *
+ * <table>
+ * <thead>
+ * <tr>
+ * <th>Parameter</th>
+ * <th>Required</th>
+ * <th>Default</th>
+ * <th>Description</th>
+ * </tr>
+ * </thead>
+ * <tbody>
+ * <tr>
+ * <td>conversion</td>
+ * <td>no</td>
+ * <td>&nbsp;</td>
+ * <td>used for Type Conversions applied at Type level.</td>
+ * </tr>
+ * </tbody>
+ * </table>
  * <!-- END SNIPPET: parameters -->
  *
  * <p/> <u>Example code:</u>

@@ -83,12 +83,12 @@ import java.lang.annotation.*;
  * @Conversion()
  * public class ConversionAction implements Action {
  *
- *  private String convertInt;
+ *   private String convertInt;
  *
- * private String convertDouble;
- * private List users = null;
+ *   private String convertDouble;
+ *   private List users = null;
  *
- * private HashMap keyValues = null;
+ *   private HashMap keyValues = null;
  *
  *   @TypeConversion(type = ConversionType.APPLICATION, converter = "com.opensymphony.xwork.util.XWorkBasicConverter")
  *   public void setConvertInt( String convertInt ) {
