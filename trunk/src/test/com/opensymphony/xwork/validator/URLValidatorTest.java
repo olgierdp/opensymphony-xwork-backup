@@ -44,10 +44,10 @@ public class URLValidatorTest extends TestCase {
 		validator.setFieldName("testingUrl2");
 		validator.validate(new MyObject());
 		
-		assertTrue(validator.getValidatorContext().hasErrors());
+		assertFalse(validator.getValidatorContext().hasErrors());
 		assertFalse(validator.getValidatorContext().hasActionErrors());
 		assertFalse(validator.getValidatorContext().hasActionMessages());
-		assertTrue(validator.getValidatorContext().hasFieldErrors());
+		assertFalse(validator.getValidatorContext().hasFieldErrors());
 	}
 	
 	public void testInvalidValue() throws Exception {
