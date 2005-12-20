@@ -61,15 +61,7 @@ public class XWorkList extends ArrayList {
             get(index);
         }
 
-        if ((element != null) && !clazz.isAssignableFrom(element.getClass())) {
-            // convert to correct type
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Converting from " + element.getClass().getName() + " to " + clazz.getName());
-            }
-
-            Map context = ActionContext.getContext().getContextMap();
-            element = XWorkConverter.getInstance().convertValue(context, null, null, null, element, clazz);
-        }
+        element = convert(element);
 
         super.add(index, element);
     }
@@ -83,15 +75,7 @@ public class XWorkList extends ArrayList {
      * @return <tt>true</tt> (as per the general contract of Collection.add).
      */
     public boolean add(Object element) {
-        if ((element != null) && !clazz.isAssignableFrom(element.getClass())) {
-            // convert to correct type
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Converting from " + element.getClass().getName() + " to " + clazz.getName());
-            }
-
-            Map context = ActionContext.getContext().getContextMap();
-            element = XWorkConverter.getInstance().convertValue(context, null, null, null, element, clazz);
-        }
+        element = convert(element);
 
         return super.add(element);
     }
@@ -197,6 +181,12 @@ public class XWorkList extends ArrayList {
             get(index);
         }
 
+        element = convert(element);
+
+        return super.set(index, element);
+    }
+
+    private Object convert(Object element) {
         if ((element != null) && !clazz.isAssignableFrom(element.getClass())) {
             // convert to correct type
             if (LOG.isDebugEnabled()) {
@@ -207,6 +197,12 @@ public class XWorkList extends ArrayList {
             element = XWorkConverter.getInstance().convertValue(context, null, null, null, element, clazz);
         }
 
-        return super.set(index, element);
+        return element;
+    }
+
+    public boolean contains(Object element) {
+        element = convert(element);
+
+        return super.contains(element);
     }
 }
