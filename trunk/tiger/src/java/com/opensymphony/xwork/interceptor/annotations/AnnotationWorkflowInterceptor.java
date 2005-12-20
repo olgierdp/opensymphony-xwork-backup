@@ -73,6 +73,18 @@ import com.opensymphony.xwork.interceptor.PreResultListener;
  * instance variable will contain <code>baseBefore-before-execute-beforeResult-after</code>.</p>
  * <!-- END SNIPPET: example -->
  *
+ * <p/>Configure a stack in xwork.xml that replaces the PrepareInterceptor with the AnnotationWorkflowInterceptor:
+ * <pre>
+ * <!-- START SNIPPET: stack -->
+ * <interceptor-stack name="annotatedStack">
+ *	<interceptor-ref name="static-params"/>
+ *	<interceptor-ref name="params"/>
+ *	<interceptor-ref name="conversionError"/>
+ *	<interceptor-ref name="annotationInterceptor"/>
+ * </interceptor-stack>
+ *  <!-- END SNIPPET: stack -->
+ * </pre>
+
  * @author Zsolt Szasz, zsolt at lorecraft dot com
  * @author Rainer Hermanns
  */
