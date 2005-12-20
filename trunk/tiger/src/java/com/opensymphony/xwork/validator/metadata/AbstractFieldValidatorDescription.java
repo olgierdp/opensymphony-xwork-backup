@@ -20,7 +20,6 @@ public abstract class AbstractFieldValidatorDescription implements ValidatorDesc
      */
     protected static Log log = null;
 
-    public String[] aliasNames;
     public String fieldName;
     public String key;
     public String message;
@@ -40,15 +39,6 @@ public abstract class AbstractFieldValidatorDescription implements ValidatorDesc
     public AbstractFieldValidatorDescription(String fieldName) {
         this.fieldName = fieldName;
         log = LogFactory.getLog(this.getClass());
-    }
-
-    /**
-     * Sets the aliasName of the Action alias as defined in the xwork.xml configuration.
-     *
-     * @param aliasNames the aliasName of the Action alias.
-     */
-    public void setAliasNames(String[] aliasNames) {
-        this.aliasNames = aliasNames;
     }
 
     /**

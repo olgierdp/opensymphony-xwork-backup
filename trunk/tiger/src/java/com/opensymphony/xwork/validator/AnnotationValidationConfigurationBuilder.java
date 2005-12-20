@@ -13,9 +13,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.opensymphony.xwork.validator.annotations.*;
 
 /**
@@ -26,8 +23,6 @@ import com.opensymphony.xwork.validator.annotations.*;
  * @version $Id$
  */
 public class AnnotationValidationConfigurationBuilder {
-
-    private static final Log log = LogFactory.getLog(AnnotationValidationConfigurationBuilder.class);
 
     private static final Pattern SETTER_PATTERN = Pattern.compile("set([A-Z][A-Za-z0-9]*)$");
     private static final Pattern GETTER_PATTERN = Pattern.compile("(get|is|has)([A-Z][A-Za-z0-9]*)$");

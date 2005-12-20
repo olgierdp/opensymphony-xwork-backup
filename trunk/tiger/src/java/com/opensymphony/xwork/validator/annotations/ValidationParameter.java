@@ -23,23 +23,25 @@ import java.lang.annotation.Target;
  * <p/> <u>Annotation parameters:</u>
  *
  * <!-- START SNIPPET: parameters -->
- * <table>
- * <thead>
+ * <table class='confluenceTable'>
  * <tr>
- * <th>Parameter</th>
- * <th>Required</th>
- * <th>Default</th>
- * <th>Description</th>
+ * <th class='confluenceTh'> Parameter </th>
+ * <th class='confluenceTh'> Required </th>
+ * <th class='confluenceTh'> Default </th>
+ * <th class='confluenceTh'> Notes </th>
  * </tr>
- * </thead>
- * <tbody>
  * <tr>
- * <td>param</td>
- * <td>required</td>
- * <td>default</td>
- * <td>description</td>
+ * <td class='confluenceTd'>name</td>
+ * <td class='confluenceTd'>yes</td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'>parameter name.</td>
  * </tr>
- * </tbody>
+ * <tr>
+ * <td class='confluenceTd'>value</td>
+ * <td class='confluenceTd'>yes</td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'>parameter value.</td>
+ * </tr>
  * </table>
  * <!-- END SNIPPET: parameters -->
  *

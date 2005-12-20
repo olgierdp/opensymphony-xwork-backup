@@ -20,23 +20,43 @@ import java.lang.annotation.*;
  * <p/> <u>Annotation parameters:</u>
  *
  * <!-- START SNIPPET: parameters -->
- * <table>
- * <thead>
+ * <table class='confluenceTable'>
  * <tr>
- * <th>Parameter</th>
- * <th>Required</th>
- * <th>Default</th>
- * <th>Description</th>
+ * <th class='confluenceTh'> Parameter </th>
+ * <th class='confluenceTh'> Required </th>
+ * <th class='confluenceTh'> Default </th>
+ * <th class='confluenceTh'> Notes </th>
  * </tr>
- * </thead>
- * <tbody>
  * <tr>
- * <td>param</td>
- * <td>required</td>
- * <td>default</td>
- * <td>description</td>
+ * <td class='confluenceTd'>message</td>
+ * <td class='confluenceTd'>yes</td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'>field error message</td>
  * </tr>
- * </tbody>
+ * <tr>
+ * <td class='confluenceTd'>key</td>
+ * <td class='confluenceTd'>no</td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'>i18n key from language specific properties file.</td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'>fieldName</td>
+ * <td class='confluenceTd'>no</td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'>shortCircuit</td>
+ * <td class='confluenceTd'>no</td>
+ * <td class='confluenceTd'>false</td>
+ * <td class='confluenceTd'>If this validator should be used as shortCircuit.</td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'>type</td>
+ * <td class='confluenceTd'>yes</td>
+ * <td class='confluenceTd'>ValidatorType.FIELD</td>
+ * <td class='confluenceTd'>Enum value from ValidatorType. Either FIELD or SIMPLE can be used here.</td>
+ * </tr>
  * </table>
  * <!-- END SNIPPET: parameters -->
  *
@@ -54,11 +74,6 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UrlValidator {
-
-    /**
-     * The aliasNames are the names of the Action aliases as defined in the xwork.xml configuration for the particular Action.
-     */
-    String[] aliasNames() default {};
 
    /**
      * The default error message for this validator.

@@ -28,13 +28,6 @@ public interface ValidatorDescription {
     String getFieldName();
 
     /**
-     * Sets the aliasName of the Action alias as defined in the xwork.xml configuration.
-     *
-     * @param aliasNames the aliasName of the Action alias.
-     */
-    void setAliasNames(String[] aliasNames);
-
-    /**
      * Sets the I18N message key.
      * @param key the I18N message key
      */

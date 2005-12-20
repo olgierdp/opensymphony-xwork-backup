@@ -15,20 +15,10 @@ import java.io.PrintWriter;
  */
 public class ExpressionValidatorDescription implements ValidatorDescription {
 
-    public String[] aliasNames;
     public String expression;
     public String key;
     public String message;
     public boolean shortCircuit;
-
-    /**
-     * Sets the aliasNames of the Action aliases as defined in the xwork.xml configuration.
-     *
-     * @param aliasNames the aliasNames of the Action aliases.
-     */
-    public void setAliasNames(String[] aliasNames) {
-        this.aliasNames = aliasNames;
-    }
 
     public void setExpression(String expression) {
         this.expression = expression;

@@ -30,6 +30,36 @@ import java.lang.annotation.*;
  * <th class='confluenceTh'> Notes </th>
  * </tr>
  * <tr>
+ * <td class='confluenceTd'>message</td>
+ * <td class='confluenceTd'>yes</td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'>field error message</td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'>key</td>
+ * <td class='confluenceTd'>no</td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'>i18n key from language specific properties file.</td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'>fieldName</td>
+ * <td class='confluenceTd'>no</td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'>shortCircuit</td>
+ * <td class='confluenceTd'>no</td>
+ * <td class='confluenceTd'>false</td>
+ * <td class='confluenceTd'>If this validator should be used as shortCircuit.</td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'>type</td>
+ * <td class='confluenceTd'>yes</td>
+ * <td class='confluenceTd'>ValidatorType.FIELD</td>
+ * <td class='confluenceTd'>Enum value from ValidatorType. Either FIELD or SIMPLE can be used here.</td>
+ * </tr>
+ * <tr>
  * <td class='confluenceTd'> expression </td>
  * <td class='confluenceTd'> yes </td>
  * <td class='confluenceTd'>&nbsp;</td>
@@ -52,11 +82,6 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FieldExpressionValidator {
-
-    /**
-     * The aliasNames are the names of the Action aliases as defined in the xwork.xml configuration for the particular Action.
-     */
-    String[] aliasNames() default {};
 
     /**
      *  An OGNL expression that returns a boolean value.
