@@ -9,10 +9,8 @@ package com.opensymphony.xwork.util;
  *
  * <!-- START SNIPPET: usage -->
  * <p/>The KeyProperty annotation must be applied at method level.
+ * <p/>This annotation should be used with Generic types, if the key property of the key element needs to be specified.
  * <!-- END SNIPPET: usage -->
- * This annotation should be used with Generic types, if the key property of the key element needs to be specified.
- * This defaults to id.
- *
  * <p/> <u>Annotation parameters:</u>
  *
  * <!-- START SNIPPET: parameters -->
