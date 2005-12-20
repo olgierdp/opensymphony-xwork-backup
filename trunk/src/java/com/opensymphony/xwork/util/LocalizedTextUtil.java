@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -500,20 +501,55 @@ public class LocalizedTextUtil {
     private static void reloadBundles() {
         if (reloadBundles) {
             try {
-                Class klass = ResourceBundle.class;
-                Field field = klass.getDeclaredField("cacheList");
-                field.setAccessible(true);
+                clearMap(ResourceBundle.class, null, "cacheList");
 
-                Object cache = field.get(null);
-                synchronized (cache) {
-                    Method clearMethod = cache.getClass().getMethod("clear", new Class[0]);
-                    clearMethod.invoke(cache, new Object[0]);
-                }
-            } catch (Exception e) {
+                // now, for the true and utter hack, if we're running in tomcat, clear
+                // it's class loader resource cache as well.
+                clearTomcatCache();
+            }
+            catch (Exception e) {
                 LOG.error("Could not reload resource bundles", e);
             }
         }
     }
+
+
+    private static void clearTomcatCache() {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        // no need for compilation here.
+        Class cl = loader.getClass();
+
+        try {
+            if ("org.apache.catalina.loader.WebappClassLoader".equals(cl.getName())) {
+                clearMap(cl, loader, "resourceEntries");
+            } else {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("class loader " + cl.getName() + " is not tomcat loader.");
+                }
+            }
+        }
+        catch (Exception e) {
+            LOG.warn("couldn't clear tomcat cache", e);
+        }
+    }
+
+
+    private static void clearMap(Class cl, Object obj, String name)
+            throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException,
+            InvocationTargetException {
+        Field field = cl.getDeclaredField(name);
+        field.setAccessible(true);
+
+        Object cache = field.get(obj);
+
+        synchronized (cache) {
+            Class ccl = cache.getClass();
+            Method clearMethod = ccl.getMethod("clear", new Class[0]);
+            clearMethod.invoke(cache, new Class[0]);
+        }
+
+    }
+
 
     public static void reset() {
         clearDefaultResourceBundles();
