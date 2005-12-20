@@ -10,6 +10,8 @@ package com.opensymphony.xwork.util;
  * <!-- START SNIPPET: usage -->
  * <p/>The KeyProperty annotation must be applied at method level.
  * <!-- END SNIPPET: usage -->
+ * This annotation should be used with Generic types, if the key property of the key element needs to be specified.
+ * This defaults to id.
  *
  * <p/> <u>Annotation parameters:</u>
  *
@@ -35,9 +37,16 @@ package com.opensymphony.xwork.util;
  * <!-- END SNIPPET: parameters -->
  *
  * <p/> <u>Example code:</u>
+ * The key property for users in this example is the <code>userName</code> attribute.
  *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * List<User> users = null;
+ *
+ * @KeyProperty( value = "userName" )
+ * public void setUsers(List<User> users) {
+ *   this.users = users;
+ * }
  * <!-- END SNIPPET: example -->
  * </pre>
  *
