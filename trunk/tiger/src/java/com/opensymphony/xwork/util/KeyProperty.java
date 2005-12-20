@@ -35,10 +35,9 @@ package com.opensymphony.xwork.util;
  * <!-- END SNIPPET: parameters -->
  *
  * <p/> <u>Example code:</u>
- * The key property for users in this example is the <code>userName</code> attribute.
- *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * // The key property for User objects within the users collection is the <code>userName</code> attribute.
  * List<User> users = null;
  *
  * @KeyProperty( value = "userName" )
