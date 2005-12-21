@@ -86,7 +86,7 @@ public class LocalizedTextUtilTest extends TestCase {
         LocalizedTextUtil.addDefaultResourceBundle("com/opensymphony/xwork/SimpleAction");
 
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("/", "packagelessAction", Collections.EMPTY_MAP, false);
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("/", "packagelessAction", Collections.EMPTY_MAP, false, true);
             proxy.execute();
         } catch (Exception e) {
             e.printStackTrace();

@@ -86,8 +86,9 @@ public abstract class ActionProxyFactory {
      * @param actionName
      * @param extraContext  a Map of extra parameters to be provided to the ActionProxy
      * @param executeResult flag which tells whether the result should be executed after the action
+     * @param cleanupContext
      * @return
      * @throws Exception
      */
-    public abstract ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult) throws Exception;
+    public abstract ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception;
 }

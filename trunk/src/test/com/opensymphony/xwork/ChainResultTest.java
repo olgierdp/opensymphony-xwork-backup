@@ -108,7 +108,7 @@ public class ChainResultTest extends TestCase {
             return returnVal;
         }
 
-        public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult) throws Exception {
+        public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
             TestCase.assertEquals(expectedNamespace, namespace);
             TestCase.assertEquals(expectedActionName, actionName);
 

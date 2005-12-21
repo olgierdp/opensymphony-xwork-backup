@@ -30,7 +30,7 @@ public class PreResultListenerTest extends TestCase {
 
 
     public void testPreResultListenersAreCalled() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("package", "action", new HashMap(), false);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("package", "action", new HashMap(), false, true);
         ActionInvocation invocation = proxy.getInvocation();
         Mock preResultListenerMock1 = new Mock(PreResultListener.class);
         preResultListenerMock1.expect("beforeResult", C.args(C.eq(invocation), C.eq(Action.SUCCESS)));
@@ -40,7 +40,7 @@ public class PreResultListenerTest extends TestCase {
     }
 
     public void testPreResultListenersAreCalledInOrder() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("package", "action", new HashMap(), false);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("package", "action", new HashMap(), false, true);
         ActionInvocation invocation = proxy.getInvocation();
         CountPreResultListener listener1 = new CountPreResultListener();
         CountPreResultListener listener2 = new CountPreResultListener();

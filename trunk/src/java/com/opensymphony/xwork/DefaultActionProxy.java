@@ -35,6 +35,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     protected String namespace;
     protected String method;
     protected boolean executeResult;
+    protected boolean cleanupContext;
 
     /**
      * This constructor is private so the builder methods (create*) should be used to create an DefaultActionProxy.
@@ -42,7 +43,8 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
      * The reason for the builder methods is so that you can use a subclass to create your own DefaultActionProxy instance
      * (like a RMIActionProxy).
      */
-    protected DefaultActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult) throws Exception {
+    protected DefaultActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+        this.cleanupContext = cleanupContext;
         if (LOG.isDebugEnabled()) {
             LOG.debug("Creating an DefaultActionProxy for namespace " + namespace + " and action name " + actionName);
         }
@@ -117,7 +119,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
             retCode = invocation.invoke();
             ActionGlobalContext.getContext().setActionExecuted("Executed");
         } finally {
-            if (executed != null) {
+            if (cleanupContext && executed != null) {
                 ActionContext.setContext(nestedContext);
             }
         }
