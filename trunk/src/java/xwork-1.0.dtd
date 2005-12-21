@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   XWork Configuraion DTD.
+   Use the following DOCTYPE.
+   
+   <!DOCTYPE xwork PUBLIC 
+		"-//OpenSymphony Group//XWork 1.0//EN" 
+		"http://www.opensymphony.com/xwork/xwork-1.0.dtd">
+-->
+
 <!ELEMENT xwork (package|include)*>
 
 <!ELEMENT package (result-types?, interceptors?, default-interceptor-ref?, global-results?, action*)>
