@@ -185,13 +185,18 @@ public class OgnlValueStack implements Serializable {
                 return findValue(expr, defaultType);
             }
 
-            return OgnlUtil.getValue(expr, context, root);
+            Object value = OgnlUtil.getValue(expr, context, root);
+            if (value != null) {
+                return value;
+            } else {
+                return findInContext(expr);
+            }
         } catch (OgnlException e) {
-            return null;
+            return findInContext(expr);
         } catch (Exception e) {
             LOG.warn("Caught an exception while evaluating expression '" + expr + "' against value stack", e);
 
-            return null;
+            return findInContext(expr);
         } finally {
             OgnlContextState.clear(context);
         }
@@ -214,16 +219,25 @@ public class OgnlValueStack implements Serializable {
                 expr = (String) overrides.get(expr);
             }
 
-            return OgnlUtil.getValue(expr, context, root, asType);
+            Object value = OgnlUtil.getValue(expr, context, root, asType);
+            if (value != null) {
+                return value;
+            } else {
+                return findInContext(expr);
+            }
         } catch (OgnlException e) {
-            return null;
+            return findInContext(expr);
         } catch (Exception e) {
             LOG.warn("Caught an exception while evaluating expression '" + expr + "' against value stack", e);
 
-            return null;
+            return findInContext(expr);
         } finally {
             OgnlContextState.clear(context);
         }
+    }
+
+    private Object findInContext(String name) {
+        return getContext().get(name);
     }
 
     /**
