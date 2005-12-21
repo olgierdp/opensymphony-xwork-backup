@@ -209,28 +209,29 @@ public class ObjectFactory {
         }
 
         public Class loadClass(String name) throws ClassNotFoundException {
+            Class aClass = parent.loadClass(name);
             if (validName(name)) {
                 if (findLoadedClass(name) == null) {
                     try {
                         byte[] bytes = ClassByteUtil.getBytes(name, parent);
                         if (bytes == null) {
-                            return super.loadClass(name);
+                            throw new RuntimeException("Continuation error: no bytes loaded");
                         }
 
                         byte[] resume_bytes = ContinuationInstrumentor.instrument(bytes, name, false);
 
-                        if (resume_bytes != null) {
-                            bytes = resume_bytes;
+                        if (resume_bytes == null) {
+                            return aClass;
+                        } else {
+                            return defineClass(name, resume_bytes, 0, resume_bytes.length);
                         }
-
-                        return defineClass(name, bytes, 0, bytes.length);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException("Continuation error", e);
                     }
                 }
             }
 
-            return super.loadClass(name);
+            return aClass;
         }
 
         private boolean validName(String name) {
