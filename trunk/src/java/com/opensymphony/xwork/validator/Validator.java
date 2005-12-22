@@ -352,4 +352,8 @@ public interface Validator {
      * @throws ValidationException
      */
     void validate(Object object) throws ValidationException;
+
+    void setValidatorType(String type);
+
+    String getValidatorType();
 }

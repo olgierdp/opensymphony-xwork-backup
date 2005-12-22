@@ -63,6 +63,7 @@ public class ActionValidatorManager {
         for (Iterator iterator = cfgs.iterator(); iterator.hasNext(); ) {
             ValidatorConfig cfg = (ValidatorConfig) iterator.next();
             Validator validator = ValidatorFactory.getValidator(cfg);
+            validator.setValidatorType(cfg.getType());
             validators.add(validator);
         }
 

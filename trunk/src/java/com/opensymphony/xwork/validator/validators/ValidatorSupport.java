@@ -27,6 +27,7 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
     protected String messageKey = null;
     private ValidatorContext validatorContext;
     private boolean shortCircuit;
+    private String type;
 
 
     public void setDefaultMessage(String message) {
@@ -92,6 +93,14 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
 
     public ValidatorContext getValidatorContext() {
         return validatorContext;
+    }
+
+    public void setValidatorType(String type) {
+        this.type = type;
+    }
+
+    public String getValidatorType() {
+        return type;
     }
 
     protected Object getFieldValue(String name, Object object) throws ValidationException {

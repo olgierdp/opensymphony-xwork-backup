@@ -15,9 +15,8 @@ import com.opensymphony.xwork.validator.FieldValidator;
  * @author Jason Carreira
  */
 public abstract class FieldValidatorSupport extends ValidatorSupport implements FieldValidator {
-
     private String fieldName = null;
-
+    private String type;
 
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
@@ -25,5 +24,13 @@ public abstract class FieldValidatorSupport extends ValidatorSupport implements 
 
     public String getFieldName() {
         return fieldName;
+    }
+
+    public void setValidatorType(String type) {
+        this.type = type;
+    }
+
+    public String getValidatorType() {
+        return type;
     }
 }
