@@ -20,7 +20,6 @@
         <conf name="default" description="The xwork jar file"/>
         <conf name="source" description="The xwork source files packaged as a jar"/>
         <conf name="spring" description="The xwork jar file with Spring integration"/>
-        <conf name="pico"/>
     </configurations>
     <publications>
         <artifact name="xwork" type="jar" conf="default"/>
@@ -45,8 +44,5 @@
         <!-- spring -->
         <dependency org="springframework" name="spring" rev="1.2.6"
                     conf="spring->spring-aop,spring-beans,spring-context,spring-core,spring-web"/>
-
-        <!-- pico -->
-        <dependency org="picocontainer" name="picocontainer" rev="1.2-RC-2" conf="pico->*"/>
     </dependencies>
 </ivy-module>
