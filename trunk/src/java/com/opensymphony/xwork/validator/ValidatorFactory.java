@@ -112,8 +112,8 @@ import java.util.Map;
  * 
  * <pre>
  * <!-- START SNIPPET: exValidationRules1 -->
- * &lt;!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0//EN"
- *        "http://www.opensymphony.com/xwork/xwork-validator-1.0.dtd"&gt;
+ * &lt;!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN"
+ *        "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd"&gt;
  * &lt;validators&gt;
  *   &lt;field name="bar"&gt;
  *       &lt;field-validator type="required"&gt;
