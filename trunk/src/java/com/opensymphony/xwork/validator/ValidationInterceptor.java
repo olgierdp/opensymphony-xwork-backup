@@ -90,8 +90,9 @@ public class ValidationInterceptor extends AroundInterceptor {
      * @throws Exception if an error occurs validating the action.
      */
     protected void before(ActionInvocation invocation) throws Exception {
-        if (excludeMethods.contains(invocation.getProxy().getMethod())) {
-            log.debug("Skipping validation. Method found in exclude list.");
+    	String method = invocation.getProxy().getMethod();
+        if (excludeMethods.contains(method)) {
+            log.debug("Skipping validation. Method ["+method+"] found in exclude list.");
             return;
         }
 
