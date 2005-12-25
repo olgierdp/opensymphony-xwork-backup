@@ -93,8 +93,9 @@ public class DefaultWorkflowInterceptor implements Interceptor {
     }
 
     public String intercept(ActionInvocation invocation) throws Exception {
-        if (excludeMethods.contains(invocation.getProxy().getMethod())) {
-            log.debug("Skipping workflow. Method found in exclude list.");
+    	String method = invocation.getProxy().getMethod();
+        if (excludeMethods.contains(method)) {
+            log.debug("Skipping workflow. Method ["+method+"]found in exclude list.");
             return invocation.invoke();
         }
 
