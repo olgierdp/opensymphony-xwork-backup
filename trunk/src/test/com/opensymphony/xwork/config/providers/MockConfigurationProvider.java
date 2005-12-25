@@ -32,6 +32,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
 
     public static final String FOO_ACTION_NAME = "foo";
     public static final String MODEL_DRIVEN_PARAM_TEST = "modelParamTest";
+    public static final String MODEL_DRIVEN_PARAM_FILTER_TEST  = "modelParamFilterTest";
     public static final String PARAM_INTERCEPTOR_ACTION_NAME = "parametersInterceptorTest";
     public static final String VALIDATION_ACTION_NAME = "validationInterceptorTest";
     public static final String VALIDATION_ALIAS_NAME = "validationAlias";
@@ -77,6 +78,11 @@ public class MockConfigurationProvider implements ConfigurationProvider {
 
         ActionConfig modelParamActionConfig = new ActionConfig(null, ModelDrivenAction.class, null, null, interceptors);
         defaultPackageContext.addActionConfig(MODEL_DRIVEN_PARAM_TEST, modelParamActionConfig);
+        
+        //List paramFilterInterceptor=new ArrayList();
+        //paramFilterInterceptor.add(new ParameterFilterInterC)
+        //ActionConfig modelParamFilterActionConfig = new ActionConfig(null, ModelDrivenAction.class, null, null, interceptors);
+        
 
         results = new HashMap();
         successParams = new HashMap();

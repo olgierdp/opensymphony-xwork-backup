@@ -35,15 +35,19 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
         }
         OgnlContextState.updateCurrentPropertyPath(context, name);
         //System.out.println("Entering XWorkListPropertyAccessor. Name: " + name);
+        Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
+        String lastProperty = (String) context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
+        
         if (name instanceof Number
-                && context.get(InstantiatingNullHandler.CREATE_NULL_OBJECTS) != null) {
+                && OgnlContextState.isCreatingNullObjects(context)
+                && XWorkConverter.getInstance()
+                .getObjectTypeDeterminer().shouldCreateIfNew(lastClass,lastProperty,target,null,true)) {
 
             //System.out.println("Getting index from List");
             List list = (List) target;
             int index = ((Number) name).intValue();
             int listSize = list.size();
-            Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
-            String lastProperty = (String) context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
+
             if (lastClass == null || lastProperty == null) {
                 return super.getProperty(context, target, name);
             }
@@ -98,7 +102,7 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
                     OgnlUtil.setValue((String) name, context, o, v);
                     c.add(o);
                 } catch (Exception e) {
-                    // what to do?
+                    throw new OgnlException("Error converting given String values for Collection.", e);
                 }
             }
 

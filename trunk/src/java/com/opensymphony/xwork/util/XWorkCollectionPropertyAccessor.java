@@ -11,6 +11,8 @@ import ognl.SetPropertyAccessor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.opensymphony.xwork.ObjectFactory;
+
 import java.util.*;
 
 /**
@@ -67,11 +69,13 @@ public class XWorkCollectionPropertyAccessor extends SetPropertyAccessor {
             OgnlContextState.updateCurrentPropertyPath(context, key);
             return super.getProperty(context, target, key);
         }
-
+        
+        ObjectTypeDeterminer objTypeDeterminer=XWorkConverter.getInstance()
+        .getObjectTypeDeterminer();
+        
         //get the key property to index the
         //collection with from the ObjectTypeDeterminer
-        String keyProperty = XWorkConverter.getInstance()
-                .getObjectTypeDeterminer()
+        String keyProperty = objTypeDeterminer
                 .getKeyProperty(lastBeanClass, lastPropertyClass);
 
         //get the collection class of the
@@ -97,7 +101,36 @@ public class XWorkCollectionPropertyAccessor extends SetPropertyAccessor {
                 return collMap.get(null);
             }
             Object realKey = XWorkConverter.getInstance().convertValue(context, key, keyType);
-            return collMap.get(realKey);
+            Object value = collMap.get(realKey);
+            if (value == null
+                    && OgnlContextState.isCreatingNullObjects(context)
+                    && objTypeDeterminer
+                    .shouldCreateIfNew(lastBeanClass,lastPropertyClass,c,keyProperty,false)) {
+                	//create a new element and 
+                    //set the value of keyProperty
+                    //to be the given value
+                	try {
+                	    value=ObjectFactory
+                		.getObjectFactory()
+                		.buildBean(collClass, context);
+                	    
+                	    //set the value of the keyProperty
+                	    _accessor.setProperty(context,value,keyProperty,realKey);
+                	    
+                	    //add the new object to the collection 
+                	    c.add(value);
+                	    
+                	    //add to the Map if accessed later
+                	    collMap.put(realKey, value);
+                	    
+                	    
+                	}	catch (Exception exc) {
+                	    throw new OgnlException("Error adding new element to collection", exc);
+                	    
+                	}
+                
+            }
+            return value;
         } else {
             if (key.toString().equals(KEY_PROPERTY_FOR_CREATION)) {
                 return null;

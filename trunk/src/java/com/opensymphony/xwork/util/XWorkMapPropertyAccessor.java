@@ -67,7 +67,9 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
             result = map.get(key);
 
             if (result == null &&
-                    context.get(InstantiatingNullHandler.CREATE_NULL_OBJECTS) != null) {
+                    context.get(InstantiatingNullHandler.CREATE_NULL_OBJECTS) != null
+                    &&  XWorkConverter.getInstance()
+                    .getObjectTypeDeterminer().shouldCreateIfNew(lastClass,lastProperty,target,null,false)) {
                 Class valueClass = _converter.getObjectTypeDeterminer().getElementClass(lastClass, lastProperty, key);
 
                 try {

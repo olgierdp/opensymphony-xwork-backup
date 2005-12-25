@@ -3,6 +3,8 @@
  */
 package com.opensymphony.xwork.util;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -32,6 +34,7 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
     public static final String KEY_PREFIX = "Key_";
     public static final String ELEMENT_PREFIX = "Element_";
     public static final String KEY_PROPERTY_PREFIX = "KeyProperty_";
+    public static final String CREATE_IF_NULL_PREFIX = "CreateIfNull_";
     public static final String DEPRECATED_ELEMENT_PREFIX = "Collection_";
 
 
@@ -78,5 +81,32 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
                 .getConverter(parentClass, KEY_PROPERTY_PREFIX + property);
 
     }
-
+    
+    public boolean shouldCreateIfNew(Class parentClass, 
+            String property, 
+            Object target,
+            String keyProperty,
+            boolean isIndexAccessed) {
+        
+        	String configValue=(String) XWorkConverter.getInstance()
+            .getConverter(parentClass, CREATE_IF_NULL_PREFIX + property);
+        	//check if a value is in the config
+        	if (configValue!=null) {
+        	    if (configValue.equals("true")) {
+        	        return true;
+        	    }
+        	    if (configValue.equals("false")) {
+        	        return false;
+        	    }        	      
+        	}
+        	
+        	//default values depend on target type 
+        	//and whether this is accessed by an index
+        	//in the case of List
+        	if ((target instanceof Map) || isIndexAccessed) {
+        	    return true;
+        	}	else {
+        	    return false;
+        	}
+    }
 }

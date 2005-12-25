@@ -430,7 +430,8 @@ public class XWorkConverter extends DefaultTypeConverter {
                         LOG.debug(key + ":" + entry.getValue());
                     }
 
-                    if (key.startsWith(DefaultObjectTypeDeterminer.KEY_PROPERTY_PREFIX)) {
+                    if (key.startsWith(DefaultObjectTypeDeterminer.KEY_PROPERTY_PREFIX)
+                            || key.startsWith(DefaultObjectTypeDeterminer.CREATE_IF_NULL_PREFIX)) {
                         mapping.put(key, entry.getValue());
                     }
                     //for properties of classes
