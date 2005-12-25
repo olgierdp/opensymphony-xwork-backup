@@ -12,6 +12,9 @@ import com.opensymphony.xwork.util.OgnlValueStack;
 
 import java.util.*;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * <!-- START SNIPPET: description -->
@@ -58,6 +61,7 @@ import java.util.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * 
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
  *     &lt;interceptor-ref name="basicStack"/&gt;
  *     &lt;result name="success" type="chain"&gt;otherAction&lt;/result&gt;
@@ -68,13 +72,18 @@ import java.util.*;
  *     &lt;interceptor-ref name="basicStack"/&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
+ * 
  * <!-- END SNIPPET: example -->
  * </pre>
  *
  * @author $Author$
+ * @author tm_jee ( tm_jee(at)yahoo.co.uk )
  * @version $Revision$
  */
 public class ChainingInterceptor extends AroundInterceptor {
+	
+	private static final Log _log = LogFactory.getLog(ChainingInterceptor.class);
+	
     Collection excludes;
     Collection includes;
 
@@ -92,10 +101,17 @@ public class ChainingInterceptor extends AroundInterceptor {
 
             Map ctxMap = invocation.getInvocationContext().getContextMap();
             Iterator iterator = list.iterator();
+            int index = 1; // starts with 1, 0 has been removed
             while (iterator.hasNext()) {
+            	index = index + 1;
                 Object o = iterator.next();
-                if (!(o instanceof Unchainable)) {
-                    OgnlUtil.copy(o, invocation.getAction(), ctxMap, excludes, includes);
+                if (o != null) {
+                	if (!(o instanceof Unchainable)) {
+                		OgnlUtil.copy(o, invocation.getAction(), ctxMap, excludes, includes);
+                	}
+                }
+                else {
+                	_log.warn("compound root element at index "+index+" is null");
                 }
             }
         }

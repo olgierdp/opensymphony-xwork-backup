@@ -56,6 +56,16 @@ public class ChainingInterceptorTest extends TestCase {
         assertEquals(bean.getName(), action.getName());
         assertEquals(bean.getCount(), action.getCount());
     }
+    
+    
+    public void testNullCompoundRootElementAllowsProcessToContinue() throws Exception {
+    	// we should not get NPE, but instead get a warning logged.
+    	stack.push(null);
+    	stack.push(null);
+    	stack.push(null);
+    	interceptor.intercept(invocation); 
+    }
+    
 
     protected void setUp() throws Exception {
         super.setUp();
