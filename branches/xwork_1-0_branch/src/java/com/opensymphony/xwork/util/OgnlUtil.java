@@ -190,14 +190,16 @@ public class OgnlUtil {
     }
 
     public static Object compile(String expression) throws OgnlException {
-        Object o = expressions.get(expression);
+        synchronized(expressions) {
+            Object o = expressions.get(expression);
 
-        if (o == null) {
-            o = Ognl.parseExpression(expression);
-            expressions.put(expression, o);
+            if (o == null) {
+                o = Ognl.parseExpression(expression);
+                expressions.put(expression, o);
+            }
+
+            return o;
         }
-
-        return o;
     }
 
     /**
@@ -257,13 +259,16 @@ public class OgnlUtil {
     }
 
     private static BeanInfo getBeanInfo(Object from) throws IntrospectionException {
-        BeanInfo beanInfo;
-        beanInfo = (BeanInfo) beanInfoCache.get(from.getClass());
-        if (beanInfo == null) {
-            beanInfo = Introspector.getBeanInfo(from.getClass(), Object.class);
-            beanInfoCache.put(from.getClass(), beanInfo);
+        synchronized (beanInfoCache) {
+            BeanInfo beanInfo = (BeanInfo) beanInfoCache.get(from.getClass());
+            if (beanInfo == null) {
+                beanInfo = Introspector.getBeanInfo(from.getClass(), Object.class);
+                beanInfoCache.put(from.getClass(), beanInfo);
+            }
+
+            return beanInfo;
         }
-        return beanInfo;
+
     }
 
     static void internalSetProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
