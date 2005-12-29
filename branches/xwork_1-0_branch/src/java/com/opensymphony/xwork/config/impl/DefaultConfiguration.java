@@ -30,7 +30,7 @@ public class DefaultConfiguration implements Configuration {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     // Programmatic Action Conifigurations
-    private Map packageContexts = new HashMap();
+    private Map packageContexts = new LinkedHashMap();
     private RuntimeConfiguration runtimeConfiguration;
 
     //~ Constructors ///////////////////////////////////////////////////////////
@@ -105,7 +105,7 @@ public class DefaultConfiguration implements Configuration {
      * programmatic configuration data structures. All of the old runtime configuration will be discarded and rebuilt.
      */
     protected synchronized RuntimeConfiguration buildRuntimeConfiguration() throws ConfigurationException {
-        Map namespaceActionConfigs = new HashMap();
+        Map namespaceActionConfigs = new LinkedHashMap();
 
         for (Iterator iterator = packageContexts.values().iterator();
                 iterator.hasNext();) {
@@ -116,7 +116,7 @@ public class DefaultConfiguration implements Configuration {
                 Map configs = (Map) namespaceActionConfigs.get(namespace);
 
                 if (configs == null) {
-                    configs = new HashMap();
+                    configs = new LinkedHashMap();
                 }
 
                 Map actionConfigs = packageContext.getAllActionConfigs();

@@ -11,13 +11,7 @@ import com.opensymphony.xwork.config.ExternalReferenceResolver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -32,10 +26,10 @@ public class PackageConfig {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private ExternalReferenceResolver externalRefResolver = null;
-    private Map actionConfigs = new HashMap();
-    private Map globalResultConfigs = new HashMap();
-    private Map interceptorConfigs = new HashMap();
-    private Map resultTypeConfigs = new HashMap();
+    private Map actionConfigs = new LinkedHashMap();
+    private Map globalResultConfigs = new LinkedHashMap();
+    private Map interceptorConfigs = new LinkedHashMap();
+    private Map resultTypeConfigs = new LinkedHashMap();
     private Set parents = new HashSet();
     private String defaultInterceptorRef;
     private String defaultResultType;
@@ -89,7 +83,7 @@ public class PackageConfig {
     * @see com.opensymphony.xwork.config.entities.ActionConfig
     */
     public Map getAllActionConfigs() {
-        Map retMap = new HashMap();
+        Map retMap = new LinkedHashMap();
 
         if (!parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
@@ -110,7 +104,7 @@ public class PackageConfig {
     * @see com.opensymphony.xwork.config.entities.ResultConfig
     */
     public Map getAllGlobalResults() {
-        Map retMap = new HashMap();
+        Map retMap = new LinkedHashMap();
 
         if (!parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
@@ -132,7 +126,7 @@ public class PackageConfig {
     * @see com.opensymphony.xwork.config.entities.InterceptorStackConfig
     */
     public Map getAllInterceptorConfigs() {
-        Map retMap = new HashMap();
+        Map retMap = new LinkedHashMap();
 
         if (!parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
@@ -153,7 +147,7 @@ public class PackageConfig {
     * @see com.opensymphony.xwork.config.entities.ResultTypeConfig
     */
     public Map getAllResultTypeConfigs() {
-        Map retMap = new HashMap();
+        Map retMap = new LinkedHashMap();
 
         if (!parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
@@ -224,7 +218,6 @@ public class PackageConfig {
     /**
     * gets the default interceptor-ref name. If this is not set on this PackageConfig, it searches the parent
     * PackageConfigs in order until it finds one.
-    * @return
     */
     public String getFullDefaultInterceptorRef() {
         if ((defaultInterceptorRef == null) && !parents.isEmpty()) {

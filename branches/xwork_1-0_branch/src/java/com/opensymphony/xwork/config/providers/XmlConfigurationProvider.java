@@ -365,7 +365,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     protected Map buildResults(Element element, PackageConfig packageContext) {
         NodeList resultEls = element.getElementsByTagName("result");
 
-        Map results = new HashMap();
+        Map results = new LinkedHashMap();
 
         for (int i = 0; i < resultEls.getLength(); i++) {
             Element resultElement = (Element) resultEls.item(i);
@@ -402,7 +402,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                  {
                     // if <result ...>something</result> then we add a parameter of 'something' as this is the most used result param
                     if ((resultElement.getChildNodes().getLength() == 1) && (resultElement.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE)) {
-                        params = new HashMap();
+                        params = new LinkedHashMap();
 
                         try {
                             String paramName = (String) resultClass.getField("DEFAULT_PARAM").get(null);

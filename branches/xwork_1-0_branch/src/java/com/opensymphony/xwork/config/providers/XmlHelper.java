@@ -9,6 +9,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 
 /**
@@ -22,7 +23,7 @@ public class XmlHelper {
     //~ Methods ////////////////////////////////////////////////////////////////
 
     public static HashMap getParams(Element paramsElement) {
-        HashMap params = new HashMap();
+        HashMap params = new LinkedHashMap();
 
         if (paramsElement == null) {
             return params;

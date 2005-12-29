@@ -6,6 +6,7 @@ package com.opensymphony.xwork.config.entities;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.LinkedHashMap;
 
 
 /**
@@ -25,7 +26,7 @@ public class ResultConfig implements Parameterizable {
     //~ Constructors ///////////////////////////////////////////////////////////
 
     public ResultConfig() {
-        params = new HashMap();
+        params = new LinkedHashMap();
     }
 
     public ResultConfig(String name, Class clazz) {
@@ -68,7 +69,7 @@ public class ResultConfig implements Parameterizable {
 
     public Map getParams() {
         if (params == null) {
-            params = new HashMap();
+            params = new LinkedHashMap();
         }
 
         return params;
