@@ -40,7 +40,7 @@
     </target>
 
     <target name="predist" depends="tiger">
-        <copy file="%{build}/${name}-tiger-${version}.jar" todir="${dist}"/>
+        <copy file="${build}/${name}-tiger-${version}.jar" todir="${dist}"/>
     </target>
 
     <target name="tiger">
