@@ -219,6 +219,12 @@ public class OgnlUtil {
      *                   note if exclusions AND inclusions are supplied and not null nothing will get copied.
      */
     public static void copy(Object from, Object to, Map context, Collection exclusions, Collection inclusions) {
+        if (from == null || to == null) {
+            log.warn("Attempting to copy from or to a null source. This is illegal and is bein skipped. This may be due to an error in an OGNL expression, action chaining, or some other event.");
+
+            return;
+        }
+
         Map contextFrom = Ognl.createDefaultContext(from);
         Ognl.setTypeConverter(contextFrom, XWorkConverter.getInstance());
         Map contextTo = Ognl.createDefaultContext(to);
