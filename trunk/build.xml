@@ -17,12 +17,12 @@
     </path>
 
     <target name="init" depends="common.init" unless="skip.ivy">
-        <taskdef name="ivy-configure" classname="fr.jayasoft.ivy.ant.IvyConfigure"/>
-        <taskdef name="ivy-resolve" classname="fr.jayasoft.ivy.ant.IvyResolve"/>
-        <taskdef name="ivy-retrieve" classname="fr.jayasoft.ivy.ant.IvyRetrieve"/>
-        <taskdef name="ivy-publish" classname="fr.jayasoft.ivy.ant.IvyPublish"/>
-        <taskdef name="ivy-report" classname="fr.jayasoft.ivy.ant.IvyReport"/>
-        <taskdef name="ivy-deliver" classname="fr.jayasoft.ivy.ant.IvyDeliver"/>
+        <taskdef name="ivy-configure" classname="fr.jayasoft.ivy.ant.IvyConfigure" classpathref="cp"/>
+        <taskdef name="ivy-resolve" classname="fr.jayasoft.ivy.ant.IvyResolve" classpathref="cp"/>
+        <taskdef name="ivy-retrieve" classname="fr.jayasoft.ivy.ant.IvyRetrieve" classpathref="cp"/>
+        <taskdef name="ivy-publish" classname="fr.jayasoft.ivy.ant.IvyPublish" classpathref="cp"/>
+        <taskdef name="ivy-report" classname="fr.jayasoft.ivy.ant.IvyReport" classpathref="cp"/>
+        <taskdef name="ivy-deliver" classname="fr.jayasoft.ivy.ant.IvyDeliver" classpathref="cp"/>
 
         <ivy-retrieve/>
     </target>
@@ -40,6 +40,9 @@
     </target>
 
     <target name="predist" depends="tiger">
+        <!-- grab the README.txt file -->
+        <copy file="${src}/etc/README.txt" todir="${dist}"/>
+
         <copy file="${build}/${name}-tiger-${version}.jar" todir="${dist}"/>
     </target>
 
