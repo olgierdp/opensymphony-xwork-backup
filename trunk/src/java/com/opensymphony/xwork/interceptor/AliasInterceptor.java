@@ -103,7 +103,17 @@ public class AliasInterceptor extends AroundInterceptor {
                     String name = entry.getKey().toString();
                     String alias = (String) entry.getValue();
                     Object value = stack.findValue(name);
-                    stack.setValue(alias, value);
+                    if (null == value) {
+                        // workaround
+                        Map contextParameters = (Map) stack.getContext().get("parameters");
+                        
+                        if (null != contextParameters) {
+                            value = contextParameters.get(name);
+                        }
+                    }
+                    if (null != value) {
+                        stack.setValue(alias, value);
+                    }
                 }
             } else {
                 log.debug("invalid alias expression:" + aliasesKey);
