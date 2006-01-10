@@ -1,0 +1,39 @@
+package com.opensymphony.xwork.util;
+
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
+import ognl.PropertyAccessor;
+
+import java.util.Map;
+
+/**
+ * @author Gabe
+ */
+public class ObjectProxyPropertyAccessor implements PropertyAccessor {
+    public Object getProperty(Map context, Object target, Object name) throws OgnlException {
+        ObjectProxy proxy = (ObjectProxy) target;
+        setupContext(context, proxy);
+
+        return OgnlRuntime.getPropertyAccessor(proxy.getValue().getClass()).getProperty(context, target, name);
+
+    }
+
+    public void setProperty(Map context, Object target, Object name, Object value) throws OgnlException {
+        ObjectProxy proxy = (ObjectProxy) target;
+        setupContext(context, proxy);
+
+        OgnlRuntime.getPropertyAccessor(proxy.getValue().getClass()).setProperty(context, target, name, value);
+    }
+
+    /**
+     * Sets up the context with the last property and last class
+     * accessed.
+     *
+     * @param context
+     * @param proxy
+     */
+    private void setupContext(Map context, ObjectProxy proxy) {
+        OgnlContextState.setLastBeanClassAccessed(context, proxy.getLastClassAccessed());
+        OgnlContextState.setLastBeanPropertyAccessed(context, proxy.getLastPropertyAccessed());
+    }
+}
