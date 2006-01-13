@@ -34,14 +34,14 @@ public class AnnotationWorkflowInterceptorTest extends TestCase {
 	}
 	
 	public void testInterceptsBeforeAndAfter() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", ANNOTATED_ACTION, null, false);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", ANNOTATED_ACTION, null, false, false);
         assertEquals(Action.SUCCESS, proxy.execute());
         AnnotatedAction action = (AnnotatedAction)proxy.getInvocation().getAction();
         assertEquals("baseBefore-before-execute-beforeResult-after", action.log);		
 	}
 	
 	public void testInterceptsShortcircuitedAction() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", SHORTCIRCUITED_ACTION, null, false);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", SHORTCIRCUITED_ACTION, null, false, false);
         assertEquals("shortcircuit", proxy.execute());
         ShortcircuitedAction action = (ShortcircuitedAction)proxy.getInvocation().getAction();
         assertEquals("baseBefore-before", action.log);		
