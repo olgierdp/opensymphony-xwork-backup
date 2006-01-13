@@ -77,7 +77,7 @@ public class ActionValidatorManager {
      * @param context the action's context.
      * @throws ValidationException if an error happens when validating the action.
      */
-    public static void validate(Object object, String context) throws ValidationException {
+    public void validate(Object object, String context) throws ValidationException {
         ValidatorContext validatorContext = new DelegatingValidatorContext(object);
         validate(object, context, validatorContext);
     }
