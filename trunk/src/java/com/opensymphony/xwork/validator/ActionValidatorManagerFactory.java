@@ -22,7 +22,7 @@ public class ActionValidatorManagerFactory {
 
     static {
         try {
-            Class c = ClassLoaderUtil.loadClass("com.opensymphony.xwork.util.AnnotationActionValidatorManager", ActionValidatorManagerFactory.class);
+            Class c = ClassLoaderUtil.loadClass("com.opensymphony.xwork.validator.AnnotationActionValidatorManager", ActionValidatorManagerFactory.class);
 
             LOG.info("Detected AnnotationActionValidatorManager, initializing it...");
             instance = (ActionValidatorManager) c.newInstance();
