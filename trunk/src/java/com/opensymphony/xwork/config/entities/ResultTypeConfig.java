@@ -4,19 +4,23 @@
  */
 package com.opensymphony.xwork.config.entities;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 
 /**
- * Created by IntelliJ IDEA.
- * User: Mike
- * Date: May 6, 2003
- * Time: 1:24:41 PM
- * To change this template use Options | File Templates.
+ * Configuration class for result types.
+ *
+ * @author Mike
+ * @author Rainer Hermanns
+ * @author Neo
  */
 public class ResultTypeConfig {
 
     private Class clazz;
     private String name;
 
+    private Map params;
 
     public ResultTypeConfig() {
     }
@@ -43,33 +47,35 @@ public class ResultTypeConfig {
         return name;
     }
 
+    public void addParam(String key, String value) {
+        if (params == null) {
+            params = new TreeMap();
+        }
+        params.put(key, value);
+    }
+
+    public Map getParams() {
+        return this.params;
+    }
+
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        if (!(o instanceof ResultTypeConfig)) {
-            return false;
-        }
+        final ResultTypeConfig that = (ResultTypeConfig) o;
 
-        final ResultTypeConfig resultTypeConfig = (ResultTypeConfig) o;
-
-        if ((clazz != null) ? (!clazz.equals(resultTypeConfig.clazz)) : (resultTypeConfig.clazz != null)) {
-            return false;
-        }
-
-        if ((name != null) ? (!name.equals(resultTypeConfig.name)) : (resultTypeConfig.name != null)) {
-            return false;
-        }
+        if (clazz != null ? !clazz.equals(that.clazz) : that.clazz != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (params != null ? !params.equals(that.params) : that.params != null) return false;
 
         return true;
     }
 
     public int hashCode() {
         int result;
-        result = ((name != null) ? name.hashCode() : 0);
-        result = (29 * result) + ((clazz != null) ? clazz.hashCode() : 0);
-
+        result = (clazz != null ? clazz.hashCode() : 0);
+        result = 29 * result + (name != null ? name.hashCode() : 0);
+        result = 29 * result + (params != null ? params.hashCode() : 0);
         return result;
     }
 }

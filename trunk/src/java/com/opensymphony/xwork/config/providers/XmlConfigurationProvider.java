@@ -31,7 +31,9 @@ import java.lang.reflect.Modifier;
 /**
  * Looks in the classpath for "xwork.xml" and uses it for the XWork configuration.
  *
- * @author $Author$
+ * @author tmjee
+ * @author Rainer Hermanns
+ * @author Neo
  * @version $Revision$
  */
 public class XmlConfigurationProvider implements ConfigurationProvider {
@@ -255,6 +257,12 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             }
 
             ResultTypeConfig resultType = new ResultTypeConfig(name, clazz);
+            // load param of result type
+            NodeList params = resultTypeElement.getElementsByTagName("param");
+            for (int j = 0; j < params.getLength(); j++) {
+                Element param = (Element) params.item(j);
+                resultType.addParam(param.getAttribute("name"), param.getTextContent());
+            }
             packageContext.addResultTypeConfig(resultType);
 
             // set the default result type
@@ -423,14 +431,14 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     LOG.error("Result type '" + resultType + "' is invalid. Modify your xwork.xml file.");
                 }
 
-                Map params = XmlHelper.getParams(resultElement);
+                Map resultParams = XmlHelper.getParams(resultElement);
 
-                if (params.size() == 0) // maybe we just have a body - therefore a default parameter
+                if (resultParams.size() == 0) // maybe we just have a body - therefore a default parameter
                 {
                     // if <result ...>something</result> then we add a parameter of 'something' as this is the most used result param
                     if ((resultElement.getChildNodes().getLength() == 1) && (resultElement.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE))
                     {
-                        params = new TreeMap();
+                        resultParams = new TreeMap();
 
                         try {
                             String paramName = (String) resultClass.getField("DEFAULT_PARAM").get(null);
@@ -438,11 +446,19 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                             if (paramValue != null) {
                                 paramValue = paramValue.trim();
                             }
-                            params.put(paramName, paramValue);
+                            resultParams.put(paramName, paramValue);
                         } catch (Throwable t) {
                         }
                     }
                 }
+
+                // create new param map, so that the result param can override the config param
+                Map params = new TreeMap();
+                Map configParams = config.getParams();
+                if (configParams != null) {
+                    params.putAll(configParams);
+                }
+                params.putAll(resultParams);
 
                 ResultConfig resultConfig = new ResultConfig(resultName, resultClass, params);
                 results.put(resultConfig.getName(), resultConfig);
