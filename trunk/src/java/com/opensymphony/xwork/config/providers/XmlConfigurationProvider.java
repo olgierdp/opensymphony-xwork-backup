@@ -257,12 +257,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             }
 
             ResultTypeConfig resultType = new ResultTypeConfig(name, clazz);
-            // load param of result type
-            NodeList params = resultTypeElement.getElementsByTagName("param");
-            for (int j = 0; j < params.getLength(); j++) {
-                Element param = (Element) params.item(j);
-                resultType.addParam(param.getAttribute("name"), param.getTextContent());
-            }
+            Map params = XmlHelper.getParams(resultTypeElement);
+
+            resultType.setParams(params);
             packageContext.addResultTypeConfig(resultType);
 
             // set the default result type
