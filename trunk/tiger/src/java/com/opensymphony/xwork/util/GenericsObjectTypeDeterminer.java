@@ -38,6 +38,9 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
 
     public String getKeyProperty(Class parentClass, String property) {
         Field field = OgnlRuntime.getField(parentClass, property);
+        if (field == null) {
+            return null;
+        }
         KeyProperty annotation = field.getAnnotation(KeyProperty.class);
         if (annotation != null) {
             return annotation.value();
@@ -48,6 +51,9 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
 
     private Class getClass(Class parentClass, String property, int index) {
         Field field = OgnlRuntime.getField(parentClass, property);
+        if (field == null) {
+            return null;
+        }
         Type genericType = field.getGenericType();
         if (genericType instanceof ParameterizedType) {
             ParameterizedType type = (ParameterizedType) genericType;
