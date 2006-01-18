@@ -101,7 +101,7 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
      * Looks up beans using Spring's application context before falling back to the method defined in the {@link
      * ObjectFactory}.
      *
-     * @param beanName The name of the bean to look up in the application context
+     * @param beanName     The name of the bean to look up in the application context
      * @param extraContext
      * @return A bean from Spring or the result of calling the overridden
      *         method.
@@ -182,5 +182,15 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
      */
     public void initObjectFactory() {
         ObjectFactory.setObjectFactory(this);
+    }
+
+    /**
+     * Allows for ObjectFactory implementations that support
+     * Actions without no-arg constructors.
+     *
+     * @return false
+     */
+    public boolean isNoArgConstructorRequired() {
+        return false;
     }
 }
