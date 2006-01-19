@@ -45,7 +45,12 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
             return super.getProperty(context, target, name);
         }
 
-        Object result = super.getProperty(context, target, name);
+        Object result = null;
+
+        try{
+            result = super.getProperty(context, target, name);
+        } catch(ClassCastException ex){
+        }
 
         if (result == null) {
             //find the key class and convert the name to that class
