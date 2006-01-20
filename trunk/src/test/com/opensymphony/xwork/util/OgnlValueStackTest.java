@@ -364,6 +364,18 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertEquals(0, action.getBar());
     }
 
+    /* Testcase for XW-326
+    public void testObjectSettingWithInvalidValueDoesNotCauseSetCalledWithNull() {
+        SimpleAction action = new SimpleAction();
+        action.setBean(new TestBean());
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(action);
+        stack.setValue("bean", "foobar");
+
+        assertNotNull(action.getBean());
+    }
+    */
+
     public void testSerializable() throws IOException, ClassNotFoundException {
         OgnlValueStack vs = new OgnlValueStack();
 
