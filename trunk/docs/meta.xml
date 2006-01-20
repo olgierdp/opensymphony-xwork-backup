@@ -1,0 +1,139 @@
+<project>
+    <name>XWork</name>
+    <jiraId>10050</jiraId>
+    <jiraName>XW</jiraName>
+    <confluenceName>XW</confluenceName>
+
+    <forums>
+        <usersId>1</usersId>
+        <devId>32</devId>
+        <cvsId>9</cvsId>
+    </forums>
+
+    <docs>
+        <url>wikidocs/Documentation.html</url>
+    </docs>
+
+    <owners>
+        <person>
+            <name>Patrick Lightbody</name>
+            <email>plightbo@gmail.com</email>
+            <role>OGNL and TypeConversion</role>
+        </person>
+        <person>
+            <name>Jason Carreira</name>
+            <email>jcarreira@gmail.com</email>
+            <role>Validation Framework, Interceptors, ActionInvocation / ActionProxy</role>
+        </person>
+    </owners>
+
+    <developers>
+        <person>
+            <name>Cameron Braid</name>
+            <email>cameron@braid.com.au</email>
+        </person>
+        <person>
+            <name>Bill Lynch</name>
+            <email>bill@jivesoftware.com</email>
+        </person>
+        <person>
+            <name>James House</name>
+            <email>jhouse@revolition.net</email>
+        </person>
+        <person>
+            <name>Jon Lipsky</name>
+            <email>jon.lipsky@xesoft.com</email>
+            <role>XWork Configuration Editor</role>
+        </person>
+        <person>
+            <name>Matthew Payne</name>
+            <email>matthew.payne@sutternow.com</email>
+        </person>
+        <person>
+            <name>Rainer Hermanns</name>
+            <email>rainerh@gmail.com</email>
+        </person>
+        <person>
+            <name>Matt Ho</name>
+            <email>matt@xtreme.com</email>
+        </person>
+        <person>
+            <name>Mark Woon</name>
+            <email>morpheus@helix.stanford.edu</email>
+        </person>
+        <person>
+            <name>Peter Kelley</name>
+            <email>yellekau@yahoo.com</email>
+        </person>
+    </developers>
+
+    <releases>
+        <release>
+            <version>1.1</version>
+            <date>01/10/2006</date>
+            <jiraId>21330</jiraId>
+            <downloads>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/27183/xwork-1.1.zip</url>
+                    <name>Full</name>
+                </download>
+            </downloads>
+        </release>
+        <release>
+            <version>1.0.5</version>
+            <date>12/12/2004</date>
+            <jiraId>21420</jiraId>
+            <downloads>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/9668/xwork-1.0.5.zip</url>
+                    <name>Full</name>
+                </download>
+            </downloads>
+        </release>
+        <release>
+            <version>1.0.4</version>
+            <date>11/14/2004</date>
+            <jiraId>21394</jiraId>
+            <downloads>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/8836/xwork-1.0.4.zip</url>
+                    <name>Full</name>
+                </download>
+            </downloads>
+        </release>
+        <release>
+            <version>1.0.3</version>
+            <date>09/07/2004</date>
+            <jiraId>21390</jiraId>
+            <downloads>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/6750/xwork-1.0.3.zip</url>
+                    <name>Full</name>
+                </download>
+            </downloads>
+        </release>
+        <release>
+            <version>1.0.1</version>
+            <date>06/18/2004</date>
+            <jiraId>21213</jiraId>
+            <downloads>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/5325/xwork-1.0.1.zip</url>
+                    <name>Full</name>
+                </download>
+            </downloads>
+        </release>
+        <release>
+            <version>1.0</version>
+            <date>02/09/2004</date>
+            <jiraId>21200</jiraId>
+            <downloads>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/2885/xwork-1.0.zip</url>
+                    <name>Full</name>
+                </download>
+            </downloads>
+        </release>
+    </releases>
+
+</project>
