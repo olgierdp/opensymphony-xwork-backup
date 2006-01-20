@@ -7,10 +7,7 @@ package com.opensymphony.xwork.validator.validators;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.TextParseUtil;
-import com.opensymphony.xwork.validator.ShortCircuitableValidator;
-import com.opensymphony.xwork.validator.ValidationException;
-import com.opensymphony.xwork.validator.Validator;
-import com.opensymphony.xwork.validator.ValidatorContext;
+import com.opensymphony.xwork.validator.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -54,7 +51,9 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
             if ((defaultMessage == null) || (defaultMessage.trim().equals(""))) {
                 defaultMessage = messageKey;
             }
-
+            if ( validatorContext == null) {
+                validatorContext = new DelegatingValidatorContext(object);
+            }
             message = validatorContext.getText(messageKey, defaultMessage);
         } else {
             message = defaultMessage;
