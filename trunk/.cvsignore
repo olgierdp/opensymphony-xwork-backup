@@ -6,3 +6,4 @@ dist
 .project
 .classpath
 ivyrep.properties
+.settings
