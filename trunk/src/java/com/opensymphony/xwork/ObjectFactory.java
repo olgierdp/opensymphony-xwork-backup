@@ -115,7 +115,7 @@ public class ObjectFactory {
     public Object buildBean(String className, Map extraContext) throws Exception {
         Class clazz = getClassInstance(className);
 
-        return clazz.newInstance();
+        return buildBean(clazz, extraContext);
     }
 
     /**
