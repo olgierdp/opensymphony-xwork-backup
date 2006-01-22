@@ -21,11 +21,16 @@ import java.util.Map;
 
 /**
  * @author CameronBraid
- *         <p/>
- *         To change the template for this generated type comment go to
- *         Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class ChainResultTest extends TestCase {
+
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        // ensure we're using the default configuration, not simple config
+        ConfigurationManager.clearConfigurationProviders();
+        ConfigurationManager.getConfiguration().reload();
+    }
 
     public void testNamespaceAndActionExpressionEvaluation() throws Exception {
         ActionChainResult result = new ActionChainResult();
@@ -68,15 +73,6 @@ public class ChainResultTest extends TestCase {
         } catch (XworkException e) {
         }
     }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        // ensure we're using the default configuration, not simple config
-        ConfigurationManager.clearConfigurationProviders();
-        ConfigurationManager.getConfiguration().reload();
-    }
-
 
     private class NamespaceActionNameTestActionProxyFactory extends ActionProxyFactory {
         private ActionProxy returnVal;
