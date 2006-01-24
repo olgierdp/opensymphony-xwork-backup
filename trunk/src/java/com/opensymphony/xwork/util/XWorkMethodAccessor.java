@@ -48,12 +48,12 @@ public class XWorkMethodAccessor extends ObjectMethodAccessor {
                   	    //so that property strings are not cleared
                   	    //i.e. OgnlUtil should be used initially, OgnlRuntime
                   	    //thereafter
-
+                  	    
                   	    Object propVal=OgnlRuntime.getProperty(ogContext, object, string);
                   	    //use the Collection property accessor instead of the individual property accessor, because 
                   	    //in the case of Lists otherwise the index property could be used
                   	    PropertyAccessor accessor=OgnlRuntime.getPropertyAccessor(Collection.class);
-                  	    
+                  	    OgnlContextState.setGettingByKeyProperty(ogContext,true);
                   	    return accessor.getProperty(ogContext,propVal,objects[0]);
                   	}
               }

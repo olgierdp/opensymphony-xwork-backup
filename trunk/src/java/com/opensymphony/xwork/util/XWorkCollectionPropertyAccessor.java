@@ -23,7 +23,7 @@ public class XWorkCollectionPropertyAccessor extends SetPropertyAccessor {
     private static final Log LOG = LogFactory.getLog(XWorkCollectionPropertyAccessor.class);
     private static final String CONTEXT_COLLECTION_MAP = "xworkCollectionPropertyAccessorContextSetMap";
 
-    private static final String KEY_PROPERTY_FOR_CREATION = "makeNew";
+    public static final String KEY_PROPERTY_FOR_CREATION = "makeNew";
 
     //use a basic object Ognl property accessor here
     //to access properties of the objects in the Set
@@ -48,11 +48,12 @@ public class XWorkCollectionPropertyAccessor extends SetPropertyAccessor {
         //check if it is a generic type property.
         //if so, return the value from the
         //superclass which will determine this.
-        if (key instanceof String &&
-                (key.equals("isEmpty")
-                        || key.equals("size")
-                        || key.equals("iterator"))) {
+        if (!OgnlContextState.isGettingByKeyProperty(context)
+                && !key.equals(KEY_PROPERTY_FOR_CREATION)) {
             return super.getProperty(context, target, key);
+        }	else {
+            //reset context property
+            OgnlContextState.setGettingByKeyProperty(context,false);
         }
         Collection c = (Collection) target;
 

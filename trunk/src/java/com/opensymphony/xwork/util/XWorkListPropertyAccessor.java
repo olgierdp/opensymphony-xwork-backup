@@ -25,13 +25,11 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
     public Object getProperty(Map context, Object target, Object name)
             throws OgnlException {
 
-        if (name instanceof String) {
-            if (name.equals("isEmpty")
-                        || name.equals("size")
-                        || name.equals("iterator")) {
-                return super.getProperty(context, target, name);
-            }
+        if (OgnlContextState.isGettingByKeyProperty(context)
+                || name.equals(XWorkCollectionPropertyAccessor.KEY_PROPERTY_FOR_CREATION)) {
             return _sAcc.getProperty(context, target, name);
+        }	else if (name instanceof String) {
+            return super.getProperty(context, target, name);
         }
         OgnlContextState.updateCurrentPropertyPath(context, name);
         //System.out.println("Entering XWorkListPropertyAccessor. Name: " + name);

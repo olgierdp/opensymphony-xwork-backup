@@ -18,6 +18,7 @@ public class OgnlContextState {
 
     public static final String CURRENT_PROPERTY_PATH="current.property.path";
     public static final String FULL_PROPERTY_PATH="current.property.path";
+    private static final String GETTING_BY_KEY_PROPERTY="xwork.getting.by.key.property";
 
     private static final String SET_MAP_KEY="set.map.key";
 
@@ -30,6 +31,14 @@ public class OgnlContextState {
 		setBooleanValue(InstantiatingNullHandler.CREATE_NULL_OBJECTS, context, creatingNullObjects);
 	}
 
+	public static boolean isGettingByKeyProperty(Map context) {
+		return getBooleanProperty(GETTING_BY_KEY_PROPERTY, context);
+	}
+
+	public static void setGettingByKeyProperty(Map context, boolean gettingByKeyProperty) {
+		setBooleanValue(GETTING_BY_KEY_PROPERTY, context, gettingByKeyProperty);
+	}	
+	
 	public static boolean isReportingConversionErrors(Map context) {
 		return getBooleanProperty(XWorkConverter.REPORT_CONVERSION_ERRORS, context);
 	}
