@@ -203,5 +203,16 @@
     <option name="ACTIVE_VCS_NAME" value="CVS" />
     <option name="USE_PROJECT_VCS" value="false" />
   </component>
+  <component name="copyright">
+    <Base>
+      <setting name="state" value="1" />
+    </Base>
+    <JavaOptions>
+      <option name="body" value="/*&#10; * Copyright (c) $today.year Opensymphony. All Rights Reserved.&#10; */" />
+      <option name="location" value="1" />
+      <option name="remove" value="true" />
+      <option name="replace" value="2" />
+    </JavaOptions>
+  </component>
 </module>
 

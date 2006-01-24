@@ -107,9 +107,9 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
         ActionContext nestedContext = null;
 
         String executed = ActionGlobalContext.getContext().getActionExecuted();
-        if (executed != null) {
+//        if (executed != null) {
             nestedContext = ActionContext.getContext();
-        }
+//        }
 
         ActionContext.setContext(invocation.getInvocationContext());
 
@@ -119,7 +119,8 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
             retCode = invocation.invoke();
             ActionGlobalContext.getContext().setActionExecuted("Executed");
         } finally {
-            if (cleanupContext && executed != null) {
+//            if (cleanupContext && executed != null) {
+            if (cleanupContext) {
                 ActionContext.setContext(nestedContext);
             }
         }
