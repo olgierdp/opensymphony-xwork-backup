@@ -13,6 +13,7 @@ import com.opensymphony.xwork.test.AnnotationUser;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import junit.framework.TestCase;
 import ognl.OgnlException;
+import ognl.OgnlRuntime;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -95,7 +96,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
         ognlStackContext.put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, "bean.birth");
 
         String[] value = new String[]{"invalid date"};
-        assertEquals("Conversion should have failed.", null, converter.convertValue(ognlStackContext, action.getBean(), null, "birth", value, Date.class));
+        assertEquals("Conversion should have failed.", OgnlRuntime.NoConversionPossible, converter.convertValue(ognlStackContext, action.getBean(), null, "birth", value, Date.class));
         stack.pop();
 
         Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
@@ -115,7 +116,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
         ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         String[] value = new String[]{"invalid date"};
-        assertEquals("Conversion should have failed.", null, converter.convertValue(ognlStackContext, action, null, "date", value, Date.class));
+        assertEquals("Conversion should have failed.", OgnlRuntime.NoConversionPossible, converter.convertValue(ognlStackContext, action, null, "date", value, Date.class));
         stack.pop();
 
         Map conversionErrors = (Map) ognlStackContext.get(ActionContext.CONVERSION_ERRORS);
@@ -135,7 +136,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
         ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         String[] value = new String[]{"invalid date"};
-        assertEquals("Conversion should have failed.", null, converter.convertValue(ognlStackContext, action, null, "birth", value, Date.class));
+        assertEquals("Conversion should have failed.", OgnlRuntime.NoConversionPossible, converter.convertValue(ognlStackContext, action, null, "birth", value, Date.class));
         stack.pop();
         stack.pop();
 
