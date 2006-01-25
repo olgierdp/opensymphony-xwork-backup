@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
     public Class getKeyClass(Class parentClass, String property) {
-        Class clazz = getClass(parentClass, property, 0);
+        Class clazz = getClass(parentClass, property, false);
         if (clazz != null) {
             return clazz;
         } else {
@@ -23,15 +23,10 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
     }
 
     public Class getElementClass(Class parentClass, String property, Object key) {
-        int index = 0;
-        if (Map.class.isAssignableFrom(parentClass)) {
-            index = 1;
-        }
-
-        Class clazz = getClass(parentClass, property, index);
-        if (clazz != null) {
-            return clazz;
-        } else {
+        Class clazz = getClass(parentClass, property, true);
+         if (clazz != null) {
+             return clazz;
+         } else {
             return super.getElementClass(parentClass, property, key);
         }
     }
@@ -49,13 +44,14 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
         return super.getKeyProperty(parentClass, property);
     }
 
-    private Class getClass(Class parentClass, String property, int index) {
+    private Class getClass(Class parentClass, String property, boolean element) {
         Field field = OgnlRuntime.getField(parentClass, property);
         if (field == null) {
             return null;
         }
         Type genericType = field.getGenericType();
         if (genericType instanceof ParameterizedType) {
+            int index = (element && Map.class.isAssignableFrom(field.getType())) ? 1 : 0;
             ParameterizedType type = (ParameterizedType) genericType;
 
             return (Class) type.getActualTypeArguments()[index];
