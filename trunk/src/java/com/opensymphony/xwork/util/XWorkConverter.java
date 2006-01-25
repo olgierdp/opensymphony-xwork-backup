@@ -4,19 +4,26 @@
  */
 package com.opensymphony.xwork.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Member;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+
+import ognl.DefaultTypeConverter;
+import ognl.OgnlRuntime;
+import ognl.TypeConverter;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.opensymphony.util.FileManager;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.XWorkMessages;
-import ognl.DefaultTypeConverter;
-import ognl.TypeConverter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.InputStream;
-import java.io.IOException;
-import java.lang.reflect.Member;
-import java.util.*;
 
 
 /**
@@ -92,6 +99,7 @@ import java.util.*;
  *
  * @author <a href="mailto:plightbo@gmail.com">Pat Lightbody</a>
  * @author Rainer Hermanns
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  * @see XWorkBasicConverter
  */
 public class XWorkConverter extends DefaultTypeConverter {
@@ -237,7 +245,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             } catch (Exception e) {
                 handleConversionException(context, property, value, target);
 
-                return acceptableErrorValue(toClass);
+                return OgnlRuntime.NoConversionPossible;
             }
         }
 
@@ -247,7 +255,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             } catch (Exception e) {
                 handleConversionException(context, property, value, target);
 
-                return acceptableErrorValue(toClass);
+                return OgnlRuntime.NoConversionPossible;
             }
         } else {
             try {
@@ -255,7 +263,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             } catch (Exception e) {
                 handleConversionException(context, property, value, target);
 
-                return acceptableErrorValue(toClass);
+                return OgnlRuntime.NoConversionPossible;
             }
         }
     }
@@ -376,11 +384,14 @@ public class XWorkConverter extends DefaultTypeConverter {
         return (Object[]) context.get("__link");
     }
 
+    /**
+     * not used
+     */
     private Object acceptableErrorValue(Class toClass) {
         if (!toClass.isPrimitive()) {
             return null;
         }
-
+        
         if (toClass == int.class) {
             return new Integer(0);
         } else if (toClass == double.class) {
@@ -398,7 +409,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         } else if (toClass == char.class) {
             return new Character((char) 0);
         }
-
+        
         return null;
     }
 

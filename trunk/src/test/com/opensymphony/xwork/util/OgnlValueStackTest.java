@@ -352,29 +352,51 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertEquals("bar:123", vs.findValue("foo.bar", String.class));
     }
 
-    public void testPrimitiveSettingWithInvalidValueAddsFieldError() {
+    public void testPrimitiveSettingWithInvalidValueAddsFieldErrorInDevMode() {
         SimpleAction action = new SimpleAction();
         OgnlValueStack stack = new OgnlValueStack();
         stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        stack.getContext().put(ActionContext.DEV_MODE, Boolean.TRUE);
+        stack.push(action);
+        
+        try {
+            stack.setValue("bar", "3x");
+            fail("Attempt to set 'bar' int property to '3x' should result in RuntimeException");
+        }
+        catch(RuntimeException re) {
+            assertTrue(true);
+        }
+
+        Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
+        assertTrue(conversionErrors.containsKey("bar"));
+    }
+
+    public void testPrimitiveSettingWithInvalidValueAddsFieldErrorInNonDevMode() {
+        SimpleAction action = new SimpleAction();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+        stack.getContext().put(ActionContext.DEV_MODE, Boolean.FALSE);
         stack.push(action);
         stack.setValue("bar", "3x");
 
         Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
         assertTrue(conversionErrors.containsKey("bar"));
-        assertEquals(0, action.getBar());
     }
+    
 
-    /* Testcase for XW-326
     public void testObjectSettingWithInvalidValueDoesNotCauseSetCalledWithNull() {
         SimpleAction action = new SimpleAction();
         action.setBean(new TestBean());
         OgnlValueStack stack = new OgnlValueStack();
+        stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         stack.push(action);
         stack.setValue("bean", "foobar");
 
+        Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
+        assertTrue(conversionErrors.containsKey("bean"));
         assertNotNull(action.getBean());
     }
-    */
+
 
     public void testSerializable() throws IOException, ClassNotFoundException {
         OgnlValueStack vs = new OgnlValueStack();

@@ -47,12 +47,12 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     map.put(name, value);
                     return;
                 }
-            } catch (OgnlException e) {
-                if (e.getReason() != null) {
-                    final String msg = "Caught an Ognl exception while setting property " + name;
-                    log.error(msg, e);
-                    throw new RuntimeException(msg, e.getReason());
-                }
+//            } catch (OgnlException e) {
+//                if (e.getReason() != null) {
+//                    final String msg = "Caught an Ognl exception while setting property " + name;
+//                    log.error(msg, e);
+//                    throw new RuntimeException(msg, e.getReason());
+//                }
             } catch (IntrospectionException e) {
                 // this is OK if this happens, we'll just keep trying the next
             }

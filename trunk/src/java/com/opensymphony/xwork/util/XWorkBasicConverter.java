@@ -104,6 +104,10 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             } else {
                 result = super.convertValue(context, value, toType);
             }
+            
+            if (result == null && value != null && !"".equals(value)) {
+                throw new XworkException("Cannot create type " + toType + " from value " + value);
+            }
         }
 
         return result;
@@ -309,7 +313,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                     // convert it to a Number
                     value = super.convertValue(context, numFormat.parse((String) value), toType);
                 } catch (ParseException ex) {
-                    // ignore parse failure and hope default behavior works
+                    throw new XworkException("Could not parse number", ex);
                 }
             }
         } else if (value instanceof Object[]) {
