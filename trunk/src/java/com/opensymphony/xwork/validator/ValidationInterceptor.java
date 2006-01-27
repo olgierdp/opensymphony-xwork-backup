@@ -75,9 +75,14 @@ import java.util.Set;
 public class ValidationInterceptor extends AroundInterceptor {
 
     Set excludeMethods = Collections.EMPTY_SET;
+    Set includeMethods = Collections.EMPTY_SET;
 
     public void setExcludeMethods(String excludeMethods) {
         this.excludeMethods = TextParseUtil.commaDelimitedStringToSet(excludeMethods);
+    }
+
+    public void setIncludeMethods(String includeMethods) {
+        this.includeMethods = TextParseUtil.commaDelimitedStringToSet(includeMethods);
     }
 
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
@@ -91,19 +96,22 @@ public class ValidationInterceptor extends AroundInterceptor {
      */
     protected void before(ActionInvocation invocation) throws Exception {
     	String method = invocation.getProxy().getMethod();
-        if (excludeMethods.contains(method)) {
+        if (excludeMethods.contains(method) && !includeMethods.contains(method)) {
             log.debug("Skipping validation. Method ["+method+"] found in exclude list.");
             return;
         }
 
-        Object action = invocation.getAction();
-        String context = invocation.getProxy().getActionName();
+        if ( includeMethods.size() == 0 || includeMethods.contains(method) ) {
+            Object action = invocation.getAction();
+            String context = invocation.getProxy().getActionName();
 
-        if (log.isDebugEnabled()) {
-            log.debug("Validating "
-                    + invocation.getProxy().getNamespace() + "/" + invocation.getProxy().getActionName() + ".");
+            if (log.isDebugEnabled()) {
+                log.debug("Validating "
+                        + invocation.getProxy().getNamespace() + "/" + invocation.getProxy().getActionName() + ".");
+            }
+
+            ActionValidatorManagerFactory.getInstance().validate(action, context);
         }
-
-        ActionValidatorManagerFactory.getInstance().validate(action, context);
     }
+
 }

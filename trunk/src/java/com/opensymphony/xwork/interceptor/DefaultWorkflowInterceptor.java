@@ -81,36 +81,44 @@ import java.util.Set;
  * </pre>
  *
  * @author Jason Carreira
+ * @author Rainer Hermanns
  */
 public class DefaultWorkflowInterceptor implements Interceptor {
 
     Log log = LogFactory.getLog(this.getClass());
 
     Set excludeMethods = Collections.EMPTY_SET;
+    Set includeMethods = Collections.EMPTY_SET;
 
     public void setExcludeMethods(String excludeMethods) {
         this.excludeMethods = TextParseUtil.commaDelimitedStringToSet(excludeMethods);
     }
 
+    public void setIncludeMethods(String includeMethods) {
+        this.includeMethods = TextParseUtil.commaDelimitedStringToSet(includeMethods);
+    }
+
     public String intercept(ActionInvocation invocation) throws Exception {
     	String method = invocation.getProxy().getMethod();
-        if (excludeMethods.contains(method)) {
-            log.debug("Skipping workflow. Method ["+method+"]found in exclude list.");
+        if (excludeMethods.contains(method) && !includeMethods.contains(method)) {
+            log.debug("Skipping workflow. Method ["+method+"] found in exclude list.");
             return invocation.invoke();
         }
 
-        Object action = invocation.getAction();
+        if ( includeMethods.size() == 0 || includeMethods.contains(method) ) {
+            Object action = invocation.getAction();
 
-        if (action instanceof Validateable) {
-            Validateable validateable = (Validateable) action;
-            validateable.validate();
-        }
+            if (action instanceof Validateable) {
+                Validateable validateable = (Validateable) action;
+                validateable.validate();
+            }
 
-        if (action instanceof ValidationAware) {
-            ValidationAware validationAwareAction = (ValidationAware) action;
+            if (action instanceof ValidationAware) {
+                ValidationAware validationAwareAction = (ValidationAware) action;
 
-            if (validationAwareAction.hasErrors()) {
-                return Action.INPUT;
+                if (validationAwareAction.hasErrors()) {
+                    return Action.INPUT;
+                }
             }
         }
 
