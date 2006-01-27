@@ -47,6 +47,27 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         assertEquals(result, interceptor.intercept(invocation));
     }
 
+    public void testIncludesMethod() throws Exception {
+        interceptor.setIncludeMethods("execute");
+        actionMock.expectAndReturn("hasErrors", false);
+        actionMock.expect("validate");
+        final String result = "testing123";
+        invocationMock.expectAndReturn("invoke", result);
+        invocationMock.expectAndReturn("getAction", action);
+        assertEquals(result, interceptor.intercept(invocation));
+    }
+
+    public void testIncludesAndExcludesMethod() throws Exception {
+        interceptor.setExcludeMethods("execute,input,validate");
+        interceptor.setIncludeMethods("execute");
+        actionMock.expectAndReturn("hasErrors", false);
+        actionMock.expect("validate");
+        final String result = "testing123";
+        invocationMock.expectAndReturn("invoke", result);
+        invocationMock.expectAndReturn("getAction", action);
+        assertEquals(result, interceptor.intercept(invocation));
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         actionMock = new Mock(ValidateAction.class);
