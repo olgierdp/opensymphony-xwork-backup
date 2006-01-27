@@ -4,6 +4,25 @@
  */
 package com.opensymphony.xwork.util;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import junit.framework.TestCase;
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
+
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ModelDrivenAction;
 import com.opensymphony.xwork.SimpleAction;
@@ -11,16 +30,6 @@ import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.test.ModelDrivenAction2;
 import com.opensymphony.xwork.test.User;
-import junit.framework.TestCase;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 
 /**
@@ -199,6 +208,24 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(dateString, converter.convertValue(context, null, null, null, date, String.class));
     }
 
+    public void testStringToIntConversions() {
+        SimpleAction action = new SimpleAction();
+        action.setBean(new TestBean());
+
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(action);
+
+        Map ognlStackContext = stack.getContext();
+        ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+
+        assertEquals("Conversion should have failed.", OgnlRuntime.NoConversionPossible, converter.convertValue(ognlStackContext, action.getBean(), null, "count", "111.1", int.class));
+        stack.pop();
+
+        Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
+        assertNotNull(conversionErrors);
+        assertTrue(conversionErrors.size() == 1);
+    }
+    
     public void testStringArrayToCollection() {
         List list = new ArrayList();
         list.add("foo");
@@ -335,7 +362,6 @@ public class XWorkConverterTest extends TestCase {
 
     public void testStringToPrimitives() {
         assertEquals(new Long(123), converter.convertValue(context, null, null, null, "123", long.class));
-        assertEquals(new Integer(123), converter.convertValue(context, null, null, null, "123", int.class));
         assertEquals(new Double(123.5), converter.convertValue(context, null, null, null, "123.5", double.class));
         assertEquals(new Float(123.5), converter.convertValue(context, null, null, null, "123.5", float.class));
         assertEquals(new Boolean(false), converter.convertValue(context, null, null, null, "false", boolean.class));
@@ -344,6 +370,13 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(new BigInteger("123"), converter.convertValue(context, null, null, null, "123", BigInteger.class));
     }
 
+    public void testStringToInt() {
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123.12", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123aa", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "aa123", int.class));
+        assertEquals(new Integer(123), converter.convertValue(context, null, null, null, "123", int.class));
+    }
+    
     public void testOgnlValueStackWithTypeParameter() {
         OgnlValueStack stack = new OgnlValueStack();
         stack.push(new Foo1());

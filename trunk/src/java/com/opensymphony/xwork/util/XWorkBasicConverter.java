@@ -4,24 +4,34 @@
  */
 package com.opensymphony.xwork.util;
 
-import com.opensymphony.util.TextUtils;
-import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.XworkException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import ognl.DefaultTypeConverter;
 import ognl.Ognl;
 import ognl.TypeConverter;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.*;
+import com.opensymphony.util.TextUtils;
+import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.xwork.XworkException;
 
 
 /**
@@ -58,6 +68,7 @@ import java.util.*;
  * @author <a href="mailto:plightbo@gmail.com">Pat Lightbody</a>
  * @author Mike Mosiewicz
  * @author Rainer Hermanns
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class XWorkBasicConverter extends DefaultTypeConverter {
 
@@ -101,7 +112,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
                 // let's try to convert the first element only
                 result = convertValue(context, o, member, s, value, toType);
-            } else {
+            } else if (!"".equals(value)) { // we've already tried the types we know
                 result = super.convertValue(context, value, toType);
             }
             
@@ -307,13 +318,17 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             } else if (toType == BigInteger.class) {
                 return new BigInteger((String) value);
             } else {
+                String stringValue = (String) value;
                 NumberFormat numFormat = NumberFormat.getInstance(getLocale(context));
-
-                try {
-                    // convert it to a Number
-                    value = super.convertValue(context, numFormat.parse((String) value), toType);
-                } catch (ParseException ex) {
-                    throw new XworkException("Could not parse number", ex);
+                ParsePosition parsePos = new ParsePosition(0);
+                Number number = numFormat.parse(stringValue, parsePos);
+                
+                if (parsePos.getIndex() != stringValue.length()) {
+                    throw new XworkException("Unparseable number: \"" + stringValue + "\" at position "
+                            + parsePos.getIndex());
+                }
+                else {
+                    value = super.convertValue(context, number, toType);
                 }
             }
         } else if (value instanceof Object[]) {
