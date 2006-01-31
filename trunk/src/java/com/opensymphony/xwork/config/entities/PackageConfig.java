@@ -29,10 +29,13 @@ public class PackageConfig implements Comparable {
     private List globalExceptionMappingConfigs = new ArrayList();
     private Set parents = new HashSet();
     private String defaultInterceptorRef;
+	private String defaultActionRef;
     private String defaultResultType;
     private String name;
     private String namespace = "";
     private boolean isAbstract = false;
+
+
 
 
     public PackageConfig() {
@@ -190,6 +193,14 @@ public class PackageConfig implements Comparable {
     public String getDefaultInterceptorRef() {
         return defaultInterceptorRef;
     }
+    
+	public void setDefaultActionRef(String name) {
+		defaultActionRef = name;
+	}
+	
+	public String getDefaultActionRef() {
+        return defaultActionRef;
+    }
 
     /**
      * sets the default Result type for this package
@@ -256,6 +267,24 @@ public class PackageConfig implements Comparable {
         }
 
         return defaultInterceptorRef;
+    }
+    
+    /**
+     * gets the default action-ref name. If this is not set on this PackageConfig, it searches the parent
+     * PackageConfigs in order until it finds one.
+     */
+    public String getFullDefaultActionRef() {
+        if ((defaultActionRef == null) && !parents.isEmpty()) {
+            for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
+                PackageConfig parent = (PackageConfig) iterator.next();
+                String parentDefault = parent.getFullDefaultActionRef();
+
+                if (parentDefault != null) {
+                    return parentDefault;
+                }
+            }
+        }
+        return defaultActionRef;
     }
 
     /**
@@ -484,4 +513,5 @@ public class PackageConfig implements Comparable {
         // note, this isn't perfect (could come from different parents), but it is "good enough"
         return full.compareTo(otherFull);
     }
+
 }

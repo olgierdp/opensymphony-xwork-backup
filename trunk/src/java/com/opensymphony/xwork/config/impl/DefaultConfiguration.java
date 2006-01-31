@@ -101,13 +101,14 @@ public class DefaultConfiguration implements Configuration {
      */
     protected synchronized RuntimeConfiguration buildRuntimeConfiguration() throws ConfigurationException {
         Map namespaceActionConfigs = new TreeMap();
+        Map namespaceConfigs = new TreeMap();
 
         for (Iterator iterator = packageContexts.values().iterator();
              iterator.hasNext();) {
             PackageConfig packageContext = (PackageConfig) iterator.next();
 
             if (!packageContext.isAbstract()) {
-                String namespace = packageContext.getNamespace();
+                String namespace = packageContext.getNamespace();                
                 Map configs = (Map) namespaceActionConfigs.get(namespace);
 
                 if (configs == null) {
@@ -124,10 +125,11 @@ public class DefaultConfiguration implements Configuration {
                 }
 
                 namespaceActionConfigs.put(namespace, configs);
+                namespaceConfigs.put(namespace, packageContext.getFullDefaultActionRef());
             }
         }
 
-        return new RuntimeConfigurationImpl(namespaceActionConfigs);
+        return new RuntimeConfigurationImpl(namespaceActionConfigs, namespaceConfigs);
     }
 
     private void setDefaultResults(Map results, PackageConfig packageContext) {
@@ -182,10 +184,14 @@ public class DefaultConfiguration implements Configuration {
 
     private class RuntimeConfigurationImpl implements RuntimeConfiguration {
         private Map namespaceActionConfigs;
+        private Map namespaceConfigs;
 
-        public RuntimeConfigurationImpl(Map namespaceActionConfigs) {
+        public RuntimeConfigurationImpl(Map namespaceActionConfigs, Map namespaceConfigs) {
             this.namespaceActionConfigs = namespaceActionConfigs;
+            this.namespaceConfigs = namespaceConfigs;
         }
+        
+        
 
         /**
          * Gets the configuration information for an action name, or returns null if the
@@ -201,6 +207,11 @@ public class DefaultConfiguration implements Configuration {
 
             if (actions != null) {
                 config = (ActionConfig) actions.get(name);
+                // fail over to default action
+                if (config == null) {
+                	String defaultActionRef = (String) namespaceConfigs.get((namespace == null) ? "" : namespace);
+                	config = (ActionConfig) actions.get(defaultActionRef);
+                }
             }
 
             // fail over to empty namespace
@@ -209,8 +220,14 @@ public class DefaultConfiguration implements Configuration {
 
                 if (actions != null) {
                     config = (ActionConfig) actions.get(name);
+                    // fail over to default action
+                    if (config == null) {
+                    	String defaultActionRef = (String) namespaceConfigs.get((namespace == null) ? "" : namespace);
+                    	config = (ActionConfig) actions.get(defaultActionRef);
+                    }
                 }
             }
+            
 
             return config;
         }

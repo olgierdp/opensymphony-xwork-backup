@@ -95,7 +95,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             db.setEntityResolver(new EntityResolver() {
                 public InputSource resolveEntity(String publicId, String systemId) {
                     if ("-//OpenSymphony Group//XWork 1.0//EN".equals(publicId)) {
-                        return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.1.dtd", XmlConfigurationProvider.class));
+                        return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.1.1.dtd", XmlConfigurationProvider.class));
                     }
 
                     return null;
@@ -238,6 +238,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             Element actionElement = (Element) actionList.item(i);
             addAction(actionElement, newPackage);
         }
+        
+        // load the default action reference for this package
+        loadDefaultActionRef(newPackage, packageElement);
 
         configuration.addPackageConfig(newPackage.getName(), newPackage);
     }
@@ -504,6 +507,15 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         if (resultTypeList.getLength() > 0) {
             Element defaultRefElement = (Element) resultTypeList.item(0);
             packageContext.setDefaultInterceptorRef(defaultRefElement.getAttribute("name"));
+        }
+    }
+    
+    protected void loadDefaultActionRef(PackageConfig packageContext, Element element) {
+        NodeList resultTypeList = element.getElementsByTagName("default-action-ref");
+
+        if (resultTypeList.getLength() > 0) {
+            Element defaultRefElement = (Element) resultTypeList.item(0);
+            packageContext.setDefaultActionRef(defaultRefElement.getAttribute("name"));
         }
     }
 
