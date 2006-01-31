@@ -210,7 +210,9 @@ public class DefaultConfiguration implements Configuration {
                 // fail over to default action
                 if (config == null) {
                 	String defaultActionRef = (String) namespaceConfigs.get((namespace == null) ? "" : namespace);
-                	config = (ActionConfig) actions.get(defaultActionRef);
+                	if (defaultActionRef != null) {
+                		config = (ActionConfig) actions.get(defaultActionRef);
+                	}
                 }
             }
 
@@ -222,8 +224,10 @@ public class DefaultConfiguration implements Configuration {
                     config = (ActionConfig) actions.get(name);
                     // fail over to default action
                     if (config == null) {
-                    	String defaultActionRef = (String) namespaceConfigs.get((namespace == null) ? "" : namespace);
-                    	config = (ActionConfig) actions.get(defaultActionRef);
+                    	String defaultActionRef = (String) namespaceConfigs.get("");
+                    	if (defaultActionRef != null) {
+                    		config = (ActionConfig) actions.get(defaultActionRef);
+                    	}
                     }
                 }
             }
