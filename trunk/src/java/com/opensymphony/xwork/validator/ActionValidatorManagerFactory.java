@@ -18,7 +18,7 @@ public class ActionValidatorManagerFactory {
 
     private static final Log LOG = LogFactory.getLog(ActionValidatorManagerFactory.class);
 
-    private static ActionValidatorManager instance = new ActionValidatorManager();
+    private static ActionValidatorManager instance = new DefaultActionValidatorManager();
 
     static {
         try {

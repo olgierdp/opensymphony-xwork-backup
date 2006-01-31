@@ -28,6 +28,17 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
 
     protected final String alias = "validationAlias";
 
+    AnnotationActionValidatorManager annotationActionValidatorManager;
+
+    protected void setUp() throws Exception {
+        annotationActionValidatorManager = new AnnotationActionValidatorManager();
+        super.setUp();
+    }
+
+    protected void tearDown() throws Exception {
+        annotationActionValidatorManager = null;
+        super.tearDown();
+    }
 
     public void testBuildValidatorKey() {
         String validatorKey = AnnotationActionValidatorManager.buildValidatorKey(SimpleAnnotationAction.class, alias);
@@ -35,7 +46,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
     }
 
     public void testBuildsValidatorsForAlias() {
-        List validatorList = AnnotationActionValidatorManager.getValidators(SimpleAnnotationAction.class, alias);
+        List validatorList = annotationActionValidatorManager.getValidators(SimpleAnnotationAction.class, alias);
 
         // 16 in the class level + 0 in the alias
         // TODO: add alias tests
@@ -44,7 +55,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
 
     public void testDefaultMessageInterpolation() {
         // get validators
-        List validatorList = AnnotationActionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
+        List validatorList = annotationActionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
         assertEquals(3, validatorList.size());
 
         try {
@@ -53,7 +64,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
             bean.setCount(99);
 
             ValidatorContext context = new GenericValidatorContext(bean);
-            AnnotationActionValidatorManager.validate(bean, "beanMessageBundle", context);
+            annotationActionValidatorManager.validate(bean, "beanMessageBundle", context);
             assertTrue(context.hasErrors());
             assertTrue(context.hasFieldErrors());
 
@@ -68,7 +79,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
     }
 
     public void testGetValidatorsForInterface() {
-        List validatorList = AnnotationActionValidatorManager.getValidators(AnnotationDataAware2.class, alias);
+        List validatorList = annotationActionValidatorManager.getValidators(AnnotationDataAware2.class, alias);
 
         // 1 in interface hierarchy, 2 from parent interface (1 default + 1 context)
         assertEquals(3, validatorList.size());
@@ -87,7 +98,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
     }
 
     public void testGetValidatorsFromInterface() {
-        List validatorList = AnnotationActionValidatorManager.getValidators(SimpleAnnotationAction3.class, alias);
+        List validatorList = annotationActionValidatorManager.getValidators(SimpleAnnotationAction3.class, alias);
 
         // 16 in the class hierarchy + 1 in the interface + 1 in interface alias
         assertEquals(18, validatorList.size());
@@ -170,7 +181,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
 
     public void testMessageInterpolation() {
         // get validators
-        List validatorList = AnnotationActionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
+        List validatorList = annotationActionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
         assertEquals(3, validatorList.size());
 
         try {
@@ -179,7 +190,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
             bean.setCount(150);
 
             ValidatorContext context = new GenericValidatorContext(bean);
-            AnnotationActionValidatorManager.validate(bean, "beanMessageBundle", context);
+            annotationActionValidatorManager.validate(bean, "beanMessageBundle", context);
             assertTrue(context.hasErrors());
             assertTrue(context.hasFieldErrors());
 
@@ -194,14 +205,14 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
     }
 
     public void testSameAliasWithDifferentClass() {
-        List validatorList = AnnotationActionValidatorManager.getValidators(SimpleAnnotationAction.class, alias);
-        List validatorList2 = AnnotationActionValidatorManager.getValidators(SimpleAnnotationAction2.class, alias);
+        List validatorList = annotationActionValidatorManager.getValidators(SimpleAnnotationAction.class, alias);
+        List validatorList2 = annotationActionValidatorManager.getValidators(SimpleAnnotationAction2.class, alias);
         assertFalse(validatorList.size() == validatorList2.size());
     }
 
     public void testSkipUserMarkerActionLevelShortCircuit() {
         // get validators
-        List validatorList = AnnotationActionValidatorManager.getValidators(AnnotationUser.class, null);
+        List validatorList = annotationActionValidatorManager.getValidators(AnnotationUser.class, null);
         assertEquals(10, validatorList.size());
 
         try {
@@ -211,7 +222,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
             user.setEmail2("bad_email");
 
             ValidatorContext context = new GenericValidatorContext(user);
-            AnnotationActionValidatorManager.validate(user, null, context);
+            annotationActionValidatorManager.validate(user, null, context);
             assertTrue(context.hasFieldErrors());
 
             // check field errors
@@ -239,7 +250,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
 
     public void testSkipAllActionLevelShortCircuit2() {
         // get validators
-        List validatorList = AnnotationActionValidatorManager.getValidators(AnnotationUser.class, null);
+        List validatorList = annotationActionValidatorManager.getValidators(AnnotationUser.class, null);
         assertEquals(10, validatorList.size());
 
         try {
@@ -253,7 +264,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
             user.setEmail2("mark_bad_email_for_field_val@foo.com");
 
             ValidatorContext context = new GenericValidatorContext(user);
-            AnnotationActionValidatorManager.validate(user, null, context);
+            annotationActionValidatorManager.validate(user, null, context);
             assertTrue(context.hasFieldErrors());
 
             // check field errors
@@ -279,7 +290,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
     
     public void testActionLevelShortCircuit() throws Exception {
     	
-    	List validatorList = AnnotationActionValidatorManager.getValidators(AnnotationUser.class, null);
+    	List validatorList = annotationActionValidatorManager.getValidators(AnnotationUser.class, null);
         assertEquals(10, validatorList.size());
         
         AnnotationUser user = new AnnotationUser();
@@ -291,7 +302,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
 
 
         ValidatorContext context = new GenericValidatorContext(user);
-        AnnotationActionValidatorManager.validate(user, null, context);
+        annotationActionValidatorManager.validate(user, null, context);
     	
     	// check field level errors
         // shouldn't have any because action error prevents validation of anything else
@@ -312,7 +323,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
     
     public void testShortCircuitNoErrors() {
         // get validators
-        List validatorList = AnnotationActionValidatorManager.getValidators(AnnotationUser.class, null);
+        List validatorList = annotationActionValidatorManager.getValidators(AnnotationUser.class, null);
         assertEquals(10, validatorList.size());
 
         try {
@@ -322,7 +333,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
             user.setEmail2("mark@mycompany.com");
 
             ValidatorContext context = new GenericValidatorContext(user);
-            AnnotationActionValidatorManager.validate(user, null, context);
+            annotationActionValidatorManager.validate(user, null, context);
             assertFalse(context.hasErrors());
         } catch (ValidationException ex) {
             ex.printStackTrace();

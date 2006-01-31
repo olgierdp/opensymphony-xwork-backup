@@ -1,50 +1,50 @@
 /*
- * Copyright (c) 2002-2005 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.validator;
 
+import com.opensymphony.util.FileManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.*;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
-import com.opensymphony.util.FileManager;
+import java.util.*;
+
 
 /**
- * <code>AnnotationActionValidatorManager</code>
- * <p/>
- * This is the entry point into XWork's annotations-based validator framework.
- * Validation rules are specified as annotations within the source files.
+ * This is the entry point into XWork's rule-based validation framework.  Validation rules are
+ * specified in XML configuration files named "className-contextName-validation.xml" where
+ * className is the name of the class the configuration is for and -contextName is optional
+ * (contextName is an arbitrary key that is used to look up additional validation rules for a
+ * specific context).
  *
+ * @author Jason Carreira
+ * @author Mark Woon
+ * @author James House
  * @author Rainer Hermanns
- * @author jepjep
- * @version $Id$
  */
-public class AnnotationActionValidatorManager implements ActionValidatorManager {
+public class DefaultActionValidatorManager implements ActionValidatorManager {
 
-
-    /**
-     * The file suffix for any validation file.
-     */
+    /** The file suffix for any validation file. */
     protected static final String VALIDATION_CONFIG_SUFFIX = "-validation.xml";
 
-    private static final Map<String, List<ValidatorConfig>> validatorCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
-    private static final Map<String, List<ValidatorConfig>> validatorFileCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
-    private static final Log LOG = LogFactory.getLog(AnnotationActionValidatorManager.class);
+    private static final Map validatorCache = Collections.synchronizedMap(new HashMap());
+    private static final Map validatorFileCache = Collections.synchronizedMap(new HashMap());
+    private static final Log LOG = LogFactory.getLog(DefaultActionValidatorManager.class);
 
     /**
      * Returns a list of validators for the given class and context. This is the primary
      * lookup method for validators.
      *
-     * @param clazz   the class to lookup.
+     * @param clazz the class to lookup.
      * @param context the context of the action class - can be <tt>null</tt>.
      * @return a list of all validators for the given class and context.
      */
-    public synchronized List<Validator> getValidators(Class clazz, String context) {
+    public synchronized List getValidators(Class clazz, String context) {
         final String validatorKey = buildValidatorKey(clazz, context);
 
         if (validatorCache.containsKey(validatorKey)) {
@@ -56,12 +56,14 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
         }
 
         // get the set of validator configs
-        List<ValidatorConfig> cfgs = validatorCache.get(validatorKey);
+        List cfgs = (List) validatorCache.get(validatorKey);
 
         // create clean instances of the validators for the caller's use
-        ArrayList<Validator> validators = new ArrayList<Validator>(cfgs.size());
-        for (ValidatorConfig cfg : cfgs) {
+        ArrayList validators = new ArrayList(cfgs.size());
+        for (Iterator iterator = cfgs.iterator(); iterator.hasNext(); ) {
+            ValidatorConfig cfg = (ValidatorConfig) iterator.next();
             Validator validator = ValidatorFactory.getValidator(cfg);
+            validator.setValidatorType(cfg.getType());
             validators.add(validator);
         }
 
@@ -71,7 +73,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
     /**
      * Validates the given object using action and its context.
      *
-     * @param object  the action to validate.
+     * @param object the action to validate.
      * @param context the action's context.
      * @throws ValidationException if an error happens when validating the action.
      */
@@ -83,16 +85,17 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
     /**
      * Validates an action give its context and a validation context.
      *
-     * @param object           the action to validate.
-     * @param context          the action's context.
+     * @param object the action to validate.
+     * @param context the action's context.
      * @param validatorContext
      * @throws ValidationException if an error happens when validating the action.
      */
     public void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException {
-        List<Validator> validators = getValidators(object.getClass(), context);
-        Set<String> shortcircuitedFields = null;
+        List validators = getValidators(object.getClass(), context);
+        Set shortcircuitedFields = null;
 
-        for (Validator validator: validators) {
+        for (Iterator iterator = validators.iterator(); iterator.hasNext();) {
+            Validator validator = (Validator) iterator.next();
             validator.setValidatorContext(validatorContext);
 
             if (LOG.isDebugEnabled()) {
@@ -115,24 +118,23 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
                 }
             }
 
-            if (validator instanceof ShortCircuitableValidator && ((ShortCircuitableValidator) validator).isShortCircuit())
-            {
+            if (validator instanceof ShortCircuitableValidator && ((ShortCircuitableValidator) validator).isShortCircuit()) {
                 // get number of existing errors
-                List<String> errs = null;
+                List errs = null;
 
                 if (fValidator != null) {
                     if (validatorContext.hasFieldErrors()) {
-                        Collection<String> fieldErrors = (Collection<String>) validatorContext.getFieldErrors().get(fullFieldName);
+                        Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fullFieldName);
 
                         if (fieldErrors != null) {
-                            errs = new ArrayList<String>(fieldErrors);
+                            errs = new ArrayList(fieldErrors);
                         }
                     }
                 } else if (validatorContext.hasActionErrors()) {
-                    Collection<String> actionErrors = validatorContext.getActionErrors();
+                    Collection actionErrors = validatorContext.getActionErrors();
 
                     if (actionErrors != null) {
-                        errs = new ArrayList<String>(actionErrors);
+                        errs = new ArrayList(actionErrors);
                     }
                 }
 
@@ -140,7 +142,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
 
                 if (fValidator != null) {
                     if (validatorContext.hasFieldErrors()) {
-                        Collection<String> errCol = (Collection<String>) validatorContext.getFieldErrors().get(fullFieldName);
+                        Collection errCol = (Collection) validatorContext.getFieldErrors().get(fullFieldName);
 
                         if ((errCol != null) && !errCol.equals(errs)) {
                             if (LOG.isDebugEnabled()) {
@@ -148,14 +150,14 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
                             }
 
                             if (shortcircuitedFields == null) {
-                                shortcircuitedFields = new TreeSet<String>();
+                                shortcircuitedFields = new TreeSet();
                             }
 
                             shortcircuitedFields.add(fullFieldName);
                         }
                     }
                 } else if (validatorContext.hasActionErrors()) {
-                    Collection<String> errCol = validatorContext.getActionErrors();
+                    Collection errCol = validatorContext.getActionErrors();
 
                     if ((errCol != null) && !errCol.equals(errs)) {
                         if (LOG.isDebugEnabled()) {
@@ -176,7 +178,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
     /**
      * Builds a key for validators - used when caching validators.
      *
-     * @param clazz   the action.
+     * @param clazz the action.
      * @param context the action's context.
      * @return a validator key which is the class name plus context.
      */
@@ -187,35 +189,26 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
         return sb.toString();
     }
 
-    private  List<ValidatorConfig> buildAliasValidatorConfigs(Class aClass, String context, boolean checkFile) {
+    private List buildAliasValidatorConfigs(Class aClass, String context, boolean checkFile) {
         String fileName = aClass.getName().replace('.', '/') + "-" + context + VALIDATION_CONFIG_SUFFIX;
 
         return loadFile(fileName, aClass, checkFile);
     }
 
-
-    protected List<ValidatorConfig> buildClassValidatorConfigs(Class aClass, boolean checkFile) {
-
+    private List buildClassValidatorConfigs(Class aClass, boolean checkFile) {
         String fileName = aClass.getName().replace('.', '/') + VALIDATION_CONFIG_SUFFIX;
 
-        List<ValidatorConfig> result = new ArrayList<ValidatorConfig>(loadFile(fileName, aClass, checkFile));
-
-        List<ValidatorConfig> annotationResult = new ArrayList<ValidatorConfig>(AnnotationValidationConfigurationBuilder.buildAnnotationClassValidatorConfigs(aClass));
-
-        result.addAll(annotationResult);
-
-        return result;
-
+        return loadFile(fileName, aClass, checkFile);
     }
 
     /**
      * <p>This method 'collects' all the validator configurations for a given
      * action invocation.</p>
-     * <p/>
+     *
      * <p>It will traverse up the class hierarchy looking for validators for every super class
      * and directly implemented interface of the current action, as well as adding validators for
      * any alias of this invocation. Nifty!</p>
-     * <p/>
+     *
      * <p>Given the following class structure:
      * <pre>
      *   interface Thing;
@@ -225,7 +218,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
      *   class QuadrapedImpl extends AnimalImpl implements Quadraped;
      *   class Dog extends QuadrapedImpl;
      * </pre></p>
-     * <p/>
+     *
      * <p>This method will look for the following config files for Dog:
      * <pre>
      *   Animal
@@ -239,22 +232,22 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
      *   Dog
      *   Dog-context
      * </pre></p>
-     * <p/>
+     *
      * <p>Note that the validation rules for Thing is never looked for because no class in the
      * hierarchy directly implements Thing.</p>
      *
-     * @param clazz     the Class to look up validators for.
-     * @param context   the context to use when looking up validators.
+     * @param clazz the Class to look up validators for.
+     * @param context the context to use when looking up validators.
      * @param checkFile true if the validation config file should be checked to see if it has been
-     *                  updated.
-     * @param checked   the set of previously checked class-contexts, null if none have been checked
+     *      updated.
+     * @param checked the set of previously checked class-contexts, null if none have been checked
      * @return a list of validator configs for the given class and context.
      */
-    private List<ValidatorConfig> buildValidatorConfigs(Class clazz, String context, boolean checkFile, Set checked) {
-        List<ValidatorConfig> validatorConfigs = new ArrayList<ValidatorConfig>();
+    private List buildValidatorConfigs(Class clazz, String context, boolean checkFile, Set checked) {
+        List validatorConfigs = new ArrayList();
 
         if (checked == null) {
-            checked = new TreeSet<String>();
+            checked = new TreeSet();
         } else if (checked.contains(clazz.getName())) {
             return validatorConfigs;
         }
@@ -262,8 +255,8 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
         if (clazz.isInterface()) {
             Class[] interfaces = clazz.getInterfaces();
 
-            for (Class anInterface : interfaces) {
-                validatorConfigs.addAll(buildValidatorConfigs(anInterface, context, checkFile, checked));
+            for (int x = 0; x < interfaces.length; x++) {
+                validatorConfigs.addAll(buildValidatorConfigs(interfaces[x], context, checkFile, checked));
             }
         } else {
             if (!clazz.equals(Object.class)) {
@@ -274,18 +267,18 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
         // look for validators for implemented interfaces
         Class[] interfaces = clazz.getInterfaces();
 
-        for (Class anInterface1 : interfaces) {
-            if (checked.contains(anInterface1.getName())) {
+        for (int x = 0; x < interfaces.length; x++) {
+            if (checked.contains(interfaces[x].getName())) {
                 continue;
             }
 
-            validatorConfigs.addAll(buildClassValidatorConfigs(anInterface1, checkFile));
+            validatorConfigs.addAll(buildClassValidatorConfigs(interfaces[x], checkFile));
 
             if (context != null) {
-                validatorConfigs.addAll(buildAliasValidatorConfigs(anInterface1, context, checkFile));
+                validatorConfigs.addAll(buildAliasValidatorConfigs(interfaces[x], context, checkFile));
             }
 
-            checked.add(anInterface1.getName());
+            checked.add(interfaces[x].getName());
         }
 
         validatorConfigs.addAll(buildClassValidatorConfigs(clazz, checkFile));
@@ -299,8 +292,8 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
         return validatorConfigs;
     }
 
-    private List<ValidatorConfig> loadFile(String fileName, Class clazz, boolean checkFile) {
-        List<ValidatorConfig> retList = Collections.emptyList();
+    private List loadFile(String fileName, Class clazz, boolean checkFile) {
+        List retList = Collections.EMPTY_LIST;
 
         if ((checkFile && FileManager.fileNeedsReloading(fileName)) || !validatorFileCache.containsKey(fileName)) {
             InputStream is = null;
@@ -309,7 +302,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
                 is = FileManager.loadFile(fileName, clazz);
 
                 if (is != null) {
-                    retList = new ArrayList<ValidatorConfig>(ValidatorFileParser.parseActionValidatorConfigs(is, fileName));
+                    retList = new ArrayList(ValidatorFileParser.parseActionValidatorConfigs(is, fileName));
                 }
             } catch (Exception e) {
                 LOG.error("Caught exception while loading file " + fileName, e);
@@ -325,11 +318,9 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
 
             validatorFileCache.put(fileName, retList);
         } else {
-            retList = validatorFileCache.get(fileName);
+            retList = (List) validatorFileCache.get(fileName);
         }
 
         return retList;
     }
-
-
 }

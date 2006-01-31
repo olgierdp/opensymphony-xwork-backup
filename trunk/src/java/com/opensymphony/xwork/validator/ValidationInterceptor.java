@@ -89,7 +89,7 @@ public class ValidationInterceptor extends AroundInterceptor {
     }
 
     /**
-     * Gets the current action and its context and calls {@link ActionValidatorManager#validate(Object, String)}.
+     * Gets the current action and its context and calls {@link DefaultActionValidatorManager#validate(Object, String)}.
      *
      * @param invocation the execution state of the Action.
      * @throws Exception if an error occurs validating the action.

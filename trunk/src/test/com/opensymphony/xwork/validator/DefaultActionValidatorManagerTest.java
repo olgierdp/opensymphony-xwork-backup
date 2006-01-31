@@ -17,24 +17,36 @@ import java.util.List;
 
 
 /**
- * ActionValidatorManagerTest
+ * DefaultActionValidatorManagerTest
  *
  * @author Jason Carreira
  * @author tm_jee ( tm_jee (at) yahoo.co.uk )
  *         Created Jun 9, 2003 11:03:01 AM
  */
-public class ActionValidatorManagerTest extends XWorkTestCase {
+public class DefaultActionValidatorManagerTest extends XWorkTestCase {
 
     protected final String alias = "validationAlias";
 
+    ActionValidatorManager actionValidatorManager;
+
+    protected void setUp() throws Exception {
+        actionValidatorManager = new DefaultActionValidatorManager();
+        super.setUp();
+    }
+
+    protected void tearDown() throws Exception {
+        actionValidatorManager = null;
+        super.tearDown();
+    }
+
 
     public void testBuildValidatorKey() {
-        String validatorKey = ActionValidatorManager.buildValidatorKey(SimpleAction.class, alias);
+        String validatorKey = DefaultActionValidatorManager.buildValidatorKey(SimpleAction.class, alias);
         assertEquals(SimpleAction.class.getName() + "/" + alias, validatorKey);
     }
 
     public void testBuildsValidatorsForAlias() {
-        List validatorList = ActionValidatorManager.getValidators(SimpleAction.class, alias);
+        List validatorList = actionValidatorManager.getValidators(SimpleAction.class, alias);
 
         // 6 in the class level + 2 in the alias
         assertEquals(8, validatorList.size());
@@ -42,7 +54,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
 
     public void testDefaultMessageInterpolation() {
         // get validators
-        List validatorList = ActionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
+        List validatorList = actionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
         assertEquals(3, validatorList.size());
 
         try {
@@ -51,7 +63,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
             bean.setCount(99);
 
             ValidatorContext context = new GenericValidatorContext(bean);
-            ActionValidatorManager.validate(bean, "beanMessageBundle", context);
+            actionValidatorManager.validate(bean, "beanMessageBundle", context);
             assertTrue(context.hasErrors());
             assertTrue(context.hasFieldErrors());
 
@@ -66,7 +78,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
     }
 
     public void testGetValidatorsForInterface() {
-        List validatorList = ActionValidatorManager.getValidators(DataAware2.class, alias);
+        List validatorList = actionValidatorManager.getValidators(DataAware2.class, alias);
 
         // 3 in interface hierarchy, 2 from parent interface (1 default + 1 context)
         assertEquals(3, validatorList.size());
@@ -85,7 +97,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
     }
 
     public void testGetValidatorsFromInterface() {
-        List validatorList = ActionValidatorManager.getValidators(SimpleAction3.class, alias);
+        List validatorList = actionValidatorManager.getValidators(SimpleAction3.class, alias);
 
        
         
@@ -136,7 +148,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
 
     public void testMessageInterpolation() {
         // get validators
-        List validatorList = ActionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
+        List validatorList = actionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
         assertEquals(3, validatorList.size());
 
         try {
@@ -145,7 +157,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
             bean.setCount(150);
 
             ValidatorContext context = new GenericValidatorContext(bean);
-            ActionValidatorManager.validate(bean, "beanMessageBundle", context);
+            actionValidatorManager.validate(bean, "beanMessageBundle", context);
             assertTrue(context.hasErrors());
             assertTrue(context.hasFieldErrors());
 
@@ -160,14 +172,14 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
     }
 
     public void testSameAliasWithDifferentClass() {
-        List validatorList = ActionValidatorManager.getValidators(SimpleAction.class, alias);
-        List validatorList2 = ActionValidatorManager.getValidators(SimpleAction2.class, alias);
+        List validatorList = actionValidatorManager.getValidators(SimpleAction.class, alias);
+        List validatorList2 = actionValidatorManager.getValidators(SimpleAction2.class, alias);
         assertFalse(validatorList.size() == validatorList2.size());
     }
 
     public void testSkipUserMarkerActionLevelShortCircuit() {
         // get validators
-        List validatorList = ActionValidatorManager.getValidators(User.class, null);
+        List validatorList = actionValidatorManager.getValidators(User.class, null);
         assertEquals(10, validatorList.size());
 
         try {
@@ -177,7 +189,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
             user.setEmail2("bad_email");
 
             ValidatorContext context = new GenericValidatorContext(user);
-            ActionValidatorManager.validate(user, null, context);
+            actionValidatorManager.validate(user, null, context);
             assertTrue(context.hasFieldErrors());
 
             // check field errors
@@ -205,7 +217,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
 
     public void testSkipAllActionLevelShortCircuit2() {
         // get validators
-        List validatorList = ActionValidatorManager.getValidators(User.class, null);
+        List validatorList = actionValidatorManager.getValidators(User.class, null);
         assertEquals(10, validatorList.size());
 
         try {
@@ -219,7 +231,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
             user.setEmail2("mark_bad_email_for_field_val@foo.com");
 
             ValidatorContext context = new GenericValidatorContext(user);
-            ActionValidatorManager.validate(user, null, context);
+            actionValidatorManager.validate(user, null, context);
             assertTrue(context.hasFieldErrors());
 
             // check field errors
@@ -245,7 +257,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
     
     public void testActionLevelShortCircuit() throws Exception {
     	
-    	List validatorList = ActionValidatorManager.getValidators(User.class, null);
+    	List validatorList = actionValidatorManager.getValidators(User.class, null);
         assertEquals(10, validatorList.size());
         
         User user = new User();
@@ -255,7 +267,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
         user.setEmail("tm_jee(at)yahoo.co.uk");
         
         ValidatorContext context = new GenericValidatorContext(user);
-        ActionValidatorManager.validate(user, null, context);
+        actionValidatorManager.validate(user, null, context);
     	
     	// check field level errors
         // shouldn't have any because action error prevents validation of anything else
@@ -276,7 +288,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
     
     public void testShortCircuitNoErrors() {
         // get validators
-        List validatorList = ActionValidatorManager.getValidators(User.class, null);
+        List validatorList = actionValidatorManager.getValidators(User.class, null);
         assertEquals(10, validatorList.size());
 
         try {
@@ -286,7 +298,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
             user.setEmail2("mark@mycompany.com");
 
             ValidatorContext context = new GenericValidatorContext(user);
-            ActionValidatorManager.validate(user, null, context);
+            actionValidatorManager.validate(user, null, context);
             assertFalse(context.hasErrors());
         } catch (ValidationException ex) {
             ex.printStackTrace();
