@@ -141,7 +141,8 @@ public class AnnotationXWorkConverter extends XWorkConverter {
                         LOG.debug(key + ":" + entry.getValue());
                     }
 
-                    if (key.startsWith(DefaultObjectTypeDeterminer.KEY_PROPERTY_PREFIX)) {
+                    if (key.startsWith(DefaultObjectTypeDeterminer.KEY_PROPERTY_PREFIX)
+                            || key.startsWith(DefaultObjectTypeDeterminer.CREATE_IF_NULL_PREFIX)) {
                         mapping.put(key, entry.getValue());
                     }
                     //for properties of classes
@@ -212,7 +213,7 @@ public class AnnotationXWorkConverter extends XWorkConverter {
                             if (tc.rule().equals(ConversionType.APPLICATION)) {
                                 defaultMappings.put(key, createTypeConverter(tc.converter()));
                             } else {
-                                if (tc.rule().toString().equals(ConversionRule.KEY_PROPERTY)) {
+                                if (tc.rule().toString().equals(ConversionRule.KEY_PROPERTY) || tc.rule().toString().equals(ConversionRule.CREATE_IF_NULL)) {
                                     mapping.put(key, tc.value());
                                 }
                                 //for properties of classes
