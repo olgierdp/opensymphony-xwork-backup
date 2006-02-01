@@ -125,7 +125,9 @@ public class DefaultConfiguration implements Configuration {
                 }
 
                 namespaceActionConfigs.put(namespace, configs);
-                namespaceConfigs.put(namespace, packageContext.getFullDefaultActionRef());
+                if (packageContext.getFullDefaultActionRef() != null) {
+                	namespaceConfigs.put(namespace, packageContext.getFullDefaultActionRef());
+                }
             }
         }
 
