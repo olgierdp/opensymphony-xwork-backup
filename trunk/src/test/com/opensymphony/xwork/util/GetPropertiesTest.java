@@ -18,7 +18,7 @@ import junit.framework.TestCase;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class GetPropertesTest extends TestCase {
+public class GetPropertiesTest extends TestCase {
 
     public void testGetCollectionProperties()  {
         doGetCollectionPropertiesTest(new ArrayList());
