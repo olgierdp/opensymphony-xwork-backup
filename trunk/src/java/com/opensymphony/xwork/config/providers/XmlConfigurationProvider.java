@@ -94,8 +94,14 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             db = dbf.newDocumentBuilder();
             db.setEntityResolver(new EntityResolver() {
                 public InputSource resolveEntity(String publicId, String systemId) {
-                    if ("-//OpenSymphony Group//XWork 1.0//EN".equals(publicId)) {
+                    if ("-//OpenSymphony Group//XWork 1.1.1//EN".equals(publicId)) {
                         return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.1.1.dtd", XmlConfigurationProvider.class));
+                    }
+                    else if ("-//OpenSymphony Group//XWork 1.1//EN".equals(publicId)) {
+                        return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.1.dtd", XmlConfigurationProvider.class));
+                    }
+                    else if ("-//OpenSymphony Group//XWork 1.0//EN".equals(publicId)) {
+                        return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.0.dtd", XmlConfigurationProvider.class));
                     }
 
                     return null;
