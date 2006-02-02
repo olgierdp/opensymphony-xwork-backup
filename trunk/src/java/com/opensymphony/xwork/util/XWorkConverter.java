@@ -542,10 +542,8 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     TypeConverter createTypeConverter(String className) throws Exception {
-        Class conversionClass = Thread.currentThread().getContextClassLoader().loadClass(className);
-
         // type converters are used across users
-        return (TypeConverter) ObjectFactory.getObjectFactory().buildBean(conversionClass, null);
+        return (TypeConverter) ObjectFactory.getObjectFactory().buildBean(className, null);
     }
 
     public void loadConversionProperties(String propsName) throws IOException {
