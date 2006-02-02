@@ -141,6 +141,43 @@ public class ParametersInterceptorTest extends TestCase {
         }
     }
 
+    public void testNonexistentParametersGetLoggedInDevMode() {
+        Map params = new HashMap();
+        params.put("not_a_property", "There is no action property named like this");
+
+        HashMap extraContext = new HashMap();
+        extraContext.put(ActionContext.PARAMETERS, params);
+        extraContext.put(ActionContext.DEV_MODE, Boolean.TRUE);
+
+        try {
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
+            proxy.execute();
+            final String actionMessage = ""+((SimpleAction) proxy.getAction()).getActionMessages().toArray()[0];
+            assertTrue(actionMessage.indexOf("No object in the CompoundRoot has a property named 'not_a_property'")>-1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    public void testNonexistentParametersAreIgnoredInProductionMode() {
+        Map params = new HashMap();
+        params.put("not_a_property", "There is no action property named like this");
+
+        HashMap extraContext = new HashMap();
+        extraContext.put(ActionContext.PARAMETERS, params);
+        extraContext.put(ActionContext.DEV_MODE, Boolean.FALSE);
+
+        try {
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
+            proxy.execute();
+            assertTrue(((SimpleAction) proxy.getAction()).getActionMessages().isEmpty());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
     protected void setUp() throws Exception {
         ConfigurationManager.clearConfigurationProviders();
         ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());

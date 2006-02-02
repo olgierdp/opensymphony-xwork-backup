@@ -6,14 +6,15 @@ package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.util.InstantiatingNullHandler;
-import com.opensymphony.xwork.util.OgnlValueStack;
-import com.opensymphony.xwork.util.XWorkConverter;
-import com.opensymphony.xwork.util.XWorkMethodAccessor;
+import com.opensymphony.xwork.ValidationAware;
+import com.opensymphony.xwork.util.*;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -86,6 +87,8 @@ import java.util.TreeMap;
  */
 public class ParametersInterceptor extends AroundInterceptor {
 
+    private static final Log LOG = LogFactory.getLog(ParametersInterceptor.class);
+
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }
 
@@ -129,7 +132,22 @@ public class ParametersInterceptor extends AroundInterceptor {
 
             if (acceptableName) {
                 Object value = entry.getValue();
-                stack.setValue(name, value);
+                try {
+                    stack.setValue(name, value);
+                } catch (RuntimeException e) {
+                    final Boolean devMode = (Boolean) stack.getContext().get(ActionContext.DEV_MODE);
+                    if (devMode != null && devMode.booleanValue()) {
+                        String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "webwork.messages.devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification (set webwork.devMode to false to disable this message):\n{0}", new Object[]{
+                                e.getMessage()
+                        });
+                        LOG.error(developerNotification);
+                        if (action instanceof ValidationAware) {
+                            ((ValidationAware) action).addActionMessage(developerNotification);
+                        }
+                    } else {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         }
     }
