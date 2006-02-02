@@ -1,13 +1,15 @@
+/*
+ * Copyright (c) 2005-2006 Opensymphony. All Rights Reserved.
+ */
 package com.opensymphony.xwork.util;
 
-import com.opensymphony.util.ClassLoaderUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import com.opensymphony.util.ClassLoaderUtil;
 
 /**
- * User: plightbo
- * Date: Sep 22, 2005
- * Time: 8:26:17 PM
+ * @author plightbo
+ * @author Rainer Hermanns
  */
 public class ObjectTypeDeterminerFactory {
     private static final Log LOG = LogFactory.getLog(ObjectTypeDeterminerFactory.class);
