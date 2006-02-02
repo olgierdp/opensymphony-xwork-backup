@@ -145,7 +145,7 @@ public class ParametersInterceptor extends AroundInterceptor {
                             ((ValidationAware) action).addActionMessage(developerNotification);
                         }
                     } else {
-                        throw new RuntimeException(e);
+                        LOG.error("ParametersInterceptor - [setParameters]: Unexpected Exception catched: " + e.getMessage());
                     }
                 }
             }
