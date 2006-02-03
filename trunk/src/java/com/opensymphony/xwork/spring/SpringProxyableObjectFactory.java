@@ -70,7 +70,7 @@ public class SpringProxyableObjectFactory extends SpringObjectFactory {
     /**
      * Subclasses may override this to return a different application context.
      * Note that this application context should see any changes made to the
-     * {@link autoWiringFactory}, so the application context should be either
+     * {@link #autoWiringFactory}, so the application context should be either
      * the original or a child context of the original.
      * @param context
      */

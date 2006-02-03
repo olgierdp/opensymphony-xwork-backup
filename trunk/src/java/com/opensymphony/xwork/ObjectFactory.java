@@ -89,7 +89,7 @@ public class ObjectFactory {
      * @param namespace the namespace the action is configured in
      * @param config the action configuration found in the config for the actionName / namespace
      * @param extraContext a Map of extra context which uses the same keys as the {@link com.opensymphony.xwork.ActionContext}
-     * @return
+     * @return instance of the action class to handle a web request
      * @throws Exception
      */
     public Object buildAction(String actionName, String namespace, ActionConfig config, Map extraContext) throws Exception {

@@ -89,7 +89,7 @@ public class ParameterFilterInterceptor implements Interceptor {
     
     /**
      * @param c
-     * @return
+     * @return <tt>true</tt>, if char is property separator, <tt>false</tt> otherwise.
      */
     private boolean isPropSeperator(char c) {
         // TODO Auto-generated method stub
@@ -122,7 +122,7 @@ public class ParameterFilterInterceptor implements Interceptor {
         return defaultBlock;
     }
     /**
-     * @param defaultBlock The defaultBlock to set.
+     * @param defaultExclude The defaultExclude to set.
      */
     public void setDefaultBlock(boolean defaultExclude) {
         this.defaultBlock = defaultExclude;

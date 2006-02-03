@@ -123,7 +123,7 @@ public class ActionAutowiringInterceptor extends AroundInterceptor implements Ap
     }
 
     /**
-     * @return
+     * @return context
      */
     protected ApplicationContext getApplicationContext() {
         return context;

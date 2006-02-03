@@ -34,7 +34,7 @@ import java.util.*;
  * references.</li>
  *
  * <li>If the null property is a simple bean with a no-arg constructor, it will simply be created using the {@link
- * ObjectFactory#buildBean(Class)} method.</li>
+ * ObjectFactory#buildBean(java.lang.Class, java.util.Map)} method.</li>
  *
  * </ul>
  *

@@ -43,7 +43,7 @@ public abstract class AbstractLifecycleInterceptor implements Interceptor, PreRe
      * request by the DefaultActionInvocation or to short-circuit the processing and just return a String return code.
      *
      * @param invocation
-     * @return
+     * @return result
      * @throws Exception
      */
     public String intercept(ActionInvocation invocation) throws Exception {

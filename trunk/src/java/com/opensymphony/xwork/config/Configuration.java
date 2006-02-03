@@ -31,7 +31,7 @@ public interface Configuration {
      * the current runtime configuration.  currently, if changes have been made to the Configuration since the last
      * time buildRuntimeConfiguration() was called, you'll need to make sure to
      *
-     * @return
+     * @return the current runtime configuration
      */
     RuntimeConfiguration getRuntimeConfiguration();
 

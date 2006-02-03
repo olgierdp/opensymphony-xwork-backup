@@ -39,7 +39,7 @@ public abstract class ActionProxyFactory {
      *
      * @param actionProxy
      * @param extraContext
-     * @return
+     * @return ActionInvocation
      * @throws Exception
      */
     public abstract ActionInvocation createActionInvocation(ActionProxy actionProxy, Map extraContext) throws Exception;
@@ -49,7 +49,7 @@ public abstract class ActionProxyFactory {
      * as part of creating an ActionProxy. Client code should not need to call the createActionInvocation methods.
      *
      * @param actionProxy
-     * @return
+     * @return ActionInvocation
      * @throws Exception
      */
     public abstract ActionInvocation createActionInvocation(ActionProxy actionProxy) throws Exception;
@@ -61,7 +61,7 @@ public abstract class ActionProxyFactory {
      * @param actionProxy
      * @param extraContext
      * @param pushAction   tells whether the Action should be pushed onto the ValueStack
-     * @return
+     * @return ActionInvocation
      * @throws Exception
      */
     public abstract ActionInvocation createActionInvocation(ActionProxy actionProxy, Map extraContext, boolean pushAction) throws Exception;
@@ -73,7 +73,7 @@ public abstract class ActionProxyFactory {
      * @param namespace    the namespace of the action
      * @param actionName
      * @param extraContext a Map of extra parameters to be provided to the ActionProxy
-     * @return
+     * @return ActionProxy
      * @throws Exception
      */
     public abstract ActionProxy createActionProxy(String namespace, String actionName, Map extraContext) throws Exception;
@@ -87,7 +87,7 @@ public abstract class ActionProxyFactory {
      * @param extraContext  a Map of extra parameters to be provided to the ActionProxy
      * @param executeResult flag which tells whether the result should be executed after the action
      * @param cleanupContext
-     * @return
+     * @return ActionProxy
      * @throws Exception
      */
     public abstract ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception;

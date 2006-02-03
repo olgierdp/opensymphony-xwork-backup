@@ -35,7 +35,7 @@ public class InterceptorBuilder {
      * @param packageConfig
      * @param refName
      * @param refParams
-     * @return
+     * @return list of interceptors referenced by the refName in the supplied PackageConfig.
      * @throws ConfigurationException
      */
     public static List constructInterceptorReference(PackageConfig packageConfig, String refName, Map refParams) throws ConfigurationException {

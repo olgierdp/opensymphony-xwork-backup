@@ -71,8 +71,9 @@ public class ConfigurationManager {
      * ConfigurationProvider has been added, then the XmlConfigurationProvider must be added by hand.
      * </p>
      *
+     * TODO: the lazy instantiation of XmlConfigurationProvider should be refactored to be elsewhere.  the behavior described above seems unintuitive.
+     *
      * @return the list of registered ConfigurationProvider objects
-     * @todo the lazy instantiation of XmlConfigurationProvider should be refactored to be elsewhere.  the behavior described above seems unintuitive.
      * @see com.opensymphony.xwork.config.ConfigurationProvider
      */
     public static List getConfigurationProviders() {
@@ -127,8 +128,8 @@ public class ConfigurationManager {
     /**
      * reloads the Configuration files if the configuration files indicate that they need to be reloaded.
      *
-     * @todo as FileManager.setReloadingConfigs never appears to be set anywhere, will this ever do anything?
-     * @todo it currently appears that the reload strategy is to check on each call to getConfiguration().  this seems extremely burdensome.  a caching mechanism should be implemented
+     * TODO: as FileManager.setReloadingConfigs never appears to be set anywhere, will this ever do anything?
+     * TODO: it currently appears that the reload strategy is to check on each call to getConfiguration().  this seems extremely burdensome.  a caching mechanism should be implemented
      */
     private static synchronized void conditionalReload() {
         if (FileManager.isReloadingConfigs()) {
