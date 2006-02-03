@@ -279,6 +279,10 @@
             <fileset dir="${src}"/>
         </copy>
 
+        <copy todir="${dist}/tiger">
+            <fileset dir="tiger"/>
+        </copy>
+
         <mkdir dir="${dist}/lib"/>
         <copy todir="${dist}/lib">
             <fileset dir="${lib}">
