@@ -1,0 +1,40 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+
+<xwork>
+    <package name="default" externalReferenceResolver="com.opensymphony.xwork.spring.SpringExternalReferenceResolver">
+        <result-types>
+            <result-type name="null" class="com.opensymphony.xwork.result.NullResult" default="true"/>
+        </result-types>
+
+        <interceptors>
+			<interceptor name="reference-resolver" class="com.opensymphony.xwork.interceptor.ExternalReferencesInterceptor"/>
+        </interceptors>
+
+        <default-interceptor-ref name="reference-resolver"/>
+
+		<action name="TestExternalRefResolver" class="com.opensymphony.xwork.spring.ExternalReferenceAction">
+        	<external-ref name="foo">myFoo</external-ref>
+        	<external-ref name="bar">myBar</external-ref>
+        </action>
+        
+        <action name="TestExternalRefResolver2" class="com.opensymphony.xwork.spring.ExternalReferenceAction">
+        	<external-ref name="foo">myFoo</external-ref>
+        	<external-ref required="false" name="Boo">myBoo</external-ref>
+        </action>
+        
+        <action name="TestExternalRefResolver3" class="com.opensymphony.xwork.spring.ExternalReferenceAction">
+        	<external-ref name="foo">myFoo</external-ref>
+        	<external-ref required="true" name="Boo">myBoo</external-ref>
+        </action>
+        
+        <action name="TestExternalRefResolver4" class="com.opensymphony.xwork.spring.ExternalReferenceAction">
+        	<external-ref name="foo"/>
+        </action>
+   	</package>
+
+   	<package name="test" extends="default" namespace="test/">
+        <action name="TestExternalRefResolver5" class="com.opensymphony.xwork.spring.ExternalReferenceAction">
+        	<external-ref name="foo">myFoo</external-ref>
+        </action>
+   </package>
+</xwork>

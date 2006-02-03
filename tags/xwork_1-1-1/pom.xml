@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.opensymphony</groupId>
+    <artifactId>xwork</artifactId>
+    <version>1.1.1</version>
+    <packaging>jar</packaging>
+    <name>XWork</name>
+    <description>
+        XWork is an command-pattern framework that is used to power WebWork
+        as well as other applications. XWork provides an Inversion of Control
+        container, a powerful expression language, data type conversion,
+        validation, and pluggable configuration.
+    </description>
+    <url>http://www.opensymphony.com/xwork/</url>
+    <organization>
+        <name>OpenSymphony</name>
+        <url>http://www.opensymphony.com/</url>
+    </organization>
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://jira.opensymphony.com/browse/XW</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>WebWork users list</name>
+            <post>mailto:users@webwork.dev.java.net</post>
+            <subscribe>https://webwork.dev.java.net/servlets/ProjectMailingListList</subscribe>
+            <archive>https://webwork.dev.java.net/servlets/SummarizeList?listName=users</archive>
+            <otherArchives>
+                <otherArchive>http://forums.opensymphony.com/forum.jspa?forumID=1</otherArchive>
+            </otherArchives>
+        </mailingList>
+        <mailingList>
+            <name>WebWork developers list</name>
+            <post>mailto:dev@webwork.dev.java.net</post>
+            <subscribe>https://webwork.dev.java.net/servlets/ProjectMailingListList</subscribe>
+            <archive>https://webwork.dev.java.net/servlets/SummarizeList?listName=dev</archive>
+            <otherArchives>
+                <otherArchive>http://forums.opensymphony.com/forum.jspa?forumID=32</otherArchive>
+            </otherArchives>
+        </mailingList>
+        <mailingList>
+            <name>XWork cvs commit list</name>
+            <post>mailto:cvs@xwork.dev.java.net</post>
+            <subscribe>https://xwork.dev.java.net/servlets/ProjectMailingListList</subscribe>
+            <archive>https://xwork.dev.java.net/servlets/SummarizeList?listName=cvs</archive>
+            <otherArchives>
+                <otherArchive>http://forums.opensymphony.com/forum.jspa?forumID=9</otherArchive>
+            </otherArchives>
+        </mailingList>
+    </mailingLists>
+    <scm>
+        <connection>:pserver:[username]@cvs.dev.java.net:/cvs/xwork</connection>
+        <url>https://xwork.dev.java.net/source/browse/xwork/</url>
+    </scm>
+    <licenses>
+        <license>
+            <name>The OpenSymphony Software License 1.1</name>
+            <url>http://opensymphony.com/xwork/license.action</url>
+            <comments>
+                This license is derived and fully compatible with the Apache Software
+                License - see http://www.apache.org/LICENSE.txt
+            </comments>
+        </license>
+    </licenses>
+    <dependencies>
+        <dependency>
+            <groupId>org.rifers</groupId>
+            <artifactId>rife-continuations</artifactId>
+            <version>0.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <!-- group should be com.opensymphony ... -->
+            <groupId>opensymphony</groupId>
+            <artifactId>oscore</artifactId>
+            <version>2.2.4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ognl</groupId>
+            <artifactId>ognl</artifactId>
+            <version>2.6.7</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>1.2.6</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>1.2.6</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>1.2.6</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>1.2.6</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>1.2.6</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+</project>
