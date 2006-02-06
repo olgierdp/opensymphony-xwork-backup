@@ -101,8 +101,7 @@
 
     <target name="mavenrep" depends="jar">
         <!-- xwork -->
-        <filter token="VERSION" value="${version}"/>
-        <copy file="pom.xml" tofile="/opt/repository/ibiblio.org/opensymphony/poms/${name}-${version}-SNAPSHOT.pom" filtering="yes"/>
+        <copy file="pom.xml" tofile="/opt/repository/ibiblio.org/opensymphony/poms/${name}-${version}-SNAPSHOT.pom"/>
         <copy file="${build}/${name}-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT.jar"/>
         <copy file="${build}/${name}-src-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-src-${version}-SNAPSHOT.jar"/>
 

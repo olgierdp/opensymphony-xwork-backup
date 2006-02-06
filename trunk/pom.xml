@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.opensymphony</groupId>
     <artifactId>xwork</artifactId>
-    <version>@VERSION@</version>
+    <version>1.1.2</version>
     <packaging>jar</packaging>
     <name>XWork</name>
     <description>
