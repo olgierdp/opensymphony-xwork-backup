@@ -99,6 +99,18 @@
         </antcall>
     </target>
 
+    <target name="mavenrep" depends="jar">
+        <!-- xwork -->
+        <filter token="VERSION" value="${version}"/>
+        <copy file="pom.xml" tofile="/opt/repository/ibiblio.org/opensymphony/poms/${name}-${version}-SNAPSHOT.pom" filtering="yes"/>
+        <copy file="${build}/${name}-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT.jar"/>
+        <copy file="${build}/${name}-src-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-src-${version}-SNAPSHOT.jar"/>
+
+        <!-- xwork-tiger -->
+        <copy file="${build}/${name}-tiger-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-tiger-${version}-SNAPSHOT.jar"/>
+        <copy file="${build}/${name}-tiger-src-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-tiger-src-${version}-SNAPSHOT.jar"/>
+    </target>
+
     <macrodef name="run-tiger-junit">
         <attribute name="classpathref" default="junit-tiger.cp" />
         <sequential>
