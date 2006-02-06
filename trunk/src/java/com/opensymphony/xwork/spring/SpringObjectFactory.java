@@ -32,6 +32,7 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
     protected AutowireCapableBeanFactory autoWiringFactory;
     protected int autowireStrategy = AutowireCapableBeanFactory.AUTOWIRE_BY_NAME;
     private Map classes = new HashMap();
+    private boolean useClassCache = true;
 
     /**
      * Set the Spring ApplicationContext that should be used to look beans up with.
@@ -159,9 +160,12 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
     }
 
     public Class getClassInstance(String className) throws ClassNotFoundException {
-        // this cache of classes is needed because Spring sucks at dealing with situations where the
-        // class instance changes (such as WebWork's QuickStart) 
-        Class clazz = (Class) classes.get(className);
+        Class clazz = null;
+        if (useClassCache) {
+            // this cache of classes is needed because Spring sucks at dealing with situations where the
+            // class instance changes (such as WebWork's QuickStart)
+            clazz = (Class) classes.get(className);
+        }
 
         if (clazz == null) {
             if (appContext.containsBean(className)) {
@@ -169,7 +173,10 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
             } else {
                 clazz = super.getClassInstance(className);
             }
-            classes.put(className, clazz);
+
+            if (useClassCache) {
+                classes.put(className, clazz);
+            }
         }
 
         return clazz;
@@ -192,5 +199,9 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
      */
     public boolean isNoArgConstructorRequired() {
         return false;
+    }
+
+    public void setUseClassCache(boolean useClassCache) {
+        this.useClassCache = useClassCache;
     }
 }
