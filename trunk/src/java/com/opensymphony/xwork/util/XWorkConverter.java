@@ -372,11 +372,11 @@ public class XWorkConverter extends DefaultTypeConverter {
         }
     }
 
-    protected synchronized void registerConverter(String className, TypeConverter converter) {
+    public synchronized void registerConverter(String className, TypeConverter converter) {
         defaultMappings.put(className, converter);
     }
 
-    protected synchronized void registerConverterNotFound(String className) {
+    public synchronized void registerConverterNotFound(String className) {
         unknownMappings.add(className);
     }
 
