@@ -169,6 +169,10 @@ public class XWorkConverter extends DefaultTypeConverter {
         return instance;
     }
 
+    public static void setInstance(XWorkConverter instance) {
+        XWorkConverter.instance = instance;
+    }
+
     public static String buildConverterFilename(Class clazz) {
         String className = clazz.getName();
         String resource = className.replace('.', '/') + "-conversion.properties";
