@@ -60,10 +60,7 @@ import org.apache.commons.logging.LogFactory;
 public class ComponentInterceptor extends AroundInterceptor {
     public static final String COMPONENT_MANAGER = "com.opensymphony.xwork.interceptor.component.ComponentManager";
     private static final Log LOG = LogFactory.getLog(ComponentInterceptor.class);
-
-    static {
-        LOG.info("WebWork's IoC has been deprecated, please use an alternative such as Spring");
-    }
+    private static boolean deprecationLogged = false;
 
     public void init() {
     }
@@ -72,6 +69,10 @@ public class ComponentInterceptor extends AroundInterceptor {
     }
 
     protected void before(ActionInvocation dispatcher) throws Exception {
+        if (!deprecationLogged) {
+            LOG.info("WebWork's IoC has been deprecated, please use an alternative such as Spring");
+            deprecationLogged = true;
+        }
         ComponentManager container = (ComponentManager) ActionContext.getContext().get(COMPONENT_MANAGER);
 
         if (container != null) {
