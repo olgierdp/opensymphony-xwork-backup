@@ -99,10 +99,19 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         params = new HashMap();
         params.put("date", new java.util.Date(2002 - 1900, 11, 20));
 
+        //Explicitly set an out-of-range double for DoubleRangeValidatorTest
+        params.put("percentage", new Double(100.0123));
+
         ActionConfig validationActionConfig = new ActionConfig(null, SimpleAction.class, params, results, interceptors);
         defaultPackageContext.addActionConfig(VALIDATION_ACTION_NAME, validationActionConfig);
         defaultPackageContext.addActionConfig(VALIDATION_ALIAS_NAME, validationActionConfig);
         defaultPackageContext.addActionConfig(VALIDATION_SUBPROPERTY_NAME, validationActionConfig);
+
+
+        params = new HashMap();
+        params.put("percentage", new Double(1.234567));
+        ActionConfig percentageActionConfig = new ActionConfig(null, SimpleAction.class, params, results, interceptors);
+        defaultPackageContext.addActionConfig("percentage", percentageActionConfig);
 
         // We need this actionconfig to be the final destination for action chaining
         ActionConfig barActionConfig = new ActionConfig(null, SimpleAction.class, null, null, null);
@@ -114,7 +123,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
     /**
      * Tells whether the ConfigurationProvider should reload its configuration
      *
-     * @return
+     * @return false
      */
     public boolean needsReload() {
         return false;

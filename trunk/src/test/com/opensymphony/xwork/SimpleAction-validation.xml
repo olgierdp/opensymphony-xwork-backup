@@ -10,6 +10,13 @@
             <message>bar must be between ${min} and ${max}, current value is ${bar}.</message>
         </field-validator>
     </field>
+    <field name="percentage">
+        <field-validator type="double">
+            <param name="min">0.1</param>
+            <param name="max">10.1</param>
+            <message>percentage must be between ${min} and ${max}, current value is ${percentage}.</message>
+        </field-validator>
+    </field>
     <field name="date">
         <field-validator type="date">
             <param name="min">12/22/2002</param>

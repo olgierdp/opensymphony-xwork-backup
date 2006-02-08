@@ -33,6 +33,7 @@ public class SimpleActionValidationTest extends TestCase {
         //valid values
         params.put("bar", "7");
         params.put("date", "12/23/2002");
+        params.put("percentage", "1.23456789");
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);

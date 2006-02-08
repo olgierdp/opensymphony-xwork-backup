@@ -30,6 +30,7 @@ public class SimpleAction extends ActionSupport {
     private int bar;
     private int baz;
     private int foo;
+    private double percentage;
 
     private String aliasSource;
     private String aliasDest;
@@ -45,6 +46,14 @@ public class SimpleAction extends ActionSupport {
 
     public int getBar() {
         return bar;
+    }
+
+    public double getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
     }
 
     public void setBaz(int baz) {
