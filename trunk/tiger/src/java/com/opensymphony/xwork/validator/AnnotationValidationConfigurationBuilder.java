@@ -519,8 +519,12 @@ public class AnnotationValidationConfigurationBuilder {
             params.put("fieldName", v.fieldName());
         }
 
-        params.put("maxLength", v.maxLength());
-        params.put("minLength", v.minLength());
+        if ( v.maxLength() != null && v.maxLength().length() > 0) {
+            params.put("maxLength", v.maxLength());
+        }
+        if ( v.minLength() != null && v.minLength().length() > 0) {
+            params.put("minLength", v.minLength());
+        }
         params.put("trim", v.trim());
 
         ValidatorFactory.lookupRegisteredValidatorType(validatorType);
@@ -600,8 +604,12 @@ public class AnnotationValidationConfigurationBuilder {
             params.put("fieldName", v.fieldName());
         }
 
-        params.put("min", v.min());
-        params.put("max", v.max());
+        if ( v.min() != null && v.min().length() > 0) {
+            params.put("min", v.min());
+        }
+        if ( v.max() != null && v.max().length() > 0) {
+            params.put("max", v.max());
+        }
 
         ValidatorFactory.lookupRegisteredValidatorType(validatorType);
         ValidatorConfig vCfg = new ValidatorConfig(validatorType, params);
@@ -679,8 +687,12 @@ public class AnnotationValidationConfigurationBuilder {
         } else if (v.fieldName() != null && v.fieldName().length() > 0 ) {
             params.put("fieldName", v.fieldName());
         }
-        params.put("min", v.min());
-        params.put("max", v.max());
+        if ( v.min() != null && v.min().length() > 0) {
+            params.put("min", v.min());
+        }
+        if ( v.max() != null && v.max().length() > 0) {
+            params.put("max", v.max());
+        }
 
         ValidatorFactory.lookupRegisteredValidatorType(validatorType);
         ValidatorConfig vCfg = new ValidatorConfig(validatorType, params);
