@@ -37,7 +37,8 @@ public class SimpleAnnotationAction extends ActionSupport {
     private int bar;
     private int baz;
     private int foo;
-    
+    private double percentage;
+
     private String aliasSource;
     private String aliasDest;
     
@@ -67,6 +68,15 @@ public class SimpleAnnotationAction extends ActionSupport {
 
     public int getBaz() {
         return baz;
+    }
+
+    public double getPercentage() {
+        return percentage;
+    }
+
+    @DoubleRangeFieldValidator(min = "0.123", key = "baz.range", message = "Could not find percentage.range!")
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
     }
 
     public void setBean(TestBean bean) {

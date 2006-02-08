@@ -132,6 +132,15 @@ public class AnnotationValidationConfigurationBuilder {
                     }
 
                 }
+                // Process DoubleRangeFieldValidator
+                else if ( a instanceof DoubleRangeFieldValidator) {
+                    DoubleRangeFieldValidator v = (DoubleRangeFieldValidator) a;
+                    ValidatorConfig temp = processDoubleRangeFieldValidatorAnnotation(v, fieldName);
+                    if ( temp != null) {
+                        result.add(temp);
+                    }
+
+                }
                 // Process RequiredFieldValidator
                 else if ( a instanceof RequiredFieldValidator) {
                     RequiredFieldValidator v = (RequiredFieldValidator) a;
@@ -595,6 +604,38 @@ public class AnnotationValidationConfigurationBuilder {
 
     private static ValidatorConfig processIntRangeFieldValidatorAnnotation(IntRangeFieldValidator v, String fieldName) {
         String validatorType = "int";
+
+        Map<String, Object> params = new HashMap<String, Object>();
+
+        if (fieldName != null) {
+            params.put("fieldName", fieldName);
+        } else if (v.fieldName() != null && v.fieldName().length() > 0 ) {
+            params.put("fieldName", v.fieldName());
+        }
+
+        if ( v.min() != null && v.min().length() > 0) {
+            params.put("min", v.min());
+        }
+        if ( v.max() != null && v.max().length() > 0) {
+            params.put("max", v.max());
+        }
+
+        ValidatorFactory.lookupRegisteredValidatorType(validatorType);
+        ValidatorConfig vCfg = new ValidatorConfig(validatorType, params);
+        vCfg.setShortCircuit(v.shortCircuit());
+        vCfg.setDefaultMessage(v.message());
+
+        String key = v.key();
+
+        if ((key != null) && (key.trim().length() > 0)) {
+            vCfg.setMessageKey(key);
+        }
+
+        return vCfg;
+    }
+
+    private static ValidatorConfig processDoubleRangeFieldValidatorAnnotation(DoubleRangeFieldValidator v, String fieldName) {
+        String validatorType = "double";
 
         Map<String, Object> params = new HashMap<String, Object>();
 
