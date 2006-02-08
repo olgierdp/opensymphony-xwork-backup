@@ -33,16 +33,12 @@ public class ParameterFilterInterceptor implements Interceptor {
      * @see com.opensymphony.xwork.interceptor.Interceptor#destroy()
      */
     public void destroy() {
-        // TODO Auto-generated method stub
-
     }
 
     /* (non-Javadoc)
      * @see com.opensymphony.xwork.interceptor.Interceptor#init()
      */
     public void init() {
-        // TODO Auto-generated method stub
-
     }
 
     /* (non-Javadoc)
@@ -92,7 +88,6 @@ public class ParameterFilterInterceptor implements Interceptor {
      * @return <tt>true</tt>, if char is property separator, <tt>false</tt> otherwise.
      */
     private boolean isPropSeperator(char c) {
-        // TODO Auto-generated method stub
         return c=='.' || c=='(' || c=='[';
     }
 
