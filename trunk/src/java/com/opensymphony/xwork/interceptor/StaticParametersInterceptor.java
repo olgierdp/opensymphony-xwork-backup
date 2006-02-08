@@ -9,6 +9,7 @@ import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.Parameterizable;
 import com.opensymphony.xwork.util.OgnlValueStack;
+import com.opensymphony.xwork.util.TextParseUtil;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -49,7 +50,9 @@ import java.util.Map;
  * <pre>
  * <!-- START SNIPPET: example -->
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
- *     &lt;interceptor-ref name="static-params"/&gt;
+ *     &lt;interceptor-ref name="static-params"&gt;
+ *          &lt;param name="parse"&gt;true&lt;/param&gt;
+ *     &lt;/interceptor-ref&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
  * <!-- END SNIPPET: example -->
@@ -58,6 +61,12 @@ import java.util.Map;
  * @author Patrick Lightbody
  */
 public class StaticParametersInterceptor extends AroundInterceptor {
+
+    private boolean parse;
+
+    public void setParse(String value) {
+        this.parse = new Boolean(value).booleanValue();
+    }
 
     protected void after(ActionInvocation invocation, String result) throws Exception {
     }
@@ -84,6 +93,11 @@ public class StaticParametersInterceptor extends AroundInterceptor {
                  iterator.hasNext();) {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 stack.setValue(entry.getKey().toString(), entry.getValue());
+                Object val = entry.getValue();
+                if (parse && val instanceof String) {
+                    val = TextParseUtil.translateVariables((String) val, stack);
+                }
+                stack.setValue(entry.getKey().toString(), val);
             }
         }
     }
