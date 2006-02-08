@@ -13,6 +13,7 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -71,6 +72,8 @@ import com.opensymphony.xwork.XworkException;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class XWorkBasicConverter extends DefaultTypeConverter {
+
+    private static String MILLISECOND_FORMAT = ".SSS";
 
     public Object convertValue(Map context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;
@@ -286,10 +289,34 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             String sa = (String) value;
             Locale locale = getLocale(context);
 
-            DateFormat df =
-                    java.sql.Time.class == toType ?
-                            DateFormat.getTimeInstance(DateFormat.MEDIUM, locale) :
-                            DateFormat.getDateInstance(DateFormat.SHORT, locale);
+            DateFormat df = null;
+            if (java.sql.Time.class == toType) {
+                df = DateFormat.getTimeInstance(DateFormat.MEDIUM, locale);
+            } else if (java.sql.Timestamp.class == toType) {
+                Date check = null;
+                SimpleDateFormat dtfmt = (SimpleDateFormat) DateFormat.getDateTimeInstance(DateFormat.SHORT,
+                        DateFormat.MEDIUM,
+                        locale);
+                SimpleDateFormat fullfmt = new SimpleDateFormat(dtfmt.toPattern() + MILLISECOND_FORMAT,
+                        locale);
+
+                SimpleDateFormat dfmt = (SimpleDateFormat) DateFormat.getDateInstance(DateFormat.SHORT,
+                        locale);
+
+                SimpleDateFormat[] fmts = {fullfmt, dtfmt, dfmt};
+                for (int i = 0; i < fmts.length; i++) {
+                    try {
+                        check = fmts[i].parse(sa);
+                        df = fmts[i];
+                        if (check != null) {
+                            break;
+                        }
+                    } catch (ParseException ignore) {
+                    }
+                }
+            } else {
+                df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+            }
 
             try {
                 result = df.parse(sa);
@@ -383,9 +410,17 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
             result = TextUtils.join(", ", intArray);
         } else if (value instanceof Date) {
-            DateFormat df = value instanceof java.sql.Time ?
-                    DateFormat.getTimeInstance(DateFormat.MEDIUM, getLocale(context)) :
-                    DateFormat.getDateInstance(DateFormat.SHORT, getLocale(context));
+            DateFormat df = null;
+            if (value instanceof java.sql.Time) {
+                df = DateFormat.getTimeInstance(DateFormat.MEDIUM, getLocale(context));
+            } else if (value instanceof java.sql.Timestamp) {
+                SimpleDateFormat dfmt = (SimpleDateFormat) DateFormat.getDateTimeInstance(DateFormat.SHORT,
+                        DateFormat.MEDIUM,
+                        getLocale(context));
+                df = new SimpleDateFormat(dfmt.toPattern() + MILLISECOND_FORMAT);
+            } else {
+                df = DateFormat.getDateInstance(DateFormat.SHORT, getLocale(context));
+            }
             result = df.format(value);
         } else if (value instanceof String[]) {
             result = TextUtils.join(", ", (String[]) value);
