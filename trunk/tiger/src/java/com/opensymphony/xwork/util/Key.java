@@ -1,15 +1,18 @@
+/*
+ * Copyright (c) 2006, Your Corporation. All Rights Reserved.
+ */
+
 package com.opensymphony.xwork.util;
 
 /**
  * <!-- START SNIPPET: description -->
- * <p/>Sets the KeyProperty for type conversion.
+ * <p/>Sets the Key for type conversion.
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- * <p/>The KeyProperty annotation must be applied at method level.
- * <p/>This annotation should be used with Generic types, if the key property of the key element needs to be specified.
+ * <p/>The Key annotation must be applied at method level.
  * <!-- END SNIPPET: usage -->
  * <p/> <u>Annotation parameters:</u>
  *
@@ -27,7 +30,7 @@ package com.opensymphony.xwork.util;
  * <tr>
  * <td>value</td>
  * <td>no</td>
- * <td>id</td>
+ * <td>java.lang.Object.class</td>
  * <td>The key property value.</td>
  * </tr>
  * </tbody>
@@ -38,23 +41,23 @@ package com.opensymphony.xwork.util;
  * <pre>
  * <!-- START SNIPPET: example -->
  * // The key property for User objects within the users collection is the <code>userName</code> attribute.
- * List<User> users = null;
+ * Map<Long, User> userMap = null;
  *
- * @KeyProperty( value = "userName" )
- * public void setUsers(List<User> users) {
- *   this.users = users;
+ * @Key( value = java.lang.Long.class )
+ * public void setUserMap(Map<Long, User> userMap) {
+ *   this.userMap = userMap;
  * }
  * <!-- END SNIPPET: example -->
  * </pre>
  *
- * @author Patrick Lightbody
  * @author Rainer Hermanns
+ * @version $Id$
  */
-public @interface KeyProperty {
+public @interface Key {
 
     /**
-     * The KeyProperty value.
-     * Defaults to the <tt>id</tt> attribute. 
+     * The Key value.
+     * Defaults to <tt>java.lang.Object.class</tt>.
      */
-    String value() default "id";
+    Class value() default java.lang.Object.class;
 }
