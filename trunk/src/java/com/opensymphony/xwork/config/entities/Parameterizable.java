@@ -5,8 +5,6 @@
 package com.opensymphony.xwork.config.entities;
 
 import java.util.Map;
-import java.io.Serializable;
-
 
 /**
  * <!-- START SNIPPET: javadoc -->
