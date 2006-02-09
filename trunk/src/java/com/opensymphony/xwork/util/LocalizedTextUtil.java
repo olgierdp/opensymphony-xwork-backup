@@ -382,9 +382,7 @@ public class LocalizedTextUtil {
             String message = findDefaultText(key, locale);
 
             if (message == null) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Unable to find text for key " + key);
-                }
+                LOG.warn("Unable to find text for key " + key);
 
                 message = defaultMessage;
             }
