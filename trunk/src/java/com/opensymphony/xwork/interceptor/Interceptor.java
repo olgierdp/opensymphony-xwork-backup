@@ -6,6 +6,8 @@ package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionInvocation;
 
+import java.io.Serializable;
+
 
 /**
  * An interceptor is a stateless class that follows the interceptor pattern, as
@@ -18,7 +20,7 @@ import com.opensymphony.xwork.ActionInvocation;
  *
  * @author Jason Carreira
  */
-public interface Interceptor {
+public interface Interceptor extends Serializable {
 
     /**
      * Called to let an interceptor clean up any resources it has allocated.

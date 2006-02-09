@@ -10,13 +10,16 @@
  */
 package com.opensymphony.xwork.config.entities;
 
+import java.io.Serializable;
+
 
 /**
+ * Encapsulates an external reference in the xwork configuration.
+ *
  * @author Ross
- *         <p/>
- *         Encapsulates an external reference in the xwork configuration
+ * @author Rainer Hermanns
  */
-public class ExternalReference {
+public class ExternalReference implements Serializable {
 
     private String externalRef;
     private String name;

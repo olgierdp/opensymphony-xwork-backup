@@ -6,6 +6,7 @@ package com.opensymphony.xwork.config.entities;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.io.Serializable;
 
 
 /**
@@ -15,7 +16,7 @@ import java.util.TreeMap;
  * Time: 11:55:34 AM
  * To change this template use Options | File Templates.
  */
-public class InterceptorConfig implements Parameterizable {
+public class InterceptorConfig implements Parameterizable, Serializable {
 
     Map params;
     String className;

@@ -16,8 +16,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AroundInterceptor implements Interceptor {
 
-    protected Log log = LogFactory.getLog(this.getClass());
-
+    protected transient Log log = LogFactory.getLog(getClass());
 
     public void destroy() {
     }

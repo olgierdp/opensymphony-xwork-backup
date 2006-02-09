@@ -9,6 +9,7 @@ import com.opensymphony.xwork.interceptor.Interceptor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.io.Serializable;
 
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
  * Time: 2:41:35 PM
  * To change this template use Options | File Templates.
  */
-public class InterceptorStackConfig implements InterceptorListHolder {
+public class InterceptorStackConfig implements InterceptorListHolder, Serializable {
 
     private List interceptors;
     private String name;

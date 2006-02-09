@@ -10,13 +10,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
+import java.io.Serializable;
 
 
 /**
  * @author $Author$
  * @version $Revision$
  */
-public class PackageConfig implements Comparable {
+public class PackageConfig implements Comparable, Serializable {
 
     private static final Log LOG = LogFactory.getLog(PackageConfig.class);
 
@@ -29,7 +30,7 @@ public class PackageConfig implements Comparable {
     private List globalExceptionMappingConfigs = new ArrayList();
     private Set parents = new HashSet();
     private String defaultInterceptorRef;
-	private String defaultActionRef;
+    private String defaultActionRef;
     private String defaultResultType;
     private String name;
     private String namespace = "";
@@ -193,12 +194,12 @@ public class PackageConfig implements Comparable {
     public String getDefaultInterceptorRef() {
         return defaultInterceptorRef;
     }
-    
-	public void setDefaultActionRef(String name) {
-		defaultActionRef = name;
-	}
-	
-	public String getDefaultActionRef() {
+
+    public void setDefaultActionRef(String name) {
+        defaultActionRef = name;
+    }
+
+    public String getDefaultActionRef() {
         return defaultActionRef;
     }
 
@@ -268,7 +269,7 @@ public class PackageConfig implements Comparable {
 
         return defaultInterceptorRef;
     }
-    
+
     /**
      * gets the default action-ref name. If this is not set on this PackageConfig, it searches the parent
      * PackageConfigs in order until it finds one.

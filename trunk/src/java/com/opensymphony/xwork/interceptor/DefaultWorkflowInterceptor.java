@@ -85,7 +85,7 @@ import java.util.Set;
  */
 public class DefaultWorkflowInterceptor implements Interceptor {
 
-    Log log = LogFactory.getLog(this.getClass());
+    protected static final Log log = LogFactory.getLog(DefaultWorkflowInterceptor.class);
 
     Set excludeMethods = Collections.EMPTY_SET;
     Set includeMethods = Collections.EMPTY_SET;

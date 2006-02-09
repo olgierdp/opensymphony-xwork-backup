@@ -2,13 +2,15 @@ package com.opensymphony.xwork.config.entities;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.io.Serializable;
 
 /**
  * User: Matthew E. Porter (matthew dot porter at metissian dot com)
+ * @author Rainer Hermanns
  * Date: Aug 9, 2005
  * Time: 3:51:50 PM
  */
-public class ExceptionMappingConfig {
+public class ExceptionMappingConfig implements Serializable {
 
     private String name;
     private String exceptionClassName;

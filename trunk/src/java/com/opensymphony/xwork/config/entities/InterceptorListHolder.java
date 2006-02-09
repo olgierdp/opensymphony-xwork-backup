@@ -7,6 +7,7 @@ package com.opensymphony.xwork.config.entities;
 import com.opensymphony.xwork.interceptor.Interceptor;
 
 import java.util.List;
+import java.io.Serializable;
 
 
 /**

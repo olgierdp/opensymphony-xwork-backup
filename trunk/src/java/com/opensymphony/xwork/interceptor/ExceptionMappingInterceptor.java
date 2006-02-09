@@ -78,7 +78,8 @@ import java.util.List;
  * @author Matthew E. Porter (matthew dot porter at metissian dot com) Date: Aug 14, 2005 Time: 12:40:02 PM
  */
 public class ExceptionMappingInterceptor implements Interceptor {
-    protected Log log = LogFactory.getLog(this.getClass());
+    
+    protected static final Log log = LogFactory.getLog(ExceptionMappingInterceptor.class);
 
 
     public void destroy() {

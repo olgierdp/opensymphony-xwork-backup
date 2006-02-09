@@ -6,6 +6,7 @@ package com.opensymphony.xwork.config.entities;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.io.Serializable;
 
 
 /**
@@ -15,7 +16,7 @@ import java.util.TreeMap;
  * Time: 1:21:06 PM
  * To change this template use Options | File Templates.
  */
-public class ResultConfig implements Parameterizable {
+public class ResultConfig implements Parameterizable, Serializable {
 
     private Map params;
     private String className;

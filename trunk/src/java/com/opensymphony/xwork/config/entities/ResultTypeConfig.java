@@ -6,6 +6,7 @@ package com.opensymphony.xwork.config.entities;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.io.Serializable;
 
 
 /**
@@ -15,7 +16,7 @@ import java.util.TreeMap;
  * @author Rainer Hermanns
  * @author Neo
  */
-public class ResultTypeConfig {
+public class ResultTypeConfig implements Serializable {
 
     private Class clazz;
     private String name;
@@ -61,7 +62,7 @@ public class ResultTypeConfig {
     public void setParams(Map params) {
         this.params = params;
     }
-    
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
