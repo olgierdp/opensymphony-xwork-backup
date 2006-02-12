@@ -7,15 +7,14 @@ package com.opensymphony.xwork;
 import com.opensymphony.xwork.util.LocalizedTextUtil;
 import com.opensymphony.xwork.util.OgnlValueStack;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 /**
  * Default TextProvider implementation.
  *
  * @author Jason Carreira
+ * @author Rainer Hermanns
  */
 public class TextProviderSupport implements TextProvider {
 
@@ -47,7 +46,7 @@ public class TextProviderSupport implements TextProvider {
      * @return value of named text
      */
     public String getText(String aTextName) {
-        return getText(aTextName, aTextName, null);
+        return getText(aTextName, aTextName, Collections.EMPTY_LIST);
     }
 
     /**
@@ -63,7 +62,25 @@ public class TextProviderSupport implements TextProvider {
      * @return value of named text
      */
     public String getText(String aTextName, String defaultValue) {
-        return getText(aTextName, defaultValue, null);
+        return getText(aTextName, defaultValue, Collections.EMPTY_LIST);
+    }
+
+    /**
+     * Get a text from the resource bundles associated with this action.
+     * The resource bundles are searched, starting with the one associated
+     * with this particular action, and testing all its superclasses' bundles.
+     * It will stop once a bundle is found that contains the given text. This gives
+     * a cascading style that allow global texts to be defined for an application base
+     * class. If no text is found for this text name, the default value is returned.
+     *
+     * @param aTextName    name of text to be found
+     * @param defaultValue the default value which will be returned if no text is found
+     * @return value of named text
+     */
+    public String getText(String aTextName, String defaultValue, String obj) {
+        List args = new ArrayList();
+        args.add(obj);
+        return getText(aTextName, defaultValue, args);
     }
 
     /**
@@ -90,17 +107,54 @@ public class TextProviderSupport implements TextProvider {
      * a cascading style that allow global texts to be defined for an application base
      * class. If no text is found for this text name, the default value is returned.
      *
+     * @param key name of text to be found
+     * @param args      an array of args to be used in a MessageFormat message
+     * @return value of named text
+     */
+    public String getText(String key, String[] args) {
+        return getText(key, key, args);
+    }
+
+    /**
+     * Get a text from the resource bundles associated with this action.
+     * The resource bundles are searched, starting with the one associated
+     * with this particular action, and testing all its superclasses' bundles.
+     * It will stop once a bundle is found that contains the given text. This gives
+     * a cascading style that allow global texts to be defined for an application base
+     * class. If no text is found for this text name, the default value is returned.
+     *
      * @param aTextName    name of text to be found
      * @param defaultValue the default value which will be returned if no text is found
      * @param args         a List of args to be used in a MessageFormat message
      * @return value of named text
      */
     public String getText(String aTextName, String defaultValue, List args) {
-        Object[] argsArray = ((args != null) ? args.toArray() : null);
+        Object[] argsArray = ((args != null && !args.equals(Collections.EMPTY_LIST)) ? args.toArray() : null);
         if (clazz != null) {
             return LocalizedTextUtil.findText(clazz, aTextName, getLocale(), defaultValue, argsArray);
         } else {
             return LocalizedTextUtil.findText(bundle, aTextName, getLocale(), defaultValue, argsArray);
+        }
+    }
+
+    /**
+     * Get a text from the resource bundles associated with this action.
+     * The resource bundles are searched, starting with the one associated
+     * with this particular action, and testing all its superclasses' bundles.
+     * It will stop once a bundle is found that contains the given text. This gives
+     * a cascading style that allow global texts to be defined for an application base
+     * class. If no text is found for this text name, the default value is returned.
+     *
+     * @param key          name of text to be found
+     * @param defaultValue the default value which will be returned if no text is found
+     * @param args         an array of args to be used in a MessageFormat message
+     * @return value of named text
+     */
+    public String getText(String key, String defaultValue, String[] args) {
+        if (clazz != null) {
+            return LocalizedTextUtil.findText(clazz, key, getLocale(), defaultValue, args);
+        } else {
+            return LocalizedTextUtil.findText(bundle, key, getLocale(), defaultValue, args);
         }
     }
 
@@ -127,6 +181,32 @@ public class TextProviderSupport implements TextProvider {
         } else {
             return LocalizedTextUtil.findText(bundle, aTextName, locale, defaultValue, argsArray, stack);
         }
+    }
+
+
+    /**
+     * Gets a message based on a key using the supplied args, as defined in
+     * {@link java.text.MessageFormat}, or, if the message is not found, a supplied
+     * default value is returned. Instead of using the value stack in the ActionContext
+     * this version of the getText() method uses the provided value stack.
+     *
+     * @param key          the resource bundle key that is to be searched for
+     * @param defaultValue the default value which will be returned if no message is found
+     * @param args         an array args to be used in a {@link java.text.MessageFormat} message
+     * @param stack        the value stack to use for finding the text
+     * @return the message as found in the resource bundle, or defaultValue if none is found
+     */
+    public String getText(String key, String defaultValue, String[] args, OgnlValueStack stack) {
+        Locale locale = (Locale) stack.getContext().get(ActionContext.LOCALE);
+        if (locale == null) {
+            locale = getLocale();
+        }
+        if (clazz != null) {
+            return LocalizedTextUtil.findText(clazz, key, locale, defaultValue, args, stack);
+        } else {
+            return LocalizedTextUtil.findText(bundle, key, locale, defaultValue, args, stack);
+        }
+
     }
 
     /**

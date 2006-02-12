@@ -79,12 +79,24 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
         return textProvider.getText(aTextName, defaultValue);
     }
 
+    public String getText(String aTextName, String defaultValue, String obj) {
+        return textProvider.getText(aTextName, defaultValue, obj);
+    }
+
     public String getText(String aTextName, List args) {
         return textProvider.getText(aTextName, args);
     }
 
+    public String getText(String key, String[] args) {
+        return textProvider.getText(key, args);
+    }
+
     public String getText(String aTextName, String defaultValue, List args) {
         return textProvider.getText(aTextName, defaultValue, args);
+    }
+
+    public String getText(String key, String defaultValue, String[] args) {
+        return textProvider.getText(key, defaultValue, args);
     }
 
     public ResourceBundle getTexts(String aBundleName) {
@@ -94,6 +106,11 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
     public String getText(String key, String defaultValue, List args, OgnlValueStack stack) {
         return textProvider.getText(key, defaultValue, args, stack);
     }
+
+    public String getText(String key, String defaultValue, String[] args, OgnlValueStack stack) {
+        return textProvider.getText(key, defaultValue, args, stack);
+    }
+
 
     public ResourceBundle getTexts() {
         return textProvider.getTexts();

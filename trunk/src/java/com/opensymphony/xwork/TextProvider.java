@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
  * use the {@link LocaleProvider} interface to get the users configured locale.
  *
  * @author Jason Carreira
- *         Created Feb 10, 2003 9:55:48 AM
+ * @author Rainer Hermanns
  * @see LocaleProvider
  * @see TextProviderSupport
  */
@@ -49,6 +49,18 @@ public interface TextProvider {
     String getText(String key, String defaultValue);
 
     /**
+     * Gets a message based on a key using the supplied obj, as defined in
+     * {@link java.text.MessageFormat}, or, if the message is not found, a supplied
+     * default value is returned.
+     *
+     * @param key          the resource bundle key that is to be searched for
+     * @param defaultValue the default value which will be returned if no message is found
+     * @param obj          obj to be used in a {@link java.text.MessageFormat} message
+     * @return the message as found in the resource bundle, or defaultValue if none is found
+     */
+    String getText(String key, String defaultValue, String obj);
+
+    /**
      * Gets a message based on a key using the supplied args, as defined in
      * {@link java.text.MessageFormat}, or null if no message is found.
      *
@@ -57,6 +69,15 @@ public interface TextProvider {
      * @return the message as found in the resource bundle, or null if none is found.
      */
     String getText(String key, List args);
+    /**
+     * Gets a message based on a key using the supplied args, as defined in
+     * {@link java.text.MessageFormat}, or null if no message is found.
+     *
+     * @param key  the resource bundle key that is to be searched for
+     * @param args an array args to be used in a {@link java.text.MessageFormat} message
+     * @return the message as found in the resource bundle, or null if none is found.
+     */
+    String getText(String key, String[] args);
 
     /**
      * Gets a message based on a key using the supplied args, as defined in
@@ -73,6 +94,18 @@ public interface TextProvider {
     /**
      * Gets a message based on a key using the supplied args, as defined in
      * {@link java.text.MessageFormat}, or, if the message is not found, a supplied
+     * default value is returned.
+     *
+     * @param key          the resource bundle key that is to be searched for
+     * @param defaultValue the default value which will be returned if no message is found
+     * @param args         an array args to be used in a {@link java.text.MessageFormat} message
+     * @return the message as found in the resource bundle, or defaultValue if none is found
+     */
+    String getText(String key, String defaultValue, String[] args);
+
+    /**
+     * Gets a message based on a key using the supplied args, as defined in
+     * {@link java.text.MessageFormat}, or, if the message is not found, a supplied
      * default value is returned. Instead of using the value stack in the ActionContext
      * this version of the getText() method uses the provided value stack.
      *
@@ -83,6 +116,20 @@ public interface TextProvider {
      * @return the message as found in the resource bundle, or defaultValue if none is found
      */
     String getText(String key, String defaultValue, List args, OgnlValueStack stack);
+
+    /**
+     * Gets a message based on a key using the supplied args, as defined in
+     * {@link java.text.MessageFormat}, or, if the message is not found, a supplied
+     * default value is returned. Instead of using the value stack in the ActionContext
+     * this version of the getText() method uses the provided value stack.
+     *
+     * @param key          the resource bundle key that is to be searched for
+     * @param defaultValue the default value which will be returned if no message is found
+     * @param args         an array args to be used in a {@link java.text.MessageFormat} message
+     * @param stack        the value stack to use for finding the text
+     * @return the message as found in the resource bundle, or defaultValue if none is found
+     */
+    String getText(String key, String defaultValue, String[] args, OgnlValueStack stack);
 
     /**
      * Get the named bundle, such as "com/acme/Foo".
