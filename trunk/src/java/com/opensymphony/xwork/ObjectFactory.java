@@ -209,9 +209,9 @@ public class ObjectFactory {
         }
 
         public Class loadClass(String name) throws ClassNotFoundException {
-            Class aClass = parent.loadClass(name);
             if (validName(name)) {
-                if (findLoadedClass(name) == null) {
+                Class clazz = findLoadedClass(name);
+                if (clazz == null) {
                     try {
                         byte[] bytes = ClassByteUtil.getBytes(name, parent);
                         if (bytes == null) {
@@ -221,25 +221,23 @@ public class ObjectFactory {
                         byte[] resume_bytes = ContinuationInstrumentor.instrument(bytes, name, false);
 
                         if (resume_bytes == null) {
-                            return aClass;
+                            return parent.loadClass(name);
                         } else {
                             return defineClass(name, resume_bytes, 0, resume_bytes.length);
                         }
                     } catch (IOException e) {
                         throw new RuntimeException("Continuation error", e);
                     }
+                } else {
+                    return clazz;
                 }
+            } else {
+                return parent.loadClass(name);
             }
-
-            return aClass;
         }
 
         private boolean validName(String name) {
-            if (name.startsWith(base + ".")) {
-                return true;
-            } else {
-                return false;
-            }
+            return name.startsWith(base + ".");
         }
     }
 }
