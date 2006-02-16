@@ -106,6 +106,7 @@
         <copy file="${build}/${name}-src-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-src-${version}-SNAPSHOT.jar"/>
 
         <!-- xwork-tiger -->
+        <copy file="tiger/pom.xml" tofile="/opt/repository/ibiblio.org/opensymphony/poms/${name}-tiger-${version}-SNAPSHOT.pom"/>
         <copy file="${build}/${name}-tiger-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-tiger-${version}-SNAPSHOT.jar"/>
         <copy file="${build}/${name}-tiger-src-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-tiger-src-${version}-SNAPSHOT.jar"/>
     </target>
