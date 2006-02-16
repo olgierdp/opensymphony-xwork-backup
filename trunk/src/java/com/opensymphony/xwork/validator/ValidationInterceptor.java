@@ -6,6 +6,7 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.interceptor.AroundInterceptor;
+import com.opensymphony.xwork.interceptor.MethodFilterInterceptor;
 import com.opensymphony.xwork.util.TextParseUtil;
 
 import java.util.Collections;
@@ -69,32 +70,18 @@ import java.util.Set;
  *
  * @author Jason Carreira
  * @author Rainer Hermanns
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  * @see ActionValidatorManager
  * @see com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor
  */
-public class ValidationInterceptor extends AroundInterceptor {
-
-    Set excludeMethods = Collections.EMPTY_SET;
-    Set includeMethods = Collections.EMPTY_SET;
-
-    public void setExcludeMethods(String excludeMethods) {
-        this.excludeMethods = TextParseUtil.commaDelimitedStringToSet(excludeMethods);
-    }
-
-    public void setIncludeMethods(String includeMethods) {
-        this.includeMethods = TextParseUtil.commaDelimitedStringToSet(includeMethods);
-    }
-
-    protected void after(ActionInvocation dispatcher, String result) throws Exception {
-    }
-
+public class ValidationInterceptor extends MethodFilterInterceptor {
     /**
      * Gets the current action and its context and calls {@link DefaultActionValidatorManager#validate(Object, String)}.
      *
      * @param invocation the execution state of the Action.
      * @throws Exception if an error occurs validating the action.
      */
-    protected void before(ActionInvocation invocation) throws Exception {
+    protected void doBeforeInvocation(ActionInvocation invocation) throws Exception {
     	String method = invocation.getProxy().getMethod();
         if (excludeMethods.contains(method) && !includeMethods.contains(method)) {
             log.debug("Skipping validation. Method ["+method+"] found in exclude list.");
@@ -114,4 +101,12 @@ public class ValidationInterceptor extends AroundInterceptor {
         }
     }
 
+    /**
+     * @see com.opensymphony.xwork.interceptor.MethodFilterInterceptor#doIntercept(com.opensymphony.xwork.ActionInvocation)
+     */
+    protected String doIntercept(ActionInvocation invocation) throws Exception {
+        doBeforeInvocation(invocation);
+        
+        return invocation.invoke();
+    }
 }

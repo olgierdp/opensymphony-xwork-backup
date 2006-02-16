@@ -82,52 +82,28 @@ import java.util.Set;
  *
  * @author Jason Carreira
  * @author Rainer Hermanns
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
-public class DefaultWorkflowInterceptor implements Interceptor {
+public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
+    /**
+     * @see com.opensymphony.xwork.interceptor.MethodFilterInterceptor#doIntercept(com.opensymphony.xwork.ActionInvocation)
+     */
+    protected String doIntercept(ActionInvocation invocation) throws Exception {
+        Object action = invocation.getAction();
 
-    protected static final Log log = LogFactory.getLog(DefaultWorkflowInterceptor.class);
-
-    Set excludeMethods = Collections.EMPTY_SET;
-    Set includeMethods = Collections.EMPTY_SET;
-
-    public void setExcludeMethods(String excludeMethods) {
-        this.excludeMethods = TextParseUtil.commaDelimitedStringToSet(excludeMethods);
-    }
-
-    public void setIncludeMethods(String includeMethods) {
-        this.includeMethods = TextParseUtil.commaDelimitedStringToSet(includeMethods);
-    }
-
-    public String intercept(ActionInvocation invocation) throws Exception {
-    	String method = invocation.getProxy().getMethod();
-        if (excludeMethods.contains(method) && !includeMethods.contains(method)) {
-            log.debug("Skipping workflow. Method ["+method+"] found in exclude list.");
-            return invocation.invoke();
+        if (action instanceof Validateable) {
+            Validateable validateable = (Validateable) action;
+            validateable.validate();
         }
 
-        if ( includeMethods.size() == 0 || includeMethods.contains(method) ) {
-            Object action = invocation.getAction();
+        if (action instanceof ValidationAware) {
+            ValidationAware validationAwareAction = (ValidationAware) action;
 
-            if (action instanceof Validateable) {
-                Validateable validateable = (Validateable) action;
-                validateable.validate();
-            }
-
-            if (action instanceof ValidationAware) {
-                ValidationAware validationAwareAction = (ValidationAware) action;
-
-                if (validationAwareAction.hasErrors()) {
-                    return Action.INPUT;
-                }
+            if (validationAwareAction.hasErrors()) {
+                return Action.INPUT;
             }
         }
 
         return invocation.invoke();
-    }
-
-    public void destroy() {
-    }
-
-    public void init() {
     }
 }
