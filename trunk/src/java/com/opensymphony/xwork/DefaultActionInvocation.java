@@ -251,9 +251,9 @@ public class DefaultActionInvocation implements ActionInvocation {
                 ContinuationContext context = m.getContext(id);
                 if (context != null) {
                     ContinuationContext.setContext(context);
-                    // copy over the values
+                    // use the original action instead
                     Object original = context.getContinuable();
-                    OgnlUtil.copy(original, action, getStack().getContext());
+                    action = original;
                 }
             }
         } catch (CloneNotSupportedException e) {
