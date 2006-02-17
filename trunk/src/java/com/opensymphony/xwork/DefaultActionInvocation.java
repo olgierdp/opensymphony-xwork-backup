@@ -238,7 +238,10 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     private void prepareContinuation() {
         if (action instanceof ContinuableObject) {
-            ContinuationContext.createInstance((ContinuableObject) action);
+            ContinuationContext ctx = ContinuationContext.createInstance((ContinuableObject) action);
+            if (action instanceof NonCloningContinuableObject) {
+                ctx.setShouldClone(false);
+            }
         }
 
         try {
