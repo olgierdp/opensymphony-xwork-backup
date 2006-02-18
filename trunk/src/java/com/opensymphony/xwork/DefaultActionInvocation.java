@@ -150,12 +150,17 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     public Result createResult() throws Exception {
+
         ActionConfig config = proxy.getConfig();
         Map results = config.getResults();
 
-        ResultConfig resultConfig;
+        ResultConfig resultConfig = null;
         synchronized (config) {
-            resultConfig = (ResultConfig) results.get(resultCode);
+            try {
+                resultConfig = (ResultConfig) results.get(resultCode);
+            } catch (NullPointerException e) {
+                return null;
+            }
         }
 
         if (resultConfig != null) {
