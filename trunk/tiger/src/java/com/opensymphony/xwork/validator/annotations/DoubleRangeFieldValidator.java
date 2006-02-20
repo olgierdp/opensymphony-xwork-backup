@@ -62,16 +62,28 @@ import java.lang.annotation.RetentionPolicy;
  * <td class='confluenceTd'>Enum value from ValidatorType. Either FIELD or SIMPLE can be used here.</td>
  * </tr>
  * <tr>
- * <td class='confluenceTd'> min </td>
+ * <td class='confluenceTd'> minInclusive </td>
  * <td class='confluenceTd'> no </td>
  * <td class='confluenceTd'>&nbsp;</td>
- * <td class='confluenceTd'> Double property.  The minimum the number must be. </td>
+ * <td class='confluenceTd'> Double property.  The inclusive minimum the number must be. </td>
  * </tr>
  * <tr>
- * <td class='confluenceTd'> max </td>
+ * <td class='confluenceTd'> maxInclusive </td>
  * <td class='confluenceTd'> no </td>
  * <td class='confluenceTd'>&nbsp;</td>
- * <td class='confluenceTd'> Double property.  The maximum number can be. </td>
+ * <td class='confluenceTd'> Double property.  The inclusive maximum number can be. </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> minExclusive </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'> Double property.  The exclusive minimum the number must be. </td>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'> maxExclusive </td>
+ * <td class='confluenceTd'> no </td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'> Double property.  The exclusive maximum number can be. </td>
  * </tr>
  * </table>
  *
