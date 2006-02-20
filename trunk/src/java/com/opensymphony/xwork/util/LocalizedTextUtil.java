@@ -22,6 +22,7 @@ import java.util.*;
  *
  * @author Jason Carreira
  * @author Mark Woon
+ * @author Rainer Hermanns
  */
 public class LocalizedTextUtil {
 
@@ -319,9 +320,10 @@ public class LocalizedTextUtil {
             }
         }
 
+        String result = null;
         // get default
         if (indexedTextName == null) {
-            return getDefaultMessage(aTextName, locale, valueStack, args, defaultMessage);
+            result = getDefaultMessage(aTextName, locale, valueStack, args, defaultMessage);
         } else {
             msg = getDefaultMessage(aTextName, locale, valueStack, args, null);
 
@@ -329,8 +331,12 @@ public class LocalizedTextUtil {
                 return msg;
             }
 
-            return getDefaultMessage(indexedTextName, locale, valueStack, args, defaultMessage);
+            result = getDefaultMessage(indexedTextName, locale, valueStack, args, defaultMessage);
         }
+        if ( result != null && result.equals(defaultMessage)) {
+            LOG.warn("Unable to find text for key " + aTextName);
+        }
+        return result;
     }
 
     /**
@@ -371,7 +377,11 @@ public class LocalizedTextUtil {
         } catch (MissingResourceException ex) {
         }
 
-        return getDefaultMessage(aTextName, locale, valueStack, args, defaultMessage);
+        String result = getDefaultMessage(aTextName, locale, valueStack, args, defaultMessage);
+        if ( result != null && result.equals(defaultMessage)) {
+            LOG.warn("Unable to find text for key " + aTextName);
+        }
+        return result;
     }
 
     /**
@@ -382,8 +392,6 @@ public class LocalizedTextUtil {
             String message = findDefaultText(key, locale);
 
             if (message == null) {
-                LOG.warn("Unable to find text for key " + key);
-
                 message = defaultMessage;
             }
 
