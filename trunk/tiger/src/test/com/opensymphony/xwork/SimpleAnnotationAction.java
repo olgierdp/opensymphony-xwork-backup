@@ -74,7 +74,7 @@ public class SimpleAnnotationAction extends ActionSupport {
         return percentage;
     }
 
-    @DoubleRangeFieldValidator(min = "0.123", key = "baz.range", message = "Could not find percentage.range!")
+    @DoubleRangeFieldValidator(minInclusive = "0.123", key = "baz.range", message = "Could not find percentage.range!")
     public void setPercentage(double percentage) {
         this.percentage = percentage;
     }

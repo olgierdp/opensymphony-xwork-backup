@@ -84,7 +84,7 @@ import java.lang.annotation.RetentionPolicy;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * @DoubleRangeFieldValidator(message = "Default message", key = "i18n.key", shortCircuit = true, min = "0.123", max = "99.987")
+ * @DoubleRangeFieldValidator(message = "Default message", key = "i18n.key", shortCircuit = true, minInclusive = "0.123", maxInclusive = "99.987")
  * <!-- END SNIPPET: example -->
  * </pre>
  *
@@ -96,14 +96,24 @@ import java.lang.annotation.RetentionPolicy;
 public @interface DoubleRangeFieldValidator {
 
     /**
-     *  Double property. The minimum the number must be.
+     *  Double property. The inclusive minimum the number must be.
      */
-    String min() default "";
+    String minInclusive() default "";
 
     /**
-     *  Double property. The maximum number can be.
+     *  Double property. The inclusive minimum the number must be.
      */
-    String max() default "";
+    String maxInclusive() default "";
+
+    /**
+     *  Double property. The exclusive maximum number can be.
+     */
+    String minExclusive() default "";
+
+    /**
+     *  Double property. The exclusive maximum number can be.
+     */
+    String maxExclusive() default "";
 
     /**
      * The default error message for this validator.

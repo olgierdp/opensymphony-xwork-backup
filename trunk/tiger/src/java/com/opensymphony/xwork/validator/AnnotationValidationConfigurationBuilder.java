@@ -645,11 +645,18 @@ public class AnnotationValidationConfigurationBuilder {
             params.put("fieldName", v.fieldName());
         }
 
-        if ( v.min() != null && v.min().length() > 0) {
-            params.put("min", v.min());
+        if ( v.minInclusive() != null && v.minInclusive().length() > 0) {
+            params.put("minInclusive", v.minInclusive());
         }
-        if ( v.max() != null && v.max().length() > 0) {
-            params.put("max", v.max());
+        if ( v.maxInclusive() != null && v.maxInclusive().length() > 0) {
+            params.put("maxInclusive", v.maxInclusive());
+        }
+
+        if ( v.minExclusive() != null && v.minExclusive().length() > 0) {
+            params.put("minExclusive", v.minExclusive());
+        }
+        if ( v.maxExclusive() != null && v.maxExclusive().length() > 0) {
+            params.put("maxExclusive", v.maxExclusive());
         }
 
         ValidatorFactory.lookupRegisteredValidatorType(validatorType);
