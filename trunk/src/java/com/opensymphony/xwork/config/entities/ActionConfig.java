@@ -38,8 +38,8 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
 
 
     public ActionConfig() {
-        params = new TreeMap();
-        results = new TreeMap();
+        params = new LinkedHashMap();
+        results = new LinkedHashMap();
         interceptors = new ArrayList();
         externalRefs = new ArrayList();
         exceptionMappings = new ArrayList();
@@ -138,7 +138,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
 
     public Map getParams() {
         if (params == null) {
-            params = new TreeMap();
+            params = new LinkedHashMap();
         }
 
         return params;
@@ -150,7 +150,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
 
     public Map getResults() {
         if (results == null) {
-            results = new TreeMap();
+            results = new LinkedHashMap();
         }
 
         return results;

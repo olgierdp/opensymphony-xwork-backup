@@ -6,6 +6,7 @@ package com.opensymphony.xwork.config.entities;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.LinkedHashMap;
 import java.io.Serializable;
 
 
@@ -24,11 +25,11 @@ public class ResultConfig implements Parameterizable, Serializable {
 
 
     public ResultConfig() {
-        params = new TreeMap();
+        params = new LinkedHashMap();
     }
 
     public ResultConfig(String name, Class clazz) {
-        this(name, clazz, new TreeMap());
+        this(name, clazz, new LinkedHashMap());
     }
 
     public ResultConfig(String name, Class clazz, Map params) {
@@ -66,7 +67,7 @@ public class ResultConfig implements Parameterizable, Serializable {
 
     public Map getParams() {
         if (params == null) {
-            params = new TreeMap();
+            params = new LinkedHashMap();
         }
 
         return params;

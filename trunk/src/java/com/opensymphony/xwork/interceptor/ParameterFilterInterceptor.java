@@ -6,32 +6,28 @@
  */
 package com.opensymphony.xwork.interceptor;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.opensymphony.xwork.ActionInvocation;
+
+import java.util.*;
 
 /**
  * @author Gabe
  *
- * Filters parameters
+ *         Filters parameters
  */
 public class ParameterFilterInterceptor implements Interceptor {
 
     private Collection allowed;
-    
+
     private Collection blocked;
-    
-    private TreeMap includesExcludesMap;
-    
-    private boolean defaultBlock=false;
-    
+
+    private Map includesExcludesMap;
+
+    private boolean defaultBlock = false;
+
     /* (non-Javadoc)
-     * @see com.opensymphony.xwork.interceptor.Interceptor#destroy()
-     */
+    * @see com.opensymphony.xwork.interceptor.Interceptor#destroy()
+    */
     public void destroy() {
     }
 
@@ -45,29 +41,29 @@ public class ParameterFilterInterceptor implements Interceptor {
      * @see com.opensymphony.xwork.interceptor.Interceptor#intercept(com.opensymphony.xwork.ActionInvocation)
      */
     public String intercept(ActionInvocation invocation) throws Exception {
-        
-        Map parameters=invocation.getInvocationContext().getParameters();
-        HashSet paramsToRemove=new HashSet();
-        
-        TreeMap includesExcludesMap=getIncludesExcludesMap();
-        
-        for (Iterator i=parameters.keySet().iterator();i.hasNext(); ) {
-            
-            String param=(String)i.next();
-            
-            boolean currentAllowed=!isDefaultBlock();
-            
-            boolean foundApplicableRule=false;
-            for (Iterator j=includesExcludesMap.keySet().iterator(); j.hasNext(); ) {
-                String currRule=(String)j.next();
-                
+
+        Map parameters = invocation.getInvocationContext().getParameters();
+        HashSet paramsToRemove = new HashSet();
+
+        Map includesExcludesMap = getIncludesExcludesMap();
+
+        for (Iterator i = parameters.keySet().iterator(); i.hasNext();) {
+
+            String param = (String) i.next();
+
+            boolean currentAllowed = !isDefaultBlock();
+
+            boolean foundApplicableRule = false;
+            for (Iterator j = includesExcludesMap.keySet().iterator(); j.hasNext();) {
+                String currRule = (String) j.next();
+
                 if (param.startsWith(currRule)
-                        && (param.length()==currRule.length()
-                                || isPropSeperator(param.charAt(currRule.length())))) {
-                    currentAllowed=((Boolean)includesExcludesMap.get(currRule)).booleanValue();
-                }	else {
+                        && (param.length() == currRule.length()
+                        || isPropSeperator(param.charAt(currRule.length())))) {
+                    currentAllowed = ((Boolean) includesExcludesMap.get(currRule)).booleanValue();
+                } else {
                     if (foundApplicableRule) {
-                        foundApplicableRule=false;
+                        foundApplicableRule = false;
                         break;
                     }
                 }
@@ -76,94 +72,99 @@ public class ParameterFilterInterceptor implements Interceptor {
                 paramsToRemove.add(param);
             }
         }
-        for (Iterator i=paramsToRemove.iterator(); i.hasNext();) {
-            parameters.remove(i.next()); 
+        for (Iterator i = paramsToRemove.iterator(); i.hasNext();) {
+            parameters.remove(i.next());
         }
-        
+
         return invocation.invoke();
     }
-    
+
     /**
      * @param c
      * @return <tt>true</tt>, if char is property separator, <tt>false</tt> otherwise.
      */
     private boolean isPropSeperator(char c) {
-        return c=='.' || c=='(' || c=='[';
+        return c == '.' || c == '(' || c == '[';
     }
 
-    private TreeMap getIncludesExcludesMap() {
-        if (this.includesExcludesMap==null) {
-            this.includesExcludesMap=new TreeMap();
-            
-            if (getAllowed()!=null) {
-	            for (Iterator i=getAllowed().iterator();i.hasNext(); ) {
-	                this.includesExcludesMap.put(i.next(), Boolean.TRUE);
-	            }
+    private Map getIncludesExcludesMap() {
+        if (this.includesExcludesMap == null) {
+            this.includesExcludesMap = new TreeMap();
+
+            if (getAllowed() != null) {
+                for (Iterator i = getAllowed().iterator(); i.hasNext();) {
+                    this.includesExcludesMap.put(i.next(), Boolean.TRUE);
+                }
             }
-            if (getBlocked()!=null) {
-	            for (Iterator i=getBlocked().iterator();i.hasNext(); ) {
-	                this.includesExcludesMap.put(i.next(), Boolean.FALSE);
-	            }  
+            if (getBlocked() != null) {
+                for (Iterator i = getBlocked().iterator(); i.hasNext();) {
+                    this.includesExcludesMap.put(i.next(), Boolean.FALSE);
+                }
             }
         }
-        
+
         return this.includesExcludesMap;
     }
-    
+
     /**
      * @return Returns the defaultBlock.
      */
     public boolean isDefaultBlock() {
         return defaultBlock;
     }
+
     /**
      * @param defaultExclude The defaultExclude to set.
      */
     public void setDefaultBlock(boolean defaultExclude) {
         this.defaultBlock = defaultExclude;
     }
+
     /**
      * @return Returns the blocked.
      */
     public Collection getBlocked() {
         return blocked;
     }
+
     /**
      * @param blocked The blocked to set.
      */
     public void setBlocked(Collection blocked) {
         this.blocked = blocked;
     }
-    
+
     public void setBlocked(String blocked) {
         setBlocked(asCollection(blocked));
     }
+
     /**
      * @return Returns the allowed.
      */
     public Collection getAllowed() {
         return allowed;
     }
+
     /**
      * @param allowed The allowed to set.
      */
     public void setAllowed(Collection allowed) {
         this.allowed = allowed;
     }
-    
+
     public void setAllowed(String allowed) {
-        
+
         setAllowed(asCollection(allowed));
     }
-    
+
     private Collection asCollection(String commaDelim) {
-        if (commaDelim==null || commaDelim.trim().length()==0) {
+        if (commaDelim == null || commaDelim.trim().length() == 0) {
             return null;
         }
-        String [] splitString=commaDelim.split(",");
-        
-        HashSet set=new HashSet();
-        for (int i=0; i<splitString.length;i++) {
+        String [] splitString = commaDelim.split(",");
+
+        HashSet set = new HashSet();
+        for (int i = 0; i < splitString.length; i++) {
             set.add(splitString[i].trim());
         }
         return set;

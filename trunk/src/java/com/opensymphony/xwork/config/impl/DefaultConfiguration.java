@@ -27,7 +27,7 @@ public class DefaultConfiguration implements Configuration {
 
 
     // Programmatic Action Conifigurations
-    private Map packageContexts = new TreeMap();
+    private Map packageContexts = new LinkedHashMap();
     private RuntimeConfiguration runtimeConfiguration;
 
 
@@ -100,8 +100,8 @@ public class DefaultConfiguration implements Configuration {
      * programmatic configuration data structures. All of the old runtime configuration will be discarded and rebuilt.
      */
     protected synchronized RuntimeConfiguration buildRuntimeConfiguration() throws ConfigurationException {
-        Map namespaceActionConfigs = new TreeMap();
-        Map namespaceConfigs = new TreeMap();
+        Map namespaceActionConfigs = new LinkedHashMap();
+        Map namespaceConfigs = new LinkedHashMap();
 
         for (Iterator iterator = packageContexts.values().iterator();
              iterator.hasNext();) {
@@ -112,7 +112,7 @@ public class DefaultConfiguration implements Configuration {
                 Map configs = (Map) namespaceActionConfigs.get(namespace);
 
                 if (configs == null) {
-                    configs = new TreeMap();
+                    configs = new LinkedHashMap();
                 }
 
                 Map actionConfigs = packageContext.getAllActionConfigs();
@@ -169,7 +169,7 @@ public class DefaultConfiguration implements Configuration {
             String defaultInterceptorRefName = packageContext.getFullDefaultInterceptorRef();
 
             if (defaultInterceptorRefName != null) {
-                interceptors.addAll(InterceptorBuilder.constructInterceptorReference(packageContext, defaultInterceptorRefName, new TreeMap()));
+                interceptors.addAll(InterceptorBuilder.constructInterceptorReference(packageContext, defaultInterceptorRefName, new LinkedHashMap()));
             }
         }
 

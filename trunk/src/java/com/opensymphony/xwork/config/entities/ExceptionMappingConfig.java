@@ -2,6 +2,7 @@ package com.opensymphony.xwork.config.entities;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.LinkedHashMap;
 import java.io.Serializable;
 
 /**
@@ -22,7 +23,7 @@ public class ExceptionMappingConfig implements Serializable {
     }
 
     public ExceptionMappingConfig(String name, String exceptionClassName, String result) {
-        this(name, exceptionClassName, result, new TreeMap());
+        this(name, exceptionClassName, result, new LinkedHashMap());
     }
 
     public ExceptionMappingConfig(String name, String exceptionClassName, String result, Map params) {
@@ -58,7 +59,7 @@ public class ExceptionMappingConfig implements Serializable {
 
     public Map getParams() {
         if (params == null) {
-            params = new TreeMap();
+            params = new LinkedHashMap();
         }
 
         return params;

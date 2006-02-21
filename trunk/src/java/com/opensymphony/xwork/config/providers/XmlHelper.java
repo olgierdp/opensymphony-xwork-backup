@@ -10,6 +10,7 @@ import org.w3c.dom.NodeList;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.LinkedHashMap;
 
 
 /**
@@ -22,7 +23,7 @@ import java.util.TreeMap;
 public class XmlHelper {
 
     public static Map getParams(Element paramsElement) {
-        TreeMap params = new TreeMap();
+        LinkedHashMap params = new LinkedHashMap();
 
         if (paramsElement == null) {
             return params;

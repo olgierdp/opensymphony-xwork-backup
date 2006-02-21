@@ -23,10 +23,10 @@ public class PackageConfig implements Comparable, Serializable {
 
 
     private ExternalReferenceResolver externalRefResolver = null;
-    private Map actionConfigs = new TreeMap();
-    private Map globalResultConfigs = new TreeMap();
-    private Map interceptorConfigs = new TreeMap();
-    private Map resultTypeConfigs = new TreeMap();
+    private Map actionConfigs = new LinkedHashMap();
+    private Map globalResultConfigs = new LinkedHashMap();
+    private Map interceptorConfigs = new LinkedHashMap();
+    private Map resultTypeConfigs = new LinkedHashMap();
     private List globalExceptionMappingConfigs = new ArrayList();
     private Set parents = new HashSet();
     private String defaultInterceptorRef;
@@ -83,7 +83,7 @@ public class PackageConfig implements Comparable, Serializable {
      * @see ActionConfig
      */
     public Map getAllActionConfigs() {
-        Map retMap = new TreeMap();
+        Map retMap = new LinkedHashMap();
 
         if (!parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
@@ -105,7 +105,7 @@ public class PackageConfig implements Comparable, Serializable {
      * @see ResultConfig
      */
     public Map getAllGlobalResults() {
-        Map retMap = new TreeMap();
+        Map retMap = new LinkedHashMap();
 
         if (!parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
@@ -128,7 +128,7 @@ public class PackageConfig implements Comparable, Serializable {
      * @see InterceptorStackConfig
      */
     public Map getAllInterceptorConfigs() {
-        Map retMap = new TreeMap();
+        Map retMap = new LinkedHashMap();
 
         if (!parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
@@ -150,7 +150,7 @@ public class PackageConfig implements Comparable, Serializable {
      * @see ResultTypeConfig
      */
     public Map getAllResultTypeConfigs() {
-        Map retMap = new TreeMap();
+        Map retMap = new LinkedHashMap();
 
         if (!parents.isEmpty()) {
             for (Iterator iterator = parents.iterator(); iterator.hasNext();) {

@@ -400,7 +400,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     protected Map buildResults(Element element, PackageConfig packageContext) {
         NodeList resultEls = element.getElementsByTagName("result");
 
-        Map results = new TreeMap();
+        Map results = new LinkedHashMap();
 
         for (int i = 0; i < resultEls.getLength(); i++) {
             Element resultElement = (Element) resultEls.item(i);
@@ -446,7 +446,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     // if <result ...>something</result> then we add a parameter of 'something' as this is the most used result param
                     if ((resultElement.getChildNodes().getLength() == 1) && (resultElement.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE))
                     {
-                        resultParams = new TreeMap();
+                        resultParams = new LinkedHashMap();
 
                         try {
                             String paramName = (String) resultClass.getField("DEFAULT_PARAM").get(null);
@@ -461,7 +461,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
 
                 // create new param map, so that the result param can override the config param
-                Map params = new TreeMap();
+                Map params = new LinkedHashMap();
                 Map configParams = config.getParams();
                 if (configParams != null) {
                     params.putAll(configParams);
