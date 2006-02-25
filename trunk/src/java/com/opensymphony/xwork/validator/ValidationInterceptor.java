@@ -94,7 +94,7 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
 
             if (log.isDebugEnabled()) {
                 log.debug("Validating "
-                        + invocation.getProxy().getNamespace() + "/" + invocation.getProxy().getActionName() + ".");
+                        + invocation.getProxy().getNamespace() + "/" + invocation.getProxy().getActionName() + " with method "+invocation.getProxy().getMethod()+".");
             }
 
             ActionValidatorManagerFactory.getInstance().validate(action, context);
