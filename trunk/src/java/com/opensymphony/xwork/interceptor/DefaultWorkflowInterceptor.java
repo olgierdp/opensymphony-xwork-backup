@@ -96,7 +96,9 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 
         if (action instanceof Validateable) {
             Validateable validateable = (Validateable) action;
-            _log.debug("invoking validate() on action "+validateable);
+            if (_log.isDebugEnabled()) {
+            	_log.debug("invoking validate() on action "+validateable);
+            }
             validateable.validate();
         }
 
@@ -104,7 +106,9 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
             ValidationAware validationAwareAction = (ValidationAware) action;
 
             if (validationAwareAction.hasErrors()) {
-            	_log.debug("errors on action "+validationAwareAction+", returning result name 'input'");
+            	if (_log.isDebugEnabled()) {
+            		_log.debug("errors on action "+validationAwareAction+", returning result name 'input'");
+            	}
                 return Action.INPUT;
             }
         }
