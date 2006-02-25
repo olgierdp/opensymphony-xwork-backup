@@ -14,7 +14,23 @@ import com.opensymphony.xwork.util.TextParseUtil;
  * An abstract <code>Interceptor</code> that is applied to selectively according
  * to specified included/excluded method lists.
  * 
+ * <p/>
+ * 
+ * Setable parameters are as follows:
+ * 
+ * <ul>
+ * 		<li>excludeMethods - methods name to be excluded</li>
+ * 		<li>includeMethods - methods name to be included</li>
+ * </ul>
+ * 
+ * <p/>
+ * 
+ * <b>NOTE:</b> If method name are available in both includeMethods and 
+ * excludeMethods, it will still be considered as an included method. In short
+ * includeMethods takes precedence over excludeMethods.
+ * 
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
+ * @version $Date$ $Id$
  */
 public abstract class MethodFilterInterceptor implements Interceptor {
     protected transient Log log = LogFactory.getLog(getClass());
