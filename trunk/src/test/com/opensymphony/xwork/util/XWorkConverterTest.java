@@ -85,7 +85,7 @@ public class XWorkConverterTest extends TestCase {
         java.sql.Date sqlDate = new java.sql.Date(System.currentTimeMillis());
         assertEquals(sqlDate, converter.convertValue(context, null, null, null, sqlDate, Date.class));
 
-        SimpleDateFormat format = new SimpleDateFormat("mm/dd/yyyy hh:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
         Date date = format.parse("01/10/2001 00:00:00");
 
         SimpleDateFormat formatt = new SimpleDateFormat("hh:mm:ss");
@@ -101,7 +101,8 @@ public class XWorkConverterTest extends TestCase {
         java.sql.Timestamp ts = (java.sql.Timestamp) converter.convertValue(context, null, null, null, dateStr, java.sql.Timestamp.class);
         assertEquals(date, ts);
         java.sql.Time time1= (java.sql.Time) converter.convertValue(context, null, null, null, datetStr, java.sql.Time.class);
-        assertEquals(datet, time1);    }
+        assertEquals(datet, time1);    
+    }
 
     public void testFieldErrorMessageAddedForComplexProperty() {
         SimpleAction action = new SimpleAction();
@@ -166,6 +167,26 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(value, conversionErrors.get("birth"));
     }
 
+    public void testDateStrictConversion() throws Exception {
+        // see XW-341
+        String dateStr = "13/01/2005"; // us date format is used in context
+        Object res = converter.convertValue(context, null, null, null, dateStr, Date.class);
+        assertEquals(res, OgnlRuntime.NoConversionPossible);
+    	
+        dateStr = "02/30/2005"; // us date format is used in context
+        res = converter.convertValue(context, null, null, null, dateStr, Date.class);
+        assertEquals(res, OgnlRuntime.NoConversionPossible);
+    	
+        // and test a date that is passable
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        dateStr = "12/31/2005"; // us date format
+        res = converter.convertValue(context, null, null, null, dateStr, Date.class);
+        Date date = format.parse(dateStr);
+        assertNotSame(res, OgnlRuntime.NoConversionPossible);
+        assertEquals(date, res);
+    }
+    
+    
     public void testFindConversionErrorMessage() {
         ModelDrivenAction action = new ModelDrivenAction();
         OgnlValueStack stack = new OgnlValueStack();

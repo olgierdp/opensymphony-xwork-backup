@@ -319,6 +319,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             }
 
             try {
+            	df.setLenient(false); // let's use strict parsing (XW-341)
                 result = df.parse(sa);
                 if (! (Date.class == toType)) {
                     try {
