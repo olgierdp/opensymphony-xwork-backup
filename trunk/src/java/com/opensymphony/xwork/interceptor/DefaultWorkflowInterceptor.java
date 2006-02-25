@@ -85,6 +85,9 @@ import java.util.Set;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
+	
+	private static final Log _log = LogFactory.getLog(DefaultWorkflowInterceptor.class);
+	
     /**
      * @see com.opensymphony.xwork.interceptor.MethodFilterInterceptor#doIntercept(com.opensymphony.xwork.ActionInvocation)
      */
@@ -93,6 +96,7 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 
         if (action instanceof Validateable) {
             Validateable validateable = (Validateable) action;
+            _log.debug("invoking validate() on action "+validateable);
             validateable.validate();
         }
 
@@ -100,6 +104,7 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
             ValidationAware validationAwareAction = (ValidationAware) action;
 
             if (validationAwareAction.hasErrors()) {
+            	_log.debug("errors on action "+validationAwareAction+", returning result name 'input'");
                 return Action.INPUT;
             }
         }
