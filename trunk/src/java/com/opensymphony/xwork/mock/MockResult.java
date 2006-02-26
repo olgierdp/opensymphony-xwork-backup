@@ -4,16 +4,12 @@
  */
 package com.opensymphony.xwork.mock;
 
-import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.Result;
-
+import com.opensymphony.xwork.ActionInvocation;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Mike
- * Date: May 6, 2003
- * Time: 5:03:07 PM
- * To change this template use Options | File Templates.
+ * @author Mike
+ * @author Rainer Hermanns
  */
 public class MockResult implements Result {
 
