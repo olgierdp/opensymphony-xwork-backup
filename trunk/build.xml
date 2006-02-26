@@ -76,7 +76,7 @@
         <compile srcdir="tiger/src/java" destdir="tiger/build/java-test" classpathref="junit-tiger.cp" source="1.5" target="1.5"/>
     </target>
 
-    <target name="test" depends="junit-check, clover-check, compile, tiger, test-compile" description="run tests"
+    <target name="test" depends="junit-check, clover-check, compile, test-compile" description="run tests"
             unless="skip.tests">
         <run-junit />
     </target>
