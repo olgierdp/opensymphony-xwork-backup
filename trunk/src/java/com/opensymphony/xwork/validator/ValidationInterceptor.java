@@ -5,13 +5,7 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.interceptor.AroundInterceptor;
 import com.opensymphony.xwork.interceptor.MethodFilterInterceptor;
-import com.opensymphony.xwork.util.TextParseUtil;
-
-import java.util.Collections;
-import java.util.Set;
-
 
 /**
  * <!-- START SNIPPET: description -->
@@ -84,7 +78,9 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
     protected void doBeforeInvocation(ActionInvocation invocation) throws Exception {
     	String method = invocation.getProxy().getMethod();
         if (excludeMethods.contains(method) && !includeMethods.contains(method)) {
-            log.debug("Skipping validation. Method ["+method+"] found in exclude list.");
+            if (log.isDebugEnabled()) {
+                log.debug("Skipping validation. Method ["+method+"] found in exclude list.");
+            }
             return;
         }
 
@@ -101,9 +97,6 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
         }
     }
 
-    /**
-     * @see com.opensymphony.xwork.interceptor.MethodFilterInterceptor#doIntercept(com.opensymphony.xwork.ActionInvocation)
-     */
     protected String doIntercept(ActionInvocation invocation) throws Exception {
         doBeforeInvocation(invocation);
         
