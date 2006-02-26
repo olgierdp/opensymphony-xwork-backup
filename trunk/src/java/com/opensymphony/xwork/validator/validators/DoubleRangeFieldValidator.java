@@ -16,13 +16,13 @@ import com.opensymphony.xwork.validator.ValidationException;
  * <ul>
  *                 <li>fieldName - The field name this validator is validating. Required if using
 Plain-Validator Syntax otherwise not required</li>
- *                 <li>minInclusive - the minimum inclusive value (if none is specified, it will
+ *                 <li>minInclusive - the minimum inclusive value in FloatValue format specified by Java language (if none is specified, it will
 not be checked) </li>
- *                 <li>maxInclusive - the maximum inclusive value (if none is specified, it will
+ *                 <li>maxInclusive - the maximum inclusive value in FloatValue format specified by Java language (if none is specified, it will
 not be checked) </li>
- *                 <li>minExclusive - the minimum exclusive value (if none is specified, it will
+ *                 <li>minExclusive - the minimum exclusive value in FloatValue format specified by Java language (if none is specified, it will
 not be checked) </li>
- *                 <li>maxExclusive - the maximum exclusive value (if none is specified, it will
+ *                 <li>maxExclusive - the maximum exclusive value in FloatValue format specified by Java language (if none is specified, it will
 not be checked) </li> *
  * </ul>
  * <!-- END SNIPPET: parameters -->
@@ -54,14 +54,21 @@ and ${maxExclusive} (exclusive)&lt;/message&gt;
  * </pre>
  *
  * @author Rainer Hermanns
+ * @author Rene Gielen
+ *
  * @version $Id$
  */
 public class DoubleRangeFieldValidator extends FieldValidatorSupport {
     
-    Double maxInclusive = null;
-    Double minInclusive = null;
-    Double minExclusive = null;
-    Double maxExclusive = null;
+    String maxInclusive = null;
+    String minInclusive = null;
+    String minExclusive = null;
+    String maxExclusive = null;
+
+    Double maxInclusiveValue = null;
+    Double minInclusiveValue = null;
+    Double minExclusiveValue = null;
+    Double maxExclusiveValue = null;
 
     public void validate(Object object) throws ValidationException {
         String fieldName = getFieldName();
@@ -76,43 +83,64 @@ public class DoubleRangeFieldValidator extends FieldValidatorSupport {
             return;
         }
 
-        if ((maxInclusive != null && value.compareTo(maxInclusive) > 0) ||
-                (minInclusive != null && value.compareTo(minInclusive) < 0) ||
-                (maxExclusive != null && value.compareTo(maxExclusive) >= 0) ||
-                (minExclusive != null && value.compareTo(minExclusive) <= 0)) {
+        parseParameterValues();
+        if ((maxInclusiveValue != null && value.compareTo(maxInclusiveValue) > 0) ||
+                (minInclusiveValue != null && value.compareTo(minInclusiveValue) < 0) ||
+                (maxExclusiveValue != null && value.compareTo(maxExclusiveValue) >= 0) ||
+                (minExclusiveValue != null && value.compareTo(minExclusiveValue) <= 0)) {
             addFieldError(fieldName, object);
         }
     }
 
-    public void setMaxInclusive(Double maxInclusive) {
+    private void parseParameterValues() {
+        this.minInclusiveValue = parseDouble(minInclusive);
+        this.maxInclusiveValue = parseDouble(maxInclusive);
+        this.minExclusiveValue = parseDouble(minExclusive);
+        this.maxExclusiveValue = parseDouble(maxExclusive);
+    }
+
+    private Double parseDouble (String value) {
+        if (value != null) {
+            try {
+                return Double.valueOf(value);
+            } catch (NumberFormatException e) {
+                if (log.isWarnEnabled()) {
+                    log.warn("DoubleRangeFieldValidator - [parseDouble]: Unable to parse given double parameter " + value);
+                }
+            }
+        }
+        return null;
+    }
+
+    public void setMaxInclusive(String maxInclusive) {
         this.maxInclusive = maxInclusive;
     }
 
-    public Double getMaxInclusive() {
+    public String getMaxInclusive() {
         return maxInclusive;
     }
 
-    public void setMinInclusive(Double minInclusive) {
+    public void setMinInclusive(String minInclusive) {
         this.minInclusive = minInclusive;
     }
 
-    public Double getMinInclusive() {
+    public String getMinInclusive() {
         return minInclusive;
     }
 
-    public Double getMinExclusive() {
+    public String getMinExclusive() {
         return minExclusive;
     }
 
-    public void setMinExclusive(Double minExclusive) {
+    public void setMinExclusive(String minExclusive) {
         this.minExclusive = minExclusive;
     }
 
-    public Double getMaxExclusive() {
+    public String getMaxExclusive() {
         return maxExclusive;
     }
 
-    public void setMaxExclusive(Double maxExclusive) {
+    public void setMaxExclusive(String maxExclusive) {
         this.maxExclusive = maxExclusive;
     }
 }
