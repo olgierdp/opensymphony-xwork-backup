@@ -7,10 +7,7 @@ package com.opensymphony.xwork.validator;
 import com.opensymphony.xwork.ObjectFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -32,17 +29,22 @@ import java.util.Map;
  * @author Jason Carreira
  * @author James House
  * @author tm_jee ( tm_jee (at) yahoo.co.uk )
+ * @author Rob Harrop
+ * @author Rene Gielen
+ *
  * @see com.opensymphony.xwork.validator.ValidatorConfig
  */
 public class ValidatorFileParser {
 
     private static final Log log = LogFactory.getLog(ValidatorFileParser.class);
 
+    static final String MULTI_TEXTVALUE_SEPARATOR = " ";
+
     /**
      * Parse resource for a list of ValidatorConfig objects.
-     * 
+     *
      * @param is input stream to the resource
-     * @param resourceName file name of the resource 
+     * @param resourceName file name of the resource
      * @return List list of ValidatorConfig
      */
     public static List parseActionValidatorConfigs(InputStream is, final String resourceName) {
@@ -94,7 +96,7 @@ public class ValidatorFileParser {
             // it will not cause field-leve validator to be kicked off.
             {NodeList validatorNodes = doc.getElementsByTagName("validator");
             addValidatorConfigs(validatorNodes, new HashMap(), validatorCfgs);}
-            
+
             for (int i = 0; i < fieldNodes.getLength(); i++) {
                 Element fieldElement = (Element) fieldNodes.item(i);
                 String fieldName = fieldElement.getAttribute("name");
@@ -134,6 +136,36 @@ public class ValidatorFileParser {
         }
     }
 
+    /**
+     * Extract trimmed text value from the given DOM element, ignoring XML comments. Appends all CharacterData nodes
+     * and EntityReference nodes into a single String value, excluding Comment nodes.
+     * This method is based on a method originally found in DomUtils class of Springframework.
+     *
+     * @see org.w3c.dom.CharacterData
+     * @see org.w3c.dom.EntityReference
+     * @see org.w3c.dom.Comment
+     */
+    public static String getTextValue(Element valueEle) {
+        StringBuffer value = new StringBuffer();
+        NodeList nl = valueEle.getChildNodes();
+        boolean firstCDataFound = false;
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node item = nl.item(i);
+            if ((item instanceof CharacterData && !(item instanceof Comment)) || item instanceof EntityReference) {
+                final String nodeValue = item.getNodeValue();
+                if (nodeValue != null) {
+                    if (firstCDataFound) {
+                        value.append(MULTI_TEXTVALUE_SEPARATOR);
+                    } else {
+                        firstCDataFound = true;
+                    }
+                    value.append(nodeValue.trim());
+                }
+            }
+        }
+        return value.toString().trim();
+    }
+
     private static void addValidatorConfigs(NodeList validatorNodes, Map extraParams, List validatorCfgs) {
         for (int j = 0; j < validatorNodes.getLength(); j++) {
             Element validatorElement = (Element) validatorNodes.item(j);
@@ -144,8 +176,7 @@ public class ValidatorFileParser {
             for (int k = 0; k < paramNodes.getLength(); k++) {
                 Element paramElement = (Element) paramNodes.item(k);
                 String paramName = paramElement.getAttribute("name");
-                String paramValue = paramElement.getFirstChild().getNodeValue();
-                params.put(paramName, paramValue);
+                params.put(paramName, getTextValue(paramElement));
             }
 
             // ensure that the type is valid...

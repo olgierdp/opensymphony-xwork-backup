@@ -55,7 +55,7 @@ public class ValidatorFileParserTest extends TestCase {
         List configs = ValidatorFileParser.parseActionValidatorConfigs(is, testFileName);
 
         assertNotNull(configs);
-        assertEquals(5, configs.size());
+        assertEquals(6, configs.size());
 
         
         ValidatorConfig cfg = (ValidatorConfig) configs.get(0);
@@ -78,6 +78,11 @@ public class ValidatorFileParserTest extends TestCase {
         cfg = (ValidatorConfig) configs.get(4);
         assertEquals("int", cfg.getType());
         assertFalse(cfg.isShortCircuit());
+
+        cfg = (ValidatorConfig) configs.get(5);
+        assertEquals("regex", cfg.getType());
+        assertFalse(cfg.isShortCircuit());
+        assertEquals("([aAbBcCdD][123][eEfFgG][456])", cfg.getParams().get("expression"));
     }
 
     protected void setUp() throws Exception {

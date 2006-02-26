@@ -14,6 +14,13 @@
             <param name="max">10</param>
             <message>bar must be between ${min} and ${max}, current value is ${bar}.</message>
         </field-validator>
+        <field-validator type="regex">
+            <param name="expression">
+                <!-- Some useless comment for the following expression, which should be ignored by parser -->
+                <![CDATA[([aAbBcCdD][123][eEfFgG][456])]]>
+            </param>
+            <message>bar must must match the given expression.</message>
+        </field-validator>
     </field>
     <validator type="expression">
         <param name="expression">email.equals(email2)</param>
