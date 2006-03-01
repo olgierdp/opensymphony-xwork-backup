@@ -227,6 +227,9 @@ public class ValidatorFactory {
 
     /**
      * Get a Validator that matches the given configuration.
+     *
+     * @param cfg  the configurator.
+     * @return  the validator.
      */
     public static Validator getValidator(ValidatorConfig cfg) {
 
@@ -239,8 +242,9 @@ public class ValidatorFactory {
             //todo - can this use the ThreadLocal?
             validator = ObjectFactory.getObjectFactory().buildValidator(className, cfg.getParams(), null); // ActionContext.getContext().getContextMap());
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("There was a problem creating a Validator of type " + className);
+            final String msg = "There was a problem creating a Validator of type " + className + " : caused by " + e.getMessage();
+            LOG.error(msg, e);
+            throw new IllegalArgumentException(msg, e);
         }
 
         // set other configured properties
@@ -253,6 +257,13 @@ public class ValidatorFactory {
         return validator;
     }
 
+    /**
+     * Registers the given validator to the existing map of validators.
+     * This will <b>add</b> to the existing list.
+     *
+     * @param name    name of validator to add.
+     * @param className   the FQ classname of the validator.
+     */
     public static void registerValidator(String name, String className) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Registering validator of class " + className + " with name " + name);
@@ -261,6 +272,13 @@ public class ValidatorFactory {
         validators.put(name, className);
     }
 
+    /**
+     * Lookup to get the FQ classname of the given validator name.
+     *
+     * @param name   name of validator to lookup.
+     * @return  the found FQ classname
+     * @throws IllegalArgumentException is thrown if the name is not found.
+     */
     public static String lookupRegisteredValidatorType(String name) {
         // lookup the validator class mapped to the type name
         String className = (String) validators.get(name);
