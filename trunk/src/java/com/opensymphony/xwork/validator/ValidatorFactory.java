@@ -244,7 +244,7 @@ public class ValidatorFactory {
         } catch (Exception e) {
             final String msg = "There was a problem creating a Validator of type " + className + " : caused by " + e.getMessage();
             LOG.error(msg, e);
-            throw new IllegalArgumentException(msg, e);
+            throw new IllegalArgumentException(msg);
         }
 
         // set other configured properties
