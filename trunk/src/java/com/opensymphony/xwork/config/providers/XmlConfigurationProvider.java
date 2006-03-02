@@ -284,9 +284,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         try {
             return ObjectFactory.getObjectFactory().getClassInstance(className);
         } catch (ClassNotFoundException e) {
-            LOG.error("Result class [" + className + "] doesn't exist (ClassNotFoundException), ignoring", e);
+            LOG.warn("Result class [" + className + "] doesn't exist (ClassNotFoundException), ignoring", e);
         } catch (NoClassDefFoundError e) {
-            LOG.error("Result class [" + className + "] doesn't exist (NoClassDefFoundError), ignoring", e);
+            LOG.warn("Result class [" + className + "] doesn't exist (NoClassDefFoundError), ignoring", e);
         }
 
         return null;
