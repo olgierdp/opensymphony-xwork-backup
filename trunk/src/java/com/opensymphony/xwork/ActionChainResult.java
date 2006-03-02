@@ -33,6 +33,9 @@ import java.util.Set;
  * <li><b>namespace</b> - used to determine which namespace the Action is in that we're chaining. If namespace is null,
  * this defaults to the current namespace</li>
  *
+ * <li><b>method</b> - used to specify another method on target action to be invoked. 
+ * If null, this defaults to execute method</li>
+ * 
  * </ul>
  *
  * <!-- END SNIPPET: params -->
@@ -61,6 +64,8 @@ import java.util.Set;
  *     &lt;/action&gt;
  * &lt;/package&gt;
  * <!-- END SNIPPET: example --></pre>
+ * 
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class ActionChainResult implements Result {
 
@@ -73,6 +78,8 @@ public class ActionChainResult implements Result {
     private String actionName;
 
     private String namespace;
+    
+    private String methodName;
 
 
     public void setActionName(String actionName) {
@@ -83,6 +90,10 @@ public class ActionChainResult implements Result {
         this.namespace = namespace;
     }
 
+    public void setMethod(String method) {
+        this.methodName = method;
+    }
+    
     public ActionProxy getProxy() {
         return proxy;
     }
@@ -118,12 +129,15 @@ public class ActionChainResult implements Result {
         OgnlValueStack stack = ActionContext.getContext().getValueStack();
         String finalNamespace = TextParseUtil.translateVariables(namespace, stack);
         String finalActionName = TextParseUtil.translateVariables(actionName, stack);
+        String finalMethodName = this.methodName != null 
+                ? TextParseUtil.translateVariables(this.methodName, stack)
+                : null;
 
-        if (isInChainHistory(finalNamespace, finalActionName)) {
+        if (isInChainHistory(finalNamespace, finalActionName, finalMethodName)) {
             throw new XworkException("infinite recursion detected");
         }
 
-        addToHistory(finalNamespace, finalActionName);
+        addToHistory(finalNamespace, finalActionName, finalMethodName);
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.VALUE_STACK, ActionContext.getContext().getValueStack());
@@ -136,6 +150,9 @@ public class ActionChainResult implements Result {
         }
 
         proxy = ActionProxyFactory.getFactory().createActionProxy(finalNamespace, finalActionName, extraContext);
+        if (null != finalMethodName) {
+            proxy.setMethod(finalMethodName);
+        }
         proxy.execute();
     }
 
@@ -143,17 +160,17 @@ public class ActionChainResult implements Result {
         return ((actionName != null) ? actionName.hashCode() : 0);
     }
 
-    private boolean isInChainHistory(String namespace, String actionName) {
+    private boolean isInChainHistory(String namespace, String actionName, String methodName) {
         Set chainHistory = (Set) ActionContext.getContext().get(CHAIN_HISTORY);
 
         if (chainHistory == null) {
             return false;
         } else {
-            return chainHistory.contains(makeKey(namespace, actionName));
+            return chainHistory.contains(makeKey(namespace, actionName, methodName));
         }
     }
 
-    private void addToHistory(String namespace, String actionName) {
+    private void addToHistory(String namespace, String actionName, String methodName) {
         Set chainHistory = (Set) ActionContext.getContext().get(CHAIN_HISTORY);
 
         if (chainHistory == null) {
@@ -162,10 +179,14 @@ public class ActionChainResult implements Result {
 
         ActionContext.getContext().put(CHAIN_HISTORY, chainHistory);
 
-        chainHistory.add(makeKey(namespace, actionName));
+        chainHistory.add(makeKey(namespace, actionName, methodName));
     }
 
-    private String makeKey(String namespace, String actionName) {
-        return namespace + "/" + actionName;
+    private String makeKey(String namespace, String actionName, String methodName) {
+        if (null == methodName) {
+            return namespace + "/" + actionName;
+        }
+        
+        return namespace + "/" + actionName + "!" + methodName;
     }
 }
