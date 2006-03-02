@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
+*/
 package com.opensymphony.xwork.interceptor;
 
 import com.mockobjects.dynamic.Mock;
@@ -34,6 +38,8 @@ public class ExceptionMappingInterceptorTest extends TestCase {
         assertNotNull(stack.findValue("exception"));
         assertEquals(stack.findValue("exception"), exception);
         assertEquals(result, "spooky");
+        ExceptionHolder holder = (ExceptionHolder) stack.getRoot().get(0); // is on top of the root
+        assertNotNull(holder.getExceptionStack()); // to invoke the method for unit test
     }
 
     public void testThrownExceptionMatching2() throws Exception {
