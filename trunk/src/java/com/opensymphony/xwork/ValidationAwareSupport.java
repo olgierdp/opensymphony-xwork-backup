@@ -12,6 +12,8 @@ import java.util.*;
  * errors and messages (defensive copy).
  *
  * @author Jason Carreira
+ * @author tm_jee
+ * @version $Date$ $Id$
  */
 public class ValidationAwareSupport implements ValidationAware, Serializable {
 
@@ -41,7 +43,7 @@ public class ValidationAwareSupport implements ValidationAware, Serializable {
     }
 
     public synchronized Map getFieldErrors() {
-        return new HashMap(internalGetFieldErrors());
+        return new LinkedHashMap(internalGetFieldErrors());
     }
 
     public synchronized void addActionError(String anErrorMessage) {
@@ -98,7 +100,7 @@ public class ValidationAwareSupport implements ValidationAware, Serializable {
 
     private Map internalGetFieldErrors() {
         if (fieldErrors == null) {
-            fieldErrors = new HashMap();
+            fieldErrors = new LinkedHashMap();
         }
 
         return fieldErrors;

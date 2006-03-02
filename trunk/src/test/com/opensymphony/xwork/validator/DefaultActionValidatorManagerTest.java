@@ -6,6 +6,7 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.TestBean;
+import com.opensymphony.xwork.ValidationOrderAction;
 import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.test.DataAware2;
 import com.opensymphony.xwork.test.SimpleAction2;
@@ -13,15 +14,17 @@ import com.opensymphony.xwork.test.SimpleAction3;
 import com.opensymphony.xwork.test.User;
 import com.opensymphony.xwork.validator.validators.*;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 /**
  * DefaultActionValidatorManagerTest
  *
  * @author Jason Carreira
- * @author tm_jee ( tm_jee (at) yahoo.co.uk )
- *         Created Jun 9, 2003 11:03:01 AM
+ * @author tm_jee 
+ * @version $Date$ $Id$
  */
 public class DefaultActionValidatorManagerTest extends XWorkTestCase {
 
@@ -308,5 +311,65 @@ public class DefaultActionValidatorManagerTest extends XWorkTestCase {
             ex.printStackTrace();
             fail("Validation error: " + ex.getMessage());
         }
+    }
+    
+    public void testFieldErrorsOrder() throws Exception {
+    	ValidationOrderAction action = new ValidationOrderAction();
+    	actionValidatorManager.validate(action, "actionContext");
+    	Map fieldErrors = action.getFieldErrors();
+    	Iterator i = fieldErrors.entrySet().iterator();
+    	
+    	assertNotNull(fieldErrors);
+    	assertEquals(fieldErrors.size(), 12);
+    	
+    	
+    	Map.Entry e = (Map.Entry) i.next();
+    	assertEquals(e.getKey(), "username");
+    	assertEquals(((List)e.getValue()).get(0), "username required");
+    	
+    	e = (Map.Entry) i.next();
+    	assertEquals(e.getKey(), "password");
+    	assertEquals(((List)e.getValue()).get(0), "password required");
+    	
+    	e = (Map.Entry) i.next();
+    	assertEquals(e.getKey(), "confirmPassword");
+    	assertEquals(((List)e.getValue()).get(0), "confirm password required");
+    	
+    	e = (Map.Entry) i.next();
+    	assertEquals(e.getKey(), "firstName");
+    	assertEquals(((List)e.getValue()).get(0), "first name required");
+    	
+    	e = (Map.Entry) i.next();
+    	assertEquals(e.getKey(), "lastName");
+    	assertEquals(((List)e.getValue()).get(0), "last name required");
+    	
+    	e = (Map.Entry) i.next();
+    	assertEquals(e.getKey(), "city");
+    	assertEquals(((List)e.getValue()).get(0), "city is required");
+    	
+    	e = (Map.Entry) i.next();
+    	assertEquals(e.getKey(), "province");
+    	assertEquals(((List)e.getValue()).get(0), "province is required");
+    	
+    	e = (Map.Entry) i.next();
+    	assertEquals(e.getKey(), "country");
+    	assertEquals(((List)e.getValue()).get(0), "country is required");
+    	
+    	e = (Map.Entry) i.next();
+    	assertEquals(e.getKey(), "postalCode");
+    	assertEquals(((List)e.getValue()).get(0), "postal code is required");
+    	
+    	e = (Map.Entry) i.next();
+    	assertEquals(e.getKey(), "email");
+    	assertEquals(((List)e.getValue()).get(0), "email is required");
+    	
+    	e = (Map.Entry) i.next();
+    	assertEquals(e.getKey(), "website");
+    	assertEquals(((List)e.getValue()).get(0), "website is required");
+    	
+    	e = (Map.Entry) i.next();
+    	assertEquals(e.getKey(), "passwordHint");
+    	assertEquals(((List)e.getValue()).get(0), "password hint is required");
+    	
     }
 }
