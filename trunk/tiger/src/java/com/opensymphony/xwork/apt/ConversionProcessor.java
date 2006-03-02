@@ -4,15 +4,16 @@
  */
 package com.opensymphony.xwork.apt;
 
-import com.opensymphony.xwork.conversion.annotations.TypeConversion;
 import com.opensymphony.xwork.conversion.annotations.Conversion;
 import com.opensymphony.xwork.conversion.annotations.ConversionType;
+import com.opensymphony.xwork.conversion.annotations.TypeConversion;
 import com.opensymphony.xwork.conversion.metadata.ConversionDescription;
+import com.opensymphony.xwork.util.AnnotationUtils;
 import com.sun.mirror.declaration.*;
 import com.sun.mirror.type.ClassType;
+import com.sun.mirror.type.InterfaceType;
 
 import java.util.*;
-import java.lang.annotation.Annotation;
 
 /**
  * <code>ConversionProcessor</code>
@@ -44,18 +45,29 @@ public class ConversionProcessor extends AbstractProcessor {
 
         for (Declaration compDecl : env.getDeclarationsAnnotatedWith(conversionAnnotation)) {
 
-            final ClassDeclaration component = (ClassDeclaration) compDecl;
-
             /*
             * Get all fields with TypeConversion-Annotation of component
             */
             List<ConversionDescription> applicationFields = new ArrayList<ConversionDescription>();
             List<ConversionDescription> classFields = new ArrayList<ConversionDescription>();
 
-            addConversionFields(component, applicationFields, classFields);
+            if ( compDecl instanceof InterfaceDeclaration) {
 
-            conversionsByType.put("", applicationFields);
-            conversionsByType.put(component.getQualifiedName(), classFields);
+                final InterfaceDeclaration component = (InterfaceDeclaration) compDecl;
+
+                addConversionFields(component, applicationFields, classFields);
+
+                conversionsByType.put("", applicationFields);
+                conversionsByType.put(component.getQualifiedName(), classFields);
+            } else if ( compDecl instanceof ClassDeclaration) {
+                final ClassDeclaration component = (ClassDeclaration) compDecl;
+
+                addConversionFields(component, applicationFields, classFields);
+
+                conversionsByType.put("", applicationFields);
+                conversionsByType.put(component.getQualifiedName(), classFields);
+
+            }
 
         }
 
@@ -90,7 +102,7 @@ public class ConversionProcessor extends AbstractProcessor {
 
         final ConversionDescription result;
 
-        String property = Generator.resolvePropertyName(method);
+        String property = AnnotationUtils.resolvePropertyName(method);
 
         if (typeConversionAnnotation.equals(annotation.getAnnotationType().getDeclaration())) {
 
@@ -133,7 +145,35 @@ public class ConversionProcessor extends AbstractProcessor {
             return;
         }
 
-        Collection<MethodDeclaration> methods = clazz.getMethods();
+        processConversionFields(clazz, allApplicationFields, allClassFields);
+
+        ClassType superClazz = clazz.getSuperclass();
+        if (superClazz != null) {
+            addConversionFields(superClazz.getDeclaration(), allApplicationFields, allClassFields);
+        }
+    }
+
+    /**
+     * Adds all fields with TypeConversion Annotation of class clazz and
+     * its superclasses to allFields
+     */
+    private void addConversionFields(InterfaceDeclaration clazz, List<ConversionDescription> allApplicationFields, List<ConversionDescription> allClassFields) {
+        if (clazz == null) {
+            return;
+        }
+
+        processConversionFields(clazz, allApplicationFields, allClassFields);
+        Collection<InterfaceType> ifaces = clazz.getSuperinterfaces();
+
+        if ( ifaces != null ) {
+            for ( InterfaceType it : ifaces) {
+                addConversionFields(it.getDeclaration(), allApplicationFields, allClassFields);
+            }
+        }
+    }
+
+    private void processConversionFields(TypeDeclaration clazz, List<ConversionDescription> allApplicationFields, List<ConversionDescription> allClassFields) {
+        Collection<? extends MethodDeclaration> methods = clazz.getMethods();
 
         for (MethodDeclaration method : methods) {
 
@@ -147,19 +187,18 @@ public class ConversionProcessor extends AbstractProcessor {
                         value = element.getDefaultValue();
                     }
                     if ( "type".equals(element.getSimpleName()) ) {
-                        if ( value.getValue().toString().equals(ConversionType.APPLICATION.toString())) {
-                            allApplicationFields.add(createConversionDescription(method, am));
-                        } else {
-                            allClassFields.add(createConversionDescription(method, am));
+                        ConversionDescription desc = createConversionDescription(method, am);
+                        if ( desc != null ) {
+                            if ( value.getValue().toString().equals(ConversionType.APPLICATION.toString())) {
+                                allApplicationFields.add(desc);
+                            } else {
+                                allClassFields.add(desc);
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             }
-        }
-        ClassType superClazz = clazz.getSuperclass();
-        if (superClazz != null) {
-            addConversionFields(superClazz.getDeclaration(), allApplicationFields, allClassFields);
         }
     }
 }

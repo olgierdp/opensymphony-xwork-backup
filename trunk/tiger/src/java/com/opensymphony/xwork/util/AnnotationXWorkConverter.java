@@ -5,24 +5,18 @@
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.util.FileManager;
-import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.ObjectFactory;
-import com.opensymphony.xwork.XWorkMessages;
 import com.opensymphony.xwork.conversion.annotations.Conversion;
-import com.opensymphony.xwork.conversion.annotations.TypeConversion;
-import com.opensymphony.xwork.conversion.annotations.ConversionType;
 import com.opensymphony.xwork.conversion.annotations.ConversionRule;
-import ognl.DefaultTypeConverter;
+import com.opensymphony.xwork.conversion.annotations.ConversionType;
+import com.opensymphony.xwork.conversion.annotations.TypeConversion;
 import ognl.TypeConverter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
-import java.io.IOException;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 
 
 /**
@@ -201,6 +195,7 @@ public class AnnotationXWorkConverter extends XWorkConverter {
                 for (TypeConversion tc : conversion.conversions()) {
 
                     String key = tc.key();
+
                     if (mapping.containsKey(key)) {
                         break;
                     }
@@ -272,6 +267,13 @@ public class AnnotationXWorkConverter extends XWorkConverter {
                     if (mapping.containsKey(key)) {
                         break;
                     }
+                    // Default to the property name
+                    if ( key != null && key.length() == 0) {
+                        key = AnnotationUtils.resolvePropertyName(method);
+                        System.out.println("key from method name... " + key + " - " + method.getName());
+                    }
+
+
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(key + ":" + key);
                     }

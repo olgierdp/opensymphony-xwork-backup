@@ -4,12 +4,12 @@
  */
 package com.opensymphony.xwork.test;
 
+import com.opensymphony.xwork.conversion.annotations.Conversion;
+import com.opensymphony.xwork.conversion.annotations.TypeConversion;
 import com.opensymphony.xwork.util.Bar;
 import com.opensymphony.xwork.validator.annotations.RequiredFieldValidator;
-import com.opensymphony.xwork.validator.annotations.Validation;
 import com.opensymphony.xwork.validator.annotations.RequiredStringValidator;
-import com.opensymphony.xwork.conversion.annotations.TypeConversion;
-import com.opensymphony.xwork.conversion.annotations.Conversion;
+import com.opensymphony.xwork.validator.annotations.Validation;
 
 
 /**
@@ -25,7 +25,7 @@ public interface AnnotationDataAware {
     void setBarObj(Bar b);
 
     @TypeConversion(
-            key = "barObj", converter = "com.opensymphony.xwork.util.FooBarConverter"
+            converter = "com.opensymphony.xwork.util.FooBarConverter"
     )
     Bar getBarObj();
 

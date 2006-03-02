@@ -5,7 +5,6 @@
 package com.opensymphony.xwork.apt;
 
 import com.opensymphony.xwork.conversion.metadata.ConversionDescription;
-import com.opensymphony.xwork.conversion.annotations.ConversionType;
 import com.sun.mirror.apt.Filer;
 
 import java.io.File;
