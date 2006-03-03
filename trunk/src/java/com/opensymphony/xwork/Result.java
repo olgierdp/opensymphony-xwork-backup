@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork;
@@ -17,7 +17,7 @@ import java.io.Serializable;
  * <li>ServletDispatcherView - dispatches the HTTP response to a URL</li>
  * </ul>
  *
- * @author $Author$
+ * @author plightbo
  * @version $Revision$
  */
 public interface Result extends Serializable {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork;
@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * The Default ActionProxy implementation
  *
- * @author $Author$
+ * @author Rainer Hermanns
  * @author Revised by <a href="mailto:hu_pengfei@yahoo.com.cn">Henry Hu</a>
  * @version $Revision$
  * @since 2005-8-6

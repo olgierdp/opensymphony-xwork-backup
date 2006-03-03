@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork;
@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * The Default ActionInvocation implementation
  *
- * @author $Author$
+ * @author Rainer Hermanns
  * @version $Revision$
  * @see com.opensymphony.xwork.DefaultActionProxy
  */

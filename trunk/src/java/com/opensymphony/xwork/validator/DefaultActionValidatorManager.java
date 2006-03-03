@@ -2,6 +2,7 @@
  * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
+
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.util.FileManager;
