@@ -23,7 +23,7 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
 
 
     private transient final TextProvider textProvider = new TextProviderSupport(getClass(), this);
-    private final ValidationAware validationAware = new ValidationAwareSupport();
+    private final ValidationAwareSupport validationAware = new ValidationAwareSupport();
 
 
     public void setActionErrors(Collection errorMessages) {
@@ -164,6 +164,14 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
 
     public boolean hasFieldErrors() {
         return validationAware.hasFieldErrors();
+    }
+
+    /**
+     * Clears all errors and messages. Useful for Continuations and other situations
+     * where you might want to clear parts of the state on the same action.
+     */
+    public void clearErrorsAndMessages() {
+        validationAware.clearErrorsAndMessages();
     }
 
     /**

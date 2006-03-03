@@ -105,4 +105,10 @@ public class ValidationAwareSupport implements ValidationAware, Serializable {
 
         return fieldErrors;
     }
+
+    public void clearErrorsAndMessages() {
+        internalGetFieldErrors().clear();
+        internalGetActionErrors().clear();
+        internalGetActionMessages().clear();
+    }
 }
