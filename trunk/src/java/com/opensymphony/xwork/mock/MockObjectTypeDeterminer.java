@@ -2,7 +2,9 @@
  * Created on Dec 12, 2005
  *
  */
-package com.opensymphony.xwork.util;
+package com.opensymphony.xwork.mock;
+
+import com.opensymphony.xwork.util.ObjectTypeDeterminer;
 
 /**
  * @author Gabe
@@ -15,10 +17,10 @@ public class MockObjectTypeDeterminer implements ObjectTypeDeterminer {
     private Class elementClass;
     private String keyProperty;
     private boolean shouldCreateIfNew;
-    
+
     public MockObjectTypeDeterminer() {}
-    
-    
+
+
     /**
      * @param keyClass
      * @param elementClass
@@ -26,19 +28,19 @@ public class MockObjectTypeDeterminer implements ObjectTypeDeterminer {
      * @param shouldCreateIfNew
      */
     public MockObjectTypeDeterminer(Class keyClass, Class elementClass,
-            String keyProperty, boolean shouldCreateIfNew) {
+                                    String keyProperty, boolean shouldCreateIfNew) {
         super();
         this.keyClass = keyClass;
         this.elementClass = elementClass;
         this.keyProperty = keyProperty;
         this.shouldCreateIfNew = shouldCreateIfNew;
     }
-    
+
     /* (non-Javadoc)
-     * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getKeyClass(java.lang.Class, java.lang.String)
-     */
+    * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getKeyClass(java.lang.Class, java.lang.String)
+    */
     public Class getKeyClass(Class parentClass, String property) {
-        
+
         return getKeyClass();
     }
 
@@ -46,7 +48,7 @@ public class MockObjectTypeDeterminer implements ObjectTypeDeterminer {
      * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getElementClass(java.lang.Class, java.lang.String, java.lang.Object)
      */
     public Class getElementClass(Class parentClass, String property, Object key) {
-        
+
         return getElementClass();
     }
 
@@ -54,7 +56,7 @@ public class MockObjectTypeDeterminer implements ObjectTypeDeterminer {
      * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getKeyProperty(java.lang.Class, java.lang.String)
      */
     public String getKeyProperty(Class parentClass, String property) {
-        
+
         return getKeyProperty();
     }
 
@@ -62,8 +64,8 @@ public class MockObjectTypeDeterminer implements ObjectTypeDeterminer {
      * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#shouldCreateIfNew(java.lang.Class, java.lang.String, java.lang.Object, java.lang.String, boolean)
      */
     public boolean shouldCreateIfNew(Class parentClass, String property,
-            Object target, String keyProperty, boolean isIndexAccessed) {
-        
+                                     Object target, String keyProperty, boolean isIndexAccessed) {
+
         return isShouldCreateIfNew();
     }
 

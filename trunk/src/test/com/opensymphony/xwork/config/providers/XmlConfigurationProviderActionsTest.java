@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork.config.providers;
 
-import com.opensymphony.xwork.MockInterceptor;
+import com.opensymphony.xwork.mock.MockInterceptor;
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.config.ConfigurationProvider;

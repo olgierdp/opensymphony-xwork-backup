@@ -6,6 +6,7 @@ package com.opensymphony.xwork.interceptor;
 
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork.*;
+import com.opensymphony.xwork.mock.MockActionProxy;
 import junit.framework.TestCase;
 
 

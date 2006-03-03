@@ -8,7 +8,7 @@
         <interceptors>
             <interceptor name="timer" class="com.opensymphony.xwork.interceptor.TimerInterceptor"/>
             <interceptor name="logging" class="com.opensymphony.xwork.interceptor.LoggingInterceptor"/>
-            <interceptor name="test" class="com.opensymphony.xwork.MockInterceptor">
+            <interceptor name="test" class="com.opensymphony.xwork.mock.MockInterceptor">
                 <param name="foo">expectedFoo</param>
             </interceptor>
 

@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.*;
+import com.opensymphony.xwork.mock.MockActionProxy;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 
 import java.util.HashMap;

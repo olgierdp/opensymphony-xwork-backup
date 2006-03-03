@@ -13,6 +13,8 @@ import ognl.Ognl;
 
 import java.util.*;
 
+import com.opensymphony.xwork.mock.MockObjectTypeDeterminer;
+
 
 /**
  * @author CameronBraid and Gabe
@@ -94,14 +96,14 @@ public class SetPropertiesTest extends TestCase {
     public void testAddingToListsWithObjects() {
         doTestAddingToListsWithObjects(true);
         doTestAddingToListsWithObjects(false);
-        
+
     }
     public void doTestAddingToListsWithObjects(boolean allowAdditions) {
-        
+
         MockObjectTypeDeterminer determiner
         =new MockObjectTypeDeterminer(null,Cat.class,null,allowAdditions);
         XWorkConverter.getInstance().setObjectTypeDeterminer(determiner);
-        
+
         Foo foo = new Foo();
         foo.setMoreCats(new ArrayList());
         String spielname = "Spielen";
@@ -119,41 +121,41 @@ public class SetPropertiesTest extends TestCase {
         Object setCat = null;
         if (allowAdditions) {
              setCat = foo.getMoreCats().get(2);
-        
-        
-	        assertNotNull(setCat);
-	        assertTrue(setCat instanceof Cat);
-	        assertTrue(((Cat) setCat).getName().equals(spielname));
+
+
+            assertNotNull(setCat);
+            assertTrue(setCat instanceof Cat);
+            assertTrue(((Cat) setCat).getName().equals(spielname));
         }	else {
             assertTrue(foo.getMoreCats()==null || foo.getMoreCats().size()==0);
         }
-        
+
         //now try to set a lower number
         //to test setting after a higher one
         //has been created
         if (allowAdditions) {
-	        spielname = "paws";
-	        vs.setValue("moreCats[0].name", spielname);
-	        setCat = foo.getMoreCats().get(0);
-	        assertNotNull(setCat);
-	        assertTrue(setCat instanceof Cat);
-	        assertTrue(((Cat) setCat).getName().equals(spielname));
+            spielname = "paws";
+            vs.setValue("moreCats[0].name", spielname);
+            setCat = foo.getMoreCats().get(0);
+            assertNotNull(setCat);
+            assertTrue(setCat instanceof Cat);
+            assertTrue(((Cat) setCat).getName().equals(spielname));
         }
 
     }
-    
+
     public void testAddingToMapsWithObjects() {
         doTestAddingToMapsWithObjects(true);
         doTestAddingToMapsWithObjects(false);
-        
+
     }
-    
+
     public void doTestAddingToMapsWithObjects(boolean allowAdditions) {
-        
+
         MockObjectTypeDeterminer determiner
         =new MockObjectTypeDeterminer(Long.class,Cat.class,null,allowAdditions);
         XWorkConverter.getInstance().setObjectTypeDeterminer(determiner);
-        
+
         Foo foo = new Foo();
         foo.setAnotherCatMap(new HashMap());
         String spielname = "Spielen";
@@ -165,9 +167,9 @@ public class SetPropertiesTest extends TestCase {
         vs.setValue("anotherCatMap[\"3\"].name", spielname);
         Object setCat = foo.getAnotherCatMap().get(new Long(3));
         if (allowAdditions) {
-	        assertNotNull(setCat);
-	        assertTrue(setCat instanceof Cat);
-	        assertTrue(((Cat) setCat).getName().equals(spielname));
+            assertNotNull(setCat);
+            assertTrue(setCat instanceof Cat);
+            assertTrue(((Cat) setCat).getName().equals(spielname));
         }	else {
             assertNull(setCat);
         }
@@ -175,18 +177,18 @@ public class SetPropertiesTest extends TestCase {
 
     }
 
-    
+
     public void testAddingAndModifyingCollectionWithObjects() {
         doTestAddingAndModifyingCollectionWithObjects(new HashSet());
-        doTestAddingAndModifyingCollectionWithObjects(new ArrayList());      
-        
+        doTestAddingAndModifyingCollectionWithObjects(new ArrayList());
+
     }
     public void doTestAddingAndModifyingCollectionWithObjects(Collection barColl) {
 
         XWorkConverter.getInstance().setObjectTypeDeterminer(new DefaultObjectTypeDeterminer());
         OgnlValueStack vs = new OgnlValueStack();
         Foo foo = new Foo();
-        
+
         foo.setBarCollection(barColl);
         Bar bar1 = new Bar();
         bar1.setId(new Long(11));
@@ -232,46 +234,46 @@ public class SetPropertiesTest extends TestCase {
         }
 
     }
-    
+
     public void testAddingToCollectionBasedOnPermission() {
-        
+
         MockObjectTypeDeterminer determiner
         =new MockObjectTypeDeterminer(Long.class,Bar.class,"id",true);
         XWorkConverter.getInstance().setObjectTypeDeterminer(determiner);
-        
+
         Collection barColl=new HashSet();
-        
+
         OgnlValueStack vs = new OgnlValueStack();
         OgnlContextState.setCreatingNullObjects(vs.getContext(), true);
         OgnlContextState.setReportingConversionErrors(vs.getContext(), true);
         Foo foo = new Foo();
-        
+
         foo.setBarCollection(barColl);
-        
+
         vs.push(foo);
-        
+
         String bar1Title="title";
         vs.setValue("barCollection(11).title", bar1Title);
-        
+
         assertEquals(1, barColl.size());
         Object bar=barColl.iterator().next();
         assertTrue(bar instanceof Bar);
         assertEquals(((Bar)bar).getTitle(), bar1Title);
         assertEquals(((Bar)bar).getId(), new Long(11));
-        
+
         //now test where there is no permission
         determiner.setShouldCreateIfNew(false);
-        
+
         String bar2Title="another title";
         vs.setValue("barCollection(22).title", bar1Title);
-        
+
         assertEquals(1, barColl.size());
         bar=barColl.iterator().next();
         assertTrue(bar instanceof Bar);
         assertEquals(((Bar)bar).getTitle(), bar1Title);
         assertEquals(((Bar)bar).getId(), new Long(11));
-        
-        
+
+
     }
 
 

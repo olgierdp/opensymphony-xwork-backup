@@ -1,6 +1,13 @@
-package com.opensymphony.xwork;
+/*
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
+ */
+
+package com.opensymphony.xwork.mock;
 
 import com.opensymphony.xwork.config.entities.ActionConfig;
+import com.opensymphony.xwork.ActionProxy;
+import com.opensymphony.xwork.ActionInvocation;
 
 /**
  * @author Patrick Lightbody (plightbo at gmail dot com)

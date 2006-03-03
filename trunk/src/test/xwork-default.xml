@@ -20,7 +20,7 @@
             <interceptor name="component" class="com.opensymphony.xwork.interceptor.component.ComponentInterceptor"/>
             <interceptor name="validation" class="com.opensymphony.xwork.validator.ValidationInterceptor"/>
 			<interceptor name="alias" class="com.opensymphony.xwork.interceptor.AliasInterceptor"/>
-            <interceptor name="test" class="com.opensymphony.xwork.MockInterceptor">
+            <interceptor name="test" class="com.opensymphony.xwork.mock.MockInterceptor">
                 <param name="foo">expectedFoo</param>
             </interceptor>
             <interceptor name="reference-resolver" class="com.opensymphony.xwork.interceptor.ExternalReferencesInterceptor"/>
