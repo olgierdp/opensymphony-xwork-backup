@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2005 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.apt;

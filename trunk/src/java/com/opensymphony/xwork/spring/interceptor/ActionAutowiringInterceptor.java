@@ -1,6 +1,8 @@
 /*
- * Created on 6/11/2004
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
  */
+
 package com.opensymphony.xwork.spring.interceptor;
 
 import com.opensymphony.xwork.ActionContext;

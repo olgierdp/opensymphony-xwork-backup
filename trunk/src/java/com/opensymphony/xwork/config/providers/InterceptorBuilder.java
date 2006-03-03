@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.config.providers;
@@ -18,11 +18,9 @@ import java.util.Map;
 
 
 /**
- * Created by IntelliJ IDEA.
  * User: Mike
  * Date: May 6, 2003
  * Time: 9:45:43 AM
- * To change this template use Options | File Templates.
  */
 public class InterceptorBuilder {
 

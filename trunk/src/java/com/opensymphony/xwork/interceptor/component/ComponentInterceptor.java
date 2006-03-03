@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.interceptor.component;
@@ -53,7 +53,7 @@ import org.apache.commons.logging.LogFactory;
  * </pre>
  *
  * @author joew@thoughtworks.com
- * @author $Author$
+ * @author plightbo
  * @deprecated WebWork's IoC has been deprecated, please use an alternative such as Spring.
  * @version $Revision$
  */

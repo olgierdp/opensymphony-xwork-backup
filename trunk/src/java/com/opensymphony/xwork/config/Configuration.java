@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.config;
@@ -11,11 +11,9 @@ import java.util.Set;
 
 
 /**
- * Created by IntelliJ IDEA.
  * User: Mike
  * Date: May 6, 2003
  * Time: 3:13:55 PM
- * To change this template use Options | File Templates.
  */
 public interface Configuration {
 

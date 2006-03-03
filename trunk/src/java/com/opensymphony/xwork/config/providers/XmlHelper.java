@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.config.providers;
@@ -14,11 +14,9 @@ import java.util.LinkedHashMap;
 
 
 /**
- * Created by IntelliJ IDEA.
  * User: Mike
  * Date: May 6, 2003
  * Time: 12:12:03 PM
- * To change this template use Options | File Templates.
  */
 public class XmlHelper {
 

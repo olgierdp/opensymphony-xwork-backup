@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.conversion;
@@ -20,6 +20,8 @@ import java.math.BigInteger;
  */
 @Conversion()
 public class ConversionTestAction implements Action {
+
+
 
     private String convertInt;
 

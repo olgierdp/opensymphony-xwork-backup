@@ -1,9 +1,8 @@
 /*
- * Created on Dec 12, 2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
  */
+
 package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionInvocation;
