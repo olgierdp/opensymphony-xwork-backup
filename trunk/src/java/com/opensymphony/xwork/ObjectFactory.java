@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * ObjectFactory is responsible for building the core framework objects. Users may register their own implementation of
@@ -32,6 +35,8 @@ import java.util.Map;
  * @author Jason Carreira
  */
 public class ObjectFactory {
+    private static final Log LOG = LogFactory.getLog(ObjectFactory.class);
+
     private static ContinuationsClassLoader ccl;
     private static ObjectFactory FACTORY = new ObjectFactory();
     private static String continuationPackage;
@@ -218,7 +223,16 @@ public class ObjectFactory {
                             throw new RuntimeException("Continuation error: no bytes loaded");
                         }
 
-                        byte[] resume_bytes = ContinuationInstrumentor.instrument(bytes, name, false);
+                        byte[] resume_bytes = null;
+                        try {
+                            resume_bytes = ContinuationInstrumentor.instrument(bytes, name, false);
+                        } catch (ClassNotFoundException e) {
+                            // this can happen when the Rife Continuations code gets broken (there are bugs in it still, ya know!)
+                            // rather than making a big deal, we'll quietly log this and move on
+                            // when more people are using continuations, perhaps we'll raise the log level
+                            LOG.debug("Error instrumenting with RIFE/Continuations, " +
+                                    "loading class normally without continuation support", e);
+                        }
 
                         if (resume_bytes == null) {
                             return parent.loadClass(name);
