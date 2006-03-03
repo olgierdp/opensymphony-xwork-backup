@@ -347,8 +347,12 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 return new BigInteger((String) value);
             } else {
                 String stringValue = (String) value;
-                NumberFormat numFormat = NumberFormat.getInstance(getLocale(context));
+                NumberFormat numFormat = NumberFormat.getInstance(getLocale(context));                
                 ParsePosition parsePos = new ParsePosition(0);
+                if (isIntegerType(toType)) {
+                    numFormat.setParseIntegerOnly(true);
+                }
+                numFormat.setGroupingUsed(true);
                 Number number = numFormat.parse(stringValue, parsePos);
                 
                 if (parsePos.getIndex() != stringValue.length()) {
@@ -371,6 +375,15 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return super.convertValue(context, value, toType);
     }
 
+    protected boolean isIntegerType(Class type) {
+        if (double.class == type || float.class == type || Double.class == type || Float.class == type
+                || char.class == type || Character.class == type) {
+            return false;
+        }
+        
+        return true;
+    }
+    
     private String doConvertToString(Map context, Object value) {
         String result = null;
 

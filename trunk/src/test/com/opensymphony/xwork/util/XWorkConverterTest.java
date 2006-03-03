@@ -392,10 +392,99 @@ public class XWorkConverterTest extends TestCase {
     }
 
     public void testStringToInt() {
+        assertEquals(new Integer(123), converter.convertValue(context, null, null, null, "123", int.class));
+        context.put(ActionContext.LOCALE, Locale.US);
         assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123.12", int.class));
         assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123aa", int.class));
         assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "aa123", int.class));
-        assertEquals(new Integer(123), converter.convertValue(context, null, null, null, "123", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,234", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,23", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,234.12", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234,12", int.class));
+        context.put(ActionContext.LOCALE, Locale.GERMANY);
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123.12", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123aa", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "aa123", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,234", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,23", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,234.12", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234", int.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234,12", int.class));
+    }
+    
+    
+    public void testStringToInteger() {
+        assertEquals(new Integer(123), converter.convertValue(context, null, null, null, "123", Integer.class));
+        context.put(ActionContext.LOCALE, Locale.US);
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123.12", Integer.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123aa", Integer.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "aa123", Integer.class));
+        assertEquals(new Integer(1234), converter.convertValue(context, null, null, null, "1,234", Integer.class));
+        // WRONG: locale separator is wrongly placed
+        assertEquals(new Integer(123), converter.convertValue(context, null, null, null, "1,23", Integer.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,234.12", Integer.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234", Integer.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234,12", Integer.class));
+
+        context.put(ActionContext.LOCALE, Locale.GERMANY);
+        // WRONG: locale separator is wrongly placed
+        assertEquals(new Integer(12312), converter.convertValue(context, null, null, null, "123.12", Integer.class));
+        assertEquals(new Integer(1234), converter.convertValue(context, null, null, null, "1.234", Integer.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123aa", Integer.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "aa123", Integer.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,234", Integer.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,234.12", Integer.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,23", Integer.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234,12", Integer.class));
+    }
+    
+    public void testStringToPrimitiveDouble() {
+        assertEquals(new Double(123), converter.convertValue(context, null, null, null, "123", double.class));
+        context.put(ActionContext.LOCALE, Locale.US);
+        assertEquals(new Double(123.12), converter.convertValue(context, null, null, null, "123.12", double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123aa", double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "aa123", double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,234", double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,234.12", double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,23", double.class));
+        assertEquals(new Double(1.234), converter.convertValue(context, null, null, null, "1.234", double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234,12", double.class));
+        
+        context.put(ActionContext.LOCALE, Locale.GERMANY);
+        assertEquals(new Double(123.12), converter.convertValue(context, null, null, null, "123.12", double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123aa", double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "aa123", double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,234", double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,234.12", double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,23", double.class));
+        assertEquals(new Double(1.234), converter.convertValue(context, null, null, null, "1.234", double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234,12", double.class));
+    }
+
+    public void testStringToDouble() {
+        assertEquals(new Double(123), converter.convertValue(context, null, null, null, "123", Double.class));
+        context.put(ActionContext.LOCALE, Locale.US);
+        assertEquals(new Double(123.12), converter.convertValue(context, null, null, null, "123.12", Double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123aa", Double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "aa123", Double.class));
+        assertEquals(new Double(1234), converter.convertValue(context, null, null, null, "1,234", Double.class));
+        assertEquals(new Double(1234.12), converter.convertValue(context, null, null, null, "1,234.12", Double.class));
+        // WRONG: locale separator is wrongly placed 
+        assertEquals(new Double(123), converter.convertValue(context, null, null, null, "1,23", Double.class));
+        assertEquals(new Double(1.234), converter.convertValue(context, null, null, null, "1.234", Double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234,12", Double.class));
+        
+        context.put(ActionContext.LOCALE, Locale.GERMANY);
+        // WRONG: locale separator is wrongly placed
+        assertEquals(new Double(12312), converter.convertValue(context, null, null, null, "123.12", Double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123aa", Double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "aa123", Double.class));
+        assertEquals(new Double(1.234), converter.convertValue(context, null, null, null, "1,234", Double.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,234.12", Double.class));
+        assertEquals(new Double(1.23), converter.convertValue(context, null, null, null, "1,23", Double.class));
+        assertEquals(new Double(1234), converter.convertValue(context, null, null, null, "1.234", Double.class));
+        assertEquals(new Double(1234.12), converter.convertValue(context, null, null, null, "1.234,12", Double.class));
     }
     
     public void testOgnlValueStackWithTypeParameter() {
