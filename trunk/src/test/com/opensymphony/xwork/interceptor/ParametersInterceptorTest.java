@@ -132,7 +132,7 @@ public class ParametersInterceptorTest extends TestCase {
         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
         proxy.execute();
         final String actionMessage = ""+((SimpleAction) proxy.getAction()).getActionMessages().toArray()[0];
-        assertTrue(actionMessage.indexOf("No object in the CompoundRoot has a property named 'not_a_property'")>-1);
+        assertTrue(actionMessage.indexOf("No object in the CompoundRoot has a publicly accessible property named 'not_a_property' (no setter could be found).") > -1);
     }
 
     public void testNonexistentParametersAreIgnoredInProductionMode() throws Exception {
