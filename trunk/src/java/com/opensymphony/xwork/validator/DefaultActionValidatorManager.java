@@ -96,83 +96,88 @@ public class DefaultActionValidatorManager implements ActionValidatorManager {
         Set shortcircuitedFields = null;
 
         for (Iterator iterator = validators.iterator(); iterator.hasNext();) {
-            Validator validator = (Validator) iterator.next();
-            validator.setValidatorContext(validatorContext);
+            final Validator validator = (Validator) iterator.next();
+            try {
+                validator.setValidatorContext(validatorContext);
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Running validator: " + validator + " for object " + object);
-            }
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Running validator: " + validator + " for object " + object);
+                }
 
-            FieldValidator fValidator = null;
-            String fullFieldName = null;
+                FieldValidator fValidator = null;
+                String fullFieldName = null;
 
-            if (validator instanceof FieldValidator) {
-                fValidator = (FieldValidator) validator;
-                fullFieldName = fValidator.getValidatorContext().getFullFieldName(fValidator.getFieldName());
+                if (validator instanceof FieldValidator) {
+                    fValidator = (FieldValidator) validator;
+                    fullFieldName = fValidator.getValidatorContext().getFullFieldName(fValidator.getFieldName());
 
-                if ((shortcircuitedFields != null) && shortcircuitedFields.contains(fullFieldName)) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Short-circuited, skipping");
+                    if ((shortcircuitedFields != null) && shortcircuitedFields.contains(fullFieldName)) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Short-circuited, skipping");
+                        }
+
+                        continue;
+                    }
+                }
+
+                if (validator instanceof ShortCircuitableValidator && ((ShortCircuitableValidator) validator).isShortCircuit()) {
+                    // get number of existing errors
+                    List errs = null;
+
+                    if (fValidator != null) {
+                        if (validatorContext.hasFieldErrors()) {
+                            Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fullFieldName);
+
+                            if (fieldErrors != null) {
+                                errs = new ArrayList(fieldErrors);
+                            }
+                        }
+                    } else if (validatorContext.hasActionErrors()) {
+                        Collection actionErrors = validatorContext.getActionErrors();
+
+                        if (actionErrors != null) {
+                            errs = new ArrayList(actionErrors);
+                        }
+                    }
+
+                    validator.validate(object);
+
+                    if (fValidator != null) {
+                        if (validatorContext.hasFieldErrors()) {
+                            Collection errCol = (Collection) validatorContext.getFieldErrors().get(fullFieldName);
+
+                            if ((errCol != null) && !errCol.equals(errs)) {
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug("Short-circuiting on field validation");
+                                }
+
+                                if (shortcircuitedFields == null) {
+                                    shortcircuitedFields = new TreeSet();
+                                }
+
+                                shortcircuitedFields.add(fullFieldName);
+                            }
+                        }
+                    } else if (validatorContext.hasActionErrors()) {
+                        Collection errCol = validatorContext.getActionErrors();
+
+                        if ((errCol != null) && !errCol.equals(errs)) {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("Short-circuiting");
+                            }
+
+                            break;
+                        }
                     }
 
                     continue;
                 }
-            }
-
-            if (validator instanceof ShortCircuitableValidator && ((ShortCircuitableValidator) validator).isShortCircuit()) {
-                // get number of existing errors
-                List errs = null;
-
-                if (fValidator != null) {
-                    if (validatorContext.hasFieldErrors()) {
-                        Collection fieldErrors = (Collection) validatorContext.getFieldErrors().get(fullFieldName);
-
-                        if (fieldErrors != null) {
-                            errs = new ArrayList(fieldErrors);
-                        }
-                    }
-                } else if (validatorContext.hasActionErrors()) {
-                    Collection actionErrors = validatorContext.getActionErrors();
-
-                    if (actionErrors != null) {
-                        errs = new ArrayList(actionErrors);
-                    }
-                }
 
                 validator.validate(object);
-
-                if (fValidator != null) {
-                    if (validatorContext.hasFieldErrors()) {
-                        Collection errCol = (Collection) validatorContext.getFieldErrors().get(fullFieldName);
-
-                        if ((errCol != null) && !errCol.equals(errs)) {
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug("Short-circuiting on field validation");
-                            }
-
-                            if (shortcircuitedFields == null) {
-                                shortcircuitedFields = new TreeSet();
-                            }
-
-                            shortcircuitedFields.add(fullFieldName);
-                        }
-                    }
-                } else if (validatorContext.hasActionErrors()) {
-                    Collection errCol = validatorContext.getActionErrors();
-
-                    if ((errCol != null) && !errCol.equals(errs)) {
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("Short-circuiting");
-                        }
-
-                        break;
-                    }
-                }
-
-                continue;
             }
-
-            validator.validate(object);
+            finally {
+                validator.setValidatorContext(null);
+            }
         }
     }
 
