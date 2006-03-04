@@ -250,9 +250,10 @@
 
         <clover-report>
             <historical outfile="${dist.docs}/clover" historyDir="${build.clover}">
-                <format type="html"/>
+                <format type="html" filter="logDebug,logIsDebugEnabled"/>
             </historical>
         </clover-report>
+        <clover-log filter="logDebug,logIsDebugEnabled"/>
     </target>
 
     <target name="junit.report" depends="test" description="generate junit reports" unless="skip.tests">
