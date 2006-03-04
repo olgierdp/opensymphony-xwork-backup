@@ -6,7 +6,7 @@ package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.MockActionInvocation;
+import com.opensymphony.xwork.mock.MockActionInvocation;
 import com.opensymphony.xwork.SimpleFooAction;
 import junit.framework.TestCase;
 
