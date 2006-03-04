@@ -88,7 +88,7 @@
     </target>
 
     <target name="junit-check" depends="init" unless="junit.available">
-        <fail message="Cannot run test cases. Please copy lib/build/junit-3.8.1.jar to ${ant.home}/lib"/>
+        <fail message="Cannot run test cases. Please copy lib/build/junit.jar to ${ant.home}/lib"/>
     </target>
 
     <target name="clover-check" depends="init" unless="clover.available">
@@ -166,6 +166,8 @@
 
         <mkdir dir="${build.clover}"/>
         <clover-setup initString="${build.clover}/coverage.db">
+            <statementContext name="logIsDebugEnabled" regexp="[\s]*if[\s]*\([\s]*(log|_log|LOG|_LOG)\.isDebugEnabled.*"/>
+            <statementContext name="logDebug" regexp="[\s]*(log|_log|LOG|_LOG)\.debug[\s]*\(.*"/>
             <files>
                 <exclude name="${src.test}/**/*.java"/>
             </files>
@@ -236,9 +238,10 @@
     <target name="clover.report" depends="test" description="generate coverage reports" unless="skip.tests">
         <clover-report>
             <current outfile="${dist.docs}/clover">
-                <format type="html"/>
+                <format type="html" filter="logDebug,logIsDebugEnabled"/>
             </current>
         </clover-report>
+        <clover-log filter="logDebug,logIsDebugEnabled"/>
     </target>
 
     <target name="clover.historical" depends="clover.report" description="generate coverage historical reports"
