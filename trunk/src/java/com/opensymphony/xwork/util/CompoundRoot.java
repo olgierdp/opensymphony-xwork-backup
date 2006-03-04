@@ -9,6 +9,8 @@ import java.util.List;
 
 
 /**
+ * A Stack that is implemented using a List.
+ * 
  * @author plightbo
  * @version $Revision$
  */

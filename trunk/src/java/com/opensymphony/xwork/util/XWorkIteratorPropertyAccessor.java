@@ -12,9 +12,7 @@ import java.util.Map;
 
 
 /**
- * User: plightbo
- * Date: Nov 13, 2003
- * Time: 7:12:22 AM
+ * @author plightbo
  */
 public class XWorkIteratorPropertyAccessor extends IteratorPropertyAccessor {
 

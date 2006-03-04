@@ -8,9 +8,9 @@ package com.opensymphony.xwork.util;
 import com.uwyn.rife.continuations.ContinuationConfig;
 
 /**
- * User: patrick
- * Date: Sep 22, 2005
- * Time: 7:39:30 AM
+ * RIFE Continuation configuration.
+ *
+ * @author patrick
  */
 public class XWorkContinuationConfig extends ContinuationConfig {
     public static final String CONTINUE_PARAM = "__continue";

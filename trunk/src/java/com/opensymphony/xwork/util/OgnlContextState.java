@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Gabe
- *
  * Manages variables in the OgnlContext and returns values
  * to be used by the application.
+ *
+ * @author Gabe
  */
 public class OgnlContextState {
 
@@ -63,13 +63,15 @@ public class OgnlContextState {
 		context.put(XWorkConverter.LAST_BEAN_CLASS_ACCESSED, clazz);
 	}
 	/**
-	 * <p>Gets the current property path but not completely.
+	 * Gets the current property path but not completely.
 	 * It does not use the [ and ] used in some representations
 	 * of Maps and Lists. The reason for this is that the current
 	 * property path is only currently used for caching purposes
-	 * so there is no real reason to have an exact replica
-	 * <p>So if the real path is myProp.myMap['myKey'] this would
+	 * so there is no real reason to have an exact replica.
+     *
+	 * <p/>So if the real path is myProp.myMap['myKey'] this would
 	 * return myProp.myMap.myKey.
+     * 
 	 * @param context
 	 */
 	public static String getCurrentPropertyPath(Map context) {

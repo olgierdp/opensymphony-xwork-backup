@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Overrides the list property accessor so in the case of trying
+ * to add properties of a given bean and the JavaBean is not present,
+ * this class will create the necessary blank JavaBeans.
+ *
  * @author Gabriel Zimmerman
- *         <p/>
- *         Overrides the list property accessor so in the case of trying
- *         to add properties of a given bean and the JavaBean is not present,
- *         this class will create the necessary blank JavaBeans.
  */
 public class XWorkListPropertyAccessor extends ListPropertyAccessor {
 

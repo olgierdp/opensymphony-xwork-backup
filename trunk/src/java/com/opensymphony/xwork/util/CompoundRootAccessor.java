@@ -16,6 +16,8 @@ import java.util.Map;
 
 
 /**
+ * A stack that is able to call methods on objects in the stack.
+ *
  * @author $Author$
  * @author Rainer Hermanns
  * @version $Revision$

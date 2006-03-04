@@ -12,6 +12,10 @@ import ognl.PropertyAccessor;
 import java.util.Map;
 
 /**
+ * Is able to access (set/get) properties on a given object.
+ * <p/>
+ * Uses Ognl internal.
+ *
  * @author Gabe
  */
 public class ObjectProxyPropertyAccessor implements PropertyAccessor {
