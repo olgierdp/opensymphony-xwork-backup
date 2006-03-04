@@ -53,29 +53,24 @@ public class ParametersInterceptorTest extends TestCase {
         assertEquals(expected, actual);
     }
 
-    public void testDoesNotAllowMethodInvocations() {
+    public void testDoesNotAllowMethodInvocations() throws Exception {
         Map params = new HashMap();
         params.put("@java.lang.System@exit(1).dummy", "dumb value");
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
 
-        try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.MODEL_DRIVEN_PARAM_TEST, extraContext);
-            assertEquals(Action.SUCCESS, proxy.execute());
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.MODEL_DRIVEN_PARAM_TEST, extraContext);
+        assertEquals(Action.SUCCESS, proxy.execute());
 
-            ModelDrivenAction action = (ModelDrivenAction) proxy.getAction();
-            TestBean model = (TestBean) action.getModel();
+        ModelDrivenAction action = (ModelDrivenAction) proxy.getAction();
+        TestBean model = (TestBean) action.getModel();
 
-            String property = System.getProperty("webwork.security.test");
-            assertNull(property);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
+        String property = System.getProperty("webwork.security.test");
+        assertNull(property);
     }
 
-    public void testModelDrivenParameters() {
+    public void testModelDrivenParameters() throws Exception {
         Map params = new HashMap();
         final String fooVal = "com.opensymphony.xwork.interceptor.ParametersInterceptorTest.foo";
         params.put("foo", fooVal);
@@ -87,22 +82,17 @@ public class ParametersInterceptorTest extends TestCase {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
 
-        try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.MODEL_DRIVEN_PARAM_TEST, extraContext);
-            assertEquals(Action.SUCCESS, proxy.execute());
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.MODEL_DRIVEN_PARAM_TEST, extraContext);
+        assertEquals(Action.SUCCESS, proxy.execute());
 
-            ModelDrivenAction action = (ModelDrivenAction) proxy.getAction();
-            TestBean model = (TestBean) action.getModel();
-            assertEquals(nameVal, model.getName());
-            assertEquals(15, model.getCount());
-            assertEquals(fooVal, action.getFoo());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
+        ModelDrivenAction action = (ModelDrivenAction) proxy.getAction();
+        TestBean model = (TestBean) action.getModel();
+        assertEquals(nameVal, model.getName());
+        assertEquals(15, model.getCount());
+        assertEquals(fooVal, action.getFoo());
     }
 
-    public void testParametersDoesNotAffectSession() {
+    public void testParametersDoesNotAffectSession() throws Exception {
         Map params = new HashMap();
         params.put("blah", "This is blah");
         params.put("#session.foo", "Foo");
@@ -110,38 +100,28 @@ public class ParametersInterceptorTest extends TestCase {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
 
-        try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
-            OgnlValueStack stack = proxy.getInvocation().getStack();
-            HashMap session = new HashMap();
-            stack.getContext().put("session", session);
-            proxy.execute();
-            assertEquals("This is blah", ((SimpleAction) proxy.getAction()).getBlah());
-            assertNull(session.get("foo"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
+        OgnlValueStack stack = proxy.getInvocation().getStack();
+        HashMap session = new HashMap();
+        stack.getContext().put("session", session);
+        proxy.execute();
+        assertEquals("This is blah", ((SimpleAction) proxy.getAction()).getBlah());
+        assertNull(session.get("foo"));
     }
 
-    public void testParameters() {
+    public void testParameters() throws Exception {
         Map params = new HashMap();
         params.put("blah", "This is blah");
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
 
-        try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
-            proxy.execute();
-            assertEquals("This is blah", ((SimpleAction) proxy.getAction()).getBlah());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
+        proxy.execute();
+        assertEquals("This is blah", ((SimpleAction) proxy.getAction()).getBlah());
     }
 
-    public void testNonexistentParametersGetLoggedInDevMode() {
+    public void testNonexistentParametersGetLoggedInDevMode() throws Exception {
         Map params = new HashMap();
         params.put("not_a_property", "There is no action property named like this");
 
@@ -149,18 +129,13 @@ public class ParametersInterceptorTest extends TestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
         extraContext.put(ActionContext.DEV_MODE, Boolean.TRUE);
 
-        try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
-            proxy.execute();
-            final String actionMessage = ""+((SimpleAction) proxy.getAction()).getActionMessages().toArray()[0];
-            assertTrue(actionMessage.indexOf("No object in the CompoundRoot has a property named 'not_a_property'")>-1);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
+        proxy.execute();
+        final String actionMessage = ""+((SimpleAction) proxy.getAction()).getActionMessages().toArray()[0];
+        assertTrue(actionMessage.indexOf("No object in the CompoundRoot has a property named 'not_a_property'")>-1);
     }
 
-    public void testNonexistentParametersAreIgnoredInProductionMode() {
+    public void testNonexistentParametersAreIgnoredInProductionMode() throws Exception {
         Map params = new HashMap();
         params.put("not_a_property", "There is no action property named like this");
 
@@ -168,14 +143,13 @@ public class ParametersInterceptorTest extends TestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
         extraContext.put(ActionContext.DEV_MODE, Boolean.FALSE);
 
-        try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
-            proxy.execute();
-            assertTrue(((SimpleAction) proxy.getAction()).getActionMessages().isEmpty());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
+        proxy.execute();
+        assertTrue(((SimpleAction) proxy.getAction()).getActionMessages().isEmpty());
+    }
+
+    public void testGetParameters() {
+        
     }
 
     protected void setUp() throws Exception {

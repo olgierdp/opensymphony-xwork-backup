@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.validator;
@@ -32,7 +32,7 @@ public class StringValidatorTest extends TestCase {
 	}
 	
 	
-    public void testRequiredString() throws ValidationException {
+    public void testRequiredString() throws Exception {
         Equidae equidae = new Equidae();
 
         // everything should fail
@@ -63,113 +63,109 @@ public class StringValidatorTest extends TestCase {
         assertEquals("trim", (String) errors.get(0));
     }
 
-    public void testStringLength() {
-        try {
-            Equidae equidae = new Equidae();
+    public void testStringLength() throws Exception {
+        Equidae equidae = new Equidae();
 
-            equidae.setCow("asdf");
-            equidae.setDonkey("asdf");
-            ActionContext.getContext().getValueStack().push(equidae);
+        equidae.setCow("asdf");
+        equidae.setDonkey("asdf");
+        ActionContext.getContext().getValueStack().push(equidae);
 
-            DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
-            ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
-            assertTrue(context.hasFieldErrors());
+        DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
+        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+        assertTrue(context.hasFieldErrors());
 
-            Map fieldErrors = context.getFieldErrors();
+        Map fieldErrors = context.getFieldErrors();
 
-            // cow
-            assertTrue(fieldErrors.containsKey("cow"));
+        // cow
+        assertTrue(fieldErrors.containsKey("cow"));
 
-            List errors = (List) fieldErrors.get("cow");
-            assertEquals(2, errors.size());
-            assertEquals("noTrim-min5", errors.get(0));
-            assertEquals("noTrim-min5-max10", errors.get(1));
+        List errors = (List) fieldErrors.get("cow");
+        assertEquals(2, errors.size());
+        assertEquals("noTrim-min5", errors.get(0));
+        assertEquals("noTrim-min5-max10", errors.get(1));
 
-            // donkey
-            assertTrue(fieldErrors.containsKey("donkey"));
-            errors = (List) fieldErrors.get("donkey");
-            assertEquals(2, errors.size());
-            assertEquals("trim-min5", errors.get(0));
-            assertEquals("trim-min5-max10", errors.get(1));
+        // donkey
+        assertTrue(fieldErrors.containsKey("donkey"));
+        errors = (List) fieldErrors.get("donkey");
+        assertEquals(2, errors.size());
+        assertEquals("trim-min5", errors.get(0));
+        assertEquals("trim-min5-max10", errors.get(1));
 
-            equidae.setCow("asdf  ");
-            equidae.setDonkey("asdf  ");
-            ActionContext.getContext().getValueStack().push(equidae);
-            context = new DelegatingValidatorContext(new ValidationAwareSupport());
-            ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
-            assertTrue(context.hasFieldErrors());
+        equidae.setCow("asdf  ");
+        equidae.setDonkey("asdf  ");
+        ActionContext.getContext().getValueStack().push(equidae);
+        context = new DelegatingValidatorContext(new ValidationAwareSupport());
+        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+        assertTrue(context.hasFieldErrors());
 
-            fieldErrors = context.getFieldErrors();
+        fieldErrors = context.getFieldErrors();
 
-            // cow
-            assertFalse(fieldErrors.containsKey("cow"));
+        // cow
+        assertFalse(fieldErrors.containsKey("cow"));
 
-            // donkey
-            assertTrue(fieldErrors.containsKey("donkey"));
-            errors = (List) fieldErrors.get("donkey");
-            assertEquals(2, errors.size());
-            assertEquals("trim-min5", errors.get(0));
-            assertEquals("trim-min5-max10", errors.get(1));
+        // donkey
+        assertTrue(fieldErrors.containsKey("donkey"));
+        errors = (List) fieldErrors.get("donkey");
+        assertEquals(2, errors.size());
+        assertEquals("trim-min5", errors.get(0));
+        assertEquals("trim-min5-max10", errors.get(1));
 
-            equidae.setCow("asdfasdf");
-            equidae.setDonkey("asdfasdf");
-            ActionContext.getContext().getValueStack().push(equidae);
-            context = new DelegatingValidatorContext(new ValidationAwareSupport());
-            ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
-            assertTrue(context.hasFieldErrors());
+        equidae.setCow("asdfasdf");
+        equidae.setDonkey("asdfasdf");
+        ActionContext.getContext().getValueStack().push(equidae);
+        context = new DelegatingValidatorContext(new ValidationAwareSupport());
+        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+        assertTrue(context.hasFieldErrors());
 
-            fieldErrors = context.getFieldErrors();
+        fieldErrors = context.getFieldErrors();
 
-            // cow
-            assertFalse(fieldErrors.containsKey("cow"));
+        // cow
+        assertFalse(fieldErrors.containsKey("cow"));
 
-            // donkey
-            assertFalse(fieldErrors.containsKey("donkey"));
+        // donkey
+        assertFalse(fieldErrors.containsKey("donkey"));
 
-            equidae.setCow("asdfasdf   ");
-            equidae.setDonkey("asdfasdf   ");
-            ActionContext.getContext().getValueStack().push(equidae);
-            context = new DelegatingValidatorContext(new ValidationAwareSupport());
-            ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
-            assertTrue(context.hasFieldErrors());
+        equidae.setCow("asdfasdf   ");
+        equidae.setDonkey("asdfasdf   ");
+        ActionContext.getContext().getValueStack().push(equidae);
+        context = new DelegatingValidatorContext(new ValidationAwareSupport());
+        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+        assertTrue(context.hasFieldErrors());
 
-            fieldErrors = context.getFieldErrors();
+        fieldErrors = context.getFieldErrors();
 
-            // cow
-            assertTrue(fieldErrors.containsKey("cow"));
-            errors = (List) fieldErrors.get("cow");
-            assertEquals(2, errors.size());
-            assertEquals("noTrim-min5-max10", errors.get(0));
-            assertEquals("noTrim-max10", errors.get(1));
+        // cow
+        assertTrue(fieldErrors.containsKey("cow"));
+        errors = (List) fieldErrors.get("cow");
+        assertEquals(2, errors.size());
+        assertEquals("noTrim-min5-max10", errors.get(0));
+        assertEquals("noTrim-max10", errors.get(1));
 
-            // donkey
-            assertFalse(fieldErrors.containsKey("donkey"));
+        // donkey
+        assertFalse(fieldErrors.containsKey("donkey"));
 
-            equidae.setCow("asdfasdfasdf");
-            equidae.setDonkey("asdfasdfasdf");
-            ActionContext.getContext().getValueStack().push(equidae);
-            context = new DelegatingValidatorContext(new ValidationAwareSupport());
-            ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
-            assertTrue(context.hasFieldErrors());
+        equidae.setCow("asdfasdfasdf");
+        equidae.setDonkey("asdfasdfasdf");
+        ActionContext.getContext().getValueStack().push(equidae);
+        context = new DelegatingValidatorContext(new ValidationAwareSupport());
+        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+        assertTrue(context.hasFieldErrors());
 
-            fieldErrors = context.getFieldErrors();
+        fieldErrors = context.getFieldErrors();
 
-            // cow
-            assertTrue(fieldErrors.containsKey("cow"));
-            errors = (List) fieldErrors.get("cow");
-            assertEquals(2, errors.size());
-            assertEquals("noTrim-min5-max10", errors.get(0));
-            assertEquals("noTrim-max10", errors.get(1));
+        // cow
+        assertTrue(fieldErrors.containsKey("cow"));
+        errors = (List) fieldErrors.get("cow");
+        assertEquals(2, errors.size());
+        assertEquals("noTrim-min5-max10", errors.get(0));
+        assertEquals("noTrim-max10", errors.get(1));
 
-            // donkey
-            assertTrue(fieldErrors.containsKey("donkey"));
-            errors = (List) fieldErrors.get("donkey");
-            assertEquals(2, errors.size());
-            assertEquals("trim-min5-max10", errors.get(0));
-            assertEquals("trim-max10", errors.get(1));
-        } catch (Exception ex) {
-            fail(ex.getMessage());
-        }
+        // donkey
+        assertTrue(fieldErrors.containsKey("donkey"));
+        errors = (List) fieldErrors.get("donkey");
+        assertEquals(2, errors.size());
+        assertEquals("trim-min5-max10", errors.get(0));
+        assertEquals("trim-max10", errors.get(1));
     }
 
     protected void setUp() throws Exception {
