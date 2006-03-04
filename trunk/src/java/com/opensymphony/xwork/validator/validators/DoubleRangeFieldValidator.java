@@ -24,7 +24,7 @@ not be checked) </li>
  *                 <li>minExclusive - the minimum exclusive value in FloatValue format specified by Java language (if none is specified, it will
 not be checked) </li>
  *                 <li>maxExclusive - the maximum exclusive value in FloatValue format specified by Java language (if none is specified, it will
-not be checked) </li> *
+not be checked) </li>
  * </ul>
  * <!-- END SNIPPET: parameters -->
  *

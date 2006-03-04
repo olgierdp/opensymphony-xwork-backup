@@ -8,11 +8,10 @@ import com.opensymphony.xwork.validator.ValidationException;
 
 
 /**
- * <p>
  * <!-- START SNIPPET: javadoc -->
  * Validates a field using an OGNL expression.
  * <!-- END SNIPPET: javadoc -->
- * </P>
+ * <p/>
  * 
  * <!-- START SNIPPET: parameters -->
  * <ul>

@@ -8,9 +8,8 @@ package com.opensymphony.xwork.interceptor.component;
 import java.util.Set;
 
 /**
- * User: plightbo
- * Date: Aug 9, 2005
- * Time: 10:37:30 PM
+ * @author plightbo
+ * @deprecated WebWork's IoC has been deprecated, please use an alternative such as Spring.
  */
 public interface ResourceAware {
     Set getDependentResources();

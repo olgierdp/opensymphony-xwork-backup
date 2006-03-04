@@ -9,14 +9,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.LinkedHashMap;
 
 
 /**
- * User: Mike
- * Date: May 6, 2003
- * Time: 12:12:03 PM
+ * XML utilities.
+ *
+ * @author Mike
  */
 public class XmlHelper {
 

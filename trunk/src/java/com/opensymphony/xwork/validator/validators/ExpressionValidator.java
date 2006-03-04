@@ -8,11 +8,10 @@ import com.opensymphony.xwork.validator.ValidationException;
 
 
 /**
- * <p>
  * <!-- START SNIPPET: javadoc -->
  * A Non-Field Level validator that validates based on regular expression supplied.
  * <!-- END SNIPPET: javadoc -->
- * </p>
+ * <p/>
  * 
  * <!-- START SNIPPET: parameters -->
  * <ul>
@@ -31,10 +30,8 @@ import com.opensymphony.xwork.validator.ValidationException;
  *     &lt;/validators&gt;
  * <!-- END SNIPPET: example -->
  * </pre>
- * 
  *
  * @author Jason Carreira
- *         Created Feb 15, 2003 9:59:04 PM
  */
 public class ExpressionValidator extends ValidatorSupport {
 

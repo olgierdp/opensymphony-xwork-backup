@@ -10,10 +10,9 @@ import junit.framework.Assert;
 
 
 /**
- * MockInterceptor
+ * Mock for an {@link com.opensymphony.xwork.interceptor.Interceptor}.
  *
  * @author Jason Carreira
- *         Created Apr 21, 2003 9:04:06 PM
  */
 public class MockInterceptor implements Interceptor {
 
@@ -97,10 +96,6 @@ public class MockInterceptor implements Interceptor {
     /**
      * Allows the Interceptor to do some processing on the request before and/or after the rest of the processing of the
      * request by the DefaultActionInvocation or to short-circuit the processing and just return a String return code.
-     *
-     * @param invocation
-     * @return
-     * @throws Exception
      */
     public String intercept(ActionInvocation invocation) throws Exception {
         executed = true;

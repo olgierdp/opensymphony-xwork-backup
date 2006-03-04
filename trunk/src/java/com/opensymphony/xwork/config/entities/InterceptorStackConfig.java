@@ -13,11 +13,11 @@ import java.io.Serializable;
 
 
 /**
- * Created by IntelliJ IDEA.
- * User: Mike
- * Date: May 6, 2003
- * Time: 2:41:35 PM
- * To change this template use Options | File Templates.
+ * Configuration for InterceptorStack.
+ * <p/>
+ * In the xml configuration file this is defined as the <code>interceptor-stack</code> tag.
+ *
+ * @author Mike
  */
 public class InterceptorStackConfig implements InterceptorListHolder, Serializable {
 

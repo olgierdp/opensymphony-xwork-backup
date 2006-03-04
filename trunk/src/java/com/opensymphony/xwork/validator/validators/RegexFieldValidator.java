@@ -8,11 +8,10 @@ package com.opensymphony.xwork.validator.validators;
 import com.opensymphony.xwork.validator.ValidationException;
 
 /**
- * <p>
  * <!-- START SNIPPET: javadoc -->
  * Validates a string field using a regular expression.
  * <!-- END SNIPPET: javadoc -->
- * </p>
+ * <p/>
  * 
  * 
  * <!-- START SNIPPET: parameters -->
@@ -46,6 +45,7 @@ import com.opensymphony.xwork.validator.ValidationException;
  * @version $Date$ $Revision$
  */
 public class RegexFieldValidator extends FieldValidatorSupport {
+    
     private String expression;
 
     public void validate(Object object) throws ValidationException {

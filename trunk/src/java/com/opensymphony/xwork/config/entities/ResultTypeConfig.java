@@ -5,13 +5,14 @@
 package com.opensymphony.xwork.config.entities;
 
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.LinkedHashMap;
 import java.io.Serializable;
 
 
 /**
  * Configuration class for result types.
+ * <p/>
+ * In the xml configuration file this is defined as the <code>result-type</code> tag.
  *
  * @author Mike
  * @author Rainer Hermanns

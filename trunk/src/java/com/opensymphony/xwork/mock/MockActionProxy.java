@@ -10,9 +10,12 @@ import com.opensymphony.xwork.ActionProxy;
 import com.opensymphony.xwork.ActionInvocation;
 
 /**
+ * Mock for an {@link ActionProxy}.
+ * 
  * @author Patrick Lightbody (plightbo at gmail dot com)
  */
 public class MockActionProxy implements ActionProxy {
+    
     Object action;
     String actionName;
     ActionConfig config;

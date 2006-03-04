@@ -8,12 +8,11 @@ import java.util.Date;
 
 
 /**
- * <p>
  * <!-- START SNIPPET: javadoc -->
  * Field Validator that checks if the date supplied is within a specific range.
  * <!-- END SNIPPET: javadoc -->
- * </p>
- * 
+ * <p/>
+ *
  * <!-- START SNIPPET: parameters -->
  * <ul>
  * 		<li>fieldName - The field name this validator is validating. Required if using Plain-Validator Syntax otherwise not required</li>

@@ -21,10 +21,10 @@ import java.util.Map;
 
 
 /**
- * @author Ross
- * 
  * Resolves an xwork external-ref references to a component available from Spring application
- * context
+ * context.
+ *
+ * @author Ross
  */
 public class SpringExternalReferenceResolver implements
         ExternalReferenceResolver, ApplicationContextAware 
@@ -98,8 +98,7 @@ public class SpringExternalReferenceResolver implements
 
     //TODO find a utility class that does this or put it in a utility class
     //TODO We will also want to cache this info somewhere so we dont execute
-    // each time
-    //a request is made
+    //     each time a request is made
     private Class[] getParameterTypes(Object bean, String methodName) {
         if(!methodName.startsWith("set")) {
             methodName = "set" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);

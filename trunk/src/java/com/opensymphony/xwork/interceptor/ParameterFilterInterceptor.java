@@ -10,8 +10,6 @@ import com.opensymphony.xwork.ActionInvocation;
 import java.util.*;
 
 /**
- * @author Gabe
- * 
  * <!-- START SNIPPET: description -->
  *
  * <p>The Parameter Filter Interceptor blocks parameters from getting
@@ -54,9 +52,9 @@ import java.util.*;
  * because 'person' is in the blocked list. However, person.address.street
  * and person.address.city would be allowed because person.address is
  * in the allowed list (the longer string determines permissions).</p> 
- * 
- *
  * <!-- END SNIPPET: parameters -->
+ *
+ * @author Gabe
  */
 public class ParameterFilterInterceptor implements Interceptor {
 
@@ -68,21 +66,12 @@ public class ParameterFilterInterceptor implements Interceptor {
 
     private boolean defaultBlock = false;
 
-    /* (non-Javadoc)
-    * @see com.opensymphony.xwork.interceptor.Interceptor#destroy()
-    */
     public void destroy() {
     }
 
-    /* (non-Javadoc)
-     * @see com.opensymphony.xwork.interceptor.Interceptor#init()
-     */
     public void init() {
     }
 
-    /* (non-Javadoc)
-     * @see com.opensymphony.xwork.interceptor.Interceptor#intercept(com.opensymphony.xwork.ActionInvocation)
-     */
     public String intercept(ActionInvocation invocation) throws Exception {
 
         Map parameters = invocation.getInvocationContext().getParameters();
@@ -196,7 +185,6 @@ public class ParameterFilterInterceptor implements Interceptor {
     }
 
     public void setAllowed(String allowed) {
-
         setAllowed(asCollection(allowed));
     }
 

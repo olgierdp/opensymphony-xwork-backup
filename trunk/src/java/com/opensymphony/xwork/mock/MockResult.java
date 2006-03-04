@@ -8,6 +8,8 @@ import com.opensymphony.xwork.Result;
 import com.opensymphony.xwork.ActionInvocation;
 
 /**
+ * Mock for a {@link Result}.
+ *
  * @author Mike
  * @author Rainer Hermanns
  */

@@ -12,23 +12,18 @@ import java.util.Map;
 
 
 /**
- * <p>
  * <!-- START SNIPPET: javadoc -->
  * Field Validator that checks if a conversion error occured for this field.
  * <!-- END SNIPPET: javadoc -->
- * </p>
- * 
- * 
- * <pre>
+ * <p/>
  * <!-- START SNIPPET: parameters -->
  * <ul>
  *     <li>fieldName - The field name this validator is validating. Required if using Plain-Validator Syntax otherwise not required</li>
  * </ul>
  * <!-- END SNIPPET: parameters -->
- * </pre>
- * 
- * 
+ *
  * <!-- START SNIPPET: example -->
+ * <pre>
  *     &lt;!-- Plain Validator Syntax --&gt;
  *     &lt;validator type="conversion"&gt;
  *     		&lt;param name="fieldName"&gt;myField&lt;/param&gt;
@@ -41,11 +36,10 @@ import java.util.Map;
  *           &lt;message&gt;Conversion Error Occurred&lt;/message&gt;
  *        &lt;/field-validator&gt;
  *     &lt;/field&gt;
+ * </pre>
  * <!-- END SNIPPET: example -->
- * 
  *
  * @author Jason Carreira
- *         Date: Nov 28, 2003 1:58:49 PM
  */
 public class ConversionErrorFieldValidator extends FieldValidatorSupport {
 

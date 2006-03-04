@@ -12,11 +12,12 @@ import com.opensymphony.xwork.util.XWorkConverter;
 import junit.framework.TestCase;
 
 /**
- * User: plightbo
- * Date: Feb 8, 2005
- * Time: 8:13:51 AM
+ * Base JUnit TestCase to extend for XWork specific unit tests.
+ *
+ * @author plightbo
  */
 public abstract class XWorkTestCase extends TestCase {
+    
     protected void setUp() throws Exception {
         // Reset the value stack
         OgnlValueStack stack = new OgnlValueStack();

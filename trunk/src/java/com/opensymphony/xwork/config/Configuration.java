@@ -11,9 +11,9 @@ import java.util.Set;
 
 
 /**
- * User: Mike
- * Date: May 6, 2003
- * Time: 3:13:55 PM
+ * XWork configuration.
+ *
+ * @author Mike
  */
 public interface Configuration {
 
@@ -26,8 +26,8 @@ public interface Configuration {
     Map getPackageConfigs();
 
     /**
-     * the current runtime configuration.  currently, if changes have been made to the Configuration since the last
-     * time buildRuntimeConfiguration() was called, you'll need to make sure to
+     * The current runtime configuration. Currently, if changes have been made to the Configuration since the last
+     * time buildRuntimeConfiguration() was called, you'll need to make sure to.
      *
      * @return the current runtime configuration
      */
@@ -36,13 +36,10 @@ public interface Configuration {
     void addPackageConfig(String name, PackageConfig packageConfig);
 
     /**
-     * allow the Configuration to clean up any resources that have been used
+     * Allow the Configuration to clean up any resources that have been used.
      */
     void destroy();
 
-    /**
-     * @throws ConfigurationException
-     */
     void reload() throws ConfigurationException;
 
     void removePackageConfig(String name);

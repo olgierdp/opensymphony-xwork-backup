@@ -8,35 +8,24 @@ import com.opensymphony.xwork.XworkException;
 
 
 /**
+ * Exception when a reference can't be resolved.
+ *
  * @author Mike
  */
 public class ReferenceResolverException extends XworkException {
 
-    /**
-     *
-     */
     public ReferenceResolverException() {
         super();
     }
 
-    /**
-     * @param s
-     */
     public ReferenceResolverException(String s) {
         super(s);
     }
 
-    /**
-     * @param s
-     * @param cause
-     */
     public ReferenceResolverException(String s, Throwable cause) {
         super(s, cause);
     }
 
-    /**
-     * @param cause
-     */
     public ReferenceResolverException(Throwable cause) {
         super(cause);
     }

@@ -8,11 +8,10 @@ import com.opensymphony.xwork.validator.ValidationException;
 
 
 /**
- * <p>
  * <!-- START SNIPPET: javadoc -->
  * RequiredFieldValidator checks if the specified field is not null.
  * <!-- END SNIPPET: javadoc -->
- * </p>
+ * <p/>
  * 
  * 
  * <!-- START SNIPPET: parameters -->
@@ -46,7 +45,7 @@ import com.opensymphony.xwork.validator.ValidationException;
  * 
  * 
  *
- * @author $Author$
+ * @author rainerh
  * @version $Revision$
  */
 public class RequiredFieldValidator extends FieldValidatorSupport {

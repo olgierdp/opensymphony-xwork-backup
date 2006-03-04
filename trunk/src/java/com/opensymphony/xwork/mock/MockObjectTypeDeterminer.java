@@ -1,15 +1,15 @@
 /*
- * Created on Dec 12, 2005
- *
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
  */
 package com.opensymphony.xwork.mock;
 
 import com.opensymphony.xwork.util.ObjectTypeDeterminer;
 
 /**
- * @author Gabe
+ * Mocks the function of an ObjectTypeDeterminer for testing purposes.
  *
- * Mocks the function of an ObjectTypeDeterminer for testing purposes
+ * @author Gabe
  */
 public class MockObjectTypeDeterminer implements ObjectTypeDeterminer {
 
@@ -36,36 +36,20 @@ public class MockObjectTypeDeterminer implements ObjectTypeDeterminer {
         this.shouldCreateIfNew = shouldCreateIfNew;
     }
 
-    /* (non-Javadoc)
-    * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getKeyClass(java.lang.Class, java.lang.String)
-    */
     public Class getKeyClass(Class parentClass, String property) {
-
         return getKeyClass();
     }
 
-    /* (non-Javadoc)
-     * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getElementClass(java.lang.Class, java.lang.String, java.lang.Object)
-     */
     public Class getElementClass(Class parentClass, String property, Object key) {
-
         return getElementClass();
     }
 
-    /* (non-Javadoc)
-     * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getKeyProperty(java.lang.Class, java.lang.String)
-     */
     public String getKeyProperty(Class parentClass, String property) {
-
         return getKeyProperty();
     }
 
-    /* (non-Javadoc)
-     * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#shouldCreateIfNew(java.lang.Class, java.lang.String, java.lang.Object, java.lang.String, boolean)
-     */
     public boolean shouldCreateIfNew(Class parentClass, String property,
                                      Object target, String keyProperty, boolean isIndexAccessed) {
-
         return isShouldCreateIfNew();
     }
 

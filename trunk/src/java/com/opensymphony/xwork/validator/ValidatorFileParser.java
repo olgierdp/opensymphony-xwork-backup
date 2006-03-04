@@ -23,7 +23,7 @@ import java.util.Map;
 
 
 /**
- * Parse the validation file (eg. MyAction-validation.xml, MyAction-actionAlias-validation.xml)
+ * Parse the validation file. (eg. MyAction-validation.xml, MyAction-actionAlias-validation.xml)
  * to return a List of ValidatorConfig encapsulating the validator information.
  *
  * @author Jason Carreira

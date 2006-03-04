@@ -8,14 +8,13 @@ import com.opensymphony.xwork.validator.FieldValidator;
 
 
 /**
- * FieldValidatorSupport
- * <p/>
- * Created : Jan 20, 2003 4:08:40 PM
+ * Base class for field validators.
  *
  * @author Jason Carreira
  */
 public abstract class FieldValidatorSupport extends ValidatorSupport implements FieldValidator {
-    private String fieldName = null;
+
+    private String fieldName;
     private String type;
 
     public void setFieldName(String fieldName) {

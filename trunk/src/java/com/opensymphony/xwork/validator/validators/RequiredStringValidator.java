@@ -8,14 +8,13 @@ import com.opensymphony.xwork.validator.ValidationException;
 
 
 /**
- * <p>
  * <!-- START SNIPPET: javadoc -->
- * RequiredStringValidator checks that a String field is non-null and has a length > 0
+ * RequiredStringValidator checks that a String field is non-null and has a length > 0.
  * (i.e. it isn't "").  The "trim" parameter determines whether it will {@link String#trim() trim}
  * the String before performing the length check.  If unspecified, the String will be trimmed.
  * <!-- END SNIPPET: javadoc -->
- * </p>
- * 
+ * <p/>
+ *
  * <!-- START SNIPPET: parameters -->
  * <ul>
  * 		<li>fieldName - The field name this validator is validating. Required if using Plain-Validator Syntax otherwise not required</li>
@@ -45,7 +44,7 @@ import com.opensymphony.xwork.validator.ValidationException;
  * <!-- END SNIPPET: examples -->
  * </pre>
  * 
- * @author $author$
+ * @author rainerh
  * @version $Date$ $Id$
  */
 public class RequiredStringValidator extends FieldValidatorSupport {

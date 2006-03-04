@@ -5,17 +5,16 @@
 package com.opensymphony.xwork.config.entities;
 
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.LinkedHashMap;
 import java.io.Serializable;
 
 
 /**
- * Created by IntelliJ IDEA.
- * User: Mike
- * Date: May 6, 2003
- * Time: 1:21:06 PM
- * To change this template use Options | File Templates.
+ * Configuration for Result.
+ * <p/>
+ * In the xml configuration file this is defined as the <code>result</code> tag.
+ * 
+ * @author Mike
  */
 public class ResultConfig implements Parameterizable, Serializable {
 

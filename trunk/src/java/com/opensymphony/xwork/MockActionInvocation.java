@@ -9,11 +9,12 @@ import com.opensymphony.xwork.interceptor.PreResultListener;
 import com.opensymphony.xwork.util.OgnlValueStack;
 
 /**
- * User: plightbo
- * Date: Sep 10, 2005
- * Time: 9:53:36 PM
+ * Mock for an {@link ActionInvocation}.
+ *
+ * @author plightbo
  */
 public class MockActionInvocation implements ActionInvocation {
+    
     private Object action;
     private ActionContext invocationContext;
     private ActionProxy proxy;

@@ -18,9 +18,9 @@ import java.util.Map;
 
 
 /**
- * User: Mike
- * Date: May 6, 2003
- * Time: 9:45:43 AM
+ * Builds a list of interceptors referenced by the refName in the supplied PackageConfig.
+ * 
+ * @author Mike
  */
 public class InterceptorBuilder {
 

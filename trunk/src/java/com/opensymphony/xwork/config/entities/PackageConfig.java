@@ -14,7 +14,11 @@ import java.io.Serializable;
 
 
 /**
- * @author $Author$
+ * Configuration for Package.
+ * <p/>
+ * In the xml configuration file this is defined as the <code>package</code> tag.
+ *
+ * @author Rainer Hermanns
  * @version $Revision$
  */
 public class PackageConfig implements Comparable, Serializable {

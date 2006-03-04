@@ -16,11 +16,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * SpringProxyableObjectFactory
+ * SpringProxyableObjectFactory.
  *
- * @author Jason Carreira <jcarreira@eplus.com>
+ * @author Jason Carreira
  */
 public class SpringProxyableObjectFactory extends SpringObjectFactory {
+    
     private static final Log log = LogFactory.getLog(SpringProxyableObjectFactory.class);
 
     private List skipBeanNames = new ArrayList();
@@ -71,9 +72,10 @@ public class SpringProxyableObjectFactory extends SpringObjectFactory {
     /**
      * Subclasses may override this to return a different application context.
      * Note that this application context should see any changes made to the
-     * {@link #autoWiringFactory}, so the application context should be either
+     * <code>autoWiringFactory</code>, so the application context should be either
      * the original or a child context of the original.
-     * @param context
+     *
+     * @param context  provided context.
      */
     protected ApplicationContext getApplicationContext(Map context) {
         return appContext;

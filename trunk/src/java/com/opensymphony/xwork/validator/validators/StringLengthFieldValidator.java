@@ -7,7 +7,6 @@ package com.opensymphony.xwork.validator.validators;
 import com.opensymphony.xwork.validator.ValidationException;
 
 /**
- * <p>
  * <!-- START SNIPPET: javadoc -->
  * StringLengthFieldValidator checks that a String field is of a certain length.  If the "minLength"
  * parameter is specified, it will make sure that the String has at least that many characters.  If
@@ -15,7 +14,7 @@ import com.opensymphony.xwork.validator.ValidationException;
  * characters.  The "trim" parameter determines whether it will {@link String#trim() trim} the
  * String before performing the length check.  If unspecified, the String will be trimmed.
  * <!-- END SNIPPET: javadoc -->
- * </p>
+ * <p/>
  * 
  * 
  * <!-- START SNIPPET: parameters -->

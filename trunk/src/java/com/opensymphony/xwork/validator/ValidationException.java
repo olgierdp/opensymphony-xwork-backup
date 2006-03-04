@@ -6,9 +6,7 @@ package com.opensymphony.xwork.validator;
 
 
 /**
- * ValidationException
- * <p/>
- * Created : Jan 20, 2003 11:45:07 PM
+ * ValidationException.
  *
  * @author Jason Carreira
  */
