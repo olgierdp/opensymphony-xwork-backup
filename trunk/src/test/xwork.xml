@@ -23,9 +23,30 @@
             <interceptor-ref name="debugStack"/>
             <interceptor-ref name="defaultStack"/>
         </action>
-		
 
-		<action name="aliasTest" class="com.opensymphony.xwork.SimpleAction">
+        <action name="WildCard" class="com.opensymphony.xwork.SimpleAction">
+            <param name="foo">17</param>
+            <param name="bar">23</param>
+            <result name="success" type="void" />
+            <result name="*" type="mock" />
+            <interceptor-ref name="defaultStack"/>
+        </action>
+
+        <action name="WildCardInput" class="com.opensymphony.xwork.SimpleAction" method="input">
+            <param name="foo">17</param>
+            <param name="bar">23</param>
+            <result name="success" type="void" />
+            <result name="*" type="mock" />
+            <interceptor-ref name="defaultStack"/>
+        </action>
+
+        <action name="WildCardError" class="com.opensymphony.xwork.SimpleAction">
+            <result name="success" type="void" />
+            <result name="*" type="mock" />
+            <interceptor-ref name="defaultStack"/>
+        </action>
+
+        <action name="aliasTest" class="com.opensymphony.xwork.SimpleAction">
             <param name="foo">17</param>
             <param name="bar">23</param>
            	<param name="aliases">#{ "aliasSource" : "aliasDest", "bar":"baz" }</param>

@@ -76,25 +76,15 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
      * @throws Exception if an error occurs validating the action.
      */
     protected void doBeforeInvocation(ActionInvocation invocation) throws Exception {
-    	String method = invocation.getProxy().getMethod();
-        if (excludeMethods.contains(method) && !includeMethods.contains(method)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Skipping validation. Method ["+method+"] found in exclude list.");
-            }
-            return;
+        Object action = invocation.getAction();
+        String context = invocation.getProxy().getActionName();
+
+        if (log.isDebugEnabled()) {
+            log.debug("Validating "
+                    + invocation.getProxy().getNamespace() + "/" + invocation.getProxy().getActionName() + " with method "+invocation.getProxy().getMethod()+".");
         }
 
-        if ( includeMethods.size() == 0 || includeMethods.contains(method) ) {
-            Object action = invocation.getAction();
-            String context = invocation.getProxy().getActionName();
-
-            if (log.isDebugEnabled()) {
-                log.debug("Validating "
-                        + invocation.getProxy().getNamespace() + "/" + invocation.getProxy().getActionName() + " with method "+invocation.getProxy().getMethod()+".");
-            }
-
-            ActionValidatorManagerFactory.getInstance().validate(action, context);
-        }
+        ActionValidatorManagerFactory.getInstance().validate(action, context);
     }
 
     protected String doIntercept(ActionInvocation invocation) throws Exception {

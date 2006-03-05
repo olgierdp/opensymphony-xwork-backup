@@ -8,7 +8,6 @@ import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.interceptor.PreResultListener;
-import com.opensymphony.xwork.util.OgnlUtil;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.XWorkContinuationConfig;
 import com.uwyn.rife.continuations.ContinuableObject;
@@ -155,11 +154,16 @@ public class DefaultActionInvocation implements ActionInvocation {
         Map results = config.getResults();
 
         ResultConfig resultConfig = null;
+
+        System.out.println("results: " + results);
         synchronized (config) {
             try {
                 resultConfig = (ResultConfig) results.get(resultCode);
             } catch (NullPointerException e) {
-                return null;
+            }
+            if (resultConfig == null ) {
+                // If no result is found for the given resultCode, try to get a wildcard '*' match.
+                resultConfig = (ResultConfig) results.get("*");
             }
         }
 

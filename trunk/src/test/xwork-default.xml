@@ -8,6 +8,7 @@
         <result-types>
             <result-type name="chain" class="com.opensymphony.xwork.ActionChainResult" default="true"/>
             <result-type name="void" class="com.opensymphony.xwork.VoidResult"/>
+            <result-type name="mock" class="com.opensymphony.xwork.mock.MockResult"/>
         </result-types>
 
         <interceptors>

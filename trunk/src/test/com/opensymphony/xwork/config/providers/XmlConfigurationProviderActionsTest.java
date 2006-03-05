@@ -19,11 +19,8 @@ import java.util.Map;
 
 
 /**
- * Created by IntelliJ IDEA.
- * User: Mike
- * Date: May 6, 2003
- * Time: 3:10:16 PM
- * To change this template use Options | File Templates.
+ * @author Mike
+ * @author Rainer Hermanns
  */
 public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
 
@@ -46,6 +43,7 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         ActionConfig barAction = new ActionConfig(null, SimpleAction.class, params, new HashMap(), new ArrayList());
 
         // foo action is a little more complex, two params, a result and an interceptor stack
+        results = new HashMap();
         params = new HashMap();
         params.put("foo", "18");
         params.put("bar", "24");
@@ -56,10 +54,17 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
 
         ActionConfig fooAction = new ActionConfig(null, SimpleAction.class, params, results, interceptors);
 
+        // wildcard action is simple wildcard example
+        results = new HashMap();
+        results.put("*", new ResultConfig("*", MockResult.class, new HashMap()));
+
+        ActionConfig wildcardAction = new ActionConfig(null, SimpleAction.class, new HashMap(), results, interceptors);
+
         // fooBar action is a little more complex, two params, a result and an interceptor stack
         params = new HashMap();
         params.put("foo", "18");
         params.put("bar", "24");
+        results = new HashMap();
         results.put("success", new ResultConfig("success", MockResult.class, new HashMap()));
 
         ExceptionMappingConfig exceptionConfig = new ExceptionMappingConfig("runtime", "java.lang.RuntimeException", "exception");
@@ -94,9 +99,10 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         Map actionConfigs = pkg.getActionConfigs();
 
         // assertions
-        assertEquals(5, actionConfigs.size());
+        assertEquals(6, actionConfigs.size());
         assertEquals(barAction, actionConfigs.get("Bar"));
         assertEquals(fooAction, actionConfigs.get("Foo"));
+        assertEquals(wildcardAction, actionConfigs.get("WildCard"));
         assertEquals(fooBarAction, actionConfigs.get("FooBar"));
         assertEquals(intAction, actionConfigs.get("TestInterceptorParam"));
         assertEquals(intOverAction, actionConfigs.get("TestInterceptorParamOverride"));

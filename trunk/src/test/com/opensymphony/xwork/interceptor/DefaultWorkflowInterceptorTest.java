@@ -48,6 +48,24 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         assertEquals(result, interceptor.intercept(invocation));
     }
 
+    public void testExcludesMethodWithWildCard() throws Exception {
+        interceptor.setExcludeMethods("*");
+        final String result = "testing123";
+        invocationMock.expectAndReturn("invoke", result);
+        assertEquals(result, interceptor.intercept(invocation));
+    }
+
+    public void testIncludesMethodWithWildcard() throws Exception {
+        interceptor.setIncludeMethods("*");
+        actionMock.expectAndReturn("hasErrors", false);
+        actionMock.expect("validate");
+        final String result = "testing123";
+        invocationMock.expectAndReturn("invoke", result);
+        invocationMock.expectAndReturn("getAction", action);
+        assertEquals(result, interceptor.intercept(invocation));
+    }
+
+
     public void testIncludesMethod() throws Exception {
         interceptor.setIncludeMethods("execute");
         actionMock.expectAndReturn("hasErrors", false);
@@ -61,6 +79,47 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
     public void testIncludesAndExcludesMethod() throws Exception {
         interceptor.setExcludeMethods("execute,input,validate");
         interceptor.setIncludeMethods("execute");
+        actionMock.expectAndReturn("hasErrors", false);
+        actionMock.expect("validate");
+        final String result = "testing123";
+        invocationMock.expectAndReturn("invoke", result);
+        invocationMock.expectAndReturn("getAction", action);
+        assertEquals(result, interceptor.intercept(invocation));
+    }
+
+    public void testIncludesAndExcludesMethodAllWildCarded() throws Exception {
+        interceptor.setExcludeMethods("*");
+        interceptor.setIncludeMethods("*");
+        actionMock.expectAndReturn("hasErrors", false);
+        actionMock.expect("validate");
+        final String result = "testing123";
+        invocationMock.expectAndReturn("invoke", result);
+        invocationMock.expectAndReturn("getAction", action);
+        assertEquals(result, interceptor.intercept(invocation));
+    }
+
+    public void testIncludesAndExcludesMethodWithExcludeWildcard() throws Exception {
+        interceptor.setExcludeMethods("*");
+        interceptor.setIncludeMethods("execute");
+        actionMock.expectAndReturn("hasErrors", false);
+        actionMock.expect("validate");
+        final String result = "testing123";
+        invocationMock.expectAndReturn("invoke", result);
+        invocationMock.expectAndReturn("getAction", action);
+        assertEquals(result, interceptor.intercept(invocation));
+    }
+
+    public void testIncludesAndExcludesMethodWithIncludeWildcardAndNoMatches() throws Exception {
+        interceptor.setExcludeMethods("execute,input,validate");
+        interceptor.setIncludeMethods("*");
+        final String result = "testing123";
+        invocationMock.expectAndReturn("invoke", result);
+        assertEquals(result, interceptor.intercept(invocation));
+    }
+
+    public void testIncludesAndExcludesMethodWithIncludeWildcard() throws Exception {
+        interceptor.setExcludeMethods("input,validate");
+        interceptor.setIncludeMethods("*");
         actionMock.expectAndReturn("hasErrors", false);
         actionMock.expect("validate");
         final String result = "testing123";

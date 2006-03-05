@@ -41,6 +41,11 @@
             <interceptor-ref name="defaultStack"/>
         </action>
 
+        <action name="WildCard" class="com.opensymphony.xwork.SimpleAction">
+            <result name="*" type="mock" />
+            <interceptor-ref name="defaultStack"/>
+        </action>
+
         <action name="FooBar" class="com.opensymphony.xwork.SimpleAction">
             <param name="foo">18</param>
             <param name="bar">24</param>

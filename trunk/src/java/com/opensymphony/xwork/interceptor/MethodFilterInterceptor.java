@@ -35,6 +35,7 @@ import com.opensymphony.xwork.util.TextParseUtil;
  * includeMethods takes precedence over excludeMethods.
  * 
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
+ * @author Rainer Hermanns
  * @version $Date$ $Id$
  */
 public abstract class MethodFilterInterceptor implements Interceptor {
@@ -65,16 +66,15 @@ public abstract class MethodFilterInterceptor implements Interceptor {
     protected boolean applyInterceptor(ActionInvocation invocation) {
         String method = invocation.getProxy().getMethod();
         // ValidationInterceptor
-        if (excludeMethods.contains(method) && !includeMethods.contains(method)) {
-            log.debug("Skipping validation. Method [" + method + "] found in exclude list.");
+        if (((excludeMethods.contains("*") && !includeMethods.contains("*"))
+                || excludeMethods.contains(method))
+                && !includeMethods.contains(method)) {
+            log.debug("Skipping Interceptor... Method [" + method + "] found in exclude list.");
             return false;
         }
 
-        if ( includeMethods.size() == 0 || includeMethods.contains(method) ) {
-            return true;
-        }
-        
-        return false;
+        return includeMethods.size() == 0 || includeMethods.contains(method) || includeMethods.contains("*");
+
     }
 
     /**
