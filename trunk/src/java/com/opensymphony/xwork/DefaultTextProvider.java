@@ -24,6 +24,8 @@ import java.util.Arrays;
  */
 public class DefaultTextProvider implements TextProvider, Serializable, Unchainable {
 
+    private static final Object[] EMPTY_ARGS = new Object[0];
+
     public static final DefaultTextProvider INSTANCE = new DefaultTextProvider();
 
     private DefaultTextProvider() {
@@ -46,7 +48,7 @@ public class DefaultTextProvider implements TextProvider, Serializable, Unchaina
         if (args != null) {
             params = args.toArray();
         } else {
-            params = new Object[0];
+            params = EMPTY_ARGS;
         }
 
         return LocalizedTextUtil.findDefaultText(key, ActionContext.getContext().getLocale(), params);
@@ -57,7 +59,7 @@ public class DefaultTextProvider implements TextProvider, Serializable, Unchaina
         if (args != null) {
             params = args;
         } else {
-            params = new Object[0];
+            params = EMPTY_ARGS;
         }
 
         return LocalizedTextUtil.findDefaultText(key, ActionContext.getContext().getLocale(), params);

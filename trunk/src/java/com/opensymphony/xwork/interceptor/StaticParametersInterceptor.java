@@ -65,7 +65,7 @@ public class StaticParametersInterceptor extends AroundInterceptor {
     private boolean parse;
 
     public void setParse(String value) {
-        this.parse = new Boolean(value).booleanValue();
+        this.parse = Boolean.valueOf(value).booleanValue();
     }
 
     protected void after(ActionInvocation invocation, String result) throws Exception {
