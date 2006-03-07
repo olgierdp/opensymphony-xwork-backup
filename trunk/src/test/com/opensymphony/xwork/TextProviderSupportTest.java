@@ -5,8 +5,6 @@
 
 package com.opensymphony.xwork;
 
-import com.opensymphony.xwork.util.OgnlValueStack;
-
 import java.util.*;
 
 /**
@@ -21,6 +19,7 @@ public class TextProviderSupportTest extends XWorkTestCase {
 
     public void testSimpleGetTexts() throws Exception {
         assertEquals("Hello World", tp.getText("hello"));
+        assertEquals("not.in.bundle", tp.getText("not.in.bundle"));
 
         assertEquals("Hello World", tp.getText("hello", "this is default"));
         assertEquals("this is default", tp.getText("not.in.bundle", "this is default"));
