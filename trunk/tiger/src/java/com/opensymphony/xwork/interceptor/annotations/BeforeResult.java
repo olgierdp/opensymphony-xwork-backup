@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * <!-- START SNIPPET: example -->
  * public class SampleAction extends ActionSupport {
  *
- *  @BeforeResult
+ *  &#64;BeforeResult
  *  public void isValid() throws ValidationException {
  *    // validate model object, throw exception if failed
  *  }

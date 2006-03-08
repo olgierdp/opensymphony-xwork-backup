@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * <!-- START SNIPPET: example -->
  * public class SampleAction extends ActionSupport {
  *
- *  @After
+ *  &#64;After
  *  public void isValid() throws ValidationException {
  *    // validate model object, throw exception if failed
  *  }

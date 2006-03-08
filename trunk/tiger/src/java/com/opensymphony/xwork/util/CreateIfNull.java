@@ -43,7 +43,7 @@ package com.opensymphony.xwork.util;
  * <!-- START SNIPPET: example -->
  * List<User> users = null;
  *
- * @CreateIfNull( value = true )
+ * &#64;CreateIfNull( value = true )
  * public void setUsers(List<User> users) {
  *   this.users = users;
  * }

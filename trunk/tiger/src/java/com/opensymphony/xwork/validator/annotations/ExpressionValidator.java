@@ -70,7 +70,7 @@ import java.lang.annotation.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * @ExpressionValidator(message = "Default message", key = "i18n.key", shortCircuit = true, expression = "an OGNL expression" )
+ * &#64;ExpressionValidator(message = "Default message", key = "i18n.key", shortCircuit = true, expression = "an OGNL expression" )
  * <!-- END SNIPPET: example -->
  * </pre>
  *

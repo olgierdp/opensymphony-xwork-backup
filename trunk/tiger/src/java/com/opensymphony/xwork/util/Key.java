@@ -44,7 +44,7 @@ package com.opensymphony.xwork.util;
  * // The key property for User objects within the users collection is the <code>userName</code> attribute.
  * Map<Long, User> userMap = null;
  *
- * @Key( value = java.lang.Long.class )
+ * &#64;Key( value = java.lang.Long.class )
  * public void setUserMap(Map<Long, User> userMap) {
  *   this.userMap = userMap;
  * }

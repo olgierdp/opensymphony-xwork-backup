@@ -45,12 +45,12 @@ package com.opensymphony.xwork.util;
  * Map<Long, User> userMap = null;
  * List<User> userList = null;
  *
- * @Element( value = com.acme.User )
+ * &#64;Element( value = com.acme.User )
  * public void setUserMap(Map<Long, User> userMap) {
  *   this.userMap = userMap;
  * }
  *
- * @Element( value = com.acme.User )
+ * &#64;Element( value = com.acme.User )
  * public void setUserList(List<User> userList) {
  *   this.userList = userList;
  * }

@@ -26,7 +26,7 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
      *
      * @param parentClass the Class which contains as a property the Map or Collection we are finding the key for.
      * @param property    the property of the Map or Collection for the given parent class
-     * @see ObjectTypeDeterminer#getKeyClass(Class, String)
+     * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getKeyClass(Class, String)
      */
     public Class getKeyClass(Class parentClass, String property) {
 
@@ -55,7 +55,7 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
      *
      * @param parentClass the Class which contains as a property the Map or Collection we are finding the key for.
      * @param property    the property of the Map or Collection for the given parent class
-     * @see ObjectTypeDeterminer#getElementClass(Class, String, Object)
+     * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getElementClass(Class, String, Object)
      */
     public Class getElementClass(Class parentClass, String property, Object key) {
 
@@ -82,7 +82,7 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
      *
      * @param parentClass the Class which contains as a property the Map or Collection we are finding the key for.
      * @param property    the property of the Map or Collection for the given parent class
-     * @see ObjectTypeDeterminer#getKeyProperty(Class, String)
+     * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getKeyProperty(Class, String)
      */
     public String getKeyProperty(Class parentClass, String property) {
 
@@ -109,7 +109,7 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
      * @param target
      * @param keyProperty
      * @param isIndexAccessed <tt>true</tt>, if the collection or map is accessed via index, <tt>false</tt> otherwise.
-     * @see ObjectTypeDeterminer#getKeyProperty(Class, String)
+     * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getKeyProperty(Class, String)
      */
     public boolean shouldCreateIfNew(Class parentClass,
                                      String property,

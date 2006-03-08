@@ -44,7 +44,7 @@ import java.lang.annotation.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * @Conversion()
+ * &#64;Conversion()
  * public class ConversionAction implements Action {
  * }
  *

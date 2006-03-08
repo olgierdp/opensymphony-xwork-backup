@@ -36,7 +36,7 @@ import com.opensymphony.xwork.interceptor.PreResultListener;
  *  public class BaseAnnotatedAction {
  *  	protected String log = "";
  *
- *  	@Before
+ *  	&#64;Before
  *  	public String baseBefore() {
  *  		log = log + "baseBefore-";
  *  		return null;
@@ -44,7 +44,7 @@ import com.opensymphony.xwork.interceptor.PreResultListener;
  *  }
  *
  *  public class AnnotatedAction extends BaseAnnotatedAction {
- *  	@Before
+ *  	&#64;Before
  *  	public String before() {
  *  		log = log + "before";
  *  		return null;
@@ -55,12 +55,12 @@ import com.opensymphony.xwork.interceptor.PreResultListener;
  *  		return Action.SUCCESS;
  *  	}
  *
- *  	@BeforeResult
+ *  	&#64;BeforeResult
  *  	public void beforeResult() throws Exception {
  *  		log = log +"-beforeResult";
  *  	}
  *
- *  	@After
+ *  	&#64;After
  *  	public void after() {
  *  		log = log + "-after";
  *  	}

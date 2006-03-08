@@ -71,7 +71,7 @@ import java.lang.annotation.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * @RequiredStringValidator(message = "Default message", key = "i18n.key", shortCircuit = true, trim = true)
+ * &#64;RequiredStringValidator(message = "Default message", key = "i18n.key", shortCircuit = true, trim = true)
  * <!-- END SNIPPET: example -->
  * </pre>
  *

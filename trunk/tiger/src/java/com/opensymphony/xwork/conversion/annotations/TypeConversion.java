@@ -80,7 +80,7 @@ import java.lang.annotation.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * @Conversion()
+ * &#64;Conversion()
  * public class ConversionAction implements Action {
  *
  *   private String convertInt;
@@ -90,27 +90,27 @@ import java.lang.annotation.*;
  *
  *   private HashMap keyValues = null;
  *
- *   @TypeConversion(type = ConversionType.APPLICATION, converter = "com.opensymphony.xwork.util.XWorkBasicConverter")
+ *   &#64;TypeConversion(type = ConversionType.APPLICATION, converter = "com.opensymphony.xwork.util.XWorkBasicConverter")
  *   public void setConvertInt( String convertInt ) {
  *       this.convertInt = convertInt;
  *   }
  *
- *   @TypeConversion(converter = "com.opensymphony.xwork.util.XWorkBasicConverter")
+ *   &#64;TypeConversion(converter = "com.opensymphony.xwork.util.XWorkBasicConverter")
  *   public void setConvertDouble( String convertDouble ) {
  *       this.convertDouble = convertDouble;
  *   }
  *
- *   @TypeConversion(rule = ConversionRule.COLLECTION, converter = "java.util.String")
+ *   &#64;TypeConversion(rule = ConversionRule.COLLECTION, converter = "java.util.String")
  *   public void setUsers( List users ) {
  *       this.users = users;
  *   }
  *
- *   @TypeConversion(rule = ConversionRule.MAP, converter = "java.math.BigInteger")
+ *   &#64;TypeConversion(rule = ConversionRule.MAP, converter = "java.math.BigInteger")
  *   public void setKeyValues( HashMap keyValues ) {
  *       this.keyValues = keyValues;
  *   }
  *
- *   @TypeConversion(type = ConversionType.APPLICATION, property = "java.util.Date", converter = "com.opensymphony.xwork.util.XWorkBasicConverter")
+ *   &#64;TypeConversion(type = ConversionType.APPLICATION, property = "java.util.Date", converter = "com.opensymphony.xwork.util.XWorkBasicConverter")
  *   public String execute() throws Exception {
  *       return SUCCESS;
  *   }

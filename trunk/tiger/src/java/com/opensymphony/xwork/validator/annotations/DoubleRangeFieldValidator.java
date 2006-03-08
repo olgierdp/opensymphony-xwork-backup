@@ -97,7 +97,7 @@ import java.lang.annotation.RetentionPolicy;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * @DoubleRangeFieldValidator(message = "Default message", key = "i18n.key", shortCircuit = true, minInclusive = "0.123", maxInclusive = "99.987")
+ * &#64;DoubleRangeFieldValidator(message = "Default message", key = "i18n.key", shortCircuit = true, minInclusive = "0.123", maxInclusive = "99.987")
  * <!-- END SNIPPET: example -->
  * </pre>
  *

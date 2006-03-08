@@ -45,7 +45,7 @@ package com.opensymphony.xwork.util;
  * // The key property for User objects within the users collection is the <code>userName</code> attribute.
  * List<User> users = null;
  *
- * @KeyProperty( value = "userName" )
+ * &#64;KeyProperty( value = "userName" )
  * public void setUsers(List<User> users) {
  *   this.users = users;
  * }

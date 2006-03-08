@@ -88,7 +88,7 @@ import java.util.Properties;
  *
  * @author <a href="mailto:plightbo@gmail.com">Pat Lightbody</a>
  * @author Rainer Hermanns
- * @see XWorkConverter
+ * @see com.opensymphony.xwork.util.XWorkConverter
  */
 public class AnnotationXWorkConverter extends XWorkConverter {
     

@@ -76,7 +76,7 @@ import java.lang.annotation.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * @StringRegexValidator(message = "Default message", key = "i18n.key", shortCircuit = true, regex = "a regular expression", caseSensitive = true)
+ * &#64;StringRegexValidator(message = "Default message", key = "i18n.key", shortCircuit = true, regex = "a regular expression", caseSensitive = true)
  * <!-- END SNIPPET: example -->
  * </pre>
  *

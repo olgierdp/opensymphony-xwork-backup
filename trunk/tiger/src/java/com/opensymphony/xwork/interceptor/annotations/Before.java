@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * <!-- START SNIPPET: example -->
  * public class SampleAction extends ActionSupport {
  *
- *  @Before
+ *  &#64;Before
  *  public void isAuthorized() throws AuthenticationException {
  *    // authorize request, throw exception if failed
  *  }

@@ -73,7 +73,7 @@ import java.lang.annotation.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * @FieldExpressionValidator(message = "Default message", key = "i18n.key", shortCircuit = true, expression = "an OGNL expression")
+ * &#64;FieldExpressionValidator(message = "Default message", key = "i18n.key", shortCircuit = true, expression = "an OGNL expression")
  * <!-- END SNIPPET: example -->
  * </pre>
  *

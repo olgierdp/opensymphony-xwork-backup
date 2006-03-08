@@ -65,7 +65,7 @@ import java.lang.annotation.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
- * @EmailValidator(message = "Default message", key = "i18n.key", shortCircuit = true)
+ * &#64;EmailValidator(message = "Default message", key = "i18n.key", shortCircuit = true)
  * <!-- END SNIPPET: example -->
  * </pre>
  *
