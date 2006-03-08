@@ -4,7 +4,7 @@
 
     <import file="osbuild.xml"/>
 
-    <path id="junit-tiger.cp">
+    <path id="tiger.cp">
         <fileset dir="lib">
             <include name="**/*.jar"/>
             <include name="**/*.zip"/>
@@ -12,6 +12,10 @@
         </fileset>
         <pathelement location="${build.java}"/>
         <pathelement location="tiger/build/java"/>
+    </path>
+
+    <path id="junit-tiger.cp">
+        <path refid="tiger.cp"/>
         <pathelement location="tiger/build/test"/>
         <pathelement location="tiger/build/java-test"/>
     </path>
@@ -90,6 +94,27 @@
         <copy todir="${dist.docs}">
             <fileset dir="${src.java}" includes="*.dtd"/>
         </copy>
+    </target>
+
+    <target name="tiger-javadocs" description="generate tiger javadocs" depends="common.init">
+        <mkdir dir="${dist.docs}/tiger-api"/>
+        <javadoc sourcepath="tiger/src/java"
+                 destdir="${dist.docs}/tiger-api"
+                 packagenames="${docs.packages}"
+                 classpathref="tiger.cp"
+                 author="true"
+                 version="true"
+                 overview="${src.java}/overview.html"
+                 windowTitle="${fullname} Tiger API - ${version}"
+                 doctitle="${fullname} Tiger API (${version})"
+                 footer="&lt;a href=&quot;http://www.opensymphony.com/${name}/&quot; target=&quot;_top&quot;&gt;${fullname} Project Page&lt;/a&gt;"
+                 use="true"
+                 verbose="false"
+                source="1.5">
+            <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+            <link href="http://java.sun.com/j2ee/sdk_${compile.version}/techdocs/api/"/>
+        </javadoc>
+        <!-- <copy overwrite="yes" file="${docs}/main.css" tofile="${docs}/api/stylesheet.css"/> -->
     </target>
 
     <target name="ivyrep" depends="common.ivyrep">
