@@ -316,6 +316,50 @@
 
     <target name="website" depends="javadocs, docs.impl"/>
 
+    <!-- =================================================================== -->
+    <!-- Fix carriage-return line feeds                                      -->
+    <!-- =================================================================== -->
+    <target name="fixcrlf" description="Fixed CR/LF problems">
+        <echo>Running fixcrlf....</echo>
+        <fixcrlf eol="lf" srcdir="${basedir}/src"
+                 includes="**/*.sh,
+                      **/*.properties,
+                      **/*.sql,
+                      **/*.script,
+                      **/*.java,
+                      **/*.css,
+                      **/*.js,
+                      **/*.jsp,
+                      **/*.ftl,
+                      **/*.txt,
+                      **/*.vm,
+                      **/*.xml,
+                      **/*.dtd,
+                      **/*.xsl,
+                      **/*.xslt,
+                      **/*.html" />
+        
+        <fixcrlf eol="lf" srcdir="${basedir}/tiger/src"
+                 includes="**/*.sh,
+                      **/*.properties,
+                      **/*.sql,
+                      **/*.script,
+                      **/*.java,
+                      **/*.css,
+                      **/*.js,
+                      **/*.jsp,
+                      **/*.ftl,
+                      **/*.txt,
+                      **/*.vm,
+                      **/*.xml,
+                      **/*.dtd,
+                      **/*.xsl,
+                      **/*.xslt,
+                      **/*.html" />
+    </target>
+
+
+
     <target name="ivyrep" depends="jar, ivyrep.impl"/>
 
     <target name="ivyrep.impl">
