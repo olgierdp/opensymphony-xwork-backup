@@ -6,6 +6,7 @@ package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
+import com.opensymphony.xwork.config.entities.InterceptorMapping;
 import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.interceptor.PreResultListener;
 import com.opensymphony.xwork.util.OgnlValueStack;
@@ -155,7 +156,6 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         ResultConfig resultConfig = null;
 
-        System.out.println("results: " + results);
         synchronized (config) {
             try {
                 resultConfig = (ResultConfig) results.get(resultCode);
@@ -185,8 +185,8 @@ public class DefaultActionInvocation implements ActionInvocation {
         }
 
         if (interceptors.hasNext()) {
-            Interceptor interceptor = (Interceptor) interceptors.next();
-            resultCode = interceptor.intercept(this);
+            InterceptorMapping interceptor = (InterceptorMapping) interceptors.next();
+            resultCode = interceptor.getInterceptor().intercept(this);
         } else {
             resultCode = invokeActionOnly();
         }

@@ -22,7 +22,8 @@ import java.util.*;
  * <li>typeConverter - the Ognl TypeConverter to use when getting/setting properties</li>
  * </ul>
  *
- * @author $Author$
+ * @author Mike
+ * @author Rainer Hermanns
  * @version $Revision$
  */
 public class ActionConfig implements InterceptorListHolder, Parameterizable, Serializable {
@@ -172,7 +173,7 @@ public class ActionConfig implements InterceptorListHolder, Parameterizable, Ser
         getExceptionMappings().addAll(exceptionMappings);
     }
 
-    public void addInterceptor(Interceptor interceptor) {
+    public void addInterceptor(InterceptorMapping interceptor) {
         getInterceptors().add(interceptor);
     }
 

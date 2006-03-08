@@ -12,6 +12,7 @@ import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
+import com.opensymphony.xwork.config.entities.InterceptorMapping;
 import com.opensymphony.xwork.interceptor.ModelDrivenInterceptor;
 import com.opensymphony.xwork.interceptor.ParametersInterceptor;
 import com.opensymphony.xwork.interceptor.StaticParametersInterceptor;
@@ -67,14 +68,14 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         results.put("success", new ResultConfig("success", ActionChainResult.class, successParams));
 
         List interceptors = new ArrayList();
-        interceptors.add(new ParametersInterceptor());
+        interceptors.add(new InterceptorMapping("params", new ParametersInterceptor()));
 
         ActionConfig paramInterceptorActionConfig = new ActionConfig(null, SimpleAction.class, null, results, interceptors);
         defaultPackageContext.addActionConfig(PARAM_INTERCEPTOR_ACTION_NAME, paramInterceptorActionConfig);
 
         interceptors = new ArrayList();
-        interceptors.add(new ModelDrivenInterceptor());
-        interceptors.add(new ParametersInterceptor());
+        interceptors.add(new InterceptorMapping("model", new ModelDrivenInterceptor()));
+        interceptors.add(new InterceptorMapping("params", new ParametersInterceptor()));
 
         ActionConfig modelParamActionConfig = new ActionConfig(null, ModelDrivenAction.class, null, null, interceptors);
         defaultPackageContext.addActionConfig(MODEL_DRIVEN_PARAM_TEST, modelParamActionConfig);
@@ -90,10 +91,10 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         results.put("success", new ResultConfig("success", ActionChainResult.class, successParams));
 
         interceptors = new ArrayList();
-        interceptors.add(new StaticParametersInterceptor());
-        interceptors.add(new ModelDrivenInterceptor());
-        interceptors.add(new ParametersInterceptor());
-        interceptors.add(new ValidationInterceptor());
+        interceptors.add(new InterceptorMapping("static-params", new StaticParametersInterceptor()));
+        interceptors.add(new InterceptorMapping("model", new ModelDrivenInterceptor()));
+        interceptors.add(new InterceptorMapping("params", new ParametersInterceptor()));
+        interceptors.add(new InterceptorMapping("validation", new ValidationInterceptor()));
 
         //Explicitly set an out-of-range date for DateRangeValidatorTest
         params = new HashMap();

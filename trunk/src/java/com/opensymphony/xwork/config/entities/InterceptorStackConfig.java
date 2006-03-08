@@ -18,6 +18,7 @@ import java.io.Serializable;
  * In the xml configuration file this is defined as the <code>interceptor-stack</code> tag.
  *
  * @author Mike
+ * @author Rainer Hermanns
  */
 public class InterceptorStackConfig implements InterceptorListHolder, Serializable {
 
@@ -47,7 +48,7 @@ public class InterceptorStackConfig implements InterceptorListHolder, Serializab
         return name;
     }
 
-    public void addInterceptor(Interceptor interceptor) {
+    public void addInterceptor(InterceptorMapping interceptor) {
         this.interceptors.add(interceptor);
     }
 

@@ -50,7 +50,7 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         results.put("success", new ResultConfig("success", MockResult.class, new HashMap()));
 
         InterceptorConfig timerInterceptorConfig = new InterceptorConfig("timer", TimerInterceptor.class, new HashMap());
-        interceptors.add(objectFactory.buildInterceptor(timerInterceptorConfig, new HashMap()));
+        interceptors.add(new InterceptorMapping("timer", objectFactory.buildInterceptor(timerInterceptorConfig, new HashMap())));
 
         ActionConfig fooAction = new ActionConfig(null, SimpleAction.class, params, results, interceptors);
 
@@ -77,9 +77,9 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         interceptorParams.put("expectedFoo", "expectedFooValue");
         interceptorParams.put("foo", MockInterceptor.DEFAULT_FOO_VALUE);
 
-        InterceptorConfig mockInterceptorConfig = new InterceptorConfig("mock", MockInterceptor.class, new HashMap());
+        InterceptorConfig mockInterceptorConfig = new InterceptorConfig("test", MockInterceptor.class, new HashMap());
         interceptors = new ArrayList();
-        interceptors.add(objectFactory.buildInterceptor(mockInterceptorConfig, interceptorParams));
+        interceptors.add(new InterceptorMapping("test", objectFactory.buildInterceptor(mockInterceptorConfig, interceptorParams)));
 
         ActionConfig intAction = new ActionConfig(null, SimpleAction.class, new HashMap(), new HashMap(), interceptors);
 
@@ -88,7 +88,7 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         interceptorParams.put("expectedFoo", "expectedFooValue");
         interceptorParams.put("foo", "foo123");
         interceptors = new ArrayList();
-        interceptors.add(objectFactory.buildInterceptor(mockInterceptorConfig, interceptorParams));
+        interceptors.add(new InterceptorMapping("test", objectFactory.buildInterceptor(mockInterceptorConfig, interceptorParams)));
 
         ActionConfig intOverAction = new ActionConfig(null, SimpleAction.class, new HashMap(), new HashMap(), interceptors);
 

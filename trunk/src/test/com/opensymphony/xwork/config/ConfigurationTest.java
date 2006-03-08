@@ -8,6 +8,7 @@ import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.mock.MockInterceptor;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
+import com.opensymphony.xwork.config.entities.InterceptorMapping;
 
 import java.util.HashMap;
 
@@ -81,7 +82,7 @@ public class ConfigurationTest extends XWorkTestCase {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("/foo/bar", "TestInterceptorParamInehritanceOverride", null);
             assertEquals(1, proxy.getConfig().getInterceptors().size());
 
-            MockInterceptor testInterceptor = (MockInterceptor) proxy.getConfig().getInterceptors().get(0);
+            MockInterceptor testInterceptor = (MockInterceptor) ((InterceptorMapping) proxy.getConfig().getInterceptors().get(0)).getInterceptor();
             assertEquals("foo123", testInterceptor.getExpectedFoo());
             proxy.execute();
             assertTrue(testInterceptor.isExecuted());
@@ -96,7 +97,7 @@ public class ConfigurationTest extends XWorkTestCase {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("/foo/bar", "TestInterceptorParamInheritance", null);
             assertEquals(1, proxy.getConfig().getInterceptors().size());
 
-            MockInterceptor testInterceptor = (MockInterceptor) proxy.getConfig().getInterceptors().get(0);
+            MockInterceptor testInterceptor = (MockInterceptor) ((InterceptorMapping) proxy.getConfig().getInterceptors().get(0)).getInterceptor();
             assertEquals("expectedFoo", testInterceptor.getExpectedFoo());
             proxy.execute();
             assertTrue(testInterceptor.isExecuted());
@@ -111,7 +112,7 @@ public class ConfigurationTest extends XWorkTestCase {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", "TestInterceptorParamOverride", null);
             assertEquals(1, proxy.getConfig().getInterceptors().size());
 
-            MockInterceptor testInterceptor = (MockInterceptor) proxy.getConfig().getInterceptors().get(0);
+            MockInterceptor testInterceptor = (MockInterceptor) ((InterceptorMapping) proxy.getConfig().getInterceptors().get(0)).getInterceptor();
             assertEquals("foo123", testInterceptor.getExpectedFoo());
             proxy.execute();
             assertTrue(testInterceptor.isExecuted());
@@ -126,7 +127,7 @@ public class ConfigurationTest extends XWorkTestCase {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", "TestInterceptorParam", null);
             assertEquals(1, proxy.getConfig().getInterceptors().size());
 
-            MockInterceptor testInterceptor = (MockInterceptor) proxy.getConfig().getInterceptors().get(0);
+            MockInterceptor testInterceptor = (MockInterceptor) ((InterceptorMapping) proxy.getConfig().getInterceptors().get(0)).getInterceptor();
             assertEquals("expectedFoo", testInterceptor.getExpectedFoo());
             proxy.execute();
             assertTrue(testInterceptor.isExecuted());
