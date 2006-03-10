@@ -46,6 +46,6 @@
 
         <!-- spring -->
         <dependency org="springframework" name="spring" rev="1.2.6"
-                    conf="spring->spring-aop,spring-beans,spring-context,spring-core,spring-web"/>
+                    conf="spring->spring-mock,spring-aop,spring-beans,spring-context,spring-core,spring-web"/>
     </dependencies>
 </ivy-module>
