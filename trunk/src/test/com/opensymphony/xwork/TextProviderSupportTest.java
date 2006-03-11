@@ -75,6 +75,16 @@ public class TextProviderSupportTest extends XWorkTestCase {
         assertEquals(rb, tp.getTexts(TextProviderSupportTest.class.getName()));
     }
 
+    public void testDifficultSymbols1() {
+        String val= tp.getText("symbols1"); 
+        assertEquals("\"=!@#$%^&*(){qwe}<>?:|}{[]\\';/.,<>`~'", val);
+    }
+
+    public void testDifficultSymbols2() {
+        String val= tp.getText("symbols2"); 
+        assertEquals("\"=!@#$%^&*()<>?:|[]\\';/.,<>`~'", val);
+    } 
+    
     protected void setUp() throws Exception {
         super.setUp();
         rb = ResourceBundle.getBundle(TextProviderSupportTest.class.getName(), Locale.ENGLISH);
