@@ -154,6 +154,16 @@ public class OgnlValueStack implements Serializable {
                     LOG.debug("Error setting value", e);
                 }
             }
+        } catch (RuntimeException re) { //XW-281
+            if (throwExceptionOnFailure) {
+                String msg = "Error setting expr '" + expr + "' with value '" + value + "'";
+                LOG.error(msg, re);
+                throw re;
+            } else {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Error setting value", re);
+                }
+            }
         } finally {
             OgnlContextState.clear(context);
             context.remove(XWorkConverter.CONVERSION_PROPERTY_FULLNAME);

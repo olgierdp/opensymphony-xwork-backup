@@ -445,6 +445,54 @@ public class OgnlUtilTest extends XWorkTestCase {
         assertEquals(123, foo.getALong());
     }
 
+    /**
+	 * XW-281
+	 */
+    public void testSetBigIndexedValue() {
+        OgnlValueStack stack = new OgnlValueStack();
+        Map stackContext = stack.getContext();
+        stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
+        stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+        stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+
+        User user = new User();
+        stack.push(user);
+
+        // indexed string w/ existing array
+        user.setList(new ArrayList());
+
+        String[] foo = new String[]{"asdf"};
+        stackContext.put(ActionContext.DEV_MODE, Boolean.TRUE);
+        try {
+            stack.setValue("list.1114778947765", foo);
+            fail("non-valid expression: list.1114778947765"); 
+        }
+        catch(RuntimeException ex) {
+            ; // it's oke
+        }
+        
+        try {
+            stack.setValue("1114778947765", foo);
+            fail("non-valid expression: 1114778947765"); 
+        }
+        catch(RuntimeException ex) {
+            ;
+        }
+        
+        try {
+            stack.setValue("1234", foo);
+            fail("non-valid expression: 1114778947765"); 
+        }
+        catch(RuntimeException ex) {
+            ;
+        }
+        
+        stackContext.put(ActionContext.DEV_MODE, Boolean.FALSE);
+        stack.setValue("list.1114778947765", foo);
+        stack.setValue("1114778947765", foo);
+        stack.setValue("1234", foo);
+    }
+    
 
     public static class Email {
         String address;
