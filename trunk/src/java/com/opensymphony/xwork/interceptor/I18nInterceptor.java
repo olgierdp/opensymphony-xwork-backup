@@ -6,6 +6,7 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionInvocation;
+import com.opensymphony.xwork.util.LocalizedTextUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -105,7 +106,6 @@ public class I18nInterceptor implements Interceptor {
                     + invocation.getProxy().getNamespace() + "/"
                     + invocation.getProxy().getActionName() + "' { ");
         }
-
         //get requested locale
         Map params = invocation.getInvocationContext().getParameters();
         Object requested_locale = params.remove(parameterName);
@@ -123,7 +123,7 @@ public class I18nInterceptor implements Interceptor {
         if (session != null) {
             if (requested_locale != null) {
                 Locale locale = (requested_locale instanceof Locale) ?
-                        (Locale) requested_locale : localeFromString(requested_locale.toString());
+                        (Locale) requested_locale : LocalizedTextUtil.localeFromString(requested_locale.toString(), null);
                 if (log.isDebugEnabled()) {
                     log.debug("store locale=" + locale);
                 }
@@ -140,7 +140,7 @@ public class I18nInterceptor implements Interceptor {
                     log.debug("apply locale=" + locale);
                 }
 
-                invocation.getInvocationContext().setLocale((Locale) locale);
+                saveLocale(invocation, (Locale)locale);
             }
         }
 
@@ -160,33 +160,14 @@ public class I18nInterceptor implements Interceptor {
         return result;
     }
 
-    private Locale localeFromString(String localeStr) {
-        if ((localeStr == null) || (localeStr.trim().length() == 0) || (localeStr.equals("_"))) {
-            return Locale.getDefault();
-        }
-
-        int index = localeStr.indexOf('_');
-        if (index < 0) {
-            return new Locale(localeStr);
-        }
-
-        String language = localeStr.substring(0, index);
-        if (index == localeStr.length()) {
-            return new Locale(language);
-        }
-
-        localeStr = localeStr.substring(index + 1);
-        index = localeStr.indexOf('_');
-        if (index < 0) {
-            return new Locale(language, localeStr);
-        }
-
-        String country = localeStr.substring(0, index);
-        if (index == localeStr.length()) {
-            return new Locale(language, country);
-        }
-
-        localeStr = localeStr.substring(index + 1);
-        return new Locale(language, country, localeStr);
+    /**
+     * Save the given locale to the ActionInvocation.
+     *
+     * @param invocation The ActionInvocation.
+     * @param locale The locale to save.
+     */
+    protected void saveLocale(ActionInvocation invocation, Locale locale) {
+        invocation.getInvocationContext().setLocale(locale);
     }
+
 }

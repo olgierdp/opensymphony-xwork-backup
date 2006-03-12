@@ -57,6 +57,48 @@ public class LocalizedTextUtil {
     }
 
     /**
+     * Builds a {@link java.util.Locale} from a String of the form en_US_foo into a Locale
+     * with language "en", country "US" and variant "foo". This will parse the output of
+     * {@link java.util.Locale#toString()}.
+     *
+     * @param localeStr The locale String to parse.
+     * @param defaultLocale The locale to use if localeStr is <tt>null</tt>.
+     * @return requested Locale
+     */
+    public static Locale localeFromString(String localeStr, Locale defaultLocale) {
+        if ((localeStr == null) || (localeStr.trim().length() == 0) || (localeStr.equals("_"))) {
+            if ( defaultLocale != null) {
+                return defaultLocale;
+            }
+            return Locale.getDefault();
+        }
+
+        int index = localeStr.indexOf('_');
+        if (index < 0) {
+            return new Locale(localeStr);
+        }
+
+        String language = localeStr.substring(0, index);
+        if (index == localeStr.length()) {
+            return new Locale(language);
+        }
+
+        localeStr = localeStr.substring(index + 1);
+        index = localeStr.indexOf('_');
+        if (index < 0) {
+            return new Locale(language, localeStr);
+        }
+
+        String country = localeStr.substring(0, index);
+        if (index == localeStr.length()) {
+            return new Locale(language, country);
+        }
+
+        localeStr = localeStr.substring(index + 1);
+        return new Locale(language, country, localeStr);
+    }
+
+    /**
      * Returns a localized message for the specified key, aTextName.  Neither the key nor the
      * message is evaluated.
      *
