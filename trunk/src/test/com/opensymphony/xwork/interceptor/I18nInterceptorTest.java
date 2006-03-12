@@ -42,7 +42,6 @@ public class I18nInterceptorTest extends TestCase {
 
         assertNull(params.get(I18nInterceptor.DEFAULT_PARAMETER)); // should have been removed
 
-        System.out.println("session: " + session);
         assertNotNull(session.get(I18nInterceptor.DEFAULT_SESSION_ATTRIBUTE)); // should be stored here
         assertEquals(Locale.getDefault(), session.get(I18nInterceptor.DEFAULT_SESSION_ATTRIBUTE)); // should create a locale object
     }
