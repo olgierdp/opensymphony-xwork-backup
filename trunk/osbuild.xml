@@ -217,7 +217,8 @@
                  doctitle="${fullname} API (${version})"
                  footer="&lt;a href=&quot;http://www.opensymphony.com/${name}/&quot; target=&quot;_top&quot;&gt;${fullname} Project Page&lt;/a&gt;"
                  use="true"
-                 verbose="false">
+                 verbose="false"
+                 source="${compile.version}">
             <link href="http://java.sun.com/j2se/${compile.version}/docs/api/"/>
             <link href="http://java.sun.com/j2ee/${compile.version}/docs/api/"/>
         </javadoc>
