@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork.config;
 
+import org.easymock.MockControl;
+
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.util.FileManager;
@@ -45,6 +47,25 @@ public class ConfigurationManagerTest extends TestCase {
         configProviderMock.expect("destroy");
     }
 
+    public void testDestroyConfiguration() throws Exception {
+    	MockControl control = MockControl.createControl(Configuration.class);
+    	Configuration configuration = (Configuration) control.getMock();
+    	ConfigurationManager.setConfiguration(configuration);
+    	
+    	configuration.destroy();		// EasyMock
+    	configProviderMock.expect("destroy");  // MockObject
+    	control.replay();
+    	ConfigurationManager.destroyConfiguration();
+    	configProviderMock.verify();
+    	control.verify();
+    }
+    
+    public void testClearConfigurationProviders() throws Exception {
+    	configProviderMock.expect("destroy");  
+    	ConfigurationManager.clearConfigurationProviders();
+    	configProviderMock.verify();
+    }
+    
     protected void setUp() throws Exception {
         super.setUp();
         ConfigurationManager.destroyConfiguration();

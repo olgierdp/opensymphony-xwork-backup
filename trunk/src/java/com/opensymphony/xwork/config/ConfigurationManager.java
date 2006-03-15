@@ -120,7 +120,11 @@ public class ConfigurationManager {
 
     public static synchronized void destroyConfiguration() {
         synchronized (configurationProviders) {
+        	clearConfigurationProviders(); // let's destroy the ConfigurationProvider first
             configurationProviders = new ArrayList();
+            
+            if (configurationInstance != null)
+            	configurationInstance.destroy(); // let's destroy it first, before nulling it.
             configurationInstance = null;
         }
     }
