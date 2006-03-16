@@ -16,10 +16,12 @@ import java.util.List;
 
 
 /**
- * ConfigurationManager
+ * ConfigurationManager - central for XWork Configuration management, including 
+ * its ConfigurationProvider.
  *
  * @author Jason Carreira
- *         Created Mar 1, 2003 1:06:04 AM
+ * @author tm_jee
+ * @version $Date$ $Id$
  */
 public class ConfigurationManager {
 
@@ -132,8 +134,8 @@ public class ConfigurationManager {
     /**
      * reloads the Configuration files if the configuration files indicate that they need to be reloaded.
      *
-     * TODO: as FileManager.setReloadingConfigs never appears to be set anywhere, will this ever do anything?
-     * TODO: it currently appears that the reload strategy is to check on each call to getConfiguration().  this seems extremely burdensome.  a caching mechanism should be implemented
+     * <B>NOTE:</b> FileManager could be configured through webwork.properties through
+     * webwork.configuration.xml.reload  property.
      */
     private static synchronized void conditionalReload() {
         if (FileManager.isReloadingConfigs()) {
