@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.text.MessageFormat;
 
 /**
  * DefaultTextProvider gets texts from only the default resource bundles associated with the
@@ -68,7 +69,18 @@ public class DefaultTextProvider implements TextProvider, Serializable, Unchaina
     public String getText(String key, String defaultValue, List args) {
         String text = getText(key, args);
         if (text == null) {
-            return defaultValue;
+            MessageFormat format = new MessageFormat(defaultValue);
+            format.setLocale(ActionContext.getContext().getLocale());
+            format.applyPattern(defaultValue);
+
+            Object[] params;
+            if (args != null) {
+                params = args.toArray();
+            } else {
+                params = EMPTY_ARGS;
+            }
+
+            return format.format(params);
         }
         return text;
     }
@@ -76,7 +88,15 @@ public class DefaultTextProvider implements TextProvider, Serializable, Unchaina
     public String getText(String key, String defaultValue, String[] args) {
         String text = getText(key, args);
         if (text == null) {
-            return defaultValue;
+            MessageFormat format = new MessageFormat(defaultValue);
+            format.setLocale(ActionContext.getContext().getLocale());
+            format.applyPattern(defaultValue);
+
+            if (args == null) {
+                return format.format(EMPTY_ARGS);
+            }
+
+            return format.format(args);
         }
         return text;
     }

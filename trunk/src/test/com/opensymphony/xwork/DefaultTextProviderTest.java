@@ -41,7 +41,7 @@ public class DefaultTextProviderTest extends TestCase {
         assertEquals("Hello World", tp.getText("hello", "this is default", "from me")); // no args in bundle
         assertEquals("Hello World from me", tp.getText("hello.0", "this is default", "from me"));
         assertEquals("this is default", tp.getText("not.in.bundle", "this is default", "from me"));
-        assertEquals("this is default {0}", tp.getText("not.in.bundle", "this is default {0}", "from me"));
+        assertEquals("this is default from me", tp.getText("not.in.bundle", "this is default {0}", "from me"));
 
         assertEquals(null, tp.getText("not.in.bundle"));
     }
@@ -55,8 +55,8 @@ public class DefaultTextProviderTest extends TestCase {
         assertEquals("Hello World. This is Santa speaking loud", tp.getText("hello.1", "this is default", args));
 
         assertEquals("this is default", tp.getText("not.in.bundle", "this is default", args));
-        assertEquals("this is default {0}", tp.getText("not.in.bundle", "this is default {0}", args));
-        assertEquals("this is default {0} speaking {1}", tp.getText("not.in.bundle", "this is default {0} speaking {1}", args));
+        assertEquals("this is default Santa", tp.getText("not.in.bundle", "this is default {0}", args));
+        assertEquals("this is default Santa speaking loud", tp.getText("not.in.bundle", "this is default {0} speaking {1}", args));
 
         assertEquals("Hello World", tp.getText("hello", args)); // no args in bundle
         assertEquals("Hello World Santa", tp.getText("hello.0", args)); // only 1 arg in bundle
@@ -72,8 +72,8 @@ public class DefaultTextProviderTest extends TestCase {
         assertEquals("Hello World. This is Santa speaking loud", tp.getText("hello.1", "this is default", args));
 
         assertEquals("this is default", tp.getText("not.in.bundle", "this is default", args));
-        assertEquals("this is default {0}", tp.getText("not.in.bundle", "this is default {0}", args));
-        assertEquals("this is default {0} speaking {1}", tp.getText("not.in.bundle", "this is default {0} speaking {1}", args));
+        assertEquals("this is default Santa", tp.getText("not.in.bundle", "this is default {0}", args));
+        assertEquals("this is default Santa speaking loud", tp.getText("not.in.bundle", "this is default {0} speaking {1}", args));
 
         assertEquals("Hello World", tp.getText("hello", args)); // no args in bundle
         assertEquals("Hello World Santa", tp.getText("hello.0", args)); // only 1 arg in bundle
@@ -93,8 +93,8 @@ public class DefaultTextProviderTest extends TestCase {
         assertEquals("Hello World. This is Santa speaking loud", tp.getText("hello.1", "this is default", args, stack));
 
         assertEquals("this is default", tp.getText("not.in.bundle", "this is default", args, stack));
-        assertEquals("this is default {0}", tp.getText("not.in.bundle", "this is default {0}", args, stack));
-        assertEquals("this is default {0} speaking {1}", tp.getText("not.in.bundle", "this is default {0} speaking {1}", args, stack));
+        assertEquals("this is default Santa", tp.getText("not.in.bundle", "this is default {0}", args, stack));
+        assertEquals("this is default Santa speaking loud", tp.getText("not.in.bundle", "this is default {0} speaking {1}", args, stack));
     }
 
     public void testGetTextsWithArrayAndStack() throws Exception {
@@ -106,8 +106,8 @@ public class DefaultTextProviderTest extends TestCase {
         assertEquals("Hello World. This is Santa speaking loud", tp.getText("hello.1", "this is default", args, stack));
 
         assertEquals("this is default", tp.getText("not.in.bundle", "this is default", args, stack));
-        assertEquals("this is default {0}", tp.getText("not.in.bundle", "this is default {0}", args, stack));
-        assertEquals("this is default {0} speaking {1}", tp.getText("not.in.bundle", "this is default {0} speaking {1}", args, stack));
+        assertEquals("this is default Santa", tp.getText("not.in.bundle", "this is default {0}", args, stack));
+        assertEquals("this is default Santa speaking loud", tp.getText("not.in.bundle", "this is default {0} speaking {1}", args, stack));
     }
 
     public void testGetBundle() throws Exception {
