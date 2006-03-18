@@ -114,19 +114,26 @@ public class OgnlValueStack implements Serializable {
     }
 
     /**
+     * Determine whether devMode is enabled.
+     * @return true if devMode was enabled, false otherwise.
+     */
+    public boolean isDevModeEnabled() {
+        Boolean devMode = (Boolean) context.get(ActionContext.DEV_MODE);
+        if (devMode != null) {
+        	return devMode.booleanValue();
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Attempts to set a property on a bean in the stack with the given expression using the default search order.
      *
      * @param expr  the expression defining the path to the property to be set.
      * @param value the value to be set into the neamed property
      */
     public void setValue(String expr, Object value) {
-        boolean report = false;
-        Boolean devMode = (Boolean) context.get(ActionContext.DEV_MODE);
-        if (devMode != null) {
-            report = devMode.booleanValue();
-        }
-
-        setValue(expr, value, report);
+        setValue(expr, value, isDevModeEnabled());
     }
 
     /**
@@ -204,7 +211,14 @@ public class OgnlValueStack implements Serializable {
         } catch (OgnlException e) {
             return findInContext(expr);
         } catch (Exception e) {
-            LOG.warn("Caught an exception while evaluating expression '" + expr + "' against value stack", e);
+            StringBuffer msg = new StringBuffer();
+            msg.append("Caught an exception while evaluating expression '").append(expr).append("' against value stack");
+            if (isDevModeEnabled() && LOG.isWarnEnabled()) {
+                LOG.warn( msg , e);
+                LOG.warn("NOTE: Previous warning message was issued due to devMode set to true.");
+            } else if ( LOG.isDebugEnabled() ) {
+                LOG.debug( msg , e);
+            }
 
             return findInContext(expr);
         } finally {

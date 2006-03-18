@@ -590,6 +590,14 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertTrue(conversionErrors.containsKey("count"));
     }
 
+    public void testIsDevModeEnabled() {
+        OgnlValueStack stack = new OgnlValueStack();
+        assertFalse(stack.isDevModeEnabled());
+        stack.getContext().put(ActionContext.DEV_MODE, Boolean.FALSE);
+        assertFalse(stack.isDevModeEnabled());
+        stack.getContext().put(ActionContext.DEV_MODE, Boolean.TRUE);
+        assertTrue(stack.isDevModeEnabled());
+    }
 
     class BadJavaBean {
         private int count;
