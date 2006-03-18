@@ -16,6 +16,8 @@ import com.opensymphony.xwork.util.TextParseUtil;
 
 
 /**
+ * <!-- START SNIPPET: javadoc -->
+ * 
  * An abstract <code>Interceptor</code> that is applied to selectively according
  * to specified included/excluded method lists.
  * 
@@ -34,8 +36,27 @@ import com.opensymphony.xwork.util.TextParseUtil;
  * excludeMethods, it will still be considered as an included method. In short
  * includeMethods takes precedence over excludeMethods.
  * 
+ * <p/>
+ * 
+ * Interceptors that extends this capability would be :-
+ * 
+ * <ul>
+ *    <li>TokenInterceptor</li>
+ *    <li>TokenSessionStoreInterceptor</li>
+ *    <li>DefaultWorkflowInterceptor</li>
+ *    <li>ValidationInterceptor</li>
+ * </ul>
+ * 
+ * <!-- END SNIPPET: javadoc -->
+ * 
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  * @author Rainer Hermanns
+ * 
+ * @see com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor
+ * @see com.opensymphony.webwork.interceptor.TokenInterceptor
+ * @see com.opensymphony.webwork.interceptor.TokenSessionStoreInterceptor
+ * @see com.opensymphony.xwork.validator.ValidationInterceptor
+ * 
  * @version $Date$ $Id$
  */
 public abstract class MethodFilterInterceptor implements Interceptor {
