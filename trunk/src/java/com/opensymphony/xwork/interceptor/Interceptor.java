@@ -90,7 +90,7 @@ import java.io.Serializable;
  * the dot (.) specifies the parameter itself. Essetially it is as follows :-
  * 
  * <pre>
- *    <interceptor-name>.<parameter-name>
+ *    &lt;interceptor-name&gt;.&lt;parameter-name&gt;
  * </pre>
  * 
  * <b>Note</b> also that in this case the <interceptor-ref ... > name attribute 
