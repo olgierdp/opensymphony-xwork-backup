@@ -25,6 +25,12 @@ import com.opensymphony.xwork.interceptor.MethodFilterInterceptor;
  * error messages to the action. The workflow of the action request does not change due to this interceptor. Rather,
  * this interceptor is often used in conjuction with the <b>workflow</b> interceptor.
  *
+ * <p/>
+ * 
+ * <b>NOTE:</b> As this method extends off MethodFilterInterceptor, it is capable of
+ * deciding if it is applicable only to selective methods in the action class. See
+ * <code>MethodFilterInterceptor</code> for more info.
+ *
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Interceptor parameters:</u>
@@ -53,12 +59,26 @@ import com.opensymphony.xwork.interceptor.MethodFilterInterceptor;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * 
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
  *     &lt;interceptor-ref name="params"/&gt;
  *     &lt;interceptor-ref name="validation"/&gt;
  *     &lt;interceptor-ref name="workflow"/&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
+ * 
+ * &lt;-- in the following case myMethod of the action class will not
+ *        get validated --&gt;
+ * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
+ *     &lt;interceptor-ref name="params"/&gt;
+ *     &lt;interceptor-ref name="validation"&gt;
+ *         &lt;param name="excludeMethods"&gt;myMethod&lt;/param&gt;
+ *     &lt;/interceptor-ref&gt;
+ *     &lt;interceptor-ref name="workflow"/&gt;
+ *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
+ * &lt;/action&gt;
+ * 
+ * 
  * <!-- END SNIPPET: example -->
  * </pre>
  *
@@ -67,6 +87,8 @@ import com.opensymphony.xwork.interceptor.MethodFilterInterceptor;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  * @see ActionValidatorManager
  * @see com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor
+ * 
+ * @version $Date$ $Id$
  */
 public class ValidationInterceptor extends MethodFilterInterceptor {
     /**

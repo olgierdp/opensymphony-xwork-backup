@@ -43,6 +43,12 @@ import java.util.Set;
  * interceptor is often used with the <b>validation</b> interceptor. However, it does not have to be, especially if you
  * wish to write all your validation rules by hand in the validate() method rather than in XML files.
  *
+ * <p/>
+ *
+ * <b>NOTE:</b> As this method extends off MethodFilterInterceptor, it is capable of
+ * deciding if it is applicable only to selective methods in the action class. See
+ * <code>MethodFilterInterceptor</code> for more info.
+ *
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Interceptor parameters:</u>
@@ -71,18 +77,33 @@ import java.util.Set;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * 
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
  *     &lt;interceptor-ref name="params"/&gt;
  *     &lt;interceptor-ref name="validation"/&gt;
  *     &lt;interceptor-ref name="workflow"/&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
+ * 
+ * &lt;-- In this case myMethod of the action class will not pass through 
+ *        the workflow process --&gt;
+ * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
+ *     &lt;interceptor-ref name="params"/&gt;
+ *     &lt;interceptor-ref name="validation"/&gt;
+ *     &lt;interceptor-ref name="workflow"&gt;
+ *         &lt;param name="excludeMethods"&gt;myMethod&lt;/param&gt;
+ *     &lt;/interceptor-ref name="workflow"&gt;
+ *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
+ * &lt;/action&gt;
+ * 
  * <!-- END SNIPPET: example -->
  * </pre>
  *
  * @author Jason Carreira
  * @author Rainer Hermanns
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
+ * 
+ * @version $Date$ $Id$
  */
 public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 	
