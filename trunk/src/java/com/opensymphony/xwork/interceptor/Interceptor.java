@@ -42,9 +42,7 @@ import java.io.Serializable;
  * <p/>
  * 
  * <b>Method 1:</b>
- * 
  * <pre>
- * 
  * &lt;action name="myAction" class="myActionClass"&gt;
  *   &lt;interceptor-ref name="exception"/&gt;
  *     &lt;interceptor-ref name="alias"/&gt;
@@ -65,20 +63,16 @@ import java.io.Serializable;
  *       &lt;param name="excludeMethods"&gt;myWorkflowExcludeMethod&lt;/param&gt;
  *     &lt;/interceptor-ref&gt;
  * &lt;/action&gt;
- * 
  * </pre>
  * 
  * <b>Method 2:</b>
- * 
  * <pre>
- * 
  * &lt;action name="myAction" class="myActionClass"&gt;
  *   &lt;interceptor-ref name="defaultStack"&gt;
  *     &lt;param name="validator.excludeMethods"&gt;myValidationExcludeMethod&lt;/param&gt;
  *     &lt;param name="workflow.excludeMethods"&gt;myWorkflowExcludeMethod&lt;/param&gt;
  *   &lt;/interceptor-ref&gt;
  * &lt;/action&gt;
- * 
  * </pre>
  * 
  * <p/>
