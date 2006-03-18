@@ -10,15 +10,104 @@ import java.io.Serializable;
 
 
 /**
+ * <!-- START SNIPPET: introduction -->
+ * 
  * An interceptor is a stateless class that follows the interceptor pattern, as
  * found in {@link  javax.servlet.Filter} and in AOP languages.
+ * 
  * <p/>
+ * 
+ * Interceptors are objects that dynamically intercept Action invocations. 
+ * They provide the developer with the opportunity to define code that can be executed 
+ * before and/or after the execution of an action. They also have the ability 
+ * to prevent an action from executing. Interceptors provide developers a way to 
+ * encapulate common functionality in a re-usable form that can be applied to 
+ * one or more Actions.
+ * 
+ * <p/>
+ * 
  * Interceptors <b>must</b> be stateless and not assume that a new instance will be created for each request or Action.
  * Interceptors may choose to either short-circuit the {@link ActionInvocation} execution and return a return code
  * (such as {@link com.opensymphony.xwork.Action#SUCCESS}), or it may choose to do some processing before
  * and/or after delegating the rest of the procesing using {@link ActionInvocation#invoke()}.
- *
+ * 
+ * <!-- END SNIPPET: introduction -->
+ * 
+ * <p/>
+ * 
+ * <!-- START SNIPPET: parameterOverriding -->
+ * 
+ * Interceptor's parameter could be overriden through the following ways :-
+ * 
+ * <p/>
+ * 
+ * <b>Method 1:</b>
+ * 
+ * <pre>
+ * 
+ * &lt;action name="myAction" class="myActionClass"&gt;
+ *   &lt;interceptor-ref name="exception"/&gt;
+ *     &lt;interceptor-ref name="alias"/&gt;
+ *     &lt;interceptor-ref name="params"/&gt;
+ *     &lt;interceptor-ref name="servlet-config"/&gt;
+ *     &lt;interceptor-ref name="prepare"/&gt;
+ *     &lt;interceptor-ref name="i18n"/&gt;
+ *     &lt;interceptor-ref name="chain"/&gt;
+ *     &lt;interceptor-ref name="model-driven"/&gt;
+ *     &lt;interceptor-ref name="fileUpload"/&gt;
+ *     &lt;interceptor-ref name="static-params"/&gt;
+ *     &lt;interceptor-ref name="params"/&gt;
+ *     &lt;interceptor-ref name="conversionError"/&gt;
+ *     &lt;interceptor-ref name="validation"&gt;
+ *       &lt;param name="excludeMethods"&gt;myValidationExcudeMethod&lt;/param&gt;
+ *     &lt;/interceptor-ref&gt;
+ *     &lt;interceptor-ref name="workflow"&gt;
+ *       &lt;param name="excludeMethods"&gt;myWorkflowExcludeMethod&lt;/param&gt;
+ *     &lt;/interceptor-ref&gt;
+ * &lt;/action&gt;
+ * 
+ * </pre>
+ * 
+ * <b>Method 2:</b>
+ * 
+ * <pre>
+ * 
+ * &lt;action name="myAction" class="myActionClass"&gt;
+ *   &lt;interceptor-ref name="defaultStack"&gt;
+ *     &lt;param name="validator.excludeMethods"&gt;myValidationExcludeMethod&lt;/param&gt;
+ *     &lt;param name="workflow.excludeMethods"&gt;myWorkflowExcludeMethod&lt;/param&gt;
+ *   &lt;/interceptor-ref&gt;
+ * &lt;/action&gt;
+ * 
+ * </pre>
+ * 
+ * <p/>
+ * 
+ * In the first method, the whole default stack is copied and the parameter then 
+ * changed accordingly.
+ * 
+ * <p/>
+ * 
+ * In the second method, the <interceptor-ref .../> refer to an existing 
+ * interceptor-stack, namely default-stack in this example, and override the validator
+ * and workflow interceptor excludeMethods typically in this case. Note that in the
+ * <param ... /> tag, the name attribute contains a dot (.) the word before the dot(.)
+ * specifies the interceptor name whose parameter is to be overriden and the word after
+ * the dot (.) specifies the parameter itself. Essetially it is as follows :-
+ * 
+ * <pre>
+ *    <interceptor-name>.<parameter-name>
+ * </pre>
+ * 
+ * <b>Note</b> also that in this case the <interceptor-ref ... > name attribute 
+ * is used to indicate an interceptor stack which makes sense as if it is refering 
+ * to the interceptor itself it would be just using Method 1 describe above.
+ * 
+ * <!-- END SNIPPET: parameterOverriding -->
+ * 
+ * 
  * @author Jason Carreira
+ * @version $Date$ $Id$
  */
 public interface Interceptor extends Serializable {
 
