@@ -9,10 +9,13 @@ import com.opensymphony.xwork.ActionInvocation;
 
 
 /**
- * AbstractLifecycleInterceptor
+ * AbstractLifecycleInterceptor is a convenience interceptor that is like an 
+ * @link com.opensymphony.xwork.interceptor.AroundInterceptor that allows before 
+ * and after action invocation callback but also berfore result is being executed
+ * callback as it implements @link com.opensymphony.xwork.interceptor.PreResultListener
  *
  * @author Jason Carreira
- *         Date: Nov 14, 2003 10:07:43 PM
+ * @version $Date$ $Id$
  */
 public abstract class AbstractLifecycleInterceptor implements Interceptor, PreResultListener {
 
