@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- START SNIPPET: xworkDtd -->
+
 <!--
    XWork configuration DTD.
    Use the following DOCTYPE
@@ -98,4 +100,5 @@
     file CDATA #REQUIRED
 >
 
+<!-- END SNIPPET: xworkDtd -->
 
