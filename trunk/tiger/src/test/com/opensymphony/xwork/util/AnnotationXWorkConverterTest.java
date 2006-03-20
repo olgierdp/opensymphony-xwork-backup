@@ -4,10 +4,7 @@
  */
 package com.opensymphony.xwork.util;
 
-import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.TestBean;
-import com.opensymphony.xwork.ModelDrivenAnnotationAction;
-import com.opensymphony.xwork.SimpleAnnotationAction;
+import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.test.ModelDrivenAnnotationAction2;
 import com.opensymphony.xwork.test.AnnotationUser;
 import com.opensymphony.xwork.config.ConfigurationManager;
@@ -286,7 +283,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
     }
 
     // TODO: Fixme... This test does not work with GenericsObjectDeterminer!
-    public void no_testStringToCollectionConversion() {
+    public void testStringToCollectionConversion() {
         OgnlValueStack stack = new OgnlValueStack();
         Map stackContext = stack.getContext();
         stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
@@ -296,7 +293,6 @@ public class AnnotationXWorkConverterTest extends TestCase {
         AnnotationUser user = new AnnotationUser();
         stack.push(user);
 
-        // This is not working... user.getList() returns null!
         stack.setValue("list", "asdf");
         assertNotNull(user.getList());
         assertEquals(1, user.getList().size());
@@ -341,6 +337,19 @@ public class AnnotationXWorkConverterTest extends TestCase {
         stack.push(new Foo1());
         Bar1 bar = (Bar1) stack.findValue("bar", Bar1.class);
         assertNotNull(bar);
+    }
+
+    public void testGenericProperties() {
+        GenericsBean gb = new GenericsBean();
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(gb);
+
+        String[] value = new String[] {"123.12", "123.45"};
+        stack.setValue("doubles", value);
+        assertEquals(2, gb.getDoubles().size());
+        assertEquals(Double.class, gb.getDoubles().get(0).getClass());
+        assertEquals(new Double(123.12), gb.getDoubles().get(0));
+        assertEquals(new Double(123.45), gb.getDoubles().get(1));
     }
 
     public static class Foo1 {
