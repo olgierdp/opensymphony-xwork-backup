@@ -76,21 +76,34 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
     /**
      * Determines the String key property for a Collection by getting it from the conversion properties file using the
      * KeyProperty_ prefix. KeyProperty_${property}=somePropertyOfBeansInTheSet
+     *
+     * @param parentClass the Class which contains as a property the Map or Collection we are finding the KeyProperty for.
+     * @param property    the property of the Map or Collection for the given parent class
      */
     public String getKeyProperty(Class parentClass, String property) {
         return (String) XWorkConverter.getInstance()
                 .getConverter(parentClass, KEY_PROPERTY_PREFIX + property);
-
     }
     
-    public boolean shouldCreateIfNew(Class parentClass, 
+    /**
+     * Determines the boolean CreateIfNull property for a Collection or Map by getting it from the conversion properties
+     * file using the CreateIfNull_ prefix. CreateIfNull_${property}=true|false
+     *
+     * @param parentClass the Class which contains as a property the Map or Collection we are finding the CreateIfNull for.
+     * @param property    the property of the Map or Collection for the given parent class
+     * @param target
+     * @param keyProperty
+     * @param isIndexAccessed
+     * @return <tt>true</tt>, if the Collection or Map should be created, <tt>false</tt> otherwise.
+     */
+    public boolean shouldCreateIfNew(Class parentClass,
             String property, 
             Object target,
             String keyProperty,
             boolean isIndexAccessed) {
         
-        	String configValue=(String) XWorkConverter.getInstance()
-            .getConverter(parentClass, CREATE_IF_NULL_PREFIX + property);
+        	String configValue = (String) XWorkConverter.getInstance()
+                    .getConverter(parentClass, CREATE_IF_NULL_PREFIX + property);
         	//check if a value is in the config
         	if (configValue!=null) {
         	    if (configValue.equals("true")) {
