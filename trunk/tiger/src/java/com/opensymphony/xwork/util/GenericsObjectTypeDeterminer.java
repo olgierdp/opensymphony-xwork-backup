@@ -88,15 +88,14 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
 
         Field field = OgnlRuntime.getField(parentClass, property);
 
-        if (field == null) {
-            return null;
+        if (field != null) {
+            KeyProperty annotation = field.getAnnotation(KeyProperty.class);
+
+            if (annotation != null) {
+                return annotation.value();
+            }
         }
 
-        KeyProperty annotation = field.getAnnotation(KeyProperty.class);
-
-        if (annotation != null) {
-            return annotation.value();
-        }
 
         return super.getKeyProperty(parentClass, property);
     }
