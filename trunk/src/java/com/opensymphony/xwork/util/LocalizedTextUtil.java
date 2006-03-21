@@ -32,6 +32,7 @@ import java.util.*;
  * <li>search up the i18n message key hierarchy itself</li>
  * <li>global resource properties (webwork.custom.i18n.resources) defined in webwork.properties</li>
  * </ol>
+ * <p/>
  * <!-- END SNIPPET: searchorder -->
  *
  * <!-- START SNIPPET: packagenote -->
@@ -44,8 +45,25 @@ import java.util.*;
  * &nbsp; &nbsp; &nbsp; FooAction.java<br/>
  * &nbsp; &nbsp; &nbsp; FooAction.properties<br/>
  * <p/>
- * If FooAction.properties does not exist com/acme/action/package.properties will be searched for if not found com/acme/package.properties if not found com/package.properties, etc.
+ * If FooAction.properties does not exist, com/acme/action/package.properties will be searched for, if
+ * not found com/acme/package.properties, if not found com/package.properties, etc.
+ * <p/>
  * <!-- END SNIPPET: packagenote -->
+ *
+ * <!-- START SNIPPET: globalresource -->
+ * A global resource bundle could be specified through the 'webwork.custom.i18n.resources' property in
+ * webwork.properties. The locale can be siwtched by 'webwork.locale' in the webwork.properties as well.
+ * <p/>
+ * <!-- END SNIPPET: globalresource -->
+ *
+ * <!-- START SNIPPET: strutscomparison -->
+ * Struts users should be familiar with the application.properties resource bundle, where you can put all the messages
+ * in the application that are going to be translated. WebWork, though, splits the resource bundles per action or model
+ * class, and you may end up with duplicated messages in those resource bundles. A quick fix for that is to create a
+ * file called ActionSupport.properties in com/opensymphony/xwork and put it on your classpath. This will only work well
+ * if all your actions subclass ActionSupport.
+ * <p/>
+ * <!-- END SNIPPET: strutscomparison -->
  *
  * @author Jason Carreira
  * @author Mark Woon
