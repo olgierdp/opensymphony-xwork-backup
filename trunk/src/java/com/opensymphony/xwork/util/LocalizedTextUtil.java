@@ -376,7 +376,7 @@ public class LocalizedTextUtil {
             result = getDefaultMessage(indexedTextName, locale, valueStack, args, defaultMessage);
         }
         if ( result != null && result.equals(defaultMessage)) {
-            LOG.warn("Unable to find text for key " + aTextName);
+            LOG.warn("Unable to find text for key " + aTextName + " in class " + aClass + " and locale " + locale);
         }
         return result;
     }
