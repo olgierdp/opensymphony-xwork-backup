@@ -13,7 +13,7 @@ package com.opensymphony.xwork.util;
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- * <p/>The KeyProperty annotation must be applied at method level.
+ * <p/>The KeyProperty annotation must be applied at field level.
  * <p/>This annotation should be used with Generic types, if the key property of the key element needs to be specified.
  * <!-- END SNIPPET: usage -->
  * <p/> <u>Annotation parameters:</u>
@@ -43,12 +43,8 @@ package com.opensymphony.xwork.util;
  * <pre>
  * <!-- START SNIPPET: example -->
  * // The key property for User objects within the users collection is the <code>userName</code> attribute.
- * List<User> users = null;
- *
  * &#64;KeyProperty( value = "userName" )
- * public void setUsers(List<User> users) {
- *   this.users = users;
- * }
+ * protected List<User> users = null;
  * <!-- END SNIPPET: example -->
  * </pre>
  *

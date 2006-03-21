@@ -13,7 +13,7 @@ package com.opensymphony.xwork.util;
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- * <p/>The Element annotation must be applied at method level.
+ * <p/>The Element annotation must be applied at field level.
  * <!-- END SNIPPET: usage -->
  * <p/> <u>Annotation parameters:</u>
  *
@@ -42,18 +42,11 @@ package com.opensymphony.xwork.util;
  * <pre>
  * <!-- START SNIPPET: example -->
  * // The key property for User objects within the users collection is the <code>userName</code> attribute.
- * Map<Long, User> userMap = null;
- * List<User> userList = null;
+ * &#64;Element( value = com.acme.User )
+ * private Map<Long, User> userMap;
  *
  * &#64;Element( value = com.acme.User )
- * public void setUserMap(Map<Long, User> userMap) {
- *   this.userMap = userMap;
- * }
- *
- * &#64;Element( value = com.acme.User )
- * public void setUserList(List<User> userList) {
- *   this.userList = userList;
- * }
+ * public List<User> userList;
  * <!-- END SNIPPET: example -->
  * </pre>
  *

@@ -13,7 +13,7 @@ package com.opensymphony.xwork.util;
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- * <p/>The CreateIfNull annotation must be applied at method level.
+ * <p/>The CreateIfNull annotation must be applied at field level.
  * <!-- END SNIPPET: usage -->
  * <p/> <u>Annotation parameters:</u>
  *
@@ -41,12 +41,8 @@ package com.opensymphony.xwork.util;
  * <p/> <u>Example code:</u>
  * <pre>
  * <!-- START SNIPPET: example -->
- * List<User> users = null;
- *
  * &#64;CreateIfNull( value = true )
- * public void setUsers(List<User> users) {
- *   this.users = users;
- * }
+ * private List<User> users;
  * <!-- END SNIPPET: example -->
  * </pre>
  *
