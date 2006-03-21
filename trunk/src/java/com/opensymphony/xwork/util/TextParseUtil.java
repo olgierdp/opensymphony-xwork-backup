@@ -14,7 +14,7 @@ import java.util.Set;
  * Utility class for text parsing.
  *
  * @author Jason Carreira
- *         Created Feb 10, 2003 8:55:11 PM
+ * @author Rainer Hermanns
  */
 public class TextParseUtil {
 
@@ -31,10 +31,30 @@ public class TextParseUtil {
         return translateVariables('$', expression, stack, String.class).toString();
     }
 
+    /**
+     * Converts all instances of ${...} in <code>expression</code> to the value returned
+     * by a call to {@link OgnlValueStack#findValue(java.lang.String)}. If an item cannot
+     * be found on the stack (null is returned), then the entire variable ${...} is not
+     * displayed, just as if the item was on the stack but returned an empty string.
+     *
+     * @param open
+     * @param expression
+     * @param stack
+     * @return Translated variable String
+     */
     public static String translateVariables(char open, String expression, OgnlValueStack stack) {
         return translateVariables(open, expression, stack, String.class).toString();
     }
 
+    /**
+     * Converted object from variable translation.
+     *
+     * @param open
+     * @param expression
+     * @param stack
+     * @param asType
+     * @return Converted object from variable translation.
+     */
     public static Object translateVariables(char open, String expression, OgnlValueStack stack, Class asType) {
         // deal with the "pure" expressions first!
         //expression = expression.trim();
@@ -89,6 +109,11 @@ public class TextParseUtil {
         return XWorkConverter.getInstance().convertValue(stack.getContext(), result, asType);
     }
 
+    /**
+     * Returns a set from comma delimted Strings.
+     * @param s The String to parse.
+     * @return A set from comma delimted Strings.
+     */
     public static Set commaDelimitedStringToSet(String s) {
         Set set = new HashSet();
         String[] split = s.split(",");
