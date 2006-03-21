@@ -20,6 +20,24 @@ import java.util.*;
 /**
  * Provides support for localization in XWork.
  *
+ * <!-- START SNIPPET: searchorder -->
+ * Resource bundles are searched in the following order:<p/>
+ * <p/>
+ * <ol>
+ * <li>ActionClass.properties</li>
+ * <li>BaseClass.properties (all the way to Object.properties)</li>
+ * <li>Interface.properties (every interface and sub-interface)</li>
+ * <li>ModelDriven's model (if implements ModelDriven), for the model object repeat from 1</li>
+ * <li>package.properties (of the directory where class is located and every parent directory all the way to the root directory)</li>
+ * <li>search up the i18n message key hierarchy itself</li>
+ * <li>global resource properties (webwork.custom.i18n.resources) defined in webwork.properties</li>
+ * </ol>
+ * <!-- END SNIPPET: searchorder -->
+ *
+ * <!-- START SNIPPET: packagenote -->
+ * While transversing the package hierarchy, WW will look for a file package.properties.
+ * <!-- END SNIPPET: packagenote -->
+ *
  * @author Jason Carreira
  * @author Mark Woon
  * @author Rainer Hermanns
