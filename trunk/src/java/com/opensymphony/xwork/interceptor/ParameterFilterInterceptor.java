@@ -6,8 +6,12 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionInvocation;
+import com.opensymphony.xwork.util.TextParseUtil;
 
 import java.util.*;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * <!-- START SNIPPET: description -->
@@ -58,6 +62,8 @@ import java.util.*;
  */
 public class ParameterFilterInterceptor implements Interceptor {
 
+    private static final Log LOG = LogFactory.getLog(ParameterFilterInterceptor.class);
+
     private Collection allowed;
 
     private Collection blocked;
@@ -104,6 +110,11 @@ public class ParameterFilterInterceptor implements Interceptor {
                 paramsToRemove.add(param);
             }
         }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Params to remove: " + paramsToRemove);
+        }
+
         for (Iterator i = paramsToRemove.iterator(); i.hasNext();) {
             parameters.remove(i.next());
         }
@@ -123,13 +134,13 @@ public class ParameterFilterInterceptor implements Interceptor {
         if (this.includesExcludesMap == null) {
             this.includesExcludesMap = new TreeMap();
 
-            if (getAllowed() != null) {
-                for (Iterator i = getAllowed().iterator(); i.hasNext();) {
+            if (getAllowedCollection() != null) {
+                for (Iterator i = getAllowedCollection().iterator(); i.hasNext();) {
                     this.includesExcludesMap.put(i.next(), Boolean.TRUE);
                 }
             }
-            if (getBlocked() != null) {
-                for (Iterator i = getBlocked().iterator(); i.hasNext();) {
+            if (getBlockedCollection() != null) {
+                for (Iterator i = getBlockedCollection().iterator(); i.hasNext();) {
                     this.includesExcludesMap.put(i.next(), Boolean.FALSE);
                 }
             }
@@ -155,49 +166,55 @@ public class ParameterFilterInterceptor implements Interceptor {
     /**
      * @return Returns the blocked.
      */
-    public Collection getBlocked() {
+    public Collection getBlockedCollection() {
         return blocked;
     }
 
     /**
      * @param blocked The blocked to set.
      */
-    public void setBlocked(Collection blocked) {
+    public void setBlockedCollection(Collection blocked) {
         this.blocked = blocked;
     }
 
+    /**
+     * @param blocked The blocked paramters as comma separated String.
+     */
     public void setBlocked(String blocked) {
-        setBlocked(asCollection(blocked));
+        setBlockedCollection(asCollection(blocked));
     }
 
     /**
      * @return Returns the allowed.
      */
-    public Collection getAllowed() {
+    public Collection getAllowedCollection() {
         return allowed;
     }
 
     /**
      * @param allowed The allowed to set.
      */
-    public void setAllowed(Collection allowed) {
+    public void setAllowedCollection(Collection allowed) {
         this.allowed = allowed;
     }
 
+    /**
+     * @param allowed The allowed paramters as comma separated String.
+     */
     public void setAllowed(String allowed) {
-        setAllowed(asCollection(allowed));
+        setAllowedCollection(asCollection(allowed));
     }
 
+    /**
+     * Return a collection from the comma delimited String.
+     *
+     * @param commaDelim
+     * @return A collection from the comma delimited String.
+     */
     private Collection asCollection(String commaDelim) {
         if (commaDelim == null || commaDelim.trim().length() == 0) {
             return null;
         }
-        String [] splitString = commaDelim.split(",");
-
-        HashSet set = new HashSet();
-        for (int i = 0; i < splitString.length; i++) {
-            set.add(splitString[i].trim());
-        }
-        return set;
+        return TextParseUtil.commaDelimitedStringToSet(commaDelim);
     }
 }
