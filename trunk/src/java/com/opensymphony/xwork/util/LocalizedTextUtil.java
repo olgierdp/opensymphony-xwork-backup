@@ -35,7 +35,16 @@ import java.util.*;
  * <!-- END SNIPPET: searchorder -->
  *
  * <!-- START SNIPPET: packagenote -->
- * While transversing the package hierarchy, WW will look for a file package.properties.
+ * While traversing the package hierarchy, WW will look for a file package.properties:<p/>
+ * com/
+ *  acme/
+ *     package.properties
+ *     actions/
+ *          package.properties
+ *          FooAction.java
+ *          FooAction.properties
+ *
+ * If FooAction.properties does not exist com/acme/action/package.properties will be searched for if not found com/acme/package.properties if not found com/package.properties, etc.
  * <!-- END SNIPPET: packagenote -->
  *
  * @author Jason Carreira
