@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>opensymphony</groupId>
     <artifactId>xwork-tiger</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
     <name>XWork Tiger Extensions</name>
     <description>
         XWork Tiger Extensions are extensions of XWork taking advantage
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>opensymphony</groupId>
             <artifactId>xwork</artifactId>
-            <version>1.1.2</version>
+            <version>1.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
