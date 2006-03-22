@@ -285,7 +285,10 @@
         </copy>
 
         <copy todir="${dist}/tiger">
-            <fileset dir="tiger"/>
+            <fileset dir="tiger">
+                <exclude name="build/"/>
+                <exclude name="*.i*"/>                
+            </fileset>
         </copy>
 
         <mkdir dir="${dist}/lib"/>
