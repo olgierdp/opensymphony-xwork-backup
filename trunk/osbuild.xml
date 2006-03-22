@@ -220,7 +220,7 @@
                  verbose="false"
                  source="${compile.version}">
             <link href="http://java.sun.com/j2se/${compile.version}/docs/api/"/>
-            <link href="http://java.sun.com/j2ee/${compile.version}/docs/api/"/>
+            <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api"/>
         </javadoc>
         <!-- <copy overwrite="yes" file="${docs}/main.css" tofile="${docs}/api/stylesheet.css"/> -->
     </target>
