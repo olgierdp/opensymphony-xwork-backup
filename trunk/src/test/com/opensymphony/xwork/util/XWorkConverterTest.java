@@ -485,6 +485,29 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(new Double(1.23), converter.convertValue(context, null, null, null, "1,23", Double.class));
         assertEquals(new Double(1234), converter.convertValue(context, null, null, null, "1.234", Double.class));
         assertEquals(new Double(1234.12), converter.convertValue(context, null, null, null, "1.234,12", Double.class));
+
+    }
+
+    // Testing for null result on non-primitive Number types supplied as empty String or 
+    public void testNotPrimitiveDefaultsToNull() {
+        assertEquals(null, converter.convertValue(context, null, null, null, null, Double.class));
+        assertEquals(null, converter.convertValue(context, null, null, null, "", Double.class));
+
+        assertEquals(null, converter.convertValue(context, null, null, null, null, Integer.class));
+        assertEquals(null, converter.convertValue(context, null, null, null, "", Integer.class));
+
+        assertEquals(null, converter.convertValue(context, null, null, null, null, Float.class));
+        assertEquals(null, converter.convertValue(context, null, null, null, "", Float.class));
+
+        assertEquals(null, converter.convertValue(context, null, null, null, null, Character.class));
+        assertEquals(null, converter.convertValue(context, null, null, null, "", Character.class));
+
+        assertEquals(null, converter.convertValue(context, null, null, null, null, Long.class));
+        assertEquals(null, converter.convertValue(context, null, null, null, "", Long.class));
+
+        assertEquals(null, converter.convertValue(context, null, null, null, null, Short.class));
+        assertEquals(null, converter.convertValue(context, null, null, null, "", Short.class));
+
     }
     
     public void testOgnlValueStackWithTypeParameter() {

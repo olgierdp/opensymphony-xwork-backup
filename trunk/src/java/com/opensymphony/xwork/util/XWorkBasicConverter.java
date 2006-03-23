@@ -347,7 +347,10 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 return new BigInteger((String) value);
             } else {
                 String stringValue = (String) value;
-                NumberFormat numFormat = NumberFormat.getInstance(getLocale(context));                
+                if ( !toType.isPrimitive() && (stringValue == null || stringValue.length() == 0)) {
+                    return null;
+                }
+                NumberFormat numFormat = NumberFormat.getInstance(getLocale(context));
                 ParsePosition parsePos = new ParsePosition(0);
                 if (isIntegerType(toType)) {
                     numFormat.setParseIntegerOnly(true);
