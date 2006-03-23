@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>opensymphony</groupId>
     <artifactId>xwork</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.1.3-SNAPSHOT</version>
     <name>XWork</name>
     <description>
         XWork is an command-pattern framework that is used to power WebWork
@@ -179,6 +179,18 @@
             <groupId>mockobjects</groupId>
             <artifactId>mockobjects-core</artifactId>
             <version>0.09</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>1.2_Java1.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+            <version>1.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
