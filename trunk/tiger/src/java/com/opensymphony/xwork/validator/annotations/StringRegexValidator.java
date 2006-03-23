@@ -9,12 +9,14 @@ import java.lang.annotation.*;
 
 /**
  * <!-- START SNIPPET: description -->
+ * StringRegexValidator checks that a given String field, if not empty,
+ * matches the configured regular expression.
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- *
+ * <p/>The annotation must be applied at method level.
  * <!-- END SNIPPET: usage -->
  *
  * <p/> <u>Annotation parameters:</u>

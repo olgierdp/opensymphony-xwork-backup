@@ -9,12 +9,13 @@ import java.lang.annotation.*;
 
 /**
  * <!-- START SNIPPET: description -->
+ * This annotation can be used for custom validators. Use the ValidationParameter annotation to supply additional params.
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- *
+ * <p/>The annotation must be applied at method or type level.
  * <!-- END SNIPPET: usage -->
  *
  * <p/> <u>Annotation parameters:</u>
@@ -64,6 +65,7 @@ import java.lang.annotation.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * &#64;CustomValidator(type ="customValidatorName", fieldName = "myField")
  * <!-- END SNIPPET: example -->
  * </pre>
  *

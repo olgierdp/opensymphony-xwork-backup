@@ -17,7 +17,7 @@ import java.lang.annotation.*;
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- *
+ * <p/>The annotation must be applied at method level.
  * <!-- END SNIPPET: usage -->
  *
  * <p/> <u>Annotation parameters:</u>

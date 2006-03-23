@@ -9,12 +9,13 @@ import java.lang.annotation.*;
 
 /**
  * <!-- START SNIPPET: description -->
+ * Validates a string field using a regular expression.
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- *
+ * <p/>The annotation must be applied at method level.
  * <!-- END SNIPPET: usage -->
  *
  * <p/> <u>Annotation parameters:</u>
@@ -64,6 +65,7 @@ import java.lang.annotation.*;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * &#64;RegexFieldValidator( key = "regex.field", expression = "yourregexp")
  * <!-- END SNIPPET: example -->
  * </pre>
  *

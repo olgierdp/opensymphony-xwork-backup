@@ -13,12 +13,13 @@ import java.lang.annotation.Target;
 
 /**
  * <!-- START SNIPPET: description -->
+ * The ValidationParameter annotation is used as a parameter for CustomValidators.
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- *
+ * <p/>The annotation must embedded into CustomValidator annotations as a parameter.
  * <!-- END SNIPPET: usage -->
  *
  * <p/> <u>Annotation parameters:</u>
@@ -50,6 +51,11 @@ import java.lang.annotation.Target;
  *
  * <pre>
  * <!-- START SNIPPET: example -->
+ * &#64;CustomValidator(
+ *   type ="customValidatorName",
+ *   fieldName = "myField",
+ *   parameters = { &#64;ValidationParameter( name = "paramName", value = "paramValue" ) }
+ * )
  * <!-- END SNIPPET: example -->
  * </pre>
  *
