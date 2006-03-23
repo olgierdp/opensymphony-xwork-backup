@@ -9,6 +9,7 @@ import java.lang.annotation.*;
 
 /**
  * <!-- START SNIPPET: description -->
+ * This non-field level validator validates a supplied regular expression.
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Annotation usage:</u>
