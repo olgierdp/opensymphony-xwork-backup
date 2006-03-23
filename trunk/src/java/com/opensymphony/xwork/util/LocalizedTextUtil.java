@@ -466,7 +466,7 @@ public class LocalizedTextUtil {
 
         String result = getDefaultMessage(aTextName, locale, valueStack, args, defaultMessage);
         if ( result != null && result.equals(defaultMessage)) {
-            LOG.warn("Unable to find text for key " + aTextName);
+            LOG.warn("Unable to find text for key '" + aTextName + "' in ResourceBundles for locale '" + locale + "'");
         }
         return result;
     }
