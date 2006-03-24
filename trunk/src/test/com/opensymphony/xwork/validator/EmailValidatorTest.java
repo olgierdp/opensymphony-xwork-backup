@@ -27,7 +27,7 @@ public class EmailValidatorTest extends TestCase {
 		assertTrue(verifyEmailValidity("tm_jee@yahoo.com"));
 		assertTrue(verifyEmailValidity("tm_jee@yahoo.net"));
 		
-		assertFalse(verifyEmailValidity("tm_jee#marry#yahoo.co.uk"));
+		assertFalse(verifyEmailValidity("tm_jee#marry@yahoo.co.uk"));
 		assertFalse(verifyEmailValidity("tm_jee@ yahoo.co.uk"));
 		assertFalse(verifyEmailValidity("tm_jee  @yahoo.co.uk"));
 		assertFalse(verifyEmailValidity("tm_j ee  @yah oo.co.uk"));
