@@ -63,6 +63,9 @@ public class DefaultTextProviderTest extends TestCase {
         assertEquals("Hello World. This is Santa speaking loud", tp.getText("hello.1", args));
 
         assertEquals(null, tp.getText("not.in.bundle", args));
+
+        assertEquals("Hello World", tp.getText("hello", "this is default", (List) null));
+        assertEquals("this is default", tp.getText("not.in.bundle", "this is default", (List) null));
     }
 
     public void testGetTextsWithArrayArgs() throws Exception {
@@ -80,6 +83,9 @@ public class DefaultTextProviderTest extends TestCase {
         assertEquals("Hello World. This is Santa speaking loud", tp.getText("hello.1", args));
 
         assertEquals(null, tp.getText("not.in.bundle", args));
+
+        assertEquals("Hello World", tp.getText("hello", "this is default", (String[]) null));
+        assertEquals("this is default", tp.getText("not.in.bundle", "this is default", (String[]) null));
     }
 
     public void testGetTextsWithListAndStack() throws Exception {

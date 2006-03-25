@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork;
@@ -12,10 +12,9 @@ import java.util.Map;
 
 
 /**
- * ActionContextTest
+ * Unit test for {@link ActionContext}.
  *
  * @author Jason Carreira
- *         Created Feb 26, 2003 11:22:50 PM
  */
 public class ActionContextTest extends TestCase {
 
@@ -24,9 +23,7 @@ public class ActionContextTest extends TestCase {
     private static final String PARAMETERS_KEY = "com.opensymphony.xwork.ActionContextTest.params";
     private static final String ACTION_NAME = "com.opensymphony.xwork.ActionContextTest.actionName";
 
-
-    ActionContext context;
-
+    private ActionContext context;
 
     public void setUp() {
         OgnlValueStack valueStack = new OgnlValueStack();
@@ -69,4 +66,42 @@ public class ActionContextTest extends TestCase {
         assertNotNull(actionErrorMessage);
         assertEquals("Error during Action invocation", actionErrorMessage);
     }
+
+    public void testApplication() {
+        Map app = new HashMap();
+        context.setApplication(app);
+        assertEquals(app, context.getApplication());
+    }
+
+    public void testContextMap() {
+        Map map = new HashMap();
+        context.setContextMap(map);
+        assertEquals(map, context.getContextMap());
+    }
+
+    public void testParameters() {
+        Map param = new HashMap();
+        context.setParameters(param);
+        assertEquals(param, context.getParameters());
+    }
+
+    public void testConversionErrors() {
+        Map errors = context.getConversionErrors();
+        assertNotNull(errors);
+        assertEquals(0, errors.size());
+
+        Map errors2 = new HashMap();
+        context.setConversionErrors(errors);
+        assertEquals(errors2, context.getConversionErrors());
+    }
+
+    public void testStaticMethods() {
+        assertEquals(context, ActionContext.getContext());
+
+        ActionContext context2 = new ActionContext(null);
+        ActionContext.setContext(context2);
+
+        assertEquals(context2, ActionContext.getContext());
+    }
+
 }
