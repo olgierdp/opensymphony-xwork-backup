@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.XWorkTestCase;
@@ -7,11 +11,12 @@ import java.util.HashSet;
 import java.util.Arrays;
 
 /**
- * User: plightbo
- * Date: Aug 3, 2005
- * Time: 5:41:36 AM
+ * Unit test of {@link TextParseUtil}.
+ *
+ * @author plightbo
  */
 public class TextParseUtilTest extends XWorkTestCase {
+
     public void testTranslateVariables() {
         OgnlValueStack stack = new OgnlValueStack();
 
@@ -45,4 +50,24 @@ public class TextParseUtilTest extends XWorkTestCase {
         assertEquals(new HashSet(Arrays.asList(new String[] { "foo", "bar", "tee" })),
                 TextParseUtil.commaDelimitedStringToSet(" foo, bar,tee"));
     }
+
+    public void testTranslateVariablesOpenChar() {
+        // just a quick test to see if the open char works
+        // most test are done the methods above
+        OgnlValueStack stack = new OgnlValueStack();
+
+        Object s = TextParseUtil.translateVariables('$', "foo: ${{1, 2, 3}}, bar: ${1}", stack);
+        assertEquals("foo: [1, 2, 3], bar: 1", s);
+
+        Object s2 = TextParseUtil.translateVariables('#', "foo: #{{1, 2, 3}}, bar: #{1}", stack);
+        assertEquals("foo: [1, 2, 3], bar: 1", s2);
+    }
+
+    public void testTranslateNoVariables() {
+        OgnlValueStack stack = new OgnlValueStack();
+
+        Object s = TextParseUtil.translateVariables('$', "foo: ${}", stack);
+        assertEquals("foo: ", s);
+    }
+
 }
