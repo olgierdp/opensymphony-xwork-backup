@@ -21,7 +21,6 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
 
     protected transient static final Log LOG = LogFactory.getLog(ActionSupport.class);
 
-
     private transient final TextProvider textProvider = new TextProviderSupport(getClass(), this);
     private final ValidationAwareSupport validationAware = new ValidationAwareSupport();
 
@@ -60,15 +59,12 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
         validationAware.setFieldErrors(errorMap);
     }
 
-    /**
-     * @return a Map of field names -> List of errors or null if no errors have been added
-     */
     public Map getFieldErrors() {
         return validationAware.getFieldErrors();
     }
 
     public Locale getLocale() {
-        return (ActionContext.getContext() != null) ? ActionContext.getContext().getLocale() : null;
+        return ActionContext.getContext().getLocale();
     }
 
     public String getText(String aTextName) {
@@ -99,10 +95,6 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
         return textProvider.getText(key, defaultValue, args);
     }
 
-    public ResourceBundle getTexts(String aBundleName) {
-        return textProvider.getTexts(aBundleName);
-    }
-
     public String getText(String key, String defaultValue, List args, OgnlValueStack stack) {
         return textProvider.getText(key, defaultValue, args, stack);
     }
@@ -111,9 +103,12 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
         return textProvider.getText(key, defaultValue, args, stack);
     }
 
-
     public ResourceBundle getTexts() {
         return textProvider.getTexts();
+    }
+
+    public ResourceBundle getTexts(String aBundleName) {
+        return textProvider.getTexts(aBundleName);
     }
 
     public void addActionError(String anErrorMessage) {
@@ -138,8 +133,13 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
 
     /**
      * A default implementation that does nothing an returns "success".
+     * <p/>
+     * Subclasses should override this method to provide their business logic.
+     * <p/>
+     * See also {@link com.opensymphony.xwork.Action#execute()}.
      *
-     * @return {@link #SUCCESS}
+     * @return returns {@link #SUCCESS}
+     * @throws Exception  can be thrown by subclasses.
      */
     public String execute() throws Exception {
         return SUCCESS;
@@ -149,11 +149,6 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
         return validationAware.hasActionErrors();
     }
 
-    /**
-     * Checks whether there are any Action-level messages.
-     *
-     * @return true if any Action-level messages have been registered
-     */
     public boolean hasActionMessages() {
         return validationAware.hasActionMessages();
     }
@@ -202,4 +197,5 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
      */
     public void pause(String result) {
     }
+
 }

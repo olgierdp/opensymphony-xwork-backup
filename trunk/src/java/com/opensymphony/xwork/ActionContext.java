@@ -144,7 +144,7 @@ public class ActionContext implements Serializable {
     /**
      * Returns the ActionContext specific to the current thread.
      *
-     * @return the ActionContext for the current thread.
+     * @return the ActionContext for the current thread, is never <tt>null</tt>.
      */
     public static ActionContext getContext() {
         ActionContext context = (ActionContext) actionContext.get();
@@ -268,6 +268,8 @@ public class ActionContext implements Serializable {
 
     /**
      * Sets a map of action session values.
+     *
+     * @param session  the session values.
      */
     public void setSession(Map session) {
         put(SESSION, session);

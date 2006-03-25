@@ -14,5 +14,9 @@ package com.opensymphony.xwork;
  */
 public interface Validateable {
 
+    /**
+     * Performs validation.
+     */
     void validate();
+
 }
