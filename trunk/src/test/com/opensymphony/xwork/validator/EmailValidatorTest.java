@@ -17,7 +17,6 @@ import junit.framework.TestCase;
  * @version $Date$ $Id$
  */
 public class EmailValidatorTest extends TestCase {
-
 	
 	public void testEmailValidity() throws Exception {
 		assertTrue(verifyEmailValidity("tmjee@yahoo.com"));
@@ -33,8 +32,6 @@ public class EmailValidatorTest extends TestCase {
 		assertFalse(verifyEmailValidity("tm_j ee  @yah oo.co.uk"));
 		assertFalse(verifyEmailValidity("tm_jee  @yah oo.co.uk"));
 		assertFalse(verifyEmailValidity("tm_jee @ yahoo.com"));
-
-		System.out.println(verifyEmailValidity("tm_jee jane @yahoo.co.uk"));
 	}
 	
 	protected boolean verifyEmailValidity(final String email) throws Exception {
