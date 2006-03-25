@@ -7,14 +7,12 @@ package com.opensymphony.xwork.validator;
 import com.opensymphony.xwork.ActionProxy;
 import com.opensymphony.xwork.ActionProxyFactory;
 import com.opensymphony.xwork.ValidationAware;
+import com.opensymphony.xwork.validator.validators.DateRangeFieldValidator;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import junit.framework.TestCase;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -46,6 +44,17 @@ public class DateRangeValidatorTest extends TestCase {
 
         String errorMessage = (String) errorMessages.get(0);
         assertNotNull(errorMessage);
+    }
+
+    public void testGetSetMinMax() throws Exception {
+        DateRangeFieldValidator val = new DateRangeFieldValidator();
+        Date max = new Date();
+        val.setMax(max);
+        assertEquals(max, val.getMax());
+
+        Date min = new Date();
+        val.setMin(min);
+        assertEquals(min, val.getMin());
     }
 
     protected void setUp() throws Exception {

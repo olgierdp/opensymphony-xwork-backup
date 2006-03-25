@@ -6,6 +6,7 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ValidationAwareSupport;
+import com.opensymphony.xwork.validator.validators.RequiredStringValidator;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.test.Equidae;
@@ -166,6 +167,16 @@ public class StringValidatorTest extends TestCase {
         assertEquals(2, errors.size());
         assertEquals("trim-min5-max10", errors.get(0));
         assertEquals("trim-max10", errors.get(1));
+    }
+
+    public void testGetSetTrim() {
+        RequiredStringValidator val = new RequiredStringValidator();
+
+        val.setTrim(true);
+        assertEquals(true, val.getTrim());
+
+        val.setTrim(false);
+        assertEquals(false, val.getTrim());
     }
 
     protected void setUp() throws Exception {

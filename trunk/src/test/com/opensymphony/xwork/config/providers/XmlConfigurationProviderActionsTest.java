@@ -108,6 +108,14 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         assertEquals(intOverAction, actionConfigs.get("TestInterceptorParamOverride"));
     }
 
+    public void testInvalidActions() throws Exception {
+        final String filename = "com/opensymphony/xwork/config/providers/xwork-test-action-invalid.xml";
+        ConfigurationProvider provider = buildConfigurationProvider(filename);
+
+        provider.init(configuration);
+        assertEquals(false, provider.needsReload());
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         params = new HashMap();
