@@ -65,7 +65,7 @@ public class ExpressionValidator extends ValidatorSupport {
         }
 
         if (!answer.booleanValue()) {
-        	log.debug("validation failed on expression "+expression+" with validated object "+object);
+            if (log.isDebugEnabled()) log.debug("Validation failed on expression " + expression + " with validated object "+ object);
             addActionError(object);
         }
     }
