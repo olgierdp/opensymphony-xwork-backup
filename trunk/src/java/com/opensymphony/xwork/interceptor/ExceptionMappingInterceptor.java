@@ -2,7 +2,6 @@
  * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
-
 package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionInvocation;
@@ -34,7 +33,12 @@ import java.util.List;
  *
  * <ul>
  *
- * <li>None</li>
+ * <li>logEnabled (optional) - Should exceptions also be logged? (boolean true|false)</li>
+ * 
+ * <li>logLevel (optional) - what log level should we use (<code>trace, debug, info, warn, error, fatal</code>)? - defaut is <code>debug</code></li>
+ * 
+ * <li>logCategory (optional) - If provided we would use this category (eg. <code>com.mycompany.app</code>).
+ * Default is to use <code>com.opensymphony.xwork.interceptor.ExceptionMappingInterceptor</code>.</li>
  *
  * </ul>
  *
@@ -79,15 +83,93 @@ import java.util.List;
  * &lt;/xwork&gt;
  * <!-- END SNIPPET: example -->
  * </pre>
+ * 
+ * <p/>
+ * This second example will also log the exceptions using our own category
+ * <code>com.mycompany.app.unhandled<code> at WARN level.
+ * 
+ * <pre>
+ * <!-- START SNIPPET: example2 -->
+ * &lt;xwork&gt;
+ *      &lt;include file="webwork-default.xml"/&gt;
+ *     
+ *   	&lt;interceptors&gt;
+ *	    	&lt;interceptor-stack name="exceptionmapping-stack"&gt;
+ *	        	&lt;interceptor-ref name="exception"&gt;
+ *        		&lt;param name="logEnabled"&gt;true&lt;/param&gt;
+ *	        		&lt;param name="logCategory"&gt;com.mycompany.app.unhandled&lt;/param&gt;
+ *	        		&lt;param name="logLevel"&gt;WARN&lt;/param&gt;	        		
+ *	        	&lt;/interceptor-ref&gt;	
+ *	            &lt;interceptor-ref name="i18n"/&gt;
+ *	            &lt;interceptor-ref name="static-params"/&gt;
+ *	            &lt;interceptor-ref name="params"/&gt;
+ *	            &lt;interceptor-ref name="validation"&gt;
+ *	                &lt;param name="excludeMethods"&gt;input,back,cancel,browse&lt;/param&gt;
+ * 	            &lt;/interceptor-ref&gt;
+ *	    	&lt;/interceptor-stack&gt;
+ *    	&lt;/interceptors&gt;
  *
- * @author Matthew E. Porter (matthew dot porter at metissian dot com) Date: Aug 14, 2005 Time: 12:40:02 PM
+ *	    &lt;default-interceptor-ref name="exceptionmapping-stack"/&gt;
+ *    
+ *		&lt;global-results&gt;
+ *           &lt;result name="unhandledException"&gt;/unhandled-exception.jsp&lt;/result&gt;
+ *      &lt;/global-results&gt;
+ *
+ *      &lt;global-exception-mappings&gt;
+ *           &lt;exception-mapping exception="java.lang.Exception" result="unhandledException"/&gt;
+ *      &lt;/global-exception-mappings&gt;
+ *        
+ *      &lt;action name="exceptionDemo" class="com.opensymphony.webwork.showcase.exceptionmapping.ExceptionMappingAction"&gt;
+ *       	&lt;exception-mapping exception="com.opensymphony.webwork.showcase.exceptionmapping.ExceptionMappingException"
+ *       	                   result="damm"/&gt;
+ *          &lt;result name="input"&gt;index.jsp&lt;/result&gt;
+ *          &lt;result name="success"&gt;success.jsp&lt;/result&gt;            
+ *          &lt;result name="damm"&gt;damm.jsp&lt;/result&gt;
+ *      &lt;/action&gt;
+ *
+ *   &lt;/package&gt;
+ * &lt;/xwork&gt;
+ * <!-- END SNIPPET: example2 -->
+ * </pre>
+ *
+ * @author Matthew E. Porter (matthew dot porter at metissian dot com) 
+ * @author Claus Ibsen
  */
 public class ExceptionMappingInterceptor implements Interceptor {
     
     protected static final Log log = LogFactory.getLog(ExceptionMappingInterceptor.class);
 
+    protected Log categoryLogger;
+    protected boolean logEnabled = false;
+    protected String logCategory;
+    protected String logLevel;
+    
 
-    public void destroy() {
+    public boolean isLogEnabled() {
+        return logEnabled;
+    }
+
+    public void setLogEnabled(boolean logEnabled) {
+        this.logEnabled = logEnabled;
+    }
+
+    public String getLogCategory() {
+		return logCategory;
+	}
+
+	public void setLogCategory(String logCatgory) {
+		this.logCategory = logCatgory;
+	}
+
+	public String getLogLevel() {
+		return logLevel;
+	}
+
+	public void setLogLevel(String logLevel) {
+		this.logLevel = logLevel;
+	}
+
+	public void destroy() {
     }
 
     public void init() {
@@ -99,6 +181,9 @@ public class ExceptionMappingInterceptor implements Interceptor {
         try {
             result = invocation.invoke();
         } catch (Exception e) {
+            if (logEnabled) {
+                handleLogging(e);
+            }
             List exceptionMappings = invocation.getProxy().getConfig().getExceptionMappings();
             String mappedResult = this.findResultFromExceptions(exceptionMappings, e);
             if (mappedResult != null) {
@@ -110,6 +195,52 @@ public class ExceptionMappingInterceptor implements Interceptor {
         }
 
         return result;
+    }
+
+    /**
+     * Handles the logging of the exception.
+     * 
+     * @param e  the exceptio to log.
+     */
+    protected void handleLogging(Exception e) {
+    	if (logCategory != null) {
+        	if (categoryLogger == null) {
+        		// init category logger
+        		categoryLogger = LogFactory.getLog(logCategory);
+        	}
+        	doLog(categoryLogger, e);
+    	} else {
+    		doLog(log, e);
+    	}
+    }
+    
+    /**
+     * Performs the actual logging.
+     * 
+     * @param logger  the provided logger to use.
+     * @param e  the exception to log.
+     */
+    protected void doLog(Log logger, Exception e) {
+    	if (logLevel == null) {
+    		logger.debug(e.getMessage(), e);
+    		return;
+    	}
+    	
+    	if ("trace".equalsIgnoreCase(logLevel)) {
+    		logger.trace(e.getMessage(), e);
+    	} else if ("debug".equalsIgnoreCase(logLevel)) {
+    		logger.debug(e.getMessage(), e);
+    	} else if ("info".equalsIgnoreCase(logLevel)) {
+    		logger.info(e.getMessage(), e);
+    	} else if ("warn".equalsIgnoreCase(logLevel)) {
+    		logger.warn(e.getMessage(), e);
+    	} else if ("error".equalsIgnoreCase(logLevel)) {
+    		logger.error(e.getMessage(), e);
+    	} else if ("fatal".equalsIgnoreCase(logLevel)) {
+    		logger.fatal(e.getMessage(), e);
+    	} else {
+    		throw new IllegalArgumentException("LogLevel [" + logLevel + "] is not supported");
+    	}
     }
 
     private String findResultFromExceptions(List exceptionMappings, Throwable t) {
@@ -134,6 +265,10 @@ public class ExceptionMappingInterceptor implements Interceptor {
     /**
      * Return the depth to the superclass matching. 0 means ex matches exactly. Returns -1 if there's no match.
      * Otherwise, returns depth. Lowest depth wins.
+     *
+     * @param exceptionMapping  the mapping classname
+     * @param t  the cause
+     * @return the depth, if not found -1 is returned.
      */
     public int getDepth(String exceptionMapping, Throwable t) {
         return getDepth(exceptionMapping, t.getClass(), 0);
