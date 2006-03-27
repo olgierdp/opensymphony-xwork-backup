@@ -19,7 +19,8 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * <!-- START SNIPPET: description -->
- *
+ * This interceptor sets all parameters on the value stack.
+ * <p/>
  * This interceptor gets all parameters from {@link ActionContext#getParameters()} and sets them on the value stack by
  * calling {@link OgnlValueStack#setValue(String, Object)}, typically resulting in the values submitted in a form
  * request being applied to an action in the value stack. Note that the parameter map must contain a String key and
