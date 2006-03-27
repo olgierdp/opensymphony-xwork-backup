@@ -204,7 +204,7 @@ public class ExceptionMappingInterceptor implements Interceptor {
     /**
      * Handles the logging of the exception.
      * 
-     * @param e  the exceptio to log.
+     * @param e  the exception to log.
      */
     protected void handleLogging(Exception e) {
     	if (logCategory != null) {
