@@ -42,6 +42,9 @@ import java.util.List;
  *
  * </ul>
  *
+ * The parameters above enables us to log all thrown exceptions with stacktace in our own logfile,
+ * and present a friendly webpage (with no stacktrace) to the end user.
+ *
  * <!-- END SNIPPET: parameters -->
  *
  * <p/> <u>Extending the interceptor:</u>
@@ -86,32 +89,33 @@ import java.util.List;
  * 
  * <p/>
  * This second example will also log the exceptions using our own category
- * <code>com.mycompany.app.unhandled<code> at WARN level.
+ * <code>com.mycompany.app.unhandled<code> at WARN level. 
  * 
  * <pre>
  * <!-- START SNIPPET: example2 -->
  * &lt;xwork&gt;
- *      &lt;include file="webwork-default.xml"/&gt;
+ *   &lt;include file="webwork-default.xml"/&gt;
  *     
- *   	&lt;interceptors&gt;
- *	    	&lt;interceptor-stack name="exceptionmapping-stack"&gt;
- *	        	&lt;interceptor-ref name="exception"&gt;
- *        		&lt;param name="logEnabled"&gt;true&lt;/param&gt;
- *	        		&lt;param name="logCategory"&gt;com.mycompany.app.unhandled&lt;/param&gt;
- *	        		&lt;param name="logLevel"&gt;WARN&lt;/param&gt;	        		
- *	        	&lt;/interceptor-ref&gt;	
- *	            &lt;interceptor-ref name="i18n"/&gt;
- *	            &lt;interceptor-ref name="static-params"/&gt;
- *	            &lt;interceptor-ref name="params"/&gt;
- *	            &lt;interceptor-ref name="validation"&gt;
- *	                &lt;param name="excludeMethods"&gt;input,back,cancel,browse&lt;/param&gt;
- * 	            &lt;/interceptor-ref&gt;
- *	    	&lt;/interceptor-stack&gt;
- *    	&lt;/interceptors&gt;
+ *   &lt;package name="something" extends="webwork-default"&gt;
+ *      &lt;interceptors&gt;
+ *          &lt;interceptor-stack name="exceptionmapping-stack"&gt;
+ *              &lt;interceptor-ref name="exception"&gt;
+ *                  &lt;param name="logEnabled"&gt;true&lt;/param&gt;
+ *                  &lt;param name="logCategory"&gt;com.mycompany.app.unhandled&lt;/param&gt;
+ *                  &lt;param name="logLevel"&gt;WARN&lt;/param&gt;	        		
+ *              &lt;/interceptor-ref&gt;	
+ *              &lt;interceptor-ref name="i18n"/&gt;
+ *              &lt;interceptor-ref name="static-params"/&gt;
+ *              &lt;interceptor-ref name="params"/&gt;
+ *              &lt;interceptor-ref name="validation"&gt;
+ *                  &lt;param name="excludeMethods"&gt;input,back,cancel,browse&lt;/param&gt;
+ *              &lt;/interceptor-ref&gt;
+ *          &lt;/interceptor-stack&gt;
+ *      &lt;/interceptors&gt;
  *
- *	    &lt;default-interceptor-ref name="exceptionmapping-stack"/&gt;
+ *      &lt;default-interceptor-ref name="exceptionmapping-stack"/&gt;
  *    
- *		&lt;global-results&gt;
+ *      &lt;global-results&gt;
  *           &lt;result name="unhandledException"&gt;/unhandled-exception.jsp&lt;/result&gt;
  *      &lt;/global-results&gt;
  *
@@ -120,8 +124,8 @@ import java.util.List;
  *      &lt;/global-exception-mappings&gt;
  *        
  *      &lt;action name="exceptionDemo" class="com.opensymphony.webwork.showcase.exceptionmapping.ExceptionMappingAction"&gt;
- *       	&lt;exception-mapping exception="com.opensymphony.webwork.showcase.exceptionmapping.ExceptionMappingException"
- *       	                   result="damm"/&gt;
+ *          &lt;exception-mapping exception="com.opensymphony.webwork.showcase.exceptionmapping.ExceptionMappingException"
+ *                             result="damm"/&gt;
  *          &lt;result name="input"&gt;index.jsp&lt;/result&gt;
  *          &lt;result name="success"&gt;success.jsp&lt;/result&gt;            
  *          &lt;result name="damm"&gt;damm.jsp&lt;/result&gt;
