@@ -52,9 +52,9 @@ import com.opensymphony.xwork.util.TextParseUtil;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  * @author Rainer Hermanns
  * 
- * @see com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor
  * @see com.opensymphony.webwork.interceptor.TokenInterceptor
  * @see com.opensymphony.webwork.interceptor.TokenSessionStoreInterceptor
+ * @see com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor
  * @see com.opensymphony.xwork.validator.ValidationInterceptor
  * 
  * @version $Date$ $Id$
@@ -73,9 +73,6 @@ public abstract class MethodFilterInterceptor implements Interceptor {
         this.includeMethods = TextParseUtil.commaDelimitedStringToSet(includeMethods);
     }
 
-    /**
-     * @see com.opensymphony.xwork.interceptor.Interceptor#intercept(com.opensymphony.xwork.ActionInvocation)
-     */
     public String intercept(ActionInvocation invocation) throws Exception {
         if (applyInterceptor(invocation)) {
             return doIntercept(invocation);
@@ -90,7 +87,7 @@ public abstract class MethodFilterInterceptor implements Interceptor {
         if (((excludeMethods.contains("*") && !includeMethods.contains("*"))
                 || excludeMethods.contains(method))
                 && !includeMethods.contains(method)) {
-            log.debug("Skipping Interceptor... Method [" + method + "] found in exclude list.");
+            if (log.isDebugEnabled()) log.debug("Skipping Interceptor... Method [" + method + "] found in exclude list.");
             return false;
         }
 
@@ -107,15 +104,9 @@ public abstract class MethodFilterInterceptor implements Interceptor {
      */
     protected abstract String doIntercept(ActionInvocation invocation) throws Exception;
     
-    /**
-     * @see com.opensymphony.xwork.interceptor.Interceptor#destroy()
-     */
     public void destroy() {
     }
 
-    /**
-     * @see com.opensymphony.xwork.interceptor.Interceptor#init()
-     */
     public void init() {
     }
 }
