@@ -9,8 +9,17 @@ import java.util.Date;
 
 /**
  * <!-- START SNIPPET: javadoc -->
+ * 
  * Field Validator that checks if the date supplied is within a specific range.
+ * 
+ * <b>NOTE:</b> If no date converter if specified, XWorkBasicConverter will kicks
+ * in to do the date conversion, which by default using the Date.SHORT format using 
+ * the locale specified in webwork.properties else falling back to the system 
+ * default locale.
+ * 
+ * 
  * <!-- END SNIPPET: javadoc -->
+ * 
  * <p/>
  *
  * <!-- START SNIPPET: parameters -->
