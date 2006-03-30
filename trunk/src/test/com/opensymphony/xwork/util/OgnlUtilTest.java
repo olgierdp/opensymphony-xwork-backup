@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.util;
@@ -9,37 +9,27 @@ import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.XworkException;
 import com.opensymphony.xwork.interceptor.ChainingInterceptor;
 import com.opensymphony.xwork.test.User;
+
 import ognl.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
 
 /**
- * DOCUMENT ME!
- *
- * @author $author$
- * @version $Revision$
+ * Unit test of {@link OgnlUtil}.
  */
 public class OgnlUtilTest extends XWorkTestCase {
 
-    public void testCanSetADependentObject() {
+    public void testCanSetADependentObject() throws Exception {
         String dogName = "fido";
 
         OgnlRuntime.setNullHandler(Owner.class, new NullHandler() {
             public Object nullMethodResult(Map map, Object o, String s, Object[] objects) {
-                System.out.println("nullMethodResult");
-
                 return null;
             }
 
             public Object nullPropertyValue(Map map, Object o, Object o1) {
-                System.out.println("nullPropertyValue");
-                System.out.println("map -- " + map);
-                System.out.println("o   -- " + o);
-                System.out.println("o1  -- " + o1.getClass().getName());
-
                 String methodName = o1.toString();
                 String getter = "set" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
                 Method[] methods = o.getClass().getDeclaredMethods();
@@ -58,14 +48,8 @@ public class OgnlUtilTest extends XWorkTestCase {
                             methods[i].invoke(o, new Object[]{param});
 
                             return param;
-                        } catch (InstantiationException e) {
-                            e.printStackTrace(); //To change body of catch statement use Options | File Templates.
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace(); //To change body of catch statement use Options | File Templates.
-                        } catch (IllegalArgumentException e) {
-                            e.printStackTrace(); //To change body of catch statement use Options | File Templates.
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace(); //To change body of catch statement use Options | File Templates.
+                        } catch (Exception e) {
+                        	throw new RuntimeException(e);
                         }
                     }
                 }
@@ -82,12 +66,6 @@ public class OgnlUtilTest extends XWorkTestCase {
         OgnlUtil.setProperties(props, owner, context);
         assertNotNull("expected Ognl to create an instance of Dog", owner.getDog());
         assertEquals(dogName, owner.getDog().getName());
-
-        try {
-            System.out.println("dog.name == " + Ognl.getValue("dog.name", new Owner()));
-        } catch (OgnlException e) {
-            e.printStackTrace(); //To change body of catch statement use Options | File Templates.
-        }
     }
 
     public void testCanSetDependentObjectArray() {
@@ -405,25 +383,31 @@ public class OgnlUtilTest extends XWorkTestCase {
         Object result = Ognl.getValue(OgnlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo);
         foo.setIncludes((Collection) result);
 
-        System.out.println(foo.getIncludes());
-        System.out.println(foo.getIncludes().size());
-
+        assertEquals(4, foo.getIncludes().size());
+        assertEquals("foo", foo.getIncludes().toArray()[0]);
+        assertEquals("ruby", foo.getIncludes().toArray()[1]);
+        assertEquals("b", "" + foo.getIncludes().toArray()[2]);
+        assertEquals("tom", foo.getIncludes().toArray()[3]);
 
         Object result2 = Ognl.getValue(OgnlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo2);
         OgnlUtil.setProperty("includes", result2, foo2, context);
 
-        System.out.println(foo2.getIncludes());
-        System.out.println(foo2.getIncludes().size());
+        assertEquals(4, foo.getIncludes().size());
+        assertEquals("foo", foo.getIncludes().toArray()[0]);
+        assertEquals("ruby", foo.getIncludes().toArray()[1]);
+        assertEquals("b", "" + foo.getIncludes().toArray()[2]);
+        assertEquals("tom", foo.getIncludes().toArray()[3]);
 
         result = ActionContext.getContext().getValueStack().findValue("{\"foo\",'ruby','b','tom'}");
 
         foo.setIncludes((Collection) result);
-        System.out.println(result.getClass());
+        assertEquals(ArrayList.class, result.getClass());
 
-        System.out.println(foo.getIncludes());
-
-        System.out.println(foo.getIncludes().size());
-
+        assertEquals(4, foo.getIncludes().size());
+        assertEquals("foo", foo.getIncludes().toArray()[0]);
+        assertEquals("ruby", foo.getIncludes().toArray()[1]);
+        assertEquals("b", "" + foo.getIncludes().toArray()[2]);
+        assertEquals("tom", foo.getIncludes().toArray()[3]);
     }
 
 
@@ -443,6 +427,75 @@ public class OgnlUtilTest extends XWorkTestCase {
         foo.setALong(0);
         OgnlUtil.setProperties(props, foo, context);
         assertEquals(123, foo.getALong());
+    }
+
+    public void testNullProperties() {
+        Foo foo = new Foo();
+        foo.setALong(88);
+
+        Map context = Ognl.createDefaultContext(foo);
+
+        OgnlUtil.setProperties(null, foo, context);
+        assertEquals(88, foo.getALong());
+
+        Map props = new HashMap();
+        props.put("aLong", "99");
+        OgnlUtil.setProperties(props, foo, context);
+        assertEquals(99, foo.getALong());
+    }
+    
+    public void testCopyNull() {
+        Foo foo = new Foo();
+        Map context = Ognl.createDefaultContext(foo);
+   		OgnlUtil.copy(null, null, context);
+
+   		OgnlUtil.copy(foo, null, context);
+   		OgnlUtil.copy(null, foo, context);
+    }
+    
+    public void testGetTopTarget() throws Exception {
+        Foo foo = new Foo();
+        Map context = Ognl.createDefaultContext(foo);
+
+        CompoundRoot root = new CompoundRoot();
+        Object top = OgnlUtil.getRealTarget("top", context, root);
+        assertEquals(root, top); // top should be root
+        
+        root.push(foo);
+        Object val = OgnlUtil.getRealTarget("unknown", context, root);
+        assertNull(val); // not found
+    }
+    
+    public void testGetBeanMap() throws Exception {
+    	Bar bar = new Bar();
+    	bar.setTitle("I have beer");
+        
+    	Foo foo = new Foo();
+        foo.setALong(123);
+        foo.setNumber(44);
+        foo.setBar(bar);
+        foo.setTitle("Hello Santa");
+        foo.setUseful(true);
+        
+        // just do some of the 15 tests
+        Map beans = OgnlUtil.getBeanMap(foo);
+        assertNotNull(beans);
+        assertEquals(15, beans.size());
+        assertEquals("Hello Santa", beans.get("title"));
+        assertEquals(new Long("123"), beans.get("ALong"));
+        assertEquals(new Integer("44"), beans.get("number"));
+        assertEquals(bar, beans.get("bar"));
+        assertEquals(Boolean.TRUE, beans.get("useful"));
+    }
+
+    public void testGetBeanMapNoReadMethod() throws Exception {
+    	MyWriteBar bar = new MyWriteBar();
+    	bar.setBar("Sams");
+    	
+    	Map beans = OgnlUtil.getBeanMap(bar);
+    	assertEquals(2, beans.size());
+    	assertEquals(new Integer("1"), beans.get("id"));
+    	assertEquals("There is no read method for bar", beans.get("bar"));
     }
 
     /**
@@ -562,5 +615,21 @@ public class OgnlUtilTest extends XWorkTestCase {
 
             return super.get(index);
         }
+    }
+    
+    private class MyWriteBar {
+    	private int id;
+    	
+    	public int getId() {
+    		return id;
+    	}
+    	
+    	public void setBar(String name) {
+    		if ("Sams".equals(name))
+    			id = 1;
+    		else
+    			id = 999;
+    	}
+    	
     }
 }
