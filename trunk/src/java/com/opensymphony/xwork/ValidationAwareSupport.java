@@ -50,7 +50,7 @@ public class ValidationAwareSupport implements ValidationAware, Serializable {
         internalGetActionErrors().add(anErrorMessage);
     }
 
-    public void addActionMessage(String aMessage) {
+    public synchronized void addActionMessage(String aMessage) {
         internalGetActionMessages().add(aMessage);
     }
 
@@ -70,7 +70,7 @@ public class ValidationAwareSupport implements ValidationAware, Serializable {
         return (actionErrors != null) && !actionErrors.isEmpty();
     }
 
-    public boolean hasActionMessages() {
+    public synchronized boolean hasActionMessages() {
         return (actionMessages != null) && !actionMessages.isEmpty();
     }
 
@@ -106,7 +106,13 @@ public class ValidationAwareSupport implements ValidationAware, Serializable {
         return fieldErrors;
     }
 
-    public void clearErrorsAndMessages() {
+    /**
+     * Clears all error and messages list/maps.
+     * <p/>
+     * Will clear the maps/lists that contain
+     * field errors, action errors and action messages.
+     */
+    public synchronized void clearErrorsAndMessages() {
         internalGetFieldErrors().clear();
         internalGetActionErrors().clear();
         internalGetActionMessages().clear();
