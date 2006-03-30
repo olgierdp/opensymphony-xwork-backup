@@ -292,11 +292,29 @@ public class OgnlUtil {
         OgnlUtil.copy(from, to, context, null, null);
     }
 
+    /**
+     * Get's the java beans property descriptors for the given source.
+     * 
+     * @param source  the source object.
+     * @return  property descriptors.
+     * @throws IntrospectionException is thrown if an exception occurs during introspection.
+     */
     public static PropertyDescriptor[] getPropertyDescriptors(Object source) throws IntrospectionException {
         BeanInfo beanInfo = getBeanInfo(source);
         return beanInfo.getPropertyDescriptors();
     }
 
+    /**
+     * Creates a Map with read properties for the given source object.
+     * <p/>
+     * If the source object does not have a read property (i.e. write-only) then
+     * the property is added to the map with the value <code>here is no read method for property-name</code>.
+     * 
+     * @param source   the source object.
+     * @return  a Map with (key = read property name, value = value of read property).
+     * @throws IntrospectionException is thrown if an exception occurs during introspection.
+     * @throws OgnlException is thrown by OGNL if the property value could not be retrieved
+     */
     public static Map getBeanMap(Object source) throws IntrospectionException, OgnlException {
         Map beanMap = new HashMap();
         Map sourceMap = Ognl.createDefaultContext(source);
@@ -316,6 +334,13 @@ public class OgnlUtil {
         return beanMap;
     }
 
+    /**
+     * Get's the java bean info for the given source.
+     * 
+     * @param source  the source object.
+     * @return  java bean info.
+     * @throws IntrospectionException is thrown if an exception occurs during introspection.
+     */
     public static BeanInfo getBeanInfo(Object from) throws IntrospectionException {
         synchronized (beanInfoCache) {
             BeanInfo beanInfo;
