@@ -211,14 +211,7 @@ public class OgnlValueStack implements Serializable {
         } catch (OgnlException e) {
             return findInContext(expr);
         } catch (Exception e) {
-            StringBuffer msg = new StringBuffer();
-            msg.append("Caught an exception while evaluating expression '").append(expr).append("' against value stack");
-            if (isDevModeEnabled() && LOG.isWarnEnabled()) {
-                LOG.warn( msg , e);
-                LOG.warn("NOTE: Previous warning message was issued due to devMode set to true.");
-            } else if ( LOG.isDebugEnabled() ) {
-                LOG.debug( msg , e);
-            }
+            logLookupFailure(expr, e);
 
             return findInContext(expr);
         } finally {
@@ -252,7 +245,7 @@ public class OgnlValueStack implements Serializable {
         } catch (OgnlException e) {
             return findInContext(expr);
         } catch (Exception e) {
-            LOG.warn("Caught an exception while evaluating expression '" + expr + "' against value stack", e);
+            logLookupFailure(expr, e);
 
             return findInContext(expr);
         } finally {
@@ -262,6 +255,23 @@ public class OgnlValueStack implements Serializable {
 
     private Object findInContext(String name) {
         return getContext().get(name);
+    }
+
+    /**
+     * Log a failed lookup, being more verbose when devMode=true.
+     *
+     * @param expr The failed expression
+     * @param e The thrown exception.
+     */
+    private void logLookupFailure(String expr, Exception e) {
+        StringBuffer msg = new StringBuffer();
+        msg.append("Caught an exception while evaluating expression '").append(expr).append("' against value stack");
+        if (isDevModeEnabled() && LOG.isWarnEnabled()) {
+            LOG.warn( msg , e);
+            LOG.warn("NOTE: Previous warning message was issued due to devMode set to true.");
+        } else if ( LOG.isDebugEnabled() ) {
+            LOG.debug( msg , e);
+        }
     }
 
     /**
