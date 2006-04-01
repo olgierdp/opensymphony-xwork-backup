@@ -25,6 +25,7 @@ public class EmailValidatorTest extends TestCase {
 		assertTrue(verifyEmailValidity("tm.jee@yahoo.co.biz"));
 		assertTrue(verifyEmailValidity("tm_jee@yahoo.com"));
 		assertTrue(verifyEmailValidity("tm_jee@yahoo.net"));
+		assertTrue(verifyEmailValidity(" user@subname1.subname2.subname3.domainname.co.uk "));
 		
 		assertFalse(verifyEmailValidity("tm_jee#marry@yahoo.co.uk"));
 		assertFalse(verifyEmailValidity("tm_jee@ yahoo.co.uk"));
@@ -32,6 +33,7 @@ public class EmailValidatorTest extends TestCase {
 		assertFalse(verifyEmailValidity("tm_j ee  @yah oo.co.uk"));
 		assertFalse(verifyEmailValidity("tm_jee  @yah oo.co.uk"));
 		assertFalse(verifyEmailValidity("tm_jee @ yahoo.com"));
+		assertFalse(verifyEmailValidity(" user@subname1.subname2.subname3.domainn#ame.co.uk "));
 	}
 	
 	protected boolean verifyEmailValidity(final String email) throws Exception {
