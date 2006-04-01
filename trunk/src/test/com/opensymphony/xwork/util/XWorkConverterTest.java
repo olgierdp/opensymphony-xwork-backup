@@ -6,6 +6,7 @@ package com.opensymphony.xwork.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -510,6 +511,69 @@ public class XWorkConverterTest extends TestCase {
 
     }
     
+    public void testConvertChar() {
+        assertEquals(new Character('A'), converter.convertValue(context, "A", char.class));
+        assertEquals(new Character('Z'), converter.convertValue(context, "Z", char.class));
+        assertEquals(new Character('A'), converter.convertValue(context, "A", Character.class));
+        assertEquals(new Character('Z'), converter.convertValue(context, "Z", Character.class));
+
+        assertEquals(new Character('A'), converter.convertValue(context, new Character('A'), char.class));
+        assertEquals(new Character('Z'), converter.convertValue(context, new Character('Z'), char.class));
+        assertEquals(new Character('A'), converter.convertValue(context, new Character('A'), Character.class));
+        assertEquals(new Character('Z'), converter.convertValue(context, new Character('Z'), Character.class));
+
+        assertEquals(new Character('D'), converter.convertValue(context, "DEF", char.class));
+        assertEquals(new Character('X'), converter.convertValue(context, "XYZ", Character.class));
+        assertEquals(new Character(' '), converter.convertValue(context, " ", Character.class));
+        assertEquals(new Character(' '), converter.convertValue(context, "   ", char.class));
+
+        assertEquals(null, converter.convertValue(context, "", char.class));
+    }
+    
+    public void testConvertClass() {
+    	Class clazz = (Class) converter.convertValue(context, "java.util.Date", Class.class);
+        assertEquals(Date.class.getName(), clazz.getName());
+
+    	Class clazz2 = (Class) converter.convertValue(context, "com.opensymphony.xwork.util.Bar", Class.class);
+        assertEquals(Bar.class.getName(), clazz2.getName());
+
+    	assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, "com.opensymphony.xwork.util.IDoNotExist", Class.class));
+
+    	assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, new Bar(), Class.class)); // only supports string values
+    }
+
+    public void testConvertBoolean() {
+        assertEquals(Boolean.TRUE, converter.convertValue(context, "true", Boolean.class));
+        assertEquals(Boolean.FALSE, converter.convertValue(context, "false", Boolean.class));
+
+        assertEquals(Boolean.TRUE, converter.convertValue(context, Boolean.TRUE, Boolean.class));
+        assertEquals(Boolean.FALSE, converter.convertValue(context, Boolean.FALSE, Boolean.class));
+
+    	assertEquals(null, converter.convertValue(context, null, Boolean.class));
+    	assertEquals(Boolean.TRUE, converter.convertValue(context, new Bar(), Boolean.class)); // Ognl converter will default to true
+    }
+    
+    public void testConvertPrimitiveArraysToString() {
+    	assertEquals("2, 3, 1", converter.convertValue(context, new int[]{2,3,1}, String.class)); 
+    	assertEquals("100, 200, 300", converter.convertValue(context, new long[]{100,200,300}, String.class)); 
+    	assertEquals("1.5, 2.5, 3.5", converter.convertValue(context, new double[]{1.5,2.5,3.5}, String.class)); 
+    	assertEquals("true, false, true", converter.convertValue(context, new boolean[]{true, false, true}, String.class)); 
+    }
+
+    public void testConvertSameCollectionToCollection() {
+    	Collection names = new ArrayList();
+    	names.add("XWork");
+    	names.add("WebWork");
+    	
+    	Collection col = (Collection) converter.convertValue(context, names, Collection.class);
+    	assertSame(names, col);
+    }
+
+    public void testConvertSqlTimestamp() {
+    	assertNotNull(converter.convertValue(context, new Timestamp(new Date().getTime()), String.class));
+    	assertNotNull(converter.convertValue(null, new Timestamp(new Date().getTime()), String.class));
+    }
+
     public void testOgnlValueStackWithTypeParameter() {
         OgnlValueStack stack = new OgnlValueStack();
         stack.push(new Foo1());
