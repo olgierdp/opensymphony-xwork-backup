@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.util;
@@ -14,15 +14,10 @@ import java.util.Map;
 
 
 /**
- * @author $Author$
- * @version $Revision$
- * @noinspection ALL
+ * Unit test for OgnlValueStack.
  */
 public class OgnlValueStackTest extends XWorkTestCase {
 
-    /**
-     * @return null
-     */
     public static Integer staticNullMethod() {
         return null;
     }
@@ -597,6 +592,62 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertFalse(stack.isDevModeEnabled());
         stack.getContext().put(ActionContext.DEV_MODE, Boolean.TRUE);
         assertTrue(stack.isDevModeEnabled());
+    }
+    
+    public void testConstructorWithAStack() {
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push("Hello World");
+        
+        OgnlValueStack stack2 = new OgnlValueStack(stack);
+
+        assertEquals(stack.getRoot(), stack2.getRoot());
+        assertEquals(stack.peek(), stack2.peek());
+        assertEquals("Hello World", stack2.pop());
+        
+        assertNotNull(OgnlValueStack.getAccessor());
+    }
+
+    public void testDefaultType() {
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.setDefaultType(String.class);
+        stack.push("Hello World");
+        
+        assertEquals("Hello World", stack.findValue("top"));
+        assertEquals(null, stack.findValue(null));
+
+        stack.setDefaultType(Integer.class);
+        stack.push(new Integer(123));
+        assertEquals(new Integer(123), stack.findValue("top"));
+    }
+    
+    public void testFindString() {
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.setDefaultType(Integer.class);
+        stack.push("Hello World");
+    	
+        assertEquals("Hello World", stack.findString("top"));
+        assertEquals(null, stack.findString(null));
+    }
+
+    public void testExpOverrides() {
+    	Map overrides = new HashMap();
+    	overrides.put("claus", "top");
+    	
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.setExprOverrides(overrides);
+        stack.push("Hello World");
+        
+        assertEquals("Hello World", stack.findValue("claus"));
+        assertEquals("Hello World", stack.findString("claus"));
+        assertEquals("Hello World", stack.findValue("top"));
+        assertEquals("Hello World", stack.findString("top"));
+
+        assertEquals("Hello World", stack.findValue("claus", String.class));
+        assertEquals("Hello World", stack.findValue("top", String.class));
+        
+        stack.getContext().put("santa", "Hello Santa");
+        assertEquals("Hello Santa", stack.findValue("santa", String.class));
+        assertEquals(null, stack.findValue("unknown", String.class));
     }
 
     class BadJavaBean {
