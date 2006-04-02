@@ -69,11 +69,4 @@ public class LoggingInterceptor extends AroundInterceptor {
         }
     }
 
-    public int hashCode() {
-        return 11;
-    }
-
-    public boolean equals(Object obj) {
-        return obj instanceof LoggingInterceptor;
-    }
 }
