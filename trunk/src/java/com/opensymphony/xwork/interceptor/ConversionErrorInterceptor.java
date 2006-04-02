@@ -65,9 +65,7 @@ import java.util.Map;
  * <!-- END SNIPPET: example -->
  * </pre>
  *
- * ConversionErrorInterceptor adds conversion errors from the ActionContext to the Action's field errors
- *
- * Date: Nov 27, 2003 3:57:06 PM
+ * ConversionErrorInterceptor adds conversion errors from the ActionContext to the Action's field errors.
  *
  * @author Jason Carreira
  */
