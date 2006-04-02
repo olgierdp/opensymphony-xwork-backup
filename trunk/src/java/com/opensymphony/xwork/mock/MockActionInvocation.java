@@ -5,6 +5,10 @@
 
 package com.opensymphony.xwork.mock;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionProxy;
@@ -17,6 +21,7 @@ import com.opensymphony.xwork.util.OgnlValueStack;
  *
  * @author plightbo
  * @author Rainer Hermanns
+ * @author tm_jee
  * @version $Id$
  */
 public class MockActionInvocation implements ActionInvocation {
@@ -27,6 +32,8 @@ public class MockActionInvocation implements ActionInvocation {
     private Result result;
     private String resultCode;
     private OgnlValueStack stack;
+    
+    private List preResultListeners = new ArrayList();
 
     public Object getAction() {
         return action;
@@ -81,9 +88,14 @@ public class MockActionInvocation implements ActionInvocation {
     }
 
     public void addPreResultListener(PreResultListener listener) {
+    	preResultListeners.add(listener);
     }
 
     public String invoke() throws Exception {
+    	for (Iterator i = preResultListeners.iterator(); i.hasNext(); ) {
+    		PreResultListener listener = (PreResultListener) i.next();
+    		listener.beforeResult(this, resultCode);
+    	}
         return resultCode;
     }
 
