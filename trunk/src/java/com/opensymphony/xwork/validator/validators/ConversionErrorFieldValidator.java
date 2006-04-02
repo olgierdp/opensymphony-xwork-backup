@@ -40,8 +40,11 @@ import java.util.Map;
  * <!-- END SNIPPET: example -->
  *
  * @author Jason Carreira
+ * @author tm_jee
+ * 
+ * @version $Date $Id$
  */
-public class ConversionErrorFieldValidator extends FieldValidatorSupport {
+public class ConversionErrorFieldValidator extends RepopulateConversionErrorFieldValidatorSupport {
 
     /**
      * The validation implementation must guarantee that setValidatorContext will
@@ -50,18 +53,19 @@ public class ConversionErrorFieldValidator extends FieldValidatorSupport {
      * @param object
      * @throws ValidationException
      */
-    public void validate(Object object) throws ValidationException {
+    public void doValidate(Object object) throws ValidationException {
         String fieldName = getFieldName();
         String fullFieldName = getValidatorContext().getFullFieldName(fieldName);
         ActionContext context = ActionContext.getContext();
         Map conversionErrors = context.getConversionErrors();
-
+        
         if (conversionErrors.containsKey(fullFieldName)) {
             if ((defaultMessage == null) || (defaultMessage.trim().equals(""))) {
                 defaultMessage = XWorkConverter.getConversionErrorMessage(fullFieldName, context.getValueStack());
             }
-
+            
             addFieldError(fieldName, object);
         }
     }
+    
 }
