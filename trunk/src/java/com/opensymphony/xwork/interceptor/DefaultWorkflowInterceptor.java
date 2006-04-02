@@ -8,13 +8,8 @@ import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.Validateable;
 import com.opensymphony.xwork.ValidationAware;
-import com.opensymphony.xwork.util.TextParseUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.Collections;
-import java.util.Set;
-
 
 /**
  * <!-- START SNIPPET: description -->
@@ -109,16 +104,13 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 	
 	private static final Log _log = LogFactory.getLog(DefaultWorkflowInterceptor.class);
 	
-    /**
-     * @see com.opensymphony.xwork.interceptor.MethodFilterInterceptor#doIntercept(com.opensymphony.xwork.ActionInvocation)
-     */
     protected String doIntercept(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
 
         if (action instanceof Validateable) {
             Validateable validateable = (Validateable) action;
             if (_log.isDebugEnabled()) {
-            	_log.debug("invoking validate() on action "+validateable);
+            	_log.debug("Invoking validate() on action "+validateable);
             }
             validateable.validate();
         }
@@ -128,7 +120,7 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 
             if (validationAwareAction.hasErrors()) {
             	if (_log.isDebugEnabled()) {
-            		_log.debug("errors on action "+validationAwareAction+", returning result name 'input'");
+            		_log.debug("Errors on action "+validationAwareAction+", returning result name 'input'");
             	}
                 return Action.INPUT;
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.interceptor;
@@ -11,10 +11,9 @@ import junit.framework.TestCase;
 
 
 /**
- * DefaultWorkflowInterceptorTest
+ * Unit test for {@link DefaultWorkflowInterceptor}.
  *
  * @author Jason Carreira
- *         Created Aug 29, 2003 1:51:00 PM
  */
 public class DefaultWorkflowInterceptorTest extends TestCase {
 
@@ -22,7 +21,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
     private ActionInvocation invocation;
     private Mock actionMock;
     private Mock invocationMock;
-    private ValidateAction action;
+    private Action action;
 
 
     public void testInvokesActionInvocationIfNoErrors() throws Exception {
@@ -122,6 +121,18 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         interceptor.setIncludeMethods("*");
         actionMock.expectAndReturn("hasErrors", false);
         actionMock.expect("validate");
+        final String result = "testing123";
+        invocationMock.expectAndReturn("invoke", result);
+        invocationMock.expectAndReturn("getAction", action);
+        assertEquals(result, interceptor.intercept(invocation));
+    }
+
+    public void testNoValidateAction() throws Exception {
+        actionMock = new Mock(Action.class);
+        action = (Action) actionMock.proxy();
+
+        interceptor.setExcludeMethods("execute,input,validate");
+        interceptor.setIncludeMethods("execute");
         final String result = "testing123";
         invocationMock.expectAndReturn("invoke", result);
         invocationMock.expectAndReturn("getAction", action);
