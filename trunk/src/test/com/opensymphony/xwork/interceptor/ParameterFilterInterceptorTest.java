@@ -1,5 +1,6 @@
 /*
- * Created on Dec 24, 2005
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
  */
 package com.opensymphony.xwork.interceptor;
 
@@ -17,8 +18,9 @@ import com.opensymphony.xwork.util.OgnlValueStack;
 import junit.framework.TestCase;
 
 /**
- * @author Gabe
+ * Unit test for {@link ParameterFilterInterceptor}.
  *
+ * @author Gabe
  */
 public class ParameterFilterInterceptorTest extends TestCase {
 
@@ -39,11 +41,17 @@ public class ParameterFilterInterceptorTest extends TestCase {
         mockInvocation.matchAndReturn("getAction", new SimpleAction());
         invocation = (ActionInvocation) mockInvocation.proxy();
         interceptor = new ParameterFilterInterceptor();
+        interceptor.init();
     }
-    
+
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        interceptor.destroy();
+    }
+
     public void testBasicBlockAll() throws Exception {
         runFilterTest(null,null,true,new String[] {"blah", "bladeblah", "bladebladeblah"});
-        assertEquals(0, getParameterNames().size()); 
+        assertEquals(0, getParameterNames().size());
     }
     
     public void testBasicAllowed() throws Exception {
@@ -99,13 +107,11 @@ public class ParameterFilterInterceptorTest extends TestCase {
     }
     
     private Collection getParameterNames() {
-        
         return ((Map)contextMap.get(ActionContext.PARAMETERS)).keySet();
     }
     
     public void runAction() throws Exception  {
         interceptor.intercept(invocation);
-        
     }
     
 }

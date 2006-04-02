@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.interceptor;
@@ -7,6 +7,7 @@ package com.opensymphony.xwork.interceptor;
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
+import com.opensymphony.xwork.mock.MockActionInvocation;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import junit.framework.TestCase;
 
@@ -15,9 +16,7 @@ import java.util.Map;
 
 
 /**
- * ParametersInterceptorTest
- * <p/>
- * Created : Jan 15, 2003 8:49:15 PM
+ * Unit test for {@link ParametersInterceptor}.
  *
  * @author Jason Carreira
  */
@@ -148,8 +147,23 @@ public class ParametersInterceptorTest extends TestCase {
         assertTrue(((SimpleAction) proxy.getAction()).getActionMessages().isEmpty());
     }
 
-    public void testGetParameters() {
-        
+    public void testNoParametersAction() throws Exception {
+        ParametersInterceptor interceptor = new ParametersInterceptor();
+        interceptor.init();
+
+        MockActionInvocation mai = new MockActionInvocation();
+        Action action = new NoParametersAction();
+        mai.setAction(action);
+
+        interceptor.intercept(mai);
+        interceptor.destroy();
+    }
+
+    private class NoParametersAction implements Action, NoParameters {
+
+        public String execute() throws Exception {
+            return SUCCESS;
+        }
     }
 
     protected void setUp() throws Exception {
