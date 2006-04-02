@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.interceptor;
@@ -11,13 +11,14 @@ import junit.framework.TestCase;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**
- * ChainingInterceptorTest
+ * Unit test for {@link ChainingInterceptor}.
  *
  * @author Jason Carreira
- *         Date: Nov 22, 2003 3:11:41 PM
  */
 public class ChainingInterceptorTest extends TestCase {
 
@@ -56,16 +57,56 @@ public class ChainingInterceptorTest extends TestCase {
         assertEquals(bean.getName(), action.getName());
         assertEquals(bean.getCount(), action.getCount());
     }
-    
-    
-    public void testNullCompoundRootElementAllowsProcessToContinue() throws Exception {
-    	// we should not get NPE, but instead get a warning logged.
-    	stack.push(null);
-    	stack.push(null);
-    	stack.push(null);
-    	interceptor.intercept(invocation); 
+
+    public void testExcludesPropertiesChained() throws Exception {
+        TestBean bean = new TestBean();
+        TestBeanAction action = new TestBeanAction();
+        mockInvocation.matchAndReturn("getAction", action);
+        bean.setBirth(new Date());
+        bean.setName("foo");
+        bean.setCount(1);
+        stack.push(bean);
+        stack.push(action);
+
+        Collection excludes = new ArrayList();
+        excludes.add("count");
+        interceptor.setExcludes(excludes);
+        interceptor.intercept(invocation);
+        assertEquals(bean.getBirth(), action.getBirth());
+        assertEquals(bean.getName(), action.getName());
+        assertEquals(0, action.getCount());
+        assertEquals(excludes, interceptor.getExcludes());
     }
-    
+
+    public void testTwoExcludesPropertiesChained() throws Exception {
+        TestBean bean = new TestBean();
+        TestBeanAction action = new TestBeanAction();
+        mockInvocation.matchAndReturn("getAction", action);
+        bean.setBirth(new Date());
+        bean.setName("foo");
+        bean.setCount(1);
+        stack.push(bean);
+        stack.push(action);
+
+        Collection excludes = new ArrayList();
+        excludes.add("name");
+        excludes.add("count");
+        interceptor.setExcludes(excludes);
+        interceptor.intercept(invocation);
+        assertEquals(bean.getBirth(), action.getBirth());
+        assertEquals(null, action.getName());
+        assertEquals(0, action.getCount());
+        assertEquals(excludes, interceptor.getExcludes());
+    }
+
+    public void testNullCompoundRootElementAllowsProcessToContinue() throws Exception {
+        // we should not get NPE, but instead get a warning logged.
+        stack.push(null);
+        stack.push(null);
+        stack.push(null);
+        interceptor.intercept(invocation);
+    }
+
 
     protected void setUp() throws Exception {
         super.setUp();
