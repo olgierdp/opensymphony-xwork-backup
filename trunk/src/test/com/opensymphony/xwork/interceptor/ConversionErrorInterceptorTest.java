@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.interceptor;
@@ -8,16 +8,16 @@ import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.util.OgnlValueStack;
+import com.opensymphony.xwork.mock.MockActionInvocation;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
 /**
- * ConversionErrorInterceptorTest
+ * Unit test for {@link ConversionErrorInterceptor}.
  *
  * @author Jason Carreira
- *         Date: Nov 27, 2003 4:48:09 PM
  */
 public class ConversionErrorInterceptorTest extends XWorkTestCase {
 
@@ -53,6 +53,31 @@ public class ConversionErrorInterceptorTest extends XWorkTestCase {
         interceptor.intercept(invocation);
         assertTrue(action.hasFieldErrors()); // This fails!
         assertNotNull(action.getFieldErrors().get(fieldName));
+    }
+
+    public void testWithPreResultListener() throws Exception {
+        conversionErrors.put("foo", "Hello");
+
+        ActionContext ac = new ActionContext(stack.getContext());
+        ac.setConversionErrors(conversionErrors);
+        ac.setValueStack(stack);
+
+        MockActionInvocation mai = new MockActionInvocation();
+        mai.setInvocationContext(ac);
+        mai.setStack(stack);
+        SimpleAction action = new SimpleAction();
+        action.setFoo(55);
+        mai.setAction(action);
+        stack.push(action);
+        assertNull(action.getFieldErrors().get("foo"));
+        assertEquals(new Integer(55), stack.findValue("foo"));
+
+        interceptor.intercept(mai);
+
+        assertTrue(action.hasFieldErrors());
+        assertNotNull(action.getFieldErrors().get("foo"));
+
+        assertEquals("Hello", stack.findValue("foo")); // assume that the original value is reset
     }
 
     protected void setUp() throws Exception {
