@@ -8,6 +8,7 @@ import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork.mock.MockActionInvocation;
 import com.opensymphony.xwork.Preparable;
 import com.opensymphony.xwork.Action;
+import com.opensymphony.xwork.SimpleFooAction;
 import junit.framework.TestCase;
 
 /**
@@ -24,6 +25,14 @@ public class PrepareInterceptorTest extends TestCase {
         MockActionInvocation mai = new MockActionInvocation();
         mai.setAction(mock.proxy());
         mock.expect("prepare");
+
+        interceptor.before(mai);
+        interceptor.after(mai, Action.SUCCESS); // to have higher code coverage
+    }
+
+    public void testNoPrepareCalled() throws Exception {
+        MockActionInvocation mai = new MockActionInvocation();
+        mai.setAction(new SimpleFooAction());
 
         interceptor.before(mai);
         interceptor.after(mai, Action.SUCCESS); // to have higher code coverage
