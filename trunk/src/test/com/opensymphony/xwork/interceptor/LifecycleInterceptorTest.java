@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 
 
 /**
- * Test AbstractLifecycleLister.
+ * Unit test for {@link AbstractLifecycleInterceptor}.
  * 
  * @author tm_jee
  * @version $Date$ $Id$

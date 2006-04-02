@@ -31,7 +31,7 @@ public class TimerInterceptorTest extends XWorkTestCase {
 
     public void testInvalidLogLevel() throws Exception {
         TimerInterceptor real = new TimerInterceptor();
-        real.setLogLevel("xxx");
+        real.setLogLevel("xxxx");
         real.init();
         try {
             real.intercept(mai);
