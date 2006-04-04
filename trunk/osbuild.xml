@@ -49,7 +49,7 @@
     <property name="jar.manifest" value="${common.dir}/EMPTY.MF"/>
     <property name="jar.excludes" value=""/>
 
-    <property name="testcase" value="location/*"/>
+    <property name="testcase" value="*"/>
     <patternset id="src.test.pattern">
         <exclude name="**/Abstract*.java"/>
         <include name="**/${testcase}Test.java"/>
