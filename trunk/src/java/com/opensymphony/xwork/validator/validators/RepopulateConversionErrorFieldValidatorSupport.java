@@ -48,33 +48,33 @@ import com.opensymphony.xwork.validator.ValidationException;
  * <pre>
  * <!-- START SNIPPET: example -->
  * 
- * <!-- myJspPage.jsp -->
- * <ww:form action="someAction" method="POST">
+ * &lt;!-- myJspPage.jsp --&gt;
+ * &lt;ww:form action="someAction" method="POST"&gt;
  *   ....
- *   <ww:textfield 
+ *   &lt;ww:textfield 
  *       label="My Integer Field"
- *       name="myIntegerField" />
+ *       name="myIntegerField" /&gt;
  *   ....
- *   <ww:submit />       
- * </ww:form>
+ *   &lt;ww:submit /&gt;       
+ * &lt;/ww:form&gt;
  * 
  * 
- * <!-- xwork.xml -->
- * <xwork>
- * <include file="webwork-default.xml" />
+ * &lt;!-- xwork.xml --&gt;
+ * &lt;xwork&gt;
+ * &lt;include file="webwork-default.xml" /&gt;
  * ....
- * <package name="myPackage" extends="webwork-default">
+ * &lt;package name="myPackage" extends="webwork-default"&gt;
  *   ....
- *   <action name="someAction" class="example.MyActionSupport.java">
- *      <result name="input">myJspPage.jsp</result>
- *      <result>success.jsp</result>
- *   </action>
+ *   &lt;action name="someAction" class="example.MyActionSupport.java"&gt;
+ *      &lt;result name="input"&gt;myJspPage.jsp&lt;/result&gt;
+ *      &lt;result&gt;success.jsp&lt;/result&gt;
+ *   &lt;/action&gt;
  *   ....
- * </package>
+ * &lt;/package&gt;
  * ....
- * </xwork>
+ * &lt;/xwork&gt;
  * 
- * <!-- MyActionSupport.java -->
+ * &lt;!-- MyActionSupport.java --&gt;
  * public class MyActionSupport extends ActionSupport {
  *    private Integer myIntegerField;
  *    
@@ -85,17 +85,17 @@ import com.opensymphony.xwork.validator.ValidationException;
  * }
  * 
  * 
- * <!-- MyActionSupport-someAction-validation.xml -->
- * <validators>
+ * &lt;!-- MyActionSupport-someAction-validation.xml --&gt;
+ * &lt;validators&gt;
  *   ...
- *   <field name="myIntegerField">
- *      <field-validator type="conversion">
- *         <param name="repopulateField">true</param>
- *         <message>Conversion Error (Integer Wanted)</message>
- *      </field-validator>
- *   </field>
+ *   &lt;field name="myIntegerField"&gt;
+ *      &lt;field-validator type="conversion"&gt;
+ *         &lt;param name="repopulateField"&gt;true&lt;/param&gt;
+ *         &lt;message&gt;Conversion Error (Integer Wanted)&lt;/message&gt;
+ *      &lt;/field-validator&gt;
+ *   &lt;/field&gt;
  *   ...
- * </validators>
+ * &lt;/validators&gt;
  * 
  * <!-- END EXAMPLE: example -->
  * </pre>
