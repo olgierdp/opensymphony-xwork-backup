@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import java.io.Serializable;
 
+import com.opensymphony.xwork.util.location.Located;
 
 /**
  * Configuration for Interceptors.
@@ -16,7 +17,7 @@ import java.io.Serializable;
  *
  * @author Mike
  */
-public class InterceptorConfig implements Parameterizable, Serializable {
+public class InterceptorConfig extends Located implements Parameterizable, Serializable {
 
     Map params;
     String className;

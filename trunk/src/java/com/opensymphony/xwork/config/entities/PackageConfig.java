@@ -6,6 +6,7 @@ package com.opensymphony.xwork.config.entities;
 
 import com.opensymphony.util.TextUtils;
 import com.opensymphony.xwork.config.ExternalReferenceResolver;
+import com.opensymphony.xwork.util.location.Located;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -21,7 +22,7 @@ import java.io.Serializable;
  * @author Rainer Hermanns
  * @version $Revision$
  */
-public class PackageConfig implements Comparable, Serializable {
+public class PackageConfig extends Located implements Comparable, Serializable {
 
     private static final Log LOG = LogFactory.getLog(PackageConfig.class);
 

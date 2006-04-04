@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import java.io.Serializable;
 
+import com.opensymphony.xwork.util.location.Located;
+
 
 /**
  * Configuration for Result.
@@ -16,7 +18,7 @@ import java.io.Serializable;
  * 
  * @author Mike
  */
-public class ResultConfig implements Parameterizable, Serializable {
+public class ResultConfig extends Located implements Parameterizable, Serializable {
 
     private Map params;
     private String className;

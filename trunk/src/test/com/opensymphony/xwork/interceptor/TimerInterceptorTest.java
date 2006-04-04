@@ -111,7 +111,7 @@ public class TimerInterceptorTest extends XWorkTestCase {
 
     public void testLogCategoryLevel() throws Exception {
         interceptor.setLogCategory("com.mycompany.myapp.actiontiming");
-        interceptor.setLogLevel("debug");
+        interceptor.setLogLevel("error");
         interceptor.intercept(mai);
         assertTrue(interceptor.message.startsWith("Executed action [myApp/myAction!execute] took "));
         assertNotSame(interceptor.logger, TimerInterceptor.log);

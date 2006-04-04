@@ -9,13 +9,15 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import java.io.Serializable;
 
+import com.opensymphony.xwork.util.location.Located;
+
 /**
  * Configuration for exception mapping.
  *
  * @author Rainer Hermanns
  * @author Matthew E. Porter (matthew dot porter at metissian dot com)
  */
-public class ExceptionMappingConfig implements Serializable {
+public class ExceptionMappingConfig extends Located implements Serializable {
 
     private String name;
     private String exceptionClassName;

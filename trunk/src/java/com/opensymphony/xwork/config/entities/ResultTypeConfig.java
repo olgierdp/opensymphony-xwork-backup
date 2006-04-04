@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import java.io.Serializable;
 
+import com.opensymphony.xwork.util.location.Located;
+
 
 /**
  * Configuration class for result types.
@@ -18,7 +20,7 @@ import java.io.Serializable;
  * @author Rainer Hermanns
  * @author Neo
  */
-public class ResultTypeConfig implements Serializable {
+public class ResultTypeConfig extends Located implements Serializable {
 
     private Class clazz;
     private String name;

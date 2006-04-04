@@ -12,6 +12,8 @@ import com.opensymphony.xwork.ActionSupport;
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.config.*;
 import com.opensymphony.xwork.config.entities.*;
+import com.opensymphony.xwork.util.DomHelper;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
@@ -84,44 +86,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         this.configuration = configuration;
         includedFileNames.clear();
 
-        DocumentBuilder db;
 
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setValidating(true);
-            dbf.setNamespaceAware(true);
-
-            db = dbf.newDocumentBuilder();
-            db.setEntityResolver(new EntityResolver() {
-                public InputSource resolveEntity(String publicId, String systemId) {
-                    if ("-//OpenSymphony Group//XWork 1.1.1//EN".equals(publicId)) {
-                        return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.1.1.dtd", XmlConfigurationProvider.class));
-                    }
-                    else if ("-//OpenSymphony Group//XWork 1.1//EN".equals(publicId)) {
-                        return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.1.dtd", XmlConfigurationProvider.class));
-                    }
-                    else if ("-//OpenSymphony Group//XWork 1.0//EN".equals(publicId)) {
-                        return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.0.dtd", XmlConfigurationProvider.class));
-                    }
-
-                    return null;
-                }
-            });
-            db.setErrorHandler(new ErrorHandler() {
-                public void warning(SAXParseException exception) {
-                }
-
-                public void error(SAXParseException exception) throws SAXException {
-                    LOG.error(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
-                    throw exception;
-                }
-
-                public void fatalError(SAXParseException exception) throws SAXException {
-                    LOG.fatal(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
-                    throw exception;
-                }
-            });
-            loadConfigurationFile(configFileName, db);
+            loadConfigurationFile(configFileName);
         } catch (Exception e) {
             LOG.fatal("Could not load XWork configuration file, failing", e);
             throw new ConfigurationException("Error loading configuration file " + configFileName, e);
@@ -183,7 +150,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         List exceptionMappings = buildExceptionMappings(actionElement, packageContext);
 
-        ActionConfig actionConfig = new ActionConfig(methodName, className, actionParams, results, interceptorList, externalrefs, exceptionMappings, packageContext.getName());
+        ActionConfig actionConfig = new ActionConfig(methodName, className, actionParams, results, interceptorList, externalrefs, exceptionMappings,
+        packageContext.getName());
+        actionConfig.setLocation(DomHelper.getLocationObject(actionElement));
         packageContext.addActionConfig(name, actionConfig);
 
         if (LOG.isDebugEnabled()) {
@@ -266,6 +235,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             }
 
             ResultTypeConfig resultType = new ResultTypeConfig(name, clazz);
+            resultType.setLocation(DomHelper.getLocationObject(resultTypeElement));
+            
             Map params = XmlHelper.getParams(resultTypeElement);
 
             if (!params.isEmpty()) {
@@ -361,6 +332,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         String externalReferenceResolver = TextUtils.noNull(packageElement.getAttribute("externalReferenceResolver"));
 
+        PackageConfig cfg = null;
         if (!("".equals(externalReferenceResolver))) {
             try {
                 erResolver = (ExternalReferenceResolver) ObjectFactory.getObjectFactory().buildBean(externalReferenceResolver, null);
@@ -379,7 +351,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         if (!TextUtils.stringSet(TextUtils.noNull(parent))) { // no parents
 
-            return new PackageConfig(name, namespace, isAbstract, erResolver);
+            cfg = new PackageConfig(name, namespace, isAbstract, erResolver);
         } else { // has parents, let's look it up
 
             List parents = ConfigurationUtil.buildParentsFromString(configuration, parent);
@@ -387,11 +359,16 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             if (parents.size() <= 0) {
                 LOG.error("Unable to find parent packages " + parent);
 
-                return new PackageConfig(name, namespace, isAbstract, erResolver);
+                cfg = new PackageConfig(name, namespace, isAbstract, erResolver);
             } else {
-                return new PackageConfig(name, namespace, isAbstract, erResolver, parents);
+                cfg = new PackageConfig(name, namespace, isAbstract, erResolver, parents);
             }
         }
+        
+        if (cfg != null) {
+            cfg.setLocation(DomHelper.getLocationObject(packageElement));
+        }
+        return cfg;
     }
 
     /**
@@ -469,6 +446,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 params.putAll(resultParams);
 
                 ResultConfig resultConfig = new ResultConfig(resultName, resultClass, params);
+                resultConfig.setLocation(DomHelper.getLocationObject(element));
                 results.put(resultConfig.getName(), resultConfig);
             }
         }
@@ -499,6 +477,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
 
                 ExceptionMappingConfig ehConfig = new ExceptionMappingConfig(emName, exceptionClassName, exceptionResult, params);
+                ehConfig.setLocation(DomHelper.getLocationObject(ehElement));
                 exceptionMappings.add(ehConfig);
             }
         }
@@ -565,6 +544,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         String name = element.getAttribute("name");
 
         InterceptorStackConfig config = new InterceptorStackConfig(name);
+        config.setLocation(DomHelper.getLocationObject(element));
         NodeList interceptorRefList = element.getElementsByTagName("interceptor-ref");
 
         for (int j = 0; j < interceptorRefList.getLength(); j++) {
@@ -598,6 +578,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
             Map params = XmlHelper.getParams(interceptorElement);
             InterceptorConfig config = new InterceptorConfig(name, className, params);
+            config.setLocation(DomHelper.getLocationObject(interceptorElement));
 
             context.addInterceptorConfig(config);
         }
@@ -613,7 +594,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     //            addPackage(packageElement);
     //        }
     //    }
-    private void loadConfigurationFile(String fileName, DocumentBuilder db) {
+    private void loadConfigurationFile(String fileName) {
         if (!includedFileNames.contains(fileName)) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Loading xwork configuration from: " + fileName);
@@ -631,7 +612,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     throw new Exception("Could not open file " + fileName);
                 }
 
-                doc = db.parse(is);
+                InputSource in = new InputSource(is);
+                in.setSystemId(fileName);
+                
+                doc = DomHelper.parse(in);
             } catch (Exception e) {
                 final String s = "Caught exception while loading file " + fileName;
                 LOG.error(s, e);
@@ -662,7 +646,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                         addPackage(child);
                     } else if (nodeName.equals("include")) {
                         String includeFileName = child.getAttribute("file");
-                        loadConfigurationFile(includeFileName, db);
+                        loadConfigurationFile(includeFileName);
                     }
                 }
             }

@@ -6,6 +6,7 @@ package com.opensymphony.xwork.config.entities;
 
 import com.opensymphony.xwork.interceptor.Interceptor;
 
+import com.opensymphony.xwork.util.location.Located;
 import java.io.Serializable;
 import java.util.*;
 
@@ -26,7 +27,7 @@ import java.util.*;
  * @author Rainer Hermanns
  * @version $Revision$
  */
-public class ActionConfig implements InterceptorListHolder, Parameterizable, Serializable {
+public class ActionConfig extends Located implements InterceptorListHolder, Parameterizable, Serializable {
 
     protected List externalRefs;
     protected List interceptors;

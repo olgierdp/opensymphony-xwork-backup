@@ -11,6 +11,8 @@ import java.util.Collection;
 import java.util.List;
 import java.io.Serializable;
 
+import com.opensymphony.xwork.util.location.Located;
+
 
 /**
  * Configuration for InterceptorStack.
@@ -20,7 +22,7 @@ import java.io.Serializable;
  * @author Mike
  * @author Rainer Hermanns
  */
-public class InterceptorStackConfig implements InterceptorListHolder, Serializable {
+public class InterceptorStackConfig extends Located implements InterceptorListHolder, Serializable {
 
     private List interceptors;
     private String name;
