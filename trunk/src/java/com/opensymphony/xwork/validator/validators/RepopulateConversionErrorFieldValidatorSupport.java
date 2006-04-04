@@ -17,7 +17,7 @@ import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.ValidationException;
 
 /**
- * <!-- START SNIPPET: javadoc -->
+ * 
  * 
  * An abstract base class that adds in the capability to populate the stack with
  * a fake parameter map when a conversion error has occurred and the 'repopulateField'
@@ -25,6 +25,15 @@ import com.opensymphony.xwork.validator.ValidationException;
  * 
  * <p/>
  * 
+ *
+ * <!-- START SNIPPET: javadoc -->
+ *
+ * The capability of auto-repopulating the stack with a fake parameter map when 
+ * a conversion error has occurred can be done with 'repopulateField' property 
+ * set to "true". 
+ *
+ * <p/>
+ *
  * This is typically usefull when one wants to repopulate the field with the original value 
  * when a conversion error occurred. Eg. with a textfield that only allows an Integer 
  * (the action class have an Integer field declared), upon conversion error, the incorrectly
