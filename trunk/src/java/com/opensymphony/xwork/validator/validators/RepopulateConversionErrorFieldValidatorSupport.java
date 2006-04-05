@@ -115,7 +115,7 @@ import com.opensymphony.xwork.validator.ValidationException;
  *   ...
  * &lt;/validators&gt;
  * 
- * <!-- END EXAMPLE: exampleValidation -->
+ * <!-- END SNIPPET: exampleValidation -->
  * </pre>
  * 
  * @author tm_jee
