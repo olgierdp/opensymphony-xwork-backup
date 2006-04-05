@@ -46,7 +46,7 @@ import com.opensymphony.xwork.validator.ValidationException;
  * <p/>
  * 
  * <pre>
- * <!-- START SNIPPET: example -->
+ * <!-- START SNIPPET: exampleJspPage -->
  * 
  * &lt;!-- myJspPage.jsp --&gt;
  * &lt;ww:form action="someAction" method="POST"&gt;
@@ -58,6 +58,11 @@ import com.opensymphony.xwork.validator.ValidationException;
  *   &lt;ww:submit /&gt;       
  * &lt;/ww:form&gt;
  * 
+ * <!-- END SNIPPET: exampleJspPage -->
+ * </pre>
+ * 
+ * <pre>
+ * <!-- START SNIPPET: exampleXwork -->
  * 
  * &lt;!-- xwork.xml --&gt;
  * &lt;xwork&gt;
@@ -74,6 +79,13 @@ import com.opensymphony.xwork.validator.ValidationException;
  * ....
  * &lt;/xwork&gt;
  * 
+ * <!-- END SNIPPET:exampleXwork -->
+ * </pre>
+ * 
+ * 
+ * <pre>
+ * <!-- START SNIPPET: exampleJava -->
+ * 
  * &lt;!-- MyActionSupport.java --&gt;
  * public class MyActionSupport extends ActionSupport {
  *    private Integer myIntegerField;
@@ -84,6 +96,12 @@ import com.opensymphony.xwork.validator.ValidationException;
  *    }
  * }
  * 
+ * <!-- END SNIPPET: exampleJava -->
+ * </pre>
+ * 
+ * 
+ * <pre>
+ * <!-- START SNIPPET: exampleValidation -->
  * 
  * &lt;!-- MyActionSupport-someAction-validation.xml --&gt;
  * &lt;validators&gt;
@@ -97,7 +115,7 @@ import com.opensymphony.xwork.validator.ValidationException;
  *   ...
  * &lt;/validators&gt;
  * 
- * <!-- END EXAMPLE: example -->
+ * <!-- END EXAMPLE: exampleValidation -->
  * </pre>
  * 
  * @author tm_jee
