@@ -82,22 +82,41 @@ public class LocalizedTextUtil {
     }
 
 
+    /**
+     * Clears the internal list of resource bundles.
+     */
     public static void clearDefaultResourceBundles() {
+    	if (DEFAULT_RESOURCE_BUNDLES != null) {
+    		DEFAULT_RESOURCE_BUNDLES.clear();
+    	}
         DEFAULT_RESOURCE_BUNDLES = Collections.synchronizedList(new ArrayList());
         DEFAULT_RESOURCE_BUNDLES.add("com/opensymphony/xwork/xwork-messages");
     }
 
+    /**
+     * Should resorce bundles be reloaded.
+     * <p/>
+     * In WW see <code>webwork.i18n.reload</code> property.
+     * @param reloadBundles  reload bundles?  
+     */
     public static void setReloadBundles(boolean reloadBundles) {
         LocalizedTextUtil.reloadBundles = reloadBundles;
     }
 
+    /**
+     * Add's the bundle to the internal list of default bundles.
+     * <p/>
+     * If the bundle already exists in the list it will be readded.
+     * 
+     * @param resourceBundleName   the name of the bundle to add.
+     */
     public static void addDefaultResourceBundle(String resourceBundleName) {
         //make sure this doesn't get added more than once
         DEFAULT_RESOURCE_BUNDLES.remove(resourceBundleName);
         DEFAULT_RESOURCE_BUNDLES.add(0, resourceBundleName);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Added default resource bundle " + resourceBundleName + ", default resource bundles = " + DEFAULT_RESOURCE_BUNDLES);
+            LOG.debug("Added default resource bundle '" + resourceBundleName + "' to default resource bundles = " + DEFAULT_RESOURCE_BUNDLES);
         }
     }
 
@@ -152,7 +171,6 @@ public class LocalizedTextUtil {
      * @return a localized message based on the specified key, or null if no localized message can be found for it
      */
     public static String findDefaultText(String aTextName, Locale locale) {
-        //List localList = new ArrayList(DEFAULT_RESOURCE_BUNDLES);
         List localList = DEFAULT_RESOURCE_BUNDLES; // it isn't sync'd, but this is so rare, let's do it anyway
 
         for (Iterator iterator = localList.iterator(); iterator.hasNext();) {
@@ -182,7 +200,6 @@ public class LocalizedTextUtil {
      * @return A formatted message based on the specified key, or null if no localized message can be found for it
      */
     public static String findDefaultText(String aTextName, Locale locale, Object[] params) {
-
         String defaultText = findDefaultText(aTextName, locale);
         if (defaultText != null) {
             MessageFormat mf = buildMessageFormat(defaultText, locale);
@@ -191,6 +208,15 @@ public class LocalizedTextUtil {
         return null;
     }
 
+    /**
+     * Finds the given resorce bundle by it's name.
+     * <p/>
+     * Will use <code>Thread.currentThread().getContextClassLoader()</code> as the classloader.
+     * 
+     * @param aBundleName  the name of the bundle (usually it's FQN classname).
+     * @param locale       the locale.
+     * @return  the bundle, <tt>null</tt> if not found.
+     */
     public static ResourceBundle findResourceBundle(String aBundleName, Locale locale) {
         synchronized (misses) {
             try {
@@ -289,6 +315,8 @@ public class LocalizedTextUtil {
      * <p/>
      * If a message is found, it will also be interpolated.  Anything within <code>${...}</code>
      * will be treated as an OGNL expression and evaluated as such.
+     * <p/>
+     * If a message is <b>not</b> found a WARN log will be logged.
      *
      * @param aClass         the class whose name to use as the start point for the search
      * @param aTextName      the key to find the text message for
@@ -407,23 +435,53 @@ public class LocalizedTextUtil {
             }
         }
 
-        String result = null;
         // get default
+        GetDefaultMessageReturnArg result = null;
         if (indexedTextName == null) {
             result = getDefaultMessage(aTextName, locale, valueStack, args, defaultMessage);
         } else {
-            msg = getDefaultMessage(aTextName, locale, valueStack, args, null);
-
-            if (msg != null) {
-                return msg;
+            result = getDefaultMessage(aTextName, locale, valueStack, args, null);
+            if (result.message != null) {
+                return result.message;
             }
-
             result = getDefaultMessage(indexedTextName, locale, valueStack, args, defaultMessage);
         }
-        if ( result != null && result.equals(defaultMessage)) {
-            LOG.warn("Unable to find text for key '" + aTextName + "' in '" + aClass + "' and locale '" + locale + "'");
+        
+        // could we find the text, if not log a warn
+        if (unableToFindTextForKey(result)) {
+        	String warn = "Unable to find text for key '" + aTextName + "' ";
+        	if (indexedTextName != null) {
+        		warn += " or indexed key '" + indexedTextName + "' ";
+        	}
+        	warn += "in class '" + aClass.getName() + "' and locale '" + locale + "'";
+            LOG.warn(warn);
         }
-        return result;
+        
+        return result != null ? result.message : null;
+    }
+    
+    /**
+     * Determines if we found the text in the bundles.
+     * 
+     * @param result   the result so far
+     * @param locale   the locale
+     * @param key1     the first key used for lookup
+     * @param key2     the second key (indexed) used for kookup
+     * @param defaultMessage  the provided default message
+     * @return  <tt>true</tt> if we could <b>not</b> find the text, <tt>false</tt> if the text was found (=success). 
+     */
+    private static boolean unableToFindTextForKey(GetDefaultMessageReturnArg result) {
+    	if (result == null || result.message == null) {
+    		return true;
+    	}
+    	
+		// did we find it in the bundle, then no problem?
+    	if (result.foundInBundle) {
+			return false;
+		}
+    	
+    	// not found in bundle
+    	return true;
     }
 
     /**
@@ -445,14 +503,36 @@ public class LocalizedTextUtil {
      * <p/>
      * If a message is found, it will also be interpolated.  Anything within <code>${...}</code>
      * will be treated as an OGNL expression and evaluated as such.
+     * <p/>
+     * If a message is <b>not</b> found a WARN log will be logged.
+     * 
+     * @param bundle     the bundle
+     * @param aTextName  the key
+     * @param locale     the locale
+     * @param defaultMessage  the default message to use if no message was found in the bundle
+     * @param args       arguments for the message formatter.
      */
     public static String findText(ResourceBundle bundle, String aTextName, Locale locale, String defaultMessage, Object[] args) {
         OgnlValueStack valueStack = ActionContext.getContext().getValueStack();
-
         return findText(bundle, aTextName, locale, defaultMessage, args, valueStack);
-
     }
 
+    /**
+     * Finds a localized text message for the given key, aTextName, in the specified resource
+     * bundle.
+     * <p/>
+     * If a message is found, it will also be interpolated.  Anything within <code>${...}</code>
+     * will be treated as an OGNL expression and evaluated as such.
+     * <p/>
+     * If a message is <b>not</b> found a WARN log will be logged.
+     * 
+     * @param bundle     the bundle
+     * @param aTextName  the key
+     * @param locale     the locale
+     * @param defaultMessage  the default message to use if no message was found in the bundle
+     * @param args       arguments for the message formatter.
+     * @param valueStack the OGNL value stack.
+     */
     public static String findText(ResourceBundle bundle, String aTextName, Locale locale, String defaultMessage, Object[] args, OgnlValueStack valueStack) {
         try {
             reloadBundles();
@@ -462,35 +542,41 @@ public class LocalizedTextUtil {
 
             return mf.format(args);
         } catch (MissingResourceException ex) {
+        	// ignore
         }
 
-        String result = getDefaultMessage(aTextName, locale, valueStack, args, defaultMessage);
-        if ( result != null && result.equals(defaultMessage)) {
+        GetDefaultMessageReturnArg result = getDefaultMessage(aTextName, locale, valueStack, args, defaultMessage);
+        if (unableToFindTextForKey(result)) {
             LOG.warn("Unable to find text for key '" + aTextName + "' in ResourceBundles for locale '" + locale + "'");
         }
-        return result;
+        return result.message;
     }
 
     /**
      * Gets the default message.
      */
-    private static String getDefaultMessage(String key, Locale locale, OgnlValueStack valueStack, Object[] args, String defaultMessage) {
+    private static GetDefaultMessageReturnArg getDefaultMessage(String key, Locale locale, OgnlValueStack valueStack, Object[] args, String defaultMessage) {
+        GetDefaultMessageReturnArg result = null;
+    	boolean found = true;
+    	
         if (key != null) {
             String message = findDefaultText(key, locale);
 
             if (message == null) {
                 message = defaultMessage;
+                found = false; // not found in bundles
             }
 
             // defaultMessage may be null
             if (message != null) {
                 MessageFormat mf = buildMessageFormat(TextParseUtil.translateVariables(message, valueStack), locale);
 
-                return mf.format(args);
+                String msg = mf.format(args);
+                result = new GetDefaultMessageReturnArg(msg, found);
             }
         }
 
-        return null;
+        return result;
     }
 
     /**
@@ -643,7 +729,9 @@ public class LocalizedTextUtil {
 
     }
 
-
+    /**
+     * Clears all the internal lists. 
+     */
     public static void reset() {
         clearDefaultResourceBundles();
 
@@ -685,5 +773,15 @@ public class LocalizedTextUtil {
             result = 29 * result + (locale != null ? locale.hashCode() : 0);
             return result;
         }
+    }
+    
+    static class GetDefaultMessageReturnArg {
+    	String message;
+    	boolean foundInBundle;
+		
+    	public GetDefaultMessageReturnArg(String message, boolean foundInBundle) {
+			this.message = message;
+			this.foundInBundle = foundInBundle;
+		}
     }
 }
