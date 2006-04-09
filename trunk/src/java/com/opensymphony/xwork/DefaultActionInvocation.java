@@ -7,7 +7,6 @@ package com.opensymphony.xwork;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.config.entities.InterceptorMapping;
-import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.interceptor.PreResultListener;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.XWorkContinuationConfig;

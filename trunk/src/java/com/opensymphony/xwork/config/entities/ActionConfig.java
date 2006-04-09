@@ -4,8 +4,6 @@
  */
 package com.opensymphony.xwork.config.entities;
 
-import com.opensymphony.xwork.interceptor.Interceptor;
-
 import com.opensymphony.xwork.util.location.Located;
 import java.io.Serializable;
 import java.util.*;

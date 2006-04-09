@@ -6,9 +6,7 @@ package com.opensymphony.xwork.util;
 
 import ognl.MethodFailedException;
 import ognl.ObjectMethodAccessor;
-import ognl.Ognl;
 import ognl.OgnlContext;
-import ognl.OgnlException;
 import ognl.OgnlRuntime;
 import ognl.PropertyAccessor;
 

@@ -9,7 +9,6 @@ import com.opensymphony.xwork.ObjectFactory;
 import ognl.MapPropertyAccessor;
 import ognl.OgnlException;
 
-import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;

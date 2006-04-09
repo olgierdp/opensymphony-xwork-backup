@@ -4,18 +4,16 @@
  */
 package com.opensymphony.xwork.util;
 
+import java.io.StringReader;
+
 import junit.framework.TestCase;
 
-import java.util.ArrayList;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import java.io.*;
-import com.opensymphony.xwork.util.location.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
-import javax.xml.transform.*;
-import javax.xml.transform.stream.*;
-import javax.xml.transform.dom.*;
-
+import com.opensymphony.xwork.util.location.Location;
 
 /**
  * Test cases for {@link DomHelper}.

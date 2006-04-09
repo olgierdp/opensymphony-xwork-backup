@@ -5,9 +5,6 @@
 
 package com.opensymphony.xwork;
 
-import com.opensymphony.xwork.interceptor.PreResultListener;
-import com.opensymphony.xwork.util.OgnlValueStack;
-
 /**
  * Mock for an {@link ActionInvocation}.
  *

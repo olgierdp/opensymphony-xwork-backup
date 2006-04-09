@@ -4,8 +4,6 @@
  */
 package com.opensymphony.xwork;
 
-import junit.framework.TestCase;
-
 import java.util.ResourceBundle;
 import java.util.List;
 import java.util.Locale;

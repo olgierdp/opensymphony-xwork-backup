@@ -16,26 +16,15 @@
 package com.opensymphony.xwork.util;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 import com.opensymphony.util.ClassLoaderUtil;
 
 import com.opensymphony.xwork.util.location.Location;
 import com.opensymphony.xwork.util.location.LocationAttributes;
 import com.opensymphony.xwork.XworkException;
-import org.w3c.dom.Attr;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;

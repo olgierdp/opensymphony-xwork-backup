@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork.config.providers;
 
-import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.util.FileManager;
 import com.opensymphony.util.TextUtils;
 import com.opensymphony.xwork.Action;
@@ -22,8 +21,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.*;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;

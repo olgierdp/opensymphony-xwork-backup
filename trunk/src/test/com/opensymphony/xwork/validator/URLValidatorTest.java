@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork.validator;
 
-import com.opensymphony.util.TextUtils;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.validators.URLValidator;
