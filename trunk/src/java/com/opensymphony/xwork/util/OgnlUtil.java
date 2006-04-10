@@ -363,7 +363,7 @@ public class OgnlUtil {
 
             if (throwPropertyExceptions) {
                 log.error(msg, exception);
-                throw new RuntimeException(msg);
+                throw new RuntimeException(msg, exception);
             } else {
                 log.warn(msg, exception);
             }
