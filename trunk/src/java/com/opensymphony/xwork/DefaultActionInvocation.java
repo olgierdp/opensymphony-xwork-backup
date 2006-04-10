@@ -171,7 +171,7 @@ public class DefaultActionInvocation implements ActionInvocation {
                 return ObjectFactory.getObjectFactory().buildResult(resultConfig, invocationContext.getContextMap());
             } catch (Exception e) {
                 LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClassName(), e);
-                throw e;
+                throw new XworkException(e, resultConfig);
             }
         } else {
             return null;
@@ -221,9 +221,9 @@ public class DefaultActionInvocation implements ActionInvocation {
         try {
             action = ObjectFactory.getObjectFactory().buildAction(proxy.getActionName(), proxy.getNamespace(), proxy.getConfig(), contextMap);
         } catch (InstantiationException e) {
-            throw new XworkException("Unable to intantiate Action!", e);
+            throw new XworkException("Unable to intantiate Action!", e, proxy.getConfig());
         } catch (IllegalAccessException e) {
-            throw new XworkException("Illegal access to constructor, is it public?", e);
+            throw new XworkException("Illegal access to constructor, is it public?", e, proxy.getConfig());
         } catch (Exception e) {
             String gripe = "";
 
@@ -238,7 +238,7 @@ public class DefaultActionInvocation implements ActionInvocation {
             }
 
             gripe += (((" -- " + e.getMessage()) != null) ? e.getMessage() : " [no message in exception]");
-            throw new XworkException(gripe, e);
+            throw new XworkException(gripe, e, proxy.getConfig());
         }
 
         prepareContinuation();

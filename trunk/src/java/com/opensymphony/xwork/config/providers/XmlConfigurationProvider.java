@@ -85,7 +85,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
 
         try {
-            loadConfigurationFile(configFileName);
+            loadConfigurationFile(configFileName, null);
         } catch (Exception e) {
             LOG.fatal("Could not load XWork configuration file, failing", e);
             throw new ConfigurationException("Error loading configuration file " + configFileName, e);
@@ -138,7 +138,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         try {
             results = buildResults(actionElement, packageContext);
         } catch (ConfigurationException e) {
-            throw new ConfigurationException("Error building results for action " + name + " in namespace " + packageContext.getNamespace(), e);
+            throw new ConfigurationException("Error building results for action " + name + " in namespace " + packageContext.getNamespace(), e, actionElement);
         }
 
         List interceptorList = buildInterceptorList(actionElement, packageContext);
@@ -337,12 +337,12 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 //TODO this should be localized
                 String msg = "Could not find External Reference Resolver: " + externalReferenceResolver + ". " + e.getMessage();
                 LOG.error(msg);
-                throw new ConfigurationException(msg, e);
+                throw new ConfigurationException(msg, e, packageElement);
             } catch (Exception e) {
                 //TODO this should be localized
                 String msg = "Could not create External Reference Resolver: " + externalReferenceResolver + ". " + e.getMessage();
                 LOG.error(msg);
-                throw new ConfigurationException(msg, e);
+                throw new ConfigurationException(msg, e, packageElement);
             }
         }
 
@@ -403,7 +403,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 ResultTypeConfig config = (ResultTypeConfig) packageContext.getAllResultTypeConfigs().get(resultType);
 
                 if (config == null) {
-                    throw new ConfigurationException("There is no result type defined for type '" + resultType + "' mapped with name '" + resultName + "'");
+                    throw new ConfigurationException("There is no result type defined for type '" + resultType + "' mapped with name '" + resultName + "'", resultElement);
                 }
 
                 Class resultClass = config.getClazz();
@@ -591,7 +591,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     //            addPackage(packageElement);
     //        }
     //    }
-    private void loadConfigurationFile(String fileName) {
+    private void loadConfigurationFile(String fileName, Element includeElement) {
         if (!includedFileNames.contains(fileName)) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Loading xwork configuration from: " + fileName);
@@ -611,12 +611,16 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
                 InputSource in = new InputSource(is);
                 in.setSystemId(fileName);
+                Map dtdMappings = new HashMap();
+                dtdMappings.put("-//OpenSymphony Group//XWork 1.1.1//EN", "xwork-1.1.1.dtd");
+                dtdMappings.put("-//OpenSymphony Group//XWork 1.1//EN", "xwork-1.1.dtd");
+                dtdMappings.put("-//OpenSymphony Group//XWork 1.0//EN", "xwork-1.0.dtd");
                 
-                doc = DomHelper.parse(in);
+                doc = DomHelper.parse(in, dtdMappings);
             } catch (Exception e) {
                 final String s = "Caught exception while loading file " + fileName;
                 LOG.error(s, e);
-                throw new ConfigurationException(s, e);
+                throw new ConfigurationException(s, e, includeElement);
             } finally {
                 if (is != null) {
                     try {
@@ -643,7 +647,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                         addPackage(child);
                     } else if (nodeName.equals("include")) {
                         String includeFileName = child.getAttribute("file");
-                        loadConfigurationFile(includeFileName);
+                        loadConfigurationFile(includeFileName, child);
                     }
                 }
             }

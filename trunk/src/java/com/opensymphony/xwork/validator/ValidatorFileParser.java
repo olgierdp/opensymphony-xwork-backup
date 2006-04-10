@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ObjectFactory;
+import com.opensymphony.xwork.util.DomHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.*;
@@ -52,38 +53,14 @@ public class ValidatorFileParser {
         Document doc = null;
 
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setValidating(true);
-            dbf.setNamespaceAware(true);
-
-            DocumentBuilder builder = dbf.newDocumentBuilder();
-            builder.setEntityResolver(new EntityResolver() {
-                public InputSource resolveEntity(String publicId, String systemId) {
-                    ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
-                    if ("-//OpenSymphony Group//XWork Validator 1.0//EN".equals(publicId)) {
-                        return new InputSource(loader.getResourceAsStream("xwork-validator-1.0.dtd"));
-                    } else if ("-//OpenSymphony Group//XWork Validator 1.0.2//EN".equals(publicId)) {
-                        return new InputSource(loader.getResourceAsStream("xwork-validator-1.0.2.dtd"));
-                    }
-
-                    return null;
-                }
-            });
-            builder.setErrorHandler(new ErrorHandler() {
-                public void warning(SAXParseException exception) {
-                    log.warn(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + " of '" + resourceName + "')");
-                }
-
-                public void error(SAXParseException exception) {
-                    log.error(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + " of '" + resourceName + "')");
-                }
-
-                public void fatalError(SAXParseException exception) {
-                    log.fatal(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + " of '" + resourceName + "')");
-                }
-            });
-            doc = builder.parse(is);
+            InputSource in = new InputSource(is);
+            in.setSystemId(resourceName);
+                
+            Map dtdMappings = new HashMap();
+            dtdMappings.put("-//OpenSymphony Group//XWork Validator 1.0//EN", "xwork-validator-1.0.dtd");
+            dtdMappings.put("-//OpenSymphony Group//XWork Validator 1.0.2//EN", "xwork-validator-1.0.2.dtd");
+            
+            doc = DomHelper.parse(in, dtdMappings);
         } catch (Exception e) {
             log.fatal("Caught exception while attempting to load validation configuration file '" + resourceName + "'.", e);
         }

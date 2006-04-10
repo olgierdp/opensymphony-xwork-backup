@@ -16,6 +16,7 @@
 package com.opensymphony.xwork.util;
 
 import java.io.IOException;
+import java.util.Map;
 
 import com.opensymphony.util.ClassLoaderUtil;
 
@@ -59,6 +60,7 @@ public class DomHelper {
         return LocationAttributes.getLocation(element);
     }
 
+    
     /**
      * Creates a W3C Document that remembers the location of each element in
      * the source file. The location of element nodes can then be retrieved
@@ -66,7 +68,20 @@ public class DomHelper {
      *
      * @param inputSource the inputSource to read the document from
      */
-    public static Document parse(InputSource inputSource)
+    public static Document parse(InputSource inputSource) 
+        throws SAXException, SAXNotSupportedException, IOException {
+        return parse(inputSource, null);
+    }
+    
+    
+    /**
+     * Creates a W3C Document that remembers the location of each element in
+     * the source file. The location of element nodes can then be retrieved
+     * using the {@link #getLocation(Element)} method.
+     *
+     * @param inputSource the inputSource to read the document from
+     */
+    public static Document parse(InputSource inputSource, Map dtdMappings)
             throws SAXException, SAXNotSupportedException, IOException {
                 
         SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -86,7 +101,11 @@ public class DomHelper {
         // Enhance the sax stream with location information
         ContentHandler locationHandler = new LocationAttributes.Pipe(builder);
         
-        parser.parse(inputSource, new StartHandler(locationHandler));
+        try {
+            parser.parse(inputSource, new StartHandler(locationHandler, dtdMappings));
+        } catch (Exception ex) {
+            throw new XworkException(ex);
+        }
         
         return builder.getDocument();
     }
@@ -222,13 +241,15 @@ public class DomHelper {
     public static class StartHandler extends DefaultHandler {
         
         private ContentHandler nextHandler;
+        private Map dtdMappings;
         
         /**
          * Create a filter that is chained to another handler.
          * @param next the next handler in the chain.
          */
-        public StartHandler(ContentHandler next) {
+        public StartHandler(ContentHandler next, Map dtdMappings) {
             nextHandler = next;
+            this.dtdMappings = dtdMappings;
         }
 
         public void setDocumentLocator(Locator locator) {
@@ -276,16 +297,10 @@ public class DomHelper {
         }
         
         public InputSource resolveEntity(String publicId, String systemId) {
-            if ("-//OpenSymphony Group//XWork 1.1.1//EN".equals(publicId)) {
-                return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.1.1.dtd", DomHelper.class));
+            if (dtdMappings != null && dtdMappings.containsKey(publicId)) {
+                String val = dtdMappings.get(publicId).toString();
+                return new InputSource(ClassLoaderUtil.getResourceAsStream(val, DomHelper.class));
             }
-            else if ("-//OpenSymphony Group//XWork 1.1//EN".equals(publicId)) {
-                return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.1.dtd", DomHelper.class));
-            }
-            else if ("-//OpenSymphony Group//XWork 1.0//EN".equals(publicId)) {
-                return new InputSource(ClassLoaderUtil.getResourceAsStream("xwork-1.0.dtd", DomHelper.class));
-            }
-    
             return null;
         }
         
@@ -293,12 +308,14 @@ public class DomHelper {
         }
 
         public void error(SAXParseException exception) throws SAXException {
-            LOG.error(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
+            LOG.error(exception.getMessage() + " at (" + exception.getPublicId() + ":" + 
+                exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
             throw exception;
         }
 
         public void fatalError(SAXParseException exception) throws SAXException {
-            LOG.fatal(exception.getMessage() + " at (" + exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
+            LOG.fatal(exception.getMessage() + " at (" + exception.getPublicId() + ":" + 
+                exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
             throw exception;
         }
     }

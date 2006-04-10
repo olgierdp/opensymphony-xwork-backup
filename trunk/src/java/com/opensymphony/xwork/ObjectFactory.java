@@ -168,7 +168,7 @@ public class ObjectFactory {
             message = "Could not load class " + interceptorClassName + ". Perhaps it exists but certain dependencies are not available?";
         }
 
-        throw new ConfigurationException(message, cause);
+        throw new ConfigurationException(message, cause, interceptorConfig);
     }
 
     /**

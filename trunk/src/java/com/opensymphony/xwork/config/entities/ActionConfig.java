@@ -234,6 +234,14 @@ public class ActionConfig extends Located implements InterceptorListHolder, Para
     }
 
     public String toString() {
-        return "{ActionConfig " + className + ((methodName != null) ? ("." + methodName + "()") : "") + "}";
+        StringBuffer sb = new StringBuffer();
+        sb.append("{ActionConfig ");
+        sb.append(className);
+        if (methodName != null) {
+            sb.append(".").append(methodName).append("()");
+        } 
+        sb.append(" - ").append(location);
+        sb.append("}");
+        return sb.toString();
     }
 }

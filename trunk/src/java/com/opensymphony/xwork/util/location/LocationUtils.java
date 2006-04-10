@@ -25,6 +25,8 @@ import javax.xml.transform.TransformerException;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXParseException;
 
+import org.w3c.dom.Element;
+
 /**
  * Location-related utility methods.
  */
@@ -238,6 +240,10 @@ public class LocationUtils {
             } else {
                 return Location.UNKNOWN;
             }
+        }
+        
+        if (obj instanceof Element) {
+            return LocationAttributes.getLocation((Element)obj);
         }
 
         List currentFinders = finders; // Keep the current list

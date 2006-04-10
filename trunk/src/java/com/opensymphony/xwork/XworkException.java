@@ -7,6 +7,10 @@ package com.opensymphony.xwork;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+import com.opensymphony.xwork.util.location.Locatable;
+import com.opensymphony.xwork.util.location.Location;
+import com.opensymphony.xwork.util.location.LocationUtils;
+
 
 /**
  * XworkException
@@ -14,9 +18,9 @@ import java.io.PrintWriter;
  * @author Jason Carreira
  *         Created Sep 7, 2003 12:15:03 AM
  */
-public class XworkException extends RuntimeException {
+public class XworkException extends RuntimeException implements Locatable {
 
-    Throwable throwable;
+    private Location location;
 
 
     /**
@@ -32,14 +36,31 @@ public class XworkException extends RuntimeException {
      * @param s the detail message.
      */
     public XworkException(String s) {
-        super(s);
+        this(s, null, null);
+    }
+    
+    /**
+     * Constructs a <code>XworkException</code> with the specified
+     * detail message and location.
+     *
+     * @param s the detail message.
+     */
+    public XworkException(String s, Object target) {
+        this(s, (Throwable) null, target);
     }
 
     /**
      * Constructs a <code>XworkException</code> with no detail  message.
      */
     public XworkException(Throwable cause) {
-        this.throwable = cause;
+        this(null, cause, null);
+    }
+    
+    /**
+     * Constructs a <code>XworkException</code> with no detail  message.
+     */
+    public XworkException(Throwable cause, Object target) {
+        this(null, cause, target);
     }
 
     /**
@@ -49,44 +70,32 @@ public class XworkException extends RuntimeException {
      * @param s the detail message.
      */
     public XworkException(String s, Throwable cause) {
-        super(s);
-        this.throwable = cause;
+        this(s, cause, null);
+    }
+    
+    
+     /**
+     * Constructs a <code>XworkException</code> with the specified
+     * detail message.
+     *
+     * @param s the detail message.
+     */
+    public XworkException(String s, Throwable cause, Object target) {
+        super(s, cause);
+        
+        this.location = LocationUtils.getLocation(target);
+        if (this.location == Location.UNKNOWN) {
+            this.location = LocationUtils.getLocation(cause);
+        }
     }
 
 
     public Throwable getThrowable() {
-        return throwable;
+        return getCause();
     }
-
-    /**
-     * Prints this <code>Throwable</code> and its backtrace to the
-     * specified print stream.
-     *
-     * @param s <code>PrintStream</code> to use for output
-     */
-    public void printStackTrace(PrintStream s) {
-        super.printStackTrace(s);
-
-        if (throwable != null) {
-            s.println("with nested exception " + throwable);
-            throwable.printStackTrace(s);
-        }
-    }
-
-    /**
-     * Prints this <code>Throwable</code> and its backtrace to the specified
-     * print writer.
-     *
-     * @param s <code>PrintWriter</code> to use for output
-     * @since JDK1.1
-     */
-    public void printStackTrace(PrintWriter s) {
-        super.printStackTrace(s);
-
-        if (throwable != null) {
-            s.println("with nested exception " + throwable);
-            throwable.printStackTrace(s);
-        }
+    
+    public Location getLocation() {
+        return this.location;
     }
 
     /**
@@ -106,10 +115,10 @@ public class XworkException extends RuntimeException {
      * @return a string representation of this <code>Throwable</code>.
      */
     public String toString() {
-        if (throwable == null) {
-            return super.toString();
+        String msg = getMessage();
+        if (msg == null && getCause() != null) {
+            msg = getCause().getMessage();
         }
-
-        return super.toString() + "\n    with nested exception \n" + throwable.toString();
+        return msg + " - " + location.toString();
     }
 }

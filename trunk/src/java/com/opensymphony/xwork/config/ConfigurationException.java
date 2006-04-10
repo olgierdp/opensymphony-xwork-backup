@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.config;
 
 import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.util.location.Location;
 
 
 /**
@@ -30,12 +31,29 @@ public class ConfigurationException extends XworkException {
     public ConfigurationException(String s) {
         super(s);
     }
+    
+    /**
+     * Constructs a <code>ConfigurationException</code> with the specified
+     * detail message.
+     *
+     * @param s the detail message.
+     */
+    public ConfigurationException(String s, Object target) {
+        super(s, target);
+    }
 
     /**
      * Constructs a <code>ConfigurationException</code> with no detail  message.
      */
     public ConfigurationException(Throwable cause) {
         super(cause);
+    }
+    
+    /**
+     * Constructs a <code>ConfigurationException</code> with no detail  message.
+     */
+    public ConfigurationException(Throwable cause, Object target) {
+        super(cause, target);
     }
 
     /**
@@ -46,5 +64,15 @@ public class ConfigurationException extends XworkException {
      */
     public ConfigurationException(String s, Throwable cause) {
         super(s, cause);
+    }
+    
+    /**
+     * Constructs a <code>ConfigurationException</code> with the specified
+     * detail message.
+     *
+     * @param s the detail message.
+     */
+    public ConfigurationException(String s, Throwable cause, Object target) {
+        super(s, cause, target);
     }
 }
