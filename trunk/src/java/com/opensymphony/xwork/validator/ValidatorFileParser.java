@@ -6,8 +6,7 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.util.DomHelper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.opensymphony.xwork.XworkException;
 import org.w3c.dom.*;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
@@ -37,8 +36,6 @@ import java.util.Map;
  */
 public class ValidatorFileParser {
 
-    private static final Log log = LogFactory.getLog(ValidatorFileParser.class);
-
     static final String MULTI_TEXTVALUE_SEPARATOR = " ";
 
     /**
@@ -52,18 +49,14 @@ public class ValidatorFileParser {
         List validatorCfgs = new ArrayList();
         Document doc = null;
 
-        try {
-            InputSource in = new InputSource(is);
-            in.setSystemId(resourceName);
-                
-            Map dtdMappings = new HashMap();
-            dtdMappings.put("-//OpenSymphony Group//XWork Validator 1.0//EN", "xwork-validator-1.0.dtd");
-            dtdMappings.put("-//OpenSymphony Group//XWork Validator 1.0.2//EN", "xwork-validator-1.0.2.dtd");
+        InputSource in = new InputSource(is);
+        in.setSystemId(resourceName);
             
-            doc = DomHelper.parse(in, dtdMappings);
-        } catch (Exception e) {
-            log.fatal("Caught exception while attempting to load validation configuration file '" + resourceName + "'.", e);
-        }
+        Map dtdMappings = new HashMap();
+        dtdMappings.put("-//OpenSymphony Group//XWork Validator 1.0//EN", "xwork-validator-1.0.dtd");
+        dtdMappings.put("-//OpenSymphony Group//XWork Validator 1.0.2//EN", "xwork-validator-1.0.2.dtd");
+        
+        doc = DomHelper.parse(in, dtdMappings);
 
         if (doc != null) {
             NodeList fieldNodes = doc.getElementsByTagName("field");
@@ -88,28 +81,46 @@ public class ValidatorFileParser {
         return validatorCfgs;
     }
 
+    
+    /**
+     *  Parses validator definitions
+     *
+     * @deprecated Use parseValidatorDefinitions(InputStream, String)
+     * @param is The input stream
+     */
     public static void parseValidatorDefinitions(InputStream is) {
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = dbf.newDocumentBuilder();
-            Document doc = builder.parse(is);
-            NodeList nodes = doc.getElementsByTagName("validator");
+        parseValidatorDefinitions(is, null);
+    }
+    
+    
+    /**
+     *  Parses validator definitions
+     *
+     * @since 1.2
+     * @param is The input stream
+     * @param resourceName The location of the input stream
+     */
+    public static void parseValidatorDefinitions(InputStream is, String resourceName) {
+        
+        InputSource in = new InputSource(is);
+        in.setSystemId(resourceName);
+            
+        Document doc = DomHelper.parse(in);
+        
+        NodeList nodes = doc.getElementsByTagName("validator");
 
-            for (int i = 0; i < nodes.getLength(); i++) {
-                Element validatorElement = (Element) nodes.item(i);
-                String name = validatorElement.getAttribute("name");
-                String className = validatorElement.getAttribute("class");
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Element validatorElement = (Element) nodes.item(i);
+            String name = validatorElement.getAttribute("name");
+            String className = validatorElement.getAttribute("class");
 
-                try {
-                    // catch any problems here
-                    ObjectFactory.getObjectFactory().buildValidator(className, new HashMap(), null);
-                    ValidatorFactory.registerValidator(name, className);
-                } catch (Exception e) {
-                    log.error("Unable to load validator class " + className);
-                }
+            try {
+                // catch any problems here
+                ObjectFactory.getObjectFactory().buildValidator(className, new HashMap(), null);
+                ValidatorFactory.registerValidator(name, className);
+            } catch (Exception e) {
+                throw new XworkException("Unable to load validator class " + className, e, validatorElement);
             }
-        } catch (Exception e) {
-            log.error("Caught exception while parsing validator definitions.");
         }
     }
 

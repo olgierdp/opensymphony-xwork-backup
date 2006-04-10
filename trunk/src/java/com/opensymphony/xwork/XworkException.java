@@ -13,7 +13,7 @@ import com.opensymphony.xwork.util.location.LocationUtils;
 
 
 /**
- * XworkException
+ * A generic runtime exception that optionally contains Location information 
  *
  * @author Jason Carreira
  *         Created Sep 7, 2003 12:15:03 AM
@@ -41,23 +41,29 @@ public class XworkException extends RuntimeException implements Locatable {
     
     /**
      * Constructs a <code>XworkException</code> with the specified
-     * detail message and location.
+     * detail message and target.
      *
      * @param s the detail message.
+     * @param target the target of the exception.
      */
     public XworkException(String s, Object target) {
         this(s, (Throwable) null, target);
     }
 
     /**
-     * Constructs a <code>XworkException</code> with no detail  message.
+     * Constructs a <code>XworkException</code> with the root cause
+     *
+     * @param cause The wrapped exception
      */
     public XworkException(Throwable cause) {
         this(null, cause, null);
     }
     
     /**
-     * Constructs a <code>XworkException</code> with no detail  message.
+     * Constructs a <code>XworkException</code> with the root cause and target
+     *
+     * @param cause The wrapped exception
+     * @param target The target of the exception
      */
     public XworkException(Throwable cause, Object target) {
         this(null, cause, target);
@@ -65,9 +71,10 @@ public class XworkException extends RuntimeException implements Locatable {
 
     /**
      * Constructs a <code>XworkException</code> with the specified
-     * detail message.
+     * detail message and exception cause.
      *
      * @param s the detail message.
+     * @param cause the wrapped exception
      */
     public XworkException(String s, Throwable cause) {
         this(s, cause, null);
@@ -76,9 +83,11 @@ public class XworkException extends RuntimeException implements Locatable {
     
      /**
      * Constructs a <code>XworkException</code> with the specified
-     * detail message.
+     * detail message, cause, and target
      *
      * @param s the detail message.
+     * @param cause The wrapped exception
+     * @param target The target of the exception
      */
     public XworkException(String s, Throwable cause, Object target) {
         super(s, cause);
@@ -90,27 +99,27 @@ public class XworkException extends RuntimeException implements Locatable {
     }
 
 
+    /**
+     *  Gets the underlying cause
+     * 
+     * @deprecated Use getCause()
+     */
     public Throwable getThrowable() {
         return getCause();
     }
-    
+
+
+    /**
+     *  Gets the location of the error, if available
+     */
     public Location getLocation() {
         return this.location;
     }
 
     /**
-     * Returns a short description of this throwable object.
-     * If this <code>Throwable</code> object was
-     * {@link #XworkException(String) created} with an error message string,
-     * then the result is the concatenation of three strings:
-     * <ul>
-     * <li>The name of the actual class of this object
-     * <li>": " (a colon and a space)
-     * <li>The result of the {@link #getMessage} method for this object
-     * </ul>
-     * If this <code>Throwable</code> object was {@link #XworkException() created}
-     * with no error message string, then the name of the actual class of
-     * this object is returned.
+     * Returns a short description of this throwable object, including the 
+     * location. If no detailed message is available, it will use the message
+     * of the underlying exception if available.
      *
      * @return a string representation of this <code>Throwable</code>.
      */

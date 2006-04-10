@@ -295,14 +295,15 @@ public class ValidatorFactory {
             LOG.debug("Loading validator definitions.");
         }
 
-        InputStream is = ClassLoaderUtil.getResourceAsStream("validators.xml", ValidatorFactory.class);
+        String resourceName = "validators.xml";
+        InputStream is = ClassLoaderUtil.getResourceAsStream(resourceName, ValidatorFactory.class);
         if (is == null) {
-            is = ClassLoaderUtil.getResourceAsStream("com/opensymphony/xwork/validator/validators/default.xml",
-                    ValidatorFactory.class);
+            resourceName = "com/opensymphony/xwork/validator/validators/default.xml";
+            is = ClassLoaderUtil.getResourceAsStream(resourceName, ValidatorFactory.class);
         }
 
         if (is != null) {
-            ValidatorFileParser.parseValidatorDefinitions(is);
+            ValidatorFileParser.parseValidatorDefinitions(is, resourceName);
         }
     }
 }

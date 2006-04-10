@@ -49,6 +49,8 @@ import javax.xml.transform.sax.TransformerHandler;
 /**
  * Helper class to create and retrieve information from location-enabled
  * DOM-trees.
+ *
+ * @since 1.2
  */
 public class DomHelper {
 
@@ -68,8 +70,7 @@ public class DomHelper {
      *
      * @param inputSource the inputSource to read the document from
      */
-    public static Document parse(InputSource inputSource) 
-        throws SAXException, SAXNotSupportedException, IOException {
+    public static Document parse(InputSource inputSource) {
         return parse(inputSource, null);
     }
     
@@ -80,18 +81,18 @@ public class DomHelper {
      * using the {@link #getLocation(Element)} method.
      *
      * @param inputSource the inputSource to read the document from
+     * @param dtdMappings a map of DTD names and public ids
      */
-    public static Document parse(InputSource inputSource, Map dtdMappings)
-            throws SAXException, SAXNotSupportedException, IOException {
+    public static Document parse(InputSource inputSource, Map dtdMappings) {
                 
         SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setValidating(true);
+        factory.setValidating((dtdMappings != null));
         factory.setNamespaceAware(true);
         
         SAXParser parser = null;
         try {
             parser = factory.newSAXParser();
-        } catch (javax.xml.parsers.ParserConfigurationException ex) {
+        } catch (Exception ex) {
             throw new XworkException("Unable to create SAX parser", ex);
         }
         

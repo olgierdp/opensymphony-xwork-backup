@@ -8,6 +8,7 @@ import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import junit.framework.TestCase;
+import com.opensymphony.xwork.XworkException;
 
 import java.io.InputStream;
 import java.util.List;
@@ -26,6 +27,9 @@ public class ValidatorFileParserTest extends TestCase {
 
     private static final String testFileName = "com/opensymphony/xwork/validator/validator-parser-test.xml";
     private static final String testFileName2 = "com/opensymphony/xwork/validator/validator-parser-test2.xml";
+    private static final String testFileName3 = "com/opensymphony/xwork/validator/validator-parser-test3.xml";
+    private static final String testFileName4 = "com/opensymphony/xwork/validator/validator-parser-test4.xml";
+    private static final String testFileName5 = "com/opensymphony/xwork/validator/validator-parser-test5.xml";
 
     public void testParserActionLevelValidatorsShouldBeBeforeFieldLevelValidators() throws Exception {
     	InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName2, this.getClass());
@@ -84,6 +88,47 @@ public class ValidatorFileParserTest extends TestCase {
         assertFalse(cfg.isShortCircuit());
         assertEquals("([aAbBcCdD][123][eEfFgG][456])", cfg.getParams().get("expression"));
     }
+
+    public void testParserWithBadValidation() {
+        InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName3, this.getClass());
+
+        boolean pass = false;
+        try {
+            ValidatorFileParser.parseActionValidatorConfigs(is, testFileName3);
+        } catch (XworkException ex) {
+            assertTrue("Wrong line number", 3==ex.getLocation().getLineNumber());
+            pass = true;
+        } 
+        assertTrue("Validation file should have thrown exception", pass);
+    }
+
+    public void testParserWithBadXML() {
+        InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName4, this.getClass());
+
+        boolean pass = false;
+        try {
+            ValidatorFileParser.parseActionValidatorConfigs(is, testFileName4);
+        } catch (XworkException ex) {
+            assertTrue("Wrong line number: "+ex.getLocation(), 13==ex.getLocation().getLineNumber());
+            pass = true;
+        } 
+        assertTrue("Validation file should have thrown exception", pass);
+    }
+
+    public void testValidatorDefinitionsWithBadClassName() {
+        InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName5, this.getClass());
+
+        boolean pass = false;
+        try {
+            ValidatorFileParser.parseValidatorDefinitions(is, testFileName5);
+        } catch (XworkException ex) {
+            assertTrue("Wrong line number", 3==ex.getLocation().getLineNumber());
+            pass = true;
+        } 
+        assertTrue("Validation file should have thrown exception", pass);
+    }
+
+
 
     protected void setUp() throws Exception {
         super.setUp();
