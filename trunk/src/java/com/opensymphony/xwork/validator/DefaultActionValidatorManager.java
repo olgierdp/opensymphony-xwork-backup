@@ -310,8 +310,6 @@ public class DefaultActionValidatorManager implements ActionValidatorManager {
                 if (is != null) {
                     retList = new ArrayList(ValidatorFileParser.parseActionValidatorConfigs(is, fileName));
                 }
-            } catch (Exception e) {
-                LOG.error("Caught exception while loading file " + fileName, e);
             } finally {
                 if (is != null) {
                     try {

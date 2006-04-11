@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.validator;
 
 import java.util.Map;
+import com.opensymphony.xwork.util.location.Located;
 
 /**
  * Holds the necessary information for configuring an instance of a Validator.
@@ -13,7 +14,7 @@ import java.util.Map;
  * @author James House
  * @author Rainer Hermanns
  */
-public class ValidatorConfig {
+public class ValidatorConfig extends Located {
 
     private String type;
     private Map params;

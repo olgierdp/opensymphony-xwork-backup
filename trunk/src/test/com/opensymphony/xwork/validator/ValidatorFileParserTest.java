@@ -74,6 +74,7 @@ public class ValidatorFileParserTest extends TestCase {
         assertEquals("required", cfg.getType());
         assertEquals("foo", cfg.getParams().get("fieldName"));
         assertEquals("You must enter a value for foo.", cfg.getDefaultMessage());
+        assertEquals(4, cfg.getLocation().getLineNumber());
         
         cfg = (ValidatorConfig) configs.get(3);
         assertEquals("required", cfg.getType());

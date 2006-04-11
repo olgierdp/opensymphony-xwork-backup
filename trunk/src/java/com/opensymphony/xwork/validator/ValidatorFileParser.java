@@ -171,6 +171,7 @@ public class ValidatorFileParser {
             ValidatorFactory.lookupRegisteredValidatorType(validatorType);
 
             ValidatorConfig vCfg = new ValidatorConfig(validatorType, params);
+            vCfg.setLocation(DomHelper.getLocationObject(validatorElement));
 
             vCfg.setShortCircuit(Boolean.valueOf(validatorElement.getAttribute("short-circuit")).booleanValue());
 
