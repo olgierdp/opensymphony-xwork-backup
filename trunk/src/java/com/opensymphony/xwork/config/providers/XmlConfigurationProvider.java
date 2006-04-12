@@ -14,6 +14,7 @@ import com.opensymphony.xwork.XworkException;
 import com.opensymphony.xwork.config.*;
 import com.opensymphony.xwork.config.entities.*;
 import com.opensymphony.xwork.util.DomHelper;
+import com.opensymphony.xwork.util.location.Location;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -229,36 +230,37 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             String name = resultTypeElement.getAttribute("name");
             String className = resultTypeElement.getAttribute("class");
             String def = resultTypeElement.getAttribute("default");
+            Location loc = DomHelper.getLocationObject(resultTypeElement);
 
-            Class clazz = verifyResultType(className);
-            if (clazz == null) {
-                return;
-            }
-
-            ResultTypeConfig resultType = new ResultTypeConfig(name, clazz);
-            resultType.setLocation(DomHelper.getLocationObject(resultTypeElement));
-            
-            Map params = XmlHelper.getParams(resultTypeElement);
-
-            if (!params.isEmpty()) {
-                resultType.setParams(params);
-            }
-            packageContext.addResultTypeConfig(resultType);
-
-            // set the default result type
-            if ("true".equals(def)) {
-                packageContext.setDefaultResultType(name);
+            Class clazz = verifyResultType(className, loc);
+            if (clazz != null) {
+                ResultTypeConfig resultType = new ResultTypeConfig(name, clazz);
+                resultType.setLocation(DomHelper.getLocationObject(resultTypeElement));
+                
+                Map params = XmlHelper.getParams(resultTypeElement);
+    
+                if (!params.isEmpty()) {
+                    resultType.setParams(params);
+                }
+                packageContext.addResultTypeConfig(resultType);
+                
+                // set the default result type
+                if ("true".equals(def)) {
+                    packageContext.setDefaultResultType(name);
+                }
             }
         }
     }
 
-    protected Class verifyResultType(String className) {
+    protected Class verifyResultType(String className, Location loc) {
         try {
             return ObjectFactory.getObjectFactory().getClassInstance(className);
         } catch (ClassNotFoundException e) {
-            LOG.warn("Result class [" + className + "] doesn't exist (ClassNotFoundException), ignoring", e);
+            LOG.warn("Result class [" + className + "] doesn't exist (ClassNotFoundException) at " +
+                loc.toString() + ", ignoring", e);
         } catch (NoClassDefFoundError e) {
-            LOG.warn("Result class [" + className + "] doesn't exist (NoClassDefFoundError), ignoring", e);
+            LOG.warn("Result class [" + className + "] doesn't exist (NoClassDefFoundError) at " +
+                loc.toString() + ", ignoring", e);
         }
 
         return null;
