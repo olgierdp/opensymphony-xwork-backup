@@ -209,6 +209,10 @@ public class LocationUtils {
      * @return the object's location, or {@link Location#UNKNOWN} if no location could be found
      */
     public static Location getLocation(Object obj, String description) {
+        if (obj instanceof Location) {
+            return (Location) obj;
+        }
+        
         if (obj instanceof Locatable) {
             return ((Locatable)obj).getLocation();
         }
