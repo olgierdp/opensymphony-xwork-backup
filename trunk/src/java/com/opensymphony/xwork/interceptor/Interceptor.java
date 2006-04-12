@@ -69,7 +69,7 @@ import java.io.Serializable;
  * <pre>
  * &lt;action name="myAction" class="myActionClass"&gt;
  *   &lt;interceptor-ref name="defaultStack"&gt;
- *     &lt;param name="validator.excludeMethods"&gt;myValidationExcludeMethod&lt;/param&gt;
+ *     &lt;param name="validation.excludeMethods"&gt;myValidationExcludeMethod&lt;/param&gt;
  *     &lt;param name="workflow.excludeMethods"&gt;myWorkflowExcludeMethod&lt;/param&gt;
  *   &lt;/interceptor-ref&gt;
  * &lt;/action&gt;
