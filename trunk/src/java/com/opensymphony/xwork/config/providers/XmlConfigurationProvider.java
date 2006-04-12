@@ -5,10 +5,12 @@
 package com.opensymphony.xwork.config.providers;
 
 import com.opensymphony.util.FileManager;
+import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.util.TextUtils;
 import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionSupport;
 import com.opensymphony.xwork.ObjectFactory;
+import com.opensymphony.xwork.XworkException;
 import com.opensymphony.xwork.config.*;
 import com.opensymphony.xwork.config.entities.*;
 import com.opensymphony.xwork.util.DomHelper;
@@ -86,6 +88,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         try {
             loadConfigurationFile(configFileName, null);
+        } catch (ConfigurationException e) {
+            throw e;
         } catch (Exception e) {
             LOG.fatal("Could not load XWork configuration file, failing", e);
             throw new ConfigurationException("Error loading configuration file " + configFileName, e);
@@ -610,13 +614,22 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
 
                 InputSource in = new InputSource(is);
-                in.setSystemId(fileName);
+                
+                //FIXME: we shouldn't be doing this lookup twice
+                in.setSystemId(ClassLoaderUtil.getResource(fileName, getClass()).toString());
+                
                 Map dtdMappings = new HashMap();
                 dtdMappings.put("-//OpenSymphony Group//XWork 1.1.1//EN", "xwork-1.1.1.dtd");
                 dtdMappings.put("-//OpenSymphony Group//XWork 1.1//EN", "xwork-1.1.dtd");
                 dtdMappings.put("-//OpenSymphony Group//XWork 1.0//EN", "xwork-1.0.dtd");
                 
                 doc = DomHelper.parse(in, dtdMappings);
+            } catch (XworkException e) {
+                if (includeElement != null) {
+                    throw new ConfigurationException(e, includeElement);
+                } else {
+                    throw new ConfigurationException(e);
+                }
             } catch (Exception e) {
                 final String s = "Caught exception while loading file " + fileName;
                 LOG.error(s, e);

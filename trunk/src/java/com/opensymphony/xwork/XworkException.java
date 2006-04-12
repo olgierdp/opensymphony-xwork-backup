@@ -128,6 +128,11 @@ public class XworkException extends RuntimeException implements Locatable {
         if (msg == null && getCause() != null) {
             msg = getCause().getMessage();
         }
-        return msg + " - " + location.toString();
+        
+        if (msg != null) {
+            return msg + " - " + location.toString();
+        } else {
+            return location.toString();
+        }
     }
 }
