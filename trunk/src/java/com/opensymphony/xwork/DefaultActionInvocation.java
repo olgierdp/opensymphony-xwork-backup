@@ -240,8 +240,8 @@ public class DefaultActionInvocation implements ActionInvocation {
             gripe += (((" -- " + e.getMessage()) != null) ? e.getMessage() : " [no message in exception]");
             throw new XworkException(gripe, e, proxy.getConfig());
         }
-
-        prepareContinuation();
+        
+        if (ObjectFactory.getContinuationPackage() != null) prepareContinuation();
     }
 
     private void prepareContinuation() {
