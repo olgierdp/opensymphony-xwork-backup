@@ -7,6 +7,9 @@ package com.opensymphony.xwork.validator.validators;
 
 import com.opensymphony.xwork.validator.ValidationException;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 /**
  * <!-- START SNIPPET: javadoc -->
  * Validates a string field using a regular expression.
@@ -18,6 +21,7 @@ import com.opensymphony.xwork.validator.ValidationException;
  * <ul>
  * 	  <li>fieldName - The field name this validator is validating. Required if using Plain-Validator Syntax otherwise not required</li>
  *    <li>expression - The RegExp expression  REQUIRED</li>
+ *    <li>caseSensitive - Boolean (Optional). Sets whether the expression should be matched against in a case-sensitive way. Default is <code>true</code>.</li>
  * </ul>
  * <!-- END SNIPPET: parameters -->
  * 
@@ -45,26 +49,73 @@ import com.opensymphony.xwork.validator.ValidationException;
  * @version $Date$ $Revision$
  */
 public class RegexFieldValidator extends FieldValidatorSupport {
-    
+
     private String expression;
+    private boolean caseSensitive = true;
 
     public void validate(Object object) throws ValidationException {
         String fieldName = getFieldName();
         Object value = this.getFieldValue(fieldName, object);
         // if there is no value - don't do comparison
         // if a value is required, a required validator should be added to the field
-        if (value == null)
+        if (value == null || expression == null) {
             return;
-        if (!(value instanceof String) || !((String) value).matches(expression)) {
+        }
+
+        // XW-375 - must be a string
+        if (!(value instanceof String)) {
+            return;
+        }
+
+        // string must not be empty
+        String str = ((String) value).trim();
+        if (str.length() == 0) {
+            return;
+        }
+
+        // match against expression
+        Pattern pattern;
+        if (isCaseSensitive()) {
+            pattern = Pattern.compile(expression);
+        } else {
+            pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        }
+
+        Matcher matcher = pattern.matcher(str);
+
+        if (!matcher.matches()) {
             addFieldError(fieldName, object);
         }
     }
 
+    /**
+     * @return Returns the regular expression to be matched.
+     */
     public String getExpression() {
         return expression;
     }
 
+    /**
+     * Sets the regular expression to be matched.
+     */
     public void setExpression(String expression) {
         this.expression = expression;
     }
+
+    /**
+     * @return Returns whether the expression should be matched against in
+     *         a case-sensitive way.  Default is <code>true</code>.
+     */
+    public boolean isCaseSensitive() {
+        return caseSensitive;
+    }
+
+    /**
+     * Sets whether the expression should be matched against in
+     * a case-sensitive way.  Default is <code>true</code>.
+     */
+    public void setCaseSensitive(boolean caseSensitive) {
+        this.caseSensitive = caseSensitive;
+    }
+
 }

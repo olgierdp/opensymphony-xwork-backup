@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
  * @author jhouse
  * @see #setRegex(String)
  * @see #setCaseSensitive(boolean)
+ * @deprecated use RegexFieldValidator
  */
 public class StringRegexValidator extends FieldValidatorSupport {
 
