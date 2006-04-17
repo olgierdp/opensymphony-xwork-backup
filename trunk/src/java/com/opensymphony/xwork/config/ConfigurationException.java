@@ -5,19 +5,17 @@
 package com.opensymphony.xwork.config;
 
 import com.opensymphony.xwork.XworkException;
-import com.opensymphony.xwork.util.location.Location;
 
 
 /**
  * ConfigurationException
  *
  * @author Jason Carreira
- *         Created Feb 24, 2003 8:15:08 AM
  */
 public class ConfigurationException extends XworkException {
 
     /**
-     * Constructs a <code>ConfigurationException</code> with no detail  message.
+     * Constructs a <code>ConfigurationException</code> with no detail message.
      */
     public ConfigurationException() {
     }
@@ -43,14 +41,14 @@ public class ConfigurationException extends XworkException {
     }
 
     /**
-     * Constructs a <code>ConfigurationException</code> with no detail  message.
+     * Constructs a <code>ConfigurationException</code> with no detail message.
      */
     public ConfigurationException(Throwable cause) {
         super(cause);
     }
     
     /**
-     * Constructs a <code>ConfigurationException</code> with no detail  message.
+     * Constructs a <code>ConfigurationException</code> with no detail message.
      */
     public ConfigurationException(Throwable cause, Object target) {
         super(cause, target);

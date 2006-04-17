@@ -8,13 +8,8 @@ import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.util.DomHelper;
 import com.opensymphony.xwork.XworkException;
 import org.w3c.dom.*;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXParseException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,7 +78,7 @@ public class ValidatorFileParser {
 
     
     /**
-     *  Parses validator definitions
+     * Parses validator definitions
      *
      * @deprecated Use parseValidatorDefinitions(InputStream, String)
      * @param is The input stream
@@ -94,7 +89,7 @@ public class ValidatorFileParser {
     
     
     /**
-     *  Parses validator definitions
+     * Parses validator definitions
      *
      * @since 1.2
      * @param is The input stream

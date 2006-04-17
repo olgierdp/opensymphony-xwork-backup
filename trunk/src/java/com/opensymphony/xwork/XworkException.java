@@ -4,8 +4,6 @@
  */
 package com.opensymphony.xwork;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,16 +17,11 @@ import com.opensymphony.xwork.util.location.Locatable;
 import com.opensymphony.xwork.util.location.Location;
 import com.opensymphony.xwork.util.location.LocationUtils;
 
-import com.opensymphony.util.FileManager;
-
-
-
 
 /**
  * A generic runtime exception that optionally contains Location information 
  *
  * @author Jason Carreira
- *         Created Sep 7, 2003 12:15:03 AM
  */
 public class XworkException extends RuntimeException implements Locatable {
 
@@ -36,7 +29,7 @@ public class XworkException extends RuntimeException implements Locatable {
 
 
     /**
-     * Constructs a <code>XworkException</code> with no detail  message.
+     * Constructs a <code>XworkException</code> with no detail message.
      */
     public XworkException() {
     }
@@ -112,7 +105,7 @@ public class XworkException extends RuntimeException implements Locatable {
 
 
     /**
-     *  Gets the underlying cause
+     * Gets the underlying cause
      * 
      * @deprecated Use getCause()
      */
@@ -122,7 +115,7 @@ public class XworkException extends RuntimeException implements Locatable {
 
 
     /**
-     *  Gets the location of the error, if available
+     * Gets the location of the error, if available
      */
     public Location getLocation() {
         return this.location;
@@ -130,7 +123,7 @@ public class XworkException extends RuntimeException implements Locatable {
     
     
     /**
-     *  Gets a source code snippet with the default padding
+     * Gets a source code snippet with the default padding
      */
     public List getSnippet() {
         return getSnippet(2);
@@ -138,7 +131,7 @@ public class XworkException extends RuntimeException implements Locatable {
     
     
     /**
-     *  Gets a source code snippet with the default padding
+     * Gets a source code snippet with the default padding
      *
      * @param padding The amount of lines before and after the error to include
      */
