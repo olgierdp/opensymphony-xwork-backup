@@ -22,10 +22,10 @@ import java.util.HashMap;
 
 
 /**
+ * Test support for external-ref tag in xwork.xml. This tag allows objects from 'external' sources
+ * to be used by an action.
+ * 
  * @author Ross
- *         <p/>
- *         Test support for external-ref tag in xwork.xml.  This tag allows objects from 'external' sources
- *         to be used by an action
  */
 public class ExternalReferenceResolverTest extends TestCase {
 
