@@ -123,6 +123,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         String name = actionElement.getAttribute("name");
         String className = actionElement.getAttribute("class");
         String methodName = actionElement.getAttribute("method");
+        Location location = DomHelper.getLocationObject(actionElement);
 
         //methodName should be null if it's not set
         methodName = (methodName.trim().length() > 0) ? methodName.trim() : null;
@@ -132,13 +133,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             className = ActionSupport.class.getName();
         }
 
-        try {
-            if (!verifyAction(className, name)) {
-                return;
-            }
-        } catch (Throwable t) {
-            throw new ConfigurationException(t, actionElement);
-        }    
+        if (!verifyAction(className, name, location)) {
+            return;
+        }
 
         Map actionParams = XmlHelper.getParams(actionElement);
 
@@ -158,7 +155,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         ActionConfig actionConfig = new ActionConfig(methodName, className, actionParams, results, interceptorList, externalrefs, exceptionMappings,
         packageContext.getName());
-        actionConfig.setLocation(DomHelper.getLocationObject(actionElement));
+        actionConfig.setLocation(location);
         packageContext.addActionConfig(name, actionConfig);
 
         if (LOG.isDebugEnabled()) {
@@ -166,7 +163,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         }
     }
 
-    protected boolean verifyAction(String className, String name) {
+    protected boolean verifyAction(String className, String name, Location loc) {
         try {
             Class clazz = ObjectFactory.getObjectFactory().getClassInstance(className);
             if (ObjectFactory.getObjectFactory().isNoArgConstructorRequired()) {
@@ -178,13 +175,16 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             }
             return true;
         } catch (ClassNotFoundException e) {
-            LOG.error("Action class [" + className + "] not found, skipping action [" + name + "]", e);
+            LOG.error("Action class [" + className + "] not found, skipping action [" + name + "] at "
+                + loc, e);
             return false;
         } catch (NoSuchMethodException e) {
             LOG.error("Action class [" + className + "] does not have a public no-arg constructor,"
-                    + " skipping action [" + name + "]", e);
+                    + " skipping action [" + name + "] at " + loc, e);
             return false;
-        }
+        } catch (Exception ex) {
+            throw new ConfigurationException(ex, loc);
+        }    
     }
 
     /**
