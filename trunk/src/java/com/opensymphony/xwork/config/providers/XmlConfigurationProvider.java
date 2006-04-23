@@ -132,9 +132,13 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             className = ActionSupport.class.getName();
         }
 
-        if (!verifyAction(className, name)) {
-            return;
-        }
+        try {
+            if (!verifyAction(className, name)) {
+                return;
+            }
+        } catch (Throwable t) {
+            throw new ConfigurationException(t, actionElement);
+        }    
 
         Map actionParams = XmlHelper.getParams(actionElement);
 
