@@ -93,6 +93,15 @@
         </testResources>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-idea-plugin</artifactId>
+                <configuration>
+                    <jdkName>1.5</jdkName>
+                    <exclude>target,test-output,.clover,build</exclude>
+                    <useShortDependencyNames>true</useShortDependencyNames>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <includes>
