@@ -231,7 +231,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     private Class doConvertToClass(Object value) {
         Class clazz = null;
 
-        if (value instanceof String) {
+        if (value instanceof String && value != null && ((String)value).length() > 0) {
             try {
                 clazz = Class.forName((String) value);
             } catch (ClassNotFoundException e) {
@@ -285,7 +285,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     private Object doConvertToDate(Map context, Object value, Class toType) {
         Date result = null;
 
-        if (value instanceof String) {
+        if (value instanceof String && value != null && ((String)value).length() > 0) {
             String sa = (String) value;
             Locale locale = getLocale(context);
 
@@ -335,7 +335,6 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         } else if (Date.class.isAssignableFrom(value.getClass())) {
             result = (Date) value;
         }
-
         return result;
     }
 
