@@ -10,6 +10,8 @@ import com.opensymphony.xwork.conversion.annotations.ConversionRule;
 import com.opensymphony.xwork.conversion.annotations.ConversionType;
 import com.opensymphony.xwork.conversion.annotations.TypeConversion;
 import ognl.TypeConverter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
@@ -91,7 +93,9 @@ import java.util.Properties;
  * @see com.opensymphony.xwork.util.XWorkConverter
  */
 public class AnnotationXWorkConverter extends XWorkConverter {
-    
+
+    private static final Log _log = LogFactory.getLog(AnnotationXWorkConverter.class);  
+  
     protected AnnotationXWorkConverter() {
         try {
             // note: this file is deprecated
@@ -270,7 +274,7 @@ public class AnnotationXWorkConverter extends XWorkConverter {
                     // Default to the property name
                     if ( key != null && key.length() == 0) {
                         key = AnnotationUtils.resolvePropertyName(method);
-                        System.out.println("key from method name... " + key + " - " + method.getName());
+                        _log.debug("key from method name... " + key + " - " + method.getName());
                     }
 
 
