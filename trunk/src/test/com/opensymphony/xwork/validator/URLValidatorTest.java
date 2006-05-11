@@ -19,9 +19,10 @@ import junit.framework.TestCase;
 public class URLValidatorTest extends TestCase {
 
 	
+	OgnlValueStack stack;
+	ActionContext actionContext;
+	
 	public void testAcceptNullValueForMutualExclusionOfValidators() throws Exception {
-		OgnlValueStack stack = new OgnlValueStack();
-		ActionContext. getContext().setValueStack(stack);
 		
 		URLValidator validator = new URLValidator();
 		validator.setValidatorContext(new GenericValidatorContext(new Object()));
@@ -35,8 +36,6 @@ public class URLValidatorTest extends TestCase {
 	}
 	
 	public void testInvalidEmptyValue() throws Exception {
-		OgnlValueStack stack = new OgnlValueStack();
-		ActionContext.getContext().setValueStack(stack);
 		
 		URLValidator validator = new URLValidator();
 		validator.setValidatorContext(new GenericValidatorContext(new Object()));
@@ -50,8 +49,6 @@ public class URLValidatorTest extends TestCase {
 	}
 	
 	public void testInvalidValue() throws Exception {
-		OgnlValueStack stack = new OgnlValueStack();
-		ActionContext.getContext().setValueStack(stack);
 		
 		URLValidator validator = new URLValidator();
 		validator.setValidatorContext(new GenericValidatorContext(new Object()));
@@ -65,7 +62,42 @@ public class URLValidatorTest extends TestCase {
 	}
 	
 	
+	public void testValidUrl1() throws Exception {
+		
+		URLValidator validator = new URLValidator();
+		validator.setValidatorContext(new GenericValidatorContext(new Object()));
+		validator.setFieldName("testingUrl4");
+		validator.validate(new MyObject());
+		
+		assertFalse(validator.getValidatorContext().hasErrors());
+		assertFalse(validator.getValidatorContext().hasActionErrors());
+		assertFalse(validator.getValidatorContext().hasActionMessages());
+		assertFalse(validator.getValidatorContext().hasFieldErrors());
+	}
 	
+	public void testValidUrl2() throws Exception {
+		
+		URLValidator validator = new URLValidator();
+		validator.setValidatorContext(new GenericValidatorContext(new Object()));
+		validator.setFieldName("testingUrl5");
+		validator.validate(new MyObject());
+		
+		assertFalse(validator.getValidatorContext().hasErrors());
+		assertFalse(validator.getValidatorContext().hasActionErrors());
+		assertFalse(validator.getValidatorContext().hasActionMessages());
+		assertFalse(validator.getValidatorContext().hasFieldErrors());
+	}
+	
+	protected void setUp() throws Exception {
+		stack = new OgnlValueStack();
+		actionContext = ActionContext.getContext();
+		actionContext.setValueStack(stack);
+	}
+	
+	protected void tearDown() throws Exception {
+		stack = null;
+		actionContext = null;
+	}
 	
 	
 	class MyObject {
@@ -79,6 +111,15 @@ public class URLValidatorTest extends TestCase {
 		
 		public String getTestingUrl3() {
 			return "sasdasd@asddd";
+		}
+		
+		public String getTestingUrl4() {
+			//return "http://yahoo.com/";
+			return "http://www.jroller.com1?qwe=qwe";
+		}
+		
+		public String getTestingUrl5() {
+			return "http://yahoo.com/articles?id=123";
 		}
 	}
 }
