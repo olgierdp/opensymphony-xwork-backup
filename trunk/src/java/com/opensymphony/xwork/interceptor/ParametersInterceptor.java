@@ -103,17 +103,18 @@ public class ParametersInterceptor extends AroundInterceptor {
             }
 
             if (parameters != null) {
+            	Map contextMap = ac.getContextMap();
                 try {
-                    ac.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-                    ac.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
-                    ac.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
+                	OgnlContextState.setCreatingNullObjects(contextMap, true);
+                	OgnlContextState.setDenyMethodExecution(contextMap, true);
+                	OgnlContextState.setReportingConversionErrors(contextMap, true);
 
                     OgnlValueStack stack = ac.getValueStack();
                     setParameters(invocation.getAction(), stack, parameters);
                 } finally {
-                    ac.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
-                    ac.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.FALSE);
-                    ac.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.FALSE);
+                	OgnlContextState.setCreatingNullObjects(contextMap, false);
+                	OgnlContextState.setDenyMethodExecution(contextMap, false);
+                	OgnlContextState.setReportingConversionErrors(contextMap, false);
                 }
             }
         }
