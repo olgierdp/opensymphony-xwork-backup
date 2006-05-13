@@ -34,6 +34,14 @@ public class OgnlContextState {
 	public static boolean isGettingByKeyProperty(Map context) {
 		return getBooleanProperty(GETTING_BY_KEY_PROPERTY, context);
 	}
+	
+	public static void setDenyMethodExecution(Map context, boolean denyMethodExecution) {
+		setBooleanValue(XWorkMethodAccessor.DENY_METHOD_EXECUTION, context, denyMethodExecution);
+	}
+	
+	public static boolean isDenyMethodExecution(Map context) {
+		return getBooleanProperty(XWorkMethodAccessor.DENY_METHOD_EXECUTION, context);
+	}
 
 	public static void setGettingByKeyProperty(Map context, boolean gettingByKeyProperty) {
 		setBooleanValue(GETTING_BY_KEY_PROPERTY, context, gettingByKeyProperty);
