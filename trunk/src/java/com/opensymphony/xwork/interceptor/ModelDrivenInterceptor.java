@@ -16,6 +16,9 @@ import com.opensymphony.xwork.util.OgnlValueStack;
  *
  * <p/> <b>Note:</b>  The ModelDrivenInterceptor must come before the both {@link StaticParametersInterceptor} and
  * {@link ParametersInterceptor} if you want the parameters to be applied to the model.
+ * 
+ * <p/> <b>Note:</b>  The ModelDrivenInterceptor will only push the model into the stack when the
+ * model is not null, else it will be ignored.
  *
  * <!-- END SNIPPET: description -->
  *
