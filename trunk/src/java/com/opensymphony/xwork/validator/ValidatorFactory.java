@@ -147,7 +147,7 @@ import java.util.Map;
  *       &lt;/field-validator&gt;
  *   &lt;/field&gt;
  *   &lt;validator type="expression"&gt;
- *       &lt;param name="expression"&lt;foo &lt; bar&lt;/param&gt;
+ *       &lt;param name="expression"&gt;foo lt bar &lt;/param&gt;
  *       &lt;message&gt;Foo must be greater than Bar. Foo = ${foo}, Bar = ${bar}.&lt;/message&gt;
  *   &lt;/validator&gt;
  * &lt;/validators&gt;
