@@ -68,33 +68,38 @@ public abstract class MethodFilterInterceptor implements Interceptor {
     public void setExcludeMethods(String excludeMethods) {
         this.excludeMethods = TextParseUtil.commaDelimitedStringToSet(excludeMethods);
     }
+    
+    public Set getExcludeMethodsSet() {
+    	return excludeMethods;
+    }
 
     public void setIncludeMethods(String includeMethods) {
         this.includeMethods = TextParseUtil.commaDelimitedStringToSet(includeMethods);
+    }
+    
+    public Set getIncludeMethodsSet() {
+    	return includeMethods;
     }
 
     public String intercept(ActionInvocation invocation) throws Exception {
         if (applyInterceptor(invocation)) {
             return doIntercept(invocation);
         } 
-        
         return invocation.invoke();
     }
 
     protected boolean applyInterceptor(ActionInvocation invocation) {
         String method = invocation.getProxy().getMethod();
         // ValidationInterceptor
-        if (((excludeMethods.contains("*") && !includeMethods.contains("*"))
-                || excludeMethods.contains(method))
-                && !includeMethods.contains(method)) {
-            if (log.isDebugEnabled()) log.debug("Skipping Interceptor... Method [" + method + "] found in exclude list.");
-            return false;
+        boolean applyMethod = MethodFilterInterceptorUtil.applyMethod(excludeMethods, includeMethods, method);
+        if (log.isDebugEnabled()) {
+        	if (!applyMethod) {
+        		log.debug("Skipping Interceptor... Method [" + method + "] found in exclude list.");
+        	}
         }
-
-        return includeMethods.size() == 0 || includeMethods.contains(method) || includeMethods.contains("*");
-
+        return applyMethod;
     }
-
+    
     /**
      * Subclasses must override to implement the interceptor logic.
      * 
