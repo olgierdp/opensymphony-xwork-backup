@@ -9,10 +9,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.beans.IntrospectionException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.beans.PropertyDescriptor;
+import java.util.*;
 
 
 /**
@@ -120,6 +118,62 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
     public Object callMethod(Map context, Object target, String name, Object[] objects) throws MethodFailedException {
         CompoundRoot root = (CompoundRoot) target;
+
+        if ("describe".equals(name)) {
+            Object v;
+            if (objects != null && objects.length == 1) {
+                v = objects[0];
+            } else {
+                v = root.get(0);
+            }
+
+
+            if (v instanceof Collection || v instanceof Map || v.getClass().isArray()) {
+                return v.toString();
+            }
+
+            try {
+                Map descriptors = OgnlRuntime.getPropertyDescriptors(v.getClass());
+
+                int maxSize = 0;
+                for (Iterator iterator = descriptors.keySet().iterator(); iterator.hasNext();) {
+                    String pdName = (String) iterator.next();
+                    if (pdName.length() > maxSize) {
+                        maxSize = pdName.length();
+                    }
+                }
+
+                SortedSet set = new TreeSet();
+                StringBuffer sb = new StringBuffer();
+                for (Iterator iterator = descriptors.values().iterator(); iterator.hasNext();) {
+                    PropertyDescriptor pd = (PropertyDescriptor) iterator.next();
+
+                    sb.append(pd.getName()).append(": ");
+                    int padding = maxSize - pd.getName().length();
+                    for (int i = 0; i < padding; i++) {
+                        sb.append(" ");
+                    }
+                    sb.append(pd.getPropertyType().getName());
+                    set.add(sb.toString());
+
+                    sb = new StringBuffer();
+                }
+
+                sb = new StringBuffer();
+                for (Iterator iterator = set.iterator(); iterator.hasNext();) {
+                    String s = (String) iterator.next();
+                    sb.append(s).append("\n");
+                }
+                
+                return sb.toString();
+            } catch (IntrospectionException e) {
+                e.printStackTrace();
+            } catch (OgnlException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
 
         for (Iterator iterator = root.iterator(); iterator.hasNext();) {
             Object o = iterator.next();
