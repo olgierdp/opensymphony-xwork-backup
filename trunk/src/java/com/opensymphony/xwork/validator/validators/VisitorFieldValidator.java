@@ -100,6 +100,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         String fieldName = getFieldName();
         Object value = this.getFieldValue(fieldName, object);
         if (value == null) {
+        	log.warn("The visited object is null, VisitorValidator will not be able to handle validation properly. Please make sure the visited object is not null for VisitorValidator to function properly");
             return;
         }
         OgnlValueStack stack = ActionContext.getContext().getValueStack();
