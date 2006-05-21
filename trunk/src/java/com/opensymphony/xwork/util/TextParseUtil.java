@@ -15,6 +15,9 @@ import java.util.Set;
  *
  * @author Jason Carreira
  * @author Rainer Hermanns
+ * @author tm_jee
+ * 
+ * @version $Date$ $Id$
  */
 public class TextParseUtil {
 
@@ -28,7 +31,30 @@ public class TextParseUtil {
      * @return the parsed expression
      */
     public static String translateVariables(String expression, OgnlValueStack stack) {
-        return translateVariables('$', expression, stack, String.class).toString();
+        return translateVariables('$', expression, stack, String.class, null).toString();
+    }
+    
+    
+    /**
+     * Function similarly as {@link #translateVariables(char, String, OgnlValueStack)} 
+     * except for the introduction of an additional <code>evaluator</code> that allows
+     * the parsed value to be evaluated by the <code>evaluator</code>. The <code>evaluator</code>
+     * could be null, if it is it will just be skipped as if it is just calling 
+     * {@link #translateVariables(char, String, OgnlValueStack)}.
+     * 
+     * <p/>
+     * 
+     * A typical use-case would be when we need to URL Encode the parsed value. To do so 
+     * we could just supply a URLEncodingEvaluator for example. 
+     * 
+     * @see {@link TextParseUtil.ParsedValueEvaluator}
+     * @param expression
+     * @param stack
+     * @param evaluator The parsed Value evaluator (could be null).
+     * @return the parsed (and possibly evaluated) variable String.
+     */
+    public static String translateVariables(String expression, OgnlValueStack stack, ParsedValueEvaluator evaluator) {
+    	return translateVariables('$', expression, stack, String.class, evaluator).toString();
     }
 
     /**
@@ -43,7 +69,7 @@ public class TextParseUtil {
      * @return Translated variable String
      */
     public static String translateVariables(char open, String expression, OgnlValueStack stack) {
-        return translateVariables(open, expression, stack, String.class).toString();
+        return translateVariables(open, expression, stack, String.class, null).toString();
     }
 
     /**
@@ -56,6 +82,20 @@ public class TextParseUtil {
      * @return Converted object from variable translation.
      */
     public static Object translateVariables(char open, String expression, OgnlValueStack stack, Class asType) {
+    	return translateVariables(open, expression, stack, asType, null);
+    }
+    
+    /**
+     * Converted object from variable translation.
+     *
+     * @param open
+     * @param expression
+     * @param stack
+     * @param asType
+     * @param evaluator
+     * @return Converted object from variable translation.
+     */
+    public static Object translateVariables(char open, String expression, OgnlValueStack stack, Class asType, ParsedValueEvaluator evaluator) {
         // deal with the "pure" expressions first!
         //expression = expression.trim();
         Object result = expression;
@@ -81,6 +121,10 @@ public class TextParseUtil {
                 String var = expression.substring(start + 2, end);
 
                 Object o = stack.findValue(var, asType);
+                if (evaluator != null) {
+                	o = evaluator.evaluate(o);
+                }
+                
 
                 String left = expression.substring(0, start);
                 String right = expression.substring(end + 1);
@@ -123,5 +167,29 @@ public class TextParseUtil {
                 set.add(trimmed);
         }
         return set;
+    }
+    
+    
+    /**
+     * A parsed value evaluator for {@link TextParseUtil}. It could be supplied by 
+     * calling {@link TextParseUtil#translateVariables(char, String, OgnlValueStack, Class, ParsedValueEvaluator)}.
+     * 
+     * <p/>
+     * 
+     * By supplying this <code>ParsedValueEvaluator</code>, the parsed value will be
+     * given to <code>ParsedValueEvaluator</code> to be evaluated before the 
+     * translateVariable process goes on. 
+     * 
+     * <p/>
+     * 
+     * A typical use-case would be to have a custom <code>ParseValueEvaluator</code>
+     * to URL Encode the parsed value.
+     * 
+     * @author tm_jee
+     * 
+     * @version $Date$ $Id$
+     */
+    public static interface ParsedValueEvaluator {
+    	Object evaluate(Object parsedValue);
     }
 }

@@ -9,13 +9,37 @@ import com.opensymphony.xwork.XWorkTestCase;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Unit test of {@link TextParseUtil}.
  *
  * @author plightbo
+ * @author tm_jee
+ * 
+ * @version $Date$ $Id$
  */
 public class TextParseUtilTest extends XWorkTestCase {
+	
+	
+	public void testTranslateVariablesWithEvaluator() throws Exception {
+		OgnlValueStack stack = new OgnlValueStack();
+		stack.push(new Object() {
+			public String getMyVariable() {
+				return "My Variable ";
+			}
+		});
+		
+		TextParseUtil.ParsedValueEvaluator evaluator = new TextParseUtil.ParsedValueEvaluator() {
+			public Object evaluate(Object parsedValue) {
+				return parsedValue.toString()+"Something";
+			}
+		};
+		
+		String result = TextParseUtil.translateVariables("Hello ${myVariable}", stack, evaluator);
+		
+		assertEquals(result, "Hello My Variable Something");
+	}
 
     public void testTranslateVariables() {
         OgnlValueStack stack = new OgnlValueStack();
@@ -36,7 +60,14 @@ public class TextParseUtilTest extends XWorkTestCase {
         assertEquals("foo: ${1", s);
 
         s =  TextParseUtil.translateVariables('$', "${{1, 2, 3}}", stack, Object.class);
+        assertNotNull(s);
         assertTrue("List not returned when parsing a 'pure' list", s instanceof List);
+        assertEquals(((List)s).size(), 3);
+        
+        s = TextParseUtil.translateVariables('$', "${#{'key1':'value1','key2':'value2','key3':'value3'}}", stack, Object.class);
+        assertNotNull(s);
+        assertTrue("Map not returned when parsing a 'pure' map", s instanceof Map);
+        assertEquals(((Map)s).size(), 3);
 
         s =  TextParseUtil.translateVariables('$', "${1} two ${3}", stack, Object.class);
         assertEquals("1 two 3", s);
