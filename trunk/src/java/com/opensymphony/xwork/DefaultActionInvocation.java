@@ -5,8 +5,8 @@
 package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.config.entities.ActionConfig;
-import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.config.entities.InterceptorMapping;
+import com.opensymphony.xwork.config.entities.ResultConfig;
 import com.opensymphony.xwork.interceptor.PreResultListener;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.XWorkContinuationConfig;
@@ -21,7 +21,10 @@ import org.apache.commons.logging.LogFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -160,7 +163,7 @@ public class DefaultActionInvocation implements ActionInvocation {
                 resultConfig = (ResultConfig) results.get(resultCode);
             } catch (NullPointerException e) {
             }
-            if (resultConfig == null ) {
+            if (resultConfig == null) {
                 // If no result is found for the given resultCode, try to get a wildcard '*' match.
                 resultConfig = (ResultConfig) results.get("*");
             }
@@ -240,7 +243,7 @@ public class DefaultActionInvocation implements ActionInvocation {
             gripe += (((" -- " + e.getMessage()) != null) ? e.getMessage() : " [no message in exception]");
             throw new XworkException(gripe, e, proxy.getConfig());
         }
-        
+
         if (ObjectFactory.getContinuationPackage() != null) prepareContinuation();
     }
 
@@ -379,7 +382,7 @@ public class DefaultActionInvocation implements ActionInvocation {
 
                 return result;
             } else if (t instanceof Exception) {
-                throw (Exception) t;
+                throw(Exception) t;
             } else {
                 throw e;
             }

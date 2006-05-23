@@ -6,11 +6,11 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ValidationAwareSupport;
-import com.opensymphony.xwork.validator.validators.RequiredStringValidator;
-import com.opensymphony.xwork.config.ConfigurationManager;
+import com.opensymphony.xwork.XWorkStatic;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.test.Equidae;
 import com.opensymphony.xwork.util.OgnlValueStack;
+import com.opensymphony.xwork.validator.validators.RequiredStringValidator;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -22,17 +22,17 @@ import java.util.Map;
  */
 public class StringValidatorTest extends TestCase {
 
-	public void testRequiredStringWithNullValue() throws Exception {
-		Equidae equidae = new Equidae();
-		equidae.setHorse(null);
-		
-		DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
-		ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
-		
-		assertTrue(context.hasFieldErrors());
-	}
-	
-	
+    public void testRequiredStringWithNullValue() throws Exception {
+        Equidae equidae = new Equidae();
+        equidae.setHorse(null);
+
+        DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
+        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+
+        assertTrue(context.hasFieldErrors());
+    }
+
+
     public void testRequiredString() throws Exception {
         Equidae equidae = new Equidae();
 
@@ -183,8 +183,8 @@ public class StringValidatorTest extends TestCase {
         OgnlValueStack stack = new OgnlValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
 
-        ConfigurationManager.clearConfigurationProviders();
-        ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
-        ConfigurationManager.getConfiguration().reload();
+        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
+        XWorkStatic.getConfigurationManager().addConfigurationProvider(new MockConfigurationProvider());
+        XWorkStatic.getConfigurationManager().getConfiguration().reload();
     }
 }

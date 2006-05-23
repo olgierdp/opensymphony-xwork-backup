@@ -5,9 +5,8 @@
 
 package com.opensymphony.xwork;
 
-import junit.framework.TestCase;
-import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.mock.MockResult;
+import junit.framework.TestCase;
 
 /**
  * <code>WildCardResultTest</code>
@@ -21,8 +20,8 @@ public class WildCardResultTest extends TestCase {
         super.setUp();
 
         // ensure we're using the default configuration, not simple config
-        ConfigurationManager.clearConfigurationProviders();
-        ConfigurationManager.getConfiguration().reload();
+        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
+        XWorkStatic.getConfigurationManager().getConfiguration().reload();
     }
 
     public void testWildCardEvaluation() throws Exception {

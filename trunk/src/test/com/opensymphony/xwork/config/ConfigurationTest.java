@@ -5,10 +5,10 @@
 package com.opensymphony.xwork.config;
 
 import com.opensymphony.xwork.*;
-import com.opensymphony.xwork.mock.MockInterceptor;
+import com.opensymphony.xwork.config.entities.InterceptorMapping;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
-import com.opensymphony.xwork.config.entities.InterceptorMapping;
+import com.opensymphony.xwork.mock.MockInterceptor;
 
 import java.util.HashMap;
 
@@ -58,7 +58,7 @@ public class ConfigurationTest extends XWorkTestCase {
     }
 
     public void testFileIncludeLoader() {
-        RuntimeConfiguration configuration = ConfigurationManager.getConfiguration().getRuntimeConfiguration();
+        RuntimeConfiguration configuration = XWorkStatic.getConfigurationManager().getConfiguration().getRuntimeConfiguration();
 
         // check entityTest package
         assertNotNull(configuration.getActionConfig("includeTest", "includeTest"));
@@ -138,16 +138,16 @@ public class ConfigurationTest extends XWorkTestCase {
     }
 
     public void testMultipleConfigProviders() {
-        ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
+        XWorkStatic.getConfigurationManager().addConfigurationProvider(new MockConfigurationProvider());
 
         try {
-            ConfigurationManager.getConfiguration().reload();
+            XWorkStatic.getConfigurationManager().getConfiguration().reload();
         } catch (ConfigurationException e) {
             e.printStackTrace();
             fail();
         }
 
-        RuntimeConfiguration configuration = ConfigurationManager.getConfiguration().getRuntimeConfiguration();
+        RuntimeConfiguration configuration = XWorkStatic.getConfigurationManager().getConfiguration().getRuntimeConfiguration();
 
         // check that it has configuration from xml
         assertNotNull(configuration.getActionConfig("/foo/bar", "Bar"));
@@ -188,7 +188,7 @@ public class ConfigurationTest extends XWorkTestCase {
 
         // ensure we're using the default configuration, not simple config
         XmlConfigurationProvider c = new XmlConfigurationProvider();
-        ConfigurationManager.addConfigurationProvider(c);
-        ConfigurationManager.getConfiguration().reload();
+        XWorkStatic.getConfigurationManager().addConfigurationProvider(c);
+        XWorkStatic.getConfigurationManager().getConfiguration().reload();
     }
 }

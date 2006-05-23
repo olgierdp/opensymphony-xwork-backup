@@ -4,33 +4,20 @@
  */
 package com.opensymphony.xwork.util;
 
+import com.opensymphony.xwork.*;
+import com.opensymphony.xwork.test.ModelDrivenAction2;
+import com.opensymphony.xwork.test.User;
+import junit.framework.TestCase;
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import junit.framework.TestCase;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
-
-import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.ModelDrivenAction;
-import com.opensymphony.xwork.SimpleAction;
-import com.opensymphony.xwork.TestBean;
-import com.opensymphony.xwork.config.ConfigurationManager;
-import com.opensymphony.xwork.test.ModelDrivenAction2;
-import com.opensymphony.xwork.test.User;
+import java.util.*;
 
 
 /**
@@ -90,7 +77,7 @@ public class XWorkConverterTest extends TestCase {
         Date date = format.parse("01/10/2001 00:00:00");
 
         SimpleDateFormat formatt = new SimpleDateFormat("hh:mm:ss");
-        java.sql.Time datet = new java.sql.Time( formatt.parse("10:11:12").getTime());
+        java.sql.Time datet = new java.sql.Time(formatt.parse("10:11:12").getTime());
 
         String dateStr = (String) converter.convertValue(context, null, null, null, date, String.class);
         String datetStr = (String) converter.convertValue(context, null, null, null, datet, String.class);
@@ -101,8 +88,8 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(date, date3);
         java.sql.Timestamp ts = (java.sql.Timestamp) converter.convertValue(context, null, null, null, dateStr, java.sql.Timestamp.class);
         assertEquals(date, ts);
-        java.sql.Time time1= (java.sql.Time) converter.convertValue(context, null, null, null, datetStr, java.sql.Time.class);
-        assertEquals(datet, time1);    
+        java.sql.Time time1 = (java.sql.Time) converter.convertValue(context, null, null, null, datetStr, java.sql.Time.class);
+        assertEquals(datet, time1);
     }
 
     public void testFieldErrorMessageAddedForComplexProperty() {
@@ -173,11 +160,11 @@ public class XWorkConverterTest extends TestCase {
         String dateStr = "13/01/2005"; // us date format is used in context
         Object res = converter.convertValue(context, null, null, null, dateStr, Date.class);
         assertEquals(res, OgnlRuntime.NoConversionPossible);
-    	
+
         dateStr = "02/30/2005"; // us date format is used in context
         res = converter.convertValue(context, null, null, null, dateStr, Date.class);
         assertEquals(res, OgnlRuntime.NoConversionPossible);
-    	
+
         // and test a date that is passable
         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         dateStr = "12/31/2005"; // us date format
@@ -186,8 +173,8 @@ public class XWorkConverterTest extends TestCase {
         assertNotSame(res, OgnlRuntime.NoConversionPossible);
         assertEquals(date, res);
     }
-    
-    
+
+
     public void testFindConversionErrorMessage() {
         ModelDrivenAction action = new ModelDrivenAction();
         OgnlValueStack stack = new OgnlValueStack();
@@ -247,7 +234,7 @@ public class XWorkConverterTest extends TestCase {
         assertNotNull(conversionErrors);
         assertTrue(conversionErrors.size() == 1);
     }
-    
+
     public void testStringArrayToCollection() {
         List list = new ArrayList();
         list.add("foo");
@@ -413,8 +400,8 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234", int.class));
         assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234,12", int.class));
     }
-    
-    
+
+
     public void testStringToInteger() {
         assertEquals(new Integer(123), converter.convertValue(context, null, null, null, "123", Integer.class));
         context.put(ActionContext.LOCALE, Locale.US);
@@ -439,7 +426,7 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,23", Integer.class));
         assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234,12", Integer.class));
     }
-    
+
     public void testStringToPrimitiveDouble() {
         assertEquals(new Double(123), converter.convertValue(context, null, null, null, "123", double.class));
         context.put(ActionContext.LOCALE, Locale.US);
@@ -451,7 +438,7 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1,23", double.class));
         assertEquals(new Double(1.234), converter.convertValue(context, null, null, null, "1.234", double.class));
         assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234,12", double.class));
-        
+
         context.put(ActionContext.LOCALE, Locale.GERMANY);
         assertEquals(new Double(123.12), converter.convertValue(context, null, null, null, "123.12", double.class));
         assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "123aa", double.class));
@@ -475,7 +462,7 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(new Double(123), converter.convertValue(context, null, null, null, "1,23", Double.class));
         assertEquals(new Double(1.234), converter.convertValue(context, null, null, null, "1.234", Double.class));
         assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "1.234,12", Double.class));
-        
+
         context.put(ActionContext.LOCALE, Locale.GERMANY);
         // WRONG: locale separator is wrongly placed
         assertEquals(new Double(12312), converter.convertValue(context, null, null, null, "123.12", Double.class));
@@ -510,7 +497,7 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(null, converter.convertValue(context, null, null, null, "", Short.class));
 
     }
-    
+
     public void testConvertChar() {
         assertEquals(new Character('A'), converter.convertValue(context, "A", char.class));
         assertEquals(new Character('Z'), converter.convertValue(context, "Z", char.class));
@@ -529,17 +516,17 @@ public class XWorkConverterTest extends TestCase {
 
         assertEquals(null, converter.convertValue(context, "", char.class));
     }
-    
+
     public void testConvertClass() {
-    	Class clazz = (Class) converter.convertValue(context, "java.util.Date", Class.class);
+        Class clazz = (Class) converter.convertValue(context, "java.util.Date", Class.class);
         assertEquals(Date.class.getName(), clazz.getName());
 
-    	Class clazz2 = (Class) converter.convertValue(context, "com.opensymphony.xwork.util.Bar", Class.class);
+        Class clazz2 = (Class) converter.convertValue(context, "com.opensymphony.xwork.util.Bar", Class.class);
         assertEquals(Bar.class.getName(), clazz2.getName());
 
-    	assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, "com.opensymphony.xwork.util.IDoNotExist", Class.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, "com.opensymphony.xwork.util.IDoNotExist", Class.class));
 
-    	assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, new Bar(), Class.class)); // only supports string values
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, new Bar(), Class.class)); // only supports string values
     }
 
     public void testConvertBoolean() {
@@ -549,29 +536,29 @@ public class XWorkConverterTest extends TestCase {
         assertEquals(Boolean.TRUE, converter.convertValue(context, Boolean.TRUE, Boolean.class));
         assertEquals(Boolean.FALSE, converter.convertValue(context, Boolean.FALSE, Boolean.class));
 
-    	assertEquals(null, converter.convertValue(context, null, Boolean.class));
-    	assertEquals(Boolean.TRUE, converter.convertValue(context, new Bar(), Boolean.class)); // Ognl converter will default to true
+        assertEquals(null, converter.convertValue(context, null, Boolean.class));
+        assertEquals(Boolean.TRUE, converter.convertValue(context, new Bar(), Boolean.class)); // Ognl converter will default to true
     }
-    
+
     public void testConvertPrimitiveArraysToString() {
-    	assertEquals("2, 3, 1", converter.convertValue(context, new int[]{2,3,1}, String.class)); 
-    	assertEquals("100, 200, 300", converter.convertValue(context, new long[]{100,200,300}, String.class)); 
-    	assertEquals("1.5, 2.5, 3.5", converter.convertValue(context, new double[]{1.5,2.5,3.5}, String.class)); 
-    	assertEquals("true, false, true", converter.convertValue(context, new boolean[]{true, false, true}, String.class)); 
+        assertEquals("2, 3, 1", converter.convertValue(context, new int[]{2, 3, 1}, String.class));
+        assertEquals("100, 200, 300", converter.convertValue(context, new long[]{100, 200, 300}, String.class));
+        assertEquals("1.5, 2.5, 3.5", converter.convertValue(context, new double[]{1.5, 2.5, 3.5}, String.class));
+        assertEquals("true, false, true", converter.convertValue(context, new boolean[]{true, false, true}, String.class));
     }
 
     public void testConvertSameCollectionToCollection() {
-    	Collection names = new ArrayList();
-    	names.add("XWork");
-    	names.add("WebWork");
-    	
-    	Collection col = (Collection) converter.convertValue(context, names, Collection.class);
-    	assertSame(names, col);
+        Collection names = new ArrayList();
+        names.add("XWork");
+        names.add("WebWork");
+
+        Collection col = (Collection) converter.convertValue(context, names, Collection.class);
+        assertSame(names, col);
     }
 
     public void testConvertSqlTimestamp() {
-    	assertNotNull(converter.convertValue(context, new Timestamp(new Date().getTime()), String.class));
-    	assertNotNull(converter.convertValue(null, new Timestamp(new Date().getTime()), String.class));
+        assertNotNull(converter.convertValue(context, new Timestamp(new Date().getTime()), String.class));
+        assertNotNull(converter.convertValue(null, new Timestamp(new Date().getTime()), String.class));
     }
 
     public void testOgnlValueStackWithTypeParameter() {
@@ -595,7 +582,7 @@ public class XWorkConverterTest extends TestCase {
 
     protected void setUp() throws Exception {
         converter = XWorkConverter.getInstance();
-        ConfigurationManager.destroyConfiguration();
+        XWorkStatic.getConfigurationManager().destroyConfiguration();
 
         OgnlValueStack stack = new OgnlValueStack();
         ActionContext ac = new ActionContext(stack.getContext());

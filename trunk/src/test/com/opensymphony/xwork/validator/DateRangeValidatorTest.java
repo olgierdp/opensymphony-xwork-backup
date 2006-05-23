@@ -7,9 +7,9 @@ package com.opensymphony.xwork.validator;
 import com.opensymphony.xwork.ActionProxy;
 import com.opensymphony.xwork.ActionProxyFactory;
 import com.opensymphony.xwork.ValidationAware;
-import com.opensymphony.xwork.validator.validators.DateRangeFieldValidator;
-import com.opensymphony.xwork.config.ConfigurationManager;
+import com.opensymphony.xwork.XWorkStatic;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
+import com.opensymphony.xwork.validator.validators.DateRangeFieldValidator;
 import junit.framework.TestCase;
 
 import java.util.*;
@@ -60,9 +60,9 @@ public class DateRangeValidatorTest extends TestCase {
     protected void setUp() throws Exception {
         origLocale = Locale.getDefault();
         Locale.setDefault(Locale.US);
-        ConfigurationManager.clearConfigurationProviders();
-        ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
-        ConfigurationManager.getConfiguration().reload();
+        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
+        XWorkStatic.getConfigurationManager().addConfigurationProvider(new MockConfigurationProvider());
+        XWorkStatic.getConfigurationManager().getConfiguration().reload();
     }
 
     protected void tearDown() throws Exception {

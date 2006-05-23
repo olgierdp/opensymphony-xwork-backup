@@ -1,16 +1,14 @@
 package com.opensymphony.xwork.validator;
 
-import junit.framework.TestCase;
-
-import java.util.Map;
-import java.util.List;
-import java.util.Iterator;
-
 import com.opensymphony.xwork.*;
+import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.validators.DoubleRangeFieldValidator;
-import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
-import com.opensymphony.xwork.config.ConfigurationManager;
+import junit.framework.TestCase;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Unit test for {@link DoubleRangeFieldValidator}.
@@ -128,7 +126,7 @@ public class DoubleRangeValidatorTest extends TestCase {
 
         val.setMaxInclusive("9.95");
         val.validate(prod); // should pass
-        assertTrue(! context.hasErrors());
+        assertTrue(!context.hasErrors());
         assertEquals("9.95", val.getMaxInclusive());
 
         val.setMaxExclusive("9.95");
@@ -154,7 +152,7 @@ public class DoubleRangeValidatorTest extends TestCase {
 
         val.setMinInclusive("9.95");
         val.validate(prod); // should pass
-        assertTrue(! context.hasErrors());
+        assertTrue(!context.hasErrors());
 
         val.setMinExclusive("9.95");
         val.validate(prod); // should not pass
@@ -162,9 +160,9 @@ public class DoubleRangeValidatorTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        ConfigurationManager.clearConfigurationProviders();
-        ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
-        ConfigurationManager.getConfiguration().reload();
+        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
+        XWorkStatic.getConfigurationManager().addConfigurationProvider(new MockConfigurationProvider());
+        XWorkStatic.getConfigurationManager().getConfiguration().reload();
     }
 
     private class MyTestProduct {

@@ -4,16 +4,16 @@
  */
 package com.opensymphony.xwork.config.providers;
 
-import com.opensymphony.xwork.mock.MockInterceptor;
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.SimpleAction;
+import com.opensymphony.xwork.XWorkStatic;
 import com.opensymphony.xwork.config.ConfigurationException;
-import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.RuntimeConfiguration;
 import com.opensymphony.xwork.config.entities.*;
 import com.opensymphony.xwork.interceptor.LoggingInterceptor;
 import com.opensymphony.xwork.interceptor.TimerInterceptor;
+import com.opensymphony.xwork.mock.MockInterceptor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,8 +78,8 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
 
     public void testInterceptorDefaultRefs() throws ConfigurationException {
         XmlConfigurationProvider provider = new XmlConfigurationProvider("com/opensymphony/xwork/config/providers/xwork-test-interceptor-defaultref.xml");
-        ConfigurationManager.clearConfigurationProviders();
-        ConfigurationManager.addConfigurationProvider(provider);
+        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
+        XWorkStatic.getConfigurationManager().addConfigurationProvider(provider);
 
         // expectations - the inherited interceptor stack
         // default package
@@ -102,7 +102,7 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
 
         ActionConfig anotherActionWithOwnRef = new ActionConfig(null, SimpleAction.class, new HashMap(), new HashMap(), interceptors);
 
-        RuntimeConfiguration runtimeConfig = ConfigurationManager.getConfiguration().getRuntimeConfiguration();
+        RuntimeConfiguration runtimeConfig = XWorkStatic.getConfigurationManager().getConfiguration().getRuntimeConfiguration();
 
         // assertions
         assertEquals(actionWithOwnRef, runtimeConfig.getActionConfig("", "ActionWithOwnRef"));
@@ -197,12 +197,12 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
     protected void setUp() throws Exception {
         super.setUp();
 
-        ConfigurationManager.destroyConfiguration();
+        XWorkStatic.getConfigurationManager().destroyConfiguration();
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
 
-        ConfigurationManager.destroyConfiguration();
+        XWorkStatic.getConfigurationManager().destroyConfiguration();
     }
 }

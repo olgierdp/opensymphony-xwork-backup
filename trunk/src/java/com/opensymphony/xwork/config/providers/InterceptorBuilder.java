@@ -5,12 +5,12 @@
 package com.opensymphony.xwork.config.providers;
 
 import com.opensymphony.xwork.ObjectFactory;
-import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.entities.InterceptorConfig;
+import com.opensymphony.xwork.config.entities.InterceptorMapping;
 import com.opensymphony.xwork.config.entities.InterceptorStackConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
-import com.opensymphony.xwork.config.entities.InterceptorMapping;
+import com.opensymphony.xwork.interceptor.Interceptor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -19,7 +19,7 @@ import java.util.*;
 
 /**
  * Builds a list of interceptors referenced by the refName in the supplied PackageConfig.
- * 
+ *
  * @author Mike
  * @author Rainer Hermanns
  */
@@ -37,9 +37,9 @@ public class InterceptorBuilder {
      * @return list of interceptors referenced by the refName in the supplied PackageConfig.
      * @throws ConfigurationException
      */
-    public static List constructInterceptorReference(PackageConfig packageConfig, String refName, Map refParams) throws ConfigurationException {
+    public static List<InterceptorMapping> constructInterceptorReference(PackageConfig packageConfig, String refName, Map refParams) throws ConfigurationException {
         Object referencedConfig = packageConfig.getAllInterceptorConfigs().get(refName);
-        List result = new ArrayList();
+        List<InterceptorMapping> result = new ArrayList<InterceptorMapping>();
 
         if (referencedConfig == null) {
             LOG.error("Unable to find interceptor class referenced by ref-name " + refName);
@@ -66,29 +66,29 @@ public class InterceptorBuilder {
     /**
      * Builds a list of interceptors referenced by the refName in the supplied PackageConfig overriding the properties
      * of the referenced interceptor with refParams.
-     * 
+     *
      * @param packageConfig
      * @param stackConfig
-     * @param refParams The overridden interceptor properies
+     * @param refParams     The overridden interceptor properies
      * @return list of interceptors referenced by the refName in the supplied PackageConfig overridden with refParams.
      */
-    private static List constructParameterizedInterceptorReferences(PackageConfig packageConfig, InterceptorStackConfig stackConfig, Map refParams) {
-        List result;
-        Map params = new HashMap();
+    private static List<InterceptorMapping> constructParameterizedInterceptorReferences(PackageConfig packageConfig, InterceptorStackConfig stackConfig, Map refParams) {
+        List<InterceptorMapping> result;
+        Map<String, Map<Object, String>> params = new HashMap<String, Map<Object, String>>();
 
-        for ( Iterator iter = refParams.keySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = refParams.keySet().iterator(); iter.hasNext();) {
             String key = (String) iter.next();
             String value = (String) refParams.get(key);
 
             try {
                 String name = key.substring(0, key.indexOf('.'));
-                key = key.substring(key.indexOf('.')  + 1);
+                key = key.substring(key.indexOf('.') + 1);
 
-                Map map;
-                if ( params.containsKey(name)) {
-                    map = (Map) params.get(name);
+                Map<Object, String> map;
+                if (params.containsKey(name)) {
+                    map = params.get(name);
                 } else {
-                    map = new HashMap();
+                    map = new HashMap<Object, String>();
                 }
 
                 map.put(key, value);
@@ -99,18 +99,17 @@ public class InterceptorBuilder {
             }
         }
 
-        result = (ArrayList) stackConfig.getInterceptors();
+        result = (ArrayList<InterceptorMapping>) stackConfig.getInterceptors();
 
-        for ( Iterator iter = params.keySet().iterator(); iter.hasNext();) {
+        for (String key : params.keySet()) {
 
-            String key = (String) iter.next();
-            Map map = (Map) params.get(key);
+            Map<Object, String> map = params.get(key);
 
             InterceptorConfig cfg = (InterceptorConfig) packageConfig.getAllInterceptorConfigs().get(key);
             Interceptor interceptor = ObjectFactory.getObjectFactory().buildInterceptor(cfg, map);
 
             InterceptorMapping mapping = new InterceptorMapping(key, interceptor);
-            if ( result != null && result.contains(mapping)) {
+            if (result != null && result.contains(mapping)) {
                 int index = result.indexOf(mapping);
                 result.set(index, mapping);
             } else {

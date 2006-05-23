@@ -11,7 +11,6 @@
 package com.opensymphony.xwork;
 
 import com.mockobjects.dynamic.Mock;
-import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import junit.framework.TestCase;
 
@@ -28,8 +27,8 @@ public class ChainResultTest extends TestCase {
         super.setUp();
 
         // ensure we're using the default configuration, not simple config
-        ConfigurationManager.clearConfigurationProviders();
-        ConfigurationManager.getConfiguration().reload();
+        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
+        XWorkStatic.getConfigurationManager().getConfiguration().reload();
     }
 
     public void testNamespaceAndActionExpressionEvaluation() throws Exception {

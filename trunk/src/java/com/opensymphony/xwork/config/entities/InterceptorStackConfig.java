@@ -4,12 +4,12 @@
  */
 package com.opensymphony.xwork.config.entities;
 
+import com.opensymphony.xwork.util.location.Located;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.io.Serializable;
-
-import com.opensymphony.xwork.util.location.Located;
 
 
 /**
@@ -22,12 +22,12 @@ import com.opensymphony.xwork.util.location.Located;
  */
 public class InterceptorStackConfig extends Located implements InterceptorListHolder, Serializable {
 
-    private List interceptors;
+    private List<InterceptorMapping> interceptors;
     private String name;
 
 
     public InterceptorStackConfig() {
-        this.interceptors = new ArrayList();
+        this.interceptors = new ArrayList<InterceptorMapping>();
     }
 
     public InterceptorStackConfig(String name) {
@@ -36,7 +36,7 @@ public class InterceptorStackConfig extends Located implements InterceptorListHo
     }
 
 
-    public Collection getInterceptors() {
+    public Collection<InterceptorMapping> getInterceptors() {
         return interceptors;
     }
 
@@ -52,7 +52,7 @@ public class InterceptorStackConfig extends Located implements InterceptorListHo
         this.interceptors.add(interceptor);
     }
 
-    public void addInterceptors(List interceptors) {
+    public void addInterceptors(List<InterceptorMapping> interceptors) {
         this.interceptors.addAll(interceptors);
     }
 

@@ -4,18 +4,18 @@
  */
 package com.opensymphony.xwork.config.entities;
 
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.io.Serializable;
-
 import com.opensymphony.xwork.util.location.Located;
+
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
  * Configuration for Result.
  * <p/>
  * In the xml configuration file this is defined as the <code>result</code> tag.
- * 
+ *
  * @author Mike
  */
 public class ResultConfig extends Located implements Parameterizable, Serializable {

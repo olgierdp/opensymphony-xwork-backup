@@ -5,7 +5,7 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.config.ConfigurationManager;
+import com.opensymphony.xwork.XWorkStatic;
 import com.opensymphony.xwork.config.ExternalReferenceResolver;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 
@@ -14,15 +14,15 @@ import com.opensymphony.xwork.config.entities.PackageConfig;
  * <!-- START SNIPPET: description -->
  * TODO: Give a description of the Interceptor.
  * <!-- END SNIPPET: description -->
- *
+ * <p/>
  * <!-- START SNIPPET: parameters -->
  * TODO: Describe the paramters for this Interceptor.
  * <!-- END SNIPPET: parameters -->
- *
+ * <p/>
  * <!-- START SNIPPET: extending -->
  * TODO: Discuss some possible extension of the Interceptor.
  * <!-- END SNIPPET: extending -->
- *
+ * <p/>
  * <pre>
  * <!-- START SNIPPET: example -->
  * &lt;!-- TODO: Describe how the Interceptor reference will effect execution --&gt;
@@ -47,7 +47,7 @@ public class ExternalReferencesInterceptor extends AroundInterceptor {
 
     protected void before(ActionInvocation invocation) throws Exception {
         String packageName = invocation.getProxy().getConfig().getPackageName();
-        PackageConfig packageConfig = ConfigurationManager.getConfiguration().getPackageConfig(packageName);
+        PackageConfig packageConfig = XWorkStatic.getConfigurationManager().getConfiguration().getPackageConfig(packageName);
 
         if (packageConfig != null) {
             ExternalReferenceResolver erResolver = packageConfig.getExternalRefResolver();

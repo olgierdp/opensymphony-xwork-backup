@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork;
 
-import com.opensymphony.xwork.config.ConfigurationManager;
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -45,7 +44,7 @@ public class ActionInvocationTest extends TestCase {
         super.setUp();
 
         // ensure we're using the default configuration, not simple config
-        ConfigurationManager.clearConfigurationProviders();
-        ConfigurationManager.getConfiguration().reload();
+        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
+        XWorkStatic.getConfigurationManager().getConfiguration().reload();
     }
 }

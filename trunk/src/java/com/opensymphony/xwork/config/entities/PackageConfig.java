@@ -10,8 +10,8 @@ import com.opensymphony.xwork.util.location.Located;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.*;
 import java.io.Serializable;
+import java.util.*;
 
 
 /**
@@ -28,20 +28,18 @@ public class PackageConfig extends Located implements Comparable, Serializable {
 
 
     private ExternalReferenceResolver externalRefResolver = null;
-    private Map actionConfigs = new LinkedHashMap();
-    private Map globalResultConfigs = new LinkedHashMap();
+    private Map<String, ActionConfig> actionConfigs = new LinkedHashMap<String, ActionConfig>();
+    private Map<String, ResultConfig> globalResultConfigs = new LinkedHashMap<String, ResultConfig>();
     private Map interceptorConfigs = new LinkedHashMap();
-    private Map resultTypeConfigs = new LinkedHashMap();
+    private Map<String, ResultTypeConfig> resultTypeConfigs = new LinkedHashMap<String, ResultTypeConfig>();
     private List globalExceptionMappingConfigs = new ArrayList();
-    private Set parents = new HashSet();
+    private Set<PackageConfig> parents = new HashSet<PackageConfig>();
     private String defaultInterceptorRef;
     private String defaultActionRef;
     private String defaultResultType;
     private String name;
     private String namespace = "";
     private boolean isAbstract = false;
-
-
 
 
     public PackageConfig() {
@@ -76,7 +74,7 @@ public class PackageConfig extends Located implements Comparable, Serializable {
         return isAbstract;
     }
 
-    public Map getActionConfigs() {
+    public Map<String, ActionConfig> getActionConfigs() {
         return actionConfigs;
     }
 
@@ -87,13 +85,12 @@ public class PackageConfig extends Located implements Comparable, Serializable {
      * @return a Map of ActionConfig Objects with the action name as the key
      * @see ActionConfig
      */
-    public Map getAllActionConfigs() {
-        Map retMap = new LinkedHashMap();
+    public Map<String, ActionConfig> getAllActionConfigs() {
+        Map<String, ActionConfig> retMap = new LinkedHashMap<String, ActionConfig>();
 
         if (!parents.isEmpty()) {
-            for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parentContext = (PackageConfig) iterator.next();
-                retMap.putAll(parentContext.getAllActionConfigs());
+            for (PackageConfig parent : parents) {
+                retMap.putAll(parent.getAllActionConfigs());
             }
         }
 
@@ -109,13 +106,12 @@ public class PackageConfig extends Located implements Comparable, Serializable {
      * @return a Map of Result Objects with the result name as the key
      * @see ResultConfig
      */
-    public Map getAllGlobalResults() {
-        Map retMap = new LinkedHashMap();
+    public Map<String, ResultConfig> getAllGlobalResults() {
+        Map<String, ResultConfig> retMap = new LinkedHashMap<String, ResultConfig>();
 
         if (!parents.isEmpty()) {
-            for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parentContext = (PackageConfig) iterator.next();
-                retMap.putAll(parentContext.getAllGlobalResults());
+            for (PackageConfig parentConfig : parents) {
+                retMap.putAll(parentConfig.getAllGlobalResults());
             }
         }
 
@@ -136,8 +132,8 @@ public class PackageConfig extends Located implements Comparable, Serializable {
         Map retMap = new LinkedHashMap();
 
         if (!parents.isEmpty()) {
-            for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parentContext = (PackageConfig) iterator.next();
+            for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
+                PackageConfig parentContext = iterator.next();
                 retMap.putAll(parentContext.getAllInterceptorConfigs());
             }
         }
@@ -154,12 +150,12 @@ public class PackageConfig extends Located implements Comparable, Serializable {
      * @return a Map of ResultTypeConfig Objects with the result type name as the key
      * @see ResultTypeConfig
      */
-    public Map getAllResultTypeConfigs() {
-        Map retMap = new LinkedHashMap();
+    public Map<String, ResultTypeConfig> getAllResultTypeConfigs() {
+        Map<String, ResultTypeConfig> retMap = new LinkedHashMap<String, ResultTypeConfig>();
 
         if (!parents.isEmpty()) {
-            for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parentContext = (PackageConfig) iterator.next();
+            for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
+                PackageConfig parentContext = iterator.next();
                 retMap.putAll(parentContext.getAllResultTypeConfigs());
             }
         }
@@ -176,12 +172,12 @@ public class PackageConfig extends Located implements Comparable, Serializable {
      * @return a List of ExceptionMappingConfigs Objects with the result type name as the key
      * @see ExceptionMappingConfig
      */
-    public List getAllExceptionMappingConfigs() {
-        List allExceptionMappings = new ArrayList();
+    public List<ExceptionMappingConfig> getAllExceptionMappingConfigs() {
+        List<ExceptionMappingConfig> allExceptionMappings = new ArrayList<ExceptionMappingConfig>();
 
         if (!parents.isEmpty()) {
-            for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parentContext = (PackageConfig) iterator.next();
+            for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
+                PackageConfig parentContext = iterator.next();
                 allExceptionMappings.addAll(parentContext.getAllExceptionMappingConfigs());
             }
         }
@@ -242,8 +238,8 @@ public class PackageConfig extends Located implements Comparable, Serializable {
         if (externalRefResolver == null) {
             PackageConfig packageConfig;
 
-            for (Iterator iter = getParents().iterator(); iter.hasNext();) {
-                packageConfig = (PackageConfig) iter.next();
+            for (Iterator<PackageConfig> iter = getParents().iterator(); iter.hasNext();) {
+                packageConfig = iter.next();
 
                 if (packageConfig.getExternalRefResolver() != null) {
                     externalRefResolver = packageConfig.getExternalRefResolver();
@@ -262,8 +258,8 @@ public class PackageConfig extends Located implements Comparable, Serializable {
      */
     public String getFullDefaultInterceptorRef() {
         if ((defaultInterceptorRef == null) && !parents.isEmpty()) {
-            for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parent = (PackageConfig) iterator.next();
+            for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
+                PackageConfig parent = iterator.next();
                 String parentDefault = parent.getFullDefaultInterceptorRef();
 
                 if (parentDefault != null) {
@@ -281,8 +277,8 @@ public class PackageConfig extends Located implements Comparable, Serializable {
      */
     public String getFullDefaultActionRef() {
         if ((defaultActionRef == null) && !parents.isEmpty()) {
-            for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parent = (PackageConfig) iterator.next();
+            for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
+                PackageConfig parent = iterator.next();
                 String parentDefault = parent.getFullDefaultActionRef();
 
                 if (parentDefault != null) {
@@ -301,8 +297,8 @@ public class PackageConfig extends Located implements Comparable, Serializable {
      */
     public String getFullDefaultResultType() {
         if ((defaultResultType == null) && !parents.isEmpty()) {
-            for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parent = (PackageConfig) iterator.next();
+            for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
+                PackageConfig parent = iterator.next();
                 String parentDefault = parent.getFullDefaultResultType();
 
                 if (parentDefault != null) {
@@ -320,7 +316,7 @@ public class PackageConfig extends Located implements Comparable, Serializable {
      * @return a Map of ResultConfig objects keyed by result name
      * @see ResultConfig
      */
-    public Map getGlobalResultConfigs() {
+    public Map<String, ResultConfig> getGlobalResultConfigs() {
         return globalResultConfigs;
     }
 
@@ -355,8 +351,8 @@ public class PackageConfig extends Located implements Comparable, Serializable {
         return namespace;
     }
 
-    public List getParents() {
-        return new ArrayList(parents);
+    public List<PackageConfig> getParents() {
+        return new ArrayList<PackageConfig>(parents);
     }
 
     /**
@@ -365,7 +361,7 @@ public class PackageConfig extends Located implements Comparable, Serializable {
      * @return a Map of ResultTypeConfig objects keyed by result name
      * @see ResultTypeConfig
      */
-    public Map getResultTypeConfigs() {
+    public Map<String, ResultTypeConfig> getResultTypeConfigs() {
         return resultTypeConfigs;
     }
 
@@ -375,7 +371,7 @@ public class PackageConfig extends Located implements Comparable, Serializable {
      * @return a Map of ExceptionMappingConfig objects keyed by result name
      * @see ExceptionMappingConfig
      */
-    public List getGlobalExceptionMappingConfigs() {
+    public List<ExceptionMappingConfig> getGlobalExceptionMappingConfigs() {
         return globalExceptionMappingConfigs;
     }
 
@@ -383,9 +379,8 @@ public class PackageConfig extends Located implements Comparable, Serializable {
         actionConfigs.put(name, action);
     }
 
-    public void addAllParents(List parents) {
-        for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
-            PackageConfig config = (PackageConfig) iterator.next();
+    public void addAllParents(List<PackageConfig> parents) {
+        for (PackageConfig config : parents) {
             addParent(config);
         }
     }

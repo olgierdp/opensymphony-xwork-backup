@@ -16,5 +16,5 @@ public interface InterceptorListHolder {
 
     void addInterceptor(InterceptorMapping interceptor);
 
-    void addInterceptors(List interceptors);
+    void addInterceptors(List<InterceptorMapping> interceptors);
 }

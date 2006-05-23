@@ -4,11 +4,10 @@
  */
 package com.opensymphony.xwork;
 
+import com.opensymphony.util.TextUtils;
 import com.opensymphony.xwork.config.ConfigurationException;
-import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.util.LocalizedTextUtil;
-import com.opensymphony.util.TextUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -54,7 +53,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
         this.executeResult = executeResult;
         this.extraContext = extraContext;
 
-        config = ConfigurationManager.getConfiguration().getRuntimeConfiguration().getActionConfig(namespace, actionName);
+        config = XWorkStatic.getConfigurationManager().getConfiguration().getRuntimeConfiguration().getActionConfig(namespace, actionName);
 
         if (config == null) {
             String message;

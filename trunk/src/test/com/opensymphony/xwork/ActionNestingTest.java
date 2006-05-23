@@ -5,7 +5,6 @@
 package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.config.Configuration;
-import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
@@ -42,8 +41,8 @@ public class ActionNestingTest extends XWorkTestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        ConfigurationManager.addConfigurationProvider(new NestedTestConfigurationProvider());
-        ConfigurationManager.getConfiguration().reload();
+        XWorkStatic.getConfigurationManager().addConfigurationProvider(new NestedTestConfigurationProvider());
+        XWorkStatic.getConfigurationManager().getConfiguration().reload();
 
         OgnlValueStack stack = new OgnlValueStack();
 
@@ -58,8 +57,8 @@ public class ActionNestingTest extends XWorkTestCase {
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        ConfigurationManager.clearConfigurationProviders();
-        ConfigurationManager.destroyConfiguration();
+        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
+        XWorkStatic.getConfigurationManager().destroyConfiguration();
         ActionContext.setContext(null);
     }
 

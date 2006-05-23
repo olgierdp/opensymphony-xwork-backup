@@ -13,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
 import java.io.Serializable;
 import java.util.*;
 
-
 /**
  * OgnlValueStack allows multiple beans to be pushed in and dynamic Ognl expressions to be evaluated against it. When
  * evaluating an expression, the stack will be searched down the stack, from the latest objects pushed in to the
@@ -115,12 +114,13 @@ public class OgnlValueStack implements Serializable {
 
     /**
      * Determine whether devMode is enabled.
+     *
      * @return true if devMode was enabled, false otherwise.
      */
     public boolean isDevModeEnabled() {
         Boolean devMode = (Boolean) context.get(ActionContext.DEV_MODE);
         if (devMode != null) {
-        	return devMode.booleanValue();
+            return devMode.booleanValue();
         } else {
             return false;
         }
@@ -261,16 +261,16 @@ public class OgnlValueStack implements Serializable {
      * Log a failed lookup, being more verbose when devMode=true.
      *
      * @param expr The failed expression
-     * @param e The thrown exception.
+     * @param e    The thrown exception.
      */
     private void logLookupFailure(String expr, Exception e) {
         StringBuffer msg = new StringBuffer();
         msg.append("Caught an exception while evaluating expression '").append(expr).append("' against value stack");
         if (isDevModeEnabled() && LOG.isWarnEnabled()) {
-            LOG.warn( msg , e);
+            LOG.warn(msg, e);
             LOG.warn("NOTE: Previous warning message was issued due to devMode set to true.");
-        } else if ( LOG.isDebugEnabled() ) {
-            LOG.debug( msg , e);
+        } else if (LOG.isDebugEnabled()) {
+            LOG.debug(msg, e);
         }
     }
 

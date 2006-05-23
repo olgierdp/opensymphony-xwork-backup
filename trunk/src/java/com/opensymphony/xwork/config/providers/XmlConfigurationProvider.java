@@ -4,8 +4,8 @@
  */
 package com.opensymphony.xwork.config.providers;
 
-import com.opensymphony.util.FileManager;
 import com.opensymphony.util.ClassLoaderUtil;
+import com.opensymphony.util.FileManager;
 import com.opensymphony.util.TextUtils;
 import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionSupport;
@@ -15,19 +15,18 @@ import com.opensymphony.xwork.config.*;
 import com.opensymphony.xwork.config.entities.*;
 import com.opensymphony.xwork.util.DomHelper;
 import com.opensymphony.xwork.util.location.Location;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.*;
+import org.xml.sax.InputSource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
 import java.lang.reflect.Modifier;
+import java.util.*;
 
 
 /**
@@ -154,7 +153,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         List exceptionMappings = buildExceptionMappings(actionElement, packageContext);
 
         ActionConfig actionConfig = new ActionConfig(methodName, className, actionParams, results, interceptorList, externalrefs, exceptionMappings,
-        packageContext.getName());
+                packageContext.getName());
         actionConfig.setLocation(location);
         packageContext.addActionConfig(name, actionConfig);
 
@@ -171,12 +170,12 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     LOG.error("Action class [" + className + "] is not public, skipping action [" + name + "]");
                     return false;
                 }
-                clazz.getConstructor(new Class[] {});
+                clazz.getConstructor(new Class[]{});
             }
             return true;
         } catch (ClassNotFoundException e) {
             LOG.error("Action class [" + className + "] not found, skipping action [" + name + "] at "
-                + loc, e);
+                    + loc, e);
             return false;
         } catch (NoSuchMethodException e) {
             LOG.error("Action class [" + className + "] does not have a public no-arg constructor,"
@@ -184,7 +183,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             return false;
         } catch (Exception ex) {
             throw new ConfigurationException(ex, loc);
-        }    
+        }
     }
 
     /**
@@ -219,7 +218,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             Element actionElement = (Element) actionList.item(i);
             addAction(actionElement, newPackage);
         }
-        
+
         // load the default action reference for this package
         loadDefaultActionRef(newPackage, packageElement);
 
@@ -240,14 +239,14 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             if (clazz != null) {
                 ResultTypeConfig resultType = new ResultTypeConfig(name, clazz);
                 resultType.setLocation(DomHelper.getLocationObject(resultTypeElement));
-                
+
                 Map params = XmlHelper.getParams(resultTypeElement);
-    
+
                 if (!params.isEmpty()) {
                     resultType.setParams(params);
                 }
                 packageContext.addResultTypeConfig(resultType);
-                
+
                 // set the default result type
                 if ("true".equals(def)) {
                     packageContext.setDefaultResultType(name);
@@ -261,10 +260,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             return ObjectFactory.getObjectFactory().getClassInstance(className);
         } catch (ClassNotFoundException e) {
             LOG.warn("Result class [" + className + "] doesn't exist (ClassNotFoundException) at " +
-                loc.toString() + ", ignoring", e);
+                    loc.toString() + ", ignoring", e);
         } catch (NoClassDefFoundError e) {
             LOG.warn("Result class [" + className + "] doesn't exist (NoClassDefFoundError) at " +
-                loc.toString() + ", ignoring", e);
+                    loc.toString() + ", ignoring", e);
         }
 
         return null;
@@ -371,7 +370,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 cfg = new PackageConfig(name, namespace, isAbstract, erResolver, parents);
             }
         }
-        
+
         if (cfg != null) {
             cfg.setLocation(DomHelper.getLocationObject(packageElement));
         }
@@ -410,7 +409,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
 
 
-                ResultTypeConfig config = (ResultTypeConfig) packageContext.getAllResultTypeConfigs().get(resultType);
+                ResultTypeConfig config = packageContext.getAllResultTypeConfigs().get(resultType);
 
                 if (config == null) {
                     throw new ConfigurationException("There is no result type defined for type '" + resultType + "' mapped with name '" + resultName + "'", resultElement);
@@ -501,7 +500,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             packageContext.setDefaultInterceptorRef(defaultRefElement.getAttribute("name"));
         }
     }
-    
+
     protected void loadDefaultActionRef(PackageConfig packageContext, Element element) {
         NodeList resultTypeList = element.getElementsByTagName("default-action-ref");
 
@@ -620,15 +619,15 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
 
                 InputSource in = new InputSource(is);
-                
+
                 //FIXME: we shouldn't be doing this lookup twice
                 in.setSystemId(ClassLoaderUtil.getResource(fileName, getClass()).toString());
-                
+
                 Map dtdMappings = new HashMap();
                 dtdMappings.put("-//OpenSymphony Group//XWork 1.1.1//EN", "xwork-1.1.1.dtd");
                 dtdMappings.put("-//OpenSymphony Group//XWork 1.1//EN", "xwork-1.1.dtd");
                 dtdMappings.put("-//OpenSymphony Group//XWork 1.0//EN", "xwork-1.0.dtd");
-                
+
                 doc = DomHelper.parse(in, dtdMappings);
             } catch (XworkException e) {
                 if (includeElement != null) {

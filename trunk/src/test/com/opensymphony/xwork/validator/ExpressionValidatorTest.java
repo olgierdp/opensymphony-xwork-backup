@@ -4,14 +4,12 @@
  */
 package com.opensymphony.xwork.validator;
 
+import com.mockobjects.dynamic.C;
+import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork.*;
-import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.validators.ExpressionValidator;
-
-import com.mockobjects.dynamic.C;
-import com.mockobjects.dynamic.Mock;
 import junit.framework.TestCase;
 
 import java.util.Collection;
@@ -108,9 +106,9 @@ public class ExpressionValidatorTest extends TestCase {
         OgnlValueStack stack = new OgnlValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
 
-        ConfigurationManager.clearConfigurationProviders();
-        ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
-        ConfigurationManager.getConfiguration().reload();
+        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
+        XWorkStatic.getConfigurationManager().addConfigurationProvider(new MockConfigurationProvider());
+        XWorkStatic.getConfigurationManager().getConfiguration().reload();
     }
-    
+
 }
