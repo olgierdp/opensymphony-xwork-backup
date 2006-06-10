@@ -16,6 +16,8 @@
 package com.opensymphony.xwork.util.location;
 
 import java.lang.ref.WeakReference;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,8 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXParseException;
 
 import org.w3c.dom.Element;
+
+import com.opensymphony.util.ClassLoaderUtil;
 
 /**
  * Location-related utility methods.
@@ -269,6 +273,35 @@ public class LocationUtils {
             if (result != null) {
                 return result;
             }
+        }
+        
+        if (obj instanceof Throwable) {
+        		Throwable t = (Throwable) obj;
+        		StackTraceElement[] stack = t.getStackTrace();
+        		if (stack != null && stack.length > 0) {
+        			StackTraceElement trace = stack[0];
+        			if (trace.getLineNumber() >= 0) {
+	        			String uri = trace.getClassName();
+	        			if (trace.getFileName() != null) {
+	        				uri = uri.replace('.','/');
+	        				uri = uri.substring(0, uri.lastIndexOf('/') + 1);
+	        				uri = uri + trace.getFileName();
+	        				URL url = ClassLoaderUtil.getResource(uri, LocationUtils.class);
+	        				if (url != null) {
+        						uri = url.toString();
+	        				}
+	        			}
+	        			if (description == null) {
+	        				StringBuilder sb = new StringBuilder();
+	        				sb.append("Class: ").append(trace.getClassName()).append("\n");
+	        				sb.append("File: ").append(trace.getFileName()).append("\n");
+	        				sb.append("Method: ").append(trace.getMethodName()).append("\n");
+	        				sb.append("Line: ").append(trace.getLineNumber());
+	        				description = sb.toString();
+	        			}
+	        			return new LocationImpl(description, uri, trace.getLineNumber(), -1);
+        			}
+        		}
         }
 
         return Location.UNKNOWN;

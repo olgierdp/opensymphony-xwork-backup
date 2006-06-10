@@ -15,7 +15,13 @@
  */
 package com.opensymphony.xwork.util.location;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple immutable and serializable implementation of {@link Location}.
@@ -132,6 +138,34 @@ public class LocationImpl implements Location, Serializable {
      */
     public int getColumnNumber() {
         return this.column;
+    }
+    
+    /**
+     * Gets a source code snippet with the default padding
+     *
+     * @param padding The amount of lines before and after the error to include
+     */
+    public List getSnippet(int padding) {
+        List snippet = new ArrayList();
+        if (getLineNumber() > 0) {
+            try {
+                InputStream in = new URL(getURI()).openStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                
+                int lineno = 0;
+                int errno = getLineNumber();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    lineno++;
+                    if (lineno >= errno - padding && lineno <= errno + padding) {
+                        snippet.add(line);
+                    }
+                }
+            } catch (Exception ex) {
+                // ignoring as snippet not available isn't a big deal
+            }
+        }
+        return snippet;
     }
 
     public boolean equals(Object obj) {

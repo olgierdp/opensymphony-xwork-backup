@@ -15,6 +15,13 @@
  */
 package com.opensymphony.xwork.util.location;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * A location in a resource. The location is composed of the URI of the resource, and 
@@ -55,5 +62,12 @@ public interface Location {
      * @return the column number (<code>-1</code> if unknown)
      */
     public int getColumnNumber();
-
+    
+    /**
+     * Gets a source code snippet with the default padding
+     *
+     * @param padding The amount of lines before and after the error to include
+     * @return A list of source lines
+     */
+    public List getSnippet(int padding);
 }

@@ -35,4 +35,19 @@ public class LocationUtilsTest extends TestCase {
         assertEquals("column", 40, loc.getColumnNumber());
         assertEquals("string representation", str, loc.toString());
     }
+    
+    public void testGetLocation_location() throws Exception {
+    		Location loc = new LocationImpl("desc", "sysId", 10, 4);
+    		assertTrue("Location should be the same", 
+				loc == LocationUtils.getLocation(loc, null));
+    }
+    
+    public void testGetLocation_exception() throws Exception {
+    		Exception e = new Exception();
+    		Location loc = LocationUtils.getLocation(e, null);
+    		
+    		assertTrue("Wrong sysId: "+loc.getURI(),
+    				"com/opensymphony/xwork/util/location/LocationUtilsTest.java"
+    				.equals(loc.getURI()));
+    }
 }

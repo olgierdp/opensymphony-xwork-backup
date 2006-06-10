@@ -19,6 +19,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.URL;
+import java.util.List;
+
+import com.opensymphony.util.ClassLoaderUtil;
+import com.opensymphony.xwork.XWorkException;
 
 import junit.framework.TestCase;
 
@@ -56,5 +61,29 @@ public class LocationImplTest extends TestCase {
         Object obj = ois.readObject();
         
         assertSame("unknown location", Location.UNKNOWN, obj);
+    }
+    
+    public void testGetSnippet() throws Exception {
+        URL url = ClassLoaderUtil.getResource("com/opensymphony/xwork/somefile.txt", getClass());
+        Location loc = new LocationImpl("foo", url.toString(), 3, 2);
+        
+        List snippet = loc.getSnippet(1);
+        assertNotNull(snippet);
+        assertTrue("Wrong length: "+snippet.size(), 3 == snippet.size());
+        
+        assertTrue("is".equals(snippet.get(0)));
+        assertTrue("a".equals(snippet.get(1)));
+        assertTrue("file".equals(snippet.get(2)));
+    }
+    
+    public void testGetSnippetNoPadding() throws Exception {
+        URL url = ClassLoaderUtil.getResource("com/opensymphony/xwork/somefile.txt", getClass());
+        Location loc = new LocationImpl("foo", url.toString(), 3, 2);
+        
+        List snippet = loc.getSnippet(0);
+        assertNotNull(snippet);
+        assertTrue("Wrong length: "+snippet.size(), 1 == snippet.size());
+        
+        assertTrue("a".equals(snippet.get(0)));
     }
 }

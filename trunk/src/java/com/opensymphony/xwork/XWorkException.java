@@ -123,43 +123,6 @@ public class XWorkException extends RuntimeException implements Locatable {
     
     
     /**
-     * Gets a source code snippet with the default padding
-     */
-    public List getSnippet() {
-        return getSnippet(2);
-    }
-    
-    
-    /**
-     * Gets a source code snippet with the default padding
-     *
-     * @param padding The amount of lines before and after the error to include
-     */
-    public List getSnippet(int padding) {
-        List snippet = new ArrayList();
-        if (location != null && location.getLineNumber() > 0) {
-            try {
-                InputStream in = new URL(location.getURI()).openStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                
-                int lineno = 0;
-                int errno = location.getLineNumber();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    lineno++;
-                    if (lineno >= errno - padding && lineno <= errno + padding) {
-                        snippet.add(line);
-                    }
-                }
-            } catch (Exception ex) {
-                // ignoring as snippet not available isn't a big deal
-            }
-        }
-        return snippet;
-    }
-            
-
-    /**
      * Returns a short description of this throwable object, including the 
      * location. If no detailed message is available, it will use the message
      * of the underlying exception if available.
