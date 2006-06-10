@@ -10,7 +10,7 @@ import com.opensymphony.util.TextUtils;
 import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionSupport;
 import com.opensymphony.xwork.ObjectFactory;
-import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.XWorkException;
 import com.opensymphony.xwork.config.*;
 import com.opensymphony.xwork.config.entities.*;
 import com.opensymphony.xwork.util.DomHelper;
@@ -629,7 +629,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 dtdMappings.put("-//OpenSymphony Group//XWork 1.0//EN", "xwork-1.0.dtd");
 
                 doc = DomHelper.parse(in, dtdMappings);
-            } catch (XworkException e) {
+            } catch (XWorkException e) {
                 if (includeElement != null) {
                     throw new ConfigurationException(e, includeElement);
                 } else {

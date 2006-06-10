@@ -69,7 +69,7 @@ public class ChainResultTest extends TestCase {
         try {
             proxy.execute();
             fail("did not detected repeated chain to an action");
-        } catch (XworkException e) {
+        } catch (XWorkException e) {
         }
     }
 

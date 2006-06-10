@@ -8,7 +8,7 @@ package com.opensymphony.xwork.validator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.opensymphony.util.ClassLoaderUtil;
-import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.XWorkException;
 
 /**
  * <code>ActionValidatorManagerFactory</code>
@@ -31,7 +31,7 @@ public class ActionValidatorManagerFactory {
         } catch (ClassNotFoundException e) {
             // this is fine, just fall back to the default object type determiner
         } catch (Exception e) {
-            throw new XworkException(e);
+            throw new XWorkException(e);
         }
     }
 

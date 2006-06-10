@@ -21,7 +21,7 @@ import com.opensymphony.util.ClassLoaderUtil;
 
 import com.opensymphony.xwork.util.location.Location;
 import com.opensymphony.xwork.util.location.LocationAttributes;
-import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.XWorkException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -91,7 +91,7 @@ public class DomHelper {
         try {
             parser = factory.newSAXParser();
         } catch (Exception ex) {
-            throw new XworkException("Unable to create SAX parser", ex);
+            throw new XWorkException("Unable to create SAX parser", ex);
         }
         
         
@@ -103,7 +103,7 @@ public class DomHelper {
         try {
             parser.parse(inputSource, new StartHandler(locationHandler, dtdMappings));
         } catch (Exception ex) {
-            throw new XworkException(ex);
+            throw new XWorkException(ex);
         }
         
         return builder.getDocument();
@@ -175,7 +175,7 @@ public class DomHelper {
                 }
                 handler.setResult(this.result);
             } catch (javax.xml.transform.TransformerException local) {
-                throw new XworkException("Fatal-Error: Unable to get transformer handler", local);
+                throw new XWorkException("Fatal-Error: Unable to get transformer handler", local);
             }
         }
     

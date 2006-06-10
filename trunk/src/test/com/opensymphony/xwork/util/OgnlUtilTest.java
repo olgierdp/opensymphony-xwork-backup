@@ -6,7 +6,7 @@ package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.XWorkTestCase;
-import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.XWorkException;
 import com.opensymphony.xwork.interceptor.ChainingInterceptor;
 import com.opensymphony.xwork.test.User;
 
@@ -609,7 +609,7 @@ public class OgnlUtilTest extends XWorkTestCase {
                 try {
                     this.add(clazz.newInstance());
                 } catch (Exception e) {
-                    throw new XworkException(e);
+                    throw new XWorkException(e);
                 }
             }
 

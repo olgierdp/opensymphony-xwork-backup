@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork.config;
 
-import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.XWorkException;
 
 
 /**
@@ -12,7 +12,7 @@ import com.opensymphony.xwork.XworkException;
  *
  * @author Jason Carreira
  */
-public class ConfigurationException extends XworkException {
+public class ConfigurationException extends XWorkException {
 
     /**
      * Constructs a <code>ConfigurationException</code> with no detail message.

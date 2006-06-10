@@ -6,7 +6,7 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.xwork.XWorkStatic;
-import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.XWorkException;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import junit.framework.TestCase;
 
@@ -96,7 +96,7 @@ public class ValidatorFileParserTest extends TestCase {
         boolean pass = false;
         try {
             ValidatorFileParser.parseActionValidatorConfigs(is, testFileName3);
-        } catch (XworkException ex) {
+        } catch (XWorkException ex) {
             assertTrue("Wrong line number", 3 == ex.getLocation().getLineNumber());
             pass = true;
         }
@@ -109,7 +109,7 @@ public class ValidatorFileParserTest extends TestCase {
         boolean pass = false;
         try {
             ValidatorFileParser.parseActionValidatorConfigs(is, testFileName4);
-        } catch (XworkException ex) {
+        } catch (XWorkException ex) {
             assertTrue("Wrong line number: " + ex.getLocation(), 13 == ex.getLocation().getLineNumber());
             pass = true;
         }
@@ -122,7 +122,7 @@ public class ValidatorFileParserTest extends TestCase {
         boolean pass = false;
         try {
             ValidatorFileParser.parseValidatorDefinitions(is, testFileName5);
-        } catch (XworkException ex) {
+        } catch (XWorkException ex) {
             assertTrue("Wrong line number", 3 == ex.getLocation().getLineNumber());
             pass = true;
         }

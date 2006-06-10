@@ -32,7 +32,7 @@ import ognl.TypeConverter;
 
 import com.opensymphony.util.TextUtils;
 import com.opensymphony.xwork.ActionContext;
-import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.XWorkException;
 
 
 /**
@@ -120,7 +120,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             }
             
             if (result == null && value != null && !"".equals(value)) {
-                throw new XworkException("Cannot create type " + toType + " from value " + value);
+                throw new XWorkException("Cannot create type " + toType + " from value " + value);
             }
         }
 
@@ -235,7 +235,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             try {
                 clazz = Class.forName((String) value);
             } catch (ClassNotFoundException e) {
-                throw new XworkException(e.getLocalizedMessage(), e);
+                throw new XWorkException(e.getLocalizedMessage(), e);
             }
         }
 
@@ -326,11 +326,11 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                         Constructor constructor = toType.getConstructor(new Class[]{long.class});
                         return constructor.newInstance(new Object[]{new Long(result.getTime())});
                     } catch (Exception e) {
-                        throw new XworkException("Couldn't create class " + toType + " using default (long) constructor", e);
+                        throw new XWorkException("Couldn't create class " + toType + " using default (long) constructor", e);
                     }
                 }
             } catch (ParseException e) {
-                throw new XworkException("Could not parse date", e);
+                throw new XWorkException("Could not parse date", e);
             }
         } else if (Date.class.isAssignableFrom(value.getClass())) {
             result = (Date) value;
@@ -358,7 +358,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 Number number = numFormat.parse(stringValue, parsePos);
                 
                 if (parsePos.getIndex() != stringValue.length()) {
-                    throw new XworkException("Unparseable number: \"" + stringValue + "\" at position "
+                    throw new XWorkException("Unparseable number: \"" + stringValue + "\" at position "
                             + parsePos.getIndex());
                 }
                 else {

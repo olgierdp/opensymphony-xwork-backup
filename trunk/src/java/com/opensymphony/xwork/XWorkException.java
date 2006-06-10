@@ -23,78 +23,78 @@ import com.opensymphony.xwork.util.location.LocationUtils;
  *
  * @author Jason Carreira
  */
-public class XworkException extends RuntimeException implements Locatable {
+public class XWorkException extends RuntimeException implements Locatable {
 
     private Location location;
 
 
     /**
-     * Constructs a <code>XworkException</code> with no detail message.
+     * Constructs a <code>XWorkException</code> with no detail message.
      */
-    public XworkException() {
+    public XWorkException() {
     }
 
     /**
-     * Constructs a <code>XworkException</code> with the specified
+     * Constructs a <code>XWorkException</code> with the specified
      * detail message.
      *
      * @param s the detail message.
      */
-    public XworkException(String s) {
+    public XWorkException(String s) {
         this(s, null, null);
     }
     
     /**
-     * Constructs a <code>XworkException</code> with the specified
+     * Constructs a <code>XWorkException</code> with the specified
      * detail message and target.
      *
      * @param s the detail message.
      * @param target the target of the exception.
      */
-    public XworkException(String s, Object target) {
+    public XWorkException(String s, Object target) {
         this(s, (Throwable) null, target);
     }
 
     /**
-     * Constructs a <code>XworkException</code> with the root cause
+     * Constructs a <code>XWorkException</code> with the root cause
      *
      * @param cause The wrapped exception
      */
-    public XworkException(Throwable cause) {
+    public XWorkException(Throwable cause) {
         this(null, cause, null);
     }
     
     /**
-     * Constructs a <code>XworkException</code> with the root cause and target
+     * Constructs a <code>XWorkException</code> with the root cause and target
      *
      * @param cause The wrapped exception
      * @param target The target of the exception
      */
-    public XworkException(Throwable cause, Object target) {
+    public XWorkException(Throwable cause, Object target) {
         this(null, cause, target);
     }
 
     /**
-     * Constructs a <code>XworkException</code> with the specified
+     * Constructs a <code>XWorkException</code> with the specified
      * detail message and exception cause.
      *
      * @param s the detail message.
      * @param cause the wrapped exception
      */
-    public XworkException(String s, Throwable cause) {
+    public XWorkException(String s, Throwable cause) {
         this(s, cause, null);
     }
     
     
      /**
-     * Constructs a <code>XworkException</code> with the specified
+     * Constructs a <code>XWorkException</code> with the specified
      * detail message, cause, and target
      *
      * @param s the detail message.
      * @param cause The wrapped exception
      * @param target The target of the exception
      */
-    public XworkException(String s, Throwable cause, Object target) {
+    public XWorkException(String s, Throwable cause, Object target) {
         super(s, cause);
         
         this.location = LocationUtils.getLocation(target);

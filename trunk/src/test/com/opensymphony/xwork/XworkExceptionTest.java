@@ -12,14 +12,14 @@ import java.util.List;
 import java.net.URL;
 
 /**
- * XworkException tests
+ * XWorkException tests
  */
 public class XworkExceptionTest extends TestCase {
 
     public void testGetSnippet() throws Exception {
         URL url = ClassLoaderUtil.getResource("com/opensymphony/xwork/somefile.txt", getClass());
         Location loc = new LocationImpl("foo", url.toString(), 3, 2);
-        XworkException ex = new XworkException("Some message", loc);
+        XWorkException ex = new XWorkException("Some message", loc);
         
         List snippet = ex.getSnippet(1);
         assertNotNull(snippet);
@@ -33,7 +33,7 @@ public class XworkExceptionTest extends TestCase {
     public void testGetSnippetNoPadding() throws Exception {
         URL url = ClassLoaderUtil.getResource("com/opensymphony/xwork/somefile.txt", getClass());
         Location loc = new LocationImpl("foo", url.toString(), 3, 2);
-        XworkException ex = new XworkException("Some message", loc);
+        XWorkException ex = new XWorkException("Some message", loc);
         
         List snippet = ex.getSnippet(0);
         assertNotNull(snippet);

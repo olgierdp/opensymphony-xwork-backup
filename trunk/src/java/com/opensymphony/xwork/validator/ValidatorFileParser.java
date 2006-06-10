@@ -6,7 +6,7 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.util.DomHelper;
-import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.XWorkException;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
@@ -114,7 +114,7 @@ public class ValidatorFileParser {
                 ObjectFactory.getObjectFactory().buildValidator(className, new HashMap(), null);
                 ValidatorFactory.registerValidator(name, className);
             } catch (Exception e) {
-                throw new XworkException("Unable to load validator class " + className, e, validatorElement);
+                throw new XWorkException("Unable to load validator class " + className, e, validatorElement);
             }
         }
     }

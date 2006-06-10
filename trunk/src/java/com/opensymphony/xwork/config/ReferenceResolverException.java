@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork.config;
 
-import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.XWorkException;
 
 
 /**
@@ -12,7 +12,7 @@ import com.opensymphony.xwork.XworkException;
  *
  * @author Mike
  */
-public class ReferenceResolverException extends XworkException {
+public class ReferenceResolverException extends XWorkException {
 
     public ReferenceResolverException() {
         super();

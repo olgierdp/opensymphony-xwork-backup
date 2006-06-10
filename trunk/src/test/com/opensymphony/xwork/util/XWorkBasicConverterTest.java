@@ -7,7 +7,7 @@ package com.opensymphony.xwork.util;
 import java.util.Date;
 import java.util.HashMap;
 
-import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.XWorkException;
 
 import junit.framework.TestCase;
 
@@ -42,7 +42,7 @@ public class XWorkBasicConverterTest extends TestCase {
 		try {
 			Object convertedObject = basicConverter.convertValue(new HashMap(), null, null, null, "asdsd", Date.class);
 		}
-		catch(XworkException e) {
+		catch(XWorkException e) {
 			// we MUST get this exception as this is a conversion error
 			assertTrue(true);
 			return;

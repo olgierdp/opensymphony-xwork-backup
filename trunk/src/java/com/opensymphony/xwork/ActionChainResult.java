@@ -134,7 +134,7 @@ public class ActionChainResult implements Result {
                 : null;
 
         if (isInChainHistory(finalNamespace, finalActionName, finalMethodName)) {
-            throw new XworkException("infinite recursion detected");
+            throw new XWorkException("infinite recursion detected");
         }
 
         addToHistory(finalNamespace, finalActionName, finalMethodName);

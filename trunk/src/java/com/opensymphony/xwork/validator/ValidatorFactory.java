@@ -6,7 +6,7 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.xwork.ObjectFactory;
-import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.XWorkException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -244,7 +244,7 @@ public class ValidatorFactory {
             validator = ObjectFactory.getObjectFactory().buildValidator(className, cfg.getParams(), null); // ActionContext.getContext().getContextMap());
         } catch (Exception e) {
             final String msg = "There was a problem creating a Validator of type " + className + " : caused by " + e.getMessage();
-            throw new XworkException(msg, e, cfg);
+            throw new XWorkException(msg, e, cfg);
         }
 
         // set other configured properties

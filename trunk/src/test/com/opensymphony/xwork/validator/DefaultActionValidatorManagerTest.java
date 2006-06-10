@@ -8,7 +8,7 @@ import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.ValidationOrderAction;
 import com.opensymphony.xwork.XWorkTestCase;
-import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.XWorkException;
 import com.opensymphony.xwork.test.DataAware2;
 import com.opensymphony.xwork.test.SimpleAction2;
 import com.opensymphony.xwork.test.SimpleAction3;
@@ -60,7 +60,7 @@ public class DefaultActionValidatorManagerTest extends XWorkTestCase {
         boolean pass = false;
         try {
             List validatorList = actionValidatorManager.getValidators(TestBean.class, "badtest");
-        } catch (XworkException ex) {
+        } catch (XWorkException ex) {
             pass = true;
         }
         assertTrue("Didn't throw exception on load failure", pass);
