@@ -176,7 +176,8 @@ public class TextParseUtil {
      * 
      * <p/>
      * 
-     * By supplying this <code>ParsedValueEvaluator</code>, the parsed value will be
+     * By supplying this <code>ParsedValueEvaluator</code>, the parsed value
+     * (parsed against the value stack) value will be
      * given to <code>ParsedValueEvaluator</code> to be evaluated before the 
      * translateVariable process goes on. 
      * 
