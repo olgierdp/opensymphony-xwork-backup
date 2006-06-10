@@ -190,6 +190,13 @@ public class TextParseUtil {
      * @version $Date$ $Id$
      */
     public static interface ParsedValueEvaluator {
+    	
+    	/**
+    	 * Evaluated the value parsed by Ognl value stack.
+    	 * 
+    	 * @param parsedValue - value parsed by ognl value stack
+    	 * @return return the evaluted value.
+    	 */
     	Object evaluate(Object parsedValue);
     }
 }
