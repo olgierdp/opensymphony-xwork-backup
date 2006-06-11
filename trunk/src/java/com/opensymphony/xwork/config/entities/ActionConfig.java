@@ -57,22 +57,20 @@ public class ActionConfig extends Located implements InterceptorListHolder, Para
     }
 
     public ActionConfig(String methodName, String className, Map<String, Object> parameters, Map<String, ResultConfig> results, List<InterceptorMapping> interceptors) {
-        this(methodName, className, parameters, results, interceptors, Collections.EMPTY_LIST, "");
+        this(methodName, className, "", parameters, results, interceptors, Collections.EMPTY_LIST);
     }
 
     public ActionConfig(String methodName, String className, Map<String, Object> parameters, Map<String, ResultConfig> results, List<InterceptorMapping> interceptors, List<ExceptionMappingConfig> exceptionMappings) {
-        this(methodName, className, parameters, results, interceptors, Collections.EMPTY_LIST, exceptionMappings, "");
+        this(methodName, className, "", parameters, results, interceptors, Collections.EMPTY_LIST, exceptionMappings);
     }
 
-    //TODO If this is commited to CVS we should put the package arg at the front of the ctor and fix
-    //code that uses it
-    public ActionConfig(String methodName, String className, Map<String, Object> parameters, Map<String, ResultConfig> results, List<InterceptorMapping> interceptors, List<ExternalReference> externalRefs, String packageName) {
-        this(methodName, className, parameters, results, interceptors, externalRefs, Collections.EMPTY_LIST, packageName);
+    public ActionConfig(String methodName, String className, String packageName, Map<String, Object> parameters, Map<String, ResultConfig> results, List<InterceptorMapping> interceptors, List<ExternalReference> externalRefs) {
+        this(methodName, className, packageName, parameters, results, interceptors, externalRefs, Collections.EMPTY_LIST);
     }
 
-    public ActionConfig(String methodName, String className, Map<String, Object> parameters, Map<String, ResultConfig> results,
-                        List<InterceptorMapping> interceptors, List<ExternalReference> externalRefs,
-                        List<ExceptionMappingConfig> exceptionMappings, String packageName) {
+    public ActionConfig(String methodName, String className, String packageName, Map<String, Object> parameters,
+                        Map<String, ResultConfig> results, List<InterceptorMapping> interceptors,
+                        List<ExternalReference> externalRefs, List<ExceptionMappingConfig> exceptionMappings) {
         this.methodName = methodName;
         this.interceptors = interceptors;
         this.params = parameters;
@@ -82,7 +80,7 @@ public class ActionConfig extends Located implements InterceptorListHolder, Para
         this.exceptionMappings = exceptionMappings;
         this.packageName = packageName;
     }
-
+    
     public void setClassName(String className) {
         this.className = className;
     }

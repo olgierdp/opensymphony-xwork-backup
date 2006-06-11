@@ -179,18 +179,26 @@ public class DefaultConfiguration implements Configuration {
         List<ExceptionMappingConfig> exceptionMappings = baseConfig.getExceptionMappings();
         exceptionMappings.addAll(packageContext.getAllExceptionMappingConfigs());
 
-        return new ActionConfig(baseConfig.getMethodName(), baseConfig.getClassName(), params, results, interceptors,
-                externalRefs, exceptionMappings, packageContext.getName());
+        return new ActionConfig(baseConfig.getMethodName(), baseConfig.getClassName(), packageContext.getName(), params, results,
+                interceptors, externalRefs, exceptionMappings);
     }
 
 
     private class RuntimeConfigurationImpl implements RuntimeConfiguration {
         private Map<String, Map<String, ActionConfig>> namespaceActionConfigs;
+        private Map<String, ActionConfigMatcher> namespaceActionConfigMatchers;
         private Map<String, String> namespaceConfigs;
 
         public RuntimeConfigurationImpl(Map<String, Map<String, ActionConfig>> namespaceActionConfigs, Map<String, String> namespaceConfigs) {
             this.namespaceActionConfigs = namespaceActionConfigs;
             this.namespaceConfigs = namespaceConfigs;
+            
+            this.namespaceActionConfigMatchers = new LinkedHashMap<String, ActionConfigMatcher>();
+            
+            for (String ns : namespaceActionConfigs.keySet()) {
+                namespaceActionConfigMatchers.put(ns,
+                        new ActionConfigMatcher(namespaceActionConfigs.get(ns)));
+            }
         }
 
 
@@ -208,11 +216,15 @@ public class DefaultConfiguration implements Configuration {
 
             if (actions != null) {
                 config = actions.get(name);
-                // fail over to default action
+                // Check wildcards
                 if (config == null) {
-                    String defaultActionRef = namespaceConfigs.get((namespace == null) ? "" : namespace);
-                    if (defaultActionRef != null) {
-                        config = actions.get(defaultActionRef);
+                    config = namespaceActionConfigMatchers.get(namespace).match(name);
+                    // fail over to default action
+                    if (config == null) {
+                        String defaultActionRef = namespaceConfigs.get((namespace == null) ? "" : namespace);
+                        if (defaultActionRef != null) {
+                            config = actions.get(defaultActionRef);
+                        }
                     }
                 }
             }
@@ -223,11 +235,15 @@ public class DefaultConfiguration implements Configuration {
 
                 if (actions != null) {
                     config = actions.get(name);
-                    // fail over to default action
+                    // Check wildcards
                     if (config == null) {
-                        String defaultActionRef = namespaceConfigs.get("");
-                        if (defaultActionRef != null) {
-                            config = actions.get(defaultActionRef);
+                        config = namespaceActionConfigMatchers.get("").match(name);
+                        // fail over to default action
+                        if (config == null) {
+                            String defaultActionRef = namespaceConfigs.get("");
+                            if (defaultActionRef != null) {
+                                config = actions.get(defaultActionRef);
+                            }
                         }
                     }
                 }
@@ -236,7 +252,7 @@ public class DefaultConfiguration implements Configuration {
 
             return config;
         }
-
+        
         /**
          * Gets the configuration settings for every action.
          *

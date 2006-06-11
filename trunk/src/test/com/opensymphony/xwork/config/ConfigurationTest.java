@@ -5,12 +5,14 @@
 package com.opensymphony.xwork.config;
 
 import com.opensymphony.xwork.*;
+import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.InterceptorMapping;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork.mock.MockInterceptor;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -65,6 +67,21 @@ public class ConfigurationTest extends XWorkTestCase {
 
         // check inheritance from Default
         assertNotNull(configuration.getActionConfig("includeTest", "Foo"));
+    }
+    
+    public void testWildcardName() {
+        RuntimeConfiguration configuration = XWorkStatic.getConfigurationManager().getConfiguration().getRuntimeConfiguration();
+
+        ActionConfig config = configuration.getActionConfig("", "WildCard/Simple/input");
+        
+        assertNotNull(config);
+        assertTrue("Wrong class name, "+config.getClassName(), 
+                "com.opensymphony.xwork.SimpleAction".equals(config.getClassName()));
+        assertTrue("Wrong method name", "input".equals(config.getMethodName()));
+        
+        Map<String, Object> p = config.getParams();
+        assertTrue("Wrong parameter, "+p.get("foo"), "Simple".equals(p.get("foo")));
+        assertTrue("Wrong parameter, "+p.get("bar"), "input".equals(p.get("bar")));
     }
 
     public void testGlobalResults() {
@@ -182,6 +199,7 @@ public class ConfigurationTest extends XWorkTestCase {
             fail();
         }
     }
+    
 
     protected void setUp() throws Exception {
         super.setUp();

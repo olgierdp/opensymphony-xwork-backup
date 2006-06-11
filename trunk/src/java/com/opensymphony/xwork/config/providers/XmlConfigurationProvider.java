@@ -152,8 +152,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         List exceptionMappings = buildExceptionMappings(actionElement, packageContext);
 
-        ActionConfig actionConfig = new ActionConfig(methodName, className, actionParams, results, interceptorList, externalrefs, exceptionMappings,
-                packageContext.getName());
+        ActionConfig actionConfig = new ActionConfig(methodName, className, packageContext.getName(), actionParams, results, interceptorList, externalrefs,
+                exceptionMappings);
         actionConfig.setLocation(location);
         packageContext.addActionConfig(name, actionConfig);
 
@@ -163,6 +163,13 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     }
 
     protected boolean verifyAction(String className, String name, Location loc) {
+        if (className.indexOf('{') > -1) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Action class [" + className + "] contains a wildcard " +
+                          "replacement value, so it can't be verified");
+            }
+            return true;
+        }
         try {
             Class clazz = ObjectFactory.getObjectFactory().getClassInstance(className);
             if (ObjectFactory.getObjectFactory().isNoArgConstructorRequired()) {
