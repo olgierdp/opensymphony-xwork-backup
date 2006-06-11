@@ -32,7 +32,8 @@ import com.opensymphony.xwork.Preparable;
  *
  * <ul>
  *
- * <li>None</li>
+ * <li>alwaysInvokePrepare - Default to true. If true, prepare will always be invoked, 
+ * otherwise it will not.</li>
  *
  * </ul>
  *
@@ -72,6 +73,8 @@ import com.opensymphony.xwork.Preparable;
  */
 public class PrepareInterceptor extends AroundInterceptor {
 	
+	private static final long serialVersionUID = -5216969014510719786L;
+
 	private static final Log _log = LogFactory.getLog(PrepareInterceptor.class);
 	
 	private final static String PREPARE_PREFIX = "prepare";

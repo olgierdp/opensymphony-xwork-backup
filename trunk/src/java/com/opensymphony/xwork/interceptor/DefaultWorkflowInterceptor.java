@@ -43,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
  * <b>NOTE:</b> As this method extends off MethodFilterInterceptor, it is capable of
  * deciding if it is applicable only to selective methods in the action class. See
  * <code>MethodFilterInterceptor</code> for more info.
- *
+ * 
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Interceptor parameters:</u>
@@ -52,7 +52,8 @@ import org.apache.commons.logging.LogFactory;
  *
  * <ul>
  *
- * <li>None</li>
+ * <li>alwaysInvokeValidate - Default to true. If true validate() method will always
+ * be invoked, otherwise it will not.</li>
  *
  * </ul>
  *
