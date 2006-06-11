@@ -14,15 +14,24 @@ import com.opensymphony.xwork.Preparable;
 /**
  * <!-- START SNIPPET: description -->
  *
- * This interceptor calls prepare() on actions which implement {@link Preparable}. This interceptor is very useful for
- * any situation where you need to ensure some logic runs before the actual execute method runs.
- *
- * <p/> A typical use of this is to run some logic to load an object from the database so that when parameters are set
- * they can be set on this object. For example, suppose you have a User object with two properties: <i>id</i> and
- * <i>name</i>. Provided that the params interceptor is called twice (once before and once after this interceptor), you
- * can load the User object using the id property, and then when the second params interceptor is called the parameter
- * <i>user.name</i> will be set, as desired, on the actual object loaded from the database. See the example for more
- * info.
+ * This interceptor calls prepare() on actions which implement
+ * {@link Preparable}. This interceptor is very useful for any situation where
+ * you need to ensure some logic runs before the actual execute method runs.
+ * 
+ * <p/><b>Update</b>: Added logic to execute a prepare{MethodName} rather than a 
+ * general prepare Method. This allows us to run some logic based on the method 
+ * name we specify in the {@link ActionProxy}. For example, you can specify a 
+ * prepareInput() method, or even a prepareDoInput() method that will be run 
+ * before the invocation of the input method.
+ * 
+ * <p/> A typical use of this is to run some logic to load an object from the
+ * database so that when parameters are set they can be set on this object. For
+ * example, suppose you have a User object with two properties: <i>id</i> and
+ * <i>name</i>. Provided that the params interceptor is called twice (once
+ * before and once after this interceptor), you can load the User object using
+ * the id property, and then when the second params interceptor is called the
+ * parameter <i>user.name</i> will be set, as desired, on the actual object
+ * loaded from the database. See the example for more info.
  *
  * <!-- END SNIPPET: description -->
  *
@@ -54,13 +63,13 @@ import com.opensymphony.xwork.Preparable;
  * <pre>
  * <!-- START SNIPPET: example -->
  * &lt;!-- Calls the params interceptor twice, allowing you to
- *      pre-load data for the second time parameters are set --&gt;
- * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
- *     &lt;interceptor-ref name="params"/&gt;
- *     &lt;interceptor-ref name="prepare"/&gt;
- *     &lt;interceptor-ref name="basicStack"/&gt;
- *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
- * &lt;/action&gt;
+ *       pre-load data for the second time parameters are set --&gt;
+ *  &lt;action name=&quot;someAction&quot; class=&quot;com.examples.SomeAction&quot;&gt;
+ *      &lt;interceptor-ref name=&quot;params&quot;/&gt;
+ *      &lt;interceptor-ref name=&quot;prepare&quot;/&gt;
+ *      &lt;interceptor-ref name=&quot;basicStack&quot;/&gt;
+ *      &lt;result name=&quot;success&quot;&gt;good_result.ftl&lt;/result&gt;
+ *  &lt;/action&gt;
  * <!-- END SNIPPET: example -->
  * </pre>
  *

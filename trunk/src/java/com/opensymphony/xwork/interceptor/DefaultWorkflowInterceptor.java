@@ -44,6 +44,11 @@ import org.apache.commons.logging.LogFactory;
  * deciding if it is applicable only to selective methods in the action class. See
  * <code>MethodFilterInterceptor</code> for more info.
  * 
+ * <p/><b>Update:</b> Added logic to execute a validate{MethodName} rather than a general validate method. 
+ * This allows us to run some validation logic based on the method name we specify in the 
+ * ActionProxy. For example, you can specify a validateInput() method, or even a validateDoInput() 
+ * method that will be run before the invocation of the input method.
+ * 
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Interceptor parameters:</u>
