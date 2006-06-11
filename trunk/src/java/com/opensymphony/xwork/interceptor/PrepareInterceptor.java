@@ -4,6 +4,9 @@
  */
 package com.opensymphony.xwork.interceptor;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.Preparable;
 
@@ -63,10 +66,23 @@ import com.opensymphony.xwork.Preparable;
  * Date: Nov 5, 2003 2:33:11 AM
  *
  * @author Jason Carreira
+ * @author Philip Luppens
+ * @author tm_jee
  * @see com.opensymphony.xwork.Preparable
  */
 public class PrepareInterceptor extends AroundInterceptor {
+	
+	private static final Log _log = LogFactory.getLog(PrepareInterceptor.class);
+	
+	private final static String PREPARE_PREFIX = "prepare";
+	private final static String ALT_PREPARE_PREFIX = "prepareDo";
 
+	private boolean alwaysInvokePrepare = true;
+	
+	public void setAlwaysInvokePrepare(String alwaysInvokePrepare) {
+		this.alwaysInvokePrepare = Boolean.parseBoolean(alwaysInvokePrepare);
+	}
+	
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }
 
@@ -74,7 +90,18 @@ public class PrepareInterceptor extends AroundInterceptor {
         Object action = invocation.getAction();
 
         if (action instanceof Preparable) {
-            ((Preparable) action).prepare();
+        	try {
+        		PrefixMethodInvocationUtil.invokePrefixMethod(invocation, 
+        			new String[] { PREPARE_PREFIX, ALT_PREPARE_PREFIX });
+        	}
+        	catch(Exception e) {
+        		// just in case there's an exception while doing reflection, 
+        		// we still want prepare() to be able to get called.
+        		_log.warn("an exception occured while trying to execute prefixed method", e);
+        	}
+        	if (alwaysInvokePrepare) {
+        		((Preparable) action).prepare();
+        	}
         }
     }
 }

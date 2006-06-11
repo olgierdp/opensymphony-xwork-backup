@@ -97,23 +97,56 @@ import org.apache.commons.logging.LogFactory;
  * @author Jason Carreira
  * @author Rainer Hermanns
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
+ * @author Philip Luppens
+ * @author tm_jee
  * 
  * @version $Date$ $Id$
  */
 public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 	
+	private static final long serialVersionUID = 7563014655616490865L;
+
 	private static final Log _log = LogFactory.getLog(DefaultWorkflowInterceptor.class);
+	
+	private final static String VALIDATE_PREFIX = "validate";
+	private final static String ALT_VALIDATE_PREFIX = "validateDo";
+	
+	private boolean alwaysInvokeValidate = true;
+	
+	
+	public void setAlwaysInvokeValidate(String alwaysInvokeValidate) {
+		this.alwaysInvokeValidate = Boolean.parseBoolean(alwaysInvokeValidate);
+	}
 	
     protected String doIntercept(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
-
+        
+        
         if (action instanceof Validateable) {
+        	
             Validateable validateable = (Validateable) action;
             if (_log.isDebugEnabled()) {
             	_log.debug("Invoking validate() on action "+validateable);
             }
-            validateable.validate();
+            
+            try {
+            	PrefixMethodInvocationUtil.invokePrefixMethod(
+            			invocation, 
+            			new String[] { VALIDATE_PREFIX, ALT_VALIDATE_PREFIX });
+            }
+            catch(Exception e) {
+            	e.printStackTrace();
+            	// If any exception occurred while doing reflection, we want 
+            	// validate() to be executed
+            	_log.warn("an exception occured while executing the prefix method", e);
+            }
+            
+            
+            if (alwaysInvokeValidate) {
+            	validateable.validate();
+            }
         }
+        
 
         if (action instanceof ValidationAware) {
             ValidationAware validationAwareAction = (ValidationAware) action;

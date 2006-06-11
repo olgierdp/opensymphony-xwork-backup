@@ -22,6 +22,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
     private Mock actionMock;
     private Mock invocationMock;
     private Action action;
+    private ActionProxy proxy;
 
 
     public void testInvokesActionInvocationIfNoErrors() throws Exception {
@@ -30,6 +31,8 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         final String result = "testing123";
         invocationMock.expectAndReturn("invoke", result);
         invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
         assertEquals(result, interceptor.intercept(invocation));
     }
 
@@ -37,6 +40,8 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         actionMock.expectAndReturn("hasErrors", true);
         actionMock.expect("validate");
         invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
         assertEquals(Action.INPUT, interceptor.intercept(invocation));
     }
 
@@ -61,6 +66,8 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         final String result = "testing123";
         invocationMock.expectAndReturn("invoke", result);
         invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
         assertEquals(result, interceptor.intercept(invocation));
     }
 
@@ -72,6 +79,8 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         final String result = "testing123";
         invocationMock.expectAndReturn("invoke", result);
         invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
         assertEquals(result, interceptor.intercept(invocation));
     }
 
@@ -83,6 +92,8 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         final String result = "testing123";
         invocationMock.expectAndReturn("invoke", result);
         invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
         assertEquals(result, interceptor.intercept(invocation));
     }
 
@@ -94,6 +105,8 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         final String result = "testing123";
         invocationMock.expectAndReturn("invoke", result);
         invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
         assertEquals(result, interceptor.intercept(invocation));
     }
 
@@ -105,6 +118,8 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         final String result = "testing123";
         invocationMock.expectAndReturn("invoke", result);
         invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
         assertEquals(result, interceptor.intercept(invocation));
     }
 
@@ -124,6 +139,8 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         final String result = "testing123";
         invocationMock.expectAndReturn("invoke", result);
         invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
         assertEquals(result, interceptor.intercept(invocation));
     }
 
@@ -138,13 +155,14 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         invocationMock.expectAndReturn("getAction", action);
         assertEquals(result, interceptor.intercept(invocation));
     }
-
+    
+    
     protected void setUp() throws Exception {
         super.setUp();
         actionMock = new Mock(ValidateAction.class);
         action = (ValidateAction) actionMock.proxy();
         invocationMock = new Mock(ActionInvocation.class);
-        ActionProxy proxy = new MockActionProxy();
+        proxy = new MockActionProxy();
         proxy.setMethod("execute");
         invocationMock.expectAndReturn("getProxy", proxy);
         invocation = (ActionInvocation) invocationMock.proxy();
@@ -157,6 +175,8 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         invocationMock.verify();
     }
 
+    
+    
 
     private interface ValidateAction extends Action, Validateable, ValidationAware {
     }
