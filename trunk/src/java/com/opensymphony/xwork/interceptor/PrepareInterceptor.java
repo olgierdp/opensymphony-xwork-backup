@@ -18,12 +18,6 @@ import com.opensymphony.xwork.Preparable;
  * {@link Preparable}. This interceptor is very useful for any situation where
  * you need to ensure some logic runs before the actual execute method runs.
  * 
- * <p/><b>Update</b>: Added logic to execute a prepare{MethodName} rather than a 
- * general prepare Method. This allows us to run some logic based on the method 
- * name we specify in the {@link ActionProxy}. For example, you can specify a 
- * prepareInput() method, or even a prepareDoInput() method that will be run 
- * before the invocation of the input method.
- * 
  * <p/> A typical use of this is to run some logic to load an object from the
  * database so that when parameters are set they can be set on this object. For
  * example, suppose you have a User object with two properties: <i>id</i> and
@@ -32,6 +26,12 @@ import com.opensymphony.xwork.Preparable;
  * the id property, and then when the second params interceptor is called the
  * parameter <i>user.name</i> will be set, as desired, on the actual object
  * loaded from the database. See the example for more info.
+ * 
+ * <p/><b>Update</b>: Added logic to execute a prepare{MethodName} rather than a 
+ * general prepare Method. This allows us to run some logic based on the method 
+ * name we specify in the {@link ActionProxy}. For example, you can specify a 
+ * prepareInput() method, or even a prepareDoInput() method that will be run 
+ * before the invocation of the input method.
  *
  * <!-- END SNIPPET: description -->
  *

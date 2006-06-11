@@ -25,7 +25,7 @@ import com.opensymphony.xwork.ActionInvocation;
  * 
  * <!-- START SNIPPET: javadocDefaultWorkflowInterceptor -->
  * 
- * <b>A] In DefaultWorkflowInterceptor</b>
+ * <b>In DefaultWorkflowInterceptor</b>
  * <p>applies only when action implements {@link com.opensymphony.xwork.Validateable}</p>
  * <ol>
  *    <li>if the action class have validate{MethodName}(), it will be invoked</li>
@@ -38,8 +38,8 @@ import com.opensymphony.xwork.ActionInvocation;
  * 
  * <!-- START SNIPPET: javadocPrepareInterceptor -->
  * 
- * <b>B] In PrepareInterceptor</b>
- * <p>applies only when action implements Preparable</p>
+ * <b>In PrepareInterceptor</b>
+ * <p>Applies only when action implements Preparable</p>
  * <ol>
  *    <li>if the action class have prepare{MethodName}(), it will be invoked</li>
  *    <li>else if the action class have prepareDo(MethodName()}(), it will be invoked</li>
