@@ -15,8 +15,6 @@ import com.opensymphony.xwork.ActionInvocation;
 /**
  * A utility class for invoking prefixed methods in action class.
  * 
- * <!-- START SNIPPET: javadoc -->
- * 
  * Interceptors that made use of this class are 
  * <ul>
  * 	 <li>DefaultWorkflowInterceptor </li>
@@ -25,14 +23,20 @@ import com.opensymphony.xwork.ActionInvocation;
  * 
  * <p/>
  * 
+ * <!-- START SNIPPET: javadocDefaultWorkflowInterceptor -->
+ * 
  * <b>A] In DefaultWorkflowInterceptor</b>
- * <p>applies only when action implements Vaidatable</p>
+ * <p>applies only when action implements {@link com.opensymphony.xwork.Validateable}</p>
  * <ol>
  *    <li>if the action class have validate{MethodName}(), it will be invoked</li>
  *    <li>else if the action class have validateDo{MethodName}(), it will be invoked</li>
  *    <li>no matter if 1] or 2] is performed, if alwaysInvokeValidate property of the interceptor is "true" (which is by default "true"), validate() will be invoked.</li>
  * </ol>
  * 
+ * <!-- END SNIPPET: javadocDefaultWorkflowInterceptor -->
+ * 
+ * 
+ * <!-- START SNIPPET: javadocPrepareInterceptor -->
  * 
  * <b>B] In PrepareInterceptor</b>
  * <p>applies only when action implements Preparable</p>
@@ -42,7 +46,7 @@ import com.opensymphony.xwork.ActionInvocation;
  *    <li>no matter if 1] or 2] is performed, if alwaysinvokePrepare property of the interceptor is "true" (which is by default "true"), prepare() will be invoked.</li>
  * </ol>
  * 
- * <!-- END SNIPPET: javadoc -->
+ * <!-- END SNIPPET: javadocPrepareInterceptor -->
  * 
  * @author Philip Luppens
  * @author tm_jee
