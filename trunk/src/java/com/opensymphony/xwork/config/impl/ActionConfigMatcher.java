@@ -21,6 +21,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.opensymphony.xwork.util.WildcardHelper;
 import com.opensymphony.xwork.config.entities.ActionConfig;
+import com.opensymphony.xwork.config.entities.ExceptionMappingConfig;
+import com.opensymphony.xwork.config.entities.ExternalReference;
+import com.opensymphony.xwork.config.entities.ResultConfig;
 
 import java.io.Serializable;
 
@@ -139,12 +142,39 @@ public class ActionConfigMatcher implements Serializable {
         String methodName = convertParam(orig.getMethodName(), vars);
         String pkgName = convertParam(orig.getPackageName(), vars);
         
-        Map<String,Object> params = new LinkedHashMap<String,Object>();
-        replaceParameters(orig.getParams(), params, vars);
+        Map<String,Object> params = replaceParameters(orig.getParams(), vars);
+        
+        Map<String,ResultConfig> results = new LinkedHashMap<String,ResultConfig>();
+        for (String name : orig.getResults().keySet()) {
+            ResultConfig result = orig.getResults().get(name);
+            name = convertParam(name, vars);
+            String resultClassName = convertParam(result.getClassName(), vars);
+            Map<String,Object> resultParams = replaceParameters(result.getParams(), vars);
+            ResultConfig r = new ResultConfig(name, resultClassName, resultParams);
+            results.put(name, r);
+        }
+        
+        List<ExceptionMappingConfig> exs = new ArrayList<ExceptionMappingConfig>();
+        for (ExceptionMappingConfig ex : orig.getExceptionMappings()) {
+            String name = convertParam(ex.getName(), vars);
+            String exClassName = convertParam(ex.getExceptionClassName(), vars);
+            String exResult = convertParam(ex.getResult(), vars);
+            Map<String,Object> exParams = replaceParameters(ex.getParams(), vars);
+            ExceptionMappingConfig e = new ExceptionMappingConfig(name, exClassName, exResult, exParams);
+            exs.add(e);
+        }
+        
+        List<ExternalReference> refs = new ArrayList<ExternalReference>();
+        for (ExternalReference ex : orig.getExternalRefs()) {
+            String name = convertParam(ex.getName(), vars);
+            String refName = convertParam(ex.getExternalRef(), vars);
+            ExternalReference e = new ExternalReference(name, refName, ex.isRequired());
+            refs.add(e);
+        }
+        
         
         ActionConfig config = new ActionConfig(methodName, className, pkgName, 
-                params, orig.getResults(), orig.getInterceptors(), 
-                orig.getExternalRefs(), orig.getExceptionMappings());
+                params, results, orig.getInterceptors(), refs, exs);
         
         return config;
     }
@@ -157,12 +187,12 @@ public class ActionConfigMatcher implements Serializable {
      * @param map The target parameters to store the processed values
      * @param vars  A Map of wildcard-matched strings
      */
-    protected void replaceParameters(Map<String, Object> orig, 
-            Map<String, Object> map, Map vars) {
-
+    protected Map<String,Object> replaceParameters(Map<String, Object> orig, Map vars) {
+        Map<String,Object> map = new LinkedHashMap<String,Object>();
         for (String key : orig.keySet()) {
             map.put(key, convertParam(String.valueOf(orig.get(key)), vars));
         }
+        return map;
     }
 
     /**

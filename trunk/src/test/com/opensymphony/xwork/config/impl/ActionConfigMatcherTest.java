@@ -58,8 +58,8 @@ public class ActionConfigMatcherTest extends XWorkTestCase {
         ActionConfig matched = matcher.match("foo/class/method");
 
         assertNotNull("ActionConfig should be matched", matched);
-        assertTrue("ActionConfig should have properties",
-            matched.getParams().size() == 2);
+        assertTrue("ActionConfig should have properties, had " +
+                matched.getParams().size(), matched.getParams().size() == 2);
         assertTrue("ActionConfig should have interceptors",
                 matched.getInterceptors().size() == 1);
         assertTrue("ActionConfig should have ex mappings",
@@ -79,6 +79,25 @@ public class ActionConfigMatcherTest extends XWorkTestCase {
 
         assertTrue("First param isn't correct", "class".equals(m.getParams().get("first")));
         assertTrue("Second param isn't correct", "method".equals(m.getParams().get("second")));
+        
+        ExceptionMappingConfig ex = m.getExceptionMappings().get(0);
+        assertTrue("Wrong name, was "+ex.getName(), "fooclass".equals(ex.getName()));
+        assertTrue("Wrong result", "successclass".equals(ex.getResult()));
+        assertTrue("Wrong exception", 
+                "java.lang.methodException".equals(ex.getExceptionClassName()));
+        assertTrue("First param isn't correct", "class".equals(ex.getParams().get("first")));
+        assertTrue("Second param isn't correct", "method".equals(ex.getParams().get("second")));
+        
+        ResultConfig result = m.getResults().get("successclass");
+        assertTrue("Wrong name, was "+result.getName(), "successclass".equals(result.getName()));
+        assertTrue("Wrong classname", "foo.method".equals(result.getClassName()));
+        assertTrue("First param isn't correct", "class".equals(result.getParams().get("first")));
+        assertTrue("Second param isn't correct", "method".equals(result.getParams().get("second")));
+        
+        ExternalReference ref = m.getExternalRefs().get(0);
+        assertTrue("Wrong name", "fooclass".equals(ref.getName()));
+        assertTrue("Wrong ref", "barmethod".equals(ref.getExternalRef()));
+        assertTrue("Wrong required", ref.isRequired());
     }
 
     public void testCheckMultipleSubstitutions() {
@@ -103,10 +122,14 @@ public class ActionConfigMatcherTest extends XWorkTestCase {
         config.setParams(params);
         map.put("foo/*/*", config);
         
-        config.addExceptionMapping(new ExceptionMappingConfig());
-        config.addExternalRef(new ExternalReference());
+        config.addExceptionMapping(new ExceptionMappingConfig(
+                "foo{1}", "java.lang.{2}Exception", "success{1}", new HashMap(params)));
+        
+        config.addExternalRef(new ExternalReference("foo{1}", "bar{2}", true));
+        
         config.addInterceptor(new InterceptorMapping());
-        config.addResultConfig(new ResultConfig());
+        
+        config.addResultConfig(new ResultConfig("success{1}", "foo.{2}", new HashMap(params)));
         
         config = new ActionConfig();
         
