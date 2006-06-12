@@ -5,7 +5,6 @@
 package com.opensymphony.xwork.interceptor;
 
 import org.easymock.MockControl;
-import org.easymock.internal.Range;
 
 import com.opensymphony.xwork.Action;
 import com.opensymphony.xwork.ActionInvocation;
