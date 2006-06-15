@@ -197,7 +197,7 @@ public class DefaultConfiguration implements Configuration {
             
             for (String ns : namespaceActionConfigs.keySet()) {
                 namespaceActionConfigMatchers.put(ns,
-                        new ActionConfigMatcher(namespaceActionConfigs.get(ns)));
+                        new ActionConfigMatcher(namespaceActionConfigs.get(ns), true));
             }
         }
 
