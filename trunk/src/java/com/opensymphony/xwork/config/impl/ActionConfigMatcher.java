@@ -38,8 +38,8 @@ import java.util.Map;
  * <p> Matches paths against pre-compiled wildcard expressions pulled from
  * action configs. It uses the wildcard matcher from the Apache Cocoon
  * project. Patterns will be matched in the order they exist in the 
- * config file. The last match wins, so more specific patterns should be
- * defined after less specific patterns.
+ * config file. The first match wins, so more specific patterns should be
+ * defined before less specific patterns.
  */
 public class ActionConfigMatcher implements Serializable {
     /**
@@ -61,11 +61,31 @@ public class ActionConfigMatcher implements Serializable {
      * <p> Finds and precompiles the wildcard patterns from the ActionConfig
      * "path" attributes. ActionConfig's will be evaluated in the order they
      * exist in the config file. Only paths that actually contain a
-     * wildcard will be compiled. </p>
+     * wildcard will be compiled. Patterns will matched strictly.</p>
      *
      * @param configs An array of ActionConfig's to process
      */
     public ActionConfigMatcher(Map<String, ActionConfig> configs) {
+        this(configs, false);
+    }
+    
+    /**
+     * <p> Finds and precompiles the wildcard patterns from the ActionConfig
+     * "path" attributes. ActionConfig's will be evaluated in the order they
+     * exist in the config file. Only paths that actually contain a
+     * wildcard will be compiled. </p>
+     * 
+     * <p>Patterns can optionally be matched "loosely".  When
+     * the end of the pattern matches \*[^*]\*$ (wildcard, no wildcard,
+     * wildcard), if the pattern fails, it is also matched as if the 
+     * last two characters didn't exist.  The goal is to support the 
+     * legacy "*!*" syntax, where the "!*" is optional.</p> 
+     *
+     * @param configs An array of ActionConfig's to process
+     * @param looseMatch To loosely match wildcards or not
+     */
+    public ActionConfigMatcher(Map<String, ActionConfig> configs,
+            boolean looseMatch) {
         compiledPaths = new ArrayList();
 
         int[] pattern;
@@ -83,6 +103,14 @@ public class ActionConfigMatcher implements Serializable {
 
                 pattern = wildcard.compilePattern(name);
                 compiledPaths.add(new Mapping(name, pattern, configs.get(name)));
+                
+                int lastStar = name.lastIndexOf('*');
+                if (lastStar > 1 && lastStar == name.length() - 1) {
+                    if (name.charAt(lastStar - 2) == '*' && name.charAt(lastStar - 1) != '*') {
+                        pattern = wildcard.compilePattern(name.substring(0, lastStar - 1));
+                        compiledPaths.add(new Mapping(name, pattern, configs.get(name)));
+                    }
+                }
             }
         }
     }
@@ -108,7 +136,6 @@ public class ActionConfigMatcher implements Serializable {
 
             for (Iterator i = compiledPaths.iterator(); i.hasNext();) {
                 m = (Mapping) i.next();
-
                 if (wildcard.match(vars, path, m.getPattern())) {
                     if (log.isDebugEnabled()) {
                         log.debug("Path matches pattern '"
@@ -118,6 +145,7 @@ public class ActionConfigMatcher implements Serializable {
                     config =
                         convertActionConfig(path,
                             (ActionConfig) m.getActionConfig(), vars);
+                    break;
                 }
             }
         }
@@ -196,7 +224,9 @@ public class ActionConfigMatcher implements Serializable {
     }
 
     /**
-     * <p> Inserts into a value wildcard-matched strings where specified.
+     * <p> Inserts into a value wildcard-matched strings where specified
+     * with the {x} syntax.  If a wildcard-matched value isn't found, the
+     * replacement token is turned into an empty string. 
      * </p>
      *
      * @param val  The value to convert
@@ -206,27 +236,26 @@ public class ActionConfigMatcher implements Serializable {
     protected String convertParam(String val, Map vars) {
         if (val == null) {
             return null;
-        } else if (val.indexOf("{") == -1) {
-            return val;
-        }
-
-        Map.Entry entry;
-        StringBuffer key = new StringBuffer("{0}");
-        StringBuffer ret = new StringBuffer(val);
-        String keyTmp;
-        int x;
-
-        for (Iterator i = vars.entrySet().iterator(); i.hasNext();) {
-            entry = (Map.Entry) i.next();
-            key.setCharAt(1, ((String) entry.getKey()).charAt(0));
-            keyTmp = key.toString();
-
-            // Replace all instances of the placeholder
-            while ((x = ret.toString().indexOf(keyTmp)) > -1) {
-                ret.replace(x, x + 3, (String) entry.getValue());
+        } 
+        
+        int len = val.length();
+        StringBuilder ret = new StringBuilder();
+        char c;
+        String varVal;
+        for (int x=0; x<len; x++) {
+            c = val.charAt(x);
+            if (x < len - 2 && 
+                    c == '{' && '}' == val.charAt(x+2)) {
+                varVal = (String)vars.get(String.valueOf(val.charAt(x + 1)));
+                if (varVal != null) {
+                    ret.append(varVal);
+                } 
+                x += 2;
+            } else {
+                ret.append(c);
             }
         }
-
+        
         return ret.toString();
     }
 
