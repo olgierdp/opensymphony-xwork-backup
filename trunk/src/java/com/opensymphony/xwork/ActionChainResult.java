@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork;
 
-import com.opensymphony.xwork.interceptor.component.ComponentInterceptor;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.TextParseUtil;
 import org.apache.commons.logging.Log;
@@ -142,7 +141,6 @@ public class ActionChainResult implements Result {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.VALUE_STACK, ActionContext.getContext().getValueStack());
         extraContext.put(ActionContext.PARAMETERS, ActionContext.getContext().getParameters());
-        extraContext.put(ComponentInterceptor.COMPONENT_MANAGER, ActionContext.getContext().get(ComponentInterceptor.COMPONENT_MANAGER));
         extraContext.put(CHAIN_HISTORY, ActionContext.getContext().get(CHAIN_HISTORY));
 
         if (log.isDebugEnabled()) {
