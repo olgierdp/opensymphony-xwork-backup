@@ -45,13 +45,17 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     private Configuration configuration;
     private Set includedFileNames = new TreeSet();
     private String configFileName = "xwork.xml";
-
+    private boolean compatMode = false;
 
     public XmlConfigurationProvider() {
     }
 
     public XmlConfigurationProvider(String filename) {
         this.configFileName = filename;
+    }
+    
+    public void setCompatibilityMode(boolean mode) {
+        this.compatMode = mode;
     }
 
 
@@ -134,6 +138,15 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         if (!verifyAction(className, name, location)) {
             return;
+        }
+        
+        // If in XWork 1.x compatibility mode, add a wildcard pattern to
+        // support legacy method declarations
+        if (compatMode) {
+            if (name.indexOf('*') == -1 && methodName == null) {
+                name += "!*";
+                methodName = "{1}";
+            }
         }
 
         Map actionParams = XmlHelper.getParams(actionElement);
@@ -697,4 +710,5 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         return InterceptorBuilder.constructInterceptorReference(context, refName, refParams);
     }
+    
 }
