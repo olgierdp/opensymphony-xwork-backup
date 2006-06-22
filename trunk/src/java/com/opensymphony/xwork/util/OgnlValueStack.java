@@ -302,7 +302,44 @@ public class OgnlValueStack implements Serializable {
     public void push(Object o) {
         root.push(o);
     }
-
+    /**
+     * Sets an object on the stack with the given key
+     * so it is retrievable by findValue(key,...)
+     * @param key
+     * @param o
+     */
+    public void set(String key, Object o) {
+    	//set basically is backed by a Map
+    	//pushed on the stack with a key 
+    	//being put on the map and the 
+    	//Object being the value
+    	
+    	Map setMap=null;
+    	
+    	//check if this is a Map 
+    	//put on the stack  for setting
+    	//if so just use the old map (reduces waste)
+    	Object topObj=peek();
+    	if (topObj instanceof Map 
+    			&&((Map)topObj).get(MAP_IDENTIFIER_KEY)!=null) {
+    		
+    		setMap=(Map)topObj;
+    	}	else {
+    		setMap=new HashMap();
+    		//the map identifier key ensures
+    		//that this map was put there
+    		//for set purposes and not by a user
+    		//whose data we don't want to touch
+    		setMap.put(MAP_IDENTIFIER_KEY,"");
+    		push(setMap);
+    	}
+    	setMap.put(key,o);
+    	
+    }
+    
+    
+    private static final String MAP_IDENTIFIER_KEY="om.opensymphony.xwork.util.OgnlValueStack.MAP_IDENTIFIER_KEY";
+    
     /**
      * Get the number of objects in the stack
      * s

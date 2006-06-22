@@ -44,6 +44,17 @@ public class OgnlValueStackTest extends XWorkTestCase {
         vs.push(dog);
         assertEquals("Rover", vs.findValue("name", String.class));
     }
+    
+    public void testBasicSet() {
+    	OgnlValueStack vs = new OgnlValueStack();
+        
+    	Dog dog = new Dog();
+        dog.setAge(12);
+        dog.setName("Rover");
+
+        vs.set("dog",dog);
+        assertEquals("Rover", vs.findValue("dog.name", String.class));
+    }
 
     public void testCallMethodOnNullObject() {
         OgnlValueStack stack = new OgnlValueStack();
@@ -60,6 +71,8 @@ public class OgnlValueStackTest extends XWorkTestCase {
         action.setThrowException(false);
         assertEquals("OK", stack.findValue("exceptionMethod()"));
     }
+    
+    
 
     public void testCallMethodWithNullArg() {
         SimpleAction action = new SimpleAction();
@@ -415,6 +428,19 @@ public class OgnlValueStackTest extends XWorkTestCase {
         OgnlValueStack newVs = (OgnlValueStack) ois.readObject();
         assertEquals("Rover", newVs.findValue("name", String.class));
     }
+    
+    public void testSetAfterPush() {
+    	OgnlValueStack vs = new OgnlValueStack();
+
+    	Dog d=new Dog();
+    	d.setName("Rover");
+    	vs.push(d);
+    	
+    	vs.set("name","Bill");
+
+    	assertEquals("Bill", vs.findValue("name"));
+    	
+    }    
 
     public void testSetBarAsString() {
         Foo foo = new Foo();
@@ -428,6 +454,18 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertEquals(123, foo.getBar().getSomethingElse());
     }
 
+    public void testSetBeforePush() {
+    	OgnlValueStack vs = new OgnlValueStack();
+    	
+    	vs.set("name","Bill");
+    	Dog d=new Dog();
+    	d.setName("Rover");
+    	vs.push(d);
+    	
+    	assertEquals("Rover", vs.findValue("name"));
+    	
+    }
+    
     public void testSetDeepBarAsString() {
         Foo foo = new Foo();
         Foo foo2 = new Foo();
@@ -462,7 +500,17 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertNotNull(((Cat) foo.getCats().get(0)).getFoo().getCats().get(1));
         assertEquals("Deep null cat", ((Cat) ((Cat) foo.getCats().get(0)).getFoo().getCats().get(1)).name);
     }
-
+    
+    public void testSetMultiple() {
+    	OgnlValueStack vs = new OgnlValueStack();
+    	int origSize=vs.getRoot().size();
+    	vs.set("something",new Object());
+    	vs.set("somethingElse",new Object());
+    	vs.set("yetSomethingElse",new Object());
+    	assertEquals(origSize+1,vs.getRoot().size());
+    	
+    }
+    
     public void testSetNullMap() {
         Foo foo = new Foo();
         OgnlValueStack vs = new OgnlValueStack();
