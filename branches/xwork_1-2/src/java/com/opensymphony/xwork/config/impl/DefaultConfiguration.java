@@ -28,7 +28,7 @@ public class DefaultConfiguration implements Configuration {
 
     // Programmatic Action Conifigurations
     private Map packageContexts = new LinkedHashMap();
-    private RuntimeConfiguration runtimeConfiguration;
+    protected RuntimeConfiguration runtimeConfiguration;
 
 
     public DefaultConfiguration() {
