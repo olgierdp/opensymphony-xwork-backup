@@ -32,8 +32,9 @@ public class ModelDrivenInterceptorTest extends TestCase {
         action = new ModelDrivenAction();
         mockActionInvocation.expectAndReturn("getAction", action);
         mockActionInvocation.expectAndReturn("getStack", stack);
+        mockActionInvocation.expectAndReturn("invoke", "foo");
 
-        modelDrivenInterceptor.before((ActionInvocation) mockActionInvocation.proxy());
+        modelDrivenInterceptor.intercept((ActionInvocation) mockActionInvocation.proxy());
 
         Object topOfStack = stack.pop();
         assertEquals("our model should be on the top of the stack", model, topOfStack);
@@ -42,9 +43,10 @@ public class ModelDrivenInterceptorTest extends TestCase {
     public void testStackNotModifedForNormalAction() throws Exception {
         action = new ActionSupport();
         mockActionInvocation.expectAndReturn("getAction", action);
+        mockActionInvocation.expectAndReturn("invoke", "foo");
 
         // nothing should happen
-        modelDrivenInterceptor.before((ActionInvocation) mockActionInvocation.proxy());
+        modelDrivenInterceptor.intercept((ActionInvocation) mockActionInvocation.proxy());
     }
 
     protected void setUp() throws Exception {

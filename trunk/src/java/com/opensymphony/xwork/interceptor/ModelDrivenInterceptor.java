@@ -59,12 +59,9 @@ import com.opensymphony.xwork.util.OgnlValueStack;
  * @author tm_jee
  * @version $Date$ $Id$
  */
-public class ModelDrivenInterceptor extends AroundInterceptor {
+public class ModelDrivenInterceptor extends AbstractInterceptor {
 
-    protected void after(ActionInvocation dispatcher, String result) throws Exception {
-    }
-
-    protected void before(ActionInvocation invocation) throws Exception {
+    public String intercept(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
 
         if (action instanceof ModelDriven) {
@@ -74,5 +71,6 @@ public class ModelDrivenInterceptor extends AroundInterceptor {
             	stack.push(modelDriven.getModel());
             }
         }
+        return invocation.invoke();
     }
 }

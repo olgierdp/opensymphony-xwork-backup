@@ -70,7 +70,7 @@ import java.util.Map;
  *
  * @author Matthew Payne
  */
-public class AliasInterceptor extends AroundInterceptor {
+public class AliasInterceptor extends AbstractInterceptor {
     private static final Log log = LogFactory.getLog(AliasInterceptor.class);
     private static final String DEFAULT_ALIAS_KEY = "aliases";
 
@@ -80,13 +80,8 @@ public class AliasInterceptor extends AroundInterceptor {
         this.aliasesKey = aliasesKey;
     }
 
-    public void destroy() {
-    }
+    public String intercept(ActionInvocation invocation) throws Exception {
 
-    public void init() {
-    }
-
-    protected void before(ActionInvocation invocation) throws Exception {
         ActionConfig config = invocation.getProxy().getConfig();
         ActionContext ac = invocation.getInvocationContext();
 
@@ -124,8 +119,7 @@ public class AliasInterceptor extends AroundInterceptor {
                 log.debug("invalid alias expression:" + aliasesKey);
             }
         }
-    }
-
-    protected void after(ActionInvocation invocation, String result) throws Exception {
+        
+        return invocation.invoke();
     }
 }

@@ -60,7 +60,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Gabe
  */
-public class ParameterFilterInterceptor implements Interceptor {
+public class ParameterFilterInterceptor extends AbstractInterceptor {
 
     private static final Log LOG = LogFactory.getLog(ParameterFilterInterceptor.class);
 
@@ -71,12 +71,6 @@ public class ParameterFilterInterceptor implements Interceptor {
     private Map includesExcludesMap;
 
     private boolean defaultBlock = false;
-
-    public void destroy() {
-    }
-
-    public void init() {
-    }
 
     public String intercept(ActionInvocation invocation) throws Exception {
 

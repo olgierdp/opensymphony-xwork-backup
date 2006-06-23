@@ -69,7 +69,7 @@ import java.util.Map;
  *
  * @author Aleksei Gopachenko
  */
-public class I18nInterceptor implements Interceptor {
+public class I18nInterceptor extends AbstractInterceptor {
     protected static final Log log = LogFactory.getLog(I18nInterceptor.class);
 
     public static final String DEFAULT_SESSION_ATTRIBUTE = "WW_TRANS_I18N_LOCALE";
@@ -90,14 +90,6 @@ public class I18nInterceptor implements Interceptor {
 
     public void setAttributeName(String attributeName) {
         this.attributeName = attributeName;
-    }
-
-    public void init() {
-        if (log.isDebugEnabled()) log.debug("init()");
-    }
-
-    public void destroy() {
-        if (log.isDebugEnabled()) log.debug("destroy()");
     }
 
     public String intercept(ActionInvocation invocation) throws Exception {

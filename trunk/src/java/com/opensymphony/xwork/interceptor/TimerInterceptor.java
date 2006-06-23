@@ -82,7 +82,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Jason Carreira
  * @author Claus Ibsen
  */
-public class TimerInterceptor implements Interceptor {
+public class TimerInterceptor extends AbstractInterceptor {
     protected static final Log log = LogFactory.getLog(TimerInterceptor.class);
 
     protected Log categoryLogger;
@@ -103,12 +103,6 @@ public class TimerInterceptor implements Interceptor {
 
     public void setLogLevel(String logLevel) {
         this.logLevel = logLevel;
-    }
-
-    public void destroy() {
-    }
-
-    public void init() {
     }
 
     public String intercept(ActionInvocation invocation) throws Exception {

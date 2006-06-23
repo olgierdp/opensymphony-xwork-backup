@@ -80,17 +80,14 @@ import org.apache.commons.logging.LogFactory;
  * @author tm_jee ( tm_jee(at)yahoo.co.uk )
  * @version $Revision$
  */
-public class ChainingInterceptor extends AroundInterceptor {
+public class ChainingInterceptor extends AbstractInterceptor {
 	
 	private static final Log _log = LogFactory.getLog(ChainingInterceptor.class);
 	
     Collection excludes;
     Collection includes;
 
-    protected void after(ActionInvocation invocation, String result) throws Exception {
-    }
-
-    protected void before(ActionInvocation invocation) throws Exception {
+    public String intercept(ActionInvocation invocation) throws Exception {
         OgnlValueStack stack = invocation.getStack();
         CompoundRoot root = stack.getRoot();
 
@@ -115,8 +112,9 @@ public class ChainingInterceptor extends AroundInterceptor {
                 }
             }
         }
+        return invocation.invoke();
     }
-
+    
     public Collection getExcludes() {
         return excludes;
     }

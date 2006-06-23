@@ -69,17 +69,15 @@ import java.util.Map;
  *
  * @author Jason Carreira
  */
-public class ConversionErrorInterceptor extends AroundInterceptor {
+public class ConversionErrorInterceptor extends AbstractInterceptor {
     public static final String ORIGINAL_PROPERTY_OVERRIDE = "original.property.override";
 
     protected Object getOverrideExpr(ActionInvocation invocation, Object value) {
         return "'" + value + "'";
     }
 
-    protected void after(ActionInvocation dispatcher, String result) throws Exception {
-    }
+    public String intercept(ActionInvocation invocation) throws Exception {
 
-    protected void before(ActionInvocation invocation) throws Exception {
         ActionContext invocationContext = invocation.getInvocationContext();
         Map conversionErrors = invocationContext.getConversionErrors();
         OgnlValueStack stack = invocationContext.getValueStack();
@@ -122,6 +120,7 @@ public class ConversionErrorInterceptor extends AroundInterceptor {
                 }
             });
         }
+        return invocation.invoke();
     }
 
     protected boolean shouldAddError(String propertyName, Object value) {

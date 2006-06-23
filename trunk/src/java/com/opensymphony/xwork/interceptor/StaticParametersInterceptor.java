@@ -14,6 +14,9 @@ import com.opensymphony.xwork.util.TextParseUtil;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * <!-- START SNIPPET: description -->
@@ -60,25 +63,24 @@ import java.util.Map;
  *
  * @author Patrick Lightbody
  */
-public class StaticParametersInterceptor extends AroundInterceptor {
+public class StaticParametersInterceptor extends AbstractInterceptor {
 
     private boolean parse;
+    
+    private static final Log LOG = LogFactory.getLog(StaticParametersInterceptor.class);
 
     public void setParse(String value) {
         this.parse = Boolean.valueOf(value).booleanValue();
     }
 
-    protected void after(ActionInvocation invocation, String result) throws Exception {
-    }
-
-    protected void before(ActionInvocation invocation) throws Exception {
+    public String intercept(ActionInvocation invocation) throws Exception {
         ActionConfig config = invocation.getProxy().getConfig();
         Object action = invocation.getAction();
 
         final Map parameters = config.getParams();
 
-        if (log.isDebugEnabled()) {
-            log.debug("Setting static parameters " + parameters);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Setting static parameters " + parameters);
         }
 
         // for actions marked as Parameterizable, pass the static parameters directly
@@ -100,5 +102,6 @@ public class StaticParametersInterceptor extends AroundInterceptor {
                 stack.setValue(entry.getKey().toString(), val);
             }
         }
+        return invocation.invoke();
     }
 }

@@ -32,7 +32,7 @@ public class ActionAutowiringInterceptorTest extends TestCase {
         interceptor.setApplicationContext(context);
         interceptor.init();
 
-        interceptor.before(invocation);
+        interceptor.intercept(invocation);
 
         assertEquals(bean, action.getBean());
     }
@@ -52,7 +52,7 @@ public class ActionAutowiringInterceptorTest extends TestCase {
         SimpleAction action = new SimpleAction();
         ActionInvocation invocation = new TestActionInvocation(action);
 
-        interceptor.before(invocation);
+        interceptor.intercept(invocation);
 
         ApplicationContext loadedContext = interceptor.getApplicationContext();
 
@@ -80,7 +80,7 @@ public class ActionAutowiringInterceptorTest extends TestCase {
         SimpleAction action = new SimpleAction();
         ActionInvocation invocation = new TestActionInvocation(action);
 
-        interceptor.before(invocation);
+        interceptor.intercept(invocation);
 
         ApplicationContext loadedContext = interceptor.getApplicationContext();
 
@@ -102,7 +102,7 @@ public class ActionAutowiringInterceptorTest extends TestCase {
 
         // If an exception is thrown here, things are going to go wrong in
         // production
-        interceptor.before(invocation);
+        interceptor.intercept(invocation);
 
         assertEquals(bean, action.getBean());
     }

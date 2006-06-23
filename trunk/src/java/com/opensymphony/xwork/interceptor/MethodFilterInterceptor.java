@@ -59,7 +59,7 @@ import com.opensymphony.xwork.util.TextParseUtil;
  * 
  * @version $Date$ $Id$
  */
-public abstract class MethodFilterInterceptor implements Interceptor {
+public abstract class MethodFilterInterceptor extends AbstractInterceptor {
     protected transient Log log = LogFactory.getLog(getClass());
     
     protected Set excludeMethods = Collections.EMPTY_SET;
@@ -109,9 +109,4 @@ public abstract class MethodFilterInterceptor implements Interceptor {
      */
     protected abstract String doIntercept(ActionInvocation invocation) throws Exception;
     
-    public void destroy() {
-    }
-
-    public void init() {
-    }
 }

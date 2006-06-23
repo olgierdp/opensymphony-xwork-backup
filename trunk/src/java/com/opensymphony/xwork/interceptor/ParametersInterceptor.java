@@ -86,20 +86,17 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Patrick Lightbody
  */
-public class ParametersInterceptor extends AroundInterceptor {
+public class ParametersInterceptor extends AbstractInterceptor {
 
     private static final Log LOG = LogFactory.getLog(ParametersInterceptor.class);
 
-    protected void after(ActionInvocation dispatcher, String result) throws Exception {
-    }
-
-    protected void before(ActionInvocation invocation) throws Exception {
+    public String intercept(ActionInvocation invocation) throws Exception {
         if (!(invocation.getAction() instanceof NoParameters)) {
             ActionContext ac = invocation.getInvocationContext();
             final Map parameters = ac.getParameters();
 
-            if (log.isDebugEnabled()) {
-                log.debug("Setting params " + getParameterLogMap(parameters));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Setting params " + getParameterLogMap(parameters));
             }
 
             if (parameters != null) {
@@ -118,6 +115,7 @@ public class ParametersInterceptor extends AroundInterceptor {
                 }
             }
         }
+        return invocation.invoke();
     }
 
     protected void setParameters(Object action, OgnlValueStack stack, final Map parameters) {

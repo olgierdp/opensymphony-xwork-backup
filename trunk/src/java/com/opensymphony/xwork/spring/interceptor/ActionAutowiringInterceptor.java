@@ -7,7 +7,7 @@ package com.opensymphony.xwork.spring.interceptor;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.interceptor.AroundInterceptor;
+import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.spring.SpringObjectFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,7 +48,7 @@ import org.springframework.web.context.WebApplicationContext;
  * @author Simon Stewart
  * @author Eric Hauser
  */
-public class ActionAutowiringInterceptor extends AroundInterceptor implements ApplicationContextAware {
+public class ActionAutowiringInterceptor implements Interceptor, ApplicationContextAware {
     private static final Log log = LogFactory.getLog(ActionAutowiringInterceptor.class);
 
     public static final String APPLICATION_CONTEXT = "com.opensymphony.xwork.spring.interceptor.ActionAutowiringInterceptor.applicationContext";
@@ -65,15 +65,13 @@ public class ActionAutowiringInterceptor extends AroundInterceptor implements Ap
         this.autowireStrategy = autowireStrategy;
     }
 
-    /**
-     * @param dispatcher
-     * @param result
-     * @throws Exception
-     */
-    protected void after(ActionInvocation dispatcher, String result) throws Exception {
-        // Empty
+    public void init() {
+    }
+    
+    public void destroy() {
     }
 
+    
     /**
      * Looks for the <code>ApplicationContext</code> under the attribute that the Spring listener sets in
      * the servlet context.  The configuration is done the first time here instead of in init() since the
@@ -89,7 +87,7 @@ public class ActionAutowiringInterceptor extends AroundInterceptor implements Ap
      * @param invocation
      * @throws Exception
      */
-    protected void before(ActionInvocation invocation) throws Exception {
+    public String intercept(ActionInvocation invocation) throws Exception {
         if (!initialized) {
             ApplicationContext applicationContext = (ApplicationContext) ActionContext.getContext().getApplication().get(
                     WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
@@ -107,13 +105,13 @@ public class ActionAutowiringInterceptor extends AroundInterceptor implements Ap
             initialized = true;
         }
 
-        if (factory == null)
-            return;
-
-        Object bean = invocation.getAction();
-        factory.autoWireBean(bean);
-
-        ActionContext.getContext().put(APPLICATION_CONTEXT, context);
+        if (factory != null) {
+            Object bean = invocation.getAction();
+            factory.autoWireBean(bean);
+    
+            ActionContext.getContext().put(APPLICATION_CONTEXT, context);
+        }
+        return invocation.invoke();
     }
 
     /**

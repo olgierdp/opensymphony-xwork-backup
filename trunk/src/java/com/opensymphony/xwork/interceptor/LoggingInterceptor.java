@@ -42,17 +42,16 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Jason Carreira
  */
-public class LoggingInterceptor extends AroundInterceptor {
+public class LoggingInterceptor extends AbstractInterceptor {
     private static final Log log = LogFactory.getLog(LoggingInterceptor.class);
     private static final String FINISH_MESSAGE = "Finishing execution stack for action ";
     private static final String START_MESSAGE = "Starting execution stack for action ";
 
-    protected void after(ActionInvocation invocation, String result) throws Exception {
+    public String intercept(ActionInvocation invocation) throws Exception {
         logMessage(invocation, FINISH_MESSAGE);
-    }
-
-    protected void before(ActionInvocation invocation) throws Exception {
+        String result = invocation.invoke();
         logMessage(invocation, START_MESSAGE);
+        return result;
     }
 
     private void logMessage(ActionInvocation invocation, String baseMessage) {

@@ -36,16 +36,14 @@ public class PrepareInterceptorTest extends TestCase {
         mai.setAction(mock.proxy());
         mock.expect("prepare");
 
-        interceptor.before(mai);
-        interceptor.after(mai, Action.SUCCESS); // to have higher code coverage
+        interceptor.intercept(mai);
     }
 
     public void testNoPrepareCalled() throws Exception {
         MockActionInvocation mai = new MockActionInvocation();
         mai.setAction(new SimpleFooAction());
 
-        interceptor.before(mai);
-        interceptor.after(mai, Action.SUCCESS); // to have higher code coverage
+        interceptor.intercept(mai);
     }
     
     public void testPrefixInvocation1() throws Exception {

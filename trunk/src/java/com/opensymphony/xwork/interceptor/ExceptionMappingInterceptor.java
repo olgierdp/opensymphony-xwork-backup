@@ -139,7 +139,7 @@ import java.util.List;
  * @author Matthew E. Porter (matthew dot porter at metissian dot com) 
  * @author Claus Ibsen
  */
-public class ExceptionMappingInterceptor implements Interceptor {
+public class ExceptionMappingInterceptor extends AbstractInterceptor {
     
     protected static final Log log = LogFactory.getLog(ExceptionMappingInterceptor.class);
 
@@ -172,12 +172,6 @@ public class ExceptionMappingInterceptor implements Interceptor {
 	public void setLogLevel(String logLevel) {
 		this.logLevel = logLevel;
 	}
-
-	public void destroy() {
-    }
-
-    public void init() {
-    }
 
     public String intercept(ActionInvocation invocation) throws Exception {
         String result;

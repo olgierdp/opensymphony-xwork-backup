@@ -40,12 +40,10 @@ import com.opensymphony.xwork.config.entities.PackageConfig;
  *         Reference Resolution is encapsulated in an interceptor so that the user can configure when references should
  *         be resloved
  */
-public class ExternalReferencesInterceptor extends AroundInterceptor {
+public class ExternalReferencesInterceptor extends AbstractInterceptor {
 
-    protected void after(ActionInvocation dispatcher, String result) throws Exception {
-    }
+    public String intercept(ActionInvocation invocation) throws Exception {
 
-    protected void before(ActionInvocation invocation) throws Exception {
         String packageName = invocation.getProxy().getConfig().getPackageName();
         PackageConfig packageConfig = XWorkStatic.getConfigurationManager().getConfiguration().getPackageConfig(packageName);
 
@@ -56,5 +54,6 @@ public class ExternalReferencesInterceptor extends AroundInterceptor {
                 erResolver.resolveReferences(invocation);
             }
         }
+        return invocation.invoke();
     }
 }
