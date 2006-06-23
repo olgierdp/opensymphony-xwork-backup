@@ -30,7 +30,7 @@ public class DefaultConfiguration implements Configuration {
 
     // Programmatic Action Conifigurations
     private Map<String, PackageConfig> packageContexts = new LinkedHashMap<String, PackageConfig>();
-    private RuntimeConfiguration runtimeConfiguration;
+    protected RuntimeConfiguration runtimeConfiguration;
 
 
     public DefaultConfiguration() {
