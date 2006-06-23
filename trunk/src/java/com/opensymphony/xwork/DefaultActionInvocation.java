@@ -342,19 +342,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         }
 
         try {
-            Method method;
-            try {
-                method = getAction().getClass().getMethod(methodName, new Class[0]);
-            } catch (NoSuchMethodException e) {
-                // hmm -- OK, try doXxx instead
-                try {
-                    String altMethodName = "do" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
-                    method = getAction().getClass().getMethod(altMethodName, new Class[0]);
-                } catch (NoSuchMethodException e1) {
-                    // throw the original one
-                    throw e;
-                }
-            }
+            Method method = getAction().getClass().getMethod(methodName, new Class[0]);
 
             if (action instanceof Proxy) {
                 try {
@@ -367,7 +355,7 @@ public class DefaultActionInvocation implements ActionInvocation {
                 return (String) method.invoke(action, new Object[0]);
             }
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Neither " + methodName + "() nor it's doXxx() equivalent is defined in action " + getAction().getClass() + "");
+            throw new IllegalArgumentException("The " + methodName + "() is not defined in action " + getAction().getClass() + "");
         } catch (InvocationTargetException e) {
             // We try to return the source exception.
             Throwable t = e.getTargetException();

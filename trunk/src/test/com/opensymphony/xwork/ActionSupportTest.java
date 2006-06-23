@@ -98,11 +98,6 @@ public class ActionSupportTest extends XWorkTestCase {
         assertEquals(false, as.hasErrors());
     }
 
-    public void testDoMethods() throws Exception {
-        assertEquals(Action.SUCCESS, as.doDefault());
-        assertEquals(Action.INPUT, as.doInput());
-    }
-
     public void testDeprecated() throws Exception {
         assertNotNull(as.getErrorMessages());
         assertEquals(0, as.getErrorMessages().size());

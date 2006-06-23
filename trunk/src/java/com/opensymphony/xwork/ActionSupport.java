@@ -123,12 +123,8 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
         validationAware.addFieldError(fieldName, errorMessage);
     }
 
-    public String doInput() throws Exception {
+    public String input() throws Exception {
         return INPUT;
-    }
-
-    public String doDefault() throws Exception {
-        return SUCCESS;
     }
 
     /**
