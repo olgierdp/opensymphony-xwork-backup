@@ -39,6 +39,20 @@ public class LocalizedTextUtilTest extends TestCase {
         assertEquals("Title:", message);
     }
 
+    public void testActionGetTextWithNull() throws Exception {
+        ModelDrivenAction2 action = new ModelDrivenAction2();
+        TestBean2 bean = (TestBean2) action.getModel();
+
+        Mock mockActionInvocation = new Mock(ActionInvocation.class);
+        mockActionInvocation.expectAndReturn("getAction", action);
+        ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
+        ActionContext.getContext().getValueStack().push(action);
+        ActionContext.getContext().getValueStack().push(action.getModel());
+
+        String message = action.getText("barObj.title");
+        assertEquals("Title:", message);
+    }
+    
     public void testNullKeys() {
         LocalizedTextUtil.findText(this.getClass(), null, Locale.getDefault());
     }

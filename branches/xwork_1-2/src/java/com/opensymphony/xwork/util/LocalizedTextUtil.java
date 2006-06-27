@@ -7,9 +7,14 @@ package com.opensymphony.xwork.util;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.ModelDriven;
+
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.beans.IntrospectionException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
@@ -417,20 +422,25 @@ public class LocalizedTextUtil {
             }
 
             if (prop != null) {
-                Object obj = valueStack.findValue(prop);
-
-                if (obj != null) {
-                    Class clazz = obj.getClass();
-
-                    if (clazz != null) {
-                        valueStack.push(obj);
-                        msg = findText(clazz, newKey, locale, null, args);
-                        valueStack.pop();
-
-                        if (msg != null) {
-                            return msg;
+                try {
+                    Object realTarget = OgnlUtil.getRealTarget(prop, valueStack.getContext(), valueStack.getRoot());
+                    
+                    if (realTarget != null) {
+                        Class clazz = OgnlRuntime.getPropertyDescriptor(realTarget.getClass(), prop).getPropertyType();
+                        
+                        if (clazz != null) {
+                            msg = findText(clazz, newKey, locale, null, args);
+                            if (msg != null) {
+                                return msg;
+                            }
                         }
                     }
+                }
+                catch(OgnlException ognlex) {
+                    ; // ignore
+                }
+                catch(IntrospectionException ie) {
+                    ; // ignore
                 }
             }
         }
