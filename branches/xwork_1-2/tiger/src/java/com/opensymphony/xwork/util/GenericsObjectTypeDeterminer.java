@@ -5,18 +5,25 @@
 
 package com.opensymphony.xwork.util;
 
-import ognl.OgnlRuntime;
-
+import java.beans.IntrospectionException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
 
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
+
 /**
- * GenericsObjectTypeDeterminer
+ * GenericsObjectTypeDeterminer use the following algorithm for determining the types: looks for 
+ * a field annotation, than for the corresponding setter annotation, and for special cases falls
+ * back to generic types.
  *
  * @author Patrick Lightbody
  * @author Rainer Hermanns
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
 
@@ -29,20 +36,16 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
      * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getKeyClass(Class, String)
      */
     public Class getKeyClass(Class parentClass, String property) {
+        Key annotation = getAnnotation(parentClass, property, Key.class);
 
-        Field field = OgnlRuntime.getField(parentClass, property);
+        if (annotation != null) {
+            return annotation.value();
+        }
 
-        if (field != null) {
-            Key annotation = field.getAnnotation(Key.class);
-            if (annotation != null) {
-                return annotation.value();
-            }
+        Class clazz = getClass(OgnlRuntime.getField(parentClass, property), false);
 
-            Class clazz = getClass(field, false);
-
-            if (clazz != null) {
-                return clazz;
-            }
+        if (clazz != null) {
+            return clazz;
         }
 
         return super.getKeyClass(parentClass, property);
@@ -58,20 +61,16 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
      * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getElementClass(Class, String, Object)
      */
     public Class getElementClass(Class parentClass, String property, Object key) {
+        Element annotation = getAnnotation(parentClass, property, Element.class);
 
-        Field field = OgnlRuntime.getField(parentClass, property);
+        if (annotation != null) {
+            return annotation.value();
+        }
 
-        if (field != null) {
-            Element annotation = field.getAnnotation(Element.class);
-            if (annotation != null) {
-                return annotation.value();
-            }
+        Class clazz = getClass(OgnlRuntime.getField(parentClass, property), true);
 
-            Class clazz = getClass(field, true);
-
-            if (clazz != null) {
-                return clazz;
-            }
+        if (clazz != null) {
+            return clazz;
         }
 
         return super.getElementClass(parentClass, property, key);
@@ -85,17 +84,11 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
      * @see com.opensymphony.xwork.util.ObjectTypeDeterminer#getKeyProperty(Class, String)
      */
     public String getKeyProperty(Class parentClass, String property) {
-
-        Field field = OgnlRuntime.getField(parentClass, property);
-
-        if (field != null) {
-            KeyProperty annotation = field.getAnnotation(KeyProperty.class);
-
-            if (annotation != null) {
-                return annotation.value();
-            }
+        KeyProperty annotation = getAnnotation(parentClass, property, KeyProperty.class);
+        
+        if (annotation != null) {
+            return annotation.value();
         }
-
 
         return super.getKeyProperty(parentClass, property);
     }
@@ -116,19 +109,50 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
                                      String keyProperty,
                                      boolean isIndexAccessed) {
 
-        Field field = OgnlRuntime.getField(parentClass, property);
+        CreateIfNull annotation = getAnnotation(parentClass, property, CreateIfNull.class);
 
-        if (field != null) {
-            CreateIfNull annotation = field.getAnnotation(CreateIfNull.class);
-            if (annotation != null) {
-                return annotation.value();
-            }
+        if (annotation != null) {
+            return annotation.value();
         }
 
         return super.shouldCreateIfNew(parentClass, property, target, keyProperty, isIndexAccessed);
-
     }
 
+    /**
+     * Retrieves an annotation for the specified field of setter.
+     * 
+     * @param <T> the annotation type to be retrieved
+     * @param parentClass the class
+     * @param property the property
+     * @param annotationClass the annotation 
+     * @return the field or setter annotation or <code>null</code> if not found
+     */
+    protected <T extends Annotation> T getAnnotation(Class parentClass, String property, Class<T> annotationClass) {
+        T annotation = null;
+        Field field = OgnlRuntime.getField(parentClass, property);
+
+        if (field != null) {
+            annotation = field.getAnnotation(annotationClass);
+        }
+        if (annotation == null) { // HINT: try with setter
+            try {
+                Method setter = OgnlRuntime.getSetMethod(null, parentClass, property);
+                
+                if (setter != null) {
+                    annotation = setter.getAnnotation(annotationClass);                    
+                }
+            }
+            catch(OgnlException ognle) {
+                ; // ignore
+            }
+            catch(IntrospectionException ie) {
+                ; // ignore
+            }
+        }
+        
+        return annotation;
+    }
+    
     /**
      * Returns the class for the given field via generic type check.
      *
