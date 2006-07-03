@@ -17,8 +17,8 @@
     <!-- NOTE: this property is purely here to make a clear distinction in IDEA where the common build is -->
     <property name="------common-properties-below------" value="Common properties below:"/>
 
-    <property name="compile.version" value="1.3"/>
-    <property name="test.compile.version" value="1.3"/>
+    <property name="compile.version" value="1.4"/>
+    <property name="test.compile.version" value="1.4"/>
 
     <dirname property="common.dir" file="${ant.file.common}"/>
     <property file="build.properties"/>
