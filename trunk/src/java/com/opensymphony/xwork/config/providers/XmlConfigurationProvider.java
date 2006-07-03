@@ -30,7 +30,8 @@ import java.util.*;
 
 
 /**
- * Looks in the classpath for "xwork.xml" and uses it for the XWork configuration.
+ * Looks in the classpath for an XML file, xwork.xml" by default,
+ * and uses it for the XWork configuration.
  *
  * @author tmjee
  * @author Rainer Hermanns
@@ -46,12 +47,18 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     private Set includedFileNames = new TreeSet();
     private String configFileName = "xwork.xml";
     private boolean compatMode = false;
+    private boolean errorIfMissing = true;
 
     public XmlConfigurationProvider() {
     }
 
     public XmlConfigurationProvider(String filename) {
+        this(filename, true);
+    }
+    
+    public XmlConfigurationProvider(String filename, boolean errorIfMissing) {
         this.configFileName = filename;
+        this.errorIfMissing = errorIfMissing;
     }
     
     public void setCompatibilityMode(boolean mode) {
@@ -635,7 +642,13 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 is = getInputStream(fileName);
 
                 if (is == null) {
-                    throw new Exception("Could not open file " + fileName);
+                    if (errorIfMissing) {
+                        throw new Exception("Could not open file " + fileName);
+                    } else {
+                        LOG.info("Unable to locate configuration file "
+                                +fileName+", skipping");
+                        return;
+                    }
                 }
 
                 InputSource in = new InputSource(is);
