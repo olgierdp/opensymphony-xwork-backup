@@ -43,7 +43,12 @@ import org.apache.commons.logging.LogFactory;
  * <b>NOTE:</b> As this method extends off MethodFilterInterceptor, it is capable of
  * deciding if it is applicable only to selective methods in the action class. See
  * <code>MethodFilterInterceptor</code> for more info.
- *
+ * 
+ * <p/><b>Update:</b> Added logic to execute a validate{MethodName} rather than a general validate method. 
+ * This allows us to run some validation logic based on the method name we specify in the 
+ * ActionProxy. For example, you can specify a validateInput() method, or even a validateDoInput() 
+ * method that will be run before the invocation of the input method.
+ * 
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Interceptor parameters:</u>
@@ -52,7 +57,8 @@ import org.apache.commons.logging.LogFactory;
  *
  * <ul>
  *
- * <li>None</li>
+ * <li>alwaysInvokeValidate - Default to true. If true validate() method will always
+ * be invoked, otherwise it will not.</li>
  *
  * </ul>
  *
@@ -97,23 +103,56 @@ import org.apache.commons.logging.LogFactory;
  * @author Jason Carreira
  * @author Rainer Hermanns
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
+ * @author Philip Luppens
+ * @author tm_jee
  * 
  * @version $Date$ $Id$
  */
 public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 	
+	private static final long serialVersionUID = 7563014655616490865L;
+
 	private static final Log _log = LogFactory.getLog(DefaultWorkflowInterceptor.class);
+	
+	private final static String VALIDATE_PREFIX = "validate";
+	private final static String ALT_VALIDATE_PREFIX = "validateDo";
+	
+	private boolean alwaysInvokeValidate = true;
+	
+	
+	public void setAlwaysInvokeValidate(String alwaysInvokeValidate) {
+		this.alwaysInvokeValidate = Boolean.parseBoolean(alwaysInvokeValidate);
+	}
 	
     protected String doIntercept(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
-
+        
+        
         if (action instanceof Validateable) {
+        	
             Validateable validateable = (Validateable) action;
             if (_log.isDebugEnabled()) {
             	_log.debug("Invoking validate() on action "+validateable);
             }
-            validateable.validate();
+            
+            try {
+            	PrefixMethodInvocationUtil.invokePrefixMethod(
+            			invocation, 
+            			new String[] { VALIDATE_PREFIX, ALT_VALIDATE_PREFIX });
+            }
+            catch(Exception e) {
+            	e.printStackTrace();
+            	// If any exception occurred while doing reflection, we want 
+            	// validate() to be executed
+            	_log.warn("an exception occured while executing the prefix method", e);
+            }
+            
+            
+            if (alwaysInvokeValidate) {
+            	validateable.validate();
+            }
         }
+        
 
         if (action instanceof ValidationAware) {
             ValidationAware validationAwareAction = (ValidationAware) action;
