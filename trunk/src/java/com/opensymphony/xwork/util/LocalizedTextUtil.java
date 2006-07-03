@@ -171,6 +171,7 @@ public class LocalizedTextUtil {
      * @return a localized message based on the specified key, or null if no localized message can be found for it
      */
     public static String findDefaultText(String aTextName, Locale locale) {
+        System.out.println("looking for messages in "+DEFAULT_RESOURCE_BUNDLES);
         List localList = DEFAULT_RESOURCE_BUNDLES; // it isn't sync'd, but this is so rare, let's do it anyway
 
         for (Iterator iterator = localList.iterator(); iterator.hasNext();) {

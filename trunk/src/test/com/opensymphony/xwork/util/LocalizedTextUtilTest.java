@@ -20,7 +20,7 @@ import java.util.Locale;
  *
  * @author jcarreira
  */
-public class LocalizedTextUtilTest extends TestCase {
+public class LocalizedTextUtilTest extends XWorkTestCase {
 
     public void testActionGetText() throws Exception {
         ModelDrivenAction2 action = new ModelDrivenAction2();
@@ -72,7 +72,8 @@ public class LocalizedTextUtilTest extends TestCase {
     public void testAddDefaultResourceBundle2() throws Exception {
         LocalizedTextUtil.addDefaultResourceBundle("com/opensymphony/xwork/SimpleAction");
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("/", "packagelessAction", Collections.EMPTY_MAP, false, true);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), "/", "packagelessAction", Collections.EMPTY_MAP, false, true);
         proxy.execute();
     }
 
@@ -168,8 +169,8 @@ public class LocalizedTextUtilTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        XWorkStatic.getConfigurationManager().destroyConfiguration();
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.destroyConfiguration();
+        configurationManager.reload();
 
         OgnlValueStack stack = new OgnlValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));

@@ -6,7 +6,6 @@ package com.opensymphony.xwork.config.providers;
 
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.SimpleAction;
-import com.opensymphony.xwork.XWorkStatic;
 import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.RuntimeConfiguration;
@@ -78,8 +77,8 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
 
     public void testInterceptorDefaultRefs() throws ConfigurationException {
         XmlConfigurationProvider provider = new XmlConfigurationProvider("com/opensymphony/xwork/config/providers/xwork-test-interceptor-defaultref.xml");
-        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
-        XWorkStatic.getConfigurationManager().addConfigurationProvider(provider);
+        configurationManager.clearConfigurationProviders();
+        configurationManager.addConfigurationProvider(provider);
 
         // expectations - the inherited interceptor stack
         // default package
@@ -102,7 +101,7 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
 
         ActionConfig anotherActionWithOwnRef = new ActionConfig(null, SimpleAction.class, new HashMap(), new HashMap(), interceptors);
 
-        RuntimeConfiguration runtimeConfig = XWorkStatic.getConfigurationManager().getConfiguration().getRuntimeConfiguration();
+        RuntimeConfiguration runtimeConfig = configurationManager.getConfiguration().getRuntimeConfiguration();
 
         // assertions
         assertEquals(actionWithOwnRef, runtimeConfig.getActionConfig("", "ActionWithOwnRef"));
@@ -194,15 +193,4 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
 
     }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        XWorkStatic.getConfigurationManager().destroyConfiguration();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-
-        XWorkStatic.getConfigurationManager().destroyConfiguration();
-    }
 }

@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ActionSupport;
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.validator.validators.EmailValidator;
 
 import junit.framework.TestCase;
@@ -16,7 +17,7 @@ import junit.framework.TestCase;
  * @author tm_jee
  * @version $Date$ $Id$
  */
-public class EmailValidatorTest extends TestCase {
+public class EmailValidatorTest extends XWorkTestCase {
 	
 	public void testEmailValidity() throws Exception {
 		assertTrue(verifyEmailValidity("tmjee@yahoo.com"));

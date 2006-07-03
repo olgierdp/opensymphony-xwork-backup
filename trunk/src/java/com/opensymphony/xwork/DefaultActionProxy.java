@@ -5,7 +5,9 @@
 package com.opensymphony.xwork;
 
 import com.opensymphony.util.TextUtils;
+import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.config.ConfigurationException;
+import com.opensymphony.xwork.config.RuntimeConfiguration;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.util.LocalizedTextUtil;
 import org.apache.commons.logging.Log;
@@ -27,6 +29,7 @@ import java.util.Map;
 public class DefaultActionProxy implements ActionProxy, Serializable {
     private static final Log LOG = LogFactory.getLog(DefaultActionProxy.class);
 
+    protected Configuration configuration;
     protected ActionConfig config;
     protected ActionInvocation invocation;
     protected Map extraContext;
@@ -42,18 +45,19 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
      * The reason for the builder methods is so that you can use a subclass to create your own DefaultActionProxy instance
      * (like a RMIActionProxy).
      */
-    protected DefaultActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+    protected DefaultActionProxy(Configuration cfg, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
         this.cleanupContext = cleanupContext;
         if (LOG.isDebugEnabled()) {
             LOG.debug("Creating an DefaultActionProxy for namespace " + namespace + " and action name " + actionName);
         }
 
+        this.configuration = cfg;
         this.actionName = actionName;
         this.namespace = namespace;
         this.executeResult = executeResult;
         this.extraContext = extraContext;
 
-        config = XWorkStatic.getConfigurationManager().getConfiguration().getRuntimeConfiguration().getActionConfig(namespace, actionName);
+        config = configuration.getRuntimeConfiguration().getActionConfig(namespace, actionName);
 
         if (config == null) {
             String message;
@@ -143,5 +147,9 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     protected void prepare() throws Exception {
         invocation = ActionProxyFactory.getFactory().createActionInvocation(this, extraContext);
         resolveMethod();
+    }
+    
+    public Configuration getConfiguration() {
+        return configuration;
     }
 }

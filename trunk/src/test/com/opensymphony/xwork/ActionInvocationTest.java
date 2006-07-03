@@ -13,13 +13,15 @@ import java.util.HashMap;
  * @author $Author$
  * @version $Revision$
  */
-public class ActionInvocationTest extends TestCase {
+public class ActionInvocationTest extends XWorkTestCase {
 
     public void testCommandInvocation() throws Exception {
-        ActionProxy baseActionProxy = ActionProxyFactory.getFactory().createActionProxy("baz", "commandTest", null);
+        ActionProxy baseActionProxy = ActionProxyFactory.getFactory().createActionProxy(configurationManager.getConfiguration(), 
+                "baz", "commandTest", null);
         assertEquals("success", baseActionProxy.execute());
 
-        ActionProxy commandActionProxy = ActionProxyFactory.getFactory().createActionProxy("baz", "myCommand", null);
+        ActionProxy commandActionProxy = ActionProxyFactory.getFactory().createActionProxy(configurationManager.getConfiguration(),
+                "baz", "myCommand", null);
         assertEquals(SimpleAction.COMMAND_RETURN_CODE, commandActionProxy.execute());
     }
 
@@ -31,7 +33,8 @@ public class ActionInvocationTest extends TestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", "Foo", extraContext);
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                    configurationManager.getConfiguration(), "", "Foo", extraContext);
             proxy.execute();
             assertEquals("this is blah", proxy.getInvocation().getStack().findValue("[1].blah"));
         } catch (Exception e) {
@@ -44,7 +47,7 @@ public class ActionInvocationTest extends TestCase {
         super.setUp();
 
         // ensure we're using the default configuration, not simple config
-        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.clearConfigurationProviders();
+        configurationManager.getConfiguration().reload(configurationManager.getConfigurationProviders());
     }
 }

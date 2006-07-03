@@ -5,8 +5,8 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.util.ClassLoaderUtil;
-import com.opensymphony.xwork.XWorkStatic;
 import com.opensymphony.xwork.XWorkException;
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import junit.framework.TestCase;
 
@@ -23,7 +23,7 @@ import java.util.List;
  * @author James House
  * @author tm_jee ( tm_jee (at) yahoo.co.uk )
  */
-public class ValidatorFileParserTest extends TestCase {
+public class ValidatorFileParserTest extends XWorkTestCase {
 
     private static final String testFileName = "com/opensymphony/xwork/validator/validator-parser-test.xml";
     private static final String testFileName2 = "com/opensymphony/xwork/validator/validator-parser-test2.xml";
@@ -132,8 +132,8 @@ public class ValidatorFileParserTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
-        XWorkStatic.getConfigurationManager().addConfigurationProvider(new MockConfigurationProvider());
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.clearConfigurationProviders();
+        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
+        configurationManager.reload();
     }
 }

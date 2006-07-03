@@ -37,7 +37,8 @@ public class AliasInterceptorTest extends XWorkTestCase {
         params.put("aliasSource", "source here");
 
         ActionProxyFactory factory = ActionProxyFactory.getFactory();
-        ActionProxy proxy = factory.createActionProxy("", "aliasTest", params);
+        ActionProxy proxy = factory.createActionProxy(
+                configurationManager.getConfiguration(), "", "aliasTest", params);
         SimpleAction actionOne = (SimpleAction) proxy.getAction();
         actionOne.setAliasSource("name to be copied");
         proxy.execute();
@@ -119,8 +120,5 @@ public class AliasInterceptorTest extends XWorkTestCase {
         ai.destroy();
     }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
 }
 

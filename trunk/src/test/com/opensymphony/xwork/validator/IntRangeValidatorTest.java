@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @author Jason Carreira
  */
-public class IntRangeValidatorTest extends TestCase {
+public class IntRangeValidatorTest extends XWorkTestCase {
 
     public void testRangeValidation() {
         HashMap params = new HashMap();
@@ -30,7 +30,8 @@ public class IntRangeValidatorTest extends TestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                    configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
             proxy.execute();
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
@@ -47,8 +48,8 @@ public class IntRangeValidatorTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
-        XWorkStatic.getConfigurationManager().addConfigurationProvider(new MockConfigurationProvider());
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.clearConfigurationProviders();
+        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
+        configurationManager.reload();
     }
 }

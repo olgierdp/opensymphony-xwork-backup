@@ -5,7 +5,6 @@
 package com.opensymphony.xwork.config.providers;
 
 import com.opensymphony.xwork.ObjectFactory;
-import com.opensymphony.xwork.XWorkStatic;
 import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.entities.InterceptorConfig;
@@ -65,6 +64,6 @@ public class XmlConfigurationProviderInterceptorsSpringTest extends Configuratio
         objFactory.setApplicationContext(sac);
         ObjectFactory.setObjectFactory(objFactory);
 
-        XWorkStatic.getConfigurationManager().destroyConfiguration();
+        configurationManager.destroyConfiguration();
     }
 }

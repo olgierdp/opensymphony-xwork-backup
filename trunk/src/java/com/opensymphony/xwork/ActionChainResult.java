@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork;
 
+import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.util.TextParseUtil;
 import org.apache.commons.logging.Log;
@@ -147,7 +148,12 @@ public class ActionChainResult implements Result {
             log.debug("Chaining to action " + finalActionName);
         }
 
-        proxy = ActionProxyFactory.getFactory().createActionProxy(finalNamespace, finalActionName, extraContext);
+        Configuration config = null;
+        if (invocation != null) {
+            config = invocation.getProxy().getConfiguration();
+        }
+        proxy = ActionProxyFactory.getFactory().createActionProxy(config,
+                finalNamespace, finalActionName, extraContext);
         if (null != finalMethodName) {
             proxy.setMethod(finalMethodName);
         }

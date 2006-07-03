@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork.config.impl;
 
-import com.opensymphony.xwork.XWorkStatic;
 import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationProvider;
@@ -78,10 +77,10 @@ public class DefaultConfiguration implements Configuration {
      *
      * @throws ConfigurationException
      */
-    public synchronized void reload() throws ConfigurationException {
+    public synchronized void reload(List<ConfigurationProvider> providers) throws ConfigurationException {
         packageContexts.clear();
 
-        for (ConfigurationProvider configurationProvider : XWorkStatic.getConfigurationManager().getConfigurationProviders())
+        for (ConfigurationProvider configurationProvider : providers)
         {
             configurationProvider.init(this);
         }

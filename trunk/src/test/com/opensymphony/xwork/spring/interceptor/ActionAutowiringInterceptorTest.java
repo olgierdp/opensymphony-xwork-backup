@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * @author Simon Stewart
  */
-public class ActionAutowiringInterceptorTest extends TestCase {
+public class ActionAutowiringInterceptorTest extends XWorkTestCase {
 
     public void testShouldAutowireAction() throws Exception {
         StaticWebApplicationContext context = new StaticWebApplicationContext();
@@ -39,8 +39,8 @@ public class ActionAutowiringInterceptorTest extends TestCase {
 
     public void testSetAutowireType() throws Exception {
         XmlConfigurationProvider c = new XmlConfigurationProvider("com/opensymphony/xwork/spring/xwork-autowire.xml");
-        XWorkStatic.getConfigurationManager().addConfigurationProvider(c);
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.addConfigurationProvider(c);
+        configurationManager.reload();
 
         StaticWebApplicationContext appContext = new StaticWebApplicationContext();
 

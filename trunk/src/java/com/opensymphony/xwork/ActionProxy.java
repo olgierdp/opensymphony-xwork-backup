@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork;
 
+import com.opensymphony.xwork.config.Configuration;
+import com.opensymphony.xwork.config.RuntimeConfiguration;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 
 
@@ -76,4 +78,9 @@ public interface ActionProxy {
      * Returns the method to execute, or null if no method has been specified (meaning "execute" will be invoked)
      */
     String getMethod();
+    
+    /**
+     * Gets the runtime configuration this action proxy was created with
+     */
+    Configuration getConfiguration();
 }

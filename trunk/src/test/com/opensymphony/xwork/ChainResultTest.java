@@ -11,6 +11,7 @@
 package com.opensymphony.xwork;
 
 import com.mockobjects.dynamic.Mock;
+import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import junit.framework.TestCase;
 
@@ -21,14 +22,15 @@ import java.util.Map;
 /**
  * @author CameronBraid
  */
-public class ChainResultTest extends TestCase {
+public class ChainResultTest extends XWorkTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
 
         // ensure we're using the default configuration, not simple config
-        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.clearConfigurationProviders();
+        configurationManager.getConfiguration().reload(
+                configurationManager.getConfigurationProviders());
     }
 
     public void testNamespaceAndActionExpressionEvaluation() throws Exception {
@@ -64,7 +66,8 @@ public class ChainResultTest extends TestCase {
     }
 
     public void testRecursiveChain() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", "InfiniteRecursionChain", null);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), "", "InfiniteRecursionChain", null);
 
         try {
             proxy.execute();
@@ -96,14 +99,14 @@ public class ChainResultTest extends TestCase {
             return null;
         }
 
-        public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext) throws Exception {
+        public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext) throws Exception {
             TestCase.assertEquals(expectedNamespace, namespace);
             TestCase.assertEquals(expectedActionName, actionName);
 
             return returnVal;
         }
 
-        public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+        public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
             TestCase.assertEquals(expectedNamespace, namespace);
             TestCase.assertEquals(expectedActionName, actionName);
 

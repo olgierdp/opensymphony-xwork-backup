@@ -43,7 +43,7 @@ public class ConfigurationManager {
         if (configuration == null) {
             setConfiguration(new DefaultConfiguration());
             try {
-                configuration.reload();
+                configuration.reload(getConfigurationProviders());
             } catch (ConfigurationException e) {
                 setConfiguration(null);
                 throw e;
@@ -126,7 +126,8 @@ public class ConfigurationManager {
 
             reload = false;
 
-            for (ConfigurationProvider provider : configurationProviders) {
+            List<ConfigurationProvider> providers = getConfigurationProviders();
+            for (ConfigurationProvider provider : providers) {
                 if (provider.needsReload()) {
                     reload = true;
 
@@ -135,9 +136,13 @@ public class ConfigurationManager {
             }
 
             if (reload) {
-                configuration.reload();
+                configuration.reload(providers);
             }
         }
+    }
+    
+    public synchronized void reload() {
+        getConfiguration().reload(getConfigurationProviders());
     }
 
     /**

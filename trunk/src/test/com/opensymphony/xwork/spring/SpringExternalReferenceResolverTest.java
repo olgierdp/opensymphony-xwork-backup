@@ -3,7 +3,6 @@
  */
 package com.opensymphony.xwork.spring;
 
-import com.opensymphony.xwork.XWorkStatic;
 import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.config.ExternalReferenceResolver;
 import com.opensymphony.xwork.config.entities.PackageConfig;
@@ -24,15 +23,15 @@ public class SpringExternalReferenceResolverTest extends XWorkTestCase {
                 "com/opensymphony/xwork/spring/resolverApplicationContext.xml");
         //ensure we're using the default xwork configuration
         XmlConfigurationProvider c = new XmlConfigurationProvider("com/opensymphony/xwork/spring/xwork-ext.xml");
-        XWorkStatic.getConfigurationManager().addConfigurationProvider(c);
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.addConfigurationProvider(c);
+        configurationManager.reload();
     }
 
     /**
      * test that resolver has been loaded and given to the package config
      */
     public void testResolverIsInstanciated() throws Exception {
-        PackageConfig packageConfig = XWorkStatic.getConfigurationManager().getConfiguration()
+        PackageConfig packageConfig = configurationManager.getConfiguration()
                 .getPackageConfig("default");
 
         assertNotNull("There should be a package called 'default'",
@@ -177,7 +176,7 @@ public class SpringExternalReferenceResolverTest extends XWorkTestCase {
      * sets the applicationContext on the resolver
      */
     private void initialiseReferenceResolver() {
-        PackageConfig packageConfig = XWorkStatic.getConfigurationManager().getConfiguration()
+        PackageConfig packageConfig = configurationManager.getConfiguration()
                 .getPackageConfig("default");
         assertNotNull("There should be a package called 'default'",
                 packageConfig);

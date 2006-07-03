@@ -6,7 +6,7 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ValidationAwareSupport;
-import com.opensymphony.xwork.XWorkStatic;
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.test.Equidae;
 import com.opensymphony.xwork.util.OgnlValueStack;
@@ -20,7 +20,7 @@ import java.util.Map;
  * @author Mark Woon
  * @author tm_jee (tm_jee (at) yahoo.co.uk )
  */
-public class StringValidatorTest extends TestCase {
+public class StringValidatorTest extends XWorkTestCase {
 
     public void testRequiredStringWithNullValue() throws Exception {
         Equidae equidae = new Equidae();
@@ -183,8 +183,8 @@ public class StringValidatorTest extends TestCase {
         OgnlValueStack stack = new OgnlValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
 
-        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
-        XWorkStatic.getConfigurationManager().addConfigurationProvider(new MockConfigurationProvider());
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.clearConfigurationProviders();
+        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
+        configurationManager.reload();
     }
 }

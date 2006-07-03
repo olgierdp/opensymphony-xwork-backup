@@ -23,13 +23,14 @@ import java.util.HashMap;
  * @author Jason Carreira
  *         Date: Nov 13, 2003 11:16:43 PM
  */
-public class PreResultListenerTest extends TestCase {
+public class PreResultListenerTest extends XWorkTestCase {
 
     private int count = 1;
 
 
     public void testPreResultListenersAreCalled() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("package", "action", new HashMap(), false, true);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), "package", "action", new HashMap(), false, true);
         ActionInvocation invocation = proxy.getInvocation();
         Mock preResultListenerMock1 = new Mock(PreResultListener.class);
         preResultListenerMock1.expect("beforeResult", C.args(C.eq(invocation), C.eq(Action.SUCCESS)));
@@ -39,7 +40,8 @@ public class PreResultListenerTest extends TestCase {
     }
 
     public void testPreResultListenersAreCalledInOrder() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("package", "action", new HashMap(), false, true);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), "package", "action", new HashMap(), false, true);
         ActionInvocation invocation = proxy.getInvocation();
         CountPreResultListener listener1 = new CountPreResultListener();
         CountPreResultListener listener2 = new CountPreResultListener();
@@ -53,8 +55,8 @@ public class PreResultListenerTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
-        XWorkStatic.getConfigurationManager().addConfigurationProvider(new ConfigurationProvider() {
+        configurationManager.clearConfigurationProviders();
+        configurationManager.addConfigurationProvider(new ConfigurationProvider() {
             public void destroy() {
             }
 
@@ -77,12 +79,12 @@ public class PreResultListenerTest extends TestCase {
                 return false;
             }
         });
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+       configurationManager.reload();
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        XWorkStatic.getConfigurationManager().destroyConfiguration();
+        configurationManager.destroyConfiguration();
     }
 
 

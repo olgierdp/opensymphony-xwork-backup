@@ -6,6 +6,8 @@ package com.opensymphony.xwork;
 
 import java.util.Map;
 
+import com.opensymphony.xwork.config.Configuration;
+
 
 /**
  * DefaultActionProxyFactory
@@ -35,14 +37,14 @@ public class DefaultActionProxyFactory extends ActionProxyFactory {
     /**
      * Use this method to build an DefaultActionProxy instance.
      */
-    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext) throws Exception {
-        return new DefaultActionProxy(namespace, actionName, extraContext, true, true);
+    public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext) throws Exception {
+        return new DefaultActionProxy(config, namespace, actionName, extraContext, true, true);
     }
 
     /**
      * Use this method to build an DefaultActionProxy instance.
      */
-    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
-        return new DefaultActionProxy(namespace, actionName, extraContext, executeResult, cleanupContext);
+    public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+        return new DefaultActionProxy(config, namespace, actionName, extraContext, executeResult, cleanupContext);
     }
 }

@@ -6,9 +6,11 @@ package com.opensymphony.xwork.config.impl;
 
 import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.config.ConfigurationException;
+import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.RuntimeConfiguration;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -58,7 +60,7 @@ public class MockConfiguration implements Configuration {
         throw new UnsupportedOperationException();
     }
 
-    public void reload() throws ConfigurationException {
+    public void reload(List<ConfigurationProvider> providers) throws ConfigurationException {
         throw new UnsupportedOperationException();
     }
 

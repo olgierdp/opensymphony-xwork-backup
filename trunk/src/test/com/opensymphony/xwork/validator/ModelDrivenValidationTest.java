@@ -18,7 +18,7 @@ import java.util.Map;
  * @author Jason Carreira
  *         Created Oct 1, 2003 10:08:25 AM
  */
-public class ModelDrivenValidationTest extends TestCase {
+public class ModelDrivenValidationTest extends XWorkTestCase {
 
     public void testModelDrivenValidation() throws Exception {
         Map params = new HashMap();
@@ -27,7 +27,8 @@ public class ModelDrivenValidationTest extends TestCase {
         Map context = new HashMap();
         context.put(ActionContext.PARAMETERS, params);
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "TestModelDrivenValidation", context);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), null, "TestModelDrivenValidation", context);
         assertEquals(Action.SUCCESS, proxy.execute());
 
         ModelDrivenAction action = (ModelDrivenAction) proxy.getAction();
@@ -36,10 +37,4 @@ public class ModelDrivenValidationTest extends TestCase {
         assertEquals("count must be between 1 and 10, current value is 11.", ((List) action.getFieldErrors().get("count")).get(0));
     }
 
-    protected void setUp() throws Exception {
-        XWorkStatic.getConfigurationManager().destroyConfiguration();
-    }
-
-    protected void tearDown() throws Exception {
-    }
 }

@@ -23,7 +23,7 @@ import java.util.Map;
  * @author Jason Carreira
  * @author Claus Ibsen
  */
-public class ExpressionValidatorTest extends TestCase {
+public class ExpressionValidatorTest extends XWorkTestCase {
 
     public void testExpressionValidationOfStringLength() throws ValidationException {
         TestBean bean = new TestBean();
@@ -56,7 +56,8 @@ public class ExpressionValidatorTest extends TestCase {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
         proxy.execute();
         assertTrue(((ValidationAware) proxy.getAction()).hasActionErrors());
 
@@ -79,7 +80,8 @@ public class ExpressionValidatorTest extends TestCase {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
         proxy.execute();
         assertFalse(((ValidationAware) proxy.getAction()).hasActionErrors());
     }
@@ -106,9 +108,9 @@ public class ExpressionValidatorTest extends TestCase {
         OgnlValueStack stack = new OgnlValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
 
-        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
-        XWorkStatic.getConfigurationManager().addConfigurationProvider(new MockConfigurationProvider());
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.clearConfigurationProviders();
+        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
+        configurationManager.reload();
     }
 
 }

@@ -14,26 +14,29 @@ import junit.framework.TestCase;
  * @author <a href="mailto:hermanns@aixcept.de">Rainer Hermanns</a>
  * @version $Id$
  */
-public class WildCardResultTest extends TestCase {
+public class WildCardResultTest extends XWorkTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
 
         // ensure we're using the default configuration, not simple config
-        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.clearConfigurationProviders();
+        configurationManager.getConfiguration().reload(configurationManager.getConfigurationProviders());
     }
 
     public void testWildCardEvaluation() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "WildCard", null);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), null, "WildCard", null);
         assertEquals("success", proxy.execute());
         assertEquals(VoidResult.class, proxy.getInvocation().getResult().getClass());
 
-        proxy = ActionProxyFactory.getFactory().createActionProxy(null, "WildCardInput", null);
+        proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), null, "WildCardInput", null);
         assertEquals("input", proxy.execute());
         assertEquals(MockResult.class, proxy.getInvocation().getResult().getClass());
 
-        proxy = ActionProxyFactory.getFactory().createActionProxy(null, "WildCardError", null);
+        proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), null, "WildCardError", null);
         assertEquals("error", proxy.execute());
         assertEquals(MockResult.class, proxy.getInvocation().getResult().getClass());
     }

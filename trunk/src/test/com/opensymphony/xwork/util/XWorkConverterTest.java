@@ -24,7 +24,7 @@ import java.util.*;
  * @author $Author$
  * @version $Revision$
  */
-public class XWorkConverterTest extends TestCase {
+public class XWorkConverterTest extends XWorkTestCase {
 
     Map context;
     XWorkConverter converter;
@@ -582,7 +582,7 @@ public class XWorkConverterTest extends TestCase {
 
     protected void setUp() throws Exception {
         converter = XWorkConverter.getInstance();
-        XWorkStatic.getConfigurationManager().destroyConfiguration();
+        configurationManager.destroyConfiguration();
 
         OgnlValueStack stack = new OgnlValueStack();
         ActionContext ac = new ActionContext(stack.getContext());

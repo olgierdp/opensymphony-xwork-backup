@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork.config.providers;
 
-import com.opensymphony.xwork.XWorkStatic;
 import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.RuntimeConfiguration;
@@ -84,9 +83,9 @@ public class XmlConfigurationProviderPackagesTest extends ConfigurationTestBase 
         assertTrue(multipleParents.contains(abstractPackage));
         assertTrue(multipleParents.contains(singlePackage));
 
-        XWorkStatic.getConfigurationManager().addConfigurationProvider(provider);
+        configurationManager.addConfigurationProvider(provider);
 
-        RuntimeConfiguration runtimeConfiguration = XWorkStatic.getConfigurationManager().getConfiguration().getRuntimeConfiguration();
+        RuntimeConfiguration runtimeConfiguration = configurationManager.getConfiguration().getRuntimeConfiguration();
         assertNotNull(runtimeConfiguration.getActionConfig("/multiple", "default"));
         assertNotNull(runtimeConfiguration.getActionConfig("/multiple", "abstract"));
         assertNotNull(runtimeConfiguration.getActionConfig("/multiple", "single"));

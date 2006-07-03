@@ -25,7 +25,8 @@ public class MyBeanActionTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", "MyBean", extraContext);
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                    configurationManager.getConfiguration(), "", "MyBean", extraContext);
             proxy.execute();
             assertEquals(2, Integer.parseInt(proxy.getInvocation().getStack().findValue("beanList.size").toString()));
             assertEquals(MyBean.class.getName(), proxy.getInvocation().getStack().findValue("beanList.get(0)").getClass().getName());
@@ -53,7 +54,8 @@ public class MyBeanActionTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", "MyBean", extraContext);
+            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                    configurationManager.getConfiguration(), "", "MyBean", extraContext);
             proxy.execute();
             MyBeanAction action = (MyBeanAction) proxy.getInvocation().getAction();
 
@@ -82,7 +84,7 @@ public class MyBeanActionTest extends XWorkTestCase {
         super.setUp();
 
         // ensure we're using the default configuration, not simple config
-        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.clearConfigurationProviders();
+        configurationManager.reload();
     }
 }

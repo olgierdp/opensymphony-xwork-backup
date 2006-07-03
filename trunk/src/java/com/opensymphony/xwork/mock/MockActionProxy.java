@@ -5,6 +5,7 @@
 
 package com.opensymphony.xwork.mock;
 
+import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.ActionProxy;
 import com.opensymphony.xwork.ActionInvocation;
@@ -25,6 +26,7 @@ public class MockActionProxy implements ActionProxy {
     String method;
     boolean executedCalled;
     String returnedResult;
+    Configuration configuration;
 
     public String execute() throws Exception {
         executedCalled = true;
@@ -94,5 +96,13 @@ public class MockActionProxy implements ActionProxy {
 
     public void setMethod(String method) {
         this.method = method;
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
     }
 }

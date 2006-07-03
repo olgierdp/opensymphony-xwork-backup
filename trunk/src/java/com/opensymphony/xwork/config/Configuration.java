@@ -6,6 +6,7 @@ package com.opensymphony.xwork.config;
 
 import com.opensymphony.xwork.config.entities.PackageConfig;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ public interface Configuration {
      */
     void destroy();
 
-    void reload() throws ConfigurationException;
+    void reload(List<ConfigurationProvider> providers) throws ConfigurationException;
 
     void removePackageConfig(String name);
 }

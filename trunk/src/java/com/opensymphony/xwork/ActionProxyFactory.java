@@ -6,6 +6,9 @@ package com.opensymphony.xwork;
 
 import java.util.Map;
 
+import com.opensymphony.xwork.config.Configuration;
+import com.opensymphony.xwork.config.ConfigurationManager;
+
 
 /**
  * The ActionProxyFactory is used to create ActionProxies to be executed. It is the entry point to XWork that is used
@@ -19,7 +22,6 @@ public abstract class ActionProxyFactory {
 
     static ActionProxyFactory factory = new DefaultActionProxyFactory();
 
-
     /**
      * Set the ActionProxyFactory implementation to use. If no instance is set, a new DefaultActionProxyFactory is used.
      *
@@ -32,7 +34,7 @@ public abstract class ActionProxyFactory {
     public static ActionProxyFactory getFactory() {
         return factory;
     }
-
+    
     /**
      * Used by an ActionProxy or ActionProxyFactory to create an ActionInvocation to associate with an ActionProxy
      * as part of creating an ActionProxy. Client code should not need to call the createActionInvocation methods.
@@ -76,7 +78,7 @@ public abstract class ActionProxyFactory {
      * @return ActionProxy
      * @throws Exception
      */
-    public abstract ActionProxy createActionProxy(String namespace, String actionName, Map extraContext) throws Exception;
+    public abstract ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext) throws Exception;
 
     /**
      * Creates an ActionProxy for the given namespace and action name by looking up the configuration. The ActionProxy
@@ -90,5 +92,5 @@ public abstract class ActionProxyFactory {
      * @return ActionProxy
      * @throws Exception
      */
-    public abstract ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception;
+    public abstract ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception;
 }

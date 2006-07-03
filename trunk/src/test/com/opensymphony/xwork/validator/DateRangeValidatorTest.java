@@ -7,7 +7,7 @@ package com.opensymphony.xwork.validator;
 import com.opensymphony.xwork.ActionProxy;
 import com.opensymphony.xwork.ActionProxyFactory;
 import com.opensymphony.xwork.ValidationAware;
-import com.opensymphony.xwork.XWorkStatic;
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.validator.validators.DateRangeFieldValidator;
 import junit.framework.TestCase;
@@ -21,7 +21,7 @@ import java.util.*;
  * @author Jason Carreira
  *         Created Feb 9, 2003 1:25:42 AM
  */
-public class DateRangeValidatorTest extends TestCase {
+public class DateRangeValidatorTest extends XWorkTestCase {
 
     private Locale origLocale;
 
@@ -31,7 +31,8 @@ public class DateRangeValidatorTest extends TestCase {
      * because the action config sets date to 12/20/2002 while expected range is Dec 22-25.
      */
     public void testRangeValidation() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, null);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, null);
         proxy.execute();
         assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
@@ -60,9 +61,9 @@ public class DateRangeValidatorTest extends TestCase {
     protected void setUp() throws Exception {
         origLocale = Locale.getDefault();
         Locale.setDefault(Locale.US);
-        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
-        XWorkStatic.getConfigurationManager().addConfigurationProvider(new MockConfigurationProvider());
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.clearConfigurationProviders();
+        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
+        configurationManager.reload();
     }
 
     protected void tearDown() throws Exception {

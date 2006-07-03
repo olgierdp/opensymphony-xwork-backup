@@ -17,10 +17,11 @@ import java.util.Map;
  * @author Claus Ibsen
  * @version $Id$
  */
-public class DoubleRangeValidatorTest extends TestCase {
+public class DoubleRangeValidatorTest extends XWorkTestCase {
 
     public void testRangeValidationWithError() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, null);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, null);
         proxy.execute();
         assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
@@ -37,7 +38,8 @@ public class DoubleRangeValidatorTest extends TestCase {
     }
 
     public void testRangeValidationNoError() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", "percentage", null);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), "", "percentage", null);
         proxy.execute();
         assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
@@ -160,9 +162,9 @@ public class DoubleRangeValidatorTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        XWorkStatic.getConfigurationManager().clearConfigurationProviders();
-        XWorkStatic.getConfigurationManager().addConfigurationProvider(new MockConfigurationProvider());
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.clearConfigurationProviders();
+        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
+        configurationManager.reload();
     }
 
     private class MyTestProduct {

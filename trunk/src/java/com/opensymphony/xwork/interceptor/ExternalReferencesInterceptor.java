@@ -5,7 +5,6 @@
 package com.opensymphony.xwork.interceptor;
 
 import com.opensymphony.xwork.ActionInvocation;
-import com.opensymphony.xwork.XWorkStatic;
 import com.opensymphony.xwork.config.ExternalReferenceResolver;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 
@@ -45,7 +44,7 @@ public class ExternalReferencesInterceptor extends AbstractInterceptor {
     public String intercept(ActionInvocation invocation) throws Exception {
 
         String packageName = invocation.getProxy().getConfig().getPackageName();
-        PackageConfig packageConfig = XWorkStatic.getConfigurationManager().getConfiguration().getPackageConfig(packageName);
+        PackageConfig packageConfig = invocation.getProxy().getConfiguration().getPackageConfig(packageName);
 
         if (packageConfig != null) {
             ExternalReferenceResolver erResolver = packageConfig.getExternalRefResolver();

@@ -24,14 +24,14 @@ import java.util.HashMap;
  *
  * @author Ross
  */
-public class ExternalReferenceResolverTest extends TestCase {
+public class ExternalReferenceResolverTest extends XWorkTestCase {
 
     /**
      * test that resolver has been loaded and given to the package config
      */
     public void testResolverIsInstanciated() throws Exception {
-        RuntimeConfiguration config = XWorkStatic.getConfigurationManager().getConfiguration().getRuntimeConfiguration();
-        PackageConfig packageConfig = XWorkStatic.getConfigurationManager().getConfiguration().getPackageConfig("default");
+        RuntimeConfiguration config = configurationManager.getConfiguration().getRuntimeConfiguration();
+        PackageConfig packageConfig = configurationManager.getConfiguration().getPackageConfig("default");
 
         assertNotNull("There should be a package called 'default'", packageConfig);
 
@@ -47,7 +47,8 @@ public class ExternalReferenceResolverTest extends TestCase {
      * @throws Exception
      */
     public void testResolverOnParentPackage() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("test/externalRef/", "TestExternalRefResolver4", null);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), "test/externalRef/", "TestExternalRefResolver4", null);
 
         ExternalReferenceAction erAction = (ExternalReferenceAction) proxy.getAction();
 
@@ -64,7 +65,8 @@ public class ExternalReferenceResolverTest extends TestCase {
      * @throws Exception because it wants to!
      */
     public void testResolverResolvesDependancies() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "TestExternalRefResolver", null);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), null, "TestExternalRefResolver", null);
         Object action = proxy.getAction();
         assertNotNull("Action should be null", action);
         assertTrue("Action should be an ExternalReferenceAction", action instanceof ExternalReferenceAction);
@@ -85,7 +87,8 @@ public class ExternalReferenceResolverTest extends TestCase {
      * @throws Exception
      */
     public void testResolverRespectsRequiredDependancies() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(null, "TestExternalRefResolver2", null);
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), null, "TestExternalRefResolver2", null);
         Object action = proxy.getAction();
         assertNotNull("Action should be null", action);
         assertTrue("Action should be an ExternalReferenceAction", action instanceof ExternalReferenceAction);
@@ -99,7 +102,8 @@ public class ExternalReferenceResolverTest extends TestCase {
         assertEquals("Foos name should be 'Little Foo'", "Little Foo", erAction.getFoo().getName());
 
         //now test that a required dependacy that is missing will throw an exception
-        proxy = ActionProxyFactory.getFactory().createActionProxy(null, "TestExternalRefResolver3", null);
+        proxy = ActionProxyFactory.getFactory().createActionProxy(
+                configurationManager.getConfiguration(), null, "TestExternalRefResolver3", null);
         action = proxy.getAction();
         assertNotNull("Action should be null", action);
         erAction = (ExternalReferenceAction) action;
@@ -119,8 +123,8 @@ public class ExternalReferenceResolverTest extends TestCase {
 
         // ensure we're using the default configuration, not simple config
         XmlConfigurationProvider c = new XmlConfigurationProvider();
-        XWorkStatic.getConfigurationManager().addConfigurationProvider(c);
-        XWorkStatic.getConfigurationManager().getConfiguration().reload();
+        configurationManager.addConfigurationProvider(c);
+        configurationManager.reload();
     }
 
     protected void tearDown() throws Exception {
