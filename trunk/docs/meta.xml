@@ -2,6 +2,7 @@
     <name>XWork</name>
     <jiraId>10050</jiraId>
     <jiraName>XW</jiraName>
+    <svn>true</svn>
     <confluenceName>XW</confluenceName>
 
     <forums>
