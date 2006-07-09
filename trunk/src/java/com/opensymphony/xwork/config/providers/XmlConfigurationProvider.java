@@ -47,11 +47,13 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
     private Configuration configuration;
     private Set includedFileNames = new TreeSet();
-    private String configFileName = "xwork.xml";
+    private String configFileName;
     private boolean compatMode = false;
-    private boolean errorIfMissing = true;
+    private boolean errorIfMissing;
+    private Map<String,String> dtdMappings;
 
     public XmlConfigurationProvider() {
+        this("xwork.xml", true);
     }
 
     public XmlConfigurationProvider(String filename) {
@@ -61,6 +63,14 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     public XmlConfigurationProvider(String filename, boolean errorIfMissing) {
         this.configFileName = filename;
         this.errorIfMissing = errorIfMissing;
+        dtdMappings = new HashMap<String,String>();
+        dtdMappings.put("-//OpenSymphony Group//XWork 1.1.1//EN", "xwork-1.1.1.dtd");
+        dtdMappings.put("-//OpenSymphony Group//XWork 1.1//EN", "xwork-1.1.dtd");
+        dtdMappings.put("-//OpenSymphony Group//XWork 1.0//EN", "xwork-1.0.dtd");
+    }
+    
+    public void setDtdMappings(Map<String,String> mappings) {
+        this.dtdMappings = mappings;
     }
     
     public void setCompatibilityMode(boolean mode) {
@@ -649,11 +659,6 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
                 //FIXME: we shouldn't be doing this lookup twice
                 in.setSystemId(ClassLoaderUtil.getResource(fileName, getClass()).toString());
-
-                Map dtdMappings = new HashMap();
-                dtdMappings.put("-//OpenSymphony Group//XWork 1.1.1//EN", "xwork-1.1.1.dtd");
-                dtdMappings.put("-//OpenSymphony Group//XWork 1.1//EN", "xwork-1.1.dtd");
-                dtdMappings.put("-//OpenSymphony Group//XWork 1.0//EN", "xwork-1.0.dtd");
 
                 doc = DomHelper.parse(in, dtdMappings);
             } catch (XWorkException e) {
