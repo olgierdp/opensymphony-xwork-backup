@@ -132,6 +132,7 @@
             <groupId>org.rifers</groupId>
             <artifactId>rife-continuations</artifactId>
             <version>0.0.2</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <!-- group should be com.opensymphony ... -->

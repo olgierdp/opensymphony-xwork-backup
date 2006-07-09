@@ -7,6 +7,7 @@ package com.opensymphony.xwork.config.providers;
 import com.opensymphony.xwork.mock.MockInterceptor;
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.SimpleAction;
+import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.ConfigurationProvider;
 import com.opensymphony.xwork.config.entities.*;
 import com.opensymphony.xwork.interceptor.TimerInterceptor;
@@ -112,8 +113,12 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         final String filename = "com/opensymphony/xwork/config/providers/xwork-test-action-invalid.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
 
-        provider.init(configuration);
-        assertEquals(false, provider.needsReload());
+        try {
+            provider.init(configuration);
+            fail("Should have thrown an exception");
+        } catch (ConfigurationException ex) {
+            // it worked correctly
+        }
     }
 
     protected void setUp() throws Exception {

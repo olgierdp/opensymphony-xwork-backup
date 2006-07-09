@@ -169,7 +169,8 @@ public class DefaultConfiguration implements Configuration {
             String defaultInterceptorRefName = packageContext.getFullDefaultInterceptorRef();
 
             if (defaultInterceptorRefName != null) {
-                interceptors.addAll(InterceptorBuilder.constructInterceptorReference(packageContext, defaultInterceptorRefName, new LinkedHashMap()));
+                interceptors.addAll(InterceptorBuilder.constructInterceptorReference(packageContext, defaultInterceptorRefName, 
+                        new LinkedHashMap(), packageContext.getLocation()));
             }
         }
 

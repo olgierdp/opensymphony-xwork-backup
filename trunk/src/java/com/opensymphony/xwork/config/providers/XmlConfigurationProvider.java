@@ -15,6 +15,8 @@ import com.opensymphony.xwork.config.*;
 import com.opensymphony.xwork.config.entities.*;
 import com.opensymphony.xwork.util.DomHelper;
 import com.opensymphony.xwork.util.location.Location;
+import com.opensymphony.xwork.util.location.LocationUtils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
@@ -102,7 +104,6 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         } catch (ConfigurationException e) {
             throw e;
         } catch (Exception e) {
-            LOG.fatal("Could not load XWork configuration file, failing", e);
             throw new ConfigurationException("Error loading configuration file " + configFileName, e);
         }
     }
@@ -194,20 +195,15 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             Class clazz = ObjectFactory.getObjectFactory().getClassInstance(className);
             if (ObjectFactory.getObjectFactory().isNoArgConstructorRequired()) {
                 if (!Modifier.isPublic(clazz.getModifiers())) {
-                    LOG.error("Action class [" + className + "] is not public, skipping action [" + name + "]");
-                    return false;
+                    throw new ConfigurationException("Action class [" + className + "] is not public", loc);
                 }
                 clazz.getConstructor(new Class[]{});
             }
             return true;
         } catch (ClassNotFoundException e) {
-            LOG.error("Action class [" + className + "] not found, skipping action [" + name + "] at "
-                    + loc, e);
-            return false;
+            throw new ConfigurationException("Action class [" + className + "] not found", e, loc);
         } catch (NoSuchMethodException e) {
-            LOG.error("Action class [" + className + "] does not have a public no-arg constructor,"
-                    + " skipping action [" + name + "] at " + loc, e);
-            return false;
+            throw new ConfigurationException("Action class [" + className + "] does not have a public no-arg constructor", e, loc);
         } catch (Exception ex) {
             throw new ConfigurationException(ex, loc);
         }
@@ -372,12 +368,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             } catch (ClassNotFoundException e) {
                 //TODO this should be localized
                 String msg = "Could not find External Reference Resolver: " + externalReferenceResolver + ". " + e.getMessage();
-                LOG.error(msg);
                 throw new ConfigurationException(msg, e, packageElement);
             } catch (Exception e) {
                 //TODO this should be localized
                 String msg = "Could not create External Reference Resolver: " + externalReferenceResolver + ". " + e.getMessage();
-                LOG.error(msg);
                 throw new ConfigurationException(msg, e, packageElement);
             }
         }
@@ -431,7 +425,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     // now check if there is a result type now
                     if (!TextUtils.stringSet(resultType)) {
                         // uh-oh, we have a problem
-                        LOG.error("No result type specified for result named '" + resultName + "', perhaps the parent package does not specify the result type?");
+                        throw new ConfigurationException("No result type specified for result named '" + resultName + "', perhaps the parent package does not specify the result type?");
                     }
                 }
 
@@ -446,7 +440,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
                 // invalid result type specified in result definition
                 if (resultClass == null) {
-                    LOG.error("Result type '" + resultType + "' is invalid. Modify your xwork.xml file.");
+                    throw new ConfigurationException("Result type '" + resultType + "' is invalid");
                 }
 
                 Map resultParams = XmlHelper.getParams(resultElement);
@@ -630,7 +624,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     private void loadConfigurationFile(String fileName, Element includeElement) {
         if (!includedFileNames.contains(fileName)) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Loading xwork configuration from: " + fileName);
+                LOG.debug("Loading action configuration from: " + fileName);
             }
 
             includedFileNames.add(fileName);
@@ -670,7 +664,6 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
             } catch (Exception e) {
                 final String s = "Caught exception while loading file " + fileName;
-                LOG.error(s, e);
                 throw new ConfigurationException(s, e, includeElement);
             } finally {
                 if (is != null) {
@@ -704,7 +697,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             }
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Loaded xwork configuration from: " + fileName);
+                LOG.debug("Loaded action configuration from: " + fileName);
             }
         }
     }
@@ -721,7 +714,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         String refName = interceptorRefElement.getAttribute("name");
         Map refParams = XmlHelper.getParams(interceptorRefElement);
 
-        return InterceptorBuilder.constructInterceptorReference(context, refName, refParams);
+        Location loc = LocationUtils.getLocation(interceptorRefElement);
+        return InterceptorBuilder.constructInterceptorReference(context, refName, refParams, loc);
     }
     
 }

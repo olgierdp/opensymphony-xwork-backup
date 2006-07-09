@@ -11,6 +11,9 @@ import com.opensymphony.xwork.config.entities.InterceptorMapping;
 import com.opensymphony.xwork.config.entities.InterceptorStackConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.interceptor.Interceptor;
+import com.opensymphony.xwork.util.location.Locatable;
+import com.opensymphony.xwork.util.location.Location;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,12 +40,13 @@ public class InterceptorBuilder {
      * @return list of interceptors referenced by the refName in the supplied PackageConfig.
      * @throws ConfigurationException
      */
-    public static List<InterceptorMapping> constructInterceptorReference(PackageConfig packageConfig, String refName, Map refParams) throws ConfigurationException {
+    public static List<InterceptorMapping> constructInterceptorReference(PackageConfig packageConfig, 
+            String refName, Map refParams, Location location) throws ConfigurationException {
         Object referencedConfig = packageConfig.getAllInterceptorConfigs().get(refName);
         List<InterceptorMapping> result = new ArrayList<InterceptorMapping>();
 
         if (referencedConfig == null) {
-            LOG.error("Unable to find interceptor class referenced by ref-name " + refName);
+            throw new ConfigurationException("Unable to find interceptor class referenced by ref-name " + refName, location);
         } else {
             if (referencedConfig instanceof InterceptorConfig) {
                 result.add(new InterceptorMapping(refName, ObjectFactory.getObjectFactory().buildInterceptor((InterceptorConfig) referencedConfig, refParams)));
