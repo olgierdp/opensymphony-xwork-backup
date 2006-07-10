@@ -11,7 +11,7 @@
 	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
 		    <tr>
 			    <td valign="top" class="pagebody">
-				    <p>Validators implement the <b>com.opensymphony.xwork.validator.Validator</b> interface</p>
+				    <p>Validators implement the <b>com.opensymphony.xwork2.validator.Validator</b> interface</p>
 
 <div class="code"><div class="codeContent">
 <pre class="code-java"><span class="code-keyword">public</span> <span class="code-keyword">interface</span> Validator {
@@ -43,7 +43,7 @@
 }</pre>
 </div></div>
 
-<p>FieldValidators implement <b>com.opensymphony.xwork.validator.FieldValidator</b>, which extends Validator:</p>
+<p>FieldValidators implement <b>com.opensymphony.xwork2.validator.FieldValidator</b>, which extends Validator:</p>
 
 <div class="code"><div class="codeContent">
 <pre class="code-java"><span class="code-keyword">public</span> <span class="code-keyword">interface</span> FieldValidator <span class="code-keyword">extends</span> Validator {
@@ -61,9 +61,9 @@
 }</pre>
 </div></div>
 
-<p>If you want to be able to use the "short-circuit" attribute, you should also implement <b>com.opensymphony.xwork.validator.ShortCircuitableValidator</b>.</p>
+<p>If you want to be able to use the "short-circuit" attribute, you should also implement <b>com.opensymphony.xwork2.validator.ShortCircuitableValidator</b>.</p>
 
-<p>Validators and FieldValidators can extend base classes <b>com.opensymphony.xwork.validator.validators.ValidatorSupport</b> and <b>com.opensymphony.xwork.validator.validators.FieldValidatorSupport</b> to get the base message and short-circuiting behavior, and will only need to implement validate(Action action). </p>
+<p>Validators and FieldValidators can extend base classes <b>com.opensymphony.xwork2.validator.validators.ValidatorSupport</b> and <b>com.opensymphony.xwork2.validator.validators.FieldValidatorSupport</b> to get the base message and short-circuiting behavior, and will only need to implement validate(Action action). </p>
 
 <p>The Support classes provide the functionality to use the message key and default message to get the localied message body and the parsing of the message body to provide for parameterized messages. Implementations of the Validator Interface which do not extend the Support base classes should provide this functionality as well for consistency.</p>
 

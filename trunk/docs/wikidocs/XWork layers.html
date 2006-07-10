@@ -48,7 +48,7 @@
     <span class="code-keyword">public</span> <span class="code-object">String</span> execute() <span class="code-keyword">throws</span> Exception;</pre>
 </div></div>
 
-<p>In general, Actions can simply extend the com.opensymphony.xwork.ActionSupport class, which implements the Action interface and provides default behavior for the most common actions.</p>
+<p>In general, Actions can simply extend the com.opensymphony.xwork2.ActionSupport class, which implements the Action interface and provides default behavior for the most common actions.</p>
 
 
 <h2><a name="XWorklayers-ActionProxy"></a>ActionProxy</h2>
@@ -100,7 +100,7 @@ ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(...);</pre
 </div></div>
 
 <p>Lets say that we need to retrieve a book object from a data source and pass it back to the caller.  We can write an action to handle this.  An action in xwork is typically a very simple class.  The only requirement is that it implements the Action interface.  These days you'll see actions as simple as javabeans with an execute method (Validation, Type conversion, and so forth can all be seperated out to provide a good separation of concerns).  The purpose of action execution is typically to provide access and manipulation to your data.  The result of the action execution is a simple string representation that should define delegation of the action after invocation.  So a result could be a success string, a failure string, a forward string, or what ever.  In our current example, a book object can be populated in the action if found with a result of "success" or if the book is not found then a "notFound" can be returned. From this, you can easily have a controlling object setup to return the book or possible forward the request off to a different inventory source if the book isn't found.</p>
-<div class="code" style="border-style: solid; "><div class="codeHeader" style="border-bottom-style: solid; "><b>com.opensymphony.xwork.example.ViewBookAction</b></div><div class="codeContent">
+<div class="code" style="border-style: solid; "><div class="codeHeader" style="border-bottom-style: solid; "><b>com.opensymphony.xwork2.example.ViewBookAction</b></div><div class="codeContent">
 <pre class="code-java"><span class="code-keyword">public</span> class ViewBookAction  <span class="code-keyword">implements</span> Action{
 	Book book;
 	<span class="code-object">String</span> id;
@@ -149,7 +149,7 @@ context.put(ActionContext.PARAMETERS, paramMap);
 <pre class="code-java">&lt;xwork&gt;
     &lt;include file=<span class="code-quote">"xwork-<span class="code-keyword">default</span>.xml"</span>/&gt;
     &lt;<span class="code-keyword">package</span> name=<span class="code-quote">"<span class="code-keyword">default</span>"</span> <span class="code-keyword">extends</span>=<span class="code-quote">"xwork-<span class="code-keyword">default</span>"</span>&gt;
-       &lt;action name=<span class="code-quote">"viewBook"</span> class=<span class="code-quote">"com.opensymphony.xwork.example.ViewBookAction"</span>/&gt;
+       &lt;action name=<span class="code-quote">"viewBook"</span> class=<span class="code-quote">"com.opensymphony.xwork2.example.ViewBookAction"</span>/&gt;
     &lt;/<span class="code-keyword">package</span>&gt;
 &lt;/xwork&gt;</pre>
 </div></div>

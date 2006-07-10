@@ -11,9 +11,9 @@
 	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
 		    <tr>
 			    <td valign="top" class="pagebody">
-				    <p>Any action can indicate that it supports localization by implementing com.opensymphony.xwork.TextProvider.  To access a localized message, simply use one of the various getText() method calls.</p>
+				    <p>Any action can indicate that it supports localization by implementing com.opensymphony.xwork2.TextProvider.  To access a localized message, simply use one of the various getText() method calls.</p>
 
-<p>The default implementation for this is com.opensymphony.xwork.TextProviderSupport, which in turn relies on com.opensymphony.xwork.util.LocalizedTextUtil.  Any Action that extends com.opensymphony.xwork.ActionSupport will automatically gain localization support via TextProviderSupport.</p>
+<p>The default implementation for this is com.opensymphony.xwork2.TextProviderSupport, which in turn relies on com.opensymphony.xwork2.util.LocalizedTextUtil.  Any Action that extends com.opensymphony.xwork2.ActionSupport will automatically gain localization support via TextProviderSupport.</p>
 
 <p>In this implementation, when you attempt to look up a message, it attempts to do the following:</p>
 

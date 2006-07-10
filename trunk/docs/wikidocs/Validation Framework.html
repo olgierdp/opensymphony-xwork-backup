@@ -39,29 +39,29 @@
 <div class="code"><div class="codeContent">
 <pre class="code-xml"><span class="code-tag">&lt;validators&gt;</span>
     &lt;validator name=<span class="code-quote">"required"</span> 
-        class=<span class="code-quote">"com.opensymphony.xwork.validator.validators.RequiredFieldValidator"</span>/&gt;
+        class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.RequiredFieldValidator"</span>/&gt;
     &lt;validator name=<span class="code-quote">"requiredstring"</span> 
-        class=<span class="code-quote">"com.opensymphony.xwork.validator.validators.RequiredStringValidator"</span>/&gt;
+        class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.RequiredStringValidator"</span>/&gt;
     &lt;validator name=<span class="code-quote">"stringlength"</span> 
-        class=<span class="code-quote">"com.opensymphony.xwork.validator.validators.StringLengthFieldValidator"</span>/&gt;
+        class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.StringLengthFieldValidator"</span>/&gt;
     &lt;validator name=<span class="code-quote">"int"</span> 
-        class=<span class="code-quote">"com.opensymphony.xwork.validator.validators.IntRangeFieldValidator"</span>/&gt;
+        class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.IntRangeFieldValidator"</span>/&gt;
     &lt;validator name=<span class="code-quote">"date"</span> 
-        class=<span class="code-quote">"com.opensymphony.xwork.validator.validators.DateRangeFieldValidator"</span>/&gt;
+        class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.DateRangeFieldValidator"</span>/&gt;
     &lt;validator name=<span class="code-quote">"expression"</span>
-        class=<span class="code-quote">"com.opensymphony.xwork.validator.validators.ExpressionValidator"</span>/&gt;
+        class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.ExpressionValidator"</span>/&gt;
     &lt;validator name=<span class="code-quote">"fieldexpression"</span> 
-        class=<span class="code-quote">"com.opensymphony.xwork.validator.validators.FieldExpressionValidator"</span>/&gt;
+        class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.FieldExpressionValidator"</span>/&gt;
     &lt;validator name=<span class="code-quote">"email"</span> 
-        class=<span class="code-quote">"com.opensymphony.xwork.validator.validators.EmailValidator"</span>/&gt;
+        class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.EmailValidator"</span>/&gt;
     &lt;validator name=<span class="code-quote">"url"</span> 
-        class=<span class="code-quote">"com.opensymphony.xwork.validator.validators.URLValidator"</span>/&gt;
+        class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.URLValidator"</span>/&gt;
     &lt;validator name=<span class="code-quote">"visitor"</span> 
-        class=<span class="code-quote">"com.opensymphony.xwork.validator.validators.VisitorFieldValidator"</span>/&gt;
+        class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.VisitorFieldValidator"</span>/&gt;
     &lt;validator name=<span class="code-quote">"conversion"</span>
-        class=<span class="code-quote">"com.opensymphony.xwork.validator.validators.ConversionErrorFieldValidator"</span>/&gt;
+        class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.ConversionErrorFieldValidator"</span>/&gt;
     &lt;validator name=<span class="code-quote">"regex"</span> 
-        class=<span class="code-quote">"com.opensymphony.xwork.validator.validators.RegexFieldValidator"</span>/&gt;
+        class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.RegexFieldValidator"</span>/&gt;
 <span class="code-tag">&lt;/validators&gt;</span></pre>
 </div></div>
 
@@ -81,10 +81,10 @@
     <span class="code-tag">&lt;package name=<span class="code-quote">"example"</span>&gt;</span>
         <span class="code-tag">&lt;interceptors&gt;</span>
             &lt;interceptor name=<span class="code-quote">"validator"</span> 
-                class=<span class="code-quote">"com.opensymphony.xwork.validator.ValidationInterceptor"</span>/&gt;
+                class=<span class="code-quote">"com.opensymphony.xwork2.validator.ValidationInterceptor"</span>/&gt;
         <span class="code-tag">&lt;/interceptors&gt;</span>
 
-        <span class="code-tag">&lt;action name=<span class="code-quote">"Foo"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+        <span class="code-tag">&lt;action name=<span class="code-quote">"Foo"</span> class=<span class="code-quote">"com.opensymphony.xwork2.SimpleAction"</span>&gt;</span>
             <span class="code-tag">&lt;param name=<span class="code-quote">"foo"</span>&gt;</span>17<span class="code-tag">&lt;/param&gt;</span>
             <span class="code-tag">&lt;param name=<span class="code-quote">"bar"</span>&gt;</span>23<span class="code-tag">&lt;/param&gt;</span>
             <span class="code-tag">&lt;result name=<span class="code-quote">"success"</span> type=<span class="code-quote">"chain"</span>&gt;</span>

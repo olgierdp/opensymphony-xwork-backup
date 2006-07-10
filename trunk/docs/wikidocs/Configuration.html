@@ -30,16 +30,16 @@ XWork is configured through the use of a file named xwork.xml in the root of the
 <span class="code-tag">&lt;xwork&gt;</span>
   <span class="code-tag">&lt;package name=<span class="code-quote">"default"</span>&gt;</span>
     <span class="code-tag">&lt;result-types&gt;</span>
-      <span class="code-tag">&lt;result-type name=<span class="code-quote">"chain"</span> class=<span class="code-quote">"com.opensymphony.xwork.ActionChainResult"</span>/&gt;</span>
+      <span class="code-tag">&lt;result-type name=<span class="code-quote">"chain"</span> class=<span class="code-quote">"com.opensymphony.xwork2.ActionChainResult"</span>/&gt;</span>
     <span class="code-tag">&lt;/result-types&gt;</span>
 
     <span class="code-tag">&lt;interceptors&gt;</span>
-      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"timer"</span> class=<span class="code-quote">"com.opensymphony.xwork.interceptor.TimerInterceptor"</span>/&gt;</span>
-      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"logger"</span> class=<span class="code-quote">"com.opensymphony.xwork.interceptor.LoggingInterceptor"</span>/&gt;</span>
-      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"chain"</span> class=<span class="code-quote">"com.opensymphony.xwork.interceptor.ChainingInterceptor"</span>/&gt;</span>
-      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"params"</span> class=<span class="code-quote">"com.opensymphony.xwork.interceptor.ParametersInterceptor"</span>/&gt;</span>
-      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"static-params"</span> class=<span class="code-quote">"com.opensymphony.xwork.interceptor.StaticParametersInterceptor"</span>/&gt;</span>
-      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"test"</span> class=<span class="code-quote">"com.opensymphony.xwork.TestInterceptor"</span>&gt;</span>
+      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"timer"</span> class=<span class="code-quote">"com.opensymphony.xwork2.interceptor.TimerInterceptor"</span>/&gt;</span>
+      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"logger"</span> class=<span class="code-quote">"com.opensymphony.xwork2.interceptor.LoggingInterceptor"</span>/&gt;</span>
+      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"chain"</span> class=<span class="code-quote">"com.opensymphony.xwork2.interceptor.ChainingInterceptor"</span>/&gt;</span>
+      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"params"</span> class=<span class="code-quote">"com.opensymphony.xwork2.interceptor.ParametersInterceptor"</span>/&gt;</span>
+      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"static-params"</span> class=<span class="code-quote">"com.opensymphony.xwork2.interceptor.StaticParametersInterceptor"</span>/&gt;</span>
+      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"test"</span> class=<span class="code-quote">"com.opensymphony.xwork2.TestInterceptor"</span>&gt;</span>
         <span class="code-tag">&lt;param name=<span class="code-quote">"foo"</span>&gt;</span>expectedFoo<span class="code-tag">&lt;/param&gt;</span>
       <span class="code-tag">&lt;/interceptor&gt;</span>
 
@@ -59,7 +59,7 @@ XWork is configured through the use of a file named xwork.xml in the root of the
       <span class="code-tag">&lt;/result&gt;</span>
     <span class="code-tag">&lt;/global-results&gt;</span>
 
-    <span class="code-tag">&lt;action name=<span class="code-quote">"Foo"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+    <span class="code-tag">&lt;action name=<span class="code-quote">"Foo"</span> class=<span class="code-quote">"com.opensymphony.xwork2.SimpleAction"</span>&gt;</span>
       <span class="code-tag">&lt;param name=<span class="code-quote">"foo"</span>&gt;</span>17<span class="code-tag">&lt;/param&gt;</span>
       <span class="code-tag">&lt;param name=<span class="code-quote">"bar"</span>&gt;</span>23<span class="code-tag">&lt;/param&gt;</span>
       <span class="code-tag">&lt;result name=<span class="code-quote">"success"</span> type=<span class="code-quote">"chain"</span>&gt;</span>
@@ -69,18 +69,18 @@ XWork is configured through the use of a file named xwork.xml in the root of the
       <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"defaultStack"</span>/&gt;</span>
     <span class="code-tag">&lt;/action&gt;</span>
 
-    <span class="code-tag">&lt;action name=<span class="code-quote">"Bar"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+    <span class="code-tag">&lt;action name=<span class="code-quote">"Bar"</span> class=<span class="code-quote">"com.opensymphony.xwork2.SimpleAction"</span>&gt;</span>
       <span class="code-tag">&lt;param name=<span class="code-quote">"foo"</span>&gt;</span>17<span class="code-tag">&lt;/param&gt;</span>
       <span class="code-tag">&lt;param name=<span class="code-quote">"bar"</span>&gt;</span>23<span class="code-tag">&lt;/param&gt;</span>
     <span class="code-tag">&lt;/action&gt;</span>
 
-    <span class="code-tag">&lt;action name=<span class="code-quote">"TestInterceptorParam"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+    <span class="code-tag">&lt;action name=<span class="code-quote">"TestInterceptorParam"</span> class=<span class="code-quote">"com.opensymphony.xwork2.SimpleAction"</span>&gt;</span>
       <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"test"</span>&gt;</span>
         <span class="code-tag">&lt;param name=<span class="code-quote">"expectedFoo"</span>&gt;</span>expectedFoo<span class="code-tag">&lt;/param&gt;</span>
       <span class="code-tag">&lt;/interceptor-ref&gt;</span>
     <span class="code-tag">&lt;/action&gt;</span>
 
-    <span class="code-tag">&lt;action name=<span class="code-quote">"TestInterceptorParamOverride"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+    <span class="code-tag">&lt;action name=<span class="code-quote">"TestInterceptorParamOverride"</span> class=<span class="code-quote">"com.opensymphony.xwork2.SimpleAction"</span>&gt;</span>
       <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"test"</span>&gt;</span>
         <span class="code-tag">&lt;param name=<span class="code-quote">"foo"</span>&gt;</span>foo123<span class="code-tag">&lt;/param&gt;</span>
         <span class="code-tag">&lt;param name=<span class="code-quote">"expectedFoo"</span>&gt;</span>foo123<span class="code-tag">&lt;/param&gt;</span>
@@ -96,11 +96,11 @@ XWork is configured through the use of a file named xwork.xml in the root of the
       <span class="code-tag">&lt;/interceptor-stack&gt;</span>
     <span class="code-tag">&lt;/interceptors&gt;</span>
 
-    <span class="code-tag">&lt;action name=<span class="code-quote">"Bar"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+    <span class="code-tag">&lt;action name=<span class="code-quote">"Bar"</span> class=<span class="code-quote">"com.opensymphony.xwork2.SimpleAction"</span>&gt;</span>
       <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"barDefaultStack"</span>/&gt;</span>
     <span class="code-tag">&lt;/action&gt;</span>
 
-    <span class="code-tag">&lt;action name=<span class="code-quote">"TestInterceptorParamInheritance"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+    <span class="code-tag">&lt;action name=<span class="code-quote">"TestInterceptorParamInheritance"</span> class=<span class="code-quote">"com.opensymphony.xwork2.SimpleAction"</span>&gt;</span>
       <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"test"</span>&gt;</span>
         <span class="code-tag">&lt;param name=<span class="code-quote">"expectedFoo"</span>&gt;</span>expectedFoo<span class="code-tag">&lt;/param&gt;</span>
       <span class="code-tag">&lt;/interceptor-ref&gt;</span>
@@ -109,13 +109,13 @@ XWork is configured through the use of a file named xwork.xml in the root of the
   <span class="code-tag">&lt;/package&gt;</span>
 
   <span class="code-tag">&lt;package name=<span class="code-quote">"abstractPackage"</span> namespace=<span class="code-quote">"/abstract"</span> abstract=<span class="code-quote">"true"</span>&gt;</span>
-    <span class="code-tag">&lt;action name=<span class="code-quote">"test"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>/&gt;</span>
+    <span class="code-tag">&lt;action name=<span class="code-quote">"test"</span> class=<span class="code-quote">"com.opensymphony.xwork2.SimpleAction"</span>/&gt;</span>
   <span class="code-tag">&lt;/package&gt;</span>
 
   <span class="code-tag">&lt;package name=<span class="code-quote">"nonAbstractPackage"</span> extends=<span class="code-quote">"abstractPackage"</span> namespace=<span class="code-quote">"/nonAbstract"</span>/&gt;</span>
 
   <span class="code-tag">&lt;package name=<span class="code-quote">"multipleInheritance"</span> extends=<span class="code-quote">"default,abstractPackage,bar"</span> namespace=<span class="code-quote">"multipleInheritance"</span>&gt;</span>
-    <span class="code-tag">&lt;action name=<span class="code-quote">"testMultipleInheritance"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+    <span class="code-tag">&lt;action name=<span class="code-quote">"testMultipleInheritance"</span> class=<span class="code-quote">"com.opensymphony.xwork2.SimpleAction"</span>&gt;</span>
       <span class="code-tag">&lt;result name=<span class="code-quote">"success"</span> type=<span class="code-quote">"chain"</span>&gt;</span>
         <span class="code-tag">&lt;param name=<span class="code-quote">"actionName"</span>&gt;</span>foo<span class="code-tag">&lt;/param&gt;</span>
       <span class="code-tag">&lt;/result&gt;</span>
@@ -183,7 +183,7 @@ XWork is configured through the use of a file named xwork.xml in the root of the
 <p>Interceptors are instantiated and stored at the ActionConfig level, i.e. there will be one instance per action configured in xwork.xml. These Interceptor instances may be parameterized at either the declaration level, where you map an Interceptor class to a name to be referenced later, like so:</p>
 
 <div class="code"><div class="codeContent">
-<pre class="code-java">&lt;interceptor name=<span class="code-quote">"test"</span> class=<span class="code-quote">"com.opensymphony.xwork.TestInterceptor"</span>&gt;
+<pre class="code-java">&lt;interceptor name=<span class="code-quote">"test"</span> class=<span class="code-quote">"com.opensymphony.xwork2.TestInterceptor"</span>&gt;
     &lt;param name=<span class="code-quote">"foo"</span>&gt;expectedFoo&lt;/param&gt;
 &lt;/interceptor&gt;</pre>
 </div></div>
@@ -251,7 +251,7 @@ XWork is configured through the use of a file named xwork.xml in the root of the
 
 <p>Similar to the interceptor Syntax shown above, actions may be parametrized:</p>
 <div class="code"><div class="codeContent">
-<pre class="code-java">&lt;action name=<span class="code-quote">"Foo"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;
+<pre class="code-java">&lt;action name=<span class="code-quote">"Foo"</span> class=<span class="code-quote">"com.opensymphony.xwork2.SimpleAction"</span>&gt;
     &lt;param name=<span class="code-quote">"foo"</span>&gt;17&lt;/param&gt;
     ...
 &lt;/action&gt;</pre>

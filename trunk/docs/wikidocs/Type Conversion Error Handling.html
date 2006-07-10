@@ -35,7 +35,7 @@
 <p>If you choose not to use this Interceptor, you can choose to enable this on a per-field basis by using the Validation framework with the new field validator added for this, defined in the validators.xml file like this:</p>
 
 <div class="code"><div class="codeContent">
-<pre class="code-java">&lt;validator name=<span class="code-quote">"conversion"</span> class=<span class="code-quote">"com.opensymphony.xwork.validator.validators.ConversionErrorFieldValidator"</span>/&gt;</pre>
+<pre class="code-java">&lt;validator name=<span class="code-quote">"conversion"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.ConversionErrorFieldValidator"</span>/&gt;</pre>
 </div></div>
 
 <p>This validator will look up the conversion errors and, if it finds a conversion error for the field it is applied to, it will add the appropriate error message to the Action. </p>
