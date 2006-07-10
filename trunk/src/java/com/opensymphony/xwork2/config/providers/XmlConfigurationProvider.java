@@ -28,11 +28,12 @@ import org.xml.sax.InputSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.*;
 
 
 /**
- * Looks in the classpath for an XML file, xwork.xml" by default,
+ * Looks in the classpath for an XML file, "xwork.xml" by default,
  * and uses it for the XWork configuration.
  *
  * @author tmjee
@@ -63,14 +64,23 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     public XmlConfigurationProvider(String filename, boolean errorIfMissing) {
         this.configFileName = filename;
         this.errorIfMissing = errorIfMissing;
-        dtdMappings = new HashMap<String,String>();
-        dtdMappings.put("-//OpenSymphony Group//XWork 1.1.1//EN", "xwork-1.1.1.dtd");
-        dtdMappings.put("-//OpenSymphony Group//XWork 1.1//EN", "xwork-1.1.dtd");
-        dtdMappings.put("-//OpenSymphony Group//XWork 1.0//EN", "xwork-1.0.dtd");
+        
+        Map<String,String> mappings = new HashMap<String,String>();
+        mappings.put("-//OpenSymphony Group//XWork 1.1.1//EN", "xwork-1.1.1.dtd");
+        mappings.put("-//OpenSymphony Group//XWork 1.1//EN", "xwork-1.1.dtd");
+        mappings.put("-//OpenSymphony Group//XWork 1.0//EN", "xwork-1.0.dtd");
+        setDtdMappings(mappings);
     }
     
     public void setDtdMappings(Map<String,String> mappings) {
-        this.dtdMappings = mappings;
+        this.dtdMappings = Collections.unmodifiableMap(mappings);
+    }
+    
+    /**
+     * Returns an unmodifiable map of DTD mappings
+     */
+    public Map<String,String> getDtdMappings() {
+        return dtdMappings;
     }
     
     public void setCompatibilityMode(boolean mode) {
@@ -658,7 +668,12 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 InputSource in = new InputSource(is);
 
                 //FIXME: we shouldn't be doing this lookup twice
-                in.setSystemId(ClassLoaderUtil.getResource(fileName, getClass()).toString());
+                URL url = ClassLoaderUtil.getResource(fileName, getClass());
+                if (url != null) {
+                    in.setSystemId(url.toString());
+                } else {
+                    LOG.info("Successfully located, but unable to determine system id for "+fileName);
+                }
 
                 doc = DomHelper.parse(in, dtdMappings);
             } catch (XWorkException e) {

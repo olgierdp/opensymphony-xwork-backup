@@ -13,11 +13,10 @@ import com.opensymphony.xwork2.interceptor.Interceptor;
 import com.opensymphony.xwork2.util.OgnlUtil;
 import com.opensymphony.xwork2.util.XWorkContinuationConfig;
 import com.opensymphony.xwork2.validator.Validator;
-import com.uwyn.rife.continuations.ContinuationConfig;
-import com.uwyn.rife.continuations.ContinuationInstrumentor;
-import com.uwyn.rife.continuations.util.ClassByteUtil;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,12 +36,30 @@ import org.apache.commons.logging.LogFactory;
 public class ObjectFactory {
     private static final Log LOG = LogFactory.getLog(ObjectFactory.class);
 
-    private static ContinuationsClassLoader ccl;
+    private static ClassLoader ccl;
     private static ObjectFactory FACTORY = new ObjectFactory();
     private static String continuationPackage;
 
     public static void setContinuationPackage(String continuationPackage) {
-        ContinuationConfig.setInstance(new XWorkContinuationConfig());
+        
+        // This reflection silliness is to ensure Rife is optional
+        Class contConfig = null;
+        try {
+            contConfig = Class.forName("com.uwyn.rife.continuations.ContinuationConfig");
+        } catch (ClassNotFoundException ex) {
+            throw new XWorkException("Unable to use continuations package, as the Rife " +
+                    "continuations jar is missing", ex);
+        }
+        try {
+            Method m = contConfig.getMethod("setInstance", contConfig);
+            m.invoke(contConfig, new XWorkContinuationConfig());
+        } catch (NoSuchMethodException ex) {
+            throw new XWorkException("Incorrect version of the Rife continuation library", ex);
+        } catch (IllegalAccessException ex) {
+            throw new XWorkException("Incorrect version of the Rife continuation library", ex);
+        } catch (InvocationTargetException ex) {
+            throw new XWorkException("Unable to initialize the Rife continuation library", ex);
+        }
         ObjectFactory.continuationPackage = continuationPackage;
         ObjectFactory.ccl = new ContinuationsClassLoader(continuationPackage, Thread.currentThread().getContextClassLoader());
     }
@@ -218,14 +235,14 @@ public class ObjectFactory {
                 Class clazz = findLoadedClass(name);
                 if (clazz == null) {
                     try {
-                        byte[] bytes = ClassByteUtil.getBytes(name, parent);
+                        byte[] bytes = com.uwyn.rife.continuations.util.ClassByteUtil.getBytes(name, parent);
                         if (bytes == null) {
                             throw new RuntimeException("Continuation error: no bytes loaded");
                         }
 
                         byte[] resume_bytes = null;
                         try {
-                            resume_bytes = ContinuationInstrumentor.instrument(bytes, name, false);
+                            resume_bytes = com.uwyn.rife.continuations.ContinuationInstrumentor.instrument(bytes, name, false);
                         } catch (ClassNotFoundException e) {
                             // this can happen when the Rife Continuations code gets broken (there are bugs in it still, ya know!)
                             // rather than making a big deal, we'll quietly log this and move on

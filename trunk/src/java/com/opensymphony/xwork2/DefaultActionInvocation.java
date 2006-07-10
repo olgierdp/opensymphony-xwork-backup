@@ -15,6 +15,7 @@ import com.uwyn.rife.continuations.ContinuationConfig;
 import com.uwyn.rife.continuations.ContinuationContext;
 import com.uwyn.rife.continuations.ContinuationManager;
 import com.uwyn.rife.continuations.exceptions.PauseException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -35,14 +36,14 @@ import java.util.Map;
  * @see com.opensymphony.xwork2.DefaultActionProxy
  */
 public class DefaultActionInvocation implements ActionInvocation {
-    public static ContinuationManager m;
+    
+    public static ContinuationHandler continuationHandler;
 
     static {
-        if (ContinuationConfig.getInstance() != null) {
-            m = new ContinuationManager();
+        if (ObjectFactory.getContinuationPackage() != null) {
+            continuationHandler = new ContinuationHandler();
         }
     }
-
     private static final Log LOG = LogFactory.getLog(DefaultActionInvocation.class);
 
     protected Object action;
@@ -244,31 +245,8 @@ public class DefaultActionInvocation implements ActionInvocation {
             throw new XWorkException(gripe, e, proxy.getConfig());
         }
 
-        if (ObjectFactory.getContinuationPackage() != null) prepareContinuation();
-    }
-
-    private void prepareContinuation() {
-        if (action instanceof ContinuableObject) {
-            ContinuationContext ctx = ContinuationContext.createInstance((ContinuableObject) action);
-            if (action instanceof NonCloningContinuableObject) {
-                ctx.setShouldClone(false);
-            }
-        }
-
-        try {
-            String id = (String) stack.getContext().get(XWorkContinuationConfig.CONTINUE_KEY);
-            stack.getContext().remove(XWorkContinuationConfig.CONTINUE_KEY);
-            if (id != null) {
-                ContinuationContext context = m.getContext(id);
-                if (context != null) {
-                    ContinuationContext.setContext(context);
-                    // use the original action instead
-                    Object original = context.getContinuable();
-                    action = original;
-                }
-            }
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
+        if (continuationHandler != null) {
+            continuationHandler.prepareContinuation(action, stack);
         }
     }
 
@@ -360,20 +338,68 @@ public class DefaultActionInvocation implements ActionInvocation {
             // We try to return the source exception.
             Throwable t = e.getTargetException();
 
-            if (t instanceof PauseException) {
-                // continuations in effect!
-                PauseException pe = ((PauseException) t);
-                ContinuationContext context = pe.getContext();
-                String result = (String) pe.getParameters();
-                getStack().getContext().put(XWorkContinuationConfig.CONTINUE_KEY, context.getId());
-                m.addContext(context);
-
-                return result;
-            } else if (t instanceof Exception) {
+            if (continuationHandler != null) {
+                String result = continuationHandler.handleException(t, getStack());
+                if (result != null) {
+                    return result;
+                }
+            }
+            if (t instanceof Exception) {
                 throw(Exception) t;
             } else {
                 throw e;
             }
         }
+    }
+    
+    static class ContinuationHandler {
+        ContinuationManager cm;
+        
+        public ContinuationHandler() {
+            if (ContinuationConfig.getInstance() != null) {
+                cm = new ContinuationManager();
+            }
+        }
+        
+        public void prepareContinuation(Object action, OgnlValueStack stack) {
+            if (action instanceof ContinuableObject) {
+                ContinuationContext ctx = ContinuationContext.createInstance((ContinuableObject) action);
+                if (action instanceof NonCloningContinuableObject) {
+                    ctx.setShouldClone(false);
+                }
+            }
+
+            try {
+                String id = (String) stack.getContext().get(XWorkContinuationConfig.CONTINUE_KEY);
+                stack.getContext().remove(XWorkContinuationConfig.CONTINUE_KEY);
+                if (id != null) {
+                    ContinuationContext context = cm.getContext(id);
+                    if (context != null) {
+                        ContinuationContext.setContext(context);
+                        // use the original action instead
+                        Object original = context.getContinuable();
+                        action = original;
+                    }
+                }
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+
+        }
+        
+        public String handleException(Throwable t, OgnlValueStack stack) {
+            if (t instanceof PauseException) {
+                // continuations in effect!
+                PauseException pe = ((PauseException) t);
+                ContinuationContext context = pe.getContext();
+                String result = (String) pe.getParameters();
+                stack.getContext().put(XWorkContinuationConfig.CONTINUE_KEY, context.getId());
+                cm.addContext(context);
+
+                return result;
+            }
+            return null;
+        }
+            
     }
 }
