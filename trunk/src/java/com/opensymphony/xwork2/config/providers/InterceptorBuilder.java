@@ -49,7 +49,19 @@ public class InterceptorBuilder {
             throw new ConfigurationException("Unable to find interceptor class referenced by ref-name " + refName, location);
         } else {
             if (referencedConfig instanceof InterceptorConfig) {
-                result.add(new InterceptorMapping(refName, ObjectFactory.getObjectFactory().buildInterceptor((InterceptorConfig) referencedConfig, refParams)));
+                InterceptorConfig config = (InterceptorConfig) referencedConfig;
+                Interceptor inter = null;
+                try {
+                    
+                    inter = ObjectFactory.getObjectFactory().buildInterceptor(config, refParams);
+                    result.add(new InterceptorMapping(refName, inter));
+                } catch (ConfigurationException ex) {
+                    LOG.warn("Unable to load config class "+config.getClassName()+" at "+
+                            ex.getLocation()+" probably due to a missing jar, which might "+
+                            "be fine if you never plan to use the "+config.getName()+" interceptor");
+                    LOG.debug("Actual exception", ex);
+                }
+                
             } else if (referencedConfig instanceof InterceptorStackConfig) {
                 InterceptorStackConfig stackConfig = (InterceptorStackConfig) referencedConfig;
 
