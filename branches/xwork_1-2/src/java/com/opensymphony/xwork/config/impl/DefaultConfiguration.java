@@ -166,12 +166,14 @@ public class DefaultConfiguration implements Configuration {
         
         Map results = new TreeMap();
         if (baseConfig.getPackageName().equals(packageContext.getName())) {
-        	results = new TreeMap(packageContext.getAllGlobalResults());
+        	results.putAll(packageContext.getAllGlobalResults());
         	results.putAll(baseConfig.getResults());
         }
         else {
             PackageConfig baseConfigPackageConfig = (PackageConfig) packageContexts.get(baseConfig.getPackageName());
-            results = new TreeMap(baseConfigPackageConfig.getAllGlobalResults());
+            if ( baseConfigPackageConfig != null) {
+                results.putAll(baseConfigPackageConfig.getAllGlobalResults());
+            }
             results.putAll(baseConfig.getResults());
         }
 
