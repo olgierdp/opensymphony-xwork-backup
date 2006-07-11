@@ -50,7 +50,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
      * Initializes the configuration object.
      */
     public void init(Configuration configurationManager) {
-        PackageConfig defaultPackageContext = new PackageConfig();
+        PackageConfig defaultPackageContext = new PackageConfig("defaultPackage");
         HashMap params = new HashMap();
         params.put("bar", "5");
 
@@ -60,6 +60,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         results.put("success", new ResultConfig("success", ActionChainResult.class, successParams));
 
         ActionConfig fooActionConfig = new ActionConfig(null, SimpleAction.class, params, results, null);
+        fooActionConfig.setPackageName("defaultPackage");
         defaultPackageContext.addActionConfig(FOO_ACTION_NAME, fooActionConfig);
 
         results = new HashMap();
@@ -71,6 +72,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         interceptors.add(new InterceptorMapping("params", new ParametersInterceptor()));
 
         ActionConfig paramInterceptorActionConfig = new ActionConfig(null, SimpleAction.class, null, results, interceptors);
+        paramInterceptorActionConfig.setPackageName("defaultPackage");
         defaultPackageContext.addActionConfig(PARAM_INTERCEPTOR_ACTION_NAME, paramInterceptorActionConfig);
 
         interceptors = new ArrayList();
@@ -78,6 +80,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         interceptors.add(new InterceptorMapping("params", new ParametersInterceptor()));
 
         ActionConfig modelParamActionConfig = new ActionConfig(null, ModelDrivenAction.class, null, null, interceptors);
+        modelParamActionConfig.setPackageName("defaultPackage");
         defaultPackageContext.addActionConfig(MODEL_DRIVEN_PARAM_TEST, modelParamActionConfig);
         
         //List paramFilterInterceptor=new ArrayList();
@@ -104,6 +107,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         params.put("percentage", new Double(100.0123));
 
         ActionConfig validationActionConfig = new ActionConfig(null, SimpleAction.class, params, results, interceptors);
+        validationActionConfig.setPackageName("defaultPackage");
         defaultPackageContext.addActionConfig(VALIDATION_ACTION_NAME, validationActionConfig);
         defaultPackageContext.addActionConfig(VALIDATION_ALIAS_NAME, validationActionConfig);
         defaultPackageContext.addActionConfig(VALIDATION_SUBPROPERTY_NAME, validationActionConfig);
@@ -112,10 +116,12 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         params = new HashMap();
         params.put("percentage", new Double(1.234567));
         ActionConfig percentageActionConfig = new ActionConfig(null, SimpleAction.class, params, results, interceptors);
+        percentageActionConfig.setPackageName("defaultPackage");
         defaultPackageContext.addActionConfig("percentage", percentageActionConfig);
 
         // We need this actionconfig to be the final destination for action chaining
         ActionConfig barActionConfig = new ActionConfig(null, SimpleAction.class, null, null, null);
+        barActionConfig.setPackageName("defaultPackage");
         defaultPackageContext.addActionConfig("bar", barActionConfig);
 
         configurationManager.addPackageConfig("defaultPackage", defaultPackageContext);

@@ -163,8 +163,17 @@ public class DefaultConfiguration implements Configuration {
      */
     private ActionConfig buildFullActionConfig(PackageConfig packageContext, ActionConfig baseConfig) throws ConfigurationException {
         Map params = new TreeMap(baseConfig.getParams());
-        Map results = new TreeMap(packageContext.getAllGlobalResults());
-        results.putAll(baseConfig.getResults());
+        
+        Map results = new TreeMap();
+        if (baseConfig.getPackageName().equals(packageContext.getName())) {
+        	results = new TreeMap(packageContext.getAllGlobalResults());
+        	results.putAll(baseConfig.getResults());
+        }
+        else {
+            PackageConfig baseConfigPackageConfig = (PackageConfig) packageContexts.get(baseConfig.getPackageName());
+            results = new TreeMap(baseConfigPackageConfig.getAllGlobalResults());
+            results.putAll(baseConfig.getResults());
+        }
 
         setDefaultResults(results, packageContext);
 

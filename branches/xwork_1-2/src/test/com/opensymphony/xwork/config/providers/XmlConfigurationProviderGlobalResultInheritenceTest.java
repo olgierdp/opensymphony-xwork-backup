@@ -42,7 +42,7 @@ public class XmlConfigurationProviderGlobalResultInheritenceTest extends Configu
         assertFalse(parentResultConfig1 == anotherResultConfig1);
         assertFalse(parentResultConfig2 == anotherResultConfig2);
 
-        assertTrue(parentResultConfig1 == childResultConfig1);
+        assertFalse(parentResultConfig1 == childResultConfig1);
         assertTrue(parentResultConfig2 == childResultConfig2);
     }
 }

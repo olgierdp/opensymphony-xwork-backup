@@ -106,12 +106,15 @@ public class ActionNestingTest extends XWorkTestCase {
          * Initializes the configuration object.
          */
         public void init(Configuration configurationManager) {
-            PackageConfig packageContext = new PackageConfig();
+            PackageConfig packageContext = new PackageConfig("nestedActionTest");
             ActionConfig config = new ActionConfig(null, SimpleAction.class, null, null, null);
+            config.setPackageName("nestedActionTest");
             packageContext.addActionConfig(SIMPLE_ACTION_NAME, config);
             config = new ActionConfig("noStack", com.opensymphony.xwork.NestedAction.class, null, null, null);
+            config.setPackageName("nestedActionTest");
             packageContext.addActionConfig(NO_STACK_ACTION_NAME, config);
             config = new ActionConfig("stack", com.opensymphony.xwork.NestedAction.class, null, null, null);
+            config.setPackageName("nestedActionTest");
             packageContext.addActionConfig(STACK_ACTION_NAME, config);
             packageContext.setNamespace(NAMESPACE);
             configurationManager.addPackageConfig("nestedActionTest", packageContext);

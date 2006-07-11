@@ -65,6 +65,7 @@ public class PreResultListenerTest extends TestCase {
             public void init(Configuration configuration) throws ConfigurationException {
                 PackageConfig packageConfig = new PackageConfig("package");
                 ActionConfig actionConfig = new ActionConfig(null, SimpleFooAction.class, null, null, null);
+                actionConfig.setPackageName("package");
                 packageConfig.addActionConfig("action", actionConfig);
                 configuration.addPackageConfig("package", packageConfig);
             }
