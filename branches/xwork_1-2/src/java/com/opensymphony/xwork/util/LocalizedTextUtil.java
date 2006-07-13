@@ -679,7 +679,7 @@ public class LocalizedTextUtil {
                 }
             }
         } else {
-            if (!clazz.equals(Object.class)) {
+            if (!clazz.equals(Object.class) && !clazz.isPrimitive()) {
                 return findMessage(clazz.getSuperclass(), key, indexedKey, locale, args, checked, valueStack);
             }
         }

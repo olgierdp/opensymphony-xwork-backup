@@ -74,6 +74,28 @@ public class LocalizedTextUtilTest extends TestCase {
         assertEquals("Haha you cant FindMe!", message);
     }
 
+    public void testActionGetTextPrimitive() throws Exception {
+        LocalizedTextUtil.addDefaultResourceBundle("com/opensymphony/xwork/util/FindMe");
+
+        SimpleAction action = new SimpleAction();
+
+        Mock mockActionInvocation = new Mock(ActionInvocation.class);
+        mockActionInvocation.expectAndReturn("getAction", action);
+        ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
+        ActionContext.getContext().getValueStack().push(action);
+
+        String bar = action.getText("bar");
+        String percentage = action.getText("percentage");
+        String barname = action.getText("bar.name");
+        String fooname = action.getText("foo.name");
+
+        assertEquals("Test", bar);
+        assertEquals("Nothing", percentage);
+        assertEquals("Sausalitos!", barname);
+        assertEquals("My Foo!", fooname);
+
+    }
+
     public void testAddDefaultResourceBundle() {
         String text = LocalizedTextUtil.findDefaultText("foo.range", Locale.getDefault());
         assertNull("Found message when it should not be available.", null);
