@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.apt;
 
 import com.opensymphony.xwork.conversion.metadata.ConversionDescription;
+import com.opensymphony.xwork.XworkException;
 import com.sun.mirror.apt.Filer;
 
 import java.io.File;
@@ -60,7 +61,7 @@ public class ConversionGenerator extends Generator {
                 writer.close();
 
             } catch (IOException ioe) {
-                throw new RuntimeException("could not generate conversion.properties: " + ioe, ioe);
+                throw new XworkException("could not generate conversion.properties: " + ioe, ioe);
             }
         }
     }
