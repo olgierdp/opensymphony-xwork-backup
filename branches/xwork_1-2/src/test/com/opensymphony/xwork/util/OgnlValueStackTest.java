@@ -280,14 +280,14 @@ public class OgnlValueStackTest extends XWorkTestCase {
         try {
             vs.setValue("count", "1", true);
             fail("Expected an exception for mismatched getter and setter");
-        } catch (RuntimeException e) {
+        } catch (XworkException e) {
             //expected
         }
 
         try {
             vs.setValue("count2", "a", true);
             fail("Expected an exception for mismatched getter and setter");
-        } catch (RuntimeException e) {
+        } catch (XworkException e) {
             //expected
         }
     }
@@ -300,13 +300,13 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
         try {
             vs.setValue("count", "1");
-        } catch (RuntimeException e) {
+        } catch (XworkException e) {
             fail("Unexpected exception for mismatched getter and setter");
         }
 
         try {
             vs.setValue("count2", "a");
-        } catch (RuntimeException e) {
+        } catch (XworkException e) {
             fail("Unexpected exception for mismatched getter and setter");
         }
     }
@@ -356,9 +356,9 @@ public class OgnlValueStackTest extends XWorkTestCase {
         
         try {
             stack.setValue("bar", "3x");
-            fail("Attempt to set 'bar' int property to '3x' should result in RuntimeException");
+            fail("Attempt to set 'bar' int property to '3x' should result in XworkException");
         }
-        catch(RuntimeException re) {
+        catch(XworkException re) {
             assertTrue(true);
         }
 

@@ -49,7 +49,7 @@ public class OgnlUtilTest extends XWorkTestCase {
 
                             return param;
                         } catch (Exception e) {
-                        	throw new RuntimeException(e);
+                        	throw new XworkException(e);
                         }
                     }
                 }
@@ -520,7 +520,7 @@ public class OgnlUtilTest extends XWorkTestCase {
             stack.setValue("list.1114778947765", foo);
             fail("non-valid expression: list.1114778947765"); 
         }
-        catch(RuntimeException ex) {
+        catch(XworkException ex) {
             ; // it's oke
         }
         
@@ -528,7 +528,7 @@ public class OgnlUtilTest extends XWorkTestCase {
             stack.setValue("1114778947765", foo);
             fail("non-valid expression: 1114778947765"); 
         }
-        catch(RuntimeException ex) {
+        catch(XworkException ex) {
             ;
         }
         
@@ -536,7 +536,7 @@ public class OgnlUtilTest extends XWorkTestCase {
             stack.setValue("1234", foo);
             fail("non-valid expression: 1114778947765"); 
         }
-        catch(RuntimeException ex) {
+        catch(XworkException ex) {
             ;
         }
         

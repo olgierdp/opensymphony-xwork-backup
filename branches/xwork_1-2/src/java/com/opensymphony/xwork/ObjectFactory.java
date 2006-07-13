@@ -220,7 +220,7 @@ public class ObjectFactory {
                     try {
                         byte[] bytes = ClassByteUtil.getBytes(name, parent);
                         if (bytes == null) {
-                            throw new RuntimeException("Continuation error: no bytes loaded");
+                            throw new XworkException("Continuation error: no bytes loaded");
                         }
 
                         byte[] resume_bytes = null;
@@ -240,7 +240,7 @@ public class ObjectFactory {
                             return defineClass(name, resume_bytes, 0, resume_bytes.length);
                         }
                     } catch (IOException e) {
-                        throw new RuntimeException("Continuation error", e);
+                        throw new XworkException("Continuation error", e);
                     }
                 } else {
                     return clazz;

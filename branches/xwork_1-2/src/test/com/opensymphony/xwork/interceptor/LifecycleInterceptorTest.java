@@ -98,7 +98,7 @@ public class LifecycleInterceptorTest extends XWorkTestCase {
 			if (! bool.booleanValue()) {
 				return super.execute();
 			} else {
-				throw new RuntimeException("Forced Exception");
+				throw new XworkException("Forced Exception");
 			}
 		}
 		

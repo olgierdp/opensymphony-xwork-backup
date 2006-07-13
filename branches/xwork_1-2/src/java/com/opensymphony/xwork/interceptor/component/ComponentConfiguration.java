@@ -5,6 +5,7 @@
 package com.opensymphony.xwork.interceptor.component;
 
 import com.opensymphony.xwork.ObjectFactory;
+import com.opensymphony.xwork.XworkException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
@@ -125,7 +126,7 @@ public class ComponentConfiguration implements Serializable {
             return ObjectFactory.getObjectFactory().getClassInstance(enablerClass);
         } catch (ClassNotFoundException e) {
             log.fatal("Cannot load class : " + enablerClass, e);
-            throw new RuntimeException("Cannot load class : " + enablerClass);
+            throw new XworkException("Cannot load class : " + enablerClass);
         }
     }
 

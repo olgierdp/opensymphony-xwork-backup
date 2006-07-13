@@ -7,6 +7,7 @@ package com.opensymphony.xwork.interceptor;
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.ValidationAware;
+import com.opensymphony.xwork.XworkException;
 import com.opensymphony.xwork.util.*;
 
 import java.util.Iterator;
@@ -136,7 +137,7 @@ public class ParametersInterceptor extends AroundInterceptor {
                 Object value = entry.getValue();
                 try {
                     stack.setValue(name, value);
-                } catch (RuntimeException e) {
+                } catch (XworkException e) {
                     final Boolean devMode = (Boolean) stack.getContext().get(ActionContext.DEV_MODE);
                     if (devMode != null && devMode.booleanValue()) {
                         String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "webwork.messages.devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification (set webwork.devMode to false to disable this message):\n{0}", new Object[]{

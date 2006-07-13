@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.opensymphony.xwork.XworkException;
+
 
 /**
  * Utility class that provides common access to the Ognl APIs for
@@ -363,7 +365,7 @@ public class OgnlUtil {
 
             if (throwPropertyExceptions) {
                 log.error(msg, exception);
-                throw new RuntimeException(msg, exception);
+                throw new XworkException(msg, exception);
             } else {
                 log.warn(msg, exception);
             }

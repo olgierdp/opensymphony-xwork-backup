@@ -12,6 +12,8 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.util.*;
 
+import com.opensymphony.xwork.XworkException;
+
 
 /**
  * A stack that is able to call methods on objects in the stack.
@@ -51,7 +53,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 //                if (e.getReason() != null) {
 //                    final String msg = "Caught an Ognl exception while setting property " + name;
 //                    log.error(msg, e);
-//                    throw new RuntimeException(msg, e.getReason());
+//                    throw new XworkException(msg, e.getReason());
 //                }
             } catch (IntrospectionException e) {
                 // this is OK if this happens, we'll just keep trying the next
@@ -64,7 +66,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
         if ((reportError != null) && (reportError.booleanValue())) {
             log.error(msg);
-            throw new RuntimeException(msg);
+            throw new XworkException(msg);
         } else {
             log.debug(msg);
         }
@@ -103,7 +105,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     if (e.getReason() != null) {
                         final String msg = "Caught an Ognl exception while getting property " + name;
                         log.error(msg, e);
-                        throw new RuntimeException(msg, e);
+                        throw new XworkException(msg, e);
                     }
                 } catch (IntrospectionException e) {
                     // this is OK if this happens, we'll just keep trying the next
@@ -164,7 +166,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     String s = (String) iterator.next();
                     sb.append(s).append("\n");
                 }
-                
+
                 return sb.toString();
             } catch (IntrospectionException e) {
                 e.printStackTrace();

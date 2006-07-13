@@ -6,6 +6,7 @@ package com.opensymphony.xwork.interceptor.component;
 
 import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.xwork.ObjectFactory;
+import com.opensymphony.xwork.XworkException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -68,7 +69,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         } catch (Exception e) {
             String message = "Could not load resource with enabler " + enablerType;
             log.error(message, e);
-            throw new RuntimeException(message);
+            throw new XworkException(message);
         }
     }
 
@@ -77,7 +78,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
             this.fallback = (DefaultComponentManager) fallback;
             this.config = fallback.getConfig();
         } else {
-            throw new RuntimeException("Fallback must be an instance of DefaultConfigurationManager");
+            throw new XworkException("Fallback must be an instance of DefaultConfigurationManager");
         }
     }
 
@@ -144,7 +145,7 @@ public class DefaultComponentManager implements ComponentManager, Serializable {
         } catch (Exception e) {
             String message = "Could not load resource of type " + componentType;
             log.error(message, e);
-            throw new RuntimeException(message);
+            throw new XworkException(message);
         }
     }
 

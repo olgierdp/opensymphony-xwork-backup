@@ -6,6 +6,7 @@ package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ObjectFactory;
+import com.opensymphony.xwork.XworkException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -158,7 +159,7 @@ public class XWorkList extends ArrayList {
                 //todo
                 this.add(ObjectFactory.getObjectFactory().buildBean(clazz, null)); //ActionContext.getContext().getContextMap()));
             } catch (Exception e) {
-                throw new RuntimeException(e.getMessage());
+                throw new XworkException(e.getMessage());
             }
         }
 
