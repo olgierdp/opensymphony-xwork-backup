@@ -121,7 +121,7 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 	
 	
 	public void setAlwaysInvokeValidate(String alwaysInvokeValidate) {
-		this.alwaysInvokeValidate = Boolean.parseBoolean(alwaysInvokeValidate);
+        this.alwaysInvokeValidate = Boolean.valueOf(alwaysInvokeValidate).booleanValue();
 	}
 	
     protected String doIntercept(ActionInvocation invocation) throws Exception {

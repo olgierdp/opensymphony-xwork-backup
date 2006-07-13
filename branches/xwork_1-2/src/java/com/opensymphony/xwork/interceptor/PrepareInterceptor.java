@@ -82,7 +82,7 @@ public class PrepareInterceptor extends AroundInterceptor {
 	private boolean alwaysInvokePrepare = true;
 	
 	public void setAlwaysInvokePrepare(String alwaysInvokePrepare) {
-		this.alwaysInvokePrepare = Boolean.parseBoolean(alwaysInvokePrepare);
+		this.alwaysInvokePrepare = Boolean.valueOf(alwaysInvokePrepare).booleanValue();
 	}
 	
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
