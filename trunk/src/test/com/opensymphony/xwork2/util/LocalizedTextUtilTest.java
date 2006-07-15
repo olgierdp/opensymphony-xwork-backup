@@ -22,6 +22,19 @@ import java.util.Locale;
  */
 public class LocalizedTextUtilTest extends XWorkTestCase {
 
+	public void testNpeWhenClassIsPrimitive() throws Exception {
+		OgnlValueStack stack = new OgnlValueStack();
+		stack.push(new MyObject());
+		String result = LocalizedTextUtil.findText(MyObject.class, "someObj.someI18nKey", Locale.ENGLISH, "default message", null, stack);
+		System.out.println(result);
+	}
+	
+	public static class MyObject extends ActionSupport {
+		public boolean getSomeObj() {
+			return true;
+		}
+	}
+	
     public void testActionGetText() throws Exception {
         ModelDrivenAction2 action = new ModelDrivenAction2();
         TestBean2 bean = (TestBean2) action.getModel();
