@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.xwork.config.impl;
+package com.opensymphony.xwork.mock;
 
 import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.config.ConfigurationException;
@@ -15,11 +15,9 @@ import java.util.Set;
 
 
 /**
- * Created by IntelliJ IDEA.
- * User: Mike
- * Date: May 6, 2003
- * Time: 3:27:37 PM
- * To change this template use Options | File Templates.
+ * Mock for an {@link Configuration}.
+ *
+ * @author Mike
  */
 public class MockConfiguration implements Configuration {
 

@@ -7,7 +7,7 @@ package com.opensymphony.xwork.config.providers;
 import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.config.Configuration;
 import com.opensymphony.xwork.config.ConfigurationProvider;
-import com.opensymphony.xwork.config.impl.MockConfiguration;
+import com.opensymphony.xwork.mock.MockConfiguration;
 
 
 /**
