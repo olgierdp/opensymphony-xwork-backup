@@ -700,11 +700,22 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     }
                 }
             }
+            
+            loadExtraConfiguration(doc);
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Loaded action configuration from: " + fileName);
             }
         }
+    }
+
+    /**
+     * Allows subclasses to load extra information from the document
+     * 
+     * @param doc The configuration document
+     */
+    protected void loadExtraConfiguration(Document doc) {
+        // no op
     }
 
     /**

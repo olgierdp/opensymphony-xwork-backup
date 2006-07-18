@@ -56,7 +56,7 @@ public class DefaultConfiguration implements Configuration {
         PackageConfig check = packageContexts.get(name);
         if (check != null) {
             throw new ConfigurationException("The package name '" + name 
-                    + "' is already been used by another package: " + check,
+                    + "' is already been used by another package: " + check.getLocation(),
                     packageContext);
             // would be better to throw ConfigurationException("name already used");
         }
