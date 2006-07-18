@@ -106,7 +106,7 @@ public class ActionConfigMatcher implements Serializable {
                 
                 int lastStar = name.lastIndexOf('*');
                 if (lastStar > 1 && lastStar == name.length() - 1) {
-                    if (name.charAt(lastStar - 2) == '*' && name.charAt(lastStar - 1) != '*') {
+                    if (name.charAt(lastStar - 1) != '*') {
                         pattern = wildcard.compilePattern(name.substring(0, lastStar - 1));
                         compiledPaths.add(new Mapping(name, pattern, configs.get(name)));
                     }

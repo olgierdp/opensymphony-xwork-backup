@@ -55,7 +55,9 @@ public class DefaultConfiguration implements Configuration {
     public void addPackageConfig(String name, PackageConfig packageContext) {
         PackageConfig check = packageContexts.get(name);
         if (check != null) {
-            LOG.error("The package name '" + name + "' is already been used by another package: " + check);
+            throw new ConfigurationException("The package name '" + name 
+                    + "' is already been used by another package: " + check,
+                    packageContext);
             // would be better to throw ConfigurationException("name already used");
         }
         packageContexts.put(name, packageContext);
@@ -221,7 +223,6 @@ public class DefaultConfiguration implements Configuration {
         public synchronized ActionConfig getActionConfig(String namespace, String name) {
             ActionConfig config = null;
             Map<String, ActionConfig> actions = namespaceActionConfigs.get((namespace == null) ? "" : namespace);
-
             if (actions != null) {
                 config = actions.get(name);
                 // Check wildcards
