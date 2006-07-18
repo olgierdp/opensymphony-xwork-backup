@@ -8,13 +8,15 @@ import junit.framework.TestCase;
 
 import java.util.ArrayList;
 
+import com.opensymphony.xwork2.XWorkTestCase;
+
 
 /**
  * Test cases for {@link XWorkList}.
  *
  * @author Mark Woon
  */
-public class XWorkListTest extends TestCase {
+public class XWorkListTest extends XWorkTestCase {
 
     public void testAddAllIndex() {
         XWorkList xworkList = new XWorkList(String.class);

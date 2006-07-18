@@ -13,13 +13,15 @@ import ognl.Ognl;
 
 import java.util.*;
 
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.mock.MockObjectTypeDeterminer;
 
 
 /**
  * @author CameronBraid and Gabe
+ * @author tm_jee
  */
-public class SetPropertiesTest extends TestCase {
+public class SetPropertiesTest extends XWorkTestCase {
 
     public void testOgnlUtilEmptyStringAsLong() {
         Bar bar = new Bar();

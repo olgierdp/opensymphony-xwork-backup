@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork2.util;
 
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.test.User;
 import junit.framework.TestCase;
 
@@ -12,8 +13,9 @@ import java.util.Map;
 
 /**
  * @author Mark Woon
+ * @author tm_jee
  */
-public class XWorkMapTest extends TestCase {
+public class XWorkMapTest extends XWorkTestCase {
 
     public void testPutValue() {
         OgnlValueStack stack = new OgnlValueStack();
