@@ -338,7 +338,7 @@ public class OgnlValueStack implements Serializable {
     }
     
     
-    private static final String MAP_IDENTIFIER_KEY="om.opensymphony.xwork.util.OgnlValueStack.MAP_IDENTIFIER_KEY";
+    private static final String MAP_IDENTIFIER_KEY="com.opensymphony.xwork2.util.OgnlValueStack.MAP_IDENTIFIER_KEY";
     
     /**
      * Get the number of objects in the stack
