@@ -47,7 +47,7 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         params = new HashMap();
         params.put("foo", "18");
         params.put("bar", "24");
-        results.put("success", new ResultConfig("success", MockResult.class, new HashMap()));
+        results.put("success", new ResultConfig("success", MockResult.class.getName(), new HashMap()));
 
         InterceptorConfig timerInterceptorConfig = new InterceptorConfig("timer", TimerInterceptor.class, new HashMap());
         interceptors.add(new InterceptorMapping("timer", objectFactory.buildInterceptor(timerInterceptorConfig, new HashMap())));
@@ -56,7 +56,7 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
 
         // wildcard action is simple wildcard example
         results = new HashMap();
-        results.put("*", new ResultConfig("*", MockResult.class, new HashMap()));
+        results.put("*", new ResultConfig("*", MockResult.class.getName(), new HashMap()));
 
         ActionConfig wildcardAction = new ActionConfig(null, SimpleAction.class, new HashMap(), results, interceptors);
 
@@ -65,7 +65,7 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         params.put("foo", "18");
         params.put("bar", "24");
         results = new HashMap();
-        results.put("success", new ResultConfig("success", MockResult.class, new HashMap()));
+        results.put("success", new ResultConfig("success", MockResult.class.getName(), new HashMap()));
 
         ExceptionMappingConfig exceptionConfig = new ExceptionMappingConfig("runtime", "java.lang.RuntimeException", "exception");
         exceptionMappings.add(exceptionConfig);

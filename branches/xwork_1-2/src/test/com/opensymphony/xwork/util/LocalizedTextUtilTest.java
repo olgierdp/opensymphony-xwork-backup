@@ -23,6 +23,24 @@ import java.util.Locale;
  */
 public class LocalizedTextUtilTest extends TestCase {
 
+	public void testNpeWhenClassIsPrimitive() throws Exception {
+		OgnlValueStack stack = new OgnlValueStack();
+		stack.push(new MyObject());
+		String result = LocalizedTextUtil.findText(MyObject.class, "someObj.someI18nKey", Locale.ENGLISH, "default message", null, stack);
+		// we should not get any exception;
+		assertEquals(result, "default message");
+	}
+	
+	public static class MyObject extends ActionSupport {
+		
+		private static final long serialVersionUID = -3835214664442662228L;
+
+		public boolean getSomeObj() {
+			return true;
+		}
+	}
+	
+	
     public void testActionGetText() throws Exception {
         ModelDrivenAction2 action = new ModelDrivenAction2();
         TestBean2 bean = (TestBean2) action.getModel();

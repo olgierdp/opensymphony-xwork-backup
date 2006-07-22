@@ -6,6 +6,10 @@ package com.opensymphony.xwork.spring;
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
+import com.opensymphony.xwork.ActionProxy;
+import com.opensymphony.xwork.ActionProxyFactory;
+import com.opensymphony.xwork.spring.SpringResult;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -72,5 +76,16 @@ public class ActionsFromSpringTest extends XWorkTestCase {
 
         String result = action.execute();
         assertEquals(Action.INPUT, result);
+    }
+    
+    public void testActionWithSpringResult() throws Exception {
+        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        		null, "simpleActionSpringResult", null);
+                
+        proxy.execute();
+        
+        SpringResult springResult = (SpringResult) proxy.getInvocation().getResult();
+        assertTrue(springResult.isInitialize());
+        assertNotNull(springResult.getStringParameter());
     }
 }

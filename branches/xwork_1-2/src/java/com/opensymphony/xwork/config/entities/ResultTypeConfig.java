@@ -22,25 +22,36 @@ import com.opensymphony.xwork.util.location.Located;
  */
 public class ResultTypeConfig extends Located implements Serializable {
 
-    private Class clazz;
+	private static final long serialVersionUID = -4536350324880589642L;
+	
+	private String clazz;
     private String name;
+    private String defaultResultParam;
 
     private Map params;
 
     public ResultTypeConfig() {
     }
 
-    public ResultTypeConfig(String name, Class clazz) {
+    public ResultTypeConfig(String name, String clazz, String defaultResultParam) {
         this.name = name;
         this.clazz = clazz;
+        this.defaultResultParam = defaultResultParam;
     }
 
+    public String getDefaultResultParam() {
+    	return this.defaultResultParam;
+    }
+    
+    public void setDefaultResultParam(String defaultResultParam) {
+    	this.defaultResultParam  = defaultResultParam;
+    }
 
-    public void setClazz(Class clazz) {
+    public void setClazz(String clazz) {
         this.clazz = clazz;
     }
 
-    public Class getClazz() {
+    public String getClazz() {
         return clazz;
     }
 

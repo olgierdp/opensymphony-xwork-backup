@@ -234,11 +234,19 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             String name = resultTypeElement.getAttribute("name");
             String className = resultTypeElement.getAttribute("class");
             String def = resultTypeElement.getAttribute("default");
+            
             Location loc = DomHelper.getLocationObject(resultTypeElement);
 
             Class clazz = verifyResultType(className, loc);
             if (clazz != null) {
-                ResultTypeConfig resultType = new ResultTypeConfig(name, clazz);
+            	String paramName = null;
+            	try {
+            		paramName = (String) clazz.getField("DEFAULT_PARAM").get(null);
+            	}
+            	catch(Throwable t) {
+            		// if we get here, the result type doesn't have a default param defined.
+            	}
+                ResultTypeConfig resultType = new ResultTypeConfig(name, className, paramName);
                 resultType.setLocation(DomHelper.getLocationObject(resultTypeElement));
                 
                 Map params = XmlHelper.getParams(resultTypeElement);
@@ -416,7 +424,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     throw new ConfigurationException("There is no result type defined for type '" + resultType + "' mapped with name '" + resultName + "'", resultElement);
                 }
 
-                Class resultClass = config.getClazz();
+                String resultClass = config.getClazz();
 
                 // invalid result type specified in result definition
                 if (resultClass == null) {
@@ -432,14 +440,16 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     {
                         resultParams = new LinkedHashMap();
 
-                        try {
-                            String paramName = (String) resultClass.getField("DEFAULT_PARAM").get(null);
+                        String paramName = config.getDefaultResultParam();
+                        if (paramName != null) {
                             String paramValue = resultElement.getChildNodes().item(0).getNodeValue();
                             if (paramValue != null) {
                                 paramValue = paramValue.trim();
                             }
                             resultParams.put(paramName, paramValue);
-                        } catch (Throwable t) {
+                        }
+                        else {
+                        	LOG.warn("no default parameter defined for result of type "+config.getName());
                         }
                     }
                 }

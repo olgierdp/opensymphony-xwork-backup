@@ -34,4 +34,9 @@
 		</property>
         <property name="beanNames"><value>auto-proxied-action</value></property>
     </bean>
+    
+    <bean id="springResult" class="com.opensymphony.xwork.spring.SpringResult"
+		init-method="initialize">
+		<property name="stringParameter" value="my string"/>
+	</bean>
 </beans>

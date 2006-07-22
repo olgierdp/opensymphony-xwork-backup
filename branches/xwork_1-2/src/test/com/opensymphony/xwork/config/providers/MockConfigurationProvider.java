@@ -57,7 +57,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         HashMap results = new HashMap();
         HashMap successParams = new HashMap();
         successParams.put("actionName", "bar");
-        results.put("success", new ResultConfig("success", ActionChainResult.class, successParams));
+        results.put("success", new ResultConfig("success", ActionChainResult.class.getName(), successParams));
 
         ActionConfig fooActionConfig = new ActionConfig(null, SimpleAction.class, params, results, null);
         fooActionConfig.setPackageName("defaultPackage");
@@ -66,7 +66,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         results = new HashMap();
         successParams = new HashMap();
         successParams.put("actionName", "bar");
-        results.put("success", new ResultConfig("success", ActionChainResult.class, successParams));
+        results.put("success", new ResultConfig("success", ActionChainResult.class.getName(), successParams));
 
         List interceptors = new ArrayList();
         interceptors.add(new InterceptorMapping("params", new ParametersInterceptor()));
@@ -91,7 +91,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         results = new HashMap();
         successParams = new HashMap();
         successParams.put("actionName", "bar");
-        results.put("success", new ResultConfig("success", ActionChainResult.class, successParams));
+        results.put("success", new ResultConfig("success", ActionChainResult.class.getName(), successParams));
 
         interceptors = new ArrayList();
         interceptors.add(new InterceptorMapping("static-params", new StaticParametersInterceptor()));
