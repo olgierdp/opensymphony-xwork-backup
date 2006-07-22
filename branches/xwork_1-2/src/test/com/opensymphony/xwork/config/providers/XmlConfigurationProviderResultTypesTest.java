@@ -41,9 +41,9 @@ public class XmlConfigurationProviderResultTypesTest extends ConfigurationTestBa
 		Map result2ParamsMap = result2ResultTypeConfig.getParams();
 		
 		assertEquals(result1ResultTypeConfig.getName(), "result1");
-		assertEquals(result1ResultTypeConfig.getClazz(), MockResult.class);
+		assertEquals(result1ResultTypeConfig.getClazz(), MockResult.class.getName());
 		assertEquals(result2ResultTypeConfig.getName(), "result2");
-		assertEquals(result2ResultTypeConfig.getClazz(), MockResult.class);
+		assertEquals(result2ResultTypeConfig.getClazz(), MockResult.class.getName());
 		assertEquals(result1ParamsMap.size(), 3);
 		assertEquals(result2ParamsMap.size(), 2);
 		assertTrue(result1ParamsMap.containsKey("param1"));
