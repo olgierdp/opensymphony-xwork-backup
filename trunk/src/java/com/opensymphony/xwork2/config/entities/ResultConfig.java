@@ -29,14 +29,8 @@ public class ResultConfig extends Located implements Parameterizable, Serializab
         params = new LinkedHashMap();
     }
 
-    public ResultConfig(String name, Class clazz) {
+    public ResultConfig(String name, String clazz) {
         this(name, clazz, new LinkedHashMap());
-    }
-
-    public ResultConfig(String name, Class clazz, Map params) {
-        this.name = name;
-        this.className = clazz.getName();
-        this.params = params;
     }
 
     public ResultConfig(String name, String className, Map params) {

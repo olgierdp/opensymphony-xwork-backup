@@ -35,21 +35,21 @@ public class XmlConfigurationProviderResultsTest extends ConfigurationTestBase {
         HashMap parameters = new HashMap();
         HashMap results = new HashMap();
 
-        results.put("chainDefaultTypedResult", new ResultConfig("chainDefaultTypedResult", ActionChainResult.class, new HashMap()));
+        results.put("chainDefaultTypedResult", new ResultConfig("chainDefaultTypedResult", ActionChainResult.class.getName(), new HashMap()));
 
-        results.put("mockTypedResult", new ResultConfig("mockTypedResult", MockResult.class, new HashMap()));
+        results.put("mockTypedResult", new ResultConfig("mockTypedResult", MockResult.class.getName(), new HashMap()));
 
         Map resultParams = new HashMap();
         resultParams.put("actionName", "bar.vm");
-        results.put("specificLocationResult", new ResultConfig("specificLocationResult", ActionChainResult.class, resultParams));
+        results.put("specificLocationResult", new ResultConfig("specificLocationResult", ActionChainResult.class.getName(), resultParams));
 
         resultParams = new HashMap();
         resultParams.put("actionName", "foo.vm");
-        results.put("defaultLocationResult", new ResultConfig("defaultLocationResult", ActionChainResult.class, resultParams));
+        results.put("defaultLocationResult", new ResultConfig("defaultLocationResult", ActionChainResult.class.getName(), resultParams));
 
         resultParams = new HashMap();
         resultParams.put("foo", "bar");
-        results.put("noDefaultLocationResult", new ResultConfig("noDefaultLocationResult", ActionChainResult.class, resultParams));
+        results.put("noDefaultLocationResult", new ResultConfig("noDefaultLocationResult", ActionChainResult.class.getName(), resultParams));
 
         ActionConfig expectedAction = new ActionConfig(null, SimpleAction.class, parameters, results, new ArrayList());
 
@@ -84,8 +84,8 @@ public class XmlConfigurationProviderResultsTest extends ConfigurationTestBase {
         ConfigurationProvider provider = buildConfigurationProvider(filename);
 
         // setup expectations
-        ResultTypeConfig chainResult = new ResultTypeConfig("chain", ActionChainResult.class);
-        ResultTypeConfig mockResult = new ResultTypeConfig("mock", MockResult.class);
+        ResultTypeConfig chainResult = new ResultTypeConfig("chain", ActionChainResult.class.getName(), null);
+        ResultTypeConfig mockResult = new ResultTypeConfig("mock", MockResult.class.getName(), null);
 
         // execute the configuration
         provider.init(configuration);

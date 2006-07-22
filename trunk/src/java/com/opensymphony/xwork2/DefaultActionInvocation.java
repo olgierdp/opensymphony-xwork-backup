@@ -172,7 +172,8 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         if (resultConfig != null) {
             try {
-                return ObjectFactory.getObjectFactory().buildResult(resultConfig, invocationContext.getContextMap());
+                Result result = ObjectFactory.getObjectFactory().buildResult(resultConfig, invocationContext.getContextMap());
+                return result;
             } catch (Exception e) {
                 LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClassName(), e);
                 throw new XWorkException(e, resultConfig);

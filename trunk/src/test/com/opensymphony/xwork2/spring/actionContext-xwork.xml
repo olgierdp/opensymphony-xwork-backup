@@ -3,6 +3,7 @@
     <package name="default">
         <result-types>
             <result-type name="null" class="com.opensymphony.xwork2.result.NullResult" default="true"/>
+            <result-type name="springResult" class="springResult" />
         </result-types>
 
         <interceptors>
@@ -18,5 +19,9 @@
         <action name="proxiedAction" class="proxied-action"/>
 
         <action name="autoProxiedAction" class="auto-proxied-action"/>
+        
+        <action name="simpleActionSpringResult" class="simple-action">
+			<result name="error" type="springResult"/>
+		</action>
     </package>
 </xwork>

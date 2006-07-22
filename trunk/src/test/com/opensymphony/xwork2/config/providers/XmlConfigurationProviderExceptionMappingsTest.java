@@ -32,11 +32,11 @@ public class XmlConfigurationProviderExceptionMappingsTest extends Configuration
 
         exceptionMappings.add(new ExceptionMappingConfig("spooky-result", "com.opensymphony.xwork2.SpookyException", "spooky-result"));
 
-        results.put("spooky-result", new ResultConfig("spooky-result", MockResult.class, new HashMap()));
+        results.put("spooky-result", new ResultConfig("spooky-result", MockResult.class.getName(), new HashMap()));
 
         Map resultParams = new HashMap();
         resultParams.put("actionName", "bar.vm");
-        results.put("specificLocationResult", new ResultConfig("specificLocationResult", ActionChainResult.class, resultParams));
+        results.put("specificLocationResult", new ResultConfig("specificLocationResult", ActionChainResult.class.getName(), resultParams));
 
         ActionConfig expectedAction = new ActionConfig(null, SimpleAction.class, parameters, results, new ArrayList(), exceptionMappings);
 

@@ -77,4 +77,15 @@ public class ActionsFromSpringTest extends XWorkTestCase {
         String result = action.execute();
         assertEquals(Action.INPUT, result);
     }
+    
+    public void testActionWithSpringResult() throws Exception {
+    	        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+    	        		configurationManager.getConfiguration(), null, "simpleActionSpringResult", null);
+    	                
+    	        proxy.execute();
+    	        
+    	        SpringResult springResult = (SpringResult) proxy.getInvocation().getResult();
+    	        assertTrue(springResult.isInitialize());
+    	        assertNotNull(springResult.getStringParameter());
+    }
 }
