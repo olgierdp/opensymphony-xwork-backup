@@ -261,11 +261,19 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             String name = resultTypeElement.getAttribute("name");
             String className = resultTypeElement.getAttribute("class");
             String def = resultTypeElement.getAttribute("default");
+            
             Location loc = DomHelper.getLocationObject(resultTypeElement);
 
             Class clazz = verifyResultType(className, loc);
             if (clazz != null) {
-                ResultTypeConfig resultType = new ResultTypeConfig(name, clazz);
+            	String paramName = null;
+            	try {
+            		paramName = (String) clazz.getField("DEFAULT_PARAM").get(null);
+            	}
+            	catch(Throwable t) {
+            		// if we get here, the result type doesn't have a default param defined.
+            	}
+                ResultTypeConfig resultType = new ResultTypeConfig(name, className, paramName);
                 resultType.setLocation(DomHelper.getLocationObject(resultTypeElement));
 
                 Map params = XmlHelper.getParams(resultTypeElement);
@@ -441,31 +449,33 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     throw new ConfigurationException("There is no result type defined for type '" + resultType + "' mapped with name '" + resultName + "'", resultElement);
                 }
 
-                Class resultClass = config.getClazz();
+                String resultClass = config.getClazz();
 
                 // invalid result type specified in result definition
                 if (resultClass == null) {
                     throw new ConfigurationException("Result type '" + resultType + "' is invalid");
                 }
 
-                Map resultParams = XmlHelper.getParams(resultElement);
+                Map<String, String> resultParams = XmlHelper.getParams(resultElement);
 
                 if (resultParams.size() == 0) // maybe we just have a body - therefore a default parameter
                 {
                     // if <result ...>something</result> then we add a parameter of 'something' as this is the most used result param
                     if ((resultElement.getChildNodes().getLength() == 1) && (resultElement.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE))
                     {
-                        resultParams = new LinkedHashMap();
+                        resultParams = new LinkedHashMap<String, String>();
 
-                        try {
-                            String paramName = (String) resultClass.getField("DEFAULT_PARAM").get(null);
+                       	String paramName = config.getDefaultResultParam();
+                       	if (paramName != null) {
                             String paramValue = resultElement.getChildNodes().item(0).getNodeValue();
                             if (paramValue != null) {
                                 paramValue = paramValue.trim();
                             }
                             resultParams.put(paramName, paramValue);
-                        } catch (Throwable t) {
-                        }
+                       	}
+                       	else {
+                       		LOG.warn("no default parameter defined for result of type "+config.getName());
+                       	}
                     }
                 }
 
