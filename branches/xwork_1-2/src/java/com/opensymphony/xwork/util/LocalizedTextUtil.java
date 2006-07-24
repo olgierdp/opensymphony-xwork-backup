@@ -464,7 +464,7 @@ public class LocalizedTextUtil {
         		warn += " or indexed key '" + indexedTextName + "' ";
         	}
         	warn += "in class '" + aClass.getName() + "' and locale '" + locale + "'";
-            LOG.warn(warn);
+            LOG.debug(warn);
         }
         
         return result != null ? result.message : null;
