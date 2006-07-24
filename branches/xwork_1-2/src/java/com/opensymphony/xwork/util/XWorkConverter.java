@@ -232,6 +232,16 @@ public class XWorkConverter extends DefaultTypeConverter {
             tc = (TypeConverter) getConverter(clazz, property);
         }
 
+        if (tc == null && context != null) {
+            // ok, let's see if we can look it up by path as requested in XW-297
+            Object lastPropertyPath = context.get(OgnlContextState.CURRENT_PROPERTY_PATH);
+            Class clazz = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
+            if (lastPropertyPath != null && clazz != null) {
+                String path = lastPropertyPath + "." + property;
+                tc = (TypeConverter) getConverter(clazz, path);
+            }
+        }
+
         if (tc == null) {
             if (toClass.equals(String.class) && (value != null) && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class)))
             {

@@ -581,6 +581,15 @@ public class XWorkConverterTest extends TestCase {
         assertNotNull(bar);
     }
 
+    public void testNestedConverters() {
+        OgnlValueStack stack = new OgnlValueStack();
+        Cat cat = new Cat();
+        cat.setFoo(new Foo());
+        stack.push(cat);
+        stack.setValue("foo.number", "123");
+        assertEquals(321, cat.getFoo().getNumber());
+    }
+
     public static class Foo1 {
         public Bar1 getBar() {
             return new Bar1Impl();
