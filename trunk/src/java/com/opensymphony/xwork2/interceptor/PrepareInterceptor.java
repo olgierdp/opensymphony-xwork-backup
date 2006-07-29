@@ -27,11 +27,11 @@ import com.opensymphony.xwork2.Preparable;
  * parameter <i>user.name</i> will be set, as desired, on the actual object
  * loaded from the database. See the example for more info.
  * 
- * <p/><b>Update</b>: Added logic to execute a prepare{MethodName} rather than a 
- * general prepare Method. This allows us to run some logic based on the method 
+ * <p/><b>Update</b>: Added logic to execute a prepare{MethodName} and conditionally
+ * the a general prepare() Method, depending on the 'alwaysInvokePrepare' parameter/property
+ * which is by default true. This allows us to run some logic based on the method 
  * name we specify in the {@link ActionProxy}. For example, you can specify a 
- * prepareInput() method, or even a prepareDoInput() method that will be run 
- * before the invocation of the input method.
+ * prepareInput() method that will be run before the invocation of the input method.
  *
  * <!-- END SNIPPET: description -->
  *
