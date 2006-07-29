@@ -8,13 +8,12 @@ import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.ModelDriven;
 
-import ognl.OgnlException;
 import ognl.OgnlRuntime;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
@@ -73,8 +72,13 @@ import java.util.*;
  * @author Jason Carreira
  * @author Mark Woon
  * @author Rainer Hermanns
+ * @author tm_jee
+ * 
+ * @author $Date$ $Id$
  */
 public class LocalizedTextUtil {
+	
+	private static final Log _log = LogFactory.getLog(LocalizedTextUtil.class);
 
     private static List DEFAULT_RESOURCE_BUNDLES = null;
     private static final Log LOG = LogFactory.getLog(LocalizedTextUtil.class);
@@ -422,25 +426,30 @@ public class LocalizedTextUtil {
             }
 
             if (prop != null) {
+            	Object obj = valueStack.findValue(prop);
                 try {
                     Object realTarget = OgnlUtil.getRealTarget(prop, valueStack.getContext(), valueStack.getRoot());
                     
                     if (realTarget != null) {
-                        Class clazz = OgnlRuntime.getPropertyDescriptor(realTarget.getClass(), prop).getPropertyType();
-                        
-                        if (clazz != null) {
-                            msg = findText(clazz, newKey, locale, null, args);
-                            if (msg != null) {
-                                return msg;
-                            }
+                        PropertyDescriptor propertyDescriptor = OgnlRuntime.getPropertyDescriptor(realTarget.getClass(), prop);
+                        if (propertyDescriptor != null) {
+                        	Class clazz = propertyDescriptor.getPropertyType();
+                        	if (clazz != null) {
+                        		if (obj != null)
+                        			valueStack.push(obj);
+                        		msg = findText(clazz, newKey, locale, null, args);
+                        		if (obj != null)
+                        			valueStack.pop();
+                        		
+                        		if (msg != null) {
+                        			return msg;
+                        		}
+                        	}
                         }
                     }
                 }
-                catch(OgnlException ognlex) {
-                    ; // ignore
-                }
-                catch(IntrospectionException ie) {
-                    ; // ignore
+                catch(Exception e) {
+                	_log.debug("unable to find property "+prop, e);
                 }
             }
         }

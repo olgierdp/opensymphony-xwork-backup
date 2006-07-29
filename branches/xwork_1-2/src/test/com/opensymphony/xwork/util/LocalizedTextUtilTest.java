@@ -9,6 +9,11 @@ import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.test.ModelDrivenAction2;
 import com.opensymphony.xwork.test.TestBean2;
+import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.xwork.ActionInvocation;
+import com.opensymphony.xwork.ActionSupport;
+import com.opensymphony.xwork.util.Bar;
+
 import junit.framework.TestCase;
 
 import java.util.Collections;
@@ -20,6 +25,9 @@ import java.util.Locale;
  * Unit test for {@link LocalizedTextUtil}.
  * 
  * @author jcarreira
+ * @author tm_jee
+ * 
+ * @version $Date$ $Id$
  */
 public class LocalizedTextUtilTest extends TestCase {
 
@@ -40,6 +48,29 @@ public class LocalizedTextUtilTest extends TestCase {
 		}
 	}
 	
+	public void testActionGetTextWithNullObject() throws Exception {
+		MyAction action = new MyAction();
+		
+		Mock mockActionInvocation = new Mock(ActionInvocation.class);
+        mockActionInvocation.expectAndReturn("getAction", action);
+        ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
+		ActionContext.getContext().getValueStack().push(action);
+		
+		String message = action.getText("barObj.title");
+		assertEquals("Title:", message);
+	}
+	
+	
+	public static class MyAction extends ActionSupport {
+		private Bar testBean2;
+		
+		public Bar getBarObj() {
+			return testBean2;
+		}
+		public void setBarObj(Bar testBean2) {
+			this.testBean2 = testBean2;
+		}
+	}
 	
     public void testActionGetText() throws Exception {
         ModelDrivenAction2 action = new ModelDrivenAction2();
