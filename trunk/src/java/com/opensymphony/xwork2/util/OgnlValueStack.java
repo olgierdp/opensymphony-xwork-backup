@@ -20,9 +20,15 @@ import java.util.*;
  * on the expression being evaluated).
  *
  * @author Patrick Lightbody
+ * @author tm_jee
+ * 
+ * @version $Date$ $Id$
  */
 public class OgnlValueStack implements Serializable {
-    public static final String VALUE_STACK = "com.opensymphony.xwork2.util.OgnlValueStack.ValueStack";
+	
+	private static final long serialVersionUID = 370737852934925530L;
+	
+	public static final String VALUE_STACK = "com.opensymphony.xwork2.util.OgnlValueStack.ValueStack";
     public static final String REPORT_ERRORS_ON_NO_PROP = "com.opensymphony.xwork2.util.OgnlValueStack.ReportErrorsOnNoProp";
     private static CompoundRootAccessor accessor;
     private static Log LOG = LogFactory.getLog(OgnlValueStack.class);
