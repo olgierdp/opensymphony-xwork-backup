@@ -7,9 +7,13 @@ package com.opensymphony.xwork2.util;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ModelDriven;
+
+import ognl.OgnlRuntime;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
@@ -68,8 +72,13 @@ import java.util.*;
  * @author Jason Carreira
  * @author Mark Woon
  * @author Rainer Hermanns
+ * @author tm_jee
+ * 
+ * @version $Date$ $Id$
  */
 public class LocalizedTextUtil {
+	
+	private static final Log _log = LogFactory.getLog(LocalizedTextUtil.class);
 
     private static List DEFAULT_RESOURCE_BUNDLES = null;
     private static final Log LOG = LogFactory.getLog(LocalizedTextUtil.class);
@@ -418,19 +427,30 @@ public class LocalizedTextUtil {
 
             if (prop != null) {
                 Object obj = valueStack.findValue(prop);
+                try {
+                	Object actionObj = OgnlUtil.getRealTarget(prop, valueStack.getContext(), valueStack.getRoot());
+                	if (actionObj != null) {
+                		PropertyDescriptor propertyDescriptor = OgnlRuntime.getPropertyDescriptor(actionObj.getClass(), prop);
 
-                if (obj != null) {
-                    Class clazz = obj.getClass();
+                		if (propertyDescriptor != null) {
+                			Class clazz=propertyDescriptor.getPropertyType();
 
-                    if (clazz != null) {
-                        valueStack.push(obj);
-                        msg = findText(clazz, newKey, locale, null, args);
-                        valueStack.pop();
+                			if (clazz != null) {
+                				if (obj != null)
+                					valueStack.push(obj);
+                				msg = findText(clazz, newKey, locale, null, args);
+                				if (obj != null)
+                					valueStack.pop();
 
-                        if (msg != null) {
-                            return msg;
-                        }
-                    }
+                				if (msg != null) {
+                					return msg;
+                				}
+                			}
+                		}
+                	}
+                }
+                catch(Exception e) {
+                	_log.warn("unable to find property "+prop, e);
                 }
             }
         }

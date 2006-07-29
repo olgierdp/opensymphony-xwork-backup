@@ -8,7 +8,6 @@ import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.test.ModelDrivenAction2;
 import com.opensymphony.xwork2.test.TestBean2;
-import junit.framework.TestCase;
 
 import java.util.Collections;
 import java.util.Date;
@@ -19,6 +18,9 @@ import java.util.Locale;
  * Unit test for {@link LocalizedTextUtil}.
  *
  * @author jcarreira
+ * @author tm_jee
+ * 
+ * @version $Date$ $Id$
  */
 public class LocalizedTextUtilTest extends XWorkTestCase {
 
@@ -32,6 +34,30 @@ public class LocalizedTextUtilTest extends XWorkTestCase {
 	public static class MyObject extends ActionSupport {
 		public boolean getSomeObj() {
 			return true;
+		}
+	}
+	
+	public void testActionGetTextWithNullObject() throws Exception {
+		MyAction action = new MyAction();
+		
+		Mock mockActionInvocation = new Mock(ActionInvocation.class);
+        mockActionInvocation.expectAndReturn("getAction", action);
+        ActionContext.getContext().setActionInvocation((ActionInvocation) mockActionInvocation.proxy());
+		ActionContext.getContext().getValueStack().push(action);
+		
+		String message = action.getText("barObj.title");
+		assertEquals("Title:", message);
+	}
+	
+	
+	public static class MyAction extends ActionSupport {
+		private Bar testBean2;
+		
+		public Bar getBarObj() {
+			return testBean2;
+		}
+		public void setBarObj(Bar testBean2) {
+			this.testBean2 = testBean2;
 		}
 	}
 	
