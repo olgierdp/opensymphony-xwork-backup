@@ -6,6 +6,7 @@ package com.opensymphony.xwork2.util;
 
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.test.ModelDrivenAction2;
 import com.opensymphony.xwork2.test.TestBean2;
 
@@ -209,7 +210,9 @@ public class LocalizedTextUtilTest extends XWorkTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         configurationManager.destroyConfiguration();
+        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
         configurationManager.reload();
+
 
         OgnlValueStack stack = new OgnlValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));

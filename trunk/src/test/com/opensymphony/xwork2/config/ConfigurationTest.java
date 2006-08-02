@@ -217,7 +217,7 @@ public class ConfigurationTest extends XWorkTestCase {
         super.setUp();
 
         // ensure we're using the default configuration, not simple config
-        XmlConfigurationProvider c = new XmlConfigurationProvider();
+        XmlConfigurationProvider c = new XmlConfigurationProvider("xwork-sample.xml");
         configurationManager.addConfigurationProvider(c);
         configurationManager.reload();
     }

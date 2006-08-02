@@ -7,6 +7,7 @@ package com.opensymphony.xwork2.interceptor;
 import com.opensymphony.xwork2.mock.MockActionProxy;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.*;
 
 import java.util.HashMap;
@@ -37,6 +38,7 @@ public class AliasInterceptorTest extends XWorkTestCase {
         params.put("aliasSource", "source here");
 
         ActionProxyFactory factory = ActionProxyFactory.getFactory();
+        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
         ActionProxy proxy = factory.createActionProxy(
                 configurationManager.getConfiguration(), "", "aliasTest", params);
         SimpleAction actionOne = (SimpleAction) proxy.getAction();

@@ -8,6 +8,8 @@ import junit.framework.TestCase;
 
 import java.util.HashMap;
 
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+
 
 /**
  * @author $Author$
@@ -16,7 +18,7 @@ import java.util.HashMap;
 public class ActionInvocationTest extends XWorkTestCase {
 
     public void testCommandInvocation() throws Exception {
-        ActionProxy baseActionProxy = ActionProxyFactory.getFactory().createActionProxy(configurationManager.getConfiguration(), 
+        ActionProxy baseActionProxy = ActionProxyFactory.getFactory().createActionProxy(configurationManager.getConfiguration(),
                 "baz", "commandTest", null);
         assertEquals("success", baseActionProxy.execute());
 
@@ -48,6 +50,7 @@ public class ActionInvocationTest extends XWorkTestCase {
 
         // ensure we're using the default configuration, not simple config
         configurationManager.clearConfigurationProviders();
+        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
         configurationManager.getConfiguration().reload(configurationManager.getConfigurationProviders());
     }
 }

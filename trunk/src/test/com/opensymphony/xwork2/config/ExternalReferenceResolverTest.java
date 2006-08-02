@@ -122,8 +122,7 @@ public class ExternalReferenceResolverTest extends XWorkTestCase {
         ActionContext.setContext(new ActionContext(new HashMap()));
 
         // ensure we're using the default configuration, not simple config
-        XmlConfigurationProvider c = new XmlConfigurationProvider();
-        configurationManager.addConfigurationProvider(c);
+        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
         configurationManager.reload();
     }
 

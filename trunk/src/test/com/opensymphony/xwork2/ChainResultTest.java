@@ -12,6 +12,7 @@ package com.opensymphony.xwork2;
 
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.config.Configuration;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.util.OgnlValueStack;
 import junit.framework.TestCase;
 
@@ -29,6 +30,7 @@ public class ChainResultTest extends XWorkTestCase {
 
         // ensure we're using the default configuration, not simple config
         configurationManager.clearConfigurationProviders();
+        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
         configurationManager.getConfiguration().reload(
                 configurationManager.getConfigurationProviders());
     }

@@ -6,6 +6,7 @@
 package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.mock.MockResult;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import junit.framework.TestCase;
 
 /**
@@ -21,6 +22,7 @@ public class WildCardResultTest extends XWorkTestCase {
 
         // ensure we're using the default configuration, not simple config
         configurationManager.clearConfigurationProviders();
+        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
         configurationManager.getConfiguration().reload(configurationManager.getConfigurationProviders());
     }
 

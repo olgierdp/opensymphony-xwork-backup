@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -85,6 +86,7 @@ public class MyBeanActionTest extends XWorkTestCase {
 
         // ensure we're using the default configuration, not simple config
         configurationManager.clearConfigurationProviders();
+        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
         configurationManager.reload();
     }
 }

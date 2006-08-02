@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -27,6 +28,7 @@ public class ModelDrivenValidationTest extends XWorkTestCase {
         Map context = new HashMap();
         context.put(ActionContext.PARAMETERS, params);
 
+        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
                 configurationManager.getConfiguration(), null, "TestModelDrivenValidation", context);
         assertEquals(Action.SUCCESS, proxy.execute());
