@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>XWork - 
+        Generic Object Validation
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>XWork's validation framework is not just limited to Actions.  It can be used to validate virtually any object.  Once you've set up your validator config file (<b>validators.xml</b>) and your validation rules (<b>ClassName-validation.xml</b>), all it takes are a couple lines of code:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-object">String</span> context = <span class="code-keyword">null</span>;
+ValidatorContext context = <span class="code-keyword">new</span> DelegatingValidatorContext(objectToValidate);
+ActionValidatorManagerFactory.getInstance().validate(objectToValidate, <span class="code-keyword">null</span>, context);</pre>
+</div></div>
+
+<p>This will cause any errors to be logged (where it gets logged to depends on how commons-logging is configured).  </p>
+
+<p>Ideally, you would either implement your own ValidatorContext to handle how error messages are logged and evaluated, or have your objects that are to be evaluated implement ValidationAware, TextProvider and/or LocaleProvider.</p>
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

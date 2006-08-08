@@ -1,0 +1,9 @@
+*.ipr
+*.iws
+build
+dist
+.project
+.classpath
+ivyrep.properties
+.settings
+target
