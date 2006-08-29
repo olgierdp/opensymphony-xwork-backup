@@ -367,7 +367,8 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     protected void handleConversionException(Map context, String property, Object value, Object object) {
-        if ((context.get(REPORT_CONVERSION_ERRORS) == Boolean.TRUE)) {
+        if ((Boolean.TRUE.equals(context.get(REPORT_CONVERSION_ERRORS)))) {
+
             String realProperty = property;
             String fullName = (String) context.get(CONVERSION_PROPERTY_FULLNAME);
 
