@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
  * @see XWorkMapPropertyAccessor
  */
 public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
-    private static final Log LOG = LogFactory.getLog(DefaultObjectTypeDeterminer.class);
+    protected static final Log LOG = LogFactory.getLog(DefaultObjectTypeDeterminer.class);
 
     public static final String KEY_PREFIX = "Key_";
     public static final String ELEMENT_PREFIX = "Element_";
