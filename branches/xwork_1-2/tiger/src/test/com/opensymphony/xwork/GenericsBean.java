@@ -1,7 +1,5 @@
 package com.opensymphony.xwork;
 
-import com.opensymphony.xwork.util.Element;
-
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -57,4 +55,5 @@ public class GenericsBean {
     public void setExtendedMap(Map<Double, List<Integer>> extendedMap) {
         this.extendedMap = extendedMap;
     }
+
 }
