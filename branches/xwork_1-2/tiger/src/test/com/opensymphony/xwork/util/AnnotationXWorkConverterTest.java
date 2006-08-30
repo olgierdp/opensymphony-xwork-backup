@@ -389,6 +389,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
     }
 
 
+    // FIXME: Implement nested Generics such as: List of Generics List, Map of Generic keys/values, etc...
     public void no_testGenericPropertiesWithNestedGenerics() {
         GenericsBean gb = new GenericsBean();
         OgnlValueStack stack = new OgnlValueStack();
