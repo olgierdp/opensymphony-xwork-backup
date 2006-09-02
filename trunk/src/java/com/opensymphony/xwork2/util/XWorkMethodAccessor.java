@@ -14,14 +14,20 @@ import java.beans.PropertyDescriptor;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * Allows methods to be executed under normal cirumstances, except when {@link #DENY_METHOD_EXECUTION}
  * is in the action context with a value of true.
  *
  * @author Patrick Lightbody
+ * @author tmjee
  */
 public class XWorkMethodAccessor extends ObjectMethodAccessor {
+	
+	private static final Log _log = LogFactory.getLog(XWorkMethodAccessor.class);
 
     public static final String DENY_METHOD_EXECUTION = "xwork.MethodAccessor.denyMethodExecution";
     public static final String DENY_INDEXED_ACCESS_EXECUTION = "xwork.IndexedPropertyAccessor.denyMethodExecution";
@@ -58,7 +64,7 @@ public class XWorkMethodAccessor extends ObjectMethodAccessor {
             }	catch (Exception oe) {
                 //this exception should theoretically never happen
                 //log it
-                oe.printStackTrace();
+            	_log.error("An unexpected exception occurred", oe);
             }
 
         }
