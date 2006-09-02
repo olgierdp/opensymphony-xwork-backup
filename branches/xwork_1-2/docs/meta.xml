@@ -69,6 +69,17 @@
 
     <releases>
         <release>
+            <version>1.2.1</version>
+            <date>09/02/2006</date>
+            <jiraId>21661</jiraId>
+            <downloads>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/40013/xwork-1.2.1.zip</url>
+                    <name>Full</name>
+                </download>
+            </downloads>
+        </release>
+        <release>
             <version>1.2.0</version>
             <date>08/08/2006</date>
             <jiraId>21531</jiraId>
