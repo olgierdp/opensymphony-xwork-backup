@@ -1,0 +1,161 @@
+<html>
+    <head>
+        <title>XWork - 
+        XWork layers
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h2><a name="XWorklayers-Overview"></a>Overview</h2>
+
+<p>Xwork is a command pattern framework centralized around an Action interface.  You define action classes by implementing an Action interface, then XWork will setup and execute your actions.  XWork is most widely known from the web MVC framework called Webwork.  However, XWork can be used by itself, so its important to understand the XWork layers and how actions are set up and executed.  This section describes the core layers within Xwork and provides a simple example of how to execute actions. </p>
+<ul>
+	<li>Action Interface</li>
+	<li>ActionProxy interface</li>
+	<li>ActionInvocation interface</li>
+	<li>ActionContext</li>
+	<li>A simple example</li>
+</ul>
+
+
+<p><br clear="all" />
+<img src="XWork layers_attachments/drawing1.gif" align="absmiddle" border="0" />
+<br clear="all" /></p>
+
+
+
+<h2><a name="XWorklayers-Actions"></a>Actions</h2>
+
+<p>Actions are the basic unit of execution...</p>
+
+<h4><a name="XWorklayers-TheActionInterface"></a>The Action Interface</h4>
+
+<p>The basic interface which all XWork actions must implement. It provides several standard return values like SUCCESS and INPUT, and only contains one method:</p>
+
+<div class="code" style="border-style: solid; "><div class="codeHeader" style="border-bottom-style: solid; "><b>Action.java</b></div><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">public</span> <span class="code-keyword">interface</span> Action {
+    <span class="code-keyword">public</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> <span class="code-object">String</span> SUCCESS = <span class="code-quote">"success"</span>;
+    <span class="code-keyword">public</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> <span class="code-object">String</span> NONE = <span class="code-quote">"none"</span>;
+    <span class="code-keyword">public</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> <span class="code-object">String</span> ERROR = <span class="code-quote">"error"</span>;
+    <span class="code-keyword">public</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> <span class="code-object">String</span> INPUT = <span class="code-quote">"input"</span>;
+    <span class="code-keyword">public</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> <span class="code-object">String</span> LOGIN = <span class="code-quote">"login"</span>;
+    
+    <span class="code-keyword">public</span> <span class="code-object">String</span> execute() <span class="code-keyword">throws</span> Exception;</pre>
+</div></div>
+
+<p>In general, Actions can simply extend the com.opensymphony.xwork.ActionSupport class, which implements the Action interface and provides default behavior for the most common actions.</p>
+
+
+<h2><a name="XWorklayers-ActionProxy"></a>ActionProxy</h2>
+
+<p>Action lifecycles are maintained thru the ActionProxy interface.  ActionProxy is the top layer in the Xwork API and should be the starting point to setup and execute actions.  XWork provides a factory as an entry point to instantiate action proxies.  Most of the implementations of each xwork layer are hidden behind interfaces making it very easy to override the default implementations for complete customization.  </p>
+
+
+<p>Example how to obtain the default impl of ActionProxy (DefaultActionProxy.java)</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">ActionProxyFactory.getFactory().createActionProxy(<span class="code-quote">"", "</span>viewBook", objectMap);</pre>
+</div></div>
+<p>If I need to register my own implementation of ActionProxy, then I may do so within the factory</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">class CustomizedActionProxyFactory <span class="code-keyword">extends</span> DefaultActionProxyFactory{
+	createActionProxy(...){ <span class="code-keyword">return</span> <span class="code-keyword">new</span> CustomizedActionProxy(...); }
+}</pre>
+</div></div>
+<div class="code"><div class="codeContent">
+<pre class="code-java">ActionProxyFactory.setFactory(<span class="code-keyword">new</span> CustomizedActionProxyFactory());
+ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(...);</pre>
+</div></div>
+
+<h2><a name="XWorklayers-ActionInvocation"></a>ActionInvocation</h2>
+
+<p>Underneath the ActionProxy layer, exists the ActionInvocation interface.  ActionInvocation represents the execution state of an action holding the action instance along with any interceptors that wrap before/after processing of the action.  </p>
+
+<h2><a name="XWorklayers-ActionContext"></a>ActionContext</h2>
+
+<p>ActionContext provides access to the execution environment in the form of named objects during an Action invocation. A new ActionContext is created for each invocation allowing developers to access/modify these properties in a thread safe manner. The ActionContext makes a number of properties available that are typically set to appropriate values by the framework. In WebWork 2 for example, the ActionContext session map wraps an underlying HttpSession object. This allows access to environment specific properties without tying the core framework to a specific execution environment.</p>
+
+<p>The ActionContext is acquired through the static ActionContext.getContext() method. The ActionContext is a thread local variable and thus the properties of the ActionContext will be relative to the current request thread. The ActionContext has several methods for commonly used properties as well as get() and set() methods which can be used for application specific properties. </p>
+
+
+<h2><a name="XWorklayers-Asimpleexample"></a>A simple example</h2>
+
+<p>Lets look at a simple example starting with a simple javabean.</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">public</span> class Book {
+	<span class="code-object">String</span> id;
+	<span class="code-object">String</span> title;
+	Set authors;
+	<span class="code-keyword">public</span> void setId(id){ <span class="code-keyword">this</span>.id = id; }
+	<span class="code-keyword">public</span> void setTitle(<span class="code-object">String</span> title){ <span class="code-keyword">this</span>.title = title; }
+	<span class="code-keyword">public</span> void setAuthors(Set authors){ <span class="code-keyword">this</span>.authors = authors; }
+	<span class="code-keyword">public</span> <span class="code-object">String</span> getId(){ }
+	<span class="code-keyword">public</span> <span class="code-object">String</span> getTitle{ }
+	<span class="code-keyword">public</span> Set getAuthors{ }
+}</pre>
+</div></div>
+
+<p>Lets say that we need to retrieve a book object from a data source and pass it back to the caller.  We can write an action to handle this.  An action in xwork is typically a very simple class.  The only requirement is that it implements the Action interface.  These days you'll see actions as simple as javabeans with an execute method (Validation, Type conversion, and so forth can all be seperated out to provide a good separation of concerns).  The purpose of action execution is typically to provide access and manipulation to your data.  The result of the action execution is a simple string representation that should define delegation of the action after invocation.  So a result could be a success string, a failure string, a forward string, or what ever.  In our current example, a book object can be populated in the action if found with a result of "success" or if the book is not found then a "notFound" can be returned. From this, you can easily have a controlling object setup to return the book or possible forward the request off to a different inventory source if the book isn't found.</p>
+<div class="code" style="border-style: solid; "><div class="codeHeader" style="border-bottom-style: solid; "><b>com.opensymphony.xwork.example.ViewBookAction</b></div><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">public</span> class ViewBookAction  <span class="code-keyword">implements</span> Action{
+	Book book;
+	<span class="code-object">String</span> id;
+
+	<span class="code-keyword">public</span> <span class="code-object">String</span> execute() <span class="code-keyword">throws</span> Exception{
+
+		<span class="code-comment">// lets pretend we have a data access object that will <span class="code-keyword">return</span> a book from storage
+</span>		book = bookDAO.findById(id, Book.class);
+		<span class="code-keyword">if</span>(book != <span class="code-keyword">null</span>) <span class="code-keyword">return</span> <span class="code-quote">"success"</span>;
+		<span class="code-keyword">return</span> <span class="code-quote">"notFound"</span>;
+	}
+	<span class="code-keyword">public</span> Book getBook(){ <span class="code-keyword">return</span> <span class="code-keyword">this</span>.book; }
+	<span class="code-keyword">public</span> setId(<span class="code-object">String</span> id){<span class="code-keyword">this</span>.id = id; }
+}</pre>
+</div></div>
+<p>Now that we have an action defined with a simple model, lets setup an action proxy and execute the action.  <br/>
+Setting up XWork to execute the action:</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-comment">// obtain inputs from the caller. For <span class="code-keyword">this</span> example, we can just define some dummy params.
+</span>Map paramMap = <span class="code-keyword">new</span> HashMap();
+paramMap.put(<span class="code-quote">"id"</span>, <span class="code-quote">"0123456789"</span>);
+
+<span class="code-comment">// set the ActionContext parameters
+</span>Map context = <span class="code-keyword">new</span> HashMap();
+context.put(ActionContext.PARAMETERS, paramMap);
+
+<span class="code-comment">// create an action proxy with no namespace, action alias (defined in xwork.xml), and a map of the context info
+</span>ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(<span class="code-quote">"","</span>viewBook", context);
+
+<span class="code-comment">// we have the action proxy instance, lets execute it and retrieve the action
+</span><span class="code-object">String</span> result = proxy.execute();
+<span class="code-keyword">if</span> (<span class="code-quote">"success"</span>.equals(result)){
+   ViewBookAction action = (ViewBookAction) proxy.getAction();
+   
+   <span class="code-comment">// <span class="code-keyword">return</span> info back to caller or just print to screen <span class="code-keyword">for</span> <span class="code-keyword">this</span> example
+</span>   <span class="code-object">System</span>.out.println(action.getBook().getTitle());
+} <span class="code-keyword">else</span> <span class="code-keyword">if</span>(<span class="code-quote">"notFound"</span>.equals(result){
+   <span class="code-comment">// forward to another inventory source
+</span>} <span class="code-keyword">else</span> {
+   <span class="code-keyword">throw</span> <span class="code-keyword">new</span> RuntimeException(<span class="code-quote">"Im lazy"</span>);
+}</pre>
+</div></div>
+<p>Not quite done yet, we need to define some configuration in xwork.xml so XWork can find the appropriate class to execute based on the action alias we provided within the createActionProxy(...) method.</p>
+
+<div class="code" style="border-style: solid; "><div class="codeHeader" style="border-bottom-style: solid; "><b>xwork.xml</b></div><div class="codeContent">
+<pre class="code-java">&lt;xwork&gt;
+    &lt;include file=<span class="code-quote">"xwork-<span class="code-keyword">default</span>.xml"</span>/&gt;
+    &lt;<span class="code-keyword">package</span> name=<span class="code-quote">"<span class="code-keyword">default</span>"</span> <span class="code-keyword">extends</span>=<span class="code-quote">"xwork-<span class="code-keyword">default</span>"</span>&gt;
+       &lt;action name=<span class="code-quote">"viewBook"</span> class=<span class="code-quote">"com.opensymphony.xwork.example.ViewBookAction"</span>/&gt;
+    &lt;/<span class="code-keyword">package</span>&gt;
+&lt;/xwork&gt;</pre>
+</div></div>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE xwork PUBLIC
+    "-//OpenSymphony Group//XWork 1.1.1//EN"
+    "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd"
+ >
+
+<xwork>
+    <package name="default">
+        <interceptors>
+            <interceptor name="timer" class="com.opensymphony.xwork.interceptor.TimerInterceptor"/>
+            <interceptor name="logging" class="com.opensymphony.xwork.interceptor.LoggingInterceptor"/>
+            <interceptor name="test" class="com.opensymphony.xwork.mock.MockInterceptor">
+                <param name="foo">expectedFoo</param>
+            </interceptor>
+
+            <interceptor-stack name="defaultStack">
+                <interceptor-ref name="timer"/>
+                <interceptor-ref name="test"/>
+            </interceptor-stack>
+
+            <interceptor-stack name="derivativeStack">
+                <interceptor-ref name="defaultStack"/>
+                <interceptor-ref name="logging"/>
+            </interceptor-stack>
+        </interceptors>
+    </package>
+</xwork>
