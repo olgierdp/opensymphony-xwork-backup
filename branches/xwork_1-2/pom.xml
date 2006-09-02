@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>opensymphony</groupId>
     <artifactId>xwork</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.1</version>
     <name>XWork</name>
     <description>
         XWork is an command-pattern framework that is used to power WebWork

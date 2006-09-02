@@ -302,7 +302,7 @@
             <fileset dir="${basedir}">
                 <include name="build.*"/>
                 <include name="osbuild.*"/>
-                <include name="ivy.*"/>
+                <include name="ivy*.*"/>
                 <include name="pom.*"/>
                 <include name="readme.txt"/>
                 <include name="license.txt"/>
