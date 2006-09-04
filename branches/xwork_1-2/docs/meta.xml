@@ -3,6 +3,7 @@
     <jiraId>10050</jiraId>
     <jiraName>XW</jiraName>
     <confluenceName>XW</confluenceName>
+    <svn>true</svn>
 
     <forums>
         <usersId>1</usersId>
