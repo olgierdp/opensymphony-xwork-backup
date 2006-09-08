@@ -161,7 +161,7 @@ public abstract class RepopulateConversionErrorFieldValidatorSupport extends Fie
 			String[] tmpValue = (String[]) value;
 			if (tmpValue != null && (tmpValue.length > 0) ) {
 				doExprOverride = true;
-				fakeParams.put(fieldName, "'"+tmpValue[0]+"'");
+				fakeParams.put(fullFieldName, "'"+tmpValue[0]+"'");
 			}
 			else {
 				_log.warn("value is an empty array of String or with first element in it as null ["+value+"], will not repopulate conversion error ");
@@ -170,7 +170,7 @@ public abstract class RepopulateConversionErrorFieldValidatorSupport extends Fie
 		else if (value instanceof String) {
 			String tmpValue = (String) value;
 			doExprOverride = true;
-			fakeParams.put(fieldName, "'"+tmpValue+"'");
+			fakeParams.put(fullFieldName, "'"+tmpValue+"'");
 		}
 		else {
 			// opps... it should be 
