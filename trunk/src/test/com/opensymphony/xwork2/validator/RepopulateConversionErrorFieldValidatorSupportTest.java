@@ -24,7 +24,20 @@ public class RepopulateConversionErrorFieldValidatorSupportTest extends TestCase
 
 	
 	InternalRepopulateConversionErrorFieldValidatorSupport validator1;
+	InternalRepopulateConversionErrorFieldValidatorSupport validator2;
 	ActionSupport action;
+	
+	public void testUseFullFieldName() throws Exception {
+		validator2.setRepopulateField("true");
+		validator2.validate(action);
+		
+		ActionContext.getContext().getActionInvocation().invoke();
+		Object valueFromStack1 = ActionContext.getContext().getValueStack().findValue("someFieldName", String.class);
+		Object valueFromStack2 = ActionContext.getContext().getValueStack().findValue("xxxsomeFieldName", String.class);
+		
+		assertNull(valueFromStack1);
+		assertEquals(valueFromStack2, "some value");
+	}
 	
 	public void testGetterSetterGetsCalledApropriately1() throws Exception {
 		
@@ -64,12 +77,22 @@ public class RepopulateConversionErrorFieldValidatorSupportTest extends TestCase
 		String[] conversionErrorValue = new String[] { "some value" };
 		Map conversionErrors = ActionContext.getContext().getConversionErrors();
 		conversionErrors.put("someFieldName", conversionErrorValue);
+		conversionErrors.put("xxxsomeFieldName", conversionErrorValue);
 		
 		action = new ActionSupport();
 		validator1 = 
 			new InternalRepopulateConversionErrorFieldValidatorSupport();
 		validator1.setFieldName("someFieldName");
 		validator1.setValidatorContext(new DelegatingValidatorContext(action));
+		
+		validator2 = 
+			new InternalRepopulateConversionErrorFieldValidatorSupport();
+		validator2.setFieldName("someFieldName");
+		validator2.setValidatorContext(new DelegatingValidatorContext(action) {
+			public String getFullFieldName(String fieldName) {
+				return "xxx"+fieldName;
+			}
+		});
 	}
 	
 	protected void tearDown() throws Exception {
