@@ -104,7 +104,12 @@ public class OgnlValueStack implements Serializable {
     }
 
     public void setExprOverrides(Map overrides) {
-        this.overrides = overrides;
+    	if (this.overrides == null) {
+    		this.overrides = overrides;
+    	}
+    	else {
+    		this.overrides.putAll(overrides);
+    	}
     }
 
     /**

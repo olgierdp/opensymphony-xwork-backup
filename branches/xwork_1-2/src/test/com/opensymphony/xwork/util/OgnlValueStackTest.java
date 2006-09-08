@@ -6,10 +6,12 @@ package com.opensymphony.xwork.util;
 
 import com.opensymphony.xwork.*;
 import com.opensymphony.xwork.test.TestBean2;
+import com.opensymphony.xwork.util.OgnlValueStack;
 
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 
@@ -22,6 +24,24 @@ public class OgnlValueStackTest extends XWorkTestCase {
         return null;
     }
 
+    public void testExpOverridesCanStackExpUp() throws Exception {
+    	Map expr1 = new LinkedHashMap();
+    	expr1.put("expr1", "'expr1value'");
+    	
+    	OgnlValueStack vs = new OgnlValueStack();
+    	vs.setExprOverrides(expr1);
+    	
+    	assertEquals(vs.findValue("expr1"), "expr1value");
+    	
+    	Map expr2 = new LinkedHashMap();
+    	expr2.put("expr2", "'expr2value'");
+    	expr2.put("expr3", "'expr3value'");
+    	vs.setExprOverrides(expr2);
+    	
+    	assertEquals(vs.findValue("expr2"), "expr2value");
+    	assertEquals(vs.findValue("expr3"), "expr3value");
+    }
+    
     public void testArrayAsString() {
         OgnlValueStack vs = new OgnlValueStack();
 
