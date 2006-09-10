@@ -464,21 +464,28 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 if (resultParams.size() == 0) // maybe we just have a body - therefore a default parameter
                 {
                     // if <result ...>something</result> then we add a parameter of 'something' as this is the most used result param
-                    if ((resultElement.getChildNodes().getLength() == 1) && (resultElement.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE))
+                    if ((resultElement.getChildNodes().getLength() >= 1) && (resultElement.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE))
                     {
-                        resultParams = new LinkedHashMap<String, String>();
+                        resultParams = new LinkedHashMap();
 
-                       	String paramName = config.getDefaultResultParam();
-                       	if (paramName != null) {
-                            String paramValue = resultElement.getChildNodes().item(0).getNodeValue();
-                            if (paramValue != null) {
-                                paramValue = paramValue.trim();
+                        String paramName = config.getDefaultResultParam();
+                        if (paramName != null) {
+                            StringBuffer paramValue = new StringBuffer();
+                            for (int j=0; i<resultElement.getChildNodes().getLength(); i++) {
+                                if (resultElement.getChildNodes().item(1).getNodeType() == Node.TEXT_NODE) {
+                                    String val = resultElement.getChildNodes().item(i).getNodeValue();
+                                    if (val != null) {
+                                        paramValue.append(val);
+                                    }
+                                }
                             }
-                            resultParams.put(paramName, paramValue);
-                       	}
-                       	else {
-                       		LOG.warn("no default parameter defined for result of type "+config.getName());
-                       	}
+                            if (paramValue.length() > 0) {
+                                resultParams.put(paramName, paramValue.toString().trim());
+                            }
+                        }
+                        else {
+                            LOG.warn("no default parameter defined for result of type "+config.getName());
+                        }
                     }
                 }
 
