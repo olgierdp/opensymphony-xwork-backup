@@ -5,7 +5,7 @@
 
 package com.opensymphony.xwork2.validator;
 
-import com.opensymphony.util.FileManager;
+import com.opensymphony.xwork2.util.FileManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork2.config;
 
-import com.opensymphony.util.FileManager;
+import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.config.impl.DefaultConfiguration;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import org.apache.commons.logging.Log;

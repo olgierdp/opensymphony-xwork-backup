@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork2;
 
-import com.opensymphony.util.TextUtils;
+import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.RuntimeConfiguration;

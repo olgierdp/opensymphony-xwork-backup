@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork2.util;
 
-import com.opensymphony.util.TextUtils;
+import com.opensymphony.xwork2.util.TextUtils;
 
 import java.util.HashSet;
 import java.util.Set;

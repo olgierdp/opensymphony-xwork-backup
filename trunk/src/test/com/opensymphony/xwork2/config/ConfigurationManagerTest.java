@@ -8,7 +8,7 @@ package com.opensymphony.xwork2.config;
 
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
-import com.opensymphony.util.FileManager;
+import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.XWorkTestCase;
 
 import junit.framework.TestCase;

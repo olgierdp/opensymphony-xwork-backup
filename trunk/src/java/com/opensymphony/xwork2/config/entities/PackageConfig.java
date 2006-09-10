@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork2.config.entities;
 
-import com.opensymphony.util.TextUtils;
+import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.config.ExternalReferenceResolver;
 import com.opensymphony.xwork2.util.location.Located;
 import org.apache.commons.logging.Log;

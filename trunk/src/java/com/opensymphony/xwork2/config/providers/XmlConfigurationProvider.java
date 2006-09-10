@@ -4,9 +4,9 @@
  */
 package com.opensymphony.xwork2.config.providers;
 
-import com.opensymphony.util.ClassLoaderUtil;
-import com.opensymphony.util.FileManager;
-import com.opensymphony.util.TextUtils;
+import com.opensymphony.xwork2.util.ClassLoaderUtil;
+import com.opensymphony.xwork2.util.FileManager;
+import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ObjectFactory;
@@ -464,23 +464,24 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 if (resultParams.size() == 0) // maybe we just have a body - therefore a default parameter
                 {
                     // if <result ...>something</result> then we add a parameter of 'something' as this is the most used result param
-                    if ((resultElement.getChildNodes().getLength() >= 1) && (resultElement.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE))
+                    if (resultElement.getChildNodes().getLength() >= 1)
                     {
                         resultParams = new LinkedHashMap();
 
                         String paramName = config.getDefaultResultParam();
                         if (paramName != null) {
                             StringBuffer paramValue = new StringBuffer();
-                            for (int j=0; i<resultElement.getChildNodes().getLength(); i++) {
-                                if (resultElement.getChildNodes().item(i).getNodeType() == Node.TEXT_NODE) {
-                                    String val = resultElement.getChildNodes().item(i).getNodeValue();
+                            for (int j=0; j<resultElement.getChildNodes().getLength(); j++) {
+                                if (resultElement.getChildNodes().item(j).getNodeType() == Node.TEXT_NODE) {
+                                    String val = resultElement.getChildNodes().item(j).getNodeValue();
                                     if (val != null) {
                                         paramValue.append(val);
                                     }
                                 }
                             }
-                            if (paramValue.length() > 0) {
-                                resultParams.put(paramName, paramValue.toString().trim());
+                            String val = paramValue.toString().trim();
+                            if (val.length() > 0) {
+                                resultParams.put(paramName, val);
                             }
                         }
                         else {

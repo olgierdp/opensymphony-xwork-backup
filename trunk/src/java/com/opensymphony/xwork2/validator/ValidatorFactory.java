@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import com.opensymphony.util.ClassLoaderUtil;
+import com.opensymphony.xwork2.util.ClassLoaderUtil;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
 import org.apache.commons.logging.Log;

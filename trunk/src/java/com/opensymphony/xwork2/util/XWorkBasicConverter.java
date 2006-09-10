@@ -30,7 +30,7 @@ import ognl.DefaultTypeConverter;
 import ognl.Ognl;
 import ognl.TypeConverter;
 
-import com.opensymphony.util.TextUtils;
+import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkException;
 

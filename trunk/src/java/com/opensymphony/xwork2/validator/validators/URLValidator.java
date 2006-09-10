@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork2.validator.validators;
 
-import com.opensymphony.util.TextUtils;
+import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.validator.ValidationException;
 
 

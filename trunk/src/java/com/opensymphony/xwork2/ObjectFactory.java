@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork2;
 
-import com.opensymphony.util.ClassLoaderUtil;
+import com.opensymphony.xwork2.util.ClassLoaderUtil;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorConfig;

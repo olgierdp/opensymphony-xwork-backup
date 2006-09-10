@@ -17,7 +17,7 @@ package com.opensymphony.xwork2.util;
 
 import java.util.Map;
 
-import com.opensymphony.util.ClassLoaderUtil;
+import com.opensymphony.xwork2.util.ClassLoaderUtil;
 
 import com.opensymphony.xwork2.util.location.Location;
 import com.opensymphony.xwork2.util.location.LocationAttributes;

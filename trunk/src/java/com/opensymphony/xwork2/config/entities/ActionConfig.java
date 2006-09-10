@@ -216,8 +216,11 @@ public class ActionConfig extends Located implements InterceptorListHolder, Para
             return false;
         }
 
-        return !((results != null) ? (!results.equals(actionConfig.results)) : (actionConfig.results != null));
-
+        if ((results != null) ? (!results.equals(actionConfig.results)) : (actionConfig.results != null)) {
+            return false;
+        }
+        
+        return true;
     }
 
     public int hashCode() {

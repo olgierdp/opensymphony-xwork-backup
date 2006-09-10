@@ -20,7 +20,7 @@ import ognl.TypeConverter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.opensymphony.util.FileManager;
+import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkMessages;

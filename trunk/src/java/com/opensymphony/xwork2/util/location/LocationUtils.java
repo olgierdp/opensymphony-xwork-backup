@@ -29,7 +29,7 @@ import org.xml.sax.SAXParseException;
 
 import org.w3c.dom.Element;
 
-import com.opensymphony.util.ClassLoaderUtil;
+import com.opensymphony.xwork2.util.ClassLoaderUtil;
 
 /**
  * Location-related utility methods.
