@@ -443,16 +443,17 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                         String paramName = config.getDefaultResultParam();
                         if (paramName != null) {
                             StringBuffer paramValue = new StringBuffer();
-                            for (int j=0; i<resultElement.getChildNodes().getLength(); i++) {
-                                if (resultElement.getChildNodes().item(i).getNodeType() == Node.TEXT_NODE) {
-                                    String val = resultElement.getChildNodes().item(i).getNodeValue();
+                            for (int j=0; j<resultElement.getChildNodes().getLength(); j++) {
+                                if (resultElement.getChildNodes().item(j).getNodeType() == Node.TEXT_NODE) {
+                                    String val = resultElement.getChildNodes().item(j).getNodeValue();
                                     if (val != null) {
                                         paramValue.append(val);
                                     }
                                 }
                             }
-                            if (paramValue.length() > 0) {
-                                resultParams.put(paramName, paramValue.toString().trim());
+                            String val = paramValue.toString().trim();
+                            if (val.length() > 0) {
+                                resultParams.put(paramName, val);
                             }
                         }
                         else {
