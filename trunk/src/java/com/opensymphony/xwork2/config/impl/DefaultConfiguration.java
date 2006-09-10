@@ -189,8 +189,10 @@ public class DefaultConfiguration implements Configuration {
         List<ExceptionMappingConfig> exceptionMappings = baseConfig.getExceptionMappings();
         exceptionMappings.addAll(packageContext.getAllExceptionMappingConfigs());
 
-        return new ActionConfig(baseConfig.getMethodName(), baseConfig.getClassName(), packageContext.getName(), params, results,
+        ActionConfig config = new ActionConfig(baseConfig.getMethodName(), baseConfig.getClassName(), packageContext.getName(), params, results,
                 interceptors, externalRefs, exceptionMappings);
+        config.setLocation(baseConfig.getLocation());
+        return config;
     }
 
 

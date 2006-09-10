@@ -150,6 +150,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         String methodName = actionElement.getAttribute("method");
         Location location = DomHelper.getLocationObject(actionElement);
 
+        if (location == null) {
+            System.out.println("location null for "+className);
+        }
         //methodName should be null if it's not set
         methodName = (methodName.trim().length() > 0) ? methodName.trim() : null;
 

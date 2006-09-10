@@ -203,6 +203,7 @@ public class ActionConfigMatcher implements Serializable {
         
         ActionConfig config = new ActionConfig(methodName, className, pkgName, 
                 params, results, orig.getInterceptors(), refs, exs);
+        config.setLocation(orig.getLocation());
         
         return config;
     }
