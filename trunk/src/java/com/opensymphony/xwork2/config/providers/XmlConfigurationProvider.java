@@ -47,7 +47,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
 
     private Configuration configuration;
-    private Set includedFileNames = new TreeSet();
+    private Set<String> includedFileNames = new TreeSet<String>();
     private String configFileName;
     private boolean errorIfMissing;
     private Map<String,String> dtdMappings;
@@ -114,7 +114,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
 
         try {
-            loadConfigurationFile(configFileName, null);
+            loadConfigurationFiles(configFileName, null);
         } catch (ConfigurationException e) {
             throw e;
         } catch (Exception e) {
@@ -138,10 +138,6 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         }
 
         return needsReload;
-    }
-
-    protected InputStream getInputStream(String fileName) {
-        return FileManager.loadFile(fileName, this.getClass());
     }
 
     protected void addAction(Element actionElement, PackageConfig packageContext) throws ConfigurationException {
@@ -441,7 +437,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     // now check if there is a result type now
                     if (!TextUtils.stringSet(resultType)) {
                         // uh-oh, we have a problem
-                        throw new ConfigurationException("No result type specified for result named '" + resultName + "', perhaps the parent package does not specify the result type?");
+                        throw new ConfigurationException("No result type specified for result named '" 
+                                + resultName + "', perhaps the parent package does not specify the result type?", resultElement);
                     }
                 }
 
@@ -647,87 +644,96 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     //            addPackage(packageElement);
     //        }
     //    }
-    private void loadConfigurationFile(String fileName, Element includeElement) {
+    private void loadConfigurationFiles(String fileName, Element includeElement) {
         if (!includedFileNames.contains(fileName)) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Loading action configuration from: " + fileName);
+                LOG.debug("Loading action configurations from: " + fileName);
             }
 
             includedFileNames.add(fileName);
 
+            Iterator<URL> urls = null;
             Document doc = null;
             InputStream is = null;
 
+            IOException ioException = null;
             try {
-                is = getInputStream(fileName);
-
-                if (is == null) {
-                    if (errorIfMissing) {
-                        throw new Exception("Could not open file " + fileName);
-                    } else {
-                        LOG.info("Unable to locate configuration file "
-                                +fileName+", skipping");
-                        return;
-                    }
-                }
-
-                InputSource in = new InputSource(is);
-
-                //FIXME: we shouldn't be doing this lookup twice
-                URL url = ClassLoaderUtil.getResource(fileName, getClass());
-                if (url != null) {
-                    in.setSystemId(url.toString());
-                } else {
-                    LOG.info("Successfully located, but unable to determine system id for "+fileName);
-                }
-
-                doc = DomHelper.parse(in, dtdMappings);
-            } catch (XWorkException e) {
-                if (includeElement != null) {
-                    throw new ConfigurationException(e, includeElement);
-                } else {
-                    throw new ConfigurationException(e);
-                }
-            } catch (Exception e) {
-                final String s = "Caught exception while loading file " + fileName;
-                throw new ConfigurationException(s, e, includeElement);
-            } finally {
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        LOG.error("Unable to close input stream", e);
-                    }
-                }
-            }
-
-            Element rootElement = doc.getDocumentElement();
-            NodeList children = rootElement.getChildNodes();
-            int childSize = children.getLength();
-
-            for (int i = 0; i < childSize; i++) {
-                Node childNode = children.item(i);
-
-                if (childNode instanceof Element) {
-                    Element child = (Element) childNode;
-
-                    final String nodeName = child.getNodeName();
-
-                    if (nodeName.equals("package")) {
-                        addPackage(child);
-                    } else if (nodeName.equals("include")) {
-                        String includeFileName = child.getAttribute("file");
-                        loadConfigurationFile(includeFileName, child);
-                    }
-                }
+                urls = getConfigurationUrls(fileName);
+            } catch (IOException ex) {
+                ioException = ex;
             }
             
-            loadExtraConfiguration(doc);
+            if (urls == null || !urls.hasNext()) {
+                if (errorIfMissing) {
+                    throw new ConfigurationException("Could not open files of the name " + fileName, ioException);
+                } else {
+                    LOG.info("Unable to locate configuration files of the name "
+                            +fileName+", skipping");
+                    return;
+                }
+            }
+         
+            while (urls.hasNext()) {
+                try {
+                    URL url = urls.next();
+                    is = FileManager.loadFile(url);
+    
+                    InputSource in = new InputSource(is);
+    
+                    in.setSystemId(url.toString());
+    
+                    doc = DomHelper.parse(in, dtdMappings);
+                } catch (XWorkException e) {
+                    if (includeElement != null) {
+                        throw new ConfigurationException(e, includeElement);
+                    } else {
+                        throw new ConfigurationException(e);
+                    }
+                } catch (Exception e) {
+                    final String s = "Caught exception while loading file " + fileName;
+                    throw new ConfigurationException(s, e, includeElement);
+                } finally {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException e) {
+                            LOG.error("Unable to close input stream", e);
+                        }
+                    }
+                }
+    
+                Element rootElement = doc.getDocumentElement();
+                NodeList children = rootElement.getChildNodes();
+                int childSize = children.getLength();
+    
+                for (int i = 0; i < childSize; i++) {
+                    Node childNode = children.item(i);
+    
+                    if (childNode instanceof Element) {
+                        Element child = (Element) childNode;
+    
+                        final String nodeName = child.getNodeName();
+    
+                        if (nodeName.equals("package")) {
+                            addPackage(child);
+                        } else if (nodeName.equals("include")) {
+                            String includeFileName = child.getAttribute("file");
+                            loadConfigurationFiles(includeFileName, child);
+                        }
+                    }
+                }
+                
+                loadExtraConfiguration(doc);
+            }
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Loaded action configuration from: " + fileName);
             }
         }
+    }
+
+    protected Iterator<URL> getConfigurationUrls(String fileName) throws IOException {
+        return ClassLoaderUtil.getResources(fileName, XmlConfigurationProvider.class, false);
     }
 
     /**

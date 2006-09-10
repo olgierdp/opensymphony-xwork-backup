@@ -67,11 +67,22 @@ public class FileManager {
      */
     public static InputStream loadFile(String fileName, Class clazz) {
         URL fileUrl = ClassLoaderUtil.getResource(fileName, clazz);
-
+        return loadFile(fileUrl);
+    }
+    
+    /**
+     * Loads opens the named file and returns the InputStream
+     *
+     * @param fileName - the name of the file to open
+     * @return an InputStream of the file contents or null
+     * @throws IllegalArgumentException if there is no file with the given file name
+     */
+    public static InputStream loadFile(URL fileUrl) {
         if (fileUrl == null) {
             return null;
         }
-
+        
+        String fileName = fileUrl.toString();
         InputStream is;
 
         try {

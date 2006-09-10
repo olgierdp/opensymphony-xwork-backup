@@ -5,7 +5,7 @@
  <!-- "file:///temp/ross/xwork/src/etc/xwork-1.0.dtd"  -->
 
 <xwork>
-    <include file="xwork-default.xml"/>
+    <include file="xwork-test-default.xml"/>
     <package name="default" extends="xwork-default" externalReferenceResolver="com.opensymphony.xwork2.config.TestExternalReferenceResolver">
 
         <global-results>

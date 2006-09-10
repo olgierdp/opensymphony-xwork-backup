@@ -28,14 +28,71 @@ import java.util.Iterator;
  * @version $Revision: 147 $
  */
 public class TextUtils {
-    //~ Static fields/initializers /////////////////////////////////////////////
+
+    public final static String htmlEncode(String s) {
+        return htmlEncode(s, true);
+    }
 
     /**
-     * An array of HTML tags that, in HTML, don't require closing tags. Note that
-     * XHTML doesn't work this way.
+     * Escape html entity characters and high characters (eg "curvy" Word quotes).
+     * Note this method can also be used to encode XML.
+     * @param s the String to escape.
+     * @param encodeSpecialChars if true high characters will be encode other wise not.
+     * @return the escaped string
      */
-    public final static String[] SINGLE_TAGS = {"br", "p", "hr"};
+    public final static String htmlEncode(String s, boolean encodeSpecialChars) {
+        s = noNull(s);
 
+        StringBuffer str = new StringBuffer();
+
+        for (int j = 0; j < s.length(); j++) {
+            char c = s.charAt(j);
+
+            // encode standard ASCII characters into HTML entities where needed
+            if (c < '\200') {
+                switch (c) {
+                case '"':
+                    str.append("&quot;");
+
+                    break;
+
+                case '&':
+                    str.append("&amp;");
+
+                    break;
+
+                case '<':
+                    str.append("&lt;");
+
+                    break;
+
+                case '>':
+                    str.append("&gt;");
+
+                    break;
+
+                default:
+                    str.append(c);
+                }
+            }
+            // encode 'ugly' characters (ie Word "curvy" quotes etc)
+            else if (encodeSpecialChars && (c < '\377')) {
+                String hexChars = "0123456789ABCDEF";
+                int a = c % 16;
+                int b = (c - a) / 16;
+                String hex = "" + hexChars.charAt(b) + hexChars.charAt(a);
+                str.append("&#x" + hex + ";");
+            }
+            //add other characters back in - to handle charactersets
+            //other than ascii
+            else {
+                str.append(c);
+            }
+        }
+
+        return str.toString();
+    }
+    
     /**
      * Join an Iteration of Strings together.
      *
