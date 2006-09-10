@@ -9,6 +9,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.util.*;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,7 +26,16 @@ import org.apache.commons.logging.LogFactory;
  * calling {@link OgnlValueStack#setValue(String, Object)}, typically resulting in the values submitted in a form
  * request being applied to an action in the value stack. Note that the parameter map must contain a String key and
  * often containers a String[] for the value.
- *
+ * 
+ * <p/> The interceptor takes one parameter named 'ordered'. When set to true action properties are guaranteed to be
+ * set top-down which means that top action's properties are set first. Then it's subcomponents properties are set.
+ * The reason for this order is to enable a 'factory' pattern. For example, let's assume that one has an action 
+ * that contains a property named 'modelClass' that allows to choose what is the underlying implementation of model.
+ * By assuring that modelClass property is set before any model properties are set, it's possible to choose model
+ * implementation during action.setModelClass() call. Similiarily it's possible to use action.setPrimaryKey() 
+ * property set call to actually load the model class from persistent storage. Without any assumption on parameter 
+ * order you have to use patterns like 'Preparable'.
+ *  
  * <p/> Because parameter names are effectively OGNL statements, it is important that security be taken in to account.
  * This interceptor will not apply any values in the parameters map if the expression contains an assignment (=),
  * multiple expressions (,), or references any objects in the context (#). This is all done in the {@link
@@ -57,7 +67,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * <ul>
  *
- * <li>None</li>
+ * <li>ordered - set to true if you want the top-down property setter behaviour</li>
  *
  * </ul>
  *
@@ -90,8 +100,27 @@ public class ParametersInterceptor extends AbstractInterceptor {
 
     private static final Log LOG = LogFactory.getLog(ParametersInterceptor.class);
 
+    boolean ordered = false;
+    
+    /** Compares based on number of '.' characters (fewer is higher) */
+    static final Comparator rbCollator = new Comparator() {
+        public int compare(Object arg0, Object arg1) {
+            String s1 = (String) arg0;
+            String s2 = (String) arg1;
+            int l1=0, l2=0;
+            for( int i=s1.length()-1; i>=0; i--) {
+                if( s1.charAt(i) == '.') l1++;
+            }
+            for( int i=s2.length()-1; i>=0; i--) {
+                if( s2.charAt(i) == '.') l2++;
+            }
+            return l1 < l2 ? -1 : ( l2 < l1 ? 1 : s1.compareTo(s2));
+        };
+    };
+    
     public String intercept(ActionInvocation invocation) throws Exception {
-        if (!(invocation.getAction() instanceof NoParameters)) {
+        Object action = invocation.getAction();
+        if (!(action instanceof NoParameters)) {
             ActionContext ac = invocation.getInvocationContext();
             final Map parameters = ac.getParameters();
 
@@ -107,7 +136,7 @@ public class ParametersInterceptor extends AbstractInterceptor {
                 	OgnlContextState.setReportingConversionErrors(contextMap, true);
 
                     OgnlValueStack stack = ac.getValueStack();
-                    setParameters(invocation.getAction(), stack, parameters);
+                    setParameters(action, stack, parameters);
                 } finally {
                 	OgnlContextState.setCreatingNullObjects(contextMap, false);
                 	OgnlContextState.setDenyMethodExecution(contextMap, false);
@@ -122,7 +151,15 @@ public class ParametersInterceptor extends AbstractInterceptor {
         ParameterNameAware parameterNameAware = (action instanceof ParameterNameAware)
                 ? (ParameterNameAware) action : null;
 
-        for (Iterator iterator = (new TreeMap(parameters)).entrySet().iterator(); iterator.hasNext();) {
+        Map params = null;
+        if( ordered ) {
+            params = new TreeMap(getOrderedComparator());
+            params.putAll(parameters);
+        } else {
+            params = new TreeMap(parameters); 
+        }
+        
+        for (Iterator iterator = params.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String name = entry.getKey().toString();
 
@@ -150,6 +187,17 @@ public class ParametersInterceptor extends AbstractInterceptor {
                 }
             }
         }
+    }
+
+    /**
+     * Gets an instance of the comparator to use for the ordered sorting.  Override this
+     * method to customize the ordering of the parameters as they are set to the 
+     * action.
+     * 
+     * @return A comparator to sort the parameters
+     */
+    protected Comparator getOrderedComparator() {
+        return rbCollator;
     }
 
     private String getParameterLogMap(Map parameters) {
@@ -189,5 +237,23 @@ public class ParametersInterceptor extends AbstractInterceptor {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Whether to order the parameters or not
+     * 
+     * @return True to order
+     */
+    public boolean isOrdered() {
+        return ordered;
+    }
+
+    /**
+     * Set whether to order the parameters by object depth or not
+     * 
+     * @param ordered True to order them
+     */
+    public void setOrdered(boolean ordered) {
+        this.ordered = ordered;
     }
 }
