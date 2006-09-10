@@ -472,7 +472,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                         if (paramName != null) {
                             StringBuffer paramValue = new StringBuffer();
                             for (int j=0; i<resultElement.getChildNodes().getLength(); i++) {
-                                if (resultElement.getChildNodes().item(1).getNodeType() == Node.TEXT_NODE) {
+                                if (resultElement.getChildNodes().item(i).getNodeType() == Node.TEXT_NODE) {
                                     String val = resultElement.getChildNodes().item(i).getNodeValue();
                                     if (val != null) {
                                         paramValue.append(val);
