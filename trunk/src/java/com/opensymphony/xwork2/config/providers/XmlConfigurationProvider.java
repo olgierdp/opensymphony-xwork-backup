@@ -49,6 +49,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     private Configuration configuration;
     private Set<String> includedFileNames = new TreeSet<String>();
     private String configFileName;
+    
+    private Set<String> loadedFileUrls = new HashSet<String>();
     private boolean errorIfMissing;
     private Map<String,String> dtdMappings;
 
@@ -111,6 +113,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     public void init(Configuration configuration) {
         this.configuration = configuration;
         includedFileNames.clear();
+        loadedFileUrls.clear();
 
 
         try {
@@ -129,15 +132,13 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
      * @return true if the file has been changed since the last time we read it
      */
     public boolean needsReload() {
-        boolean needsReload = FileManager.fileNeedsReloading(configFileName);
-        Iterator fileNameIterator = includedFileNames.iterator();
-
-        while (!needsReload && (fileNameIterator.hasNext())) {
-            String fileName = (String) fileNameIterator.next();
-            needsReload = FileManager.fileNeedsReloading(fileName);
+        
+        for (String url : loadedFileUrls) {
+            if (FileManager.fileNeedsReloading(url)) {
+                return true;
+            }
         }
-
-        return needsReload;
+        return false;
     }
 
     protected void addAction(Element actionElement, PackageConfig packageContext) throws ConfigurationException {
@@ -675,9 +676,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
             }
          
+            URL url = null;
             while (urls.hasNext()) {
                 try {
-                    URL url = urls.next();
+                    url = urls.next();
                     is = FileManager.loadFile(url);
     
                     InputSource in = new InputSource(is);
@@ -726,6 +728,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
                 
                 loadExtraConfiguration(doc);
+                loadedFileUrls.add(url.toString());
             }
 
             if (LOG.isDebugEnabled()) {
