@@ -667,8 +667,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 if (errorIfMissing) {
                     throw new ConfigurationException("Could not open files of the name " + fileName, ioException);
                 } else {
-                    LOG.info("Unable to locate configuration files of the name "
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Unable to locate configuration files of the name "
                             +fileName+", skipping");
+                    }
                     return;
                 }
             }
