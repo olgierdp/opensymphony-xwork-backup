@@ -18,6 +18,7 @@ package com.opensymphony.xwork.util.location;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URL;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -26,19 +27,20 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXParseException;
 
 import org.w3c.dom.Element;
+import com.opensymphony.util.ClassLoaderUtil;
 
 /**
  * Location-related utility methods.
  */
 public class LocationUtils {
-    
+
     /**
      * The string representation of an unknown location: "<code>[unknown location]</code>".
      */
     public static final String UNKNOWN_STRING = "[unknown location]";
-    
+
     private static List finders = new ArrayList();
-    
+
     /**
      * An finder or object locations
      */
@@ -56,7 +58,7 @@ public class LocationUtils {
     private LocationUtils() {
         // Forbid instanciation
     }
-    
+
     /**
      * Builds a string representation of a location, in the
      * "<code><em>descripton</em> - <em>uri</em>:<em>line</em>:<em>column</em></code>"
@@ -79,7 +81,7 @@ public class LocationUtils {
         } else {
             result.append(UNKNOWN_STRING);
         }
-        
+
         return result.toString();
     }
 
@@ -106,12 +108,12 @@ public class LocationUtils {
             description = null;
             uriStart = 0;
         }
-        
+
         try {
             int colSep = text.lastIndexOf(':');
             if (colSep > -1) {
                 int column = Integer.parseInt(text.substring(colSep + 1));
-                
+
                 int lineSep = text.lastIndexOf(':', colSep - 1);
                 if (lineSep > -1) {
                     int line = Integer.parseInt(text.substring(lineSep + 1, colSep));
@@ -126,7 +128,7 @@ public class LocationUtils {
         } catch(Exception e) {
             // Ignore: handled below
         }
-        
+
         return LocationImpl.UNKNOWN;
     }
 
@@ -187,7 +189,7 @@ public class LocationUtils {
             finders = newFinders;
         }
     }
-    
+
     /**
      * Get the location of an object. Some well-known located classes built in the JDK are handled
      * by this method. Handling of other located classes can be handled by adding new location finders.
@@ -198,7 +200,7 @@ public class LocationUtils {
     public static Location getLocation(Object obj) {
         return getLocation(obj, null);
     }
-    
+
     /**
      * Get the location of an object. Some well-known located classes built in the JDK are handled
      * by this method. Handling of other located classes can be handled by adding new location finders.
@@ -212,11 +214,11 @@ public class LocationUtils {
         if (obj instanceof Location) {
             return (Location) obj;
         }
-        
+
         if (obj instanceof Locatable) {
             return ((Locatable)obj).getLocation();
         }
-        
+
         // Check some well-known locatable exceptions
         if (obj instanceof SAXParseException) {
             SAXParseException spe = (SAXParseException)obj;
@@ -226,7 +228,7 @@ public class LocationUtils {
                 return Location.UNKNOWN;
             }
         }
-        
+
         if (obj instanceof TransformerException) {
             TransformerException ex = (TransformerException)obj;
             SourceLocator locator = ex.getLocator();
@@ -236,7 +238,7 @@ public class LocationUtils {
                 return Location.UNKNOWN;
             }
         }
-        
+
         if (obj instanceof Locator) {
             Locator locator = (Locator)obj;
             if (locator.getSystemId() != null) {
@@ -245,7 +247,7 @@ public class LocationUtils {
                 return Location.UNKNOWN;
             }
         }
-        
+
         if (obj instanceof Element) {
             return LocationAttributes.getLocation((Element)obj);
         }
@@ -264,11 +266,40 @@ public class LocationUtils {
                     finders = newFinders;
                 }
             }
-            
+
             Location result = finder.getLocation(obj, description);
             if (result != null) {
                 return result;
             }
+        }
+
+        if (obj instanceof Throwable) {
+                Throwable t = (Throwable) obj;
+                StackTraceElement[] stack = t.getStackTrace();
+                if (stack != null && stack.length > 0) {
+                    StackTraceElement trace = stack[0];
+                    if (trace.getLineNumber() >= 0) {
+                        String uri = trace.getClassName();
+                        if (trace.getFileName() != null) {
+                            uri = uri.replace('.','/');
+                            uri = uri.substring(0, uri.lastIndexOf('/') + 1);
+                            uri = uri + trace.getFileName();
+                            URL url = ClassLoaderUtil.getResource(uri, LocationUtils.class);
+                            if (url != null) {
+                                uri = url.toString();
+                            }
+                        }
+                        if (description == null) {
+                            StringBuilder sb = new StringBuilder();
+                            sb.append("Class: ").append(trace.getClassName()).append("\n");
+                            sb.append("File: ").append(trace.getFileName()).append("\n");
+                            sb.append("Method: ").append(trace.getMethodName()).append("\n");
+                            sb.append("Line: ").append(trace.getLineNumber());
+                            description = sb.toString();
+                        }
+                        return new LocationImpl(description, uri, trace.getLineNumber(), -1);
+                    }
+                }
         }
 
         return Location.UNKNOWN;
