@@ -33,6 +33,18 @@ public class ClassLoaderUtilTest extends TestCase {
         assertTrue(url.toString().endsWith("overview.html"));
         assertTrue(!i.hasNext());
     }
+
+    public void testGetResources_Aggregate() throws IOException {
+        Iterator<URL> i = ClassLoaderUtil.getResources("overview.html", ClassLoaderUtilTest.class, true);
+        assertNotNull(i);
+
+        assertTrue(i.hasNext());
+        URL url = i.next();
+        assertTrue(url.toString().endsWith("overview.html"));
+        url = i.next();
+        assertTrue(url.toString().endsWith("overview.html"));
+        assertTrue(!i.hasNext());
+    }
     
     public void testGetResources_None() throws IOException {
         Iterator<URL> i = ClassLoaderUtil.getResources("asdfasdf.html", ClassLoaderUtilTest.class, false);

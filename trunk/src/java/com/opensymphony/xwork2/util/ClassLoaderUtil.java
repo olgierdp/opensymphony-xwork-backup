@@ -9,13 +9,7 @@ import java.io.InputStream;
 import java.io.NotSerializableException;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 
 /**
@@ -49,9 +43,9 @@ public class ClassLoaderUtil {
      * @param callingClass The Class object of the calling object
      */
      public static Iterator<URL> getResources(String resourceName, Class callingClass, boolean aggregate) throws IOException {
-         
+
          AggregateIterator<URL> iterator = new AggregateIterator<URL>();
-         
+
          iterator.addEnumeration(Thread.currentThread().getContextClassLoader().getResources(resourceName));
 
          if (!iterator.hasNext() || aggregate) {
@@ -72,7 +66,7 @@ public class ClassLoaderUtil {
 
          return iterator;
      }
-    
+
     /**
     * Load a given resource.
     *
@@ -156,38 +150,45 @@ public class ClassLoaderUtil {
             }
         }
     }
-    
-    /** Aggregates Enumeration instances into one iterator */
+
+    /**
+     * Aggregates Enumeration instances into one iterator and filters out duplicates.  Always keeps one
+     * ahead of the enumerator to protect against returning duplicates.
+     */
     protected static class AggregateIterator<E> implements Iterator<E> {
 
         LinkedList<Enumeration<E>> enums = new LinkedList<Enumeration<E>>();
         Enumeration<E> cur = null;
-        
+        E next = null;
+        Set<E> loaded = new HashSet<E>();
+
         public AggregateIterator addEnumeration(Enumeration<E> e) {
             if (e.hasMoreElements()) {
                 if (cur == null) {
                     cur = e;
+                    next = e.nextElement();
+                    loaded.add(next);
                 } else {
                     enums.add(e);
                 }
             }
             return this;
         }
-        
+
         public boolean hasNext() {
-            if (determineCurrentEnumeration() != null) {
-                return cur.hasMoreElements();
-            } 
-            return false;
+            return (next != null);
         }
 
         public E next() {
-            if (determineCurrentEnumeration() != null) {
-                return cur.nextElement();
-            } 
-            throw new NoSuchElementException();
+            if (next != null) {
+                E prev = next;
+                next = loadNext();
+                return prev;
+            } else {
+                throw new NoSuchElementException();
+            }
         }
-        
+
         private Enumeration<E> determineCurrentEnumeration() {
             if (cur != null && !cur.hasMoreElements()) {
                 if (enums.size() > 0) {
@@ -197,6 +198,24 @@ public class ClassLoaderUtil {
                 }
             }
             return cur;
+        }
+
+        private E loadNext() {
+            if (determineCurrentEnumeration() != null) {
+                E tmp = cur.nextElement();
+                while (loaded.contains(tmp)) {
+                    tmp = loadNext();
+                    if (tmp == null) {
+                        break;
+                    }
+                }
+                if (tmp != null) {
+                    loaded.add(tmp);
+                }
+                return tmp;
+            }
+            return null;
+
         }
 
         public void remove() {
