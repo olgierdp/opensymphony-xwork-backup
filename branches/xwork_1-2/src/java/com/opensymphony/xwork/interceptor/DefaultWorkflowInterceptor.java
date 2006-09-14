@@ -129,6 +129,8 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
         
         
         if (action instanceof Validateable) {
+        	// keep exception that might occured in validateXXX or validateDoXXX
+        	Exception exception = null; 
         	
             Validateable validateable = (Validateable) action;
             if (_log.isDebugEnabled()) {
@@ -141,15 +143,20 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
             			new String[] { VALIDATE_PREFIX, ALT_VALIDATE_PREFIX });
             }
             catch(Exception e) {
-            	e.printStackTrace();
             	// If any exception occurred while doing reflection, we want 
             	// validate() to be executed
             	_log.warn("an exception occured while executing the prefix method", e);
+            	exception = e;
             }
             
             
             if (alwaysInvokeValidate) {
             	validateable.validate();
+            }
+            
+            if (exception != null) { 
+            	// rethrow if something is wrong while doing validateXXX / validateDoXXX 
+            	throw exception;
             }
         }
         
