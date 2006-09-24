@@ -52,8 +52,8 @@ import com.opensymphony.xwork2.util.TextParseUtil;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  * @author Rainer Hermanns
  * 
- * @see com.opensymphony.webwork.interceptor.TokenInterceptor
- * @see com.opensymphony.webwork.interceptor.TokenSessionStoreInterceptor
+ * @see org.apache.struts2.interceptor.TokenInterceptor
+ * @see org.apache.struts2.interceptor.TokenSessionStoreInterceptor
  * @see com.opensymphony.xwork2.interceptor.DefaultWorkflowInterceptor
  * @see com.opensymphony.xwork2.validator.ValidationInterceptor
  * 

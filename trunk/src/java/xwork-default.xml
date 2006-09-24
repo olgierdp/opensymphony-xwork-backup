@@ -13,6 +13,7 @@
             <interceptor name="static-params" class="com.opensymphony.xwork2.interceptor.StaticParametersInterceptor"/>
             <interceptor name="params" class="com.opensymphony.xwork2.interceptor.ParametersInterceptor"/>
             <interceptor name="model-driven" class="com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor"/>
+            <interceptor name="scoped-model-driven" class="com.opensymphony.xwork2.interceptor.ScopedModelDrivenInterceptor"/>
             <interceptor name="validation" class="com.opensymphony.xwork2.validator.ValidationInterceptor"/>
             <interceptor name="workflow" class="com.opensymphony.xwork2.interceptor.DefaultWorkflowInterceptor"/>
             <interceptor name="prepare" class="com.opensymphony.xwork2.interceptor.PrepareInterceptor"/>

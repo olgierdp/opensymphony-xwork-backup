@@ -123,8 +123,8 @@ import java.util.List;
  *           &lt;exception-mapping exception="java.lang.Exception" result="unhandledException"/&gt;
  *      &lt;/global-exception-mappings&gt;
  *        
- *      &lt;action name="exceptionDemo" class="com.opensymphony.webwork.showcase.exceptionmapping.ExceptionMappingAction"&gt;
- *          &lt;exception-mapping exception="com.opensymphony.webwork.showcase.exceptionmapping.ExceptionMappingException"
+ *      &lt;action name="exceptionDemo" class="org.apache.struts2.showcase.exceptionmapping.ExceptionMappingAction"&gt;
+ *          &lt;exception-mapping exception="org.apache.struts2.showcase.exceptionmapping.ExceptionMappingException"
  *                             result="damm"/&gt;
  *          &lt;result name="input"&gt;index.jsp&lt;/result&gt;
  *          &lt;result name="success"&gt;success.jsp&lt;/result&gt;            
