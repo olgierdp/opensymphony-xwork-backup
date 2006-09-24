@@ -54,15 +54,15 @@ import com.opensymphony.xwork2.config.entities.ActionConfig;
  * <pre>
  * <!-- START SNIPPET: example -->
  * 
- * &lt;-- Basic ussage --&gt;
- * lt;interceptor name="scoped-model-driven" class="com.opensymphony.interceptor.ScopedModelDrivenInterceptor" /gt;
+ * &lt;-- Basic usage --&gt;
+ * &lt;interceptor name="scoped-model-driven" class="com.opensymphony.interceptor.ScopedModelDrivenInterceptor" /&gt;
  * 
  * &lt;-- Using all available parameters --&gt;
- * lt;interceptor name="gangsterForm" class="com.opensymphony.interceptor.ScopedModelDrivenInterceptor"gt;
- *      lt;param name="scope"gt;sessionlt;/paramgt;
- *      lt;param name="name"gt;gangsterFormlt;/paramgt;
- *      lt;param name="className"gt;com.opensymphony.example.GangsterFormlt;/paramgt;
- *  lt;/interceptorgt;
+ * &lt;interceptor name="gangsterForm" class="com.opensymphony.interceptor.ScopedModelDrivenInterceptor"&gt;
+ *      &lt;param name="scope"gt;sessionlt;/param&gt;
+ *      &lt;param name="name"gt;gangsterFormlt;/param&gt;
+ *      &lt;param name="className"gt;com.opensymphony.example.GangsterFormlt;/param&gt;
+ *  &lt;/interceptor&gt;
  * 
  * <!-- END SNIPPET: example -->
  * </pre>
