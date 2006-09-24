@@ -12,10 +12,10 @@ package com.opensymphony.xwork2;
  * @author Jason Carreira
  *         Created Apr 8, 2003 6:22:42 PM
  */
-public interface ModelDriven {
+public interface ModelDriven<T> {
 
     /**
      * @return the model to be pushed onto the ValueStack instead of the Action itself
      */
-    Object getModel();
+    T getModel();
 }
