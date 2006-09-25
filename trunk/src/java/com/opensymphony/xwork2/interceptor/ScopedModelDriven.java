@@ -15,4 +15,15 @@ public interface ScopedModelDriven<T> extends ModelDriven<T> {
      * Sets the model
      */
     void setModel(T model);
+    
+    /**
+     * Sets the key under which the model is stored
+     * @param key The model key
+     */
+    void setScopeKey(String key);
+    
+    /**
+     * Gets the key under which the model is stored
+     */
+    String getScopeKey();
 }

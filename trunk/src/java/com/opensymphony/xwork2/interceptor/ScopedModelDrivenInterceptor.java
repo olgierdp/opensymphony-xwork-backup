@@ -74,19 +74,17 @@ public class ScopedModelDrivenInterceptor extends AbstractInterceptor {
     private String name;
     private String className;
     
-    protected Object resolveModel(ObjectFactory factory, Map session, String modelClassName, String modelScope, String modelName) throws Exception {
+    protected Object resolveModel(ObjectFactory factory, ActionContext actionContext, String modelClassName, String modelScope, String modelName) throws Exception {
         Object model = null;
-        if (modelName == null) {
-            modelName = modelClassName;
-        }
+        Map scopeMap = actionContext.getContextMap();
         if ("session".equals(modelScope)) {
-            model = session.get(modelName);
-            if (model == null) {
-                model = factory.buildBean(modelClassName, null);
-                session.put(modelName, model);
-            }
-        } else {
+            scopeMap = actionContext.getSession();
+        }
+        
+        model = scopeMap.get(modelName);
+        if (model == null) {
             model = factory.buildBean(modelClassName, null);
+            scopeMap.put(modelName, model);
         }
         return model;
     }
@@ -110,8 +108,13 @@ public class ScopedModelDrivenInterceptor extends AbstractInterceptor {
                         throw new XWorkException("The " + GET_MODEL + "() is not defined in action " + action.getClass() + "", config);
                     }
                 }
-                Object model = resolveModel(ObjectFactory.getObjectFactory(), ctx.getSession(), cName, scope, name);
+                String modelName = name;
+                if (modelName == null) {
+                    modelName = cName;
+                }
+                Object model = resolveModel(ObjectFactory.getObjectFactory(), ctx, cName, scope, modelName);
                 modelDriven.setModel(model);
+                modelDriven.setScopeKey(modelName);
             }
         }
         return invocation.invoke();

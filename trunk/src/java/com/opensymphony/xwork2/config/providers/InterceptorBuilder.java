@@ -59,7 +59,7 @@ public class InterceptorBuilder {
                     LOG.warn("Unable to load config class "+config.getClassName()+" at "+
                             ex.getLocation()+" probably due to a missing jar, which might "+
                             "be fine if you never plan to use the "+config.getName()+" interceptor");
-                    LOG.debug("Actual exception", ex);
+                    LOG.error("Actual exception", ex);
                 }
                 
             } else if (referencedConfig instanceof InterceptorStackConfig) {

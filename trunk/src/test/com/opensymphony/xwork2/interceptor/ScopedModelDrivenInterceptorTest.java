@@ -8,17 +8,14 @@ import java.util.HashMap;
 
 import junit.framework.TestCase;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.XWorkTestCase;
 
-public class ScopedModelDrivenInterceptorTest extends TestCase {
+public class ScopedModelDrivenInterceptorTest extends XWorkTestCase {
 
     protected ScopedModelDrivenInterceptor inter = null;
     
-    public ScopedModelDrivenInterceptorTest(String name) throws Exception {
-        super(name);
-    }
-
-
     public static void main(String args[]) {
         junit.textui.TestRunner.run(ScopedModelDrivenInterceptorTest.class);
     }
@@ -32,21 +29,26 @@ public class ScopedModelDrivenInterceptorTest extends TestCase {
     }
 
     public void testResolveModel() throws Exception {
+        ActionContext ctx = ActionContext.getContext();
+        ctx.setSession(new HashMap());
+        
         ObjectFactory factory = ObjectFactory.getObjectFactory();
-        Object obj = inter.resolveModel(factory, null, "java.lang.String", "request", null);
+        Object obj = inter.resolveModel(factory, ctx, "java.lang.String", "request", "foo");
         assertNotNull(obj);
         assertTrue(obj instanceof String);
+        assertTrue(obj == ctx.get("foo"));
 
-        HashMap session = new HashMap();
-        obj = inter.resolveModel(factory, session, "java.lang.String", "session", "foo");
+        
+        obj = inter.resolveModel(factory, ctx, "java.lang.String", "session", "foo");
         assertNotNull(obj);
         assertTrue(obj instanceof String);
-        assertTrue(obj == session.get("foo"));
+        assertTrue(obj == ctx.getSession().get("foo"));
 
-        obj = inter.resolveModel(factory, session, "java.lang.String", "session", "foo");
+        obj = inter.resolveModel(factory, ctx, "java.lang.String", "session", "foo");
         assertNotNull(obj);
         assertTrue(obj instanceof String);
-        assertTrue(obj == session.get("foo"));
+        assertTrue(obj == ctx.getSession().get("foo"));
+        
     }
 }
 
