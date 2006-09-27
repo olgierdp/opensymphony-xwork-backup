@@ -55,10 +55,18 @@ public class DefaultConfiguration implements Configuration {
     public void addPackageConfig(String name, PackageConfig packageContext) {
         PackageConfig check = packageContexts.get(name);
         if (check != null) {
-            throw new ConfigurationException("The package name '" + name 
-                    + "' is already been used by another package: " + check.getLocation(),
-                    packageContext);
-            // would be better to throw ConfigurationException("name already used");
+            if (check.getLocation() != null && packageContext.getLocation() != null
+                    && check.getLocation().equals(packageContext.getLocation())) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("The package name '" + name 
+                    + "' is already been loaded by the same location and could be removed: " 
+                    + packageContext.getLocation());
+                } 
+            } else {
+                throw new ConfigurationException("The package name '" + name 
+                        + "' is already been used by another package: " + check.getLocation(),
+                        packageContext);
+            }
         }
         packageContexts.put(name, packageContext);
     }
