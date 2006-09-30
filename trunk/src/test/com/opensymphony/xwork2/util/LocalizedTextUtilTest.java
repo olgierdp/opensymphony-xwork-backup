@@ -26,7 +26,7 @@ import java.util.Locale;
 public class LocalizedTextUtilTest extends XWorkTestCase {
 
 	public void testNpeWhenClassIsPrimitive() throws Exception {
-		OgnlValueStack stack = new OgnlValueStack();
+		ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 		stack.push(new MyObject());
 		String result = LocalizedTextUtil.findText(MyObject.class, "someObj.someI18nKey", Locale.ENGLISH, "default message", null, stack);
 		System.out.println(result);
@@ -214,7 +214,7 @@ public class LocalizedTextUtilTest extends XWorkTestCase {
         configurationManager.reload();
 
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
         ActionContext.getContext().setLocale(Locale.US);
     }

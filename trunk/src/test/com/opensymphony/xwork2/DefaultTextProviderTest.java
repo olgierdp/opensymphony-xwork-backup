@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 
 /**
  * Unit test for {@link DefaultTextProvider}.
@@ -89,7 +91,7 @@ public class DefaultTextProviderTest extends TestCase {
     }
 
     public void testGetTextsWithListAndStack() throws Exception {
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 
         List args = new ArrayList();
         args.add("Santa");
@@ -104,7 +106,7 @@ public class DefaultTextProviderTest extends TestCase {
     }
 
     public void testGetTextsWithArrayAndStack() throws Exception {
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 
         String[] args = { "Santa", "loud" };
         assertEquals("Hello World", tp.getText("hello", "this is default", args, stack)); // no args in bundle

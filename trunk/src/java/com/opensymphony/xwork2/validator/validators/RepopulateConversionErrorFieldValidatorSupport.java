@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.ValidationException;
 
 /**
@@ -180,7 +180,7 @@ public abstract class RepopulateConversionErrorFieldValidatorSupport extends Fie
 		if (doExprOverride) {
 			invocation.addPreResultListener(new PreResultListener() {
 				public void beforeResult(ActionInvocation invocation, String resultCode) {
-					OgnlValueStack stack = ActionContext.getContext().getValueStack();
+					ValueStack stack = ActionContext.getContext().getValueStack();
 					stack.setExprOverrides(fakeParams);
 				}
 			});

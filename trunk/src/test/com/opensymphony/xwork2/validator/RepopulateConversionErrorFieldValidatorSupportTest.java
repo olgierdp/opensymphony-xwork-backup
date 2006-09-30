@@ -9,7 +9,8 @@ import java.util.Map;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.RepopulateConversionErrorFieldValidatorSupport;
 
 import junit.framework.TestCase;
@@ -68,7 +69,7 @@ public class RepopulateConversionErrorFieldValidatorSupportTest extends TestCase
 	
 	
 	protected void setUp() throws Exception {
-		OgnlValueStack stack = new OgnlValueStack();
+		ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 		MockActionInvocation invocation = new MockActionInvocation();
 		invocation.setStack(stack);
 		ActionContext.getContext().setValueStack(stack);

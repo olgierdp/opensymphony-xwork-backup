@@ -6,7 +6,9 @@ package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.ValidatorSupport;
 import junit.framework.TestCase;
 
@@ -114,7 +116,7 @@ public class SimpleActionValidationTest extends XWorkTestCase {
         try {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
                     configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
-            OgnlValueStack stack = new OgnlValueStack();
+            ValueStack stack = ValueStackFactory.getFactory().createValueStack();
             ActionContext.setContext(new ActionContext(stack.getContext()));
             ActionContext.getContext().setLocale(Locale.US);
             proxy.execute();

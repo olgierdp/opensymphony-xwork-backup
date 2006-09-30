@@ -30,7 +30,7 @@ public class XWorkConverterTest extends XWorkTestCase {
     XWorkConverter converter;
 
 //    public void testConversionToSetKeepsOriginalSetAndReplacesContents() {
-//        OgnlValueStack stack = new OgnlValueStack();
+//        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 //
 //        Map stackContext = stack.getContext();
 //        stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
@@ -96,7 +96,7 @@ public class XWorkConverterTest extends XWorkTestCase {
         SimpleAction action = new SimpleAction();
         action.setBean(new TestBean());
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -117,7 +117,7 @@ public class XWorkConverterTest extends XWorkTestCase {
         SimpleAction action = new SimpleAction();
         action.setDate(null);
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -136,7 +136,7 @@ public class XWorkConverterTest extends XWorkTestCase {
 
     public void testFieldErrorMessageAddedWhenConversionFailsOnModelDriven() {
         ModelDrivenAction action = new ModelDrivenAction();
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -177,7 +177,7 @@ public class XWorkConverterTest extends XWorkTestCase {
 
     public void testFindConversionErrorMessage() {
         ModelDrivenAction action = new ModelDrivenAction();
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -192,7 +192,7 @@ public class XWorkConverterTest extends XWorkTestCase {
 
     public void testFindConversionMappingForInterface() {
         ModelDrivenAction2 action = new ModelDrivenAction2();
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -221,7 +221,7 @@ public class XWorkConverterTest extends XWorkTestCase {
         SimpleAction action = new SimpleAction();
         action.setBean(new TestBean());
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -332,7 +332,7 @@ public class XWorkConverterTest extends XWorkTestCase {
     }
 
     public void testStringToCollectionConversion() {
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         Map stackContext = stack.getContext();
         stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
         stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
@@ -561,8 +561,8 @@ public class XWorkConverterTest extends XWorkTestCase {
         assertNotNull(converter.convertValue(null, new Timestamp(new Date().getTime()), String.class));
     }
 
-    public void testOgnlValueStackWithTypeParameter() {
-        OgnlValueStack stack = new OgnlValueStack();
+    public void testValueStackWithTypeParameter() {
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(new Foo1());
         Bar1 bar = (Bar1) stack.findValue("bar", Bar1.class);
         assertNotNull(bar);
@@ -584,7 +584,7 @@ public class XWorkConverterTest extends XWorkTestCase {
         converter = XWorkConverter.getInstance();
         configurationManager.destroyConfiguration();
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext ac = new ActionContext(stack.getContext());
         ac.setLocale(Locale.US);
         ActionContext.setContext(ac);

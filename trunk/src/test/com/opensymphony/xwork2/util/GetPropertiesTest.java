@@ -27,7 +27,7 @@ public class GetPropertiesTest extends TestCase {
     }
     
     public void doGetCollectionPropertiesTest(Collection c) {
-        OgnlValueStack vs = new OgnlValueStack();
+        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         Foo foo = new Foo();
         foo.setBarCollection(c);
         vs.push(foo);

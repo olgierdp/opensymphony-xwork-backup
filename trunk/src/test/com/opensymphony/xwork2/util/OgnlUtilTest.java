@@ -259,7 +259,7 @@ public class OgnlUtilTest extends XWorkTestCase {
      * Test that type conversion is performed on indexed collection properties.
      */
     public void testSetIndexedValue() {
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         Map stackContext = stack.getContext();
         stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
         stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
@@ -378,7 +378,7 @@ public class OgnlUtilTest extends XWorkTestCase {
 
         Ognl.getValue(expression, context, "aksdj");
 
-        final OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        final ValueStack stack = ActionContext.getContext().getValueStack();
 
         Object result = Ognl.getValue(OgnlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo);
         foo.setIncludes((Collection) result);
@@ -502,7 +502,7 @@ public class OgnlUtilTest extends XWorkTestCase {
 	 * XW-281
 	 */
     public void testSetBigIndexedValue() {
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         Map stackContext = stack.getContext();
         stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.FALSE);
         stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);

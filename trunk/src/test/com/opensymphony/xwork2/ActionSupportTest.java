@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ArrayList;
 
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 
 /**
  * Unit test for {@link ActionSupport}.
@@ -214,7 +216,7 @@ public class ActionSupportTest extends XWorkTestCase {
         ActionContext.getContext().setLocale(new Locale("da"));
         MyActionSupport mas = new MyActionSupport();
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 
         List args = new ArrayList();
         args.add("Santa");
@@ -232,7 +234,7 @@ public class ActionSupportTest extends XWorkTestCase {
         ActionContext.getContext().setLocale(new Locale("da"));
         MyActionSupport mas = new MyActionSupport();
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 
         String[] args = { "Santa", "loud" };
         assertEquals("Hello World", mas.getText("hello", "this is default", args, stack)); // no args in bundle

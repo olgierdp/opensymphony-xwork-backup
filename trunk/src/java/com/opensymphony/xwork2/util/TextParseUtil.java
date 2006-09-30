@@ -23,24 +23,24 @@ public class TextParseUtil {
 
     /**
      * Converts all instances of ${...} in <code>expression</code> to the value returned
-     * by a call to {@link OgnlValueStack#findValue(java.lang.String)}. If an item cannot
+     * by a call to {@link ValueStack#findValue(java.lang.String)}. If an item cannot
      * be found on the stack (null is returned), then the entire variable ${...} is not
      * displayed, just as if the item was on the stack but returned an empty string.
      *
      * @param expression an expression that hasn't yet been translated
      * @return the parsed expression
      */
-    public static String translateVariables(String expression, OgnlValueStack stack) {
+    public static String translateVariables(String expression, ValueStack stack) {
         return translateVariables('$', expression, stack, String.class, null).toString();
     }
     
     
     /**
-     * Function similarly as {@link #translateVariables(char, String, OgnlValueStack)} 
+     * Function similarly as {@link #translateVariables(char, String, ValueStack)} 
      * except for the introduction of an additional <code>evaluator</code> that allows
      * the parsed value to be evaluated by the <code>evaluator</code>. The <code>evaluator</code>
      * could be null, if it is it will just be skipped as if it is just calling 
-     * {@link #translateVariables(char, String, OgnlValueStack)}.
+     * {@link #translateVariables(char, String, ValueStack)}.
      * 
      * <p/>
      * 
@@ -53,13 +53,13 @@ public class TextParseUtil {
      * @param evaluator The parsed Value evaluator (could be null).
      * @return the parsed (and possibly evaluated) variable String.
      */
-    public static String translateVariables(String expression, OgnlValueStack stack, ParsedValueEvaluator evaluator) {
+    public static String translateVariables(String expression, ValueStack stack, ParsedValueEvaluator evaluator) {
     	return translateVariables('$', expression, stack, String.class, evaluator).toString();
     }
 
     /**
      * Converts all instances of ${...} in <code>expression</code> to the value returned
-     * by a call to {@link OgnlValueStack#findValue(java.lang.String)}. If an item cannot
+     * by a call to {@link ValueStack#findValue(java.lang.String)}. If an item cannot
      * be found on the stack (null is returned), then the entire variable ${...} is not
      * displayed, just as if the item was on the stack but returned an empty string.
      *
@@ -68,7 +68,7 @@ public class TextParseUtil {
      * @param stack
      * @return Translated variable String
      */
-    public static String translateVariables(char open, String expression, OgnlValueStack stack) {
+    public static String translateVariables(char open, String expression, ValueStack stack) {
         return translateVariables(open, expression, stack, String.class, null).toString();
     }
 
@@ -81,7 +81,7 @@ public class TextParseUtil {
      * @param asType
      * @return Converted object from variable translation.
      */
-    public static Object translateVariables(char open, String expression, OgnlValueStack stack, Class asType) {
+    public static Object translateVariables(char open, String expression, ValueStack stack, Class asType) {
     	return translateVariables(open, expression, stack, asType, null);
     }
     
@@ -95,7 +95,7 @@ public class TextParseUtil {
      * @param evaluator
      * @return Converted object from variable translation.
      */
-    public static Object translateVariables(char open, String expression, OgnlValueStack stack, Class asType, ParsedValueEvaluator evaluator) {
+    public static Object translateVariables(char open, String expression, ValueStack stack, Class asType, ParsedValueEvaluator evaluator) {
         // deal with the "pure" expressions first!
         //expression = expression.trim();
         Object result = expression;
@@ -172,7 +172,7 @@ public class TextParseUtil {
     
     /**
      * A parsed value evaluator for {@link TextParseUtil}. It could be supplied by 
-     * calling {@link TextParseUtil#translateVariables(char, String, OgnlValueStack, Class, ParsedValueEvaluator)}.
+     * calling {@link TextParseUtil#translateVariables(char, String, ValueStack, Class, ParsedValueEvaluator)}.
      * 
      * <p/>
      * 

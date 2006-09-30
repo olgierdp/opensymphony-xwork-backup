@@ -8,8 +8,8 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.Parameterizable;
-import com.opensymphony.xwork2.util.OgnlValueStack;
 import com.opensymphony.xwork2.util.TextParseUtil;
+import com.opensymphony.xwork2.util.ValueStack;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -89,7 +89,7 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
         }
 
         if (parameters != null) {
-            final OgnlValueStack stack = ActionContext.getContext().getValueStack();
+            final ValueStack stack = ActionContext.getContext().getValueStack();
 
             for (Iterator iterator = parameters.entrySet().iterator();
                  iterator.hasNext();) {

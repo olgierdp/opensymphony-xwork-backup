@@ -289,7 +289,7 @@ public class LocalizedTextUtil {
      * @return the localized text, or null if none can be found and no defaultMessage is provided
      */
     public static String findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args) {
-        OgnlValueStack valueStack = ActionContext.getContext().getValueStack();
+        ValueStack valueStack = ActionContext.getContext().getValueStack();
         return findText(aClass, aTextName, locale, defaultMessage, args, valueStack);
 
     }
@@ -336,7 +336,7 @@ public class LocalizedTextUtil {
      *                       one in the ActionContext ThreadLocal
      * @return the localized text, or null if none can be found and no defaultMessage is provided
      */
-    public static String findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args, OgnlValueStack valueStack) {
+    public static String findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args, ValueStack valueStack) {
         String indexedTextName = null;
         if (aTextName == null) {
             LOG.warn("Trying to find text with null key!");
@@ -533,7 +533,7 @@ public class LocalizedTextUtil {
      * @param args       arguments for the message formatter.
      */
     public static String findText(ResourceBundle bundle, String aTextName, Locale locale, String defaultMessage, Object[] args) {
-        OgnlValueStack valueStack = ActionContext.getContext().getValueStack();
+        ValueStack valueStack = ActionContext.getContext().getValueStack();
         return findText(bundle, aTextName, locale, defaultMessage, args, valueStack);
     }
 
@@ -553,7 +553,7 @@ public class LocalizedTextUtil {
      * @param args       arguments for the message formatter.
      * @param valueStack the OGNL value stack.
      */
-    public static String findText(ResourceBundle bundle, String aTextName, Locale locale, String defaultMessage, Object[] args, OgnlValueStack valueStack) {
+    public static String findText(ResourceBundle bundle, String aTextName, Locale locale, String defaultMessage, Object[] args, ValueStack valueStack) {
         try {
             reloadBundles();
 
@@ -575,7 +575,7 @@ public class LocalizedTextUtil {
     /**
      * Gets the default message.
      */
-    private static GetDefaultMessageReturnArg getDefaultMessage(String key, Locale locale, OgnlValueStack valueStack, Object[] args, String defaultMessage) {
+    private static GetDefaultMessageReturnArg getDefaultMessage(String key, Locale locale, ValueStack valueStack, Object[] args, String defaultMessage) {
         GetDefaultMessageReturnArg result = null;
     	boolean found = true;
     	
@@ -602,7 +602,7 @@ public class LocalizedTextUtil {
     /**
      * Gets the message from the named resource bundle.
      */
-    private static String getMessage(String bundleName, Locale locale, String key, OgnlValueStack valueStack, Object[] args) {
+    private static String getMessage(String bundleName, Locale locale, String key, ValueStack valueStack, Object[] args) {
         ResourceBundle bundle = findResourceBundle(bundleName, locale);
         if (bundle == null) {
             return null;
@@ -636,7 +636,7 @@ public class LocalizedTextUtil {
      * Traverse up class hierarchy looking for message.  Looks at class, then implemented interface,
      * before going up hierarchy.
      */
-    private static String findMessage(Class clazz, String key, String indexedKey, Locale locale, Object[] args, Set checked, OgnlValueStack valueStack) {
+    private static String findMessage(Class clazz, String key, String indexedKey, Locale locale, Object[] args, Set checked, ValueStack valueStack) {
         if (checked == null) {
             checked = new TreeSet();
         } else if (checked.contains(clazz.getName())) {

@@ -8,7 +8,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.Result;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
 
 import java.lang.reflect.Method;
 
@@ -51,7 +51,7 @@ public class TestActionInvocation implements ActionInvocation {
 
     }
 
-    public OgnlValueStack getStack() {
+    public ValueStack getStack() {
         return null;
     }
 

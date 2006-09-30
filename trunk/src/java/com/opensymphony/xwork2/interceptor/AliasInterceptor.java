@@ -8,7 +8,8 @@ package com.opensymphony.xwork2.interceptor;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -91,7 +92,7 @@ public class AliasInterceptor extends AbstractInterceptor {
         if (parameters.containsKey(aliasesKey)) {
 
             String aliasExpression = (String) parameters.get(aliasesKey);
-            OgnlValueStack stack = ac.getValueStack();
+            ValueStack stack = ac.getValueStack();
             Object obj = stack.findValue(aliasExpression);
 
             if (obj != null && obj instanceof Map) {

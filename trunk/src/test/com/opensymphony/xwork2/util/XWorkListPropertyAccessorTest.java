@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class XWorkListPropertyAccessorTest extends XWorkTestCase {
 
     public void testContains() {
-        OgnlValueStack vs = new OgnlValueStack();
+        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         ListHolder listHolder = new ListHolder();
         vs.push(listHolder);
 
@@ -34,7 +34,7 @@ public class XWorkListPropertyAccessorTest extends XWorkTestCase {
     }
 
     public void testCanAccessListSizeProperty() {
-        OgnlValueStack vs = new OgnlValueStack();
+        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         List myList = new ArrayList();
         myList.add("a");
         myList.add("b");

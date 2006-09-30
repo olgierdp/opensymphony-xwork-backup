@@ -5,7 +5,8 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.RegexFieldValidator;
 import junit.framework.TestCase;
 
@@ -25,7 +26,7 @@ public class RegexFieldValidatorTest extends TestCase {
         MyTestPerson testPerson = new MyTestPerson();
         testPerson.setUsername("Secret");
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext.getContext().setValueStack(stack);
 
         RegexFieldValidator validator = new RegexFieldValidator();
@@ -44,7 +45,7 @@ public class RegexFieldValidatorTest extends TestCase {
         MyTestPerson testPerson = new MyTestPerson();
         testPerson.setUsername("Superman");
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext.getContext().setValueStack(stack);
 
         RegexFieldValidator validator = new RegexFieldValidator();
@@ -68,7 +69,7 @@ public class RegexFieldValidatorTest extends TestCase {
         MyTestPerson testPerson = new MyTestPerson();
         testPerson.setUsername("NoExpression");
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext.getContext().setValueStack(stack);
 
         RegexFieldValidator validator = new RegexFieldValidator();

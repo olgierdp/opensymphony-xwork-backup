@@ -9,7 +9,9 @@ import com.opensymphony.xwork2.ValidationAwareSupport;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.test.Equidae;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.RequiredStringValidator;
 import junit.framework.TestCase;
 
@@ -180,7 +182,7 @@ public class StringValidatorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
 
         configurationManager.clearConfigurationProviders();

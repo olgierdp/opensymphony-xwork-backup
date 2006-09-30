@@ -8,7 +8,9 @@ import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.XWorkContinuationConfig;
 import com.uwyn.rife.continuations.ContinuableObject;
 import com.uwyn.rife.continuations.ContinuationConfig;
@@ -52,7 +54,7 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected Map extraContext;
     protected ActionContext invocationContext;
     protected Iterator interceptors;
-    protected OgnlValueStack stack;
+    protected ValueStack stack;
     protected Result result;
     protected String resultCode;
     protected boolean executed = false;
@@ -133,7 +135,7 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
 
-    public OgnlValueStack getStack() {
+    public ValueStack getStack() {
         return stack;
     }
 
@@ -256,7 +258,7 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         if ((extraContext != null) && (extraContext.containsKey(ActionContext.VALUE_STACK))) {
             // In case the ValueStack was passed in
-            stack = (OgnlValueStack) extraContext.get(ActionContext.VALUE_STACK);
+            stack = (ValueStack) extraContext.get(ActionContext.VALUE_STACK);
 
             if (stack == null) {
                 throw new IllegalStateException("There was a null Stack set into the extra params.");
@@ -266,7 +268,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         } else {
             // create the value stack
             // this also adds the ValueStack to its context
-            stack = new OgnlValueStack();
+            stack = ValueStackFactory.getFactory().createValueStack();
 
             // create the action context
             contextMap = stack.getContext();
@@ -362,7 +364,7 @@ public class DefaultActionInvocation implements ActionInvocation {
             }
         }
         
-        public void prepareContinuation(Object action, OgnlValueStack stack) {
+        public void prepareContinuation(Object action, ValueStack stack) {
             if (action instanceof ContinuableObject) {
                 ContinuationContext ctx = ContinuationContext.createInstance((ContinuableObject) action);
                 if (action instanceof NonCloningContinuableObject) {
@@ -388,7 +390,7 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         }
         
-        public String handleException(Throwable t, OgnlValueStack stack) {
+        public String handleException(Throwable t, ValueStack stack) {
             if (t instanceof PauseException) {
                 // continuations in effect!
                 PauseException pe = ((PauseException) t);

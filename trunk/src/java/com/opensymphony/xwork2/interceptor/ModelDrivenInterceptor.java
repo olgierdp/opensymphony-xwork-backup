@@ -6,7 +6,7 @@ package com.opensymphony.xwork2.interceptor;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ModelDriven;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
 
 
 /**
@@ -66,7 +66,7 @@ public class ModelDrivenInterceptor extends AbstractInterceptor {
 
         if (action instanceof ModelDriven) {
             ModelDriven modelDriven = (ModelDriven) action;
-            OgnlValueStack stack = invocation.getStack();
+            ValueStack stack = invocation.getStack();
             if (modelDriven.getModel() !=  null) {
             	stack.push(modelDriven.getModel());
             }

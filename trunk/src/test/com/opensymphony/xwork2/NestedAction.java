@@ -4,7 +4,8 @@
  */
 package com.opensymphony.xwork2;
 
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+
 import junit.framework.Assert;
 
 
@@ -34,7 +35,7 @@ public class NestedAction implements Action {
     }
 
     public String noStack() {
-        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         // Action + DefaultTextProvider on the stack
         Assert.assertEquals(2, stack.size());
         Assert.assertNull(stack.findValue(ActionNestingTest.KEY));
@@ -44,7 +45,7 @@ public class NestedAction implements Action {
     }
 
     public String stack() {
-        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         //DefaultTextProvider, NestedActionTest pushed on by the test, and the NestedAction
         Assert.assertEquals(3, stack.size());
         Assert.assertNotNull(stack.findValue(ActionNestingTest.KEY));

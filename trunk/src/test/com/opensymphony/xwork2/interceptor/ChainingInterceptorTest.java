@@ -6,7 +6,9 @@ package com.opensymphony.xwork2.interceptor;
 
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
+
 import junit.framework.TestCase;
 
 import java.util.Date;
@@ -25,7 +27,7 @@ public class ChainingInterceptorTest extends TestCase {
     ActionInvocation invocation;
     ChainingInterceptor interceptor;
     Mock mockInvocation;
-    OgnlValueStack stack;
+    ValueStack stack;
 
 
     public void testActionErrorsCanBeAddedAfterChain() throws Exception {
@@ -110,7 +112,7 @@ public class ChainingInterceptorTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        stack = new OgnlValueStack();
+        stack = ValueStackFactory.getFactory().createValueStack();
         mockInvocation = new Mock(ActionInvocation.class);
         mockInvocation.expectAndReturn("getStack", stack);
         mockInvocation.expectAndReturn("invoke", Action.SUCCESS);

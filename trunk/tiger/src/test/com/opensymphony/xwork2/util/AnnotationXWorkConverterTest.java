@@ -31,7 +31,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
     XWorkConverter converter;
 
 //    public void testConversionToSetKeepsOriginalSetAndReplacesContents() {
-//        OgnlValueStack stack = new OgnlValueStack();
+//        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 //
 //        Map stackContext = stack.getContext();
 //        stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
@@ -85,7 +85,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
         SimpleAnnotationAction action = new SimpleAnnotationAction();
         action.setBean(new TestBean());
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -106,7 +106,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
         SimpleAnnotationAction action = new SimpleAnnotationAction();
         action.setDate(null);
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -125,7 +125,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
 
     public void testFieldErrorMessageAddedWhenConversionFailsOnModelDriven() {
         ModelDrivenAnnotationAction action = new ModelDrivenAnnotationAction();
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -146,7 +146,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
 
     public void testFindConversionErrorMessage() {
         ModelDrivenAnnotationAction action = new ModelDrivenAnnotationAction();
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -161,7 +161,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
 
     public void testFindConversionMappingForInterface() {
         ModelDrivenAnnotationAction2 action = new ModelDrivenAnnotationAction2();
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -284,7 +284,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
 
     // TODO: Fixme... This test does not work with GenericsObjectDeterminer!
     public void testStringToCollectionConversion() {
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         Map stackContext = stack.getContext();
         stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
         stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
@@ -332,8 +332,8 @@ public class AnnotationXWorkConverterTest extends TestCase {
         assertEquals(new BigInteger("123"), converter.convertValue(context, null, null, null, "123", BigInteger.class));
     }
 
-    public void testOgnlValueStackWithTypeParameter() {
-        OgnlValueStack stack = new OgnlValueStack();
+    public void testValueStackWithTypeParameter() {
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(new Foo1());
         Bar1 bar = (Bar1) stack.findValue("bar", Bar1.class);
         assertNotNull(bar);
@@ -341,7 +341,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
 
     public void testGenericProperties() {
         GenericsBean gb = new GenericsBean();
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(gb);
 
         String[] value = new String[] {"123.12", "123.45"};
@@ -368,7 +368,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
         converter = XWorkConverter.getInstance();
         ConfigurationManager.destroyConfiguration();
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext ac = new ActionContext(stack.getContext());
         ac.setLocale(Locale.US);
         ActionContext.setContext(ac);

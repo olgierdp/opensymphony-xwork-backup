@@ -7,7 +7,8 @@ package com.opensymphony.xwork2.interceptor;
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
 
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class ConversionErrorInterceptorTest extends XWorkTestCase {
     protected ConversionErrorInterceptor interceptor;
     protected Map conversionErrors;
     protected Mock mockInvocation;
-    protected OgnlValueStack stack;
+    protected ValueStack stack;
 
 
     public void testFieldErrorAdded() throws Exception {
@@ -85,7 +86,7 @@ public class ConversionErrorInterceptorTest extends XWorkTestCase {
         interceptor = new ConversionErrorInterceptor();
         mockInvocation = new Mock(ActionInvocation.class);
         invocation = (ActionInvocation) mockInvocation.proxy();
-        stack = new OgnlValueStack();
+        stack = ValueStackFactory.getFactory().createValueStack();
         context = new ActionContext(stack.getContext());
         conversionErrors = new HashMap();
         context.setConversionErrors(conversionErrors);

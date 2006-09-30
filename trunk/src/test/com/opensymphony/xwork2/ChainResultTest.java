@@ -13,7 +13,10 @@ package com.opensymphony.xwork2;
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
+
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -46,7 +49,7 @@ public class ChainResultTest extends XWorkTestCase {
         values.put("actionName", expectedActionName);
         values.put("namespace", expectedNamespace);
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(values);
 
         Mock actionProxyMock = new Mock(ActionProxy.class);

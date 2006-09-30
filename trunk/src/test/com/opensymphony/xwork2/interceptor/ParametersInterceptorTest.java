@@ -8,6 +8,9 @@ import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
 import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -24,7 +27,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
     public void testParameterNameAware() {
         ParametersInterceptor pi = new ParametersInterceptor();
         final Map actual = new HashMap();
-        OgnlValueStack stack = new OgnlValueStack() {
+        ValueStack stack = new OgnlValueStack() {
             public void setValue(String expr, Object value) {
                 actual.put(expr, value);
             }
@@ -102,7 +105,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
 
         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
                 configurationManager.getConfiguration(), "", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
-        OgnlValueStack stack = proxy.getInvocation().getStack();
+        ValueStack stack = proxy.getInvocation().getStack();
         HashMap session = new HashMap();
         stack.getContext().put("session", session);
         proxy.execute();

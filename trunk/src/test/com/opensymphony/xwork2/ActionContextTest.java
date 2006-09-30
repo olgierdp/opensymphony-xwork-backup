@@ -4,7 +4,10 @@
  */
 package com.opensymphony.xwork2;
 
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
+
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -26,7 +29,7 @@ public class ActionContextTest extends TestCase {
     private ActionContext context;
 
     public void setUp() {
-        OgnlValueStack valueStack = new OgnlValueStack();
+        ValueStack valueStack = ValueStackFactory.getFactory().createValueStack();
         Map extraContext = valueStack.getContext();
         Map application = new HashMap();
         application.put(APPLICATION_KEY, APPLICATION_KEY);
@@ -61,7 +64,7 @@ public class ActionContextTest extends TestCase {
     }
 
     public void testNewActionContextCanFindDefaultTexts() {
-        OgnlValueStack valueStack = context.getValueStack();
+        ValueStack valueStack = context.getValueStack();
         String actionErrorMessage = (String) valueStack.findValue("getText('xwork.error.action.execution')");
         assertNotNull(actionErrorMessage);
         assertEquals("Error during Action invocation", actionErrorMessage);

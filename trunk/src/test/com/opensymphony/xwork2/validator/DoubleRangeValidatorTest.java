@@ -2,7 +2,8 @@ package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.DoubleRangeFieldValidator;
 import junit.framework.TestCase;
 
@@ -61,7 +62,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         prod.setName("coca cola");
         prod.setPrice(5.99);
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
@@ -78,7 +79,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         prod.setPrice(5.99);
         prod.setVolume(new Double(12.34));
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
@@ -93,7 +94,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         MyTestProduct prod = new MyTestProduct();
         prod.setName("coca cola");
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
@@ -116,7 +117,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         prod.setName("coca cola");
         prod.setPrice(9.95);
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
@@ -142,7 +143,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         prod.setName("coca cola");
         prod.setPrice(9.95);
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 

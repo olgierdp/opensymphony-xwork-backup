@@ -8,7 +8,9 @@ import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +47,7 @@ public class ActionNestingTest extends XWorkTestCase {
         configurationManager.getConfiguration().reload(
                 configurationManager.getConfigurationProviders());
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 
         // create the action context
         Map contextMap = stack.getContext();
@@ -72,7 +74,7 @@ public class ActionNestingTest extends XWorkTestCase {
     }
 
     public void testNestedNoValueStack() throws Exception {
-        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         assertEquals(VALUE, stack.findValue(KEY));
 
         ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
@@ -84,7 +86,7 @@ public class ActionNestingTest extends XWorkTestCase {
     }
 
     public void testNestedValueStack() throws Exception {
-        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         assertEquals(VALUE, stack.findValue(KEY));
 
         HashMap extraContext = new HashMap();

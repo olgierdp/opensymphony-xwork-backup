@@ -9,7 +9,9 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
+
 import junit.framework.TestCase;
 
 import java.util.Date;
@@ -28,7 +30,7 @@ public class ModelDrivenInterceptorTest extends TestCase {
 
 
     public void testModelDrivenGetsPushedOntoStack() throws Exception {
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         action = new ModelDrivenAction();
         mockActionInvocation.expectAndReturn("getAction", action);
         mockActionInvocation.expectAndReturn("getStack", stack);

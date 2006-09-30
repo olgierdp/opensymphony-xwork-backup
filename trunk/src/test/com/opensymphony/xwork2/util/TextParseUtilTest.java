@@ -23,7 +23,7 @@ public class TextParseUtilTest extends XWorkTestCase {
 	
 	
 	public void testTranslateVariablesWithEvaluator() throws Exception {
-		OgnlValueStack stack = new OgnlValueStack();
+		ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 		stack.push(new Object() {
 			public String getMyVariable() {
 				return "My Variable ";
@@ -42,7 +42,7 @@ public class TextParseUtilTest extends XWorkTestCase {
 	}
 
     public void testTranslateVariables() {
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 
         Object s = TextParseUtil.translateVariables("foo: ${{1, 2, 3}}, bar: ${1}", stack);
         assertEquals("foo: [1, 2, 3], bar: 1", s);
@@ -85,7 +85,7 @@ public class TextParseUtilTest extends XWorkTestCase {
     public void testTranslateVariablesOpenChar() {
         // just a quick test to see if the open char works
         // most test are done the methods above
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 
         Object s = TextParseUtil.translateVariables('$', "foo: ${{1, 2, 3}}, bar: ${1}", stack);
         assertEquals("foo: [1, 2, 3], bar: 1", s);
@@ -95,7 +95,7 @@ public class TextParseUtilTest extends XWorkTestCase {
     }
 
     public void testTranslateNoVariables() {
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 
         Object s = TextParseUtil.translateVariables('$', "foo: ${}", stack);
         assertEquals("foo: ", s);

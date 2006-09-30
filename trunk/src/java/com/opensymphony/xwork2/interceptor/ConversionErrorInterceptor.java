@@ -7,7 +7,7 @@ package com.opensymphony.xwork2.interceptor;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.XWorkConverter;
 
 import java.util.HashMap;
@@ -80,7 +80,7 @@ public class ConversionErrorInterceptor extends AbstractInterceptor {
 
         ActionContext invocationContext = invocation.getInvocationContext();
         Map conversionErrors = invocationContext.getConversionErrors();
-        OgnlValueStack stack = invocationContext.getValueStack();
+        ValueStack stack = invocationContext.getValueStack();
 
         HashMap fakie = null;
 

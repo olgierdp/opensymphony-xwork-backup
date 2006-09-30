@@ -5,7 +5,7 @@
 package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
 
 import java.util.*;
 
@@ -182,7 +182,7 @@ public class TextProviderSupport implements TextProvider {
      * @param stack        the value stack to use for finding the text
      * @return the message as found in the resource bundle, or defaultValue if none is found
      */
-    public String getText(String key, String defaultValue, List args, OgnlValueStack stack) {
+    public String getText(String key, String defaultValue, List args, ValueStack stack) {
         Object[] argsArray = ((args != null) ? args.toArray() : null);
         Locale locale = (Locale) stack.getContext().get(ActionContext.LOCALE);
         if (locale == null) {
@@ -208,7 +208,7 @@ public class TextProviderSupport implements TextProvider {
      * @param stack        the value stack to use for finding the text
      * @return the message as found in the resource bundle, or defaultValue if none is found
      */
-    public String getText(String key, String defaultValue, String[] args, OgnlValueStack stack) {
+    public String getText(String key, String defaultValue, String[] args, ValueStack stack) {
         Locale locale = (Locale) stack.getContext().get(ActionContext.LOCALE);
         if (locale == null) {
             locale = getLocale();

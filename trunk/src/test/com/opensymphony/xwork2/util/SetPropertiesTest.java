@@ -46,7 +46,7 @@ public class SetPropertiesTest extends XWorkTestCase {
 
     public void testSetCollectionByConverterFromArray() {
         Foo foo = new Foo();
-        OgnlValueStack vs = new OgnlValueStack();
+        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         XWorkConverter c = (XWorkConverter) Ognl.getTypeConverter(vs.getContext());
@@ -62,7 +62,7 @@ public class SetPropertiesTest extends XWorkTestCase {
 
     public void testSetCollectionByConverterFromCollection() {
         Foo foo = new Foo();
-        OgnlValueStack vs = new OgnlValueStack();
+        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         XWorkConverter c = (XWorkConverter) Ognl.getTypeConverter(vs.getContext());
@@ -81,7 +81,7 @@ public class SetPropertiesTest extends XWorkTestCase {
 
     public void testValueStackSetValueEmptyStringAsLong() {
         Bar bar = new Bar();
-        OgnlValueStack vs = new OgnlValueStack();
+        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         vs.push(bar);
 
@@ -109,7 +109,7 @@ public class SetPropertiesTest extends XWorkTestCase {
         Foo foo = new Foo();
         foo.setMoreCats(new ArrayList());
         String spielname = "Spielen";
-        OgnlValueStack vs = new OgnlValueStack();
+        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
         vs.push(foo);
@@ -161,7 +161,7 @@ public class SetPropertiesTest extends XWorkTestCase {
         Foo foo = new Foo();
         foo.setAnotherCatMap(new HashMap());
         String spielname = "Spielen";
-        OgnlValueStack vs = new OgnlValueStack();
+        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
         vs.push(foo);
@@ -188,7 +188,7 @@ public class SetPropertiesTest extends XWorkTestCase {
     public void doTestAddingAndModifyingCollectionWithObjects(Collection barColl) {
 
         XWorkConverter.getInstance().setObjectTypeDeterminer(new DefaultObjectTypeDeterminer());
-        OgnlValueStack vs = new OgnlValueStack();
+        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         Foo foo = new Foo();
 
         foo.setBarCollection(barColl);
@@ -245,7 +245,7 @@ public class SetPropertiesTest extends XWorkTestCase {
 
         Collection barColl=new HashSet();
 
-        OgnlValueStack vs = new OgnlValueStack();
+        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         OgnlContextState.setCreatingNullObjects(vs.getContext(), true);
         OgnlContextState.setReportingConversionErrors(vs.getContext(), true);
         Foo foo = new Foo();

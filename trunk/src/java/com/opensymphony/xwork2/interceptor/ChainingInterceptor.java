@@ -8,7 +8,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.Unchainable;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.OgnlUtil;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
 
 import java.util.*;
 
@@ -88,7 +88,7 @@ public class ChainingInterceptor extends AbstractInterceptor {
     Collection includes;
 
     public String intercept(ActionInvocation invocation) throws Exception {
-        OgnlValueStack stack = invocation.getStack();
+        ValueStack stack = invocation.getStack();
         CompoundRoot root = stack.getRoot();
 
         if (root.size() > 1) {

@@ -5,8 +5,9 @@
 package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.config.Configuration;
-import com.opensymphony.xwork2.util.OgnlValueStack;
 import com.opensymphony.xwork2.util.TextParseUtil;
+import com.opensymphony.xwork2.util.ValueStack;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -126,7 +127,7 @@ public class ActionChainResult implements Result {
             this.namespace = invocation.getProxy().getNamespace();
         }
 
-        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         String finalNamespace = TextParseUtil.translateVariables(namespace, stack);
         String finalActionName = TextParseUtil.translateVariables(actionName, stack);
         String finalMethodName = this.methodName != null 

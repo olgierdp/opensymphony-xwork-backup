@@ -5,8 +5,8 @@
 package com.opensymphony.xwork2.validator.validators;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.util.OgnlValueStack;
 import com.opensymphony.xwork2.util.TextParseUtil;
+import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,7 +37,7 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
 
     public String getMessage(Object object) {
         String message;
-        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         boolean pop = false;
 
         if (!stack.getRoot().contains(object)) {
@@ -103,7 +103,7 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
     }
 
     protected Object getFieldValue(String name, Object object) throws ValidationException {
-        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
 
         boolean pop = false;
 

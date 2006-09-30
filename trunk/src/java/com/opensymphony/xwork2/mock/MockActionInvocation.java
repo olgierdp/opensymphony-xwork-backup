@@ -14,7 +14,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.Result;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
 
 /**
  * Mock for an {@link ActionInvocation}.
@@ -31,7 +31,7 @@ public class MockActionInvocation implements ActionInvocation {
     private ActionProxy proxy;
     private Result result;
     private String resultCode;
-    private OgnlValueStack stack;
+    private ValueStack stack;
     
     private List preResultListeners = new ArrayList();
 
@@ -75,11 +75,11 @@ public class MockActionInvocation implements ActionInvocation {
         this.resultCode = resultCode;
     }
 
-    public OgnlValueStack getStack() {
+    public ValueStack getStack() {
         return stack;
     }
 
-    public void setStack(OgnlValueStack stack) {
+    public void setStack(ValueStack stack) {
         this.stack = stack;
     }
 

@@ -5,7 +5,7 @@
 package com.opensymphony.xwork2.validator.validators;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.*;
 
 import java.util.Collection;
@@ -103,7 +103,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         	log.warn("The visited object is null, VisitorValidator will not be able to handle validation properly. Please make sure the visited object is not null for VisitorValidator to function properly");
             return;
         }
-        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
 
         stack.push(object);
 
@@ -133,7 +133,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
     }
 
     private void validateObject(String fieldName, Object o, String visitorContext) throws ValidationException {
-        OgnlValueStack stack = ActionContext.getContext().getValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(o);
 
         ValidatorContext validatorContext;

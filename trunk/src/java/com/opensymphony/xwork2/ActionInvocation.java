@@ -5,7 +5,7 @@
 package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.interceptor.PreResultListener;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
 
 import java.io.Serializable;
 
@@ -96,7 +96,7 @@ public interface ActionInvocation extends Serializable {
     /**
      * @return the ValueStack associated with this ActionInvocation
      */
-    OgnlValueStack getStack();
+    ValueStack getStack();
 
     /**
      * Register a com.opensymphony.xwork2.interceptor.PreResultListener to be notified after the Action is executed and

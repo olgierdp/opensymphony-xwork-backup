@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
  * This interceptor sets all parameters on the value stack.
  * <p/>
  * This interceptor gets all parameters from {@link ActionContext#getParameters()} and sets them on the value stack by
- * calling {@link OgnlValueStack#setValue(String, Object)}, typically resulting in the values submitted in a form
+ * calling {@link ValueStack#setValue(String, Object)}, typically resulting in the values submitted in a form
  * request being applied to an action in the value stack. Note that the parameter map must contain a String key and
  * often containers a String[] for the value.
  * 
@@ -135,7 +135,7 @@ public class ParametersInterceptor extends AbstractInterceptor {
                 	OgnlContextState.setDenyMethodExecution(contextMap, true);
                 	OgnlContextState.setReportingConversionErrors(contextMap, true);
 
-                    OgnlValueStack stack = ac.getValueStack();
+                    ValueStack stack = ac.getValueStack();
                     setParameters(action, stack, parameters);
                 } finally {
                 	OgnlContextState.setCreatingNullObjects(contextMap, false);
@@ -147,7 +147,7 @@ public class ParametersInterceptor extends AbstractInterceptor {
         return invocation.invoke();
     }
 
-    protected void setParameters(Object action, OgnlValueStack stack, final Map parameters) {
+    protected void setParameters(Object action, ValueStack stack, final Map parameters) {
         ParameterNameAware parameterNameAware = (action instanceof ParameterNameAware)
                 ? (ParameterNameAware) action : null;
 

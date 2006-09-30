@@ -7,7 +7,10 @@ package com.opensymphony.xwork2.validator;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.TestBean;
 import com.opensymphony.xwork2.test.TestBean2;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
+
 import junit.framework.TestCase;
 
 import java.util.*;
@@ -36,7 +39,7 @@ public class VisitorFieldValidatorModelTest extends TestCase {
         bean.setBirth(cal.getTime());
         bean.setCount(-1);
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
     }
 

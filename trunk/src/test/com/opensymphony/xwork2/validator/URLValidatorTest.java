@@ -5,7 +5,8 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.URLValidator;
 
 import junit.framework.TestCase;
@@ -19,7 +20,7 @@ import junit.framework.TestCase;
 public class URLValidatorTest extends TestCase {
 
 	
-	OgnlValueStack stack;
+	ValueStack stack;
 	ActionContext actionContext;
 	
 	public void testAcceptNullValueForMutualExclusionOfValidators() throws Exception {
@@ -89,7 +90,7 @@ public class URLValidatorTest extends TestCase {
 	}
 	
 	protected void setUp() throws Exception {
-		stack = new OgnlValueStack();
+		stack = ValueStackFactory.getFactory().createValueStack();
 		actionContext = ActionContext.getContext();
 		actionContext.setValueStack(stack);
 	}

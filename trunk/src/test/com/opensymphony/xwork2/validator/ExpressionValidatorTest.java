@@ -8,7 +8,9 @@ import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.ExpressionValidator;
 import junit.framework.TestCase;
 
@@ -105,7 +107,7 @@ public class ExpressionValidatorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
 
         configurationManager.clearConfigurationProviders();

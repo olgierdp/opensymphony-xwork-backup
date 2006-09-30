@@ -4,7 +4,8 @@
  */
 package com.opensymphony.xwork2;
 
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -94,11 +95,11 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
         return textProvider.getText(key, defaultValue, args);
     }
 
-    public String getText(String key, String defaultValue, List args, OgnlValueStack stack) {
+    public String getText(String key, String defaultValue, List args, ValueStack stack) {
         return textProvider.getText(key, defaultValue, args, stack);
     }
 
-    public String getText(String key, String defaultValue, String[] args, OgnlValueStack stack) {
+    public String getText(String key, String defaultValue, String[] args, ValueStack stack) {
         return textProvider.getText(key, defaultValue, args, stack);
     }
 

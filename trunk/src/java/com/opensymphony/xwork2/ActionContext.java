@@ -4,7 +4,9 @@
  */
 package com.opensymphony.xwork2;
 
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -43,9 +45,9 @@ public class ActionContext implements Serializable {
     public static final String ACTION_NAME = "com.opensymphony.xwork2.ActionContext.name";
 
     /**
-     * Constant for the {@link com.opensymphony.xwork2.util.OgnlValueStack OGNL value stack}.
+     * Constant for the {@link com.opensymphony.xwork2.util.ValueStack OGNL value stack}.
      */
-    public static final String VALUE_STACK = OgnlValueStack.VALUE_STACK;
+    public static final String VALUE_STACK = ValueStack.VALUE_STACK;
 
     /**
      * Constant for the action's session.
@@ -150,7 +152,7 @@ public class ActionContext implements Serializable {
         ActionContext context = (ActionContext) actionContext.get();
 
         if (context == null) {
-            OgnlValueStack vs = new OgnlValueStack();
+            ValueStack vs = ValueStackFactory.getFactory().createValueStack();
             context = new ActionContext(vs.getContext());
             setContext(context);
         }
@@ -289,7 +291,7 @@ public class ActionContext implements Serializable {
      *
      * @param stack the OGNL value stack.
      */
-    public void setValueStack(OgnlValueStack stack) {
+    public void setValueStack(ValueStack stack) {
         put(VALUE_STACK, stack);
     }
 
@@ -298,8 +300,8 @@ public class ActionContext implements Serializable {
      *
      * @return the OGNL value stack.
      */
-    public OgnlValueStack getValueStack() {
-        return (OgnlValueStack) get(VALUE_STACK);
+    public ValueStack getValueStack() {
+        return (ValueStack) get(VALUE_STACK);
     }
 
     /**
@@ -325,7 +327,7 @@ public class ActionContext implements Serializable {
 
     private static class ActionContextThreadLocal extends ThreadLocal {
         protected Object initialValue() {
-            OgnlValueStack vs = new OgnlValueStack();
+            ValueStack vs = ValueStackFactory.getFactory().createValueStack();
 
             return new ActionContext(vs.getContext());
         }

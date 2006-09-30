@@ -8,6 +8,8 @@ package com.opensymphony.xwork2;
 import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
 import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.XWorkConverter;
 import junit.framework.TestCase;
 
@@ -22,7 +24,7 @@ public abstract class XWorkTestCase extends TestCase {
     
     protected void setUp() throws Exception {
         // Reset the value stack
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = new OgnlValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
 
         //  clear out configuration

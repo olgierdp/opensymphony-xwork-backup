@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork2;
 
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
 
 import java.util.List;
 import java.util.ResourceBundle;
@@ -115,7 +115,7 @@ public interface TextProvider {
      * @param stack        the value stack to use for finding the text
      * @return the message as found in the resource bundle, or defaultValue if none is found
      */
-    String getText(String key, String defaultValue, List args, OgnlValueStack stack);
+    String getText(String key, String defaultValue, List args, ValueStack stack);
 
     /**
      * Gets a message based on a key using the supplied args, as defined in
@@ -129,7 +129,7 @@ public interface TextProvider {
      * @param stack        the value stack to use for finding the text
      * @return the message as found in the resource bundle, or defaultValue if none is found
      */
-    String getText(String key, String defaultValue, String[] args, OgnlValueStack stack);
+    String getText(String key, String defaultValue, String[] args, ValueStack stack);
 
     /**
      * Get the named bundle, such as "com/acme/Foo".

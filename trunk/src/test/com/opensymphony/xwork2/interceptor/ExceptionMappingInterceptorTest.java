@@ -8,7 +8,8 @@ import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.ValidationException;
 import junit.framework.TestCase;
 
@@ -24,7 +25,7 @@ public class ExceptionMappingInterceptorTest extends TestCase {
     ActionInvocation invocation;
     ExceptionMappingInterceptor interceptor;
     Mock mockInvocation;
-    OgnlValueStack stack;
+    ValueStack stack;
 
 
     public void testThrownExceptionMatching() throws Exception {
@@ -274,7 +275,7 @@ public class ExceptionMappingInterceptorTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        stack = new OgnlValueStack();
+        stack = ValueStackFactory.getFactory().createValueStack();
         mockInvocation = new Mock(ActionInvocation.class);
         mockInvocation.expectAndReturn("getStack", stack);
         mockInvocation.expectAndReturn("getInvocationContext", new ActionContext(new HashMap()));

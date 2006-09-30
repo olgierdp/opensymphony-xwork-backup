@@ -5,7 +5,7 @@
 package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -108,12 +108,12 @@ public class DefaultTextProvider implements TextProvider, Serializable, Unchaina
         return getText(key, defaultValue, args);
     }
 
-    public String getText(String key, String defaultValue, List args, OgnlValueStack stack) {
+    public String getText(String key, String defaultValue, List args, ValueStack stack) {
         //we're not using the value stack here
         return getText(key, defaultValue, args);
     }
 
-    public String getText(String key, String defaultValue, String[] args, OgnlValueStack stack) {
+    public String getText(String key, String defaultValue, String[] args, ValueStack stack) {
         //we're not using the value stack here
         return getText(key, defaultValue, Arrays.asList(args));
     }

@@ -134,7 +134,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         }
     }
 
-    public static String getConversionErrorMessage(String propertyName, OgnlValueStack stack) {
+    public static String getConversionErrorMessage(String propertyName, ValueStack stack) {
         String defaultMessage = LocalizedTextUtil.findDefaultText(XWorkMessages.DEFAULT_INVALID_FIELDVALUE,
                 ActionContext.getContext().getLocale(),
                 new Object[]{

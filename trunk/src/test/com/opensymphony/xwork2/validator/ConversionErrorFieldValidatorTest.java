@@ -7,7 +7,9 @@ package com.opensymphony.xwork2.validator;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.ValidationAwareSupport;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.ConversionErrorFieldValidator;
 import junit.framework.TestCase;
 
@@ -35,7 +37,7 @@ public class ConversionErrorFieldValidatorTest extends TestCase {
     public void setUp() {
         oldContext = ActionContext.getContext();
 
-        OgnlValueStack stack = new OgnlValueStack();
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext context = new ActionContext(stack.getContext());
         ActionContext.setContext(context);
 

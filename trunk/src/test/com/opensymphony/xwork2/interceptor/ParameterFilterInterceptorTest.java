@@ -13,7 +13,8 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.SimpleAction;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 
 import junit.framework.TestCase;
 
@@ -27,13 +28,13 @@ public class ParameterFilterInterceptorTest extends TestCase {
     ActionInvocation invocation;
     ParameterFilterInterceptor interceptor;
     Mock mockInvocation;
-    OgnlValueStack stack;
+    ValueStack stack;
     Map contextMap;
 
     protected void setUp() throws Exception {
         super.setUp();
         contextMap=new HashMap();
-        stack = new OgnlValueStack();
+        stack = ValueStackFactory.getFactory().createValueStack();
         mockInvocation = new Mock(ActionInvocation.class);
         mockInvocation.expectAndReturn("getStack", stack);
         mockInvocation.expectAndReturn("invoke", Action.SUCCESS);

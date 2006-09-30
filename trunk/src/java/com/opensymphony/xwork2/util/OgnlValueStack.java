@@ -6,15 +6,14 @@ package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.DefaultTextProvider;
-import ognl.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import ognl.*;
 import java.io.Serializable;
 import java.util.*;
 
 /**
- * OgnlValueStack allows multiple beans to be pushed in and dynamic Ognl expressions to be evaluated against it. When
+ * Ognl implementation of a value stack that allows for dynamic Ognl expressions to be evaluated against it. When
  * evaluating an expression, the stack will be searched down the stack, from the latest objects pushed in to the
  * earliest, looking for a bean with a getter or setter for the given property or a method of the given name (depending
  * on the expression being evaluated).
@@ -24,13 +23,11 @@ import java.util.*;
  * 
  * @version $Date$ $Id$
  */
-public class OgnlValueStack implements Serializable {
+public class OgnlValueStack implements Serializable, ValueStack {
 	
 	private static final long serialVersionUID = 370737852934925530L;
 	
-	public static final String VALUE_STACK = "com.opensymphony.xwork2.util.OgnlValueStack.ValueStack";
-    public static final String REPORT_ERRORS_ON_NO_PROP = "com.opensymphony.xwork2.util.OgnlValueStack.ReportErrorsOnNoProp";
-    private static CompoundRootAccessor accessor;
+	private static CompoundRootAccessor accessor;
     private static Log LOG = LogFactory.getLog(OgnlValueStack.class);
 
     static {
@@ -85,7 +82,7 @@ public class OgnlValueStack implements Serializable {
         push(DefaultTextProvider.INSTANCE);
     }
 
-    public OgnlValueStack(OgnlValueStack vs) {
+    public OgnlValueStack(ValueStack vs) {
         setRoot(new CompoundRoot(vs.getRoot()));
     }
 
@@ -94,19 +91,23 @@ public class OgnlValueStack implements Serializable {
         return accessor;
     }
 
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#getContext()
+     */
     public Map getContext() {
         return context;
     }
 
-    /**
-     * Sets the default type to convert to if no type is provided when getting a value.
-     *
-     * @param defaultType
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#setDefaultType(java.lang.Class)
      */
     public void setDefaultType(Class defaultType) {
         this.defaultType = defaultType;
     }
 
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#setExprOverrides(java.util.Map)
+     */
     public void setExprOverrides(Map overrides) {
     	if (this.overrides == null) {
     		this.overrides = overrides;
@@ -116,21 +117,22 @@ public class OgnlValueStack implements Serializable {
     	}
     }
     
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#getExprOverrides()
+     */
     public Map getExprOverrides() {
     	return this.overrides;
     }
 
-    /**
-     * Get the CompoundRoot which holds the objects pushed onto the stack
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#getRoot()
      */
     public CompoundRoot getRoot() {
         return root;
     }
 
-    /**
-     * Determine whether devMode is enabled.
-     *
-     * @return true if devMode was enabled, false otherwise.
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#isDevModeEnabled()
      */
     public boolean isDevModeEnabled() {
         Boolean devMode = (Boolean) context.get(ActionContext.DEV_MODE);
@@ -141,23 +143,15 @@ public class OgnlValueStack implements Serializable {
         }
     }
 
-    /**
-     * Attempts to set a property on a bean in the stack with the given expression using the default search order.
-     *
-     * @param expr  the expression defining the path to the property to be set.
-     * @param value the value to be set into the neamed property
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#setValue(java.lang.String, java.lang.Object)
      */
     public void setValue(String expr, Object value) {
         setValue(expr, value, isDevModeEnabled());
     }
 
-    /**
-     * Attempts to set a property on a bean in the stack with the given expression using the default search order.
-     *
-     * @param expr                    the expression defining the path to the property to be set.
-     * @param value                   the value to be set into the neamed property
-     * @param throwExceptionOnFailure a flag to tell whether an exception should be thrown if there is no property with
-     *                                the given name.
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#setValue(java.lang.String, java.lang.Object, boolean)
      */
     public void setValue(String expr, Object value, boolean throwExceptionOnFailure) {
         Map context = getContext();
@@ -193,15 +187,15 @@ public class OgnlValueStack implements Serializable {
         }
     }
 
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#findString(java.lang.String)
+     */
     public String findString(String expr) {
         return (String) findValue(expr, String.class);
     }
 
-    /**
-     * Find a value by evaluating the given expression against the stack in the default search order.
-     *
-     * @param expr the expression giving the path of properties to navigate to find the property value to return
-     * @return the result of evaluating the expression
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#findValue(java.lang.String)
      */
     public Object findValue(String expr) {
         try {
@@ -234,12 +228,8 @@ public class OgnlValueStack implements Serializable {
         }
     }
 
-    /**
-     * Find a value by evaluating the given expression against the stack in the default search order.
-     *
-     * @param expr   the expression giving the path of properties to navigate to find the property value to return
-     * @param asType the type to convert the return value to
-     * @return the result of evaluating the expression
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#findValue(java.lang.String, java.lang.Class)
      */
     public Object findValue(String expr, Class asType) {
         try {
@@ -289,39 +279,28 @@ public class OgnlValueStack implements Serializable {
         }
     }
 
-    /**
-     * Get the object on the top of the stack without changing the stack.
-     *
-     * @see CompoundRoot#peek()
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#peek()
      */
     public Object peek() {
         return root.peek();
     }
 
-    /**
-     * Get the object on the top of the stack and remove it from the stack.
-     *
-     * @return the object on the top of the stack
-     * @see CompoundRoot#pop()
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#pop()
      */
     public Object pop() {
         return root.pop();
     }
 
-    /**
-     * Put this object onto the top of the stack
-     *
-     * @param o the object to be pushed onto the stack
-     * @see CompoundRoot#push(Object)
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#push(java.lang.Object)
      */
     public void push(Object o) {
         root.push(o);
     }
-    /**
-     * Sets an object on the stack with the given key
-     * so it is retrievable by findValue(key,...)
-     * @param key
-     * @param o
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#set(java.lang.String, java.lang.Object)
      */
     public void set(String key, Object o) {
     	//set basically is backed by a Map
@@ -355,11 +334,8 @@ public class OgnlValueStack implements Serializable {
     
     private static final String MAP_IDENTIFIER_KEY="com.opensymphony.xwork2.util.OgnlValueStack.MAP_IDENTIFIER_KEY";
     
-    /**
-     * Get the number of objects in the stack
-     * s
-     *
-     * @return the number of objects in the stack
+    /* (non-Javadoc)
+     * @see com.opensymphony.xwork2.util.ValueStack#size()
      */
     public int size() {
         return root.size();
