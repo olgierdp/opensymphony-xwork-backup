@@ -308,13 +308,13 @@ public class DomHelper {
 
         public void error(SAXParseException exception) throws SAXException {
             LOG.error(exception.getMessage() + " at (" + exception.getPublicId() + ":" + 
-                exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
+                exception.getLineNumber() + ":" + exception.getColumnNumber() + ")", exception);
             throw exception;
         }
 
         public void fatalError(SAXParseException exception) throws SAXException {
             LOG.fatal(exception.getMessage() + " at (" + exception.getPublicId() + ":" + 
-                exception.getLineNumber() + ":" + exception.getColumnNumber() + ")");
+                exception.getLineNumber() + ":" + exception.getColumnNumber() + ")", exception);
             throw exception;
         }
     }

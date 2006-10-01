@@ -117,6 +117,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
 
         try {
+        	LOG.info("Parsing configuration file ["+configFileName+"]");
             loadConfigurationFiles(configFileName, null);
         } catch (ConfigurationException e) {
             throw e;
