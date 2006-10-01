@@ -12,6 +12,7 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.XWorkContinuationConfig;
+import com.opensymphony.xwork2.util.profiling.UtilTimerStack;
 import com.uwyn.rife.continuations.ContinuableObject;
 import com.uwyn.rife.continuations.ContinuationConfig;
 import com.uwyn.rife.continuations.ContinuationContext;
@@ -225,7 +226,9 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     protected void createAction(Map contextMap) {
         // load action
+        String timerKey = "actionCreate: "+proxy.getActionName();
         try {
+            UtilTimerStack.push(timerKey);
             action = ObjectFactory.getObjectFactory().buildAction(proxy.getActionName(), proxy.getNamespace(), proxy.getConfig(), contextMap);
         } catch (InstantiationException e) {
             throw new XWorkException("Unable to intantiate Action!", e, proxy.getConfig());
@@ -246,6 +249,8 @@ public class DefaultActionInvocation implements ActionInvocation {
 
             gripe += (((" -- " + e.getMessage()) != null) ? e.getMessage() : " [no message in exception]");
             throw new XWorkException(gripe, e, proxy.getConfig());
+        } finally {
+            UtilTimerStack.pop(timerKey);
         }
 
         if (continuationHandler != null) {
@@ -291,10 +296,16 @@ public class DefaultActionInvocation implements ActionInvocation {
     private void executeResult() throws Exception {
         result = createResult();
 
-        if (result != null) {
-            result.execute(this);
-        } else if (!Action.NONE.equals(resultCode)) {
-            LOG.warn("No result defined for action " + getAction().getClass().getName() + " and result " + getResultCode());
+        String timerKey = "executeResult: "+getResultCode();
+        try {
+            UtilTimerStack.push(timerKey);
+            if (result != null) {
+                result.execute(this);
+            } else if (!Action.NONE.equals(resultCode)) {
+                LOG.warn("No result defined for action " + getAction().getClass().getName() + " and result " + getResultCode());
+            }
+        } finally {
+            UtilTimerStack.pop(timerKey);
         }
     }
 
@@ -322,7 +333,9 @@ public class DefaultActionInvocation implements ActionInvocation {
             LOG.debug("Executing action method = " + actionConfig.getMethodName());
         }
 
+        String timerKey = "invokeAction: "+proxy.getActionName();
         try {
+            UtilTimerStack.push(timerKey);
             Method method = getAction().getClass().getMethod(methodName, new Class[0]);
 
             if (action instanceof Proxy) {
@@ -352,6 +365,8 @@ public class DefaultActionInvocation implements ActionInvocation {
             } else {
                 throw e;
             }
+        } finally {
+            UtilTimerStack.pop(timerKey);
         }
     }
     
