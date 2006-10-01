@@ -113,10 +113,10 @@ public class XWorkConverter extends DefaultTypeConverter {
     public static final String LAST_BEAN_CLASS_ACCESSED = "last.bean.accessed";
     public static final String LAST_BEAN_PROPERTY_ACCESSED = "last.property.accessed";
 
-    HashMap defaultMappings = new HashMap();
-    HashMap mappings = new HashMap();
-    HashSet noMapping = new HashSet();
-    HashSet unknownMappings = new HashSet();
+    HashMap defaultMappings = new HashMap(); 	// non-action (eg. returned value)
+    HashMap mappings = new HashMap(); 			// action
+    HashSet noMapping = new HashSet(); 			// action
+    HashSet unknownMappings = new HashSet(); 	// non-action (eg. returned value)
     TypeConverter defaultTypeConverter = new XWorkBasicConverter();
     ObjectTypeDeterminer objectTypeDeterminer = ObjectTypeDeterminerFactory.getInstance();
 
