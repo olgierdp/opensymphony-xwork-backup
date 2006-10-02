@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork2;
 
+import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
@@ -186,6 +187,9 @@ public class DefaultActionInvocation implements ActionInvocation {
         }
     }
 
+    /**
+     * @throws ConfigurationException If no result can be found with the returned code
+     */
     public String invoke() throws Exception {
         if (executed) {
             throw new IllegalStateException("Action has already executed");
@@ -292,6 +296,8 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     /**
      * Uses getResult to get the final Result and executes it
+     * 
+     * @throws ConfigurationException If not result can be found with the returned code
      */
     private void executeResult() throws Exception {
         result = createResult();
@@ -301,8 +307,13 @@ public class DefaultActionInvocation implements ActionInvocation {
             UtilTimerStack.push(timerKey);
             if (result != null) {
                 result.execute(this);
-            } else if (!Action.NONE.equals(resultCode)) {
-                LOG.warn("No result defined for action " + getAction().getClass().getName() + " and result " + getResultCode());
+            } else if (resultCode != null && !Action.NONE.equals(resultCode)) {
+                throw new ConfigurationException("No result defined for action " + getAction().getClass().getName() 
+                        + " and result " + getResultCode(), proxy.getConfig());
+            } else {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("No result returned for action "+getAction().getClass().getName()+" at "+proxy.getConfig().getLocation());
+                }
             }
         } finally {
             UtilTimerStack.pop(timerKey);
