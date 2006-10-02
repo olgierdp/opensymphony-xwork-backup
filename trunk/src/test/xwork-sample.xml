@@ -6,7 +6,7 @@
 
 <xwork>
     <include file="xwork-test-default.xml"/>
-    <package name="default" extends="xwork-default" externalReferenceResolver="com.opensymphony.xwork2.config.TestExternalReferenceResolver">
+    <package name="default" extends="xwork-test-default" externalReferenceResolver="com.opensymphony.xwork2.config.TestExternalReferenceResolver">
 
         <global-results>
             <result name="login"> <!-- should be chain type since it is the default -->
@@ -127,7 +127,7 @@
 
    </package>
 
-           <package name="test-external-refs" extends="default" namespace="test/externalRef/">
+   <package name="test-external-refs" extends="default" namespace="test/externalRef/">
         <!-- test resolution when Resolver is declared on parent -->
         <action name="TestExternalRefResolver4" class="com.opensymphony.xwork2.ExternalReferenceAction">
                 <external-ref name="foo">myFoo</external-ref>
@@ -137,7 +137,7 @@
 
    </package>
 
-    <package name="bar" extends="default" namespace="/foo/bar">
+   <package name="bar" extends="default" namespace="/foo/bar">
         <interceptors>
             <interceptor-stack name="barDefaultStack">
                 <interceptor-ref name="debugStack"/>
