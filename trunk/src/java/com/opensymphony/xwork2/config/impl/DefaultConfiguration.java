@@ -64,7 +64,8 @@ public class DefaultConfiguration implements Configuration {
                 } 
             } else {
                 throw new ConfigurationException("The package name '" + name 
-                        + "' is already been used by another package: " + check.getLocation(),
+                        + "' at locattion "+packageContext.getLocation()
+                        + " is already been used by another package at location " + check.getLocation(),
                         packageContext);
             }
         }
@@ -75,6 +76,7 @@ public class DefaultConfiguration implements Configuration {
      * Allows the configuration to clean up any resources used
      */
     public void destroy() {
+        packageContexts.clear();
     }
 
     public void rebuildRuntimeConfiguration() {
