@@ -60,6 +60,7 @@
            	<param name="aliases">#{ "aliasSource" : "aliasDest", "bar":"baz" }</param>
 			<interceptor-ref name="defaultStack"/>
          	<interceptor-ref name="alias"/>
+         	<result name="success" type="mock" />
         </action>
       
         <action name="packagelessAction" class="PackagelessAction">
@@ -68,17 +69,20 @@
         <action name="Bar" class="com.opensymphony.xwork2.SimpleAction">
         	<param name="foo">17</param>
             <param name="bar">23</param>
+            <result name="error" type="mock" />
         </action>
 
         <action name="MyBean" class="com.opensymphony.xwork2.util.MyBeanAction">
             <interceptor-ref name="debugStack"/>
             <interceptor-ref name="defaultStack"/>
+            <result name="success" type="mock" />
         </action>
 
         <action name="TestInterceptorParam" class="com.opensymphony.xwork2.SimpleAction">
             <interceptor-ref name="test">
                 <param name="expectedFoo">expectedFoo</param>
             </interceptor-ref>
+            <result name="error" type="mock" />
         </action>
 
         <action name="TestInterceptorParamOverride" class="com.opensymphony.xwork2.SimpleAction">
@@ -86,17 +90,20 @@
                 <param name="foo">foo123</param>
                 <param name="expectedFoo">foo123</param>
             </interceptor-ref>
+            <result name="error" type="mock" />
         </action>
-
+	
         <action name="TestModelDrivenValidation" class="com.opensymphony.xwork2.ModelDrivenAction">
             <interceptor-ref name="defaultStack"/>
             <interceptor-ref name="validation"/>
+            <result name="success" type="mock" />
         </action>
         <!-- test resolution  -->
         <action name="TestExternalRefResolver" class="com.opensymphony.xwork2.ExternalReferenceAction">
                 <external-ref name="foo">myFoo</external-ref>
             <interceptor-ref name="debugStack"/>
             <interceptor-ref name="defaultStack"/>
+            <result name="success" type="mock" />
         </action>
         <!-- test required flag -->
         <action name="TestExternalRefResolver2" class="com.opensymphony.xwork2.ExternalReferenceAction">
@@ -104,6 +111,7 @@
                 <external-ref required="false" name="does_not_exist">Does Not Exist</external-ref>
             <interceptor-ref name="debugStack"/>
             <interceptor-ref name="defaultStack"/>
+            <result name="success" type="mock" />
         </action>
         <!-- test where required reference is not found -->
         <action name="TestExternalRefResolver3" class="com.opensymphony.xwork2.ExternalReferenceAction">
@@ -124,6 +132,7 @@
         <action name="TestExternalRefResolver4" class="com.opensymphony.xwork2.ExternalReferenceAction">
                 <external-ref name="foo">myFoo</external-ref>
             <interceptor-ref name="defaultStack"/>
+            <result name="success" type="mock" />
         </action>
 
    </package>
@@ -142,12 +151,14 @@
 
         <action name="Bar" class="com.opensymphony.xwork2.SimpleAction">
             <interceptor-ref name="barDefaultStack"/>
+            <result name="error" type="mock" />
         </action>
 
         <action name="TestInterceptorParamInheritance" class="com.opensymphony.xwork2.SimpleAction">
             <interceptor-ref name="test">
                 <param name="expectedFoo">expectedFoo</param>
             </interceptor-ref>
+            <result name="error" type="mock" />
         </action>
 
         <action name="TestInterceptorParamInehritanceOverride" class="com.opensymphony.xwork2.SimpleAction">
@@ -155,6 +166,7 @@
                 <param name="foo">foo123</param>
                 <param name="expectedFoo">foo123</param>
             </interceptor-ref>
+            <result name="error" type="mock" />
         </action>
     </package>
 
@@ -170,6 +182,7 @@
             <result name="error" type="chain">
                 <param name="actionName">bar</param>
             </result>
+            <result name="success" type="mock" />
             <interceptor-ref name="static-params"/>
         </action>
         <action name="myCommand" class="com.opensymphony.xwork2.SimpleAction" method="commandMethod">
@@ -177,6 +190,7 @@
             <result name="success" type="chain">
                 <param name="actionName">foo</param>
             </result>
+            <result name="com.opensymphony.xwork2.SimpleAction.CommandInvoked" type="mock"/>
             <interceptor-ref name="logger"/>
         </action>
     </package>

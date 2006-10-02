@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork2.config.providers;
 
+import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionChainResult;
 import com.opensymphony.xwork2.ModelDrivenAction;
 import com.opensymphony.xwork2.SimpleAction;
@@ -16,6 +17,7 @@ import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor;
 import com.opensymphony.xwork2.interceptor.ParametersInterceptor;
 import com.opensymphony.xwork2.interceptor.StaticParametersInterceptor;
+import com.opensymphony.xwork2.mock.MockResult;
 import com.opensymphony.xwork2.validator.ValidationInterceptor;
 
 import java.util.ArrayList;
@@ -60,6 +62,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         results.put("success", new ResultConfig("success", ActionChainResult.class.getName(), successParams));
 
         ActionConfig fooActionConfig = new ActionConfig(null, SimpleAction.class, params, results, null);
+        fooActionConfig.addResultConfig(new ResultConfig(Action.ERROR, MockResult.class.getName()));
         fooActionConfig.setPackageName("defaultPackage");
         defaultPackageContext.addActionConfig(FOO_ACTION_NAME, fooActionConfig);
 
@@ -72,6 +75,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         interceptors.add(new InterceptorMapping("params", new ParametersInterceptor()));
 
         ActionConfig paramInterceptorActionConfig = new ActionConfig(null, SimpleAction.class, null, results, interceptors);
+        paramInterceptorActionConfig.addResultConfig(new ResultConfig(Action.ERROR, MockResult.class.getName()));
         paramInterceptorActionConfig.setPackageName("defaultPackage");
         defaultPackageContext.addActionConfig(PARAM_INTERCEPTOR_ACTION_NAME, paramInterceptorActionConfig);
 
@@ -80,6 +84,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         interceptors.add(new InterceptorMapping("params", new ParametersInterceptor()));
 
         ActionConfig modelParamActionConfig = new ActionConfig(null, ModelDrivenAction.class, null, null, interceptors);
+        modelParamActionConfig.addResultConfig(new ResultConfig(Action.SUCCESS, MockResult.class.getName()));
         modelParamActionConfig.setPackageName("defaultPackage");
         defaultPackageContext.addActionConfig(MODEL_DRIVEN_PARAM_TEST, modelParamActionConfig);
         
@@ -107,6 +112,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         params.put("percentage", new Double(100.0123));
 
         ActionConfig validationActionConfig = new ActionConfig(null, SimpleAction.class, params, results, interceptors);
+        validationActionConfig.addResultConfig(new ResultConfig(Action.ERROR, MockResult.class.getName()));
         validationActionConfig.setPackageName("defaultPackage");
         defaultPackageContext.addActionConfig(VALIDATION_ACTION_NAME, validationActionConfig);
         defaultPackageContext.addActionConfig(VALIDATION_ALIAS_NAME, validationActionConfig);
@@ -121,6 +127,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
 
         // We need this actionconfig to be the final destination for action chaining
         ActionConfig barActionConfig = new ActionConfig(null, SimpleAction.class, null, null, null);
+        barActionConfig.addResultConfig(new ResultConfig(Action.ERROR, MockResult.class.getName()));
         barActionConfig.setPackageName("defaultPackage");
         defaultPackageContext.addActionConfig("bar", barActionConfig);
 

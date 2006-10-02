@@ -8,6 +8,8 @@ import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
+import com.opensymphony.xwork2.config.entities.ResultConfig;
+import com.opensymphony.xwork2.mock.MockResult;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
@@ -113,12 +115,16 @@ public class ActionNestingTest extends XWorkTestCase {
         public void init(Configuration configurationManager) {
             PackageConfig packageContext = new PackageConfig("nestedActionTest");
             ActionConfig config = new ActionConfig(null, SimpleAction.class, null, null, null);
+            config.addResultConfig(new ResultConfig(Action.SUCCESS, MockResult.class.getName()));
+            config.addResultConfig(new ResultConfig(Action.ERROR, MockResult.class.getName()));
             config.setPackageName("nestedActionTest");
             packageContext.addActionConfig(SIMPLE_ACTION_NAME, config);
             config = new ActionConfig("noStack", com.opensymphony.xwork2.NestedAction.class, null, null, null);
+            config.addResultConfig(new ResultConfig(Action.SUCCESS, MockResult.class.getName()));
             config.setPackageName("nestedActionTest");
             packageContext.addActionConfig(NO_STACK_ACTION_NAME, config);
             config = new ActionConfig("stack", com.opensymphony.xwork2.NestedAction.class, null, null, null);
+            config.addResultConfig(new ResultConfig(Action.SUCCESS, MockResult.class.getName()));
             config.setPackageName("nestedActionTest");
             packageContext.addActionConfig(STACK_ACTION_NAME, config);
             packageContext.setNamespace(NAMESPACE);
