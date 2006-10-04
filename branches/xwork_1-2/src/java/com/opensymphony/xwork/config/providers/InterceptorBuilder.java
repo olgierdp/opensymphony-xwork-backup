@@ -22,6 +22,8 @@ import java.util.*;
  * 
  * @author Mike
  * @author Rainer Hermanns
+ * @author tmjee
+ * @version $Date$ $Id$
  */
 public class InterceptorBuilder {
 
@@ -99,7 +101,7 @@ public class InterceptorBuilder {
             }
         }
 
-        result = (ArrayList) stackConfig.getInterceptors();
+        result = new ArrayList(stackConfig.getInterceptors());
 
         for ( Iterator iter = params.keySet().iterator(); iter.hasNext();) {
 
