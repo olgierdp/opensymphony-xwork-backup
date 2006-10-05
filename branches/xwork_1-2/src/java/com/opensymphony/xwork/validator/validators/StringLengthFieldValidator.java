@@ -53,6 +53,7 @@ import com.opensymphony.xwork.validator.ValidationException;
  *
  * @author Jason Carreira
  * @author Mark Woon
+ * @author tmjee
  * @version $Date$ $Id$
  */
 public class StringLengthFieldValidator extends FieldValidatorSupport {
@@ -90,12 +91,16 @@ public class StringLengthFieldValidator extends FieldValidatorSupport {
         String fieldName = getFieldName();
         String val = (String) getFieldValue(fieldName, object);
 
-        if (val == null) {
+        if (val == null || val.length() <= 0) {
             // use a required validator for these
             return;
         }
         if (doTrim) {
             val = val.trim();
+            if (val.length() <= 0) { 
+            	// use a required validator
+            	return;
+            }
         }
 
         if ((minLength > -1) && (val.length() < minLength)) {
