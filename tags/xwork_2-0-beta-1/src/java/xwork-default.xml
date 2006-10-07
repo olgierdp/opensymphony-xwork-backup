@@ -1,0 +1,35 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+
+<xwork>
+    <package name="xwork-default">
+        <result-types>
+            <result-type name="chain" class="com.opensymphony.xwork2.ActionChainResult"/>
+        </result-types>
+
+        <interceptors>
+            <interceptor name="timer" class="com.opensymphony.xwork2.interceptor.TimerInterceptor"/>
+            <interceptor name="logger" class="com.opensymphony.xwork2.interceptor.LoggingInterceptor"/>
+            <interceptor name="chain" class="com.opensymphony.xwork2.interceptor.ChainingInterceptor"/>
+            <interceptor name="static-params" class="com.opensymphony.xwork2.interceptor.StaticParametersInterceptor"/>
+            <interceptor name="params" class="com.opensymphony.xwork2.interceptor.ParametersInterceptor"/>
+            <interceptor name="model-driven" class="com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor"/>
+            <interceptor name="scoped-model-driven" class="com.opensymphony.xwork2.interceptor.ScopedModelDrivenInterceptor"/>
+            <interceptor name="validation" class="com.opensymphony.xwork2.validator.ValidationInterceptor"/>
+            <interceptor name="workflow" class="com.opensymphony.xwork2.interceptor.DefaultWorkflowInterceptor"/>
+            <interceptor name="prepare" class="com.opensymphony.xwork2.interceptor.PrepareInterceptor"/>
+            <interceptor name="conversionError"  class="com.opensymphony.xwork2.interceptor.ConversionErrorInterceptor"/>
+			<interceptor name="alias" class="com.opensymphony.xwork2.interceptor.AliasInterceptor"/>
+  
+            <interceptor-stack name="defaultStack">
+                <interceptor-ref name="static-params"/>
+                <interceptor-ref name="params"/>
+                <interceptor-ref name="conversionError"/>
+            </interceptor-stack>
+            <interceptor-stack name="validationWorkflowStack">
+                <interceptor-ref name="defaultStack"/>
+                <interceptor-ref name="validation"/>
+                <interceptor-ref name="workflow"/>
+            </interceptor-stack>
+        </interceptors>
+    </package>
+</xwork>
