@@ -66,9 +66,24 @@
             <name>Peter Kelley</name>
             <email>yellekau@yahoo.com</email>
         </person>
+        <person>
+            <name>Don Brown</name>
+            <email>mrdon@twdata.org</email>
+        </person>
     </developers>
 
     <releases>
+        <release>
+            <version>2.0-beta-1</version>
+            <date>07/10/2006</date>
+            <jiraId>21650</jiraId>
+            <downloads>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/41843/xwork-2.0-beta-1.zip</url>
+                    <name>Full</name>
+                </download>
+            </downloads>
+        </release>
         <release>
             <version>1.1.3</version>
             <date>03/23/2006</date>
