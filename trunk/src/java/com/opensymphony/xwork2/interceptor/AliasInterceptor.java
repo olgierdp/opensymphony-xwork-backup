@@ -61,7 +61,6 @@ import java.util.Map;
  *     &lt;!-- The value for the foo parameter will be applied as if it were named bar --&gt;
  *     &lt;param name="aliases"&gt;#{ 'foo' : 'bar' }&lt;/param&gt;
  *
- *     &lt;!-- note: the alias interceptor is included with the defaultStack in webwork-default.xml --&gt;
  *     &lt;interceptor-ref name="alias"/&gt;
  *     &lt;interceptor-ref name="basicStack"/&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;

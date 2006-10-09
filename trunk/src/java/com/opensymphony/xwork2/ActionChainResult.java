@@ -81,6 +81,16 @@ public class ActionChainResult implements Result {
     private String namespace;
     
     private String methodName;
+    
+    public ActionChainResult() {
+    	super();
+    }
+    
+    public ActionChainResult(String namespace, String actionName, String methodName) {
+    	this.namespace = namespace;
+    	this.actionName = actionName;
+    	this.methodName = methodName;
+    }
 
 
     public void setActionName(String actionName) {

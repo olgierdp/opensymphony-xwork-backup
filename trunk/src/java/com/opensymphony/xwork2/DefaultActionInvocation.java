@@ -158,6 +158,9 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     public Result createResult() throws Exception {
 
+    	if (result != null) {
+    		return result;
+    	}
         ActionConfig config = proxy.getConfig();
         Map results = config.getResults();
 
@@ -349,15 +352,22 @@ public class DefaultActionInvocation implements ActionInvocation {
             UtilTimerStack.push(timerKey);
             Method method = getAction().getClass().getMethod(methodName, new Class[0]);
 
+            Object methodResult = null;
             if (action instanceof Proxy) {
                 try {
-                    return (String) Proxy.getInvocationHandler(action).invoke(action, method, new Object[0]);
+                    methodResult = Proxy.getInvocationHandler(action).invoke(action, method, new Object[0]);
                 } catch (Throwable throwable) {
                     throwable.printStackTrace();
                     throw new Exception("Error invoking on proxy: " + throwable.getMessage());
                 }
             } else {
-                return (String) method.invoke(action, new Object[0]);
+                methodResult = method.invoke(action, new Object[0]);
+            }
+            if (methodResult instanceof Result) {
+            	this.result = (Result) methodResult;
+            	return null;
+            } else {
+            	return (String) methodResult;
             }
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException("The " + methodName + "() is not defined in action " + getAction().getClass() + "");

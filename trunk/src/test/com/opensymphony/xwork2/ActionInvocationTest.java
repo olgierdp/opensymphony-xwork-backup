@@ -26,6 +26,12 @@ public class ActionInvocationTest extends XWorkTestCase {
                 "baz", "myCommand", null);
         assertEquals(SimpleAction.COMMAND_RETURN_CODE, commandActionProxy.execute());
     }
+    
+    public void testResultReturnInvocation() throws Exception {
+        ActionProxy baseActionProxy = ActionProxyFactory.getFactory().createActionProxy(configurationManager.getConfiguration(),
+                "baz", "resultAction", null);
+        assertEquals(null, baseActionProxy.execute());
+    }
 
     public void testSimple() {
         HashMap params = new HashMap();

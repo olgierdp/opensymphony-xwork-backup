@@ -155,6 +155,10 @@ public class SimpleAction extends ActionSupport {
     public String commandMethod() throws Exception {
         return COMMAND_RETURN_CODE;
     }
+    
+    public Result resultAction() throws Exception {
+    	return new VoidResult();
+    }
 
     public String exceptionMethod() throws Exception {
         if (throwException) {

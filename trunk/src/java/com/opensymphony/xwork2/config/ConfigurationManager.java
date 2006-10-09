@@ -111,10 +111,7 @@ public class ConfigurationManager {
 
 
     /**
-     * reloads the Configuration files if the configuration files indicate that they need to be reloaded.
-     * <p/>
-     * <B>NOTE:</b> FileManager could be configured through webwork.properties through
-     * webwork.configuration.xml.reload  property.
+     * Reloads the Configuration files if the configuration files indicate that they need to be reloaded.
      */
     public synchronized void conditionalReload() {
         if (FileManager.isReloadingConfigs()) {

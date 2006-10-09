@@ -193,6 +193,13 @@
             <result name="com.opensymphony.xwork2.SimpleAction.CommandInvoked" type="mock"/>
             <interceptor-ref name="logger"/>
         </action>
+        <action name="resultAction" class="com.opensymphony.xwork2.SimpleAction" method="resultAction">
+            <param name="bar">456</param>
+            <result name="success" type="chain">
+                <param name="actionName">foo</param>
+            </result>
+            <interceptor-ref name="logger"/>
+        </action>
     </package>
 
     <package name="multipleInheritance" extends="default,abstractPackage,bar" namespace="multipleInheritance">
