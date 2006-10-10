@@ -152,7 +152,7 @@ import org.apache.commons.logging.LogFactory;
  *      UtilTimerStack.pop(logMessage); //this needs to be the same text as above
  *    }
  *    
- * <!-- END SNIPPET: method2 -->   
+ * <!-- END SNIPPET: method1 -->   
  * </pre>
  * 
  * or 
