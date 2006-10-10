@@ -43,21 +43,21 @@ import org.apache.commons.logging.LogFactory;
  *   <li>FreemarkerPageFilter</li>
  *   <li>DispatcherFilter</li>
  *   <ul>
- *      <li>** creation of DefaultActionProxy</li>
+ *      <li>creation of DefaultActionProxy</li>
  *      <ul>
- *         <li>*** creation of DefaultActionInvocation</li>
+ *         <li>creation of DefaultActionInvocation</li>
  *         <ul>
- *   	      <li>**** creation of Action</li>
+ *   	      <li>creation of Action</li>
  *        </ul>
  *      </ul>
- *      <li>** execution of DefaultActionProxy</li>
+ *      <li>execution of DefaultActionProxy</li>
  *      <ul>
- *         <li>*** invocation of DefaultActionInvocation</li>
+ *         <li>invocation of DefaultActionInvocation</li>
  *         <ul>
- *           <li>**** invocation of Interceptors</li>
- *           <li>**** invocation of Action</li>
- *           <li>**** invocation of PreResultListener</li>
- *           <li>**** invocation of Result</li>
+ *           <li>invocation of Interceptors</li>
+ *           <li>invocation of Action</li>
+ *           <li>invocation of PreResultListener</li>
+ *           <li>invocation of Result</li>
  *        </ul>
  *     </ul>
  *   </ul>
