@@ -179,7 +179,7 @@ import org.apache.commons.logging.LogFactory;
  * say if it is Log4j, one could direct the log to appear in a different file, being emailed to someone or have 
  * it stored in the db.
  * 
- * <!-- START SNIPPET: profileLogFile -->
+ * <!-- END SNIPPET: profileLogFile -->
  * 
  * @version $Date$ $Id$
  */
