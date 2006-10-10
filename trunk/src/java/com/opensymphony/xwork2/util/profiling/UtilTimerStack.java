@@ -35,23 +35,35 @@ import org.apache.commons.logging.LogFactory;
  * <p>
  * Usage:
  * <pre>
- * String logMessage = "Log message";
- * UtilTimerStack.push(logMessage);
- * try
- * {
- *   //do some code
- * }
- * finally
- * {
- *   UtilTimerStack.pop(logMessage); //this needs to be the same text as above
- * }
+ *    String logMessage = "Log message";
+ *    UtilTimerStack.push(logMessage);
+ *    try {
+ *      // do some code
+ *    }
+ *    finally {
+ *      UtilTimerStack.pop(logMessage); //this needs to be the same text as above
+ *    }
  * </pre>
+ * 
+ * or 
+ * 
+ * <pre>
+ *   String result = UtilTimerStack.profile("purchaseItem: ", 
+ *       new UtilTimerStack.ProfilingBlock<String>() {
+ *            public String doProfiling() {
+ *               // do some code
+ *               return "Ok";
+ *            }
+ *       });
+ * </pre>
+ * 
+ * @version $Date$ $Id$
  */
 public class UtilTimerStack
 {
 
     // A reference to the current ProfilingTimerBean
-    private static ThreadLocal current = new ThreadLocal();
+    protected static ThreadLocal<ProfilingTimerBean> current = new ThreadLocal<ProfilingTimerBean>();
 
     /**
      * System property that controls whether this timer should be used or not.  Set to "true" activates
@@ -59,10 +71,20 @@ public class UtilTimerStack
      */
     public static final String ACTIVATE_PROPERTY = "xwork.profile.activate";
 
-    public static final String MIN_TIME = "atlassian.profile.mintime";
+    /**
+     * System property that controls the min time, that if exceeded will cause a log (at INFO level) to be
+     * created.
+     */
+    public static final String MIN_TIME = "xwork.profile.mintime";
     
     private static final Log log = LogFactory.getLog(UtilTimerStack.class);
 
+    /**
+     * Create and start a performance profiling with the <code>name</code> given. Deal with 
+     * profile hierarchy automatically, so caller don't have to be concern about it.
+     * 
+     * @param name profile name
+     */
     public static void push(String name)
     {
         if (!isActive())
@@ -83,6 +105,12 @@ public class UtilTimerStack
         current.set(newTimer);
     }
 
+    /**
+     * End a preformance profiling with the <code>name</code> given. Deal with
+     * profile hierarchy automatically, so caller don't have to be concern about it.
+     * 
+     * @param name profile name
+     */
     public static void pop(String name)
     {
         if (!isActive())
@@ -120,11 +148,22 @@ public class UtilTimerStack
 
     }
 
+    /**
+     * Do a log (at INFO level) of the time taken for this particular profiling.
+     * 
+     * @param currentTimer profiling timer bean
+     */
     private static void printTimes(ProfilingTimerBean currentTimer)
     {
         log.info(currentTimer.getPrintable(getMinTime()));
     }
 
+    /**
+     * Get the min time for this profiling, it searches for a System property
+     * 'xwork.profile.mintime' and default to 0.
+     * 
+     * @return long
+     */
     private static long getMinTime()
     {
         try
@@ -137,17 +176,94 @@ public class UtilTimerStack
         }
     }
 
+    /**
+     * Determine if profiling is being activated, by searching for a system property
+     * 'xwork.profile.activate', default to false (profiling is off).
+     * 
+     * @return
+     */
     public static boolean isActive()
     {
         return System.getProperty(ACTIVATE_PROPERTY) != null;
     }
 
+    /**
+     * Turn profiling on or off.
+     * 
+     * @param active
+     */
     public static void setActive(boolean active)
     {
         if (active)
             System.setProperty(ACTIVATE_PROPERTY, "true");
         else
-            System.setProperty(ACTIVATE_PROPERTY, null);
+        	System.clearProperty(ACTIVATE_PROPERTY);
     }
 
+
+    /**
+     * A convenience method that allows <code>block</code> of code subjected to profiling to be executed 
+     * and avoid the need of coding boiler code that does pushing (UtilTimeBean.push(...)) and 
+     * poping (UtilTimerBean.pop(...)) in a try ... finally ... block.
+     * 
+     * <p/>
+     * 
+     * Example of usage:
+     * <pre>
+     * 	 // we need a returning result
+     *   String result = UtilTimerStack.profile("purchaseItem: ", 
+     *       new UtilTimerStack.ProfilingBlock<String>() {
+     *            public String doProfiling() {
+     *               getMyService().purchaseItem(....)
+     *               return "Ok";
+     *            }
+     *       });
+     * </pre>
+     * or
+     * <pre>
+     *   // we don't need a returning result
+     *   UtilTimerStack.profile("purchaseItem: ", 
+     *       new UtilTimerStack.ProfilingBlock<String>() {
+     *            public String doProfiling() {
+     *               getMyService().purchaseItem(....)
+     *               return null;
+     *            }
+     *       });
+     * </pre>
+     * 
+     * @param <T> any return value if there's one.
+     * @param name profile name
+     * @param block code block subjected to profiling
+     * @return T
+     * @throws Exception
+     */
+    public static <T> T profile(String name, ProfilingBlock<T> block) throws Exception {
+    	UtilTimerStack.push(name);
+    	try {
+    		return block.doProfiling();
+    	}
+    	finally {
+    		UtilTimerStack.pop(name);
+    	}
+    }
+    
+    /**
+     * A callback interface where code subjected to profile is to be executed. This eliminates the need
+     * of coding boiler code that does pushing (UtilTimerBean.push(...)) and poping (UtilTimerBean.pop(...))
+     * in a try ... finally ... block.
+     * 
+     * @version $Date$ $Id$
+     * 
+     * @param <T>
+     */
+    public static interface ProfilingBlock<T> {
+    	
+    	/**
+    	 * Method that execute the code subjected to profiling.
+    	 * 
+    	 * @return
+    	 * @throws Exception
+    	 */
+    	T doProfiling() throws Exception;
+    }
 }

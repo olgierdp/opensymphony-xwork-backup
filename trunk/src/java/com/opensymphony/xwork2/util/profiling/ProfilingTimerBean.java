@@ -33,10 +33,14 @@ import java.util.*;
  *
  * @author <a href="mailto:mike@atlassian.com">Mike Cannon-Brookes</a>
  * @author <a href="mailto:scott@atlassian.com">Scott Farquhar</a>
+ * 
+ * @version $Date$ $Id$
  */
-public class ProfilingTimerBean implements java.io.Serializable
-{
-    List children = new ArrayList();
+public class ProfilingTimerBean implements java.io.Serializable {
+	
+	private static final long serialVersionUID = -6180672043920208784L;
+	
+	List<ProfilingTimerBean> children = new ArrayList<ProfilingTimerBean>();
     ProfilingTimerBean parent = null;
 
     String resource;

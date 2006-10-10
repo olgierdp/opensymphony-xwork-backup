@@ -7,9 +7,10 @@ package com.opensymphony.xwork2;
 import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
-import com.opensymphony.xwork2.config.RuntimeConfiguration;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
+import com.opensymphony.xwork2.util.profiling.UtilTimerStack;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -23,11 +24,16 @@ import java.util.Map;
  *
  * @author Rainer Hermanns
  * @author Revised by <a href="mailto:hu_pengfei@yahoo.com.cn">Henry Hu</a>
- * @version $Revision$
+ * @author tmjee
+ * 
+ * @version $Date$ $Id$
  * @since 2005-8-6
  */
 public class DefaultActionProxy implements ActionProxy, Serializable {
-    private static final Log LOG = LogFactory.getLog(DefaultActionProxy.class);
+	
+	private static final long serialVersionUID = 3293074152487468527L;
+
+	private static final Log LOG = LogFactory.getLog(DefaultActionProxy.class);
 
     protected Configuration configuration;
     protected ActionConfig config;
@@ -46,36 +52,43 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
      * (like a RMIActionProxy).
      */
     protected DefaultActionProxy(Configuration cfg, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
-        this.cleanupContext = cleanupContext;
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Creating an DefaultActionProxy for namespace " + namespace + " and action name " + actionName);
-        }
+    	String profileKey = "create DefaultActionProxy: ";
+    	try {
+    		UtilTimerStack.push(profileKey);
+    		
+    		this.cleanupContext = cleanupContext;
+    		if (LOG.isDebugEnabled()) {
+    			LOG.debug("Creating an DefaultActionProxy for namespace " + namespace + " and action name " + actionName);
+    		}
 
-        this.configuration = cfg;
-        this.actionName = actionName;
-        this.namespace = namespace;
-        this.executeResult = executeResult;
-        this.extraContext = extraContext;
+    		this.configuration = cfg;
+    		this.actionName = actionName;
+    		this.namespace = namespace;
+    		this.executeResult = executeResult;
+    		this.extraContext = extraContext;
 
-        config = configuration.getRuntimeConfiguration().getActionConfig(namespace, actionName);
+    		config = configuration.getRuntimeConfiguration().getActionConfig(namespace, actionName);
 
-        if (config == null) {
-            String message;
+    		if (config == null) {
+    			String message;
 
-            if ((namespace != null) && (namespace.trim().length() > 0)) {
-                message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
+    			if ((namespace != null) && (namespace.trim().length() > 0)) {
+    				message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
                         namespace, actionName
-                });
-            } else {
-                message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
+    				});
+    			} else {
+    				message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
                         actionName
-                });
-            }
+    				});
+    			}
+    			throw new ConfigurationException(message);
+    		}	
 
-            throw new ConfigurationException(message);
-        }
-
-        prepare();
+    		prepare();
+    	}
+    	finally {
+    		UtilTimerStack.pop(profileKey);
+    	}
     }
 
     public Object getAction() {
@@ -112,12 +125,16 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
 
         String retCode = null;
 
+        String profileKey = "execute: ";
         try {
+        	UtilTimerStack.push(profileKey);
+        	
             retCode = invocation.invoke();
         } finally {
             if (cleanupContext) {
                 ActionContext.setContext(nestedContext);
             }
+            UtilTimerStack.pop(profileKey);
         }
 
         return retCode;

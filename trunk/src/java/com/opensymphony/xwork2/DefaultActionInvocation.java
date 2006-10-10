@@ -10,7 +10,6 @@ import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.XWorkContinuationConfig;
 import com.opensymphony.xwork2.util.profiling.UtilTimerStack;
@@ -36,12 +35,17 @@ import java.util.Map;
  * The Default ActionInvocation implementation
  *
  * @author Rainer Hermanns
- * @version $Revision$
+ * @author tmjee
+ * 
+ * @version $Date$ $Id$
+ * 
  * @see com.opensymphony.xwork2.DefaultActionProxy
  */
 public class DefaultActionInvocation implements ActionInvocation {
     
-    public static ContinuationHandler continuationHandler;
+	private static final long serialVersionUID = -585293628862447329L;
+
+	public static ContinuationHandler continuationHandler;
 
     static {
         if (ObjectFactory.getContinuationPackage() != null) {
@@ -70,11 +74,17 @@ public class DefaultActionInvocation implements ActionInvocation {
         this(proxy, extraContext, true);
     }
 
-    protected DefaultActionInvocation(ActionProxy proxy, Map extraContext, boolean pushAction) throws Exception {
-        this.proxy = proxy;
-        this.extraContext = extraContext;
-        this.pushAction = pushAction;
-        init();
+    protected DefaultActionInvocation(final ActionProxy proxy, final Map extraContext, final boolean pushAction) throws Exception {
+    	UtilTimerStack.profile("create DefaultActionInvocation: ", 
+    			new UtilTimerStack.ProfilingBlock<Object>() {
+					public Object doProfiling() throws Exception {
+						DefaultActionInvocation.this.proxy = proxy;
+				        DefaultActionInvocation.this.extraContext = extraContext;
+				        DefaultActionInvocation.this.pushAction = pushAction;
+				        init();
+						return null;
+					}
+    			});
     }
 
     public Object getAction() {
@@ -194,41 +204,63 @@ public class DefaultActionInvocation implements ActionInvocation {
      * @throws ConfigurationException If no result can be found with the returned code
      */
     public String invoke() throws Exception {
-        if (executed) {
-            throw new IllegalStateException("Action has already executed");
-        }
+    	String profileKey = "invoke: ";
+    	try {
+    		UtilTimerStack.push(profileKey);
+    		
+    		if (executed) {
+    			throw new IllegalStateException("Action has already executed");
+    		}
 
-        if (interceptors.hasNext()) {
-            InterceptorMapping interceptor = (InterceptorMapping) interceptors.next();
-            resultCode = interceptor.getInterceptor().intercept(this);
-        } else {
-            resultCode = invokeActionOnly();
-        }
+    		if (interceptors.hasNext()) {
+    			final InterceptorMapping interceptor = (InterceptorMapping) interceptors.next();
+    			return UtilTimerStack.profile("interceptor: "+interceptor.getName(), 
+    					new UtilTimerStack.ProfilingBlock<String>() {
+							public String doProfiling() throws Exception {
+				    			resultCode = interceptor.getInterceptor().intercept(DefaultActionInvocation.this);
+								return resultCode;
+							}
+    			});
+    		} else {
+    			resultCode = invokeActionOnly();
+    		}
 
-        // this is needed because the result will be executed, then control will return to the Interceptor, which will
-        // return above and flow through again
-        if (!executed) {
-            if (preResultListeners != null) {
-                for (Iterator iterator = preResultListeners.iterator();
-                     iterator.hasNext();) {
-                    PreResultListener listener = (PreResultListener) iterator.next();
-                    listener.beforeResult(this, resultCode);
-                }
-            }
+    		// this is needed because the result will be executed, then control will return to the Interceptor, which will
+    		// return above and flow through again
+    		if (!executed) {
+    			if (preResultListeners != null) {
+    				for (Iterator iterator = preResultListeners.iterator();
+    					iterator.hasNext();) {
+    					PreResultListener listener = (PreResultListener) iterator.next();
+    					
+    					String _profileKey="preResultListener: ";
+    					try {
+    						UtilTimerStack.push(_profileKey);
+    						listener.beforeResult(this, resultCode);
+    					}
+    					finally {
+    						UtilTimerStack.pop(_profileKey);
+    					}
+    				}
+    			}
 
-            // now execute the result, if we're supposed to
-            if (proxy.getExecuteResult()) {
-                executeResult();
-            }
+    			// now execute the result, if we're supposed to
+    			if (proxy.getExecuteResult()) {
+    				executeResult();
+    			}
 
-            executed = true;
-        }
+    			executed = true;
+    		}
 
-        return resultCode;
+    		return resultCode;
+    	}
+    	finally {
+    		UtilTimerStack.pop(profileKey);
+    	}
     }
 
     public String invokeActionOnly() throws Exception {
-        return invokeAction(getAction(), proxy.getConfig());
+    	return invokeAction(getAction(), proxy.getConfig());
     }
 
     protected void createAction(Map contextMap) {
