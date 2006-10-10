@@ -32,9 +32,117 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * A timer stack.
- * <p>
- * Usage:
+ *
+ * <p />
+ * 
+ * <!-- START SNIPPET: profilingAspect -->
+ * 
+ * Struts2 profiling aspects involves the following :-
+ * <ul>
+ *   <li>ActionContextCleanUp</li>
+ *   <li>FreemarkerPageFilter</li>
+ *   <li>DispatcherFilter</li>
+ *   <ul>
+ *      <li>** creation of DefaultActionProxy</li>
+ *      <ul>
+ *         <li>*** creation of DefaultActionInvocation</li>
+ *         <ul>
+ *   	      <li>**** creation of Action</li>
+ *        </ul>
+ *      </ul>
+ *      <li>** execution of DefaultActionProxy</li>
+ *      <ul>
+ *         <li>*** invocation of DefaultActionInvocation</li>
+ *         <ul>
+ *           <li>**** invocation of Interceptors</li>
+ *           <li>**** invocation of Action</li>
+ *           <li>**** invocation of PreResultListener</li>
+ *           <li>**** invocation of Result</li>
+ *        </ul>
+ *     </ul>
+ *   </ul>
+ * </ul>
+ * 
+ * <!-- END SNIPPET: profilingAspect -->
+ * 
+ * 
+ * <!-- START SNIPPET: activationDescription -->
+ * 
+ * Activating / Deactivating of the profiling feature could be done through:- 
+ * 
+ * <!-- END SNIPPET: activationDescription -->
+ * 
+ * <p/>
+ * 
+ * System properties:- <p/>
  * <pre>
+ * <!-- START SNIPPET: activationThroughSystemProperty -->
+ * 
+ *  -Dxwork.profile.activate=true
+ *  
+ * <!-- END SNIPPET: activationThroughSystemProperty --> 
+ * </pre>
+ * 
+ * <!-- START SNIPPET: activationThroughSystemPropertyDescription -->
+ * 
+ * This could be done in the container startup script eg. CATALINA_OPTS in catalina.sh 
+ * (tomcat) or using "java -Dxwork.profile.activate=true -jar start.jar" (jetty) 
+ * 
+ * <!-- END SNIPPET: activationThroughSystemPropertyDescription -->
+ * 
+ * Code :- <p/>
+ * <pre>
+ * <!-- START SNIPPET: activationThroughCode -->
+ *   
+ *  UtilTimerStack.setActivate(true);
+ *  
+ *  // or 
+ *  
+ *  System.setProperty("xwork.profile.activate", "true");
+ *   
+ *  // or
+ *  
+ *  System.setProperty(UtilTimerStack.ACTIVATE_PROPERTY, "true");
+ *  
+ * <!-- END SNIPPET: activationThroughCode --> 
+ * </pre>
+ * 
+ * <!-- START SNIPPET: activationThroughCodeDescription -->
+ * 
+ * This could be done in a static block, in a Spring bean with lazy-init="false", 
+ * in a Servlet with init-on-startup as some numeric value, in a Filter or 
+ * Listener's init method etc.
+ * 
+ * <!-- END SNIPPET: activationThroughCodeDescription -->
+ * 
+ * 
+ * 
+ * <!-- START SNIPPET: filteringDescription -->
+ * 
+ * One could filter out the profile logging by having a System property as follows. With this
+ * 'xwork.profile.mintime' property, one could only log profile information when its execution time 
+ * exceed those specified in 'xwor.profile.mintime' system property. If no such property is specified, 
+ * it will be assumed to be 0, hence all profile information will be logged.
+ * 
+ * <!-- END SNIPPET: filteringDescription -->
+ * 
+ * <pre>
+ * <!-- START SNIPPET: filtering -->
+ * 
+ *  -Dxwork.profile.mintime=10000
+ * 
+ * <!-- END SNIPPET: filtering -->
+ * </pre>
+ * 
+ * <!-- START SNIPPET: methodDescription -->
+ * 
+ * One could extends the profiling feature provided by Struts2 in their web application as well. 
+ * 
+ * <!-- END SNIPPET: methodDescription -->
+ * 
+ * <pre>
+ * <!-- START SNIPPET: method1 -->
+ * 
  *    String logMessage = "Log message";
  *    UtilTimerStack.push(logMessage);
  *    try {
@@ -43,11 +151,15 @@ import org.apache.commons.logging.LogFactory;
  *    finally {
  *      UtilTimerStack.pop(logMessage); //this needs to be the same text as above
  *    }
+ *    
+ * <!-- END SNIPPET: method2 -->   
  * </pre>
  * 
  * or 
  * 
  * <pre>
+ * <!-- START SNIPPET: method2 -->
+ * 
  *   String result = UtilTimerStack.profile("purchaseItem: ", 
  *       new UtilTimerStack.ProfilingBlock<String>() {
  *            public String doProfiling() {
@@ -55,7 +167,19 @@ import org.apache.commons.logging.LogFactory;
  *               return "Ok";
  *            }
  *       });
+ *       
+ * <!-- END SNIPPET: method2 -->      
  * </pre>
+ * 
+ * 
+ * <!-- START SNIPPET: profileLogFile -->
+ * 
+ * Profiled result is logged using commons-logging under the logger named 
+ * 'com.opensymphony.xwork2.util.profiling.UtilTimerStack'. Depending on the underlying logging implementation
+ * say if it is Log4j, one could direct the log to appear in a different file, being emailed to someone or have 
+ * it stored in the db.
+ * 
+ * <!-- START SNIPPET: profileLogFile -->
  * 
  * @version $Date$ $Id$
  */
