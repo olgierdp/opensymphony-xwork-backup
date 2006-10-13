@@ -231,6 +231,8 @@ public class XWorkConverter extends DefaultTypeConverter {
 
             tc = (TypeConverter) getConverter(clazz, property);
         }
+        if (LOG.isDebugEnabled())
+            LOG.debug("field-level type converter for property ["+property+"] = "+(tc==null?"none found":tc));
 
         if (tc == null) {
             if (toClass.equals(String.class) && (value != null) && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class)))
@@ -242,6 +244,9 @@ public class XWorkConverter extends DefaultTypeConverter {
                 tc = lookup(toClass);
             }
         }
+        if (LOG.isDebugEnabled())
+            LOG.debug("global-level type converter for property ["+property+"] = "+(tc==null?"none found":tc));
+        
 
         if (tc != null) {
             try {
@@ -255,6 +260,8 @@ public class XWorkConverter extends DefaultTypeConverter {
 
         if (defaultTypeConverter != null) {
             try {
+                if (LOG.isDebugEnabled())
+                    LOG.debug("falling back to default type converter ["+defaultTypeConverter+"]");
                 return defaultTypeConverter.convertValue(context, target, member, property, value, toClass);
             } catch (Exception e) {
                 handleConversionException(context, property, value, target);
@@ -263,6 +270,8 @@ public class XWorkConverter extends DefaultTypeConverter {
             }
         } else {
             try {
+                if (LOG.isDebugEnabled())
+                    LOG.debug("falling back to Ognl's default type conversion");
                 return super.convertValue(context, target, member, property, value, toClass);
             } catch (Exception e) {
                 handleConversionException(context, property, value, target);
