@@ -2,11 +2,18 @@
 
 <xwork>
     <package name="xwork-default">
+    
+    	<!-- START SNIPPET: xwork2-default-result-types -->
+    
         <result-types>
             <result-type name="chain" class="com.opensymphony.xwork2.ActionChainResult"/>
         </result-types>
 
+		<!-- END SNIPPET: xwork2-default-result-types -->
+
         <interceptors>
+            <!-- START SNIPPET: xwork2-default-interceptors -->
+        
             <interceptor name="timer" class="com.opensymphony.xwork2.interceptor.TimerInterceptor"/>
             <interceptor name="logger" class="com.opensymphony.xwork2.interceptor.LoggingInterceptor"/>
             <interceptor name="chain" class="com.opensymphony.xwork2.interceptor.ChainingInterceptor"/>
@@ -20,6 +27,11 @@
             <interceptor name="conversionError"  class="com.opensymphony.xwork2.interceptor.ConversionErrorInterceptor"/>
 			<interceptor name="alias" class="com.opensymphony.xwork2.interceptor.AliasInterceptor"/>
   
+  			<!-- END SNIPPET: xwork2-default-interceptors -->
+  
+  
+  			<!-- START SNIPPET: xwork2-default-interceptor-stack -->
+  
             <interceptor-stack name="defaultStack">
                 <interceptor-ref name="static-params"/>
                 <interceptor-ref name="params"/>
@@ -30,6 +42,9 @@
                 <interceptor-ref name="validation"/>
                 <interceptor-ref name="workflow"/>
             </interceptor-stack>
+            
+            <!-- END SNIPPET: xwork2-default-interceptor-stack -->
+            
         </interceptors>
     </package>
 </xwork>
