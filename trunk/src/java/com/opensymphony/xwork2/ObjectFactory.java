@@ -114,7 +114,7 @@ public class ObjectFactory {
     }
 
     /**
-     * Build an instance of the action class to handle a web request
+     * Build an instance of the action class to handle a particular request (eg. web request)
      * @param actionName the name the action configuration is set up with in the configuration
      * @param namespace the namespace the action is configured in
      * @param config the action configuration found in the config for the actionName / namespace
