@@ -121,17 +121,17 @@ import org.apache.commons.logging.LogFactory;
  * 
  * One could filter out the profile logging by having a System property as follows. With this
  * 'xwork.profile.mintime' property, one could only log profile information when its execution time 
- * exceed those specified in 'xwor.profile.mintime' system property. If no such property is specified, 
+ * exceed those specified in 'xwork.profile.mintime' system property. If no such property is specified, 
  * it will be assumed to be 0, hence all profile information will be logged.
  * 
  * <!-- END SNIPPET: filteringDescription -->
  * 
  * <pre>
- * <!-- START SNIPPET: filtering -->
+ * <!-- START SNIPPET: filteringCode -->
  * 
  *  -Dxwork.profile.mintime=10000
  * 
- * <!-- END SNIPPET: filtering -->
+ * <!-- END SNIPPET: filteringCode -->
  * </pre>
  * 
  * <!-- START SNIPPET: methodDescription -->
