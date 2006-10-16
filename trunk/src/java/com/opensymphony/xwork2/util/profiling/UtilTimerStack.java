@@ -35,13 +35,44 @@ import org.apache.commons.logging.LogFactory;
  *
  * <p />
  * 
- * <!-- START SNIPPET: profilingAspect -->
+ * <!-- START SNIPPET: profilingAspect_struts2 -->
  * 
  * Struts2 profiling aspects involves the following :-
  * <ul>
  *   <li>ActionContextCleanUp</li>
  *   <li>FreemarkerPageFilter</li>
  *   <li>DispatcherFilter</li>
+ *   <ul>
+ *      <li>Dispatcher</li>
+ *      <ul>
+ *          <li>creation of DefaultActionProxy</li>
+ *          <ul>
+ *              <li>creation of DefaultActionInvocation</li>
+ *              <ul>
+ *   	          <li>creation of Action</li>
+ *              </ul>
+ *          </ul>
+ *          <li>execution of DefaultActionProxy</li>
+ *          <ul>
+ *              <li>invocation of DefaultActionInvocation</li>
+ *              <ul>
+ *                  <li>invocation of Interceptors</li>
+ *                  <li>invocation of Action</li>
+ *                  <li>invocation of PreResultListener</li>
+ *                  <li>invocation of Result</li>
+ *              </ul>
+ *          </ul>
+ *      </ul>
+ *   </ul>
+ * </ul>
+ * 
+ * <!-- END SNIPPET: profilingAspect_struts2 -->
+ *
+ *
+ * <!-- START SNIPPET: profilingAspect_xwork -->
+ * 
+ * XWork2 profiling aspects involves the following :-
+ * <ul>
  *   <ul>
  *      <li>creation of DefaultActionProxy</li>
  *      <ul>
@@ -63,7 +94,7 @@ import org.apache.commons.logging.LogFactory;
  *   </ul>
  * </ul>
  * 
- * <!-- END SNIPPET: profilingAspect -->
+ * <!-- END SNIPPET: profilingAspect_xwork -->
  * 
  * 
  * <!-- START SNIPPET: activationDescription -->
