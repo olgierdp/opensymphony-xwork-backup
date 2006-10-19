@@ -230,9 +230,11 @@ public class XWorkConverter extends DefaultTypeConverter {
             }
 
             tc = (TypeConverter) getConverter(clazz, property);
+            
+            if (LOG.isDebugEnabled())
+                LOG.debug("field-level type converter for property ["+property+"] = "+(tc==null?"none found":tc));
         }
-        if (LOG.isDebugEnabled())
-            LOG.debug("field-level type converter for property ["+property+"] = "+(tc==null?"none found":tc));
+        
 
         if (tc == null) {
             if (toClass.equals(String.class) && (value != null) && !(value.getClass().equals(String.class) || value.getClass().equals(String[].class)))
@@ -243,9 +245,11 @@ public class XWorkConverter extends DefaultTypeConverter {
                 // when converting from a string, use the toClass's converter
                 tc = lookup(toClass);
             }
+            
+            if (LOG.isDebugEnabled())
+                LOG.debug("global-level type converter for property ["+property+"] = "+(tc==null?"none found":tc));
         }
-        if (LOG.isDebugEnabled())
-            LOG.debug("global-level type converter for property ["+property+"] = "+(tc==null?"none found":tc));
+        
         
 
         if (tc != null) {
