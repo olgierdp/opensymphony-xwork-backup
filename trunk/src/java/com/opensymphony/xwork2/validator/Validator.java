@@ -87,8 +87,11 @@ package com.opensymphony.xwork2.validator;
  * difference is that validation rules are discovered from the parent downwards.
  * </p>
  * 
- * <p><b>NOTE:</b>Child's *-validation.xml will override parent's *-validation.xml 
- * according to the class hierarchi defined above.</p>
+ * <p><b>NOTE:</b>Child's *-validation.xml will add on to parent's *-validation.xml 
+ * according to the class hierarchi defined above. With this feature, one could have
+ * more generic validation rule at the parent and more specific validation rule at
+ * the child.</p>
+ * 
  * <!-- END SNIPPET: validationRules -->
  * 
  * 
