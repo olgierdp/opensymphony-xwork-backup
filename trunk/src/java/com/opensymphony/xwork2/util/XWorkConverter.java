@@ -100,6 +100,10 @@ import com.opensymphony.xwork2.XWorkMessages;
  * @author <a href="mailto:plightbo@gmail.com">Pat Lightbody</a>
  * @author Rainer Hermanns
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
+ * @author tm_jee
+ * 
+ * @version $Date$ $Id$
+ * 
  * @see XWorkBasicConverter
  */
 public class XWorkConverter extends DefaultTypeConverter {
@@ -113,12 +117,51 @@ public class XWorkConverter extends DefaultTypeConverter {
     public static final String LAST_BEAN_CLASS_ACCESSED = "last.bean.accessed";
     public static final String LAST_BEAN_PROPERTY_ACCESSED = "last.property.accessed";
 
-    HashMap defaultMappings = new HashMap(); 	// non-action (eg. returned value)
-    HashMap mappings = new HashMap(); 			// action
-    HashSet noMapping = new HashSet(); 			// action
-    HashSet unknownMappings = new HashSet(); 	// non-action (eg. returned value)
-    TypeConverter defaultTypeConverter = new XWorkBasicConverter();
-    ObjectTypeDeterminer objectTypeDeterminer = ObjectTypeDeterminerFactory.getInstance();
+    /**
+     * Target class conversion Mappings. 
+     * <pre>
+     * Map<Class, Map<String, Object>>
+     *  - Class -> convert to class
+     *  - Map<String, Object>
+     *    - String -> property name 
+     *                eg. Element_property, property etc.
+     *    - Object -> String to represent properties 
+     *                eg. value part of 
+     *                    KeyProperty_property=id
+     *             -> TypeConverter to represent an Ognl TypeConverter
+     *                eg. value part of 
+     *                    property=foo.bar.MyConverter
+     *             -> Class to represent a class
+     *                eg. value part of 
+     *                    Element_property=foo.bar.MyObject
+     * </pre>               
+     */
+    protected HashMap<Class,Map<String,Object>> mappings = new HashMap<Class,Map<String,Object>>(); // action 			
+    
+    /**
+     * Unavailable target class conversion mappings, serves as a simple cache.
+     */
+    protected HashSet<Class> noMapping = new HashSet<Class>(); // action
+    
+    /**
+     * Record class and its type converter mapping.
+     * <pre>
+     * - String - classname as String
+     * - TypeConverter - instance of TypeConverter
+     * </pre>
+     */
+    protected HashMap<String, TypeConverter> defaultMappings = new HashMap<String, TypeConverter>();  // non-action (eg. returned value)
+    
+    /**
+     * Record classes that doesn't have conversion mapping defined.
+     * <pre>
+     * - String -> classname as String
+     * </pre>
+     */
+    protected HashSet<String> unknownMappings = new HashSet<String>(); 	// non-action (eg. returned value)
+    
+    protected TypeConverter defaultTypeConverter = new XWorkBasicConverter();
+    protected ObjectTypeDeterminer objectTypeDeterminer = ObjectTypeDeterminerFactory.getInstance();
 
 
     protected XWorkConverter() {
@@ -339,12 +382,9 @@ public class XWorkConverter extends DefaultTypeConverter {
         synchronized (clazz) {
             if ((property != null) && !noMapping.contains(clazz)) {
                 try {
-                    Map mapping = (Map) mappings.get(clazz);
+                    Map<String, Object> mapping = mappings.get(clazz);
 
                     if (mapping == null) {
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("Map is null.");
-                        }
                         mapping = buildConverterMapping(clazz);
                     } else {
                         mapping = conditionalReload(clazz, mapping);
@@ -353,9 +393,9 @@ public class XWorkConverter extends DefaultTypeConverter {
                     Object converter = mapping.get(property);
                     if (LOG.isDebugEnabled() && converter == null) {
                         LOG.debug("converter is null for property " + property + ". Mapping size: " + mapping.size());
-                        Iterator iter = mapping.keySet().iterator();
+                        Iterator<String> iter = mapping.keySet().iterator();
                         while (iter.hasNext()) {
-                            Object next = iter.next();
+                            String next = iter.next();
                             LOG.debug(next + ":" + mapping.get(next));
                         }
                     }
@@ -437,11 +477,16 @@ public class XWorkConverter extends DefaultTypeConverter {
      * @param mapping an existing map to add new converter mappings to
      * @param clazz   class to look for converter mappings for
      */
-    void addConverterMapping(Map mapping, Class clazz) {
+    void addConverterMapping(Map<String, Object> mapping, Class clazz) {
         try {
-            InputStream is = FileManager.loadFile(buildConverterFilename(clazz), clazz);
+            String converterFilename = buildConverterFilename(clazz);
+            InputStream is = FileManager.loadFile(converterFilename, clazz);
 
             if (is != null) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("processing conversion file ["+converterFilename+"] [class="+clazz+"]");
+                }
+                
                 Properties prop = new Properties();
                 prop.load(is);
 
@@ -454,12 +499,12 @@ public class XWorkConverter extends DefaultTypeConverter {
                     if (mapping.containsKey(key)) {
                         break;
                     }
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(key + ":" + entry.getValue());
-                    }
-
+                    // for keyProperty of Set
                     if (key.startsWith(DefaultObjectTypeDeterminer.KEY_PROPERTY_PREFIX)
                             || key.startsWith(DefaultObjectTypeDeterminer.CREATE_IF_NULL_PREFIX)) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("\t"+key + ":" + entry.getValue()+"[treated as String]");
+                        }
                         mapping.put(key, entry.getValue());
                     }
                     //for properties of classes
@@ -467,40 +512,40 @@ public class XWorkConverter extends DefaultTypeConverter {
                             key.startsWith(DefaultObjectTypeDeterminer.KEY_PREFIX) ||
                             key.startsWith(DefaultObjectTypeDeterminer.DEPRECATED_ELEMENT_PREFIX))
                             ) {
-                        mapping.put(key, createTypeConverter((String) entry.getValue()));
+                        TypeConverter _typeConverter = createTypeConverter((String) entry.getValue());
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("\t"+key + ":" + entry.getValue()+"[treated as TypeConverter "+_typeConverter+"]");
+                        }
+                        mapping.put(key, _typeConverter);
                     }
                     //for keys of Maps
                     else if (key.startsWith(DefaultObjectTypeDeterminer.KEY_PREFIX)) {
 
                         Class converterClass = Thread.currentThread().getContextClassLoader().loadClass((String) entry.getValue());
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("Converter class: " + converterClass);
-                        }
+                        
                         //check if the converter is a type converter if it is one
                         //then just put it in the map as is. Otherwise
                         //put a value in for the type converter of the class
                         if (converterClass.isAssignableFrom(TypeConverter.class)) {
-
-                            mapping.put(key, createTypeConverter((String) entry.getValue()));
-
-
-                        } else {
-
-                            mapping.put(key, converterClass);
+                            TypeConverter _typeConverter = createTypeConverter((String) entry.getValue());
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug("Object placed in mapping for key "
-                                        + key
-                                        + " is "
-                                        + mapping.get(key));
+                                LOG.debug("\t"+key + ":" + entry.getValue()+"[treated as TypeConverter "+_typeConverter+"]");
                             }
-
+                            mapping.put(key, _typeConverter);
+                        } else {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("\t"+key + ":" + entry.getValue()+"[treated as Class "+converterClass+"]");
+                            }
+                            mapping.put(key, converterClass);
                         }
-
-
                     }
                     //elements(values) of maps / lists
                     else {
-                        mapping.put(key, Thread.currentThread().getContextClassLoader().loadClass((String) entry.getValue()));
+                        Class _c = Thread.currentThread().getContextClassLoader().loadClass((String) entry.getValue());
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("\t"+key + ":" + entry.getValue()+"[treated as Class "+_c+"]");
+                        }
+                        mapping.put(key, _c);
                     }
                 }
             }
@@ -517,8 +562,8 @@ public class XWorkConverter extends DefaultTypeConverter {
      * @param clazz the class to look for converter mappings for
      * @return the converter mappings
      */
-    private Map buildConverterMapping(Class clazz) throws Exception {
-        Map mapping = new HashMap();
+    private Map<String, Object> buildConverterMapping(Class clazz) throws Exception {
+        Map<String, Object> mapping = new HashMap<String, Object>();
 
         // check for conversion mapping associated with super classes and any implemented interfaces
         Class curClazz = clazz;
@@ -546,8 +591,8 @@ public class XWorkConverter extends DefaultTypeConverter {
         return mapping;
     }
 
-    private Map conditionalReload(Class clazz, Map oldValues) throws Exception {
-        Map mapping = oldValues;
+    private Map<String, Object> conditionalReload(Class clazz, Map<String, Object> oldValues) throws Exception {
+        Map<String, Object> mapping = oldValues;
 
         if (FileManager.isReloadingConfigs()) {
             if (FileManager.fileNeedsReloading(buildConverterFilename(clazz))) {
@@ -568,13 +613,21 @@ public class XWorkConverter extends DefaultTypeConverter {
         Properties props = new Properties();
         props.load(is);
 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("processing conversion file ["+propsName+"]");
+        }
+        
         for (Iterator iterator = props.entrySet().iterator();
              iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String key = (String) entry.getKey();
 
             try {
-                defaultMappings.put(key, createTypeConverter((String) entry.getValue()));
+                TypeConverter _typeConverter = createTypeConverter((String) entry.getValue());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("\t"+key + ":" + entry.getValue()+" [treated as TypeConverter "+_typeConverter+"]");
+                }
+                defaultMappings.put(key, _typeConverter);
             } catch (Exception e) {
                 LOG.error("Conversion registration error", e);
             }
