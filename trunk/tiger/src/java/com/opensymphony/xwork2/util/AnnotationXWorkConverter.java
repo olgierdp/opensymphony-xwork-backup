@@ -25,12 +25,12 @@ import java.util.Properties;
  * <!-- START SNIPPET: javadoc -->
  * <p/>
  * Type conversion is great for situations where you need to turn a String in to a more complex object. Because the web
- * is type-agnostic (everything is a string in HTTP), WebWork's type conversion features are very useful. For instance,
+ * is type-agnostic (everything is a string in HTTP), XWork's type conversion features are very useful. For instance,
  * if you were prompting a user to enter in coordinates in the form of a string (such as "3, 22"), you could have
- * WebWork do the conversion both from String to Point and from Point to String.
+ * XWork do the conversion both from String to Point and from Point to String.
  * <p/>
  * <p/> Using this "point" example, if your action (or another compound object in which you are setting properties on)
- * has a corresponding ClassName-conversion.properties file, WebWork will use the configured type converters for
+ * has a corresponding ClassName-conversion.properties file, XWork will use the configured type converters for
  * conversion to and from strings. So turning "3, 22" in to new Point(3, 22) is done by merely adding the following
  * entry to <b>ClassName-conversion.properties</b> (Note that the PointConverter should impl the ognl.TypeConverter
  * interface):
@@ -60,7 +60,7 @@ import java.util.Properties;
  * <!-- START SNIPPET: i18n-note -->
  * <p/>
  * Type conversion should not be used as a substitute for i18n. It is not recommended to use this feature to print out
- * properly formatted dates. Rather, you should use the i18n features of WebWork (and consult the JavaDocs for JDK's
+ * properly formatted dates. Rather, you should use the i18n features of XWork (and consult the JavaDocs for JDK's
  * MessageFormat object) to see how a properly formatted date should be displayed.
  * <p/>
  * <!-- END SNIPPET: i18n-note -->

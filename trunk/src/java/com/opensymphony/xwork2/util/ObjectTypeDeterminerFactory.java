@@ -10,8 +10,6 @@ import com.opensymphony.xwork2.util.ClassLoaderUtil;
 
 /**
  * Factory for getting an instance of {@link ObjectTypeDeterminer}.
- * <p/>
- * In WebWork this factory is used to instantiate a JDK5 generics compatible factory.
  * <br/>
  * Will use <code>com.opensymphony.xwork2.util.GenericsObjectTypeDeterminer</code> if running on JDK5 or higher.
  * If not <code>com.opensymphony.xwork2.util.ObjectTypeDeterminer</code> is used.

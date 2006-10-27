@@ -245,7 +245,7 @@ public class ObjectFactory {
                     try {
                         byte[] bytes = com.uwyn.rife.continuations.util.ClassByteUtil.getBytes(name, parent);
                         if (bytes == null) {
-                            throw new RuntimeException("Continuation error: no bytes loaded");
+                            throw new ClassNotFoundException(name);
                         }
 
                         byte[] resume_bytes = null;

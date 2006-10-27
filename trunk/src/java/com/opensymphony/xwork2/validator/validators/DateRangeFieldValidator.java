@@ -14,7 +14,7 @@ import java.util.Date;
  * 
  * <b>NOTE:</b> If no date converter is specified, XWorkBasicConverter will kick
  * in to do the date conversion, which by default using the <code>Date.SHORT</code> format using 
- * the locale specified in webwork.properties else falling back to the system 
+ * the a programmatically specified locale else falling back to the system 
  * default locale.
  * 
  * 

@@ -32,11 +32,10 @@ import java.util.Map;
  * <b>INFORMATION</b>
  * <!-- START SNIPPET: information -->
  * validators.xml if being defined should be available in the classpath. However 
- * this is not necessary, if no custom validator is needed. Webwork will automatically 
- * picked up a predefined sets of validators defined in 
- * com/opensymphony/xwork2/validator/validators/default.xml packaged together 
- * in xwork jar file that comes with webwork distribution. See ValidatorFactory 
- * static block for details.
+ * this is not necessary, if no custom validator is needed. Predefined sets of validators
+ * will automatically be picked up when defined in 
+ * com/opensymphony/xwork2/validator/validators/default.xml packaged in 
+ * in the xwork jar file. See ValidatorFactory static block for details.
  * <!-- END SNIPPET: information -->
  * </p>
  * 
@@ -83,7 +82,7 @@ import java.util.Map;
  * <!-- START SNIPPET: nonFieldValidators -->
  * Non-field validators only add action level messages. Non-field validators 
  * are mostly domain specific and therefore often custom implementations. 
- * The most important standard non-field validator provided by XWork/WebWork 
+ * The most important standard non-field validator provided by XWork
  * is ExpressionValidator.
  * <!-- END SNIPPET: nonFieldValidators -->
  * </p>
@@ -104,7 +103,7 @@ import java.util.Map;
  *  <li> Per Action class: in a file named ActionName-validation.xml</li>
  *  <li> Per Action alias: in a file named ActionName-alias-validation.xml</li>
  *  <li> Inheritance hierarchy and interfaces implemented by Action class: 
- *  WebWork searches up the inheritance tree of the action to find default 
+ *  XWork searches up the inheritance tree of the action to find default 
  *  validations for parent classes of the Action and interfaces implemented</li>
  * </ol>
  * Here is an example for SimpleAction-validation.xml:

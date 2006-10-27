@@ -1,7 +1,7 @@
-Thanks for trying out XWork: the foundation for WebWork, Java's most 
-cutting edge web development platform. WebWork is brought to you by
-the OpenSymphony team. You can find out more about WebWork and
-OpenSymphony at http://www.opensymphony.com.
+Thanks for trying out XWork: the foundation for Struts 2, Java's most 
+cutting edge web development platform. Struts 2 is brought to you by
+the Apache Struts team. You can find out more about Struts 2 and
+the Apache Software Foundation at http://struts.apache.org.
 
 === Documentation ===
 The documentation can be found in HTML and PDF format in the docs

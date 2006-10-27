@@ -115,8 +115,7 @@ public interface ActionInvocation extends Serializable {
 
     /**
      * Invokes only the action (not interceptors or results). This is useful in rare situations where advanced usage
-     * with the interceptor/action/result workflow is being manipulated for certain functionality. Specifically,
-     * WebWork's execAndWait interceptor takes advantage of this method.
+     * with the interceptor/action/result workflow is being manipulated for certain functionality. 
      */
     String invokeActionOnly() throws Exception;
 }

@@ -550,7 +550,7 @@ public class XWorkConverterTest extends XWorkTestCase {
     public void testConvertSameCollectionToCollection() {
         Collection names = new ArrayList();
         names.add("XWork");
-        names.add("WebWork");
+        names.add("Struts");
 
         Collection col = (Collection) converter.convertValue(context, names, Collection.class);
         assertSame(names, col);

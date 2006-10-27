@@ -66,9 +66,9 @@ import com.opensymphony.xwork2.validator.ValidationException;
  * 
  * &lt;!-- xwork.xml --&gt;
  * &lt;xwork&gt;
- * &lt;include file="webwork-default.xml" /&gt;
+ * &lt;include file="xwork-default.xml" /&gt;
  * ....
- * &lt;package name="myPackage" extends="webwork-default"&gt;
+ * &lt;package name="myPackage" extends="xwork-default"&gt;
  *   ....
  *   &lt;action name="someAction" class="example.MyActionSupport.java"&gt;
  *      &lt;result name="input"&gt;myJspPage.jsp&lt;/result&gt;

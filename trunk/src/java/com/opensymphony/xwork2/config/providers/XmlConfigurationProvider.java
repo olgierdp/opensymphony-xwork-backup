@@ -207,7 +207,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             }
             return true;
         } catch (ClassNotFoundException e) {
-            throw new ConfigurationException("Action class [" + className + "] not found", e, loc);
+            throw new ConfigurationException("Action class [" + className + "] not found", loc);
         } catch (NoSuchMethodException e) {
             throw new ConfigurationException("Action class [" + className + "] does not have a public no-arg constructor", e, loc);
         } catch (Exception ex) {

@@ -34,7 +34,7 @@ import java.util.*;
  * <li>ModelDriven's model (if implements ModelDriven), for the model object repeat from 1</li>
  * <li>package.properties (of the directory where class is located and every parent directory all the way to the root directory)</li>
  * <li>search up the i18n message key hierarchy itself</li>
- * <li>global resource properties (webwork.custom.i18n.resources) defined in webwork.properties</li>
+ * <li>global resource properties</li>
  * </ol>
  * <p/>
  * <!-- END SNIPPET: searchorder -->
@@ -55,19 +55,9 @@ import java.util.*;
  * <!-- END SNIPPET: packagenote -->
  *
  * <!-- START SNIPPET: globalresource -->
- * A global resource bundle could be specified through the 'webwork.custom.i18n.resources' property in
- * webwork.properties. The locale can be siwtched by 'webwork.locale' in the webwork.properties as well.
+ * A global resource bundle could be specified programatically, as well as the locale.
  * <p/>
  * <!-- END SNIPPET: globalresource -->
- *
- * <!-- START SNIPPET: strutscomparison -->
- * Struts users should be familiar with the application.properties resource bundle, where you can put all the messages
- * in the application that are going to be translated. WebWork, though, splits the resource bundles per action or model
- * class, and you may end up with duplicated messages in those resource bundles. A quick fix for that is to create a
- * file called ActionSupport.properties in com/opensymphony/xwork2 and put it on your classpath. This will only work well
- * if all your actions subclass ActionSupport.
- * <p/>
- * <!-- END SNIPPET: strutscomparison -->
  *
  * @author Jason Carreira
  * @author Mark Woon
@@ -104,8 +94,6 @@ public class LocalizedTextUtil {
 
     /**
      * Should resorce bundles be reloaded.
-     * <p/>
-     * In WW see <code>webwork.i18n.reload</code> property.
      * @param reloadBundles  reload bundles?  
      */
     public static void setReloadBundles(boolean reloadBundles) {

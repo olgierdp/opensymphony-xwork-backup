@@ -52,7 +52,7 @@ import java.util.Collection;
  * </pre>
  * 
  * <!-- START SNIPPET: explanation -->
- * <p>In the example above, if the acion's getUser() method return User object, WebWork
+ * <p>In the example above, if the acion's getUser() method return User object, XWork
  * will look for User-myContext-validation.xml for the validators. Since appednPrefix is true,
  * every field name will be prefixed with 'user' such that if the actual field name for 'name' is  
  * 'user.name' </p>

@@ -68,7 +68,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         ModelDrivenAction action = (ModelDrivenAction) proxy.getAction();
         TestBean model = (TestBean) action.getModel();
 
-        String property = System.getProperty("webwork.security.test");
+        String property = System.getProperty("xwork.security.test");
         assertNull(property);
     }
 

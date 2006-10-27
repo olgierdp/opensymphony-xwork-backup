@@ -174,7 +174,7 @@ public class ParametersInterceptor extends AbstractInterceptor {
                 } catch (RuntimeException e) {
                     final Boolean devMode = (Boolean) stack.getContext().get(ActionContext.DEV_MODE);
                     if (devMode != null && devMode.booleanValue()) {
-                        String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "webwork.messages.devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification (set webwork.devMode to false to disable this message):\n{0}", new Object[]{
+                        String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification:\n{0}", new Object[]{
                                 e.getMessage()
                         });
                         LOG.error(developerNotification);

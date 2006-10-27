@@ -38,7 +38,7 @@ import com.opensymphony.xwork2.XWorkException;
 /**
  * <!-- START SNIPPET: javadoc -->
  * <p/>
- * WebWork will automatically handle the most common type conversion for you. This includes support for converting to
+ * XWork will automatically handle the most common type conversion for you. This includes support for converting to
  * and from Strings for each of the following:
  * <p/>
  * <ul>
