@@ -58,7 +58,34 @@ import org.apache.commons.logging.LogFactory;
  * in the allowed list (the longer string determines permissions).</p> 
  * <!-- END SNIPPET: parameters -->
  *
+ * <!-- START SNIPPET: extending -->
+ * 
+ * none
+ * 
+ * <!-- END SNIPPET: extending -->
+ * 
+ * <pre>
+ * <!-- START SNIPPET: example -->
+ * 
+ * <interceptors>
+ *   ...
+ *   <interceptor name="parameterFilter" class="com.opensymphony.xwork2.interceptor.ParameterFilterInterceptor" />
+ *   ...
+ * </interceptors>
+ * 
+ * <action ....>
+ *   ...
+ *   <interceptor-ref name="parameterFilter">
+ *     <param name="blocked">person,person.address.createDate,personDao</param>
+ *   </interceptor-ref>
+ *   ...
+ * </action> 
+ * 
+ * <!-- END SNIPPET: example -->
+ * </pre>
+ * 
  * @author Gabe
+ * @version $Date$ $Id$
  */
 public class ParameterFilterInterceptor extends AbstractInterceptor {
 
