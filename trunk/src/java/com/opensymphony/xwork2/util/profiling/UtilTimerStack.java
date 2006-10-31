@@ -121,6 +121,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * <!-- END SNIPPET: activationThroughSystemPropertyDescription -->
  * 
+ * <p/>
  * Code :- <p/>
  * <pre>
  * <!-- START SNIPPET: activationThroughCode -->
@@ -138,6 +139,8 @@ import org.apache.commons.logging.LogFactory;
  * <!-- END SNIPPET: activationThroughCode --> 
  * </pre>
  * 
+ * 
+ * 
  * <!-- START SNIPPET: activationThroughCodeDescription -->
  * 
  * This could be done in a static block, in a Spring bean with lazy-init="false", 
@@ -146,7 +149,61 @@ import org.apache.commons.logging.LogFactory;
  * 
  * <!-- END SNIPPET: activationThroughCodeDescription -->
  * 
+ * <p/>
+ * Parameter:- 
  * 
+ * <pre>
+ * <!-- START SNIPPET: activationThroughParameter -->
+ * 
+ * &lt;action ... &gt;  
+ *  ...
+ *  &lt;interceptor-ref name="profiling"&gt;
+ *      &lt;param name="profilingKey"&gt;profiling&lt;/param&gt;
+ *  &lt;/interceptor-ref&gt;
+ *  ...
+ * &lt;/action&gt;
+ * 
+ * or 
+ * 
+ * &lt;action .... &gt;
+ * ...
+ *  &lt;interceptor-ref name="profiling" /&gt;
+ * ...
+ * &lt;/action&gt;
+ * 
+ * through url
+ * 
+ * http://host:port/context/namespace/someAction.action?profiling=true
+ * 
+ * through code
+ * 
+ * ActionContext.getContext().getParameters().put("profiling", "true);
+ * 
+ * <!-- END SNIPPET: activationThroughParameter -->
+ * </pre>
+ * 
+ * 
+ * <!-- START SNIPPET: activationThroughParameterDescription -->
+ * 
+ * To use profiling activation through parameter, one will need to pass in through 
+ * the 'profiling' parameter (which is the default) and could be changed through 
+ * the param tag in the interceptor-ref. 
+ * 
+ * <!-- END SNIPPET: activationThroughParameterDescription -->
+ * 
+ * <p/>
+ * Warning:<p/>
+ * <!-- START SNIPPET: activationThroughParameterWarning -->
+ * 
+ * Profiling activation through parameter will need the followings:-
+ * <ul>
+ *  <li>Profiling interceptor</li>
+ *  <li>dev mode on (struts.devMode=true in struts.properties)
+ * </ul>
+ * 
+ * <!-- END SNIPPET: activationThroughParameterWarning -->
+ * 
+ * <p/>
  * 
  * <!-- START SNIPPET: filteringDescription -->
  * 
