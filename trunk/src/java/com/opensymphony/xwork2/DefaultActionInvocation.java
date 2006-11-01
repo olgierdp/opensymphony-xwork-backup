@@ -214,11 +214,11 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     		if (interceptors.hasNext()) {
     			final InterceptorMapping interceptor = (InterceptorMapping) interceptors.next();
-    			return UtilTimerStack.profile("interceptor: "+interceptor.getName(), 
+    			UtilTimerStack.profile("interceptor: "+interceptor.getName(), 
     					new UtilTimerStack.ProfilingBlock<String>() {
 							public String doProfiling() throws Exception {
 				    			resultCode = interceptor.getInterceptor().intercept(DefaultActionInvocation.this);
-								return resultCode;
+				    			return null;
 							}
     			});
     		} else {
