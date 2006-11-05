@@ -64,7 +64,7 @@ public class DefaultConfiguration implements Configuration {
                 } 
             } else {
                 throw new ConfigurationException("The package name '" + name 
-                        + "' at locattion "+packageContext.getLocation()
+                        + "' at location "+packageContext.getLocation()
                         + " is already been used by another package at location " + check.getLocation(),
                         packageContext);
             }
