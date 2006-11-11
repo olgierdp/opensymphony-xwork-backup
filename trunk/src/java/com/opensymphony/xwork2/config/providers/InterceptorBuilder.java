@@ -11,7 +11,6 @@ import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.config.entities.InterceptorStackConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.interceptor.Interceptor;
-import com.opensymphony.xwork2.util.location.Locatable;
 import com.opensymphony.xwork2.util.location.Location;
 
 import org.apache.commons.logging.Log;
