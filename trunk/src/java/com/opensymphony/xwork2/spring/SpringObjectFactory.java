@@ -202,6 +202,11 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
         return false;
     }
 
+    /**
+     *  Enable / disable caching of classes loaded by Spring.
+     *  
+     * @param useClassCache
+     */
     public void setUseClassCache(boolean useClassCache) {
         this.useClassCache = useClassCache;
     }
