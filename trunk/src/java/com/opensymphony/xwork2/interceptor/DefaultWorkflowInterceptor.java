@@ -61,6 +61,8 @@ import org.apache.commons.logging.LogFactory;
  *
  * <li>alwaysInvokeValidate - Default to true. If true validate() method will always
  * be invoked, otherwise it will not.</li>
+ * <li>inputResultName - Default to "input". Determine the result name to be returned when
+ * an action / field error is found.</li>
  *
  * </ul>
  *
@@ -99,6 +101,17 @@ import org.apache.commons.logging.LogFactory;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
  * 
+ * &lt;-- In this case, the result named "error" will be used when 
+ *        an action / field error is found --&gt;
+ * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
+ *     &lt;interceptor-ref name="params"/&gt;
+ *     &lt;interceptor-ref name="validation"/&gt;
+ *     &lt;interceptor-ref name="workflow"&gt;
+ *        &lt;param name="inputResultName"&gt;error&lt;/param&gt;
+ *     &lt;/interceptor-ref&gt;
+ *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
+ * &lt;/action&gt;
+ * 
  * <!-- END SNIPPET: example -->
  * </pre>
  *
@@ -121,11 +134,34 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 	
 	private boolean alwaysInvokeValidate = true;
 	
+	private String inputResultName = Action.INPUT;
 	
+	/**
+	 * Determine if {@link Validateable}'s <code>validate()</code> should always 
+	 * be invoked. Default to "true".
+	 * 
+	 * @param alwaysInvokeValidate
+	 */
 	public void setAlwaysInvokeValidate(String alwaysInvokeValidate) {
 		this.alwaysInvokeValidate = Boolean.parseBoolean(alwaysInvokeValidate);
 	}
 	
+	/**
+	 * Set the <code>inputResultName</code> (result name to be returned when 
+	 * a action / field error is found registered). Default to {@link Action#INPUT}
+	 * 
+	 * @param inputResultName
+	 */
+	public void setInputResultName(String inputResultName) {
+		this.inputResultName = inputResultName;
+	}
+	
+	/**
+	 * Intercept {@link ActionInvocation} and returns a <code>inputResultName</code>
+	 * when action / field errors is found registered.
+	 * 
+	 * @return String result name
+	 */
     protected String doIntercept(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
         
@@ -170,7 +206,7 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
             	if (_log.isDebugEnabled()) {
             		_log.debug("Errors on action "+validationAwareAction+", returning result name 'input'");
             	}
-                return Action.INPUT;
+            	return inputResultName;
             }
         }
 
