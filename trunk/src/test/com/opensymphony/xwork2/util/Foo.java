@@ -19,6 +19,8 @@ public class Foo {
 
     Bar bar;
     Date birthday;
+    Date event;
+    Date meeting;
     Foo child;
     List cats;
     List moreCats;
@@ -171,4 +173,21 @@ public class Foo {
     public boolean isUseful() {
         return useful;
     }
+    
+    
+    public Date getEvent() {
+    	return event;
+    }
+    
+    public void setEvent(Date event) {
+    	this.event = event;
+    }
+    
+    public Date getMeeting() {
+    	return meeting;
+    }
+    
+    public void setMeeting(Date meeting) {
+    	this.meeting = meeting;
+    }     
 }

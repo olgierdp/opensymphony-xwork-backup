@@ -314,10 +314,28 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                     } catch (ParseException ignore) {
                     }
                 }
-            } else {
-                df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+             } else if(java.util.Date.class == toType) {
+            	Date check = null;
+                SimpleDateFormat d1 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG, locale);
+                SimpleDateFormat d2 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale);
+                SimpleDateFormat d3 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
+                SimpleDateFormat[] dfs = {d1, d2, d3};
+                for (int i = 0; i < dfs.length; i++) {
+                	try {
+                		check = dfs[i].parse(sa);
+                		df = dfs[i];
+                		if (check != null) {
+                			break;
+                		}
+                	} 
+                	catch (ParseException ignore) {
+                	}
+                }
             }
-
+            //final fallback for dates without time
+            if (df == null){
+            	df = DateFormat.getDateInstance(DateFormat.SHORT, locale); 
+            }
             try {
             	df.setLenient(false); // let's use strict parsing (XW-341)
                 result = df.parse(sa);
