@@ -59,6 +59,7 @@ and ${maxExclusive} (exclusive)&lt;/message&gt;
  *
  * @version $Id$
  */
+// START SNIPPET: field-level-validator
 public class DoubleRangeFieldValidator extends FieldValidatorSupport {
     
     String maxInclusive = null;
@@ -145,3 +146,4 @@ public class DoubleRangeFieldValidator extends FieldValidatorSupport {
         this.maxExclusive = maxExclusive;
     }
 }
+// END SNIPPET: field-level-validator

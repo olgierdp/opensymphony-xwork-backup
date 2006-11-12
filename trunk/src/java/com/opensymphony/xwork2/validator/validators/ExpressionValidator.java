@@ -33,6 +33,7 @@ import com.opensymphony.xwork2.validator.ValidationException;
  *
  * @author Jason Carreira
  */
+// START SNIPPET: global-level-validator
 public class ExpressionValidator extends ValidatorSupport {
 
     private String expression;
@@ -70,3 +71,5 @@ public class ExpressionValidator extends ValidatorSupport {
         }
     }
 }
+// END SNIPPET: global-level-validator 
+
