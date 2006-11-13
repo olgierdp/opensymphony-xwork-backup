@@ -33,7 +33,7 @@ public class ConfigurationManagerTest extends XWorkTestCase {
         configProviderMock.expect("init", C.isA(Configuration.class));
         configProviderMock.expect("register", C.ANY_ARGS);
         configProviderMock.expect("loadPackages", C.ANY_ARGS);
-        configProviderMock.expect("toString");
+        configProviderMock.matchAndReturn("toString", "mock");
         configurationManager.getConfiguration();
         configProviderMock.verify();
 
@@ -84,6 +84,7 @@ public class ConfigurationManagerTest extends XWorkTestCase {
         configProviderMock.expect("init", C.isA(Configuration.class));
         configProviderMock.expect("register", C.ANY_ARGS);
         configProviderMock.expect("loadPackages", C.ANY_ARGS);
+        configProviderMock.matchAndReturn("toString", "mock");
         configurationManager.getConfiguration();
     }
 
