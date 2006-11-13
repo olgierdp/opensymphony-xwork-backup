@@ -26,7 +26,7 @@ public class ConfigurationTest extends XWorkTestCase {
 
     public void testAbstract() {
         try {
-            ActionProxyFactory.getFactory().createActionProxy(
+            container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "/abstract", "test", null);
             fail();
         } catch (Exception e) {
@@ -34,7 +34,7 @@ public class ConfigurationTest extends XWorkTestCase {
         }
 
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "/nonAbstract", "test", null);
             assertTrue(proxy.getActionName().equals("test"));
             assertTrue(proxy.getConfig().getClassName().equals(SimpleAction.class.getName()));
@@ -52,7 +52,7 @@ public class ConfigurationTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "/does/not/exist", "Foo", extraContext);
             proxy.execute();
             assertEquals("this is blah", proxy.getInvocation().getStack().findValue("[1].blah"));
@@ -89,7 +89,7 @@ public class ConfigurationTest extends XWorkTestCase {
 
     public void testGlobalResults() {
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "", "Foo", null);
             assertNotNull(proxy.getConfig().getResults().get("login"));
         } catch (Exception e) {
@@ -100,7 +100,7 @@ public class ConfigurationTest extends XWorkTestCase {
 
     public void testInterceptorParamInehritanceOverride() {
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "/foo/bar", "TestInterceptorParamInehritanceOverride", null);
             assertEquals(1, proxy.getConfig().getInterceptors().size());
 
@@ -116,7 +116,7 @@ public class ConfigurationTest extends XWorkTestCase {
 
     public void testInterceptorParamInheritance() {
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "/foo/bar", "TestInterceptorParamInheritance", null);
             assertEquals(1, proxy.getConfig().getInterceptors().size());
 
@@ -132,7 +132,7 @@ public class ConfigurationTest extends XWorkTestCase {
 
     public void testInterceptorParamOverride() {
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "", "TestInterceptorParamOverride", null);
             assertEquals(1, proxy.getConfig().getInterceptors().size());
 
@@ -148,7 +148,7 @@ public class ConfigurationTest extends XWorkTestCase {
 
     public void testInterceptorParams() {
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "", "TestInterceptorParam", null);
             assertEquals(1, proxy.getConfig().getInterceptors().size());
 
@@ -184,16 +184,16 @@ public class ConfigurationTest extends XWorkTestCase {
     public void testMultipleInheritance() {
         try {
             ActionProxy proxy;
-            proxy = ActionProxyFactory.getFactory().createActionProxy(
+            proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "multipleInheritance", "test", null);
             assertNotNull(proxy);
-            proxy = ActionProxyFactory.getFactory().createActionProxy(
+            proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "multipleInheritance", "Foo", null);
             assertNotNull(proxy);
-            proxy = ActionProxyFactory.getFactory().createActionProxy(
+            proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "multipleInheritance", "testMultipleInheritance", null);
             assertNotNull(proxy);
-            assertEquals(6, proxy.getConfig().getInterceptors().size());
+            assertEquals(5, proxy.getConfig().getInterceptors().size());
             assertEquals(2, proxy.getConfig().getResults().size());
         } catch (Exception e) {
             e.printStackTrace();
@@ -203,9 +203,9 @@ public class ConfigurationTest extends XWorkTestCase {
 
     public void testPackageExtension() {
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "/foo/bar", "Bar", null);
-            assertEquals(6, proxy.getConfig().getInterceptors().size());
+            assertEquals(5, proxy.getConfig().getInterceptors().size());
         } catch (Exception e) {
             e.printStackTrace();
             fail();

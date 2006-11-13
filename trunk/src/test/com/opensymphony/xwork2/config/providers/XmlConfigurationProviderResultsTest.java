@@ -55,6 +55,7 @@ public class XmlConfigurationProviderResultsTest extends ConfigurationTestBase {
 
         // execute the configuration
         provider.init(configuration);
+        provider.loadPackages();
 
         PackageConfig pkg = configuration.getPackageConfig("default");
         Map actionConfigs = pkg.getActionConfigs();
@@ -72,6 +73,7 @@ public class XmlConfigurationProviderResultsTest extends ConfigurationTestBase {
 
         // expectations
         provider.init(configuration);
+        provider.loadPackages();
 
         // assertions
         PackageConfig subPkg = configuration.getPackageConfig("subPackage");
@@ -89,6 +91,7 @@ public class XmlConfigurationProviderResultsTest extends ConfigurationTestBase {
 
         // execute the configuration
         provider.init(configuration);
+        provider.loadPackages();
 
         PackageConfig pkg = configuration.getPackageConfig("default");
         Map resultTypes = pkg.getResultTypeConfigs();

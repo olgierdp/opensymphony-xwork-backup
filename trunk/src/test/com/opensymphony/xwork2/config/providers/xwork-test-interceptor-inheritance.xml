@@ -4,6 +4,7 @@
  >
 
 <xwork>
+	<include file="xwork-test-beans.xml" />
     <package name="default">
         <interceptors>
             <interceptor name="timer" class="com.opensymphony.xwork2.interceptor.TimerInterceptor"/>

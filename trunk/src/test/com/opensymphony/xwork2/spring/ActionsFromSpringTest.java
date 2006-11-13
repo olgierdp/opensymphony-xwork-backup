@@ -4,7 +4,9 @@
 package com.opensymphony.xwork2.spring;
 
 import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.config.impl.MockConfiguration;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -18,20 +20,18 @@ public class ActionsFromSpringTest extends XWorkTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        // Set up Spring and the ObjectFactory
-        appContext = new ClassPathXmlApplicationContext("com/opensymphony/xwork2/spring/actionContext-spring.xml");
-        SpringObjectFactory springObjectFactory = new SpringObjectFactory();
-        springObjectFactory.setApplicationContext(appContext);
-        ObjectFactory.setObjectFactory(springObjectFactory);
 
         // Set up XWork
         XmlConfigurationProvider c = new XmlConfigurationProvider("com/opensymphony/xwork2/spring/actionContext-xwork.xml");
         configurationManager.addConfigurationProvider(c);
         configurationManager.reload();
+        configuration = configurationManager.getConfiguration();
+        container = configuration.getContainer();
+        appContext = ((SpringObjectFactory)container.getInstance(ObjectFactory.class)).appContext;
     }
 
     public void testLoadSimpleAction() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), null, "simpleAction", null);
         Object action = proxy.getAction();
 
@@ -41,7 +41,7 @@ public class ActionsFromSpringTest extends XWorkTestCase {
     }
 
     public void testLoadActionWithDependencies() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), null, "dependencyAction", null);
         SimpleAction action = (SimpleAction) proxy.getAction();
 
@@ -49,13 +49,13 @@ public class ActionsFromSpringTest extends XWorkTestCase {
     }
 
     public void testProxiedActionIsNotStateful() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), null, "proxiedAction", null);
         SimpleAction action = (SimpleAction) proxy.getAction();
 
         action.setBlah("Hello World");
 
-        proxy = ActionProxyFactory.getFactory().createActionProxy(
+        proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), null, "proxiedAction", null);
         action = (SimpleAction) proxy.getAction();
 
@@ -69,7 +69,7 @@ public class ActionsFromSpringTest extends XWorkTestCase {
     }
 
     public void testAutoProxiedAction() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), null, "autoProxiedAction", null);
 
         SimpleAction action = (SimpleAction) proxy.getAction();
@@ -79,7 +79,7 @@ public class ActionsFromSpringTest extends XWorkTestCase {
     }
     
     public void testActionWithSpringResult() throws Exception {
-    	        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+    	        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
     	        		configurationManager.getConfiguration(), null, "simpleActionSpringResult", null);
     	                
     	        proxy.execute();

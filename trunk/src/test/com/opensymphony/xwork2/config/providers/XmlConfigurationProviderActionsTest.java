@@ -95,6 +95,7 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
 
         // execute the configuration
         provider.init(configuration);
+        provider.loadPackages();
 
         PackageConfig pkg = configuration.getPackageConfig("default");
         Map actionConfigs = pkg.getActionConfigs();
@@ -111,10 +112,9 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
 
     public void testInvalidActions() throws Exception {
         final String filename = "com/opensymphony/xwork2/config/providers/xwork-test-action-invalid.xml";
-        ConfigurationProvider provider = buildConfigurationProvider(filename);
 
         try {
-            provider.init(configuration);
+            ConfigurationProvider provider = buildConfigurationProvider(filename);
             fail("Should have thrown an exception");
         } catch (ConfigurationException ex) {
             // it worked correctly

@@ -1,7 +1,9 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.DoubleRangeFieldValidator;
@@ -21,7 +23,7 @@ import java.util.Map;
 public class DoubleRangeValidatorTest extends XWorkTestCase {
 
     public void testRangeValidationWithError() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, null);
         proxy.execute();
         assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
@@ -39,7 +41,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
     }
 
     public void testRangeValidationNoError() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), "", "percentage", null);
         proxy.execute();
         assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
@@ -163,9 +165,12 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        configurationManager.clearConfigurationProviders();
+        configurationManager = new ConfigurationManager();
+        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-test-beans.xml"));
         configurationManager.addConfigurationProvider(new MockConfigurationProvider());
         configurationManager.reload();
+        container = configurationManager.getConfiguration().getContainer();
+        ObjectFactory.setObjectFactory(container.getInstance(ObjectFactory.class));
     }
 
     private class MyTestProduct {

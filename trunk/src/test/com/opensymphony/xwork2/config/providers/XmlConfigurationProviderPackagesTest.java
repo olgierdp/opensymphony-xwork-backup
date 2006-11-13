@@ -25,12 +25,14 @@ public class XmlConfigurationProviderPackagesTest extends ConfigurationTestBase 
         final String filename = "com/opensymphony/xwork2/config/providers/xwork-test-bad-inheritance.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
         provider.init(configuration);
+        provider.loadPackages();
     }
 
     public void testBasicPackages() throws ConfigurationException {
         final String filename = "com/opensymphony/xwork2/config/providers/xwork-test-basic-packages.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
         provider.init(configuration);
+        provider.loadPackages();
 
         // setup our expectations
         PackageConfig expectedNamespacePackage = new PackageConfig("namespacepkg", "/namespace/set", false, null);
@@ -46,6 +48,7 @@ public class XmlConfigurationProviderPackagesTest extends ConfigurationTestBase 
         final String filename = "com/opensymphony/xwork2/config/providers/xwork-test-default-package.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
         provider.init(configuration);
+        provider.loadPackages();
 
         // setup our expectations
         PackageConfig expectedPackageConfig = new PackageConfig("default");
@@ -60,6 +63,7 @@ public class XmlConfigurationProviderPackagesTest extends ConfigurationTestBase 
         ConfigurationProvider provider = buildConfigurationProvider(filename);
 
         provider.init(configuration);
+        provider.loadPackages();
 
         // test expectations
         assertEquals(4, configuration.getPackageConfigs().size());

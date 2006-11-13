@@ -1,5 +1,8 @@
-<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 2.0//EN" "http://www.opensymphony.com/xwork/xwork-2.0.dtd">
 <xwork>
+	<bean type="com.opensymphony.xwork2.ActionProxyFactory" name="default" class="com.opensymphony.xwork2.DefaultActionProxyFactory" />
+	<bean type="com.opensymphony.xwork2.ObjectFactory" name="default" class="com.opensymphony.xwork2.spring.SpringObjectFactory" />
+	<constant name="applicationContextPath" value="com/opensymphony/xwork2/spring/actionContext-spring.xml" />
     <package name="default">
         <result-types>
             <result-type name="null"

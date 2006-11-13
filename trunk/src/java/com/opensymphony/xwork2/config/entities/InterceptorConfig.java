@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork2.config.entities;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.io.Serializable;
@@ -37,6 +38,13 @@ public class InterceptorConfig extends Located implements Parameterizable, Seria
         this.name = name;
         this.className = className;
         this.params = params;
+    }
+    
+    public InterceptorConfig(InterceptorConfig parent, Map params) {
+        this.name = parent.getName();
+        this.className = parent.getClassName();
+        this.params = new HashMap(parent.getParams());
+        this.params.putAll(params);
     }
 
 

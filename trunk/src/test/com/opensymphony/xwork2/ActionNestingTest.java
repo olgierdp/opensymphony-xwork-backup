@@ -9,6 +9,7 @@ import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
+import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.mock.MockResult;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
@@ -16,6 +17,7 @@ import com.opensymphony.xwork2.util.ValueStackFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 
 /**
@@ -62,14 +64,12 @@ public class ActionNestingTest extends XWorkTestCase {
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        configurationManager.clearConfigurationProviders();
-        configurationManager.destroyConfiguration();
         ActionContext.setContext(null);
     }
 
     public void testNestedContext() throws Exception {
         assertEquals(context, ActionContext.getContext());
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), NAMESPACE, SIMPLE_ACTION_NAME, null);
         proxy.execute();
         assertEquals(context, ActionContext.getContext());
@@ -79,7 +79,7 @@ public class ActionNestingTest extends XWorkTestCase {
         ValueStack stack = ActionContext.getContext().getValueStack();
         assertEquals(VALUE, stack.findValue(KEY));
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), NAMESPACE, NO_STACK_ACTION_NAME, null);
         proxy.execute();
         stack = ActionContext.getContext().getValueStack();
@@ -94,7 +94,7 @@ public class ActionNestingTest extends XWorkTestCase {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.VALUE_STACK, stack);
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), NAMESPACE, STACK_ACTION_NAME, extraContext);
         proxy.execute();
         assertEquals(context, ActionContext.getContext());
@@ -106,13 +106,20 @@ public class ActionNestingTest extends XWorkTestCase {
 
 
     class NestedTestConfigurationProvider implements ConfigurationProvider {
+        private Configuration configuration;
         public void destroy() {
         }
+        public void init(Configuration configuration) {
+            this.configuration = configuration;
+        }
 
-        /**
-         * Initializes the configuration object.
-         */
-        public void init(Configuration configurationManager) {
+        public void register(ContainerBuilder builder, Properties props) {
+            builder.factory(ObjectFactory.class);
+            builder.factory(ActionProxyFactory.class, DefaultActionProxyFactory.class);
+        }
+        
+        public void loadPackages() {
+            
             PackageConfig packageContext = new PackageConfig("nestedActionTest");
             ActionConfig config = new ActionConfig(null, SimpleAction.class, null, null, null);
             config.addResultConfig(new ResultConfig(Action.SUCCESS, MockResult.class.getName()));
@@ -128,7 +135,7 @@ public class ActionNestingTest extends XWorkTestCase {
             config.setPackageName("nestedActionTest");
             packageContext.addActionConfig(STACK_ACTION_NAME, config);
             packageContext.setNamespace(NAMESPACE);
-            configurationManager.addPackageConfig("nestedActionTest", packageContext);
+            configuration.addPackageConfig("nestedActionTest", packageContext);
         }
 
         /**

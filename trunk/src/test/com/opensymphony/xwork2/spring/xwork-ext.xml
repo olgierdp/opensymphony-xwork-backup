@@ -1,6 +1,8 @@
-<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.2.dtd">
 
 <xwork>
+	<bean type="com.opensymphony.xwork2.ActionProxyFactory" name="default" class="com.opensymphony.xwork2.DefaultActionProxyFactory" />
+	<bean type="com.opensymphony.xwork2.ObjectFactory" name="default" class="com.opensymphony.xwork2.spring.SpringObjectFactory" />
     <package name="default" externalReferenceResolver="com.opensymphony.xwork2.spring.SpringExternalReferenceResolver">
         <result-types>
             <result-type name="null" class="com.opensymphony.xwork2.result.NullResult" default="true"/>

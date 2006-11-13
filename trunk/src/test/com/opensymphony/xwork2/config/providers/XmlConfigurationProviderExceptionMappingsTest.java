@@ -42,6 +42,7 @@ public class XmlConfigurationProviderExceptionMappingsTest extends Configuration
 
         // execute the configuration
         provider.init(configuration);
+        provider.loadPackages();
 
         PackageConfig pkg = configuration.getPackageConfig("default");
         Map actionConfigs = pkg.getActionConfigs();

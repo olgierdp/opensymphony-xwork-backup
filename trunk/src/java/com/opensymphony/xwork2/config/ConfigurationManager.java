@@ -30,8 +30,14 @@ public class ConfigurationManager {
     protected Configuration configuration;
     protected Lock providerLock = new ReentrantLock();
     private List<ConfigurationProvider> configurationProviders = new CopyOnWriteArrayList<ConfigurationProvider>();
+    protected String defaultFrameworkBeanName;
 
     public ConfigurationManager() {
+        this("xwork");
+    }
+    
+    public ConfigurationManager(String name) {
+        this.defaultFrameworkBeanName = name;
     }
 
     /**
@@ -41,7 +47,7 @@ public class ConfigurationManager {
      */
     public synchronized Configuration getConfiguration() {
         if (configuration == null) {
-            setConfiguration(new DefaultConfiguration());
+            setConfiguration(new DefaultConfiguration(defaultFrameworkBeanName));
             try {
                 configuration.reload(getConfigurationProviders());
             } catch (ConfigurationException e) {
@@ -74,7 +80,7 @@ public class ConfigurationManager {
         providerLock.lock();
         try {
             if (configurationProviders.size() == 0) {
-                configurationProviders.add(new XmlConfigurationProvider());
+                configurationProviders.add(new XmlConfigurationProvider("xwork.xml", true));
             }
 
             return configurationProviders;
@@ -108,40 +114,7 @@ public class ConfigurationManager {
             configurationProviders.add(provider);
         }
     }
-
-
-    /**
-     * Reloads the Configuration files if the configuration files indicate that they need to be reloaded.
-     */
-    public synchronized void conditionalReload() {
-        if (FileManager.isReloadingConfigs()) {
-            boolean reload;
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Checking ConfigurationProviders for reload.");
-            }
-
-            reload = false;
-
-            List<ConfigurationProvider> providers = getConfigurationProviders();
-            for (ConfigurationProvider provider : providers) {
-                if (provider.needsReload()) {
-                    reload = true;
-
-                    break;
-                }
-            }
-
-            if (reload) {
-                configuration.reload(providers);
-            }
-        }
-    }
     
-    public synchronized void reload() {
-        getConfiguration().reload(getConfigurationProviders());
-    }
-
     /**
      * clears the registered ConfigurationProviders.  this method will call destroy() on each of the registered
      * ConfigurationProviders
@@ -162,5 +135,41 @@ public class ConfigurationManager {
         if (configuration != null)
             configuration.destroy(); // let's destroy it first, before nulling it.
         configuration = null;
+    }
+
+
+    /**
+     * Reloads the Configuration files if the configuration files indicate that they need to be reloaded.
+     */
+    public synchronized void conditionalReload() {
+        if (FileManager.isReloadingConfigs()) {
+            boolean reload;
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Checking ConfigurationProviders for reload.");
+            }
+
+            reload = false;
+
+            List<ConfigurationProvider> providers = getConfigurationProviders();
+            for (ConfigurationProvider provider : providers) {
+                if (provider.needsReload()) {
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info("Detected configuration provider "+provider+" needs to be reloaded.  Reloading all providers.");
+                    }
+                    reload = true;
+
+                    break;
+                }
+            }
+
+            if (reload) {
+                configuration.reload(providers);
+            }
+        }
+    }
+    
+    public synchronized void reload() {
+        getConfiguration().reload(getConfigurationProviders());
     }
 }

@@ -5,7 +5,9 @@
 package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.config.Configuration;
+import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
@@ -25,7 +27,7 @@ public class LocaleAwareTest extends XWorkTestCase {
 
     public void testGetText() {
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "", MockConfigurationProvider.FOO_ACTION_NAME, null);
             ActionContext.getContext().setLocale(Locale.US);
 
@@ -39,7 +41,7 @@ public class LocaleAwareTest extends XWorkTestCase {
 
     public void testLocaleGetText() {
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "", MockConfigurationProvider.FOO_ACTION_NAME, null);
             ActionContext.getContext().setLocale(Locale.GERMANY);
 
@@ -52,10 +54,12 @@ public class LocaleAwareTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        configurationManager.destroyConfiguration();
+        configurationManager = new ConfigurationManager();
+        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-test-beans.xml"));
         configurationManager.addConfigurationProvider(new MockConfigurationProvider());
-        configurationManager.getConfiguration().reload(
-                configurationManager.getConfigurationProviders());
+        configurationManager.reload();
+        container = configurationManager.getConfiguration().getContainer();
+        ObjectFactory.setObjectFactory(container.getInstance(ObjectFactory.class));
 
         ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));

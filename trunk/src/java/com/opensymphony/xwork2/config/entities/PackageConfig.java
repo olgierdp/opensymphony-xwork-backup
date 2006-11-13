@@ -5,7 +5,6 @@
 package com.opensymphony.xwork2.config.entities;
 
 import com.opensymphony.xwork2.util.TextUtils;
-import com.opensymphony.xwork2.config.ExternalReferenceResolver;
 import com.opensymphony.xwork2.util.location.Located;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,7 +26,6 @@ public class PackageConfig extends Located implements Comparable, Serializable {
     private static final Log LOG = LogFactory.getLog(PackageConfig.class);
 
 
-    private ExternalReferenceResolver externalRefResolver = null;
     private Map<String, ActionConfig> actionConfigs = new LinkedHashMap<String, ActionConfig>();
     private Map<String, ResultConfig> globalResultConfigs = new LinkedHashMap<String, ResultConfig>();
     private Map interceptorConfigs = new LinkedHashMap();
@@ -49,19 +47,20 @@ public class PackageConfig extends Located implements Comparable, Serializable {
         this.name = name;
     }
 
-    public PackageConfig(String name, String namespace, boolean isAbstract, ExternalReferenceResolver externalRefResolver) {
+    public PackageConfig(String name, String namespace, boolean isAbstract) {
         this(name);
         this.namespace = TextUtils.noNull(namespace);
         this.isAbstract = isAbstract;
-        this.externalRefResolver = externalRefResolver;
     }
 
-    public PackageConfig(String name, String namespace, boolean isAbstract, ExternalReferenceResolver externalRefResolver, List parents) {
-        this(name, namespace, isAbstract, externalRefResolver);
+    public PackageConfig(String name, String namespace, boolean isAbstract, List parents) {
+        this(name, namespace, isAbstract);
 
-        for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
-            PackageConfig parent = (PackageConfig) iterator.next();
-            addParent(parent);
+        if (parents != null) {
+            for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
+                PackageConfig parent = (PackageConfig) iterator.next();
+                addParent(parent);
+            }
         }
     }
 
@@ -218,38 +217,6 @@ public class PackageConfig extends Located implements Comparable, Serializable {
      */
     public String getDefaultResultType() {
         return defaultResultType;
-    }
-
-    /**
-     * @param externalRefResolver The externalRefResolver to set.
-     */
-    public void setExternalRefResolver(ExternalReferenceResolver externalRefResolver) {
-        this.externalRefResolver = externalRefResolver;
-    }
-
-    /**
-     * Gets the Reference resolver for this package.  If the resolver for this package is
-     * not specified, the method will try and find one on one of the parent packages
-     *
-     * @return Returns the externalRefResolver.
-     */
-    public ExternalReferenceResolver getExternalRefResolver() {
-        //If this resolver is null, lets look to see if our parents have one
-        if (externalRefResolver == null) {
-            PackageConfig packageConfig;
-
-            for (Iterator<PackageConfig> iter = getParents().iterator(); iter.hasNext();) {
-                packageConfig = iter.next();
-
-                if (packageConfig.getExternalRefResolver() != null) {
-                    externalRefResolver = packageConfig.getExternalRefResolver();
-
-                    break;
-                }
-            }
-        }
-
-        return externalRefResolver;
     }
 
     /**

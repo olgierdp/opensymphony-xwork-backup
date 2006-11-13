@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.config.Configuration;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.TextParseUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 
@@ -81,6 +82,7 @@ public class ActionChainResult implements Result {
     private String namespace;
     
     private String methodName;
+    private ActionProxyFactory actionProxyFactory;
     
     public ActionChainResult() {
     	super();
@@ -92,6 +94,15 @@ public class ActionChainResult implements Result {
     	this.methodName = methodName;
     }
 
+    
+
+    /**
+     * @param actionProxyFactory the actionProxyFactory to set
+     */
+    @Inject
+    public void setActionProxyFactory(ActionProxyFactory actionProxyFactory) {
+        this.actionProxyFactory = actionProxyFactory;
+    }
 
     public void setActionName(String actionName) {
         this.actionName = actionName;
@@ -163,7 +174,7 @@ public class ActionChainResult implements Result {
         if (invocation != null) {
             config = invocation.getProxy().getConfiguration();
         }
-        proxy = ActionProxyFactory.getFactory().createActionProxy(config,
+        proxy = actionProxyFactory.createActionProxy(config,
                 finalNamespace, finalActionName, extraContext);
         if (null != finalMethodName) {
             proxy.setMethod(finalMethodName);

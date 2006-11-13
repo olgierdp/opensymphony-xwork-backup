@@ -12,7 +12,7 @@ import java.util.*;
 import java.io.InputStream;
 import java.io.IOException;
 
-import com.opensymphony.util.FileManager;
+import com.opensymphony.xwork2.util.FileManager;
 
 /**
  * <code>AnnotationActionValidatorManager</code>

@@ -7,6 +7,7 @@ package com.opensymphony.xwork2.interceptor;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.*;
 
 import java.util.Comparator;
@@ -101,6 +102,12 @@ public class ParametersInterceptor extends AbstractInterceptor {
     private static final Log LOG = LogFactory.getLog(ParametersInterceptor.class);
 
     boolean ordered = false;
+    static boolean devMode = false;
+    
+    @Inject("devMode")
+    public static void setDevMode(String mode) {
+        devMode = "true".equals(mode);
+    }
     
     /** Compares based on number of '.' characters (fewer is higher) */
     static final Comparator rbCollator = new Comparator() {
@@ -172,8 +179,7 @@ public class ParametersInterceptor extends AbstractInterceptor {
                 try {
                     stack.setValue(name, value);
                 } catch (RuntimeException e) {
-                    final Boolean devMode = (Boolean) stack.getContext().get(ActionContext.DEV_MODE);
-                    if (devMode != null && devMode.booleanValue()) {
+                    if (devMode) {
                         String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification:\n{0}", new Object[]{
                                 e.getMessage()
                         });

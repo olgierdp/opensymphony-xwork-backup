@@ -4,6 +4,7 @@
  >
 
 <xwork>
+	<include file="xwork-test-beans.xml" />
     <package name="default">
 
         <action name="Foo" class="com.opensymphony.xwork2.config.providers.PrivateConstructorAction">

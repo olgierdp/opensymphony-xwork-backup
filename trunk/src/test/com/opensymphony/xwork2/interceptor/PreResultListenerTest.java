@@ -12,9 +12,12 @@ import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
+import com.opensymphony.xwork2.inject.ContainerBuilder;
+
 import junit.framework.TestCase;
 
 import java.util.HashMap;
+import java.util.Properties;
 
 
 /**
@@ -29,7 +32,7 @@ public class PreResultListenerTest extends XWorkTestCase {
 
 
     public void testPreResultListenersAreCalled() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), "package", "action", new HashMap(), false, true);
         ActionInvocation invocation = proxy.getInvocation();
         Mock preResultListenerMock1 = new Mock(PreResultListener.class);
@@ -40,7 +43,7 @@ public class PreResultListenerTest extends XWorkTestCase {
     }
 
     public void testPreResultListenersAreCalledInOrder() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), "package", "action", new HashMap(), false, true);
         ActionInvocation invocation = proxy.getInvocation();
         CountPreResultListener listener1 = new CountPreResultListener();
@@ -57,13 +60,15 @@ public class PreResultListenerTest extends XWorkTestCase {
         super.setUp();
         configurationManager.clearConfigurationProviders();
         configurationManager.addConfigurationProvider(new ConfigurationProvider() {
+            Configuration configuration;
             public void destroy() {
             }
+            
+            public void init(Configuration config) {
+                this.configuration = config;
+            }
 
-            /**
-             * Initializes the configuration object.
-             */
-            public void init(Configuration configuration) throws ConfigurationException {
+            public void loadPackages() {
                 PackageConfig packageConfig = new PackageConfig("package");
                 ActionConfig actionConfig = new ActionConfig(null, SimpleFooAction.class, null, null, null);
                 actionConfig.setPackageName("package");
@@ -79,13 +84,17 @@ public class PreResultListenerTest extends XWorkTestCase {
             public boolean needsReload() {
                 return false;
             }
+
+            public void register(ContainerBuilder builder, Properties props) throws ConfigurationException {
+                // TODO Auto-generated method stub
+                
+            }
         });
        configurationManager.reload();
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        configurationManager.destroyConfiguration();
     }
 
 

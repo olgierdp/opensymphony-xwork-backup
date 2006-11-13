@@ -9,11 +9,13 @@ import com.opensymphony.xwork2.ActionChainResult;
 import com.opensymphony.xwork2.ModelDrivenAction;
 import com.opensymphony.xwork2.SimpleAction;
 import com.opensymphony.xwork2.config.Configuration;
+import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
+import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor;
 import com.opensymphony.xwork2.interceptor.ParametersInterceptor;
 import com.opensymphony.xwork2.interceptor.StaticParametersInterceptor;
@@ -23,6 +25,7 @@ import com.opensymphony.xwork2.validator.ValidationInterceptor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 
 /**
@@ -40,6 +43,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
     public static final String VALIDATION_ACTION_NAME = "validationInterceptorTest";
     public static final String VALIDATION_ALIAS_NAME = "validationAlias";
     public static final String VALIDATION_SUBPROPERTY_NAME = "subproperty";
+    private Configuration configuration;
 
 
     /**
@@ -47,11 +51,13 @@ public class MockConfigurationProvider implements ConfigurationProvider {
      */
     public void destroy() {
     }
+    
+    public void init(Configuration config) {
+        this.configuration = config;
+    }
 
-    /**
-     * Initializes the configuration object.
-     */
-    public void init(Configuration configurationManager) {
+    public void loadPackages() {
+        
         PackageConfig defaultPackageContext = new PackageConfig("defaultPackage");
         HashMap params = new HashMap();
         params.put("bar", "5");
@@ -131,7 +137,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         barActionConfig.setPackageName("defaultPackage");
         defaultPackageContext.addActionConfig("bar", barActionConfig);
 
-        configurationManager.addPackageConfig("defaultPackage", defaultPackageContext);
+        configuration.addPackageConfig("defaultPackage", defaultPackageContext);
     }
 
     /**
@@ -141,5 +147,10 @@ public class MockConfigurationProvider implements ConfigurationProvider {
      */
     public boolean needsReload() {
         return false;
+    }
+
+    public void register(ContainerBuilder builder, Properties props) throws ConfigurationException {
+        // TODO Auto-generated method stub
+        
     }
 }

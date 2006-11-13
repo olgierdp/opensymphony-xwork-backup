@@ -5,7 +5,10 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+
 import junit.framework.TestCase;
 
 import java.util.HashMap;
@@ -30,7 +33,7 @@ public class IntRangeValidatorTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
             proxy.execute();
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
@@ -48,8 +51,11 @@ public class IntRangeValidatorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        configurationManager.clearConfigurationProviders();
+        configurationManager = new ConfigurationManager();
+        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-test-beans.xml"));
         configurationManager.addConfigurationProvider(new MockConfigurationProvider());
         configurationManager.reload();
+        container = configurationManager.getConfiguration().getContainer();
+        ObjectFactory.setObjectFactory(container.getInstance(ObjectFactory.class));
     }
 }

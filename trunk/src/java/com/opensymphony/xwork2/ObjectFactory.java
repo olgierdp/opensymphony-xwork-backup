@@ -9,6 +9,8 @@ import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorConfig;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
+import com.opensymphony.xwork2.inject.Container;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.interceptor.Interceptor;
 import com.opensymphony.xwork2.util.OgnlUtil;
 import com.opensymphony.xwork2.util.XWorkContinuationConfig;
@@ -45,8 +47,9 @@ public class ObjectFactory {
     private static final Log LOG = LogFactory.getLog(ObjectFactory.class);
 
     private static ClassLoader ccl;
-    private static ObjectFactory FACTORY = new ObjectFactory();
+    private static ObjectFactory self = new ObjectFactory();
     private static String continuationPackage;
+    private Container container;
 
     public static void setContinuationPackage(String continuationPackage) {
         
@@ -76,15 +79,21 @@ public class ObjectFactory {
         return continuationPackage;
     }
 
-    protected ObjectFactory() {
+    public ObjectFactory() {
+    }
+    
+    @Inject
+    public void setContainer(Container container) {
+        this.container = container;
+        self = container.getInstance(ObjectFactory.class);
     }
 
     public static void setObjectFactory(ObjectFactory factory) {
-        FACTORY = factory;
+        self = factory;
     }
 
     public static ObjectFactory getObjectFactory() {
-        return FACTORY;
+        return self;
     }
 
     /**
@@ -137,15 +146,38 @@ public class ObjectFactory {
     }
 
     /**
+     * @param obj
+     */
+    protected Object injectInternalBeans(Object obj) {
+        if (obj != null && container != null) {
+            container.inject(obj);
+        }
+        return obj;
+    }
+
+    /**
      * Build a generic Java object of the given type.
      *
      * @param className the type of Object to build
      * @param extraContext a Map of extra context which uses the same keys as the {@link com.opensymphony.xwork2.ActionContext}
      */
     public Object buildBean(String className, Map extraContext) throws Exception {
+        return buildBean(className, extraContext, true);
+    }
+    
+    /**
+     * Build a generic Java object of the given type.
+     *
+     * @param className the type of Object to build
+     * @param extraContext a Map of extra context which uses the same keys as the {@link com.opensymphony.xwork2.ActionContext}
+     */
+    public Object buildBean(String className, Map extraContext, boolean injectInternal) throws Exception {
         Class clazz = getClassInstance(className);
-
-        return buildBean(clazz, extraContext);
+        Object obj = buildBean(clazz, extraContext);
+        if (injectInternal) {
+            injectInternalBeans(obj);
+        }
+        return obj;
     }
 
     /**

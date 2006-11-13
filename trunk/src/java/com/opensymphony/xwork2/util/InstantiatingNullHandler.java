@@ -5,6 +5,8 @@
 package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.inject.Inject;
+
 import ognl.NullHandler;
 import ognl.Ognl;
 import ognl.OgnlRuntime;
@@ -57,8 +59,7 @@ public class InstantiatingNullHandler implements NullHandler {
 
     public static final String CREATE_NULL_OBJECTS = "xwork.NullHandler.createNullObjects";
     private static final Log LOG = LogFactory.getLog(InstantiatingNullHandler.class);
-
-
+    
     public Object nullMethodResult(Map context, Object target, String methodName, Object[] args) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Entering nullMethodResult ");

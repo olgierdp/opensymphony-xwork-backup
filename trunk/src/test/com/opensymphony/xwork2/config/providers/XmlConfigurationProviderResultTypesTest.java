@@ -25,8 +25,6 @@ public class XmlConfigurationProviderResultTypesTest extends ConfigurationTestBa
 	public void testPlainResultTypesParams() throws Exception {
 		ConfigurationProvider configurationProvider = buildConfigurationProvider("com/opensymphony/xwork2/config/providers/xwork-test-result-types.xml");
 		
-		configurationProvider.init(configuration);
-		
 		PackageConfig packageConfig = configuration.getPackageConfig("xworkResultTypesTestPackage1");
 		Map resultTypesConfigMap = packageConfig.getResultTypeConfigs();
 		
@@ -62,8 +60,6 @@ public class XmlConfigurationProviderResultTypesTest extends ConfigurationTestBa
 	
 	public void testInheritedResultTypesParams() throws Exception {
 		ConfigurationProvider configurationProvider = buildConfigurationProvider("com/opensymphony/xwork2/config/providers/xwork-test-result-types.xml");
-		
-		configurationProvider.init(configuration);
 		
 		PackageConfig packageConfig = configuration.getPackageConfig("xworkResultTypesTestPackage2");
 		Map actionConfigMap = packageConfig.getActionConfigs();

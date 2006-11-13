@@ -6,6 +6,8 @@ package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.DefaultTextProvider;
+import com.opensymphony.xwork2.inject.Inject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ognl.*;
@@ -29,6 +31,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
 	
 	private static CompoundRootAccessor accessor;
     private static Log LOG = LogFactory.getLog(OgnlValueStack.class);
+    private static boolean devMode;
 
     static {
         reset();
@@ -90,6 +93,11 @@ public class OgnlValueStack implements Serializable, ValueStack {
     public static CompoundRootAccessor getAccessor() {
         return accessor;
     }
+    
+    @Inject("devMode")
+    public static void setDevMode(String mode) {
+        devMode = "true".equals(mode);
+    }
 
     /* (non-Javadoc)
      * @see com.opensymphony.xwork2.util.ValueStack#getContext()
@@ -132,22 +140,10 @@ public class OgnlValueStack implements Serializable, ValueStack {
     }
 
     /* (non-Javadoc)
-     * @see com.opensymphony.xwork2.util.ValueStack#isDevModeEnabled()
-     */
-    public boolean isDevModeEnabled() {
-        Boolean devMode = (Boolean) context.get(ActionContext.DEV_MODE);
-        if (devMode != null) {
-            return devMode.booleanValue();
-        } else {
-            return false;
-        }
-    }
-
-    /* (non-Javadoc)
      * @see com.opensymphony.xwork2.util.ValueStack#setValue(java.lang.String, java.lang.Object)
      */
     public void setValue(String expr, Object value) {
-        setValue(expr, value, isDevModeEnabled());
+        setValue(expr, value, devMode);
     }
 
     /* (non-Javadoc)
@@ -271,7 +267,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
     private void logLookupFailure(String expr, Exception e) {
         StringBuffer msg = new StringBuffer();
         msg.append("Caught an exception while evaluating expression '").append(expr).append("' against value stack");
-        if (isDevModeEnabled() && LOG.isWarnEnabled()) {
+        if (devMode && LOG.isWarnEnabled()) {
             LOG.warn(msg, e);
             LOG.warn("NOTE: Previous warning message was issued due to devMode set to true.");
         } else if (LOG.isDebugEnabled()) {

@@ -223,7 +223,16 @@ public class ValidatorFactory {
 
     private ValidatorFactory() {
     }
-
+    /**
+     * Get a Validator that matches the given configuration.
+     *
+     * @deprecated
+     * @param cfg  the configurator.
+     * @return  the validator.
+     */
+    public static Validator getValidator(ValidatorConfig cfg) {
+        return getValidator(cfg, ObjectFactory.getObjectFactory());
+    }
 
     /**
      * Get a Validator that matches the given configuration.
@@ -231,7 +240,7 @@ public class ValidatorFactory {
      * @param cfg  the configurator.
      * @return  the validator.
      */
-    public static Validator getValidator(ValidatorConfig cfg) {
+    public static Validator getValidator(ValidatorConfig cfg, ObjectFactory objectFactory) {
 
         String className = lookupRegisteredValidatorType(cfg.getType());
 
@@ -240,7 +249,7 @@ public class ValidatorFactory {
         try {
             // instantiate the validator, and set configured parameters
             //todo - can this use the ThreadLocal?
-            validator = ObjectFactory.getObjectFactory().buildValidator(className, cfg.getParams(), null); // ActionContext.getContext().getContextMap());
+            validator = objectFactory.buildValidator(className, cfg.getParams(), null); // ActionContext.getContext().getContextMap());
         } catch (Exception e) {
             final String msg = "There was a problem creating a Validator of type " + className + " : caused by " + e.getMessage();
             throw new XWorkException(msg, e, cfg);

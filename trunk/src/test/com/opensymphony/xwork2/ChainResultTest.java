@@ -56,22 +56,20 @@ public class ChainResultTest extends XWorkTestCase {
         actionProxyMock.expect("execute");
 
         ActionProxyFactory testActionProxyFactory = new NamespaceActionNameTestActionProxyFactory(expectedNamespace, expectedActionName, (ActionProxy) actionProxyMock.proxy());
-
+        result.setActionProxyFactory(testActionProxyFactory);
         try {
-            ActionProxyFactory.setFactory(testActionProxyFactory);
 
             ActionContext testContext = new ActionContext(stack.getContext());
             ActionContext.setContext(testContext);
             result.execute(null);
             actionProxyMock.verify();
         } finally {
-            ActionProxyFactory.setFactory(new DefaultActionProxyFactory());
             ActionContext.setContext(null);
         }
     }
 
     public void testRecursiveChain() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), "", "InfiniteRecursionChain", null);
 
         try {
@@ -81,7 +79,7 @@ public class ChainResultTest extends XWorkTestCase {
         }
     }
 
-    private class NamespaceActionNameTestActionProxyFactory extends ActionProxyFactory {
+    private class NamespaceActionNameTestActionProxyFactory implements ActionProxyFactory {
         private ActionProxy returnVal;
         private String expectedActionName;
         private String expectedNamespace;

@@ -37,13 +37,6 @@ public interface ValueStack {
     public abstract CompoundRoot getRoot();
 
     /**
-     * Determine whether devMode is enabled.
-     *
-     * @return true if devMode was enabled, false otherwise.
-     */
-    public abstract boolean isDevModeEnabled();
-
-    /**
      * Attempts to set a property on a bean in the stack with the given expression using the default search order.
      *
      * @param expr  the expression defining the path to the property to be set.

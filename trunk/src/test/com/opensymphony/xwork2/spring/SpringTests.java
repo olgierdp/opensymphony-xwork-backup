@@ -17,7 +17,6 @@ public class SpringTests {
 				"Test for com.opensymphony.xwork2.spring");
 		
 		//$JUnit-BEGIN$
-		suite.addTestSuite(SpringExternalReferenceResolverTest.class);
 		suite.addTestSuite(SpringObjectFactoryTest.class);
 		suite.addTestSuite(ActionsFromSpringTest.class);
 		suite.addTestSuite(InjectSpringObjectFactoryTest.class);

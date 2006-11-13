@@ -4,6 +4,13 @@
  */
 package com.opensymphony.xwork2.config;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Properties;
+
+import com.opensymphony.xwork2.inject.Container;
+import com.opensymphony.xwork2.inject.ContainerBuilder;
+
 
 /**
  * Interface to be implemented by all forms of XWork configuration classes.
@@ -14,16 +21,18 @@ package com.opensymphony.xwork2.config;
 public interface ConfigurationProvider {
 
     public void destroy();
-
-    /**
-     * Initializes the configuration object.
-     */
+    
     public void init(Configuration configuration) throws ConfigurationException;
-
+    
+    public void register(ContainerBuilder builder, Properties props) throws ConfigurationException;
+    
+    public void loadPackages() throws ConfigurationException;
+    
     /**
      * Tells whether the ConfigurationProvider should reload its configuration
      *
      * @return <tt>true</tt>, whether the ConfigurationProvider should reload its configuration, <tt>false</tt>otherwise.
      */
     public boolean needsReload();
+    
 }

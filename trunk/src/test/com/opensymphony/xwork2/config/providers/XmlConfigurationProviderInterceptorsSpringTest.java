@@ -43,6 +43,7 @@ public class XmlConfigurationProviderInterceptorsSpringTest extends Configuratio
 
         // execute the configuration
         provider.init(configuration);
+        provider.loadPackages();
 
         PackageConfig pkg = configuration.getPackageConfig("default");
         Map interceptorConfigs = pkg.getInterceptorConfigs();

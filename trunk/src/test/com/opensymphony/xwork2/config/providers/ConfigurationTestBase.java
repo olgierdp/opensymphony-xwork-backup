@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork2.config.providers;
 
+import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
@@ -18,15 +19,14 @@ import com.opensymphony.xwork2.config.impl.MockConfiguration;
  */
 public abstract class ConfigurationTestBase extends XWorkTestCase {
 
-    protected Configuration configuration;
-
-
-    protected void setUp() throws Exception {
-        super.setUp();
-        configuration = new MockConfiguration();
-    }
-
     protected ConfigurationProvider buildConfigurationProvider(final String filename) {
-        return new XmlConfigurationProvider(filename);
+        configuration = new MockConfiguration();
+        container = configuration.getContainer();
+        
+        XmlConfigurationProvider prov = new XmlConfigurationProvider(filename, true);
+        prov.setObjectFactory(new ObjectFactory());
+        prov.init(configuration);
+        prov.loadPackages();
+        return prov;
     }
 }

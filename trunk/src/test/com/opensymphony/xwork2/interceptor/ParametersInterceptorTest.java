@@ -5,7 +5,9 @@
 package com.opensymphony.xwork2.interceptor;
 
 import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
 import com.opensymphony.xwork2.util.OgnlValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
@@ -61,7 +63,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), "", MockConfigurationProvider.MODEL_DRIVEN_PARAM_TEST, extraContext);
         assertEquals(Action.SUCCESS, proxy.execute());
 
@@ -84,7 +86,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), "", MockConfigurationProvider.MODEL_DRIVEN_PARAM_TEST, extraContext);
         assertEquals(Action.SUCCESS, proxy.execute());
 
@@ -103,7 +105,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), "", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
         ValueStack stack = proxy.getInvocation().getStack();
         HashMap session = new HashMap();
@@ -120,7 +122,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), "", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
         proxy.execute();
         assertEquals("This is blah", ((SimpleAction) proxy.getAction()).getBlah());
@@ -132,9 +134,10 @@ public class ParametersInterceptorTest extends XWorkTestCase {
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
-        extraContext.put(ActionContext.DEV_MODE, Boolean.TRUE);
+        OgnlValueStack.setDevMode("true");
+        ParametersInterceptor.setDevMode("true");
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), "", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
         proxy.execute();
         final String actionMessage = "" + ((SimpleAction) proxy.getAction()).getActionMessages().toArray()[0];
@@ -147,9 +150,9 @@ public class ParametersInterceptorTest extends XWorkTestCase {
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
-        extraContext.put(ActionContext.DEV_MODE, Boolean.FALSE);
+        OgnlValueStack.setDevMode("false");
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), "", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
         proxy.execute();
         assertTrue(((SimpleAction) proxy.getAction()).getActionMessages().isEmpty());
@@ -175,8 +178,11 @@ public class ParametersInterceptorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        configurationManager.clearConfigurationProviders();
+        configurationManager = new ConfigurationManager();
+        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-test-beans.xml"));
         configurationManager.addConfigurationProvider(new MockConfigurationProvider());
         configurationManager.reload();
+        container = configurationManager.getConfiguration().getContainer();
+        ObjectFactory.setObjectFactory(container.getInstance(ObjectFactory.class));
     }
 }

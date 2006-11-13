@@ -37,7 +37,7 @@ public class ActionContext implements Serializable {
      * This mode provides more feedback that is useful for developers but probably
      * too verbose/error prone for production.
      */
-    public static final String DEV_MODE = "__devMode";
+    //public static final String DEV_MODE = "__devMode";
 
     /**
      * Constant for the name of the action being executed.

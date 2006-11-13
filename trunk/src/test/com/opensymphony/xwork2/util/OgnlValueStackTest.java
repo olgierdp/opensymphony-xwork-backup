@@ -385,7 +385,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         SimpleAction action = new SimpleAction();
         OgnlValueStack stack = new OgnlValueStack();
         stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-        stack.getContext().put(ActionContext.DEV_MODE, Boolean.TRUE);
+        stack.setDevMode("true");
         stack.push(action);
         
         try {
@@ -404,7 +404,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         SimpleAction action = new SimpleAction();
         OgnlValueStack stack = new OgnlValueStack();
         stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-        stack.getContext().put(ActionContext.DEV_MODE, Boolean.FALSE);
+        stack.setDevMode("false");
         stack.push(action);
         stack.setValue("bar", "3x");
 
@@ -654,15 +654,6 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertTrue(conversionErrors.containsKey("count"));
     }
 
-    public void testIsDevModeEnabled() {
-        OgnlValueStack stack = new OgnlValueStack();
-        assertFalse(stack.isDevModeEnabled());
-        stack.getContext().put(ActionContext.DEV_MODE, Boolean.FALSE);
-        assertFalse(stack.isDevModeEnabled());
-        stack.getContext().put(ActionContext.DEV_MODE, Boolean.TRUE);
-        assertTrue(stack.isDevModeEnabled());
-    }
-    
     public void testConstructorWithAStack() {
         OgnlValueStack stack = new OgnlValueStack();
         stack.push("Hello World");

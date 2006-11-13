@@ -6,7 +6,7 @@
 
 <xwork>
     <include file="xwork-test-default.xml"/>
-    <package name="default" extends="xwork-test-default" externalReferenceResolver="com.opensymphony.xwork2.config.TestExternalReferenceResolver">
+    <package name="default" extends="xwork-test-default">
 
         <global-results>
             <result name="login"> <!-- should be chain type since it is the default -->
@@ -98,41 +98,10 @@
             <interceptor-ref name="validation"/>
             <result name="success" type="mock" />
         </action>
-        <!-- test resolution  -->
-        <action name="TestExternalRefResolver" class="com.opensymphony.xwork2.ExternalReferenceAction">
-                <external-ref name="foo">myFoo</external-ref>
-            <interceptor-ref name="debugStack"/>
-            <interceptor-ref name="defaultStack"/>
-            <result name="success" type="mock" />
-        </action>
-        <!-- test required flag -->
-        <action name="TestExternalRefResolver2" class="com.opensymphony.xwork2.ExternalReferenceAction">
-                <external-ref name="foo">myFoo</external-ref>
-                <external-ref required="false" name="does_not_exist">Does Not Exist</external-ref>
-            <interceptor-ref name="debugStack"/>
-            <interceptor-ref name="defaultStack"/>
-            <result name="success" type="mock" />
-        </action>
-        <!-- test where required reference is not found -->
-        <action name="TestExternalRefResolver3" class="com.opensymphony.xwork2.ExternalReferenceAction">
-                <external-ref required="true" name="Boo">myBoo</external-ref>
-            <interceptor-ref name="debugStack"/>
-            <interceptor-ref name="defaultStack"/>
-        </action>
 
         <!-- chain resursion detection -->
         <action name="InfiniteRecursionChain" class="com.opensymphony.xwork2.ActionSupport">
                 <result name="success" type="chain">InfiniteRecursionChain</result>
-        </action>
-
-   </package>
-
-   <package name="test-external-refs" extends="default" namespace="test/externalRef/">
-        <!-- test resolution when Resolver is declared on parent -->
-        <action name="TestExternalRefResolver4" class="com.opensymphony.xwork2.ExternalReferenceAction">
-                <external-ref name="foo">myFoo</external-ref>
-            <interceptor-ref name="defaultStack"/>
-            <result name="success" type="mock" />
         </action>
 
    </package>

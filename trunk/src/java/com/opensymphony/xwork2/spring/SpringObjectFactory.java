@@ -5,6 +5,8 @@
 package com.opensymphony.xwork2.spring;
 
 import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.inject.Inject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +38,13 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
     private Map classes = new HashMap();
     private boolean useClassCache = true;
 
+    @Inject(value="applicationContextPath",required=false)
+    public void setApplicationContextPath(String ctx) {
+        if (ctx != null) {
+            setApplicationContext(new ClassPathXmlApplicationContext(ctx));
+        }
+    }
+    
     /**
      * Set the Spring ApplicationContext that should be used to look beans up with.
      *
@@ -109,13 +119,18 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
      *         method.
      * @throws Exception
      */
-    public Object buildBean(String beanName, Map extraContext) throws Exception {
+    public Object buildBean(String beanName, Map extraContext, boolean injectInternal) throws Exception {
+        Object o = null;
         try {
-            return appContext.getBean(beanName);
+            o = appContext.getBean(beanName);
         } catch (NoSuchBeanDefinitionException e) {
             Class beanClazz = getClassInstance(beanName);
-            return buildBean(beanClazz, extraContext);
+            o = buildBean(beanClazz, extraContext);
         }
+        if (injectInternal) {
+            injectInternalBeans(o);
+        }
+        return o;
     }
 
     /**
@@ -136,7 +151,6 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
         bean = autoWiringFactory.applyBeanPostProcessorsBeforeInitialization(bean, bean.getClass().getName());
         // We don't need to call the init-method since one won't be registered.
         bean = autoWiringFactory.applyBeanPostProcessorsAfterInitialization(bean, bean.getClass().getName());
-
         return autoWireBean(bean, autoWiringFactory);
     }
 
@@ -156,6 +170,8 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
         if (bean instanceof ApplicationContextAware) {
             ((ApplicationContextAware) bean).setApplicationContext(appContext);
         }
+        
+        injectInternalBeans(bean);
 
         return bean;
     }

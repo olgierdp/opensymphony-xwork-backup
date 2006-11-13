@@ -16,7 +16,6 @@ public class XmlConfigurationProviderTest extends ConfigurationTestBase {
         FileManager.setReloadingConfigs(true);
         final String filename = "com/opensymphony/xwork2/config/providers/xwork-test-actions.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
-        provider.init(configuration);
         
         assertTrue(!provider.needsReload());
         

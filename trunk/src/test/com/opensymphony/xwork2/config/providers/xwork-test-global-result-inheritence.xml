@@ -5,7 +5,7 @@
  >
 
 <xwork>
-
+	<include file="xwork-test-beans.xml" />
 	<package name="parent" namespace="/base">
 		<result-types>
 			<result-type name="mockResult" class="com.opensymphony.xwork2.mock.MockResult" />

@@ -18,55 +18,7 @@ import com.opensymphony.xwork2.config.ConfigurationManager;
  *         Created Jun 15, 2003 5:18:30 PM
  * @see DefaultActionProxyFactory
  */
-public abstract class ActionProxyFactory {
-
-    static ActionProxyFactory factory = new DefaultActionProxyFactory();
-
-    /**
-     * Set the ActionProxyFactory implementation to use. If no instance is set, a new DefaultActionProxyFactory is used.
-     *
-     * @param factory
-     */
-    public static void setFactory(ActionProxyFactory factory) {
-        ActionProxyFactory.factory = factory;
-    }
-
-    public static ActionProxyFactory getFactory() {
-        return factory;
-    }
-    
-    /**
-     * Used by an ActionProxy or ActionProxyFactory to create an ActionInvocation to associate with an ActionProxy
-     * as part of creating an ActionProxy. Client code should not need to call the createActionInvocation methods.
-     *
-     * @param actionProxy
-     * @param extraContext
-     * @return ActionInvocation
-     * @throws Exception
-     */
-    public abstract ActionInvocation createActionInvocation(ActionProxy actionProxy, Map extraContext) throws Exception;
-
-    /**
-     * Used by an ActionProxy or ActionProxyFactory to create an ActionInvocation to associate with an ActionProxy
-     * as part of creating an ActionProxy. Client code should not need to call the createActionInvocation methods.
-     *
-     * @param actionProxy
-     * @return ActionInvocation
-     * @throws Exception
-     */
-    public abstract ActionInvocation createActionInvocation(ActionProxy actionProxy) throws Exception;
-
-    /**
-     * Used by an ActionProxy or ActionProxyFactory to create an ActionInvocation to associate with an ActionProxy
-     * as part of creating an ActionProxy. Client code should not need to call the createActionInvocation methods.
-     *
-     * @param actionProxy
-     * @param extraContext
-     * @param pushAction   tells whether the Action should be pushed onto the ValueStack
-     * @return ActionInvocation
-     * @throws Exception
-     */
-    public abstract ActionInvocation createActionInvocation(ActionProxy actionProxy, Map extraContext, boolean pushAction) throws Exception;
+public interface ActionProxyFactory {
 
     /**
      * Creates an ActionProxy for the given namespace and action name by looking up the configuration. The ActionProxy
@@ -78,7 +30,7 @@ public abstract class ActionProxyFactory {
      * @return ActionProxy
      * @throws Exception
      */
-    public abstract ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext) throws Exception;
+    public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext) throws Exception;
 
     /**
      * Creates an ActionProxy for the given namespace and action name by looking up the configuration. The ActionProxy
@@ -92,5 +44,5 @@ public abstract class ActionProxyFactory {
      * @return ActionProxy
      * @throws Exception
      */
-    public abstract ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception;
+    public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception;
 }

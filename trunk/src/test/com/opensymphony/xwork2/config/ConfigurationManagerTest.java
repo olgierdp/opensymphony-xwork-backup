@@ -31,6 +31,9 @@ public class ConfigurationManagerTest extends XWorkTestCase {
         // now check that it reloads
         configProviderMock.expectAndReturn("needsReload", Boolean.TRUE);
         configProviderMock.expect("init", C.isA(Configuration.class));
+        configProviderMock.expect("register", C.ANY_ARGS);
+        configProviderMock.expect("loadPackages", C.ANY_ARGS);
+        configProviderMock.expect("toString");
         configurationManager.getConfiguration();
         configProviderMock.verify();
 
@@ -76,14 +79,16 @@ public class ConfigurationManagerTest extends XWorkTestCase {
 
         ConfigurationProvider mockProvider = (ConfigurationProvider) configProviderMock.proxy();
         configurationManager.addConfigurationProvider(mockProvider);
-
+        
         //the first time it always inits
         configProviderMock.expect("init", C.isA(Configuration.class));
+        configProviderMock.expect("register", C.ANY_ARGS);
+        configProviderMock.expect("loadPackages", C.ANY_ARGS);
         configurationManager.getConfiguration();
     }
 
     protected void tearDown() throws Exception {
+        configProviderMock.expect("destroy");
         super.tearDown();
-        configurationManager.destroyConfiguration();
     }
 }

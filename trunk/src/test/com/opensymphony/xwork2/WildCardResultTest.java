@@ -27,17 +27,17 @@ public class WildCardResultTest extends XWorkTestCase {
     }
 
     public void testWildCardEvaluation() throws Exception {
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), null, "WildCard", null);
         assertEquals("success", proxy.execute());
         assertEquals(VoidResult.class, proxy.getInvocation().getResult().getClass());
 
-        proxy = ActionProxyFactory.getFactory().createActionProxy(
+        proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), null, "WildCardInput", null);
         assertEquals("input", proxy.execute());
         assertEquals(MockResult.class, proxy.getInvocation().getResult().getClass());
 
-        proxy = ActionProxyFactory.getFactory().createActionProxy(
+        proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), null, "WildCardError", null);
         assertEquals("error", proxy.execute());
         assertEquals(MockResult.class, proxy.getInvocation().getResult().getClass());

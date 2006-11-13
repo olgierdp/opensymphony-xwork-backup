@@ -4,6 +4,7 @@
  >
 
 <xwork>
+	<include file="xwork-test-beans.xml" />
     <package name="xwork-test-default">
         <result-types>
             <result-type name="chain" class="com.opensymphony.xwork2.ActionChainResult" default="true"/>
@@ -23,10 +24,8 @@
             <interceptor name="test" class="com.opensymphony.xwork2.mock.MockInterceptor">
                 <param name="foo">expectedFoo</param>
             </interceptor>
-            <interceptor name="reference-resolver" class="com.opensymphony.xwork2.interceptor.ExternalReferencesInterceptor"/>
 
             <interceptor-stack name="defaultStack">
-            	<interceptor-ref name="reference-resolver"/>
                 <interceptor-ref name="static-params"/>
                 <interceptor-ref name="model-driven"/>
                 <interceptor-ref name="params"/>

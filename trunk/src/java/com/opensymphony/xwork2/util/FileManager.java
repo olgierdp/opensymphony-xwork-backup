@@ -55,7 +55,11 @@ public class FileManager {
             return false;
         }
 
-        return revision.getLastModified() < revision.getFile().lastModified();
+        if (revision.getFile() != null) {
+            return revision.getLastModified() < revision.getFile().lastModified();
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -106,6 +110,9 @@ public class FileManager {
             if (file != null) {
                 lastModified = file.lastModified();
                 files.put(fileName, new FileRevision(file, lastModified));
+            } else {
+                // Never expire a non-file resource
+                files.put(fileName, new FileRevision());
             }
         }
 
@@ -118,6 +125,9 @@ public class FileManager {
         private File file;
         private long lastModified;
 
+        public FileRevision() {
+        }
+        
         public FileRevision(File file, long lastUpdated) {
             this.file = file;
             this.lastModified = lastUpdated;

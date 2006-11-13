@@ -32,6 +32,7 @@ public class XmlConfigurationProviderMultilevelTest extends ConfigurationTestBas
         final String filename = "com/opensymphony/xwork2/config/providers/xwork-test-multilevel.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
         provider.init(configuration);
+        provider.loadPackages();
 
         /**
          * for this test, we expect the action named, action3, in the namespace, namespace3, to have a single

@@ -11,6 +11,7 @@ import junit.framework.TestCase;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.config.ConfigurationManager;
 
 public class ScopedModelDrivenInterceptorTest extends XWorkTestCase {
 
@@ -26,6 +27,7 @@ public class ScopedModelDrivenInterceptorTest extends XWorkTestCase {
     public void setUp() throws Exception {
     
         inter = new ScopedModelDrivenInterceptor();
+        ObjectFactory.setObjectFactory(new ObjectFactory());
     }
 
     public void testResolveModel() throws Exception {

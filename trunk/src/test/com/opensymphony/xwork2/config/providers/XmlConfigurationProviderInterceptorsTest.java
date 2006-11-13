@@ -31,7 +31,7 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
     InterceptorConfig loggingInterceptor = new InterceptorConfig("logging", LoggingInterceptor.class, new HashMap());
     InterceptorConfig mockInterceptor = new InterceptorConfig("mock", MockInterceptor.class, new HashMap());
     InterceptorConfig timerInterceptor = new InterceptorConfig("timer", TimerInterceptor.class, new HashMap());
-    ObjectFactory objectFactory = ObjectFactory.getObjectFactory();
+    ObjectFactory objectFactory = new ObjectFactory();
 
 
     public void testBasicInterceptors() throws ConfigurationException {
@@ -58,6 +58,7 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
 
         // execute the configuration
         provider.init(configuration);
+        provider.loadPackages();
 
         PackageConfig pkg = configuration.getPackageConfig("default");
         Map interceptorConfigs = pkg.getInterceptorConfigs();
@@ -76,7 +77,7 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
     }
 
     public void testInterceptorDefaultRefs() throws ConfigurationException {
-        XmlConfigurationProvider provider = new XmlConfigurationProvider("com/opensymphony/xwork2/config/providers/xwork-test-interceptor-defaultref.xml");
+        ConfigurationProvider provider = new XmlConfigurationProvider("com/opensymphony/xwork2/config/providers/xwork-test-interceptor-defaultref.xml");
         configurationManager.clearConfigurationProviders();
         configurationManager.addConfigurationProvider(provider);
 
@@ -112,13 +113,12 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
     }
 
     public void testInterceptorInheritance() throws ConfigurationException {
-        XmlConfigurationProvider provider = new XmlConfigurationProvider("com/opensymphony/xwork2/config/providers/xwork-test-interceptor-inheritance.xml");
-
+        
         // expectations - the inherited interceptor stack
         InterceptorStackConfig inheritedStack = new InterceptorStackConfig("subDefaultStack");
         inheritedStack.addInterceptor(new InterceptorMapping("timer", objectFactory.buildInterceptor(timerInterceptor, new HashMap())));
 
-        provider.init(configuration);
+        ConfigurationProvider provider = buildConfigurationProvider("com/opensymphony/xwork2/config/providers/xwork-test-interceptor-inheritance.xml");
 
         // assertions
         PackageConfig defaultPkg = configuration.getPackageConfig("default");
@@ -142,8 +142,6 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
 
 
     public void testInterceptorParamOverriding() throws Exception {
-
-        XmlConfigurationProvider provider = new XmlConfigurationProvider("com/opensymphony/xwork2/config/providers/xwork-test-interceptor-params.xml");
 
         Map params = new HashMap();
         params.put("foo", "expectedFoo");
@@ -174,8 +172,8 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
 
         ActionConfig intOverAction = new ActionConfig(null, SimpleAction.class, new HashMap(), new HashMap(), interceptors);
 
-        // execute the configuration
-        provider.init(configuration);
+        ConfigurationProvider provider = buildConfigurationProvider("com/opensymphony/xwork2/config/providers/xwork-test-interceptor-params.xml");
+
 
         PackageConfig pkg = configuration.getPackageConfig("default");
         Map actionConfigs = pkg.getActionConfigs();

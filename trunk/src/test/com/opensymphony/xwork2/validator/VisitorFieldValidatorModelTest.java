@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.TestBean;
 import com.opensymphony.xwork2.test.TestBean2;
 import com.opensymphony.xwork2.util.ValueStack;
@@ -29,6 +30,7 @@ public class VisitorFieldValidatorModelTest extends TestCase {
 
 
     public void setUp() {
+        ObjectFactory.setObjectFactory(new ObjectFactory());
         origLocale = Locale.getDefault();
         Locale.setDefault(Locale.US);
 

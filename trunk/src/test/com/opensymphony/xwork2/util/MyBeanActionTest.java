@@ -26,7 +26,7 @@ public class MyBeanActionTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "", "MyBean", extraContext);
             proxy.execute();
             assertEquals(2, Integer.parseInt(proxy.getInvocation().getStack().findValue("beanList.size").toString()));
@@ -55,7 +55,7 @@ public class MyBeanActionTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "", "MyBean", extraContext);
             proxy.execute();
             MyBeanAction action = (MyBeanAction) proxy.getInvocation().getAction();

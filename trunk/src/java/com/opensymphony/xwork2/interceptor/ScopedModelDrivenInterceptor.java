@@ -12,6 +12,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
+import com.opensymphony.xwork2.inject.Inject;
 
 /**
  * <!-- START SNIPPET: description -->
@@ -73,6 +74,12 @@ public class ScopedModelDrivenInterceptor extends AbstractInterceptor {
     private String scope;
     private String name;
     private String className;
+    private ObjectFactory objectFactory;
+    
+    @Inject
+    public void setObjectFactory(ObjectFactory factory) {
+        this.objectFactory = factory;
+    }
     
     protected Object resolveModel(ObjectFactory factory, ActionContext actionContext, String modelClassName, String modelScope, String modelName) throws Exception {
         Object model = null;
@@ -112,7 +119,7 @@ public class ScopedModelDrivenInterceptor extends AbstractInterceptor {
                 if (modelName == null) {
                     modelName = cName;
                 }
-                Object model = resolveModel(ObjectFactory.getObjectFactory(), ctx, cName, scope, modelName);
+                Object model = resolveModel(objectFactory, ctx, cName, scope, modelName);
                 modelDriven.setModel(model);
                 modelDriven.setScopeKey(modelName);
             }

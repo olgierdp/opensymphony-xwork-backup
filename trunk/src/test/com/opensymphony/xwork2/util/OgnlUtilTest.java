@@ -548,7 +548,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         user.setList(new ArrayList());
 
         String[] foo = new String[]{"asdf"};
-        stackContext.put(ActionContext.DEV_MODE, Boolean.TRUE);
+        ((OgnlValueStack)stack).setDevMode("true");
         try {
             stack.setValue("list.1114778947765", foo);
             fail("non-valid expression: list.1114778947765"); 
@@ -573,7 +573,7 @@ public class OgnlUtilTest extends XWorkTestCase {
             ;
         }
         
-        stackContext.put(ActionContext.DEV_MODE, Boolean.FALSE);
+        ((OgnlValueStack)stack).setDevMode("false");
         stack.setValue("list.1114778947765", foo);
         stack.setValue("1114778947765", foo);
         stack.setValue("1234", foo);

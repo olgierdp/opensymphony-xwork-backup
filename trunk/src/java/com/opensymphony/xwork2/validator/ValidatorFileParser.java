@@ -91,11 +91,22 @@ public class ValidatorFileParser {
     /**
      * Parses validator definitions
      *
-     * @since 1.2
+     * @deprecated
      * @param is The input stream
      * @param resourceName The location of the input stream
      */
     public static void parseValidatorDefinitions(InputStream is, String resourceName) {
+        parseValidatorDefinitions(is, resourceName, ObjectFactory.getObjectFactory());
+    }
+    
+    /**
+     * Parses validator definitions
+     *
+     * @since 1.2
+     * @param is The input stream
+     * @param resourceName The location of the input stream
+     */
+    public static void parseValidatorDefinitions(InputStream is, String resourceName, ObjectFactory objectFactory) {
         
         InputSource in = new InputSource(is);
         in.setSystemId(resourceName);
@@ -111,7 +122,7 @@ public class ValidatorFileParser {
 
             try {
                 // catch any problems here
-                ObjectFactory.getObjectFactory().buildValidator(className, new HashMap(), null);
+                objectFactory.buildValidator(className, new HashMap(), null);
                 ValidatorFactory.registerValidator(name, className);
             } catch (Exception e) {
                 throw new XWorkException("Unable to load validator class " + className, e, validatorElement);

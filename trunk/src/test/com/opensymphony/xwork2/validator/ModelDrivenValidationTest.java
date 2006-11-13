@@ -29,7 +29,7 @@ public class ModelDrivenValidationTest extends XWorkTestCase {
         context.put(ActionContext.PARAMETERS, params);
 
         configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), null, "TestModelDrivenValidation", context);
         assertEquals(Action.SUCCESS, proxy.execute());
 

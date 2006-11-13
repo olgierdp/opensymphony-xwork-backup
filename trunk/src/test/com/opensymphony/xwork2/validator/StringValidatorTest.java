@@ -5,8 +5,10 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.ValidationAwareSupport;
 import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.test.Equidae;
 import com.opensymphony.xwork2.util.ValueStack;
@@ -184,8 +186,9 @@ public class StringValidatorTest extends XWorkTestCase {
     protected void setUp() throws Exception {
         ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
+        ObjectFactory.setObjectFactory(new ObjectFactory());
 
-        configurationManager.clearConfigurationProviders();
+        configurationManager = new ConfigurationManager();
         configurationManager.addConfigurationProvider(new MockConfigurationProvider());
         configurationManager.reload();
     }

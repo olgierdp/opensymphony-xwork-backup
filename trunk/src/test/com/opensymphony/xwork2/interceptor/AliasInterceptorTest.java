@@ -37,7 +37,7 @@ public class AliasInterceptorTest extends XWorkTestCase {
         Map params = new HashMap();
         params.put("aliasSource", "source here");
 
-        ActionProxyFactory factory = ActionProxyFactory.getFactory();
+        ActionProxyFactory factory = container.getInstance(ActionProxyFactory.class);
         configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
         ActionProxy proxy = factory.createActionProxy(
                 configurationManager.getConfiguration(), "", "aliasTest", params);

@@ -8,6 +8,7 @@ import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
 import com.opensymphony.xwork2.util.profiling.UtilTimerStack;
 
@@ -45,14 +46,17 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     protected boolean executeResult;
     protected boolean cleanupContext;
 
+    protected ObjectFactory objectFactory;
+
     /**
      * This constructor is private so the builder methods (create*) should be used to create an DefaultActionProxy.
      * <p/>
      * The reason for the builder methods is so that you can use a subclass to create your own DefaultActionProxy instance
      * (like a RMIActionProxy).
      */
-    protected DefaultActionProxy(Configuration cfg, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
-    	String profileKey = "create DefaultActionProxy: ";
+    protected DefaultActionProxy(ObjectFactory objectFactory, Configuration cfg, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+    	this.objectFactory = objectFactory;
+        String profileKey = "create DefaultActionProxy: ";
     	try {
     		UtilTimerStack.push(profileKey);
     		
@@ -102,7 +106,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     public ActionConfig getConfig() {
         return config;
     }
-
+    
     public void setExecuteResult(boolean executeResult) {
         this.executeResult = executeResult;
     }
@@ -162,7 +166,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     }
 
     protected void prepare() throws Exception {
-        invocation = ActionProxyFactory.getFactory().createActionInvocation(this, extraContext);
+        invocation = new DefaultActionInvocation(objectFactory, this, extraContext);
         resolveMethod();
     }
     

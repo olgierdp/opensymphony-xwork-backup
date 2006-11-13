@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.config;
 
 import com.opensymphony.xwork2.config.entities.PackageConfig;
+import com.opensymphony.xwork2.inject.Container;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.Set;
  * @author Mike
  */
 public interface Configuration {
-
+    
     public void rebuildRuntimeConfiguration();
 
     PackageConfig getPackageConfig(String name);
@@ -44,4 +45,11 @@ public interface Configuration {
     void reload(List<ConfigurationProvider> providers) throws ConfigurationException;
 
     void removePackageConfig(String name);
+
+    /**
+     * @return the container
+     */
+    public Container getContainer();
+
+    public Set<String> getLoadedFileNames();
 }

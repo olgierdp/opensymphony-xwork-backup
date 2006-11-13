@@ -8,6 +8,7 @@ import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
@@ -47,11 +48,11 @@ public class DefaultActionInvocation implements ActionInvocation {
 
 	public static ContinuationHandler continuationHandler;
 
-    static {
-        if (ObjectFactory.getContinuationPackage() != null) {
-            continuationHandler = new ContinuationHandler();
-        }
-    }
+    //static {
+    //    if (ObjectFactory.getContinuationPackage() != null) {
+    //        continuationHandler = new ContinuationHandler();
+    //    }
+    //}
     private static final Log LOG = LogFactory.getLog(DefaultActionInvocation.class);
 
     protected Object action;
@@ -65,20 +66,18 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected String resultCode;
     protected boolean executed = false;
     protected boolean pushAction = true;
+    protected ObjectFactory objectFactory;
 
-    protected DefaultActionInvocation(ActionProxy proxy) throws Exception {
-        this(proxy, null);
+    protected DefaultActionInvocation(ObjectFactory objectFactory, ActionProxy proxy, Map extraContext) throws Exception {
+        this(objectFactory, proxy, extraContext, true);
     }
 
-    protected DefaultActionInvocation(ActionProxy proxy, Map extraContext) throws Exception {
-        this(proxy, extraContext, true);
-    }
-
-    protected DefaultActionInvocation(final ActionProxy proxy, final Map extraContext, final boolean pushAction) throws Exception {
+    protected DefaultActionInvocation(final ObjectFactory objectFactory, final ActionProxy proxy, final Map extraContext, final boolean pushAction) throws Exception {
     	UtilTimerStack.profile("create DefaultActionInvocation: ", 
     			new UtilTimerStack.ProfilingBlock<Object>() {
 					public Object doProfiling() throws Exception {
 						DefaultActionInvocation.this.proxy = proxy;
+                        DefaultActionInvocation.this.objectFactory = objectFactory;
 				        DefaultActionInvocation.this.extraContext = extraContext;
 				        DefaultActionInvocation.this.pushAction = pushAction;
 				        init();
@@ -189,7 +188,7 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         if (resultConfig != null) {
             try {
-                Result result = ObjectFactory.getObjectFactory().buildResult(resultConfig, invocationContext.getContextMap());
+                Result result = objectFactory.buildResult(resultConfig, invocationContext.getContextMap());
                 return result;
             } catch (Exception e) {
                 LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClassName(), e);
@@ -268,7 +267,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         String timerKey = "actionCreate: "+proxy.getActionName();
         try {
             UtilTimerStack.push(timerKey);
-            action = ObjectFactory.getObjectFactory().buildAction(proxy.getActionName(), proxy.getNamespace(), proxy.getConfig(), contextMap);
+            action = objectFactory.buildAction(proxy.getActionName(), proxy.getNamespace(), proxy.getConfig(), contextMap);
         } catch (InstantiationException e) {
             throw new XWorkException("Unable to intantiate Action!", e, proxy.getConfig());
         } catch (IllegalAccessException e) {

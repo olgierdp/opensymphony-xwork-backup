@@ -4,12 +4,18 @@
  */
 package com.opensymphony.xwork2.config.impl;
 
+import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.RuntimeConfiguration;
 import com.opensymphony.xwork2.config.entities.*;
 import com.opensymphony.xwork2.config.providers.InterceptorBuilder;
+import com.opensymphony.xwork2.inject.Container;
+import com.opensymphony.xwork2.inject.ContainerBuilder;
+import com.opensymphony.xwork2.inject.Context;
+import com.opensymphony.xwork2.inject.Factory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -28,11 +34,21 @@ public class DefaultConfiguration implements Configuration {
 
 
     // Programmatic Action Conifigurations
-    private Map<String, PackageConfig> packageContexts = new LinkedHashMap<String, PackageConfig>();
+    protected Map<String, PackageConfig> packageContexts = new LinkedHashMap<String, PackageConfig>();
     protected RuntimeConfiguration runtimeConfiguration;
+    protected Container container;
+    protected String defaultFrameworkBeanName;
+    protected Set<String> loadedFileNames = new TreeSet<String>();
 
+
+    ObjectFactory objectFactory;
 
     public DefaultConfiguration() {
+        this("xwork");
+    }
+    
+    public DefaultConfiguration(String defaultBeanName) {
+        this.defaultFrameworkBeanName = defaultBeanName;
     }
 
 
@@ -47,9 +63,20 @@ public class DefaultConfiguration implements Configuration {
     public Map getPackageConfigs() {
         return packageContexts;
     }
+    
+    public Set<String> getLoadedFileNames() {
+        return loadedFileNames;
+    }
 
     public RuntimeConfiguration getRuntimeConfiguration() {
         return runtimeConfiguration;
+    }
+    
+    /**
+     * @return the container
+     */
+    public Container getContainer() {
+        return container;
     }
 
     public void addPackageConfig(String name, PackageConfig packageContext) {
@@ -91,10 +118,31 @@ public class DefaultConfiguration implements Configuration {
      */
     public synchronized void reload(List<ConfigurationProvider> providers) throws ConfigurationException {
         packageContexts.clear();
+        loadedFileNames.clear();
 
+        ContainerProperties props = new ContainerProperties();
+        ContainerBuilder builder = new ContainerBuilder();
         for (ConfigurationProvider configurationProvider : providers)
         {
             configurationProvider.init(this);
+            configurationProvider.register(builder, props);
+        }
+        props.setConstants(builder);
+        
+        builder.factory(Configuration.class, new Factory() {
+            public Object create(Context context) throws Exception {
+                return DefaultConfiguration.this;
+            }
+            
+        });
+        
+        container = builder.create(false);
+        objectFactory = container.getInstance(ObjectFactory.class);
+        
+        for (ConfigurationProvider configurationProvider : providers)
+        {
+            container.inject(configurationProvider);
+            configurationProvider.loadPackages();
         }
 
         rebuildRuntimeConfiguration();
@@ -190,7 +238,7 @@ public class DefaultConfiguration implements Configuration {
 
             if (defaultInterceptorRefName != null) {
                 interceptors.addAll(InterceptorBuilder.constructInterceptorReference(packageContext, defaultInterceptorRefName, 
-                        new LinkedHashMap(), packageContext.getLocation()));
+                        new LinkedHashMap(), packageContext.getLocation(), objectFactory));
             }
         }
 
@@ -295,6 +343,22 @@ public class DefaultConfiguration implements Configuration {
             }
 
             return buff.toString();
+        }
+    }
+    
+    class ContainerProperties extends Properties {
+        public Object setProperty(String key, String value) {
+            String oldValue = getProperty(key);
+            if (oldValue != null && !oldValue.equals(value) && !defaultFrameworkBeanName.equals(oldValue)) {
+                LOG.info("Overriding property "+key+" - old value: "+oldValue+" new value: "+value);
+            }
+            return super.setProperty(key, value);
+        }
+
+        public void setConstants(ContainerBuilder builder) {
+            for (Object key : keySet()) {
+                builder.constant((String)key, getProperty((String)key));
+            }
         }
     }
 }

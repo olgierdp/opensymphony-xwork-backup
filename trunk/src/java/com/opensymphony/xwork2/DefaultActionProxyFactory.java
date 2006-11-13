@@ -7,6 +7,8 @@ package com.opensymphony.xwork2;
 import java.util.Map;
 
 import com.opensymphony.xwork2.config.Configuration;
+import com.opensymphony.xwork2.inject.Container;
+import com.opensymphony.xwork2.inject.Inject;
 
 
 /**
@@ -15,36 +17,40 @@ import com.opensymphony.xwork2.config.Configuration;
  * @author Jason Carreira
  *         Created Jun 15, 2003 5:19:13 PM
  */
-public class DefaultActionProxyFactory extends ActionProxyFactory {
+public class DefaultActionProxyFactory implements ActionProxyFactory {
 
+    protected Container container;
+    protected ObjectFactory objectFactory;
+    
     public DefaultActionProxyFactory() {
         super();
     }
-
-
-    public ActionInvocation createActionInvocation(ActionProxy actionProxy) throws Exception {
-        return new DefaultActionInvocation(actionProxy);
+    
+    @Inject
+    public void setContainer(Container container) {
+        this.container = container;
     }
-
-    public ActionInvocation createActionInvocation(ActionProxy actionProxy, Map extraContext) throws Exception {
-        return new DefaultActionInvocation(actionProxy, extraContext);
-    }
-
-    public ActionInvocation createActionInvocation(ActionProxy actionProxy, Map extraContext, boolean pushAction) throws Exception {
-        return new DefaultActionInvocation(actionProxy, extraContext, pushAction);
+    
+    @Inject
+    public void setObjectFactory(ObjectFactory factory) {
+        this.objectFactory = factory;
     }
 
     /**
      * Use this method to build an DefaultActionProxy instance.
      */
     public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext) throws Exception {
-        return new DefaultActionProxy(config, namespace, actionName, extraContext, true, true);
+        ActionProxy proxy = new DefaultActionProxy(objectFactory, config, namespace, actionName, extraContext, true, true);
+        container.inject(proxy);
+        return proxy;
     }
 
     /**
      * Use this method to build an DefaultActionProxy instance.
      */
     public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
-        return new DefaultActionProxy(config, namespace, actionName, extraContext, executeResult, cleanupContext);
+        ActionProxy proxy = new DefaultActionProxy(objectFactory, config, namespace, actionName, extraContext, executeResult, cleanupContext);
+        container.inject(proxy);
+        return proxy;
     }
 }

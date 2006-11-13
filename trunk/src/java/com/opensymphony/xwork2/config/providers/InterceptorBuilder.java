@@ -42,7 +42,7 @@ public class InterceptorBuilder {
      * @throws ConfigurationException
      */
     public static List<InterceptorMapping> constructInterceptorReference(PackageConfig packageConfig, 
-            String refName, Map refParams, Location location) throws ConfigurationException {
+            String refName, Map refParams, Location location, ObjectFactory objectFactory) throws ConfigurationException {
         Object referencedConfig = packageConfig.getAllInterceptorConfigs().get(refName);
         List<InterceptorMapping> result = new ArrayList<InterceptorMapping>();
 
@@ -54,7 +54,7 @@ public class InterceptorBuilder {
                 Interceptor inter = null;
                 try {
                     
-                    inter = ObjectFactory.getObjectFactory().buildInterceptor(config, refParams);
+                    inter = objectFactory.buildInterceptor(config, refParams);
                     result.add(new InterceptorMapping(refName, inter));
                 } catch (ConfigurationException ex) {
                     LOG.warn("Unable to load config class "+config.getClassName()+" at "+
@@ -67,7 +67,7 @@ public class InterceptorBuilder {
                 InterceptorStackConfig stackConfig = (InterceptorStackConfig) referencedConfig;
 
                 if ((refParams != null) && (refParams.size() > 0)) {
-                    result = constructParameterizedInterceptorReferences(packageConfig, stackConfig, refParams);
+                    result = constructParameterizedInterceptorReferences(packageConfig, stackConfig, refParams, objectFactory);
                 } else {
                     result.addAll(stackConfig.getInterceptors());
                 }
@@ -89,7 +89,9 @@ public class InterceptorBuilder {
      * @param refParams     The overridden interceptor properies
      * @return list of interceptors referenced by the refName in the supplied PackageConfig overridden with refParams.
      */
-    private static List<InterceptorMapping> constructParameterizedInterceptorReferences(PackageConfig packageConfig, InterceptorStackConfig stackConfig, Map refParams) {
+    private static List<InterceptorMapping> constructParameterizedInterceptorReferences(
+            PackageConfig packageConfig, InterceptorStackConfig stackConfig, Map refParams,
+            ObjectFactory objectFactory) {
         List<InterceptorMapping> result;
         Map<String, Map<Object, String>> params = new HashMap<String, Map<Object, String>>();
 
@@ -123,7 +125,7 @@ public class InterceptorBuilder {
             Map<Object, String> map = params.get(key);
 
             InterceptorConfig cfg = (InterceptorConfig) packageConfig.getAllInterceptorConfigs().get(key);
-            Interceptor interceptor = ObjectFactory.getObjectFactory().buildInterceptor(cfg, map);
+            Interceptor interceptor = objectFactory.buildInterceptor(cfg, map);
 
             InterceptorMapping mapping = new InterceptorMapping(key, interceptor);
             if (result != null && result.contains(mapping)) {

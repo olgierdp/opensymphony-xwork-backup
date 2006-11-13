@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.test.ModelDrivenAction2;
 import com.opensymphony.xwork2.test.User;
 import junit.framework.TestCase;
@@ -581,6 +582,9 @@ public class XWorkConverterTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
+        ObjectFactory.setObjectFactory(new ObjectFactory());
+
+        configurationManager = new ConfigurationManager();
         converter = XWorkConverter.getInstance();
         configurationManager.destroyConfiguration();
 

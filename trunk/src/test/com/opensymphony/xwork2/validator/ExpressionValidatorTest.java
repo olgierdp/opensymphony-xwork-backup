@@ -7,7 +7,9 @@ package com.opensymphony.xwork2.validator;
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
@@ -58,7 +60,7 @@ public class ExpressionValidatorTest extends XWorkTestCase {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
         proxy.execute();
         assertTrue(((ValidationAware) proxy.getAction()).hasActionErrors());
@@ -82,7 +84,7 @@ public class ExpressionValidatorTest extends XWorkTestCase {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
 
-        ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                 configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
         proxy.execute();
         assertFalse(((ValidationAware) proxy.getAction()).hasActionErrors());
@@ -110,9 +112,12 @@ public class ExpressionValidatorTest extends XWorkTestCase {
         ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
 
-        configurationManager.clearConfigurationProviders();
+        configurationManager = new ConfigurationManager();
+        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-test-beans.xml"));
         configurationManager.addConfigurationProvider(new MockConfigurationProvider());
         configurationManager.reload();
+        container = configurationManager.getConfiguration().getContainer();
+        ObjectFactory.setObjectFactory(container.getInstance(ObjectFactory.class));
     }
 
 }

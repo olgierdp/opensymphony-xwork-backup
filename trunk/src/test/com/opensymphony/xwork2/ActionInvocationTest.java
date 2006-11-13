@@ -18,17 +18,17 @@ import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 public class ActionInvocationTest extends XWorkTestCase {
 
     public void testCommandInvocation() throws Exception {
-        ActionProxy baseActionProxy = ActionProxyFactory.getFactory().createActionProxy(configurationManager.getConfiguration(),
+        ActionProxy baseActionProxy = container.getInstance(ActionProxyFactory.class).createActionProxy(configurationManager.getConfiguration(),
                 "baz", "commandTest", null);
         assertEquals("success", baseActionProxy.execute());
 
-        ActionProxy commandActionProxy = ActionProxyFactory.getFactory().createActionProxy(configurationManager.getConfiguration(),
+        ActionProxy commandActionProxy = container.getInstance(ActionProxyFactory.class).createActionProxy(configurationManager.getConfiguration(),
                 "baz", "myCommand", null);
         assertEquals(SimpleAction.COMMAND_RETURN_CODE, commandActionProxy.execute());
     }
     
     public void testResultReturnInvocation() throws Exception {
-        ActionProxy baseActionProxy = ActionProxyFactory.getFactory().createActionProxy(configurationManager.getConfiguration(),
+        ActionProxy baseActionProxy = container.getInstance(ActionProxyFactory.class).createActionProxy(configurationManager.getConfiguration(),
                 "baz", "resultAction", null);
         assertEquals(null, baseActionProxy.execute());
     }
@@ -41,7 +41,7 @@ public class ActionInvocationTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy(
+            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
                     configurationManager.getConfiguration(), "", "Foo", extraContext);
             proxy.execute();
             assertEquals("this is blah", proxy.getInvocation().getStack().findValue("[1].blah"));
