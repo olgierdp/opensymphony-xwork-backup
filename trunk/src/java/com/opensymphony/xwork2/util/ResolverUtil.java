@@ -190,7 +190,7 @@ public class ResolverUtil<T> {
 
         Test test = new IsA(parent);
         for (String pkg : packageNames) {
-            find(test, pkg);
+            findInPackage(test, pkg);
         }
     }
     
@@ -206,7 +206,7 @@ public class ResolverUtil<T> {
 
         Test test = new NameEndsWith(suffix);
         for (String pkg : packageNames) {
-            find(test, pkg);
+            findInPackage(test, pkg);
         }
     }
 
@@ -222,7 +222,22 @@ public class ResolverUtil<T> {
 
         Test test = new AnnotatedWith(annotation);
         for (String pkg : packageNames) {
-            find(test, pkg);
+            findInPackage(test, pkg);
+        }
+    }
+    
+    /**
+     * Attempts to discover classes that pass the test. Accumulated
+     * classes can be accessed by calling {@link #getClasses()}.
+     *
+     * @param test the test to determine matching classes
+     * @param packageNames one or more package names to scan (including subpackages) for classes
+     */
+    public void find(Test test, String... packageNames) {
+        if (packageNames == null) return;
+
+        for (String pkg : packageNames) {
+            findInPackage(test, pkg);
         }
     }
 
@@ -236,7 +251,7 @@ public class ResolverUtil<T> {
      * @param packageName the name of the package from which to start scanning for
      *        classes, e.g. {@code net.sourceforge.stripes}
      */
-    public void find(Test test, String packageName) {
+    public void findInPackage(Test test, String packageName) {
         packageName = packageName.replace('.', '/');
         ClassLoader loader = getClassLoader();
         Enumeration<URL> urls;
