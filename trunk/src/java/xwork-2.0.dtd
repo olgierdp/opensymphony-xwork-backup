@@ -62,7 +62,7 @@
 
 <!ELEMENT global-exception-mappings (exception-mapping+)>
 
-<!ELEMENT action (param|result|interceptor-ref|exception-mapping|external-ref)*>
+<!ELEMENT action (param|result|interceptor-ref|exception-mapping)*>
 <!ATTLIST action
     name CDATA #REQUIRED
     class CDATA #IMPLIED
@@ -96,8 +96,11 @@
 <!ELEMENT bean (#PCDATA)>
 <!ATTLIST bean
     type CDATA #IMPLIED
-    name CDATA #REQUIRED
+    name CDATA #IMPLIED
     class CDATA #REQUIRED
+    scope CDATA #IMPLIED
+    static CDATA #IMPLIED
+    optional CDATA #IMPLIED
 >
 
 <!ELEMENT constant (#PCDATA)>
