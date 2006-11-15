@@ -5,6 +5,8 @@
 package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.XWorkException;
+
 import ognl.ListPropertyAccessor;
 import ognl.OgnlException;
 
@@ -63,7 +65,7 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
                 try {
                     list.add(index, result = ObjectFactory.getObjectFactory().buildBean(beanClass, context));
                 } catch (Exception exc) {
-                    throw new RuntimeException(exc);
+                    throw new XWorkException(exc);
                 }
                 return result;
             } else if (list.get(index) == null) {
@@ -71,7 +73,7 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
                 try {
                     list.set(index, result = ObjectFactory.getObjectFactory().buildBean(beanClass, context));
                 } catch (Exception exc) {
-                    throw new RuntimeException(exc);
+                    throw new XWorkException(exc);
                 }
                 return result;
             }

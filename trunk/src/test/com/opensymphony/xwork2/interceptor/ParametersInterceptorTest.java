@@ -141,7 +141,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
                 configurationManager.getConfiguration(), "", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
         proxy.execute();
         final String actionMessage = "" + ((SimpleAction) proxy.getAction()).getActionMessages().toArray()[0];
-        assertTrue(actionMessage.indexOf("No object in the CompoundRoot has a publicly accessible property named 'not_a_property' (no setter could be found).") > -1);
+        assertTrue(actionMessage.indexOf("Error setting expression 'not_a_property' with value 'There is no action property named like this'") > -1);
     }
 
     public void testNonexistentParametersAreIgnoredInProductionMode() throws Exception {

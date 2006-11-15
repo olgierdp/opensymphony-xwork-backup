@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.util.AnnotationUtils;
 import com.opensymphony.xwork2.interceptor.Interceptor;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
@@ -139,7 +140,7 @@ public class AnnotationWorkflowInterceptor implements Interceptor, PreResultList
             try {
                 m.invoke(action, (Object[]) null);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new XWorkException(e);
             }
         }
     }

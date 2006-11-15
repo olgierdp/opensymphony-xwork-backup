@@ -297,7 +297,7 @@ public class ObjectFactory {
                             return defineClass(name, resume_bytes, 0, resume_bytes.length);
                         }
                     } catch (IOException e) {
-                        throw new RuntimeException("Continuation error", e);
+                        throw new XWorkException("Continuation error", e);
                     }
                 } else {
                     return clazz;

@@ -11,6 +11,8 @@ import ognl.OgnlRuntime;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.opensymphony.xwork2.XWorkException;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -362,8 +364,7 @@ public class OgnlUtil {
             Throwable exception = (reason == null) ? e : reason;
 
             if (throwPropertyExceptions) {
-                log.error(msg, exception);
-                throw new RuntimeException(msg, exception);
+                throw new XWorkException(msg, exception);
             } else {
                 log.warn(msg, exception);
             }

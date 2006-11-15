@@ -6,6 +6,7 @@ package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.XWorkException;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,7 +48,7 @@ public class XWorkMap extends HashMap {
                 o = ObjectFactory.getObjectFactory().buildBean(clazz, null); // ActionContext.getContext().getContextMap());
                 this.put(key, o);
             } catch (Exception e) {
-                throw new RuntimeException(e.getMessage());
+                throw new XWorkException(e);
             }
         }
 

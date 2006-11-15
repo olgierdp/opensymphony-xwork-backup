@@ -8,6 +8,8 @@ import ognl.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.opensymphony.xwork2.XWorkException;
+
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.util.*;
@@ -63,8 +65,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         final String msg = "No object in the CompoundRoot has a publicly accessible property named '" + name + "' (no setter could be found).";
 
         if ((reportError != null) && (reportError.booleanValue())) {
-            log.error(msg);
-            throw new RuntimeException(msg);
+            throw new XWorkException(msg);
         } else {
             log.debug(msg);
         }
@@ -102,8 +103,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 } catch (OgnlException e) {
                     if (e.getReason() != null) {
                         final String msg = "Caught an Ognl exception while getting property " + name;
-                        log.error(msg, e);
-                        throw new RuntimeException(msg, e);
+                        throw new XWorkException(msg, e);
                     }
                 } catch (IntrospectionException e) {
                     // this is OK if this happens, we'll just keep trying the next

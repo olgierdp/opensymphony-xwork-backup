@@ -6,6 +6,7 @@ package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.DefaultTextProvider;
+import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.inject.Inject;
 
 import org.apache.commons.logging.Log;
@@ -158,9 +159,8 @@ public class OgnlValueStack implements Serializable, ValueStack {
             OgnlUtil.setValue(expr, context, root, value);
         } catch (OgnlException e) {
             if (throwExceptionOnFailure) {
-                String msg = "Error setting expr '" + expr + "' with value '" + value + "'";
-                LOG.error(msg, e);
-                throw new RuntimeException(msg, e);
+                String msg = "Error setting expression '" + expr + "' with value '" + value + "'";
+                throw new XWorkException(msg, e);
             } else {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Error setting value", e);
@@ -168,9 +168,8 @@ public class OgnlValueStack implements Serializable, ValueStack {
             }
         } catch (RuntimeException re) { //XW-281
             if (throwExceptionOnFailure) {
-                String msg = "Error setting expr '" + expr + "' with value '" + value + "'";
-                LOG.error(msg, re);
-                throw re;
+                String msg = "Error setting expression '" + expr + "' with value '" + value + "'";
+                throw new XWorkException(msg, re);
             } else {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Error setting value", re);
