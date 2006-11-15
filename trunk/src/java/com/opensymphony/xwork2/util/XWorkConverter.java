@@ -20,6 +20,7 @@ import ognl.TypeConverter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
@@ -194,24 +195,14 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     public static XWorkConverter getInstance() {
-        if (instance == null) {
-            try {
-                Class clazz = Thread.currentThread().getContextClassLoader().loadClass("com.opensymphony.xwork2.util.AnnotationXWorkConverter");
-                instance = (XWorkConverter) clazz.newInstance();
-                LOG.info("Detected AnnotationXWorkConverter, initializing it...");
-            } catch (ClassNotFoundException e) {
-                // this is fine, just fall back to the default object type determiner
-            } catch (Exception e) {
-                LOG.error("Exception when trying to create new AnnotationXWorkConverter", e);
-            }
-            if ( instance == null ) {
-                instance = new XWorkConverter();
-            }
+        if ( instance == null ) {
+            instance = new XWorkConverter();
         }
 
         return instance;
     }
-
+    
+    @Inject
     public static void setInstance(XWorkConverter instance) {
         XWorkConverter.instance = instance;
     }

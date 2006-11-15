@@ -96,7 +96,7 @@ public class AnnotationXWorkConverter extends XWorkConverter {
 
     private static final Log _log = LogFactory.getLog(AnnotationXWorkConverter.class);  
   
-    protected AnnotationXWorkConverter() {
+    public AnnotationXWorkConverter() {
         try {
             // note: this file is deprecated
             loadConversionProperties("xwork-default-conversion.properties");

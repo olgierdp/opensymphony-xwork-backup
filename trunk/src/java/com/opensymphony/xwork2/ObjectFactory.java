@@ -85,9 +85,9 @@ public class ObjectFactory {
     @Inject
     public void setContainer(Container container) {
         this.container = container;
-        self = container.getInstance(ObjectFactory.class);
     }
 
+    @Inject
     public static void setObjectFactory(ObjectFactory factory) {
         self = factory;
     }
