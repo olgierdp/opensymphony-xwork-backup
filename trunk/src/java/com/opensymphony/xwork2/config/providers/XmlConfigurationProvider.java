@@ -138,7 +138,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         } 
     }
     
-    public void register(ContainerBuilder containerBuilder, Properties props) throws ConfigurationException {
+    public void register(ContainerBuilder containerBuilder, Properties props, List<Class<?>> ignoreFailureStaticInjection) throws ConfigurationException {
         LOG.info("Parsing configuration file ["+configFileName+"]");
         Map<String,Node> loadedBeans = new HashMap<String,Node>();
         for (Document doc : documents) {
@@ -186,6 +186,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                             }
                             if ("true".equals(onlyStatic)) {
                                 containerBuilder.injectStatics(cimpl);
+                                if (optional) {
+                                	ignoreFailureStaticInjection.add(cimpl);
+                                }
                             } else {
                                 if (containerBuilder.contains(ctype, name)) {
                                     Location loc = LocationUtils.getLocation(loadedBeans.get(ctype.getName()+name));

@@ -29,9 +29,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Default {@link Container} implementation.
@@ -40,6 +44,8 @@ import java.util.Map;
  * @author crazybob@google.com (Bob Lee)
  */
 class ContainerImpl implements Container {
+	
+   private static final Log LOG = LogFactory.getLog(ContainerImpl.class);
 
   final Map<Key<?>, InternalFactory<?>> factories;
 
@@ -81,12 +87,21 @@ class ContainerImpl implements Container {
     addInjectorsForMethods(clazz.getDeclaredMethods(), false, injectors);
   }
 
+  @SuppressWarnings("unchecked")
   void injectStatics(List<Class<?>> staticInjections) {
+	  injectStatics(staticInjections, Collections.EMPTY_LIST);
+  }
+  
+  void injectStatics(List<Class<?>> staticInjections, List<Class<?>> ignoreFailureStaticInject) {
     final List<Injector> injectors = new ArrayList<Injector>();
 
     for (Class<?> clazz : staticInjections) {
-      addInjectorsForFields(clazz.getDeclaredFields(), true, injectors);
-      addInjectorsForMethods(clazz.getDeclaredMethods(), true, injectors);
+      boolean ignoreFailureDuringStaticInjection = false;
+      if (ignoreFailureStaticInject.contains(clazz)) {
+    		  ignoreFailureDuringStaticInjection = true;
+      }
+      addInjectorsForFields(clazz.getDeclaredFields(), true, injectors, ignoreFailureDuringStaticInjection);
+      addInjectorsForMethods(clazz.getDeclaredMethods(), true, injectors, ignoreFailureDuringStaticInjection);
     }
 
     callInContext(new ContextualCallable<Void>() {
@@ -99,24 +114,35 @@ class ContainerImpl implements Container {
     });
   }
 
+  void addInjectorsForMethods(Method[] methods, boolean statics, 
+		  List<Injector> injectors) {
+	  addInjectorsForMethods(methods, statics, injectors, false);
+  }
+  
   void addInjectorsForMethods(Method[] methods, boolean statics,
-      List<Injector> injectors) {
+      List<Injector> injectors, final boolean ignoreFailureStaticDuringInject) {
     addInjectorsForMembers(Arrays.asList(methods), statics, injectors,
         new InjectorFactory<Method>() {
           public Injector create(ContainerImpl container, Method method,
               String name) throws MissingDependencyException {
-            return new MethodInjector(container, method, name);
+            return new MethodInjector(container, method, name, ignoreFailureStaticDuringInject);
           }
         });
   }
+  
+  @SuppressWarnings("unchecked")
+  void addInjectorsForFields(Field[] fields, boolean statics, 
+		  List<Injector> injectors) {
+	  addInjectorsForFields(fields, statics, injectors, false);
+  }
 
   void addInjectorsForFields(Field[] fields, boolean statics,
-      List<Injector> injectors) {
+      List<Injector> injectors, final boolean  ignoreFailureStaticDuringInject) {
     addInjectorsForMembers(Arrays.asList(fields), statics, injectors,
         new InjectorFactory<Field>() {
           public Injector create(ContainerImpl container, Field field,
               String name) throws MissingDependencyException {
-            return new FieldInjector(container, field, name);
+            return new FieldInjector(container, field, name, ignoreFailureStaticDuringInject);
           }
         });
   }
@@ -154,10 +180,18 @@ class ContainerImpl implements Container {
     final Field field;
     final InternalFactory<?> factory;
     final ExternalContext<?> externalContext;
+    final boolean ignoreFailureOnStaticInject;
 
-    public FieldInjector(ContainerImpl container, Field field, String name)
+    public FieldInjector(ContainerImpl container, Field field, String name) 
+    	throws MissingDependencyException {
+    		this(container, field, name, false);
+    }
+    
+    public FieldInjector(ContainerImpl container, Field field, String name, 
+    		boolean ignoreFailureOnStaticInject)
         throws MissingDependencyException {
       this.field = field;
+      this.ignoreFailureOnStaticInject = ignoreFailureOnStaticInject;
       field.setAccessible(true);
 
       Key<?> key = Key.newInstance(field.getType(), name);
@@ -175,9 +209,15 @@ class ContainerImpl implements Container {
       context.setExternalContext(externalContext);
       try {
         field.set(o, factory.create(context));
-      } catch (IllegalAccessException e) {
-        throw new AssertionError(e);
-      } finally {
+      } catch (Throwable e) {
+    	  if (ignoreFailureOnStaticInject) {
+    		  	LOG.info("failed to inject an optional static field ["+field+"]");
+    	  }
+    	  else {
+    	  		throw new AssertionError(e);
+      	  }
+      }
+      finally {
         context.setExternalContext(previous);
       }
     }
@@ -246,10 +286,17 @@ class ContainerImpl implements Container {
 
     final Method method;
     final ParameterInjector<?>[] parameterInjectors;
-
-    public MethodInjector(ContainerImpl container, Method method, String name)
+    final boolean ignoreFailureStaticDuringInject;
+    
+    public MethodInjector(ContainerImpl container, Method method, String name) 
+    	throws MissingDependencyException {
+    	this(container, method, name, false);
+    }
+    
+    public MethodInjector(ContainerImpl container, Method method, String name, boolean ignoreFailureStaticDuringInject)
         throws MissingDependencyException {
       this.method = method;
+      this.ignoreFailureStaticDuringInject = ignoreFailureStaticDuringInject;
       method.setAccessible(true);
 
       Class<?>[] parameterTypes = method.getParameterTypes();
@@ -264,8 +311,13 @@ class ContainerImpl implements Container {
     public void inject(InternalContext context, Object o) {
       try {
         method.invoke(o, getParameters(method, context, parameterInjectors));
-      } catch (Exception e) {
-        throw new RuntimeException(e);
+      } catch (Throwable e) {
+    	  if (ignoreFailureStaticDuringInject) {
+    		  LOG.info("failed to inject static method ["+method+"]");
+    	  }
+    	  else {
+    		  throw new RuntimeException(e);
+    	  }
       }
     }
   }

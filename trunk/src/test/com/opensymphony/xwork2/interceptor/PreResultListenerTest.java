@@ -17,6 +17,7 @@ import com.opensymphony.xwork2.inject.ContainerBuilder;
 import junit.framework.TestCase;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -85,7 +86,7 @@ public class PreResultListenerTest extends XWorkTestCase {
                 return false;
             }
 
-            public void register(ContainerBuilder builder, Properties props) throws ConfigurationException {
+            public void register(ContainerBuilder builder, Properties props, List<Class<?>> ignoreFailureStaticInjection) throws ConfigurationException {
                 // TODO Auto-generated method stub
                 
             }

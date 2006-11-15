@@ -149,8 +149,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         return false;
     }
 
-    public void register(ContainerBuilder builder, Properties props) throws ConfigurationException {
-        // TODO Auto-generated method stub
-        
+    public void register(ContainerBuilder builder, Properties props, List<Class<?>> ignoreFailureStaticInjection) throws ConfigurationException {
+    	// do nothing
     }
 }

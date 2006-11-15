@@ -4,11 +4,9 @@
  */
 package com.opensymphony.xwork2.config;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 
-import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 
 
@@ -24,7 +22,7 @@ public interface ConfigurationProvider {
     
     public void init(Configuration configuration) throws ConfigurationException;
     
-    public void register(ContainerBuilder builder, Properties props) throws ConfigurationException;
+    public void register(ContainerBuilder builder, Properties props, List<Class<?>> ignoreFailureStaticInjection) throws ConfigurationException;
     
     public void loadPackages() throws ConfigurationException;
     
