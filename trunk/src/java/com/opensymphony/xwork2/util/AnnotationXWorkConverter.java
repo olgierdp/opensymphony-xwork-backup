@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork2.util;
 
-import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.conversion.annotations.Conversion;
 import com.opensymphony.xwork2.conversion.annotations.ConversionRule;
 import com.opensymphony.xwork2.conversion.annotations.ConversionType;
@@ -209,7 +208,7 @@ public class AnnotationXWorkConverter extends XWorkConverter {
 
                     if (key != null) {
                         try {
-                            if (tc.rule().equals(ConversionType.APPLICATION)) {
+                        	if (tc.type()  == ConversionType.APPLICATION) {
                                 defaultMappings.put(key, createTypeConverter(tc.converter()));
                             } else {
                                 if (tc.rule().toString().equals(ConversionRule.KEY_PROPERTY) || tc.rule().toString().equals(ConversionRule.CREATE_IF_NULL)) {
@@ -284,7 +283,7 @@ public class AnnotationXWorkConverter extends XWorkConverter {
 
                     if (key != null) {
                         try {
-                            if (tc.rule().equals(ConversionType.APPLICATION)) {
+                        	if (tc.type() == ConversionType.APPLICATION) {
                                 defaultMappings.put(key, createTypeConverter(tc.converter()));
                             } else {
                                 if (tc.rule().toString().equals(ConversionRule.KEY_PROPERTY)) {
