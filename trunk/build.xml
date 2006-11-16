@@ -4,22 +4,6 @@
 
     <import file="osbuild.xml"/>
 
-    <path id="tiger.cp">
-        <fileset dir="lib">
-            <include name="**/*.jar"/>
-            <include name="**/*.zip"/>
-            <exclude name="**/jalopy/**"/>
-        </fileset>
-        <pathelement location="${build.java}"/>
-        <pathelement location="tiger/build/java"/>
-    </path>
-
-    <path id="junit-tiger.cp">
-        <path refid="tiger.cp"/>
-        <pathelement location="tiger/build/test"/>
-        <pathelement location="tiger/build/java-test"/>
-    </path>
-
     <target name="init" depends="common.init" unless="skip.ivy">
         <taskdef name="ivy-configure" classname="fr.jayasoft.ivy.ant.IvyConfigure" classpathref="cp"/>
         <taskdef name="ivy-resolve" classname="fr.jayasoft.ivy.ant.IvyResolve" classpathref="cp"/>
@@ -36,48 +20,14 @@
                      pubrevision="${version}-${TIME}" pubdate="${TIME}"/>
     </target>
 
-    <target name="clean" depends="common.clean">
-        <delete dir="tiger/build"/>
-    </target>
-
     <target name="compile" depends="common.compile">
     </target>
 
-    <target name="predist" depends="tiger, tiger-javadocs">
+    <target name="predist" depends="common.predist">
         <!-- grab the README.txt file -->
         <copy file="${src}/etc/README.txt" todir="${dist}"/>
 
         <!--copy file="${build}/${name}-tiger-${version}.jar" todir="${dist}"/-->
-    </target>
-
-    <target name="tiger">
-        <!--compile srcdir="tiger/src/java" destdir="tiger/build/java" classpath="${build.java}" source="1.5"
-                 target="1.5"/>
-
-        <jar destfile="${build}/${name}-tiger-${version}.jar">
-            <fileset dir="tiger/build/java"/>
-        </jar>
-
-        <jar destfile="${build}/${name}-tiger-src-${version}.jar">
-            <fileset dir="tiger/src/java"/>
-        </jar-->
-    </target>
-
-    <target name="tiger-test-compile" unless="skip.tests">
-        <!--compile srcdir="tiger/src/test" destdir="tiger/build/test" classpathref="junit-tiger.cp" source="1.5"
-                 target="1.5"/>
-
-        <taskdef resource="clovertasks"/>
-        <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
-
-        <mkdir dir="tiger/build/clover"/>
-        <clover-setup initString="tiger/build/clover/coverage.db">
-            <files>
-                <exclude name="tiger/src/test/**/*.java"/>
-            </files>
-        </clover-setup>
-
-        <compile srcdir="tiger/src/java" destdir="tiger/build/java-test" classpathref="junit-tiger.cp" source="1.5" target="1.5"/-->
     </target>
 
     <target name="test" depends="junit-check, clover-check, compile, test-compile" description="run tests"
@@ -85,36 +35,10 @@
         <run-junit />
     </target>
 
-    <target name="tiger-test" depends="junit-check, clover-check, compile, tiger, tiger-test-compile" description="run tests"
-            unless="skip.tests">
-        <!--run-tiger-junit /-->
-    </target>
-
     <target name="docs.impl" depends="common.docs.impl">
         <copy todir="${dist.docs}">
             <fileset dir="${src.java}" includes="*.dtd"/>
         </copy>
-    </target>
-
-    <target name="tiger-javadocs" description="generate tiger javadocs" depends="common.init">
-        <!--mkdir dir="${dist.docs}/tiger-api"/>
-        <javadoc sourcepath="tiger/src/java"
-                 destdir="${dist.docs}/tiger-api"
-                 packagenames="${docs.packages}"
-                 classpathref="tiger.cp"
-                 author="true"
-                 version="true"
-                 overview="${src.java}/overview.html"
-                 windowTitle="${fullname} Tiger API - ${version}"
-                 doctitle="${fullname} Tiger API (${version})"
-                 footer="&lt;a href=&quot;http://www.opensymphony.com/${name}/&quot; target=&quot;_top&quot;&gt;${fullname} Project Page&lt;/a&gt;"
-                 use="true"
-                 verbose="false"
-                source="1.5">
-            <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
-            <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api"/>
-        </javadoc-->
-        <!-- <copy overwrite="yes" file="${docs}/main.css" tofile="${docs}/api/stylesheet.css"/> -->
     </target>
 
     <!--target name="ivyrep" depends="common.ivyrep">
@@ -129,33 +53,6 @@
         <copy file="pom.xml" tofile="/opt/repository/ibiblio.org/opensymphony/poms/${name}-${version}-SNAPSHOT.pom"/>
         <copy file="${build}/${name}-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT.jar"/>
         <copy file="${build}/${name}-src-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-src-${version}-SNAPSHOT.jar"/>
-
-        <!-- xwork-tiger -->
-        <!--copy file="tiger/pom.xml" tofile="/opt/repository/ibiblio.org/opensymphony/poms/${name}-tiger-${version}-SNAPSHOT.pom"/>
-        <copy file="${build}/${name}-tiger-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-tiger-${version}-SNAPSHOT.jar"/>
-        <copy file="${build}/${name}-tiger-src-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-tiger-src-${version}-SNAPSHOT.jar"/-->
     </target>
 
-    <macrodef name="run-tiger-junit">
-        <attribute name="classpathref" default="junit-tiger.cp" />
-        <sequential>
-          <mkdir dir="${dist.docs}/junit"/>
-          <junit haltonfailure="no" haltonerror="yes" fork="yes" forkmode="once" failureproperty="test.failure">
-              <jvmarg value="-Djava.awt.headless=true"/>
-              <jvmarg value="-Dorg.xml.sax.driver=org.apache.crimson.parser.XMLReaderImpl"/>
-              <classpath>
-                  <path refid="@{classpathref}"/>
-              </classpath>
-
-              <formatter type="plain" useFile="false"/>
-              <formatter type="xml"/>
-
-              <batchtest todir="${dist.docs}/junit">
-                  <fileset dir="tiger/src/test">
-                      <patternset refid="src.test.pattern"/>
-                  </fileset>
-              </batchtest>
-          </junit>
-        </sequential>
-    </macrodef>
 </project>
