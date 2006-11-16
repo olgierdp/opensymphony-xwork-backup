@@ -185,12 +185,22 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                                 ctype = ClassLoaderUtil.loadClass(type, getClass());
                             }
                             if ("true".equals(onlyStatic)) {
+                                // Force loading of class to detect no class def found exceptions
+                                cimpl.getDeclaredClasses();
+                                
                                 containerBuilder.injectStatics(cimpl);
                             } else {
                                 if (containerBuilder.contains(ctype, name)) {
                                     Location loc = LocationUtils.getLocation(loadedBeans.get(ctype.getName()+name));
                                     throw new ConfigurationException("Bean type "+ctype+" with the name "+
                                             name+" has already been loaded by "+loc, child);
+                                }
+                                
+                                // Force loading of class to detect no class def found exceptions
+                                cimpl.getDeclaredConstructors();
+                                
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug("Loaded type:"+type+" name:"+name+" impl:"+impl);
                                 }
                                 containerBuilder.factory(ctype, name, cimpl, scope);
                             }
