@@ -16,7 +16,6 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -114,7 +113,7 @@ public class ActionNestingTest extends XWorkTestCase {
             this.configuration = configuration;
         }
 
-        public void register(ContainerBuilder builder, Properties props, List<Class<?>> ignoreFailureStaticInjection) {
+        public void register(ContainerBuilder builder, Properties props) {
             builder.factory(ObjectFactory.class);
             builder.factory(ActionProxyFactory.class, DefaultActionProxyFactory.class);
         }

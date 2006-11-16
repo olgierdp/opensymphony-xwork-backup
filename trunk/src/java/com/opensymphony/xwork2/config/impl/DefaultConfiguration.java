@@ -122,12 +122,10 @@ public class DefaultConfiguration implements Configuration {
 
         ContainerProperties props = new ContainerProperties();
         ContainerBuilder builder = new ContainerBuilder();
-        List<Class<?>> ignoreFailureStaticInjection = new ArrayList<Class<?>>();
-        ignoreFailureStaticInjection.add(Object.class);
         for (ConfigurationProvider configurationProvider : providers)
         {
             configurationProvider.init(this);
-            configurationProvider.register(builder, props, ignoreFailureStaticInjection);
+            configurationProvider.register(builder, props);
         }
         props.setConstants(builder);
         
@@ -135,9 +133,10 @@ public class DefaultConfiguration implements Configuration {
             public Object create(Context context) throws Exception {
                 return DefaultConfiguration.this;
             }
+            
         });
         
-        container = builder.create(false, ignoreFailureStaticInjection);
+        container = builder.create(false);
         objectFactory = container.getInstance(ObjectFactory.class);
         
         for (ConfigurationProvider configurationProvider : providers)

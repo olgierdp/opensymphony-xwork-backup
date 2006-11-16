@@ -19,7 +19,6 @@ package com.opensymphony.xwork2.inject;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -477,12 +476,7 @@ public final class ContainerBuilder {
    *  development.
    * @throws IllegalStateException if called more than once
    */
-  @SuppressWarnings("unchecked")
   public Container create(boolean loadSingletons) {
-	  return create(loadSingletons,  Collections.EMPTY_LIST);
-  }
-  
-  public Container create(boolean loadSingletons, List<Class<?>> ignoreFailureStaticInjection) {
     ensureNotCreated();
     created = true;
     final ContainerImpl container = new ContainerImpl(
@@ -497,7 +491,7 @@ public final class ContainerBuilder {
         }
       });
     }
-    container.injectStatics(staticInjections, ignoreFailureStaticInjection);
+    container.injectStatics(staticInjections);
     return container;
   }
 
