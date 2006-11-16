@@ -17,16 +17,14 @@ public class ConversionProcessorTest extends AbstractAptTestCase {
 	}
 
 	public void test_generate() throws Exception {
-		AptRunnerResult result = runApt(new File(getDefaultSourceDir(),
-		"com/opensymphony/xwork2/conversion"));
-		assertTrue(result.succeeded());
-//		assertFalse(result.containsErrors());
+		AptRunnerResult result = runApt(new File(getDefaultSourceDir(), "com/opensymphony/xwork2/conversion"));
+		assertTrue("ERRORS: " + result, result.succeeded());
+		assertFalse("ERRORS: " + result, result.containsErrors());
 		
 		Properties generatedProperties = new Properties();
 		generatedProperties.load(readFromDestFolder("xwork-conversion.properties"));
 		Properties expectedProperties = new Properties();
-		expectedProperties.load(readFromSourceFolder
-			(getPackageDirectoryName() + "/expected/" + "xwork-conversion.properties"));
+		expectedProperties.load(readFromSourceFolder("com/opensymphony/xwork2/apt/expected/" + "xwork-conversion.properties"));
 		assertEquals(expectedProperties, generatedProperties);
 		
 		Properties generatedActionProperties = new Properties();

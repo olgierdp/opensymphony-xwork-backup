@@ -28,6 +28,7 @@ public class AptRunner {
 	private String executable;
 	private File destDir;
 	private String classpath;
+	private String additionalClasspath;
 	private String factoryName;
 	private List<String> sourceFiles;
 
@@ -44,7 +45,7 @@ public class AptRunner {
 
 	public void addSourceDir(File sourceDir) {
 		Assert.assertNotNull(sourceDir);
-		Assert.assertTrue(sourceDir.exists());
+		Assert.assertTrue("sourceDir: " + sourceDir, sourceDir.exists());
 		Assert.assertTrue(sourceDir.isDirectory());
 
 		List<String> sourceFiles = getSourceFiles(sourceDir);
@@ -75,7 +76,16 @@ public class AptRunner {
 		this.classpath = classpath;
 	}
 
-	public File getDestDir() {
+
+    public String getAdditionalClasspath() {
+        return additionalClasspath;
+    }
+
+    public void setAdditionalClasspath(String additionalClasspath) {
+        this.additionalClasspath = additionalClasspath;
+    }
+
+    public File getDestDir() {
 		return destDir;
 	}
 
@@ -110,8 +120,12 @@ public class AptRunner {
 		args.add("-s");
 		args.add(getDestDir().getAbsolutePath());
 		args.add("-classpath");
-		args.add(getClasspath());
-		args.add("-nocompile");
+        if ( additionalClasspath != null) {
+            args.add(getClasspath() + System.getProperty("path.separator") + additionalClasspath);
+        } else {
+            args.add(getClasspath());
+        }
+        args.add("-nocompile");
 		args.add("-factory");
 		args.add(getFactoryName());
 		args.addAll(getSourceFiles());

@@ -6,6 +6,8 @@ package com.opensymphony.xwork2.util;
 
 //import com.sun.mirror.declaration.MethodDeclaration;
 
+import com.sun.mirror.declaration.MethodDeclaration;
+
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -118,7 +120,7 @@ public class AnnotationUtils {
      * @param method The method to get the property name for.
      * @return the property name for given method; null if non could be resolved.
      */
-    /*public static String resolvePropertyName(MethodDeclaration method) {
+    public static String resolvePropertyName(MethodDeclaration method) {
 
         Matcher matcher = SETTER_PATTERN.matcher(method.getSimpleName());
         if (matcher.matches() && method.getParameters().size() == 1) {
@@ -133,7 +135,7 @@ public class AnnotationUtils {
         }
 
         return null;
-    }*/
+    }
 
 
     /**

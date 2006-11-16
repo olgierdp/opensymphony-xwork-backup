@@ -7,6 +7,8 @@ package com.opensymphony.xwork2.apt;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Properties;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -25,8 +27,9 @@ public class AbstractAptTestCase extends TestCase {
 
     protected static final Log log = LogFactory.getLog(AbstractAptTestCase.class);
 
-    public final static String SOURCE_DIR="tiger/src/test";
-    public final static String DEST_DIR="tiger/build/test_dest";
+    public final static String SOURCE_DIR="src/test";
+    public final static String DEST_DIR="target/test-generate";
+    public final static String BUILD_DIR="target/classes";
 
     public AbstractAptTestCase(String name) {
         super(name);
@@ -64,9 +67,14 @@ public class AbstractAptTestCase extends TestCase {
         assertTrue(destDir.exists());
         assertTrue(destDir.isDirectory());
 
+        Properties p = System.getProperties();
+        for ( Map.Entry e : p.entrySet() ) {
+            System.out.println(e.getKey() + " : " + e.getValue());
+        }
         AptRunner aptRunner = new AptRunner();
         aptRunner.setDestDir(destDir);
         aptRunner.addSourceDir(sourceDir);
+        aptRunner.setAdditionalClasspath( new File(getDefaultBaseDir(), BUILD_DIR).getAbsolutePath() + System.getProperty("path.separator") + System.getProperty("maven.dependency.classpath"));
         aptRunner.setExecutable(getDefaultExcecutable().getAbsolutePath());
         aptRunner.setFactoryName(getDefaultFactoryName());
         return aptRunner.run();

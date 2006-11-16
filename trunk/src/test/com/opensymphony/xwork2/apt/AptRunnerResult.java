@@ -59,11 +59,5 @@ public class AptRunnerResult {
 			buffer.append("]");
 			return buffer.toString();
 		}
-	
-	
-	
-	
-	
-	
 
 }
