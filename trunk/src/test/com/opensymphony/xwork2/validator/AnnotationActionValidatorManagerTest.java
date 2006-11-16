@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import com.opensymphony.xwork2.TestBean;
+import com.opensymphony.xwork2.AnnotatedTestBean;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.SimpleAnnotationAction;
 import com.opensymphony.xwork2.test.AnnotationDataAware2;
@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
 
-    protected final String alias = "validationAlias";
+    protected final String alias = "annotationValidationAlias";
 
     AnnotationActionValidatorManager annotationActionValidatorManager;
 
@@ -55,11 +55,11 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
 
     public void testDefaultMessageInterpolation() {
         // get validators
-        List validatorList = annotationActionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
+        List validatorList = annotationActionValidatorManager.getValidators(AnnotatedTestBean.class, "beanMessageBundle");
         assertEquals(3, validatorList.size());
 
         try {
-            TestBean bean = new TestBean();
+            AnnotatedTestBean bean = new AnnotatedTestBean();
             bean.setName("foo");
             bean.setCount(99);
 
@@ -111,13 +111,13 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
         assertEquals("bar", v1.getFieldName());
         assertTrue(v1 instanceof IntRangeFieldValidator);
 
-        final FieldValidator v2 = (FieldValidator) validatorList.get(2);
-        assertEquals("baz", v2.getFieldName());
-        assertTrue(v2 instanceof IntRangeFieldValidator);
-
-        final FieldValidator vdouble = (FieldValidator) validatorList.get(3);
+        final FieldValidator vdouble = (FieldValidator) validatorList.get(2);
         assertEquals("percentage", vdouble.getFieldName());
         assertTrue(vdouble instanceof DoubleRangeFieldValidator);
+
+        final FieldValidator v2 = (FieldValidator) validatorList.get(3);
+        assertEquals("baz", v2.getFieldName());
+        assertTrue(v2 instanceof IntRangeFieldValidator);
 
         final FieldValidator v3 = (FieldValidator) validatorList.get(4);
         assertEquals("date", v3.getFieldName());
@@ -183,11 +183,11 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
 
     public void testMessageInterpolation() {
         // get validators
-        List validatorList = annotationActionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
+        List validatorList = annotationActionValidatorManager.getValidators(AnnotatedTestBean.class, "beanMessageBundle");
         assertEquals(3, validatorList.size());
 
         try {
-            TestBean bean = new TestBean();
+            AnnotatedTestBean bean = new AnnotatedTestBean();
             bean.setName("foo");
             bean.setCount(150);
 

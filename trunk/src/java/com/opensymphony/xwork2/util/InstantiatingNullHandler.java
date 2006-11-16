@@ -5,7 +5,6 @@
 package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.inject.Inject;
 
 import ognl.NullHandler;
 import ognl.Ognl;
@@ -47,8 +46,8 @@ import java.util.*;
  * For example, if a form element has a text field named <b>person.name</b> and the expression <i>person</i> evaluates
  * to null, then this class will be invoked. Because the <i>person</i> expression evaluates to a <i>Person</i> class, a
  * new Person is created and assigned to the null reference. Finally, the name is set on that object and the overall
- * effect is that the system automatically created a Person object for you, set it by calling setPerson() and then
- * finally called getPerson().setName() as you would typically expect.
+ * effect is that the system automatically created a Person object for you, set it by calling setUsers() and then
+ * finally called getUsers().setName() as you would typically expect.
  *
  * <!-- END SNIPPET: example>
  *

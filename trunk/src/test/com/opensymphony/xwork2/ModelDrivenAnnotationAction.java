@@ -14,7 +14,7 @@ package com.opensymphony.xwork2;
 public class ModelDrivenAnnotationAction extends ActionSupport implements ModelDriven {
 
     private String foo;
-    private TestBean model = new TestBean();
+    private AnnotatedTestBean model = new AnnotatedTestBean();
 
 
     public void setFoo(String foo) {

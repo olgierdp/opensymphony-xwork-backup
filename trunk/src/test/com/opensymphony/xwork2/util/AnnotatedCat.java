@@ -17,7 +17,7 @@ import java.util.List;
  * @version $Revision$
  */
 @Conversion()
-public class Cat {
+public class AnnotatedCat {
 
     public static final String SCIENTIFIC_NAME = "Feline";
 

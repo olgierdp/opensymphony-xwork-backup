@@ -13,7 +13,7 @@ import com.opensymphony.xwork2.validator.annotations.Validation;
 
 
 /**
- * Implemented by SimpleAction3 and TestBean2 to test class hierarchy traversal.
+ * Implemented by SimpleAction3 and AnnotationTestBean2 to test class hierarchy traversal.
  *
  * @author Mark Woon
  * @author Rainer Hermanns

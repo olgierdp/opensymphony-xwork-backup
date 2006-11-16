@@ -194,13 +194,26 @@ public class XWorkConverter extends DefaultTypeConverter {
         return message;
     }
 
-    public static XWorkConverter getInstance() {
-        if ( instance == null ) {
-            instance = new XWorkConverter();
-        }
 
-        return instance;
-    }
+    public static XWorkConverter getInstance() {
+         if (instance == null) {
+             try {
+                 Class clazz = Thread.currentThread().getContextClassLoader().loadClass("com.opensymphony.xwork2.util.AnnotationXWorkConverter");
+                 instance = (XWorkConverter) clazz.newInstance();
+                 LOG.info("Detected AnnotationXWorkConverter, initializing it...");
+             } catch (ClassNotFoundException e) {
+                 // this is fine, just fall back to the default object type determiner
+             } catch (Exception e) {
+                 LOG.error("Exception when trying to create new AnnotationXWorkConverter", e);
+             }
+             if ( instance == null ) {
+                 instance = new XWorkConverter();
+             }
+         }
+
+         return instance;
+     }
+
     
     @Inject
     public static void setInstance(XWorkConverter instance) {

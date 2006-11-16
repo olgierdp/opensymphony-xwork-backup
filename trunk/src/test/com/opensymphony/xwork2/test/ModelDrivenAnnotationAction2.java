@@ -15,7 +15,7 @@ import com.opensymphony.xwork2.ModelDrivenAnnotationAction;
  */
 public class ModelDrivenAnnotationAction2 extends ModelDrivenAnnotationAction {
 
-    private TestBean2 model = new TestBean2();
+    private AnnotationTestBean2 model = new AnnotationTestBean2();
 
 
     /**

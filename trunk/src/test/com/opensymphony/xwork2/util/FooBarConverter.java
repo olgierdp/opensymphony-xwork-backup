@@ -38,6 +38,11 @@ public class FooBarConverter extends DefaultTypeConverter {
             cat.setName((String) value);
 
             return cat;
+        } else if (toType == AnnotatedCat.class) {
+            AnnotatedCat cat = new AnnotatedCat();
+            cat.setName((String) value);
+
+            return cat;
         } else {
             System.out.println("Don't know how to convert between " + value.getClass().getName() +
                     " and " + toType.getName());

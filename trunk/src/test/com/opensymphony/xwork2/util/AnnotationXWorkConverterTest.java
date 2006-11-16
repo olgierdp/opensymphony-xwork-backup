@@ -8,7 +8,6 @@ import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.test.ModelDrivenAnnotationAction2;
 import com.opensymphony.xwork2.test.AnnotationUser;
 import com.opensymphony.xwork2.config.ConfigurationManager;
-import junit.framework.TestCase;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 
@@ -25,8 +24,9 @@ import java.util.*;
  * @author Rainer Hermanns
  * @version $Revision$
  */
-public class AnnotationXWorkConverterTest extends TestCase {
+public class AnnotationXWorkConverterTest extends XWorkTestCase {
 
+    ActionContext ac;
     Map context;
     XWorkConverter converter;
 
@@ -83,7 +83,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
 
     public void testFieldErrorMessageAddedForComplexProperty() {
         SimpleAnnotationAction action = new SimpleAnnotationAction();
-        action.setBean(new TestBean());
+        action.setBean(new AnnotatedTestBean());
 
         ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
@@ -171,7 +171,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
         String value = "asdf:123";
         Object o = converter.convertValue(ognlStackContext, action.getModel(), null, "barObj", value, Bar.class);
         assertNotNull(o);
-        assertTrue(o instanceof Bar);
+        assertTrue("class is: " + o.getClass(), o instanceof Bar);
 
         Bar b = (Bar) o;
         assertEquals(value, b.getTitle() + ":" + b.getSomethingElse());
@@ -341,7 +341,7 @@ public class AnnotationXWorkConverterTest extends TestCase {
 
     public void testGenericProperties() {
         GenericsBean gb = new GenericsBean();
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ac.getValueStack();
         stack.push(gb);
 
         String[] value = new String[] {"123.12", "123.45"};
@@ -365,11 +365,14 @@ public class AnnotationXWorkConverterTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
+        ObjectFactory.setObjectFactory(new ObjectFactory());
+
+        configurationManager = new ConfigurationManager();
         converter = XWorkConverter.getInstance();
-        ConfigurationManager.destroyConfiguration();
+        configurationManager.destroyConfiguration();
 
         ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-        ActionContext ac = new ActionContext(stack.getContext());
+        ac = new ActionContext(stack.getContext());
         ac.setLocale(Locale.US);
         ActionContext.setContext(ac);
         context = ac.getContextMap();
@@ -379,5 +382,4 @@ public class AnnotationXWorkConverterTest extends TestCase {
         XWorkConverter.resetInstance();
         ActionContext.setContext(null);
     }
-
 }

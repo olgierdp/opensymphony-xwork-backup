@@ -6,12 +6,12 @@ package com.opensymphony.xwork2.validator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.text.SimpleDateFormat;
+import java.text.DateFormat;
+import java.text.ParseException;
 
 import com.opensymphony.xwork2.validator.annotations.*;
 
@@ -550,6 +550,28 @@ public class AnnotationValidationConfigurationBuilder {
         return vCfg;
     }
 
+    private static Date parseDateString(String value) {
+
+        SimpleDateFormat d1 = (SimpleDateFormat) DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG, Locale.getDefault());
+        SimpleDateFormat d2 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
+        SimpleDateFormat d3 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault());
+        SimpleDateFormat[] dfs = {d1, d2, d3};
+        DateFormat df = null;
+        for (int i = 0; i < dfs.length; i++) {
+            try {
+                Date check = dfs[i].parse(value);
+                df = dfs[i];
+                if (check != null) {
+                    return check;
+                }
+            }
+            catch (ParseException ignore) {
+            }
+        }
+        return null;
+
+    }
+
     private static ValidatorConfig processRequiredStringValidatorAnnotation(RequiredStringValidator v, String fieldName) {
         String validatorType = "requiredstring";
 
@@ -736,10 +758,10 @@ public class AnnotationValidationConfigurationBuilder {
             params.put("fieldName", v.fieldName());
         }
         if ( v.min() != null && v.min().length() > 0) {
-            params.put("min", v.min());
+            params.put("min", parseDateString(v.min()));
         }
         if ( v.max() != null && v.max().length() > 0) {
-            params.put("max", v.max());
+            params.put("max", parseDateString(v.max()));
         }
 
         ValidatorFactory.lookupRegisteredValidatorType(validatorType);

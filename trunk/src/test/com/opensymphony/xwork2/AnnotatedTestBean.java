@@ -12,12 +12,12 @@ import java.util.Date;
 
 
 /**
- * TestBean
+ * AnnotatedTestBean
  * @author Jason Carreira
  * @author Rainer Hermanns
  * Created Aug 4, 2003 12:39:53 AM
  */
-public class TestBean {
+public class AnnotatedTestBean {
     //~ Instance fields ////////////////////////////////////////////////////////
 
     private Date birth;
@@ -26,7 +26,7 @@ public class TestBean {
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
-    public TestBean() {
+    public AnnotatedTestBean() {
     }
 
     //~ Methods ////////////////////////////////////////////////////////////////

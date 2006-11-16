@@ -6,7 +6,7 @@ package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.validator.annotations.*;
 import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.TestBean;
+import com.opensymphony.xwork2.AnnotatedTestBean;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,7 +32,7 @@ public class SimpleAnnotationAction extends ActionSupport {
     private Properties settings = new Properties();
     private String blah;
     private String name;
-    private TestBean bean = new TestBean();
+    private AnnotatedTestBean bean = new AnnotatedTestBean();
     private boolean throwException;
     private int bar;
     private int baz;
@@ -79,11 +79,11 @@ public class SimpleAnnotationAction extends ActionSupport {
         this.percentage = percentage;
     }
 
-    public void setBean(TestBean bean) {
+    public void setBean(AnnotatedTestBean bean) {
         this.bean = bean;
     }
 
-    public TestBean getBean() {
+    public AnnotatedTestBean getBean() {
         return bean;
     }
 

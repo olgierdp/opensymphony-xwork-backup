@@ -225,7 +225,10 @@ public class DefaultConfiguration implements Configuration {
         }
         else {
         	PackageConfig baseConfigPackageConfig = (PackageConfig) packageContexts.get(baseConfig.getPackageName());
-        	results = new TreeMap<String, ResultConfig>(baseConfigPackageConfig.getAllGlobalResults());
+            if ( baseConfigPackageConfig != null) {
+                results = new TreeMap<String, ResultConfig>(baseConfigPackageConfig.getAllGlobalResults());
+            }
+
         	results.putAll(baseConfig.getResults());
         }        
 
