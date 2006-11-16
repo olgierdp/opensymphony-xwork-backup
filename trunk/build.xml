@@ -47,11 +47,11 @@
         <!-- grab the README.txt file -->
         <copy file="${src}/etc/README.txt" todir="${dist}"/>
 
-        <copy file="${build}/${name}-tiger-${version}.jar" todir="${dist}"/>
+        <!--copy file="${build}/${name}-tiger-${version}.jar" todir="${dist}"/-->
     </target>
 
     <target name="tiger">
-        <compile srcdir="tiger/src/java" destdir="tiger/build/java" classpath="${build.java}" source="1.5"
+        <!--compile srcdir="tiger/src/java" destdir="tiger/build/java" classpath="${build.java}" source="1.5"
                  target="1.5"/>
 
         <jar destfile="${build}/${name}-tiger-${version}.jar">
@@ -60,11 +60,11 @@
 
         <jar destfile="${build}/${name}-tiger-src-${version}.jar">
             <fileset dir="tiger/src/java"/>
-        </jar>
+        </jar-->
     </target>
 
     <target name="tiger-test-compile" unless="skip.tests">
-        <compile srcdir="tiger/src/test" destdir="tiger/build/test" classpathref="junit-tiger.cp" source="1.5"
+        <!--compile srcdir="tiger/src/test" destdir="tiger/build/test" classpathref="junit-tiger.cp" source="1.5"
                  target="1.5"/>
 
         <taskdef resource="clovertasks"/>
@@ -77,7 +77,7 @@
             </files>
         </clover-setup>
 
-        <compile srcdir="tiger/src/java" destdir="tiger/build/java-test" classpathref="junit-tiger.cp" source="1.5" target="1.5"/>
+        <compile srcdir="tiger/src/java" destdir="tiger/build/java-test" classpathref="junit-tiger.cp" source="1.5" target="1.5"/-->
     </target>
 
     <target name="test" depends="junit-check, clover-check, compile, test-compile" description="run tests"
@@ -87,7 +87,7 @@
 
     <target name="tiger-test" depends="junit-check, clover-check, compile, tiger, tiger-test-compile" description="run tests"
             unless="skip.tests">
-        <run-tiger-junit />
+        <!--run-tiger-junit /-->
     </target>
 
     <target name="docs.impl" depends="common.docs.impl">
@@ -97,7 +97,7 @@
     </target>
 
     <target name="tiger-javadocs" description="generate tiger javadocs" depends="common.init">
-        <mkdir dir="${dist.docs}/tiger-api"/>
+        <!--mkdir dir="${dist.docs}/tiger-api"/>
         <javadoc sourcepath="tiger/src/java"
                  destdir="${dist.docs}/tiger-api"
                  packagenames="${docs.packages}"
@@ -113,16 +113,16 @@
                 source="1.5">
             <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
             <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api"/>
-        </javadoc>
+        </javadoc-->
         <!-- <copy overwrite="yes" file="${docs}/main.css" tofile="${docs}/api/stylesheet.css"/> -->
     </target>
 
-    <target name="ivyrep" depends="common.ivyrep">
+    <!--target name="ivyrep" depends="common.ivyrep">
         <antcall target="ivyrep.impl" inheritrefs="no" inheritall="no">
             <param name="name" value="${name}-tiger"/>
             <param name="noivyxml" value="yes"/>
         </antcall>
-    </target>
+    </target-->
 
     <target name="mavenrep" depends="jar">
         <!-- xwork -->
@@ -131,9 +131,9 @@
         <copy file="${build}/${name}-src-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-src-${version}-SNAPSHOT.jar"/>
 
         <!-- xwork-tiger -->
-        <copy file="tiger/pom.xml" tofile="/opt/repository/ibiblio.org/opensymphony/poms/${name}-tiger-${version}-SNAPSHOT.pom"/>
+        <!--copy file="tiger/pom.xml" tofile="/opt/repository/ibiblio.org/opensymphony/poms/${name}-tiger-${version}-SNAPSHOT.pom"/>
         <copy file="${build}/${name}-tiger-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-tiger-${version}-SNAPSHOT.jar"/>
-        <copy file="${build}/${name}-tiger-src-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-tiger-src-${version}-SNAPSHOT.jar"/>
+        <copy file="${build}/${name}-tiger-src-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-tiger-src-${version}-SNAPSHOT.jar"/-->
     </target>
 
     <macrodef name="run-tiger-junit">
