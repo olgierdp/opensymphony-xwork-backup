@@ -5,6 +5,11 @@
 
 package com.opensymphony.xwork.util;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * <!-- START SNIPPET: description -->
  * <p/>Sets the Element for type conversion.
@@ -53,6 +58,8 @@ package com.opensymphony.xwork.util;
  * @author Rainer Hermanns
  * @version $Id$
  */
+@Target({ ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Element {
 
     /**

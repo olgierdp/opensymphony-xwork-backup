@@ -118,7 +118,6 @@ public class AnnotationXWorkConverter extends XWorkConverter {
      * @param clazz   class to look for converter mappings for
      */
     void addConverterMapping(Map mapping, Class clazz) {
-
         try {
             InputStream is = FileManager.loadFile(buildConverterFilename(clazz), clazz);
 
@@ -209,7 +208,8 @@ public class AnnotationXWorkConverter extends XWorkConverter {
 
                     if (key != null) {
                         try {
-                            if (tc.rule().equals(ConversionType.APPLICATION)) {
+                            //if (tc.rule().equals(ConversionType.APPLICATION)) {
+                        	if (tc.type()  == ConversionType.APPLICATION) {
                                 defaultMappings.put(key, createTypeConverter(tc.converter()));
                             } else {
                                 if (tc.rule().toString().equals(ConversionRule.KEY_PROPERTY) || tc.rule().toString().equals(ConversionRule.CREATE_IF_NULL)) {
@@ -283,8 +283,9 @@ public class AnnotationXWorkConverter extends XWorkConverter {
                     }
 
                     if (key != null) {
-                        try {
-                            if (tc.rule().equals(ConversionType.APPLICATION)) {
+                    	try {
+                            //if (tc.rule().equals(ConversionType.APPLICATION)) {
+                        	if (tc.type() == ConversionType.APPLICATION) {
                                 defaultMappings.put(key, createTypeConverter(tc.converter()));
                             } else {
                                 if (tc.rule().toString().equals(ConversionRule.KEY_PROPERTY)) {
