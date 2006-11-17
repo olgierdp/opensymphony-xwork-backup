@@ -4,10 +4,6 @@
  */
 package com.opensymphony.xwork2.util;
 
-//import com.sun.mirror.declaration.MethodDeclaration;
-
-import com.sun.mirror.declaration.MethodDeclaration;
-
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -112,31 +108,6 @@ public class AnnotationUtils {
             findRecursively(clazz.getSuperclass(), annotationClass, methods);
         }
     }
-
-    /**
-     * Returns the property name for a method.
-     * This method is independant from property fields.
-     *
-     * @param method The method to get the property name for.
-     * @return the property name for given method; null if non could be resolved.
-     */
-    public static String resolvePropertyName(MethodDeclaration method) {
-
-        Matcher matcher = SETTER_PATTERN.matcher(method.getSimpleName());
-        if (matcher.matches() && method.getParameters().size() == 1) {
-            String raw = matcher.group(1);
-            return raw.substring(0, 1).toLowerCase() + raw.substring(1);
-        }
-
-        matcher = GETTER_PATTERN.matcher(method.getSimpleName());
-        if (matcher.matches() && method.getParameters().size() == 0) {
-            String raw = matcher.group(2);
-            return raw.substring(0, 1).toLowerCase() + raw.substring(1);
-        }
-
-        return null;
-    }
-
 
     /**
      * Returns the property name for a method.
