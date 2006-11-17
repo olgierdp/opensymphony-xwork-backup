@@ -244,13 +244,11 @@ public class DefaultConfiguration implements Configuration {
             }
         }
 
-        List<ExternalReference> externalRefs = baseConfig.getExternalRefs();
-
         List<ExceptionMappingConfig> exceptionMappings = baseConfig.getExceptionMappings();
         exceptionMappings.addAll(packageContext.getAllExceptionMappingConfigs());
 
         ActionConfig config = new ActionConfig(baseConfig.getMethodName(), baseConfig.getClassName(), packageContext.getName(), params, results,
-                interceptors, externalRefs, exceptionMappings);
+                interceptors, exceptionMappings);
         config.setLocation(baseConfig.getLocation());
         return config;
     }

@@ -28,7 +28,6 @@ import java.util.*;
  */
 public class ActionConfig extends Located implements InterceptorListHolder, Parameterizable, Serializable {
 
-    protected List<ExternalReference> externalRefs;
     protected List<InterceptorMapping> interceptors;
     protected Map<String, Object> params;
     protected Map<String, ResultConfig> results;
@@ -42,7 +41,6 @@ public class ActionConfig extends Located implements InterceptorListHolder, Para
         params = new LinkedHashMap<String, Object>();
         results = new LinkedHashMap<String, ResultConfig>();
         interceptors = new ArrayList<InterceptorMapping>();
-        externalRefs = new ArrayList<ExternalReference>();
         exceptionMappings = new ArrayList<ExceptionMappingConfig>();
     }
 
@@ -61,22 +59,20 @@ public class ActionConfig extends Located implements InterceptorListHolder, Para
     }
 
     public ActionConfig(String methodName, String className, Map<String, Object> parameters, Map<String, ResultConfig> results, List<InterceptorMapping> interceptors, List<ExceptionMappingConfig> exceptionMappings) {
-        this(methodName, className, "", parameters, results, interceptors, Collections.EMPTY_LIST, exceptionMappings);
+        this(methodName, className, "", parameters, results, interceptors, exceptionMappings);
     }
 
-    public ActionConfig(String methodName, String className, String packageName, Map<String, Object> parameters, Map<String, ResultConfig> results, List<InterceptorMapping> interceptors, List<ExternalReference> externalRefs) {
-        this(methodName, className, packageName, parameters, results, interceptors, externalRefs, Collections.EMPTY_LIST);
+    public ActionConfig(String methodName, String className, String packageName, Map<String, Object> parameters, Map<String, ResultConfig> results, List<InterceptorMapping> interceptors) {
+        this(methodName, className, packageName, parameters, results, interceptors, Collections.EMPTY_LIST);
     }
 
     public ActionConfig(String methodName, String className, String packageName, Map<String, Object> parameters,
-                        Map<String, ResultConfig> results, List<InterceptorMapping> interceptors,
-                        List<ExternalReference> externalRefs, List<ExceptionMappingConfig> exceptionMappings) {
+                        Map<String, ResultConfig> results, List<InterceptorMapping> interceptors, List<ExceptionMappingConfig> exceptionMappings) {
         this.methodName = methodName;
         this.interceptors = interceptors;
         this.params = parameters;
         this.results = results;
         this.className = className;
-        this.externalRefs = externalRefs;
         this.exceptionMappings = exceptionMappings;
         this.packageName = packageName;
     }
@@ -87,10 +83,6 @@ public class ActionConfig extends Located implements InterceptorListHolder, Para
 
     public String getClassName() {
         return className;
-    }
-
-    public List<ExternalReference> getExternalRefs() {
-        return externalRefs;
     }
 
     public List<ExceptionMappingConfig> getExceptionMappings() {
@@ -154,14 +146,6 @@ public class ActionConfig extends Located implements InterceptorListHolder, Para
         }
 
         return results;
-    }
-
-    public void addExternalRef(ExternalReference reference) {
-        getExternalRefs().add(reference);
-    }
-
-    public void addExternalRefs(List<ExternalReference> refs) {
-        getExternalRefs().addAll(refs);
     }
 
     public void addExceptionMapping(ExceptionMappingConfig exceptionMapping) {

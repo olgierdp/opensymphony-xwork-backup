@@ -296,11 +296,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         List interceptorList = buildInterceptorList(actionElement, packageContext);
 
-        List externalrefs = buildExternalRefs(actionElement, packageContext);
-
         List exceptionMappings = buildExceptionMappings(actionElement, packageContext);
 
-        ActionConfig actionConfig = new ActionConfig(methodName, className, packageContext.getName(), actionParams, results, interceptorList, externalrefs,
+        ActionConfig actionConfig = new ActionConfig(methodName, className, packageContext.getName(), actionParams, results, interceptorList, 
                 exceptionMappings);
         actionConfig.setLocation(location);
         packageContext.addActionConfig(name, actionConfig);
@@ -425,42 +423,6 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         }
 
         return null;
-    }
-
-    protected List buildExternalRefs(Element element, PackageConfig context) throws ConfigurationException {
-        List refs = new ArrayList();
-        NodeList externalRefList = element.getElementsByTagName("external-ref");
-
-        String refName;
-        String refValue = null;
-        String requiredTemp;
-        boolean required;
-
-        for (int i = 0; i < externalRefList.getLength(); i++) {
-            Element refElement = (Element) externalRefList.item(i);
-
-            if (refElement.getParentNode().equals(element)) {
-                refName = refElement.getAttribute("name");
-
-                //If the external ref is not declared explicitly, we can introspect the
-                //reference type using it's name and try resolving the reference using it's class type
-                if (refElement.getChildNodes().getLength() > 0) {
-                    refValue = refElement.getChildNodes().item(0).getNodeValue();
-                }
-
-                requiredTemp = refElement.getAttribute("required");
-
-                if ((requiredTemp == null) || "".equals(requiredTemp)) {
-                    required = true;
-                } else {
-                    required = Boolean.valueOf(requiredTemp).booleanValue();
-                }
-
-                refs.add(new ExternalReference(refName, refValue, required));
-            }
-        }
-
-        return refs;
     }
 
     protected List buildInterceptorList(Element element, PackageConfig context) throws ConfigurationException {

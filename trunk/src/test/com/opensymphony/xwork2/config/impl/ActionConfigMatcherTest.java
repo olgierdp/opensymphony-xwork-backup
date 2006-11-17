@@ -23,7 +23,6 @@ import java.util.Map;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
-import com.opensymphony.xwork2.config.entities.ExternalReference;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 
@@ -94,10 +93,6 @@ public class ActionConfigMatcherTest extends XWorkTestCase {
         assertTrue("First param isn't correct", "class".equals(result.getParams().get("first")));
         assertTrue("Second param isn't correct", "method".equals(result.getParams().get("second")));
         
-        ExternalReference ref = m.getExternalRefs().get(0);
-        assertTrue("Wrong name", "fooclass".equals(ref.getName()));
-        assertTrue("Wrong ref", "barmethod".equals(ref.getExternalRef()));
-        assertTrue("Wrong required", ref.isRequired());
     }
 
     public void testCheckMultipleSubstitutions() {
@@ -154,8 +149,6 @@ public class ActionConfigMatcherTest extends XWorkTestCase {
         
         config.addExceptionMapping(new ExceptionMappingConfig(
                 "foo{1}", "java.lang.{2}Exception", "success{1}", new HashMap(params)));
-        
-        config.addExternalRef(new ExternalReference("foo{1}", "bar{2}", true));
         
         config.addInterceptor(new InterceptorMapping());
         

@@ -22,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import com.opensymphony.xwork2.util.WildcardHelper;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
-import com.opensymphony.xwork2.config.entities.ExternalReference;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 
 import java.io.Serializable;
@@ -192,17 +191,8 @@ public class ActionConfigMatcher implements Serializable {
             exs.add(e);
         }
         
-        List<ExternalReference> refs = new ArrayList<ExternalReference>();
-        for (ExternalReference ex : orig.getExternalRefs()) {
-            String name = convertParam(ex.getName(), vars);
-            String refName = convertParam(ex.getExternalRef(), vars);
-            ExternalReference e = new ExternalReference(name, refName, ex.isRequired());
-            refs.add(e);
-        }
-        
-        
         ActionConfig config = new ActionConfig(methodName, className, pkgName, 
-                params, results, orig.getInterceptors(), refs, exs);
+                params, results, orig.getInterceptors(), exs);
         config.setLocation(orig.getLocation());
         
         return config;
