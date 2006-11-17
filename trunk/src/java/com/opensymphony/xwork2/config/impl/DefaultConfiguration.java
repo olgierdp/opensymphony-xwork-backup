@@ -129,11 +129,10 @@ public class DefaultConfiguration implements Configuration {
         }
         props.setConstants(builder);
         
-        builder.factory(Configuration.class, new Factory() {
-            public Object create(Context context) throws Exception {
+        builder.factory(Configuration.class, new Factory<Configuration>() {
+            public Configuration create(Context context) throws Exception {
                 return DefaultConfiguration.this;
             }
-            
         });
         
         container = builder.create(false);
@@ -350,6 +349,8 @@ public class DefaultConfiguration implements Configuration {
     }
     
     class ContainerProperties extends Properties {
+        private static final long serialVersionUID = -7320625750836896089L;
+
         public Object setProperty(String key, String value) {
             String oldValue = getProperty(key);
             if (oldValue != null && !oldValue.equals(value) && !defaultFrameworkBeanName.equals(oldValue)) {
