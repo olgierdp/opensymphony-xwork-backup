@@ -13,6 +13,7 @@ import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
+import com.opensymphony.xwork2.util.location.LocatableProperties;
 
 import junit.framework.TestCase;
 
@@ -85,7 +86,7 @@ public class PreResultListenerTest extends XWorkTestCase {
                 return false;
             }
 
-            public void register(ContainerBuilder builder, Properties props) throws ConfigurationException {
+            public void register(ContainerBuilder builder, LocatableProperties props) throws ConfigurationException {
                 // TODO Auto-generated method stub
                 
             }

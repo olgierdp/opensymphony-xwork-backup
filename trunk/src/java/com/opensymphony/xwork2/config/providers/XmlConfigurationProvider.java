@@ -13,11 +13,13 @@ import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.config.*;
 import com.opensymphony.xwork2.config.entities.*;
+import com.opensymphony.xwork2.config.impl.LocatableFactory;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.inject.Scope;
 import com.opensymphony.xwork2.util.DomHelper;
+import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.util.location.Location;
 import com.opensymphony.xwork2.util.location.LocationUtils;
 
@@ -138,7 +140,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         } 
     }
     
-    public void register(ContainerBuilder containerBuilder, Properties props) throws ConfigurationException {
+    public void register(ContainerBuilder containerBuilder, LocatableProperties props) throws ConfigurationException {
         LOG.info("Parsing configuration file ["+configFileName+"]");
         Map<String,Node> loadedBeans = new HashMap<String,Node>();
         for (Document doc : documents) {
@@ -202,7 +204,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                                 if (LOG.isDebugEnabled()) {
                                     LOG.debug("Loaded type:"+type+" name:"+name+" impl:"+impl);
                                 }
-                                containerBuilder.factory(ctype, name, cimpl, scope);
+                                containerBuilder.factory(ctype, name, new LocatableFactory(cimpl, childNode), scope);
                             }
                             loadedBeans.put(ctype.getName()+name, child);
                         } catch (Throwable ex) {
@@ -215,7 +217,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     } else if (nodeName.equals("constant")) {
                         String name = child.getAttribute("name");
                         String value = child.getAttribute("value");
-                        props.setProperty(name, value);
+                        props.setProperty(name, value, childNode);
                     }
                 }
             }

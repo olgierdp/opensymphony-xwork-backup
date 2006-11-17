@@ -13,6 +13,7 @@ import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.mock.MockResult;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
+import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
@@ -73,7 +74,7 @@ public class AnnotationWorkflowInterceptorTest extends XWorkTestCase {
         public void destroy() { }
 
 
-        public void register(ContainerBuilder builder, Properties props) throws ConfigurationException {
+        public void register(ContainerBuilder builder, LocatableProperties props) throws ConfigurationException {
             if (!builder.contains(ObjectFactory.class)) {
                 builder.factory(ObjectFactory.class);
             }

@@ -9,12 +9,6 @@
             <result-type name="springResult" class="springResult" />
         </result-types>
 
-        <interceptors>
-			<interceptor name="reference-resolver" class="com.opensymphony.xwork2.interceptor.ExternalReferencesInterceptor"/>
-        </interceptors>
-
-        <default-interceptor-ref name="reference-resolver"/>
-
 		<action name="simpleAction" class="simple-action"/>
 
         <action name="dependencyAction" class="dependency-action"/>

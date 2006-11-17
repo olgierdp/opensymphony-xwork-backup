@@ -15,6 +15,7 @@ import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Context;
 import com.opensymphony.xwork2.inject.Factory;
+import com.opensymphony.xwork2.util.location.LocatableProperties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -346,7 +347,7 @@ public class DefaultConfiguration implements Configuration {
         }
     }
     
-    class ContainerProperties extends Properties {
+    class ContainerProperties extends LocatableProperties {
         private static final long serialVersionUID = -7320625750836896089L;
 
         public Object setProperty(String key, String value) {
@@ -358,8 +359,10 @@ public class DefaultConfiguration implements Configuration {
         }
 
         public void setConstants(ContainerBuilder builder) {
-            for (Object key : keySet()) {
-                builder.constant((String)key, getProperty((String)key));
+            for (Object keyobj : keySet()) {
+                String key = (String)keyobj;
+                builder.factory(String.class, key, 
+                        new LocatableConstantFactory<String>(getProperty(key), getPropertyLocation(key)));
             }
         }
     }

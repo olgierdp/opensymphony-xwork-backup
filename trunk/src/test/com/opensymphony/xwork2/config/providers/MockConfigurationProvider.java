@@ -20,6 +20,7 @@ import com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor;
 import com.opensymphony.xwork2.interceptor.ParametersInterceptor;
 import com.opensymphony.xwork2.interceptor.StaticParametersInterceptor;
 import com.opensymphony.xwork2.mock.MockResult;
+import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.validator.ValidationInterceptor;
 
 import java.util.ArrayList;
@@ -149,7 +150,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         return false;
     }
 
-    public void register(ContainerBuilder builder, Properties props) throws ConfigurationException {
+    public void register(ContainerBuilder builder, LocatableProperties props) throws ConfigurationException {
         // TODO Auto-generated method stub
         
     }
