@@ -17,11 +17,10 @@ package com.opensymphony.xwork2.util;
 
 import java.util.Map;
 
-import com.opensymphony.xwork2.util.ClassLoaderUtil;
-
 import com.opensymphony.xwork2.util.location.Location;
 import com.opensymphony.xwork2.util.location.LocationAttributes;
 import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.ObjectFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -64,7 +63,7 @@ public class DomHelper {
     /**
      * Creates a W3C Document that remembers the location of each element in
      * the source file. The location of element nodes can then be retrieved
-     * using the {@link #getLocation(Element)} method.
+     * using the {@link #getLocationObject(Element)} method.
      *
      * @param inputSource the inputSource to read the document from
      */
@@ -76,14 +75,32 @@ public class DomHelper {
     /**
      * Creates a W3C Document that remembers the location of each element in
      * the source file. The location of element nodes can then be retrieved
-     * using the {@link #getLocation(Element)} method.
+     * using the {@link #getLocationObject(Element)} method.
      *
      * @param inputSource the inputSource to read the document from
      * @param dtdMappings a map of DTD names and public ids
      */
     public static Document parse(InputSource inputSource, Map dtdMappings) {
                 
-        SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParserFactory factory = null;
+        String parserProp = System.getProperty("xwork.saxParserFactory");
+        if (parserProp != null) {
+            try {
+                Class clazz = ObjectFactory.getObjectFactory().getClassInstance(parserProp);
+                factory = (SAXParserFactory) clazz.newInstance();
+            }
+            catch (ClassNotFoundException e) {
+                LOG.error("Unable to load saxParserFactory set by system property 'xwork.saxParserFactory': " + parserProp, e);
+            }
+            catch (Exception e) {
+                LOG.error("Unable to load saxParserFactory set by system property 'xwork.saxParserFactory': " + parserProp, e);
+            }
+        }
+
+        if (factory == null) {
+            factory = SAXParserFactory.newInstance();
+        }
+
         factory.setValidating((dtdMappings != null));
         factory.setNamespaceAware(true);
         
@@ -118,7 +135,7 @@ public class DomHelper {
     static public class DOMBuilder implements ContentHandler {
     
         /** The default transformer factory shared by all instances */
-        protected static final SAXTransformerFactory FACTORY = (SAXTransformerFactory) TransformerFactory.newInstance();
+        protected static SAXTransformerFactory FACTORY;
     
         /** The transformer factory */
         protected SAXTransformerFactory factory;
@@ -131,6 +148,26 @@ public class DomHelper {
         
         protected ContentHandler nextHandler;
     
+        static {
+            String parserProp = System.getProperty("xwork.saxTransformerFactory");
+            if (parserProp != null) {
+                try {
+                    Class clazz = ObjectFactory.getObjectFactory().getClassInstance(parserProp);
+                    FACTORY = (SAXTransformerFactory) clazz.newInstance();
+                }
+                catch (ClassNotFoundException e) {
+                    LOG.error("Unable to load SAXTransformerFactory set by system property 'xwork.saxTransformerFactory': " + parserProp, e);
+                }
+                catch (Exception e) {
+                    LOG.error("Unable to load SAXTransformerFactory set by system property 'xwork.saxTransformerFactory': " + parserProp, e);
+                }
+            }
+
+            if (FACTORY == null) {
+                 FACTORY = (SAXTransformerFactory) TransformerFactory.newInstance();
+            }
+        }
+
         /**
          * Construct a new instance of this DOMBuilder.
          */

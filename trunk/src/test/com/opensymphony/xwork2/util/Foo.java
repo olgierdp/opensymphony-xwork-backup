@@ -128,7 +128,7 @@ public class Foo {
     }
 
     /**
-     * @param catSet The catSet to set.
+     * @param barCollection The barCollection to set.
      */
     public void setBarCollection(Collection barCollection) {
         this.barCollection = barCollection;

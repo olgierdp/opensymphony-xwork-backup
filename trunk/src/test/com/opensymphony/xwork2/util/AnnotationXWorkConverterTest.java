@@ -352,6 +352,75 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
         assertEquals(new Double(123.45), gb.getDoubles().get(1));
     }
 
+    public void testGenericPropertiesFromField() {
+        GenericsBean gb = new GenericsBean();
+        ValueStack stack = ac.getValueStack();
+        stack.push(gb);
+
+        stack.setValue("genericMap[123.12]", "66");
+        stack.setValue("genericMap[456.12]", "42");
+
+        assertEquals(2, gb.getGenericMap().size());
+        assertEquals(Integer.class, stack.findValue("genericMap.get(123.12).class"));
+        assertEquals(Integer.class, stack.findValue("genericMap.get(456.12).class"));
+        assertEquals(66, stack.findValue("genericMap.get(123.12)"));
+        assertEquals(42, stack.findValue("genericMap.get(456.12)"));
+        assertEquals(true, stack.findValue("genericMap.containsValue(66)"));
+        assertEquals(true, stack.findValue("genericMap.containsValue(42)"));
+        assertEquals(true, stack.findValue("genericMap.containsKey(123.12)"));
+        assertEquals(true, stack.findValue("genericMap.containsKey(456.12)"));
+    }
+
+    public void testGenericPropertiesFromSetter() {
+        GenericsBean gb = new GenericsBean();
+        ValueStack stack = ac.getValueStack();
+        stack.push(gb);
+
+        stack.setValue("genericMap[123.12]", "66");
+        stack.setValue("genericMap[456.12]", "42");
+
+        assertEquals(2, gb.getGenericMap().size());
+        assertEquals(Integer.class, stack.findValue("genericMap.get(123.12).class"));
+        assertEquals(Integer.class, stack.findValue("genericMap.get(456.12).class"));
+        assertEquals(66, stack.findValue("genericMap.get(123.12)"));
+        assertEquals(42, stack.findValue("genericMap.get(456.12)"));
+        assertEquals(true, stack.findValue("genericMap.containsValue(66)"));
+        assertEquals(true, stack.findValue("genericMap.containsValue(42)"));
+        assertEquals(true, stack.findValue("genericMap.containsKey(123.12)"));
+        assertEquals(true, stack.findValue("genericMap.containsKey(456.12)"));
+    }
+
+    public void testGenericPropertiesFromGetter() {
+        GenericsBean gb = new GenericsBean();
+        ValueStack stack = ac.getValueStack();
+        stack.push(gb);
+
+        assertEquals(1, gb.getGetterList().size());
+        assertEquals(Double.class, stack.findValue("getterList.get(0).class"));
+        assertEquals(new Double(42.42), stack.findValue("getterList.get(0)"));
+        assertEquals(new Double(42.42), gb.getGetterList().get(0));
+
+    }
+
+
+    // FIXME: Implement nested Generics such as: List of Generics List, Map of Generic keys/values, etc...
+    public void no_testGenericPropertiesWithNestedGenerics() {
+        GenericsBean gb = new GenericsBean();
+        ValueStack stack = ac.getValueStack();
+        stack.push(gb);
+
+        stack.setValue("extendedMap[123.12]", new String[] {"1", "2", "3", "4"});
+        stack.setValue("extendedMap[456.12]", new String[] {"5", "6", "7", "8", "9"});
+
+        System.out.println("gb.getExtendedMap(): " + gb.getExtendedMap());
+
+        assertEquals(2, gb.getExtendedMap().size());
+        assertEquals(4, stack.findValue("extendedMap.get(123.12).size"));
+        assertEquals(5, stack.findValue("extendedMap.get(456.12).size"));
+        assertEquals(List.class, stack.findValue("extendedMap.get(123.12).class"));
+        assertEquals(List.class, stack.findValue("extendedMap.get(456.12).class"));
+    }
+
     public static class Foo1 {
         public Bar1 getBar() {
             return new Bar1Impl();
