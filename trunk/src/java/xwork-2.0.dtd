@@ -7,13 +7,13 @@
    Use the following DOCTYPE
    
    <!DOCTYPE xwork PUBLIC 
-	"-//OpenSymphony Group//XWork 1.2//EN"
-	"http://www.opensymphony.com/xwork/xwork-1.2.dtd">
+	"-//OpenSymphony Group//XWork 2.0//EN"
+	"http://www.opensymphony.com/xwork/xwork-2.0.dtd">
 -->
 
 <!ELEMENT xwork (package|include|bean|constant)*>
 
-<!ELEMENT package (result-types?, interceptors?, default-interceptor-ref?, default-action-ref?, global-results?, global-exception-mappings?, action*)>
+<!ELEMENT package (result-types?, interceptors?, default-interceptor-ref?, default-action-ref?, default-class-ref?, global-results?, global-exception-mappings?, action*)>
 <!ATTLIST package
     name CDATA #REQUIRED
     extends CDATA #IMPLIED
@@ -56,6 +56,11 @@
 <!ELEMENT default-action-ref (param*)>
 <!ATTLIST default-action-ref
     name CDATA #REQUIRED
+>
+
+<!ELEMENT default-class-ref (param*)>
+<!ATTLIST default-class-ref
+   class CDATA #REQUIRED
 >
 
 <!ELEMENT global-results (result+)>

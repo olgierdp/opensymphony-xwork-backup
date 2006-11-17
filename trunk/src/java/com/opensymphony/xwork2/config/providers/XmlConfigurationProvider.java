@@ -277,9 +277,15 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         //methodName should be null if it's not set
         methodName = (methodName.trim().length() > 0) ? methodName.trim() : null;
 
-        // if you don't specify a class on <action/>, it defaults to ActionSupport
+        // if there isnt a class name specified for an <action/> then try to
+        // use the default-class-ref from the <package/>
         if (!TextUtils.stringSet(className)) {
-            className = ActionSupport.class.getName();
+           // if there is a package default-class-ref use that, otherwise use action support
+           if (TextUtils.stringSet(packageContext.getDefaultClassRef())) {
+               className = packageContext.getDefaultClassRef();
+           } else {
+               className = ActionSupport.class.getName();
+           }   
         }
 
         if (!verifyAction(className, name, location)) {
@@ -355,6 +361,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         // load the default interceptor reference for this package
         loadDefaultInterceptorRef(newPackage, packageElement);
 
+        // load the default class ref for this package
+        loadDefaultClassRef(newPackage, packageElement);
+        
         // load the global result list for this package
         loadGlobalResults(newPackage, packageElement);
 
@@ -642,6 +651,13 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         }
     }
 
+    protected void loadDefaultClassRef(PackageConfig packageContext, Element element) {
+       NodeList defaultClassRefList = element.getElementsByTagName("default-class-ref");
+       if ( defaultClassRefList.getLength() > 0 ) {
+           Element defaultClassRefElement = (Element) defaultClassRefList.item(0);
+           packageContext.setDefaultClassRef(defaultClassRefElement.getAttribute("class"));
+       }
+    }
     /**
      * Load all of the global results for this package from the XML element.
      */

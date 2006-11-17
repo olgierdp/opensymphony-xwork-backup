@@ -35,6 +35,7 @@ public class PackageConfig extends Located implements Comparable, Serializable {
     private String defaultInterceptorRef;
     private String defaultActionRef;
     private String defaultResultType;
+    private String defaultClassRef;
     private String name;
     private String namespace = "";
     private boolean isAbstract = false;
@@ -203,6 +204,14 @@ public class PackageConfig extends Located implements Comparable, Serializable {
         return defaultActionRef;
     }
 
+    public void setDefaultClassRef( String defaultClassRef ) {
+       this.defaultClassRef = defaultClassRef;
+    }
+    
+    public String getDefaultClassRef() {
+       return defaultClassRef;
+    }
+    
     /**
      * sets the default Result type for this package
      *
@@ -413,6 +422,11 @@ public class PackageConfig extends Located implements Comparable, Serializable {
             return false;
         }
 
+        if ((defaultClassRef != null) ? (!defaultClassRef.equals(packageConfig.defaultClassRef)) : (packageConfig.defaultClassRef != null))
+        {
+            return false;
+        }
+
         if ((globalResultConfigs != null) ? (!globalResultConfigs.equals(packageConfig.globalResultConfigs)) : (packageConfig.globalResultConfigs != null))
         {
             return false;
@@ -459,6 +473,7 @@ public class PackageConfig extends Located implements Comparable, Serializable {
         result = (29 * result) + ((resultTypeConfigs != null) ? resultTypeConfigs.hashCode() : 0);
         result = (29 * result) + ((globalExceptionMappingConfigs != null) ? globalExceptionMappingConfigs.hashCode() : 0);
         result = (29 * result) + ((defaultResultType != null) ? defaultResultType.hashCode() : 0);
+        result = (29 * result) + ((defaultClassRef != null) ? defaultClassRef.hashCode() : 0);
         result = (29 * result) + ((namespace != null) ? namespace.hashCode() : 0);
         result = (29 * result) + (isAbstract ? 1 : 0);
 

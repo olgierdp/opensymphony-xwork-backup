@@ -1,4 +1,4 @@
-<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 2.0//EN" "http://www.opensymphony.com/xwork/xwork-2.0.dtd">
 
 <xwork>
     <package name="xwork-default">
@@ -46,5 +46,8 @@
             <!-- END SNIPPET: xwork2-default-interceptor-stack -->
             
         </interceptors>
+        
+        <default-class-ref class="com.opensymphony.xwork2.ActionSupport" />
+        
     </package>
 </xwork>
