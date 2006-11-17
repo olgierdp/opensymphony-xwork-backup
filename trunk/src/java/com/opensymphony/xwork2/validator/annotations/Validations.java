@@ -8,7 +8,6 @@ package com.opensymphony.xwork2.validator.annotations;
 import com.opensymphony.xwork2.validator.annotations.CustomValidator;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;

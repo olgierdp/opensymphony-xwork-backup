@@ -7,9 +7,6 @@ package com.opensymphony.xwork2.config.entities;
 import com.opensymphony.xwork2.util.location.LocationImpl;
 import com.opensymphony.xwork2.XWorkTestCase;
 
-import java.util.HashMap;
-
-
 /**
  * ActionConfigTest
  */

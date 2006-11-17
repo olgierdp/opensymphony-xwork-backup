@@ -23,7 +23,6 @@ import java.net.URL;
 import java.util.List;
 
 import com.opensymphony.xwork2.util.ClassLoaderUtil;
-import com.opensymphony.xwork2.XWorkException;
 
 import junit.framework.TestCase;
 

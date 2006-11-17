@@ -8,10 +8,14 @@
  */
 package com.opensymphony.xwork2.util;
 
-import junit.framework.TestCase;
-import ognl.Ognl;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 
-import java.util.*;
+import ognl.Ognl;
 
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.mock.MockObjectTypeDeterminer;

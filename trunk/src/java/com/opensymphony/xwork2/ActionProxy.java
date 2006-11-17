@@ -5,7 +5,6 @@
 package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.config.Configuration;
-import com.opensymphony.xwork2.config.RuntimeConfiguration;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 
 

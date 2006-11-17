@@ -9,7 +9,6 @@ import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.TestBean;
 import com.opensymphony.xwork2.test.TestBean2;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 
 import junit.framework.TestCase;

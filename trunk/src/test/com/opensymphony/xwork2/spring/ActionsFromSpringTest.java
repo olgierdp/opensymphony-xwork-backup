@@ -4,11 +4,9 @@
 package com.opensymphony.xwork2.spring;
 
 import com.opensymphony.xwork2.*;
-import com.opensymphony.xwork2.config.impl.MockConfiguration;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Test loading actions from the Spring Application Context.

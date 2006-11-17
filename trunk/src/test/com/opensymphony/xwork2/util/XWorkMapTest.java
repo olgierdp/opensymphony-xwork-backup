@@ -6,7 +6,6 @@ package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.test.User;
-import junit.framework.TestCase;
 
 import java.util.Map;
 

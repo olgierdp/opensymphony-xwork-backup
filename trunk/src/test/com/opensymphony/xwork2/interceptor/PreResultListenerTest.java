@@ -15,8 +15,6 @@ import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 
-import junit.framework.TestCase;
-
 import java.util.HashMap;
 import java.util.Properties;
 

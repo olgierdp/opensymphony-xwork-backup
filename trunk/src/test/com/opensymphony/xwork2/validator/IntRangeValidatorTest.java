@@ -9,8 +9,6 @@ import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 
-import junit.framework.TestCase;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

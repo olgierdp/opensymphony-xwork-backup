@@ -4,15 +4,6 @@
  */
 package com.opensymphony.xwork2;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import java.util.List;
-import java.util.ArrayList;
-
-import java.net.URL;
-
 import com.opensymphony.xwork2.util.location.Locatable;
 import com.opensymphony.xwork2.util.location.Location;
 import com.opensymphony.xwork2.util.location.LocationUtils;

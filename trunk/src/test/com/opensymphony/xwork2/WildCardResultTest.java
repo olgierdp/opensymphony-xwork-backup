@@ -7,7 +7,6 @@ package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.mock.MockResult;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
-import junit.framework.TestCase;
 
 /**
  * <code>WildCardResultTest</code>

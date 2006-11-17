@@ -8,7 +8,6 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.ValidationAwareSupport;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.ConversionErrorFieldValidator;
 import junit.framework.TestCase;

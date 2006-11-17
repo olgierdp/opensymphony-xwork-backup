@@ -10,7 +10,6 @@ import java.util.Locale;
 import java.util.ArrayList;
 
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 
 /**

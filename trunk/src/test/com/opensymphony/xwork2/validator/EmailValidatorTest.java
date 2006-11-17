@@ -8,8 +8,6 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.validator.validators.EmailValidator;
 
-import junit.framework.TestCase;
-
 /**
  * Test case for Email Validator
  * 

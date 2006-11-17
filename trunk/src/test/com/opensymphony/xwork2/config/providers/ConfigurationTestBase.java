@@ -6,7 +6,6 @@ package com.opensymphony.xwork2.config.providers;
 
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkTestCase;
-import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.impl.MockConfiguration;
 

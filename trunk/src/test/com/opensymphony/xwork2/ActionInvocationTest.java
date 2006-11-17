@@ -4,8 +4,6 @@
  */
 package com.opensymphony.xwork2;
 
-import junit.framework.TestCase;
-
 import java.util.HashMap;
 
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;

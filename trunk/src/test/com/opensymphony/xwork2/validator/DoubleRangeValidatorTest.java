@@ -7,7 +7,6 @@ import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.DoubleRangeFieldValidator;
-import junit.framework.TestCase;
 
 import java.util.Iterator;
 import java.util.List;

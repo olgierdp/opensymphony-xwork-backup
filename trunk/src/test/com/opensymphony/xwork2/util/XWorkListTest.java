@@ -4,8 +4,6 @@
  */
 package com.opensymphony.xwork2.util;
 
-import junit.framework.TestCase;
-
 import java.util.ArrayList;
 
 import com.opensymphony.xwork2.XWorkTestCase;

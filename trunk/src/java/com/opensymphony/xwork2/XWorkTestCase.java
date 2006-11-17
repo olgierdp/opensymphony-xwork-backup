@@ -12,7 +12,6 @@ import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
 import com.opensymphony.xwork2.util.OgnlValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.XWorkConverter;
 import junit.framework.TestCase;
 

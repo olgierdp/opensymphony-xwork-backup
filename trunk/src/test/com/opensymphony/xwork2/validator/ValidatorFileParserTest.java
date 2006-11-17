@@ -8,7 +8,6 @@ import com.opensymphony.xwork2.util.ClassLoaderUtil;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
-import junit.framework.TestCase;
 
 import java.io.InputStream;
 import java.util.List;

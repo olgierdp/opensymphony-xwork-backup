@@ -6,12 +6,9 @@ package com.opensymphony.xwork2.interceptor;
 
 import java.util.HashMap;
 
-import junit.framework.TestCase;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkTestCase;
-import com.opensymphony.xwork2.config.ConfigurationManager;
 
 public class ScopedModelDrivenInterceptorTest extends XWorkTestCase {
 

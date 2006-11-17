@@ -6,7 +6,6 @@ package com.opensymphony.xwork2.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.NotSerializableException;
 
 import java.net.URL;
 import java.util.*;

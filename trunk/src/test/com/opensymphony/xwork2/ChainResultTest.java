@@ -14,7 +14,6 @@ import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 
 import junit.framework.TestCase;

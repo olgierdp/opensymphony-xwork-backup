@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork2.util;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.DefaultTextProvider;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.inject.Inject;

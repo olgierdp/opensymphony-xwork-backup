@@ -7,7 +7,6 @@ package com.opensymphony.xwork2;
 import java.util.Map;
 
 import com.opensymphony.xwork2.config.Configuration;
-import com.opensymphony.xwork2.config.ConfigurationManager;
 
 
 /**

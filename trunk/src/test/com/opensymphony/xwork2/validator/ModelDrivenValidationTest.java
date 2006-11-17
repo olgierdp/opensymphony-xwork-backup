@@ -6,7 +6,6 @@ package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
-import junit.framework.TestCase;
 
 import java.util.HashMap;
 import java.util.List;

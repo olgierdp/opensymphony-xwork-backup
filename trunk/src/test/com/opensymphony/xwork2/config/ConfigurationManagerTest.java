@@ -11,8 +11,6 @@ import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.XWorkTestCase;
 
-import junit.framework.TestCase;
-
 
 /**
  * ConfigurationManagerTest
