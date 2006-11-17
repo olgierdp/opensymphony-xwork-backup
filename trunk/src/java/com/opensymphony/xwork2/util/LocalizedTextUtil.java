@@ -731,8 +731,8 @@ public class LocalizedTextUtil {
 
         synchronized (cache) {
             Class ccl = cache.getClass();
-            Method clearMethod = ccl.getMethod("clear", new Class[0]);
-            clearMethod.invoke(cache, new Class[0]);
+            Method clearMethod = ccl.getMethod("clear");
+            clearMethod.invoke(cache);
         }
 
     }

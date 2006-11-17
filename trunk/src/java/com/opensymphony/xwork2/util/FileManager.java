@@ -27,7 +27,7 @@ public class FileManager {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     private static Map files = Collections.synchronizedMap(new HashMap());
-    protected static boolean reloadingConfigs = false;
+    protected static boolean reloadingConfigs = true;
 
     //~ Constructors ///////////////////////////////////////////////////////////
 
