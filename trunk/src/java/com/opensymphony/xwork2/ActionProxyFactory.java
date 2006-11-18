@@ -29,7 +29,7 @@ public interface ActionProxyFactory {
      * @return ActionProxy
      * @throws Exception
      */
-    public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext) throws Exception;
+    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext) throws Exception;
 
     /**
      * Creates an ActionProxy for the given namespace and action name by looking up the configuration. The ActionProxy
@@ -43,5 +43,5 @@ public interface ActionProxyFactory {
      * @return ActionProxy
      * @throws Exception
      */
-    public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception;
+    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception;
 }

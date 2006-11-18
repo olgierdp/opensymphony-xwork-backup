@@ -19,6 +19,11 @@ import com.opensymphony.xwork2.config.entities.ActionConfig;
 public interface ActionProxy {
 
     /**
+     * Called after all dependencies are set
+     */
+    void prepare() throws Exception;
+    
+    /**
      * @return the Action instance for this Proxy
      */
     Object getAction();
@@ -78,8 +83,4 @@ public interface ActionProxy {
      */
     String getMethod();
     
-    /**
-     * Gets the runtime configuration this action proxy was created with
-     */
-    Configuration getConfiguration();
 }

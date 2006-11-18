@@ -40,8 +40,7 @@ public class SimpleActionValidationTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                    configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
+            ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
             proxy.execute();
 
             ValidationAware validationAware = (ValidationAware) proxy.getAction();
@@ -49,8 +48,7 @@ public class SimpleActionValidationTest extends XWorkTestCase {
 
             // put in an out-of-range value to see if the old validators still work
             params.put("bar", "42");
-            proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                    configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ALIAS_NAME, extraContext);
+            proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.VALIDATION_ALIAS_NAME, extraContext);
             proxy.execute();
             validationAware = (ValidationAware) proxy.getAction();
             assertTrue(validationAware.hasFieldErrors());
@@ -88,8 +86,7 @@ public class SimpleActionValidationTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                    configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
+            ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
             proxy.execute();
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
@@ -114,8 +111,7 @@ public class SimpleActionValidationTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                    configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
+            ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
             ValueStack stack = ValueStackFactory.getFactory().createValueStack();
             ActionContext.setContext(new ActionContext(stack.getContext()));
             ActionContext.getContext().setLocale(Locale.US);
@@ -163,8 +159,7 @@ public class SimpleActionValidationTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                    configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
+            ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
             proxy.execute();
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
@@ -199,8 +194,7 @@ public class SimpleActionValidationTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                    configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_SUBPROPERTY_NAME, extraContext);
+            ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.VALIDATION_SUBPROPERTY_NAME, extraContext);
             proxy.execute();
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
@@ -221,12 +215,7 @@ public class SimpleActionValidationTest extends XWorkTestCase {
         origLocale = Locale.getDefault();
         Locale.setDefault(Locale.US);
 
-        configurationManager = new ConfigurationManager();
-        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-test-beans.xml"));
-        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
-        configurationManager.reload();
-        container = configurationManager.getConfiguration().getContainer();
-        ObjectFactory.setObjectFactory(container.getInstance(ObjectFactory.class));
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
     }
 
     protected void tearDown() throws Exception {

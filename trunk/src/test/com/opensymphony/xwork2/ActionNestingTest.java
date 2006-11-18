@@ -47,9 +47,7 @@ public class ActionNestingTest extends XWorkTestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        configurationManager.addConfigurationProvider(new NestedTestConfigurationProvider());
-        configurationManager.getConfiguration().reload(
-                configurationManager.getConfigurationProviders());
+        loadConfigurationProviders(new NestedTestConfigurationProvider());
 
         ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 
@@ -69,8 +67,7 @@ public class ActionNestingTest extends XWorkTestCase {
 
     public void testNestedContext() throws Exception {
         assertEquals(context, ActionContext.getContext());
-        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                configurationManager.getConfiguration(), NAMESPACE, SIMPLE_ACTION_NAME, null);
+        ActionProxy proxy = actionProxyFactory.createActionProxy(NAMESPACE, SIMPLE_ACTION_NAME, null);
         proxy.execute();
         assertEquals(context, ActionContext.getContext());
     }
@@ -79,8 +76,7 @@ public class ActionNestingTest extends XWorkTestCase {
         ValueStack stack = ActionContext.getContext().getValueStack();
         assertEquals(VALUE, stack.findValue(KEY));
 
-        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                configurationManager.getConfiguration(), NAMESPACE, NO_STACK_ACTION_NAME, null);
+        ActionProxy proxy = actionProxyFactory.createActionProxy(NAMESPACE, NO_STACK_ACTION_NAME, null);
         proxy.execute();
         stack = ActionContext.getContext().getValueStack();
         assertEquals(stack.findValue(KEY), VALUE);
@@ -94,8 +90,7 @@ public class ActionNestingTest extends XWorkTestCase {
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.VALUE_STACK, stack);
 
-        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                configurationManager.getConfiguration(), NAMESPACE, STACK_ACTION_NAME, extraContext);
+        ActionProxy proxy = actionProxyFactory.createActionProxy(NAMESPACE, STACK_ACTION_NAME, extraContext);
         proxy.execute();
         assertEquals(context, ActionContext.getContext());
         assertEquals(stack, ActionContext.getContext().getValueStack());

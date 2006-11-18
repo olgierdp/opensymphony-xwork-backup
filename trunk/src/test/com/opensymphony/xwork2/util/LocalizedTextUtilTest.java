@@ -112,8 +112,7 @@ public class LocalizedTextUtilTest extends XWorkTestCase {
     public void testAddDefaultResourceBundle2() throws Exception {
         LocalizedTextUtil.addDefaultResourceBundle("com/opensymphony/xwork2/SimpleAction");
 
-        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                configurationManager.getConfiguration(), "/", "packagelessAction", Collections.EMPTY_MAP, false, true);
+        ActionProxy proxy = actionProxyFactory.createActionProxy("/", "packagelessAction", Collections.EMPTY_MAP, false, true);
         proxy.execute();
     }
 
@@ -209,9 +208,7 @@ public class LocalizedTextUtilTest extends XWorkTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        configurationManager.destroyConfiguration();
-        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
-        configurationManager.reload();
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-sample.xml"));
 
 
         ValueStack stack = ValueStackFactory.getFactory().createValueStack();

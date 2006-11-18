@@ -75,7 +75,6 @@ public class ActionChainResult implements Result {
     public static final String DEFAULT_PARAM = "actionName";
     private static final String CHAIN_HISTORY = "CHAIN_HISTORY";
 
-
     private ActionProxy proxy;
     private String actionName;
 
@@ -103,7 +102,7 @@ public class ActionChainResult implements Result {
     public void setActionProxyFactory(ActionProxyFactory actionProxyFactory) {
         this.actionProxyFactory = actionProxyFactory;
     }
-
+    
     public void setActionName(String actionName) {
         this.actionName = actionName;
     }
@@ -170,12 +169,7 @@ public class ActionChainResult implements Result {
             log.debug("Chaining to action " + finalActionName);
         }
 
-        Configuration config = null;
-        if (invocation != null) {
-            config = invocation.getProxy().getConfiguration();
-        }
-        proxy = actionProxyFactory.createActionProxy(config,
-                finalNamespace, finalActionName, extraContext);
+        proxy = actionProxyFactory.createActionProxy(finalNamespace, finalActionName, extraContext);
         if (null != finalMethodName) {
             proxy.setMethod(finalMethodName);
         }

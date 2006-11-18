@@ -23,8 +23,7 @@ public class LocaleAwareTest extends XWorkTestCase {
 
     public void testGetText() {
         try {
-            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                    configurationManager.getConfiguration(), "", MockConfigurationProvider.FOO_ACTION_NAME, null);
+            ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.FOO_ACTION_NAME, null);
             ActionContext.getContext().setLocale(Locale.US);
 
             TextProvider localeAware = (TextProvider) proxy.getAction();
@@ -37,8 +36,7 @@ public class LocaleAwareTest extends XWorkTestCase {
 
     public void testLocaleGetText() {
         try {
-            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                    configurationManager.getConfiguration(), "", MockConfigurationProvider.FOO_ACTION_NAME, null);
+            ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.FOO_ACTION_NAME, null);
             ActionContext.getContext().setLocale(Locale.GERMANY);
 
             TextProvider localeAware = (TextProvider) proxy.getAction();
@@ -50,12 +48,7 @@ public class LocaleAwareTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        configurationManager = new ConfigurationManager();
-        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-test-beans.xml"));
-        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
-        configurationManager.reload();
-        container = configurationManager.getConfiguration().getContainer();
-        ObjectFactory.setObjectFactory(container.getInstance(ObjectFactory.class));
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
 
         ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));

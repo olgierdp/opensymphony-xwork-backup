@@ -31,10 +31,7 @@ public class ChainResultTest extends XWorkTestCase {
         super.setUp();
 
         // ensure we're using the default configuration, not simple config
-        configurationManager.clearConfigurationProviders();
-        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
-        configurationManager.getConfiguration().reload(
-                configurationManager.getConfigurationProviders());
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-sample.xml"));
     }
 
     public void testNamespaceAndActionExpressionEvaluation() throws Exception {
@@ -68,8 +65,7 @@ public class ChainResultTest extends XWorkTestCase {
     }
 
     public void testRecursiveChain() throws Exception {
-        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                configurationManager.getConfiguration(), "", "InfiniteRecursionChain", null);
+        ActionProxy proxy = actionProxyFactory.createActionProxy("", "InfiniteRecursionChain", null);
 
         try {
             proxy.execute();
@@ -89,26 +85,14 @@ public class ChainResultTest extends XWorkTestCase {
             this.returnVal = returnVal;
         }
 
-        public ActionInvocation createActionInvocation(ActionProxy actionProxy, Map extraContext) throws Exception {
-            return null;
-        }
-
-        public ActionInvocation createActionInvocation(ActionProxy actionProxy) throws Exception {
-            return null;
-        }
-
-        public ActionInvocation createActionInvocation(ActionProxy actionProxy, Map extraContext, boolean pushAction) throws Exception {
-            return null;
-        }
-
-        public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext) throws Exception {
+        public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext) throws Exception {
             TestCase.assertEquals(expectedNamespace, namespace);
             TestCase.assertEquals(expectedActionName, actionName);
 
             return returnVal;
         }
 
-        public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+        public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
             TestCase.assertEquals(expectedNamespace, namespace);
             TestCase.assertEquals(expectedActionName, actionName);
 

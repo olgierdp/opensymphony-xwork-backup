@@ -12,6 +12,7 @@ import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
+import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 
@@ -31,8 +32,7 @@ public class PreResultListenerTest extends XWorkTestCase {
 
 
     public void testPreResultListenersAreCalled() throws Exception {
-        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                configurationManager.getConfiguration(), "package", "action", new HashMap(), false, true);
+        ActionProxy proxy = actionProxyFactory.createActionProxy("package", "action", new HashMap(), false, true);
         ActionInvocation invocation = proxy.getInvocation();
         Mock preResultListenerMock1 = new Mock(PreResultListener.class);
         preResultListenerMock1.expect("beforeResult", C.args(C.eq(invocation), C.eq(Action.SUCCESS)));
@@ -42,8 +42,7 @@ public class PreResultListenerTest extends XWorkTestCase {
     }
 
     public void testPreResultListenersAreCalledInOrder() throws Exception {
-        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                configurationManager.getConfiguration(), "package", "action", new HashMap(), false, true);
+        ActionProxy proxy = actionProxyFactory.createActionProxy("package", "action", new HashMap(), false, true);
         ActionInvocation invocation = proxy.getInvocation();
         CountPreResultListener listener1 = new CountPreResultListener();
         CountPreResultListener listener2 = new CountPreResultListener();
@@ -57,8 +56,7 @@ public class PreResultListenerTest extends XWorkTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        configurationManager.clearConfigurationProviders();
-        configurationManager.addConfigurationProvider(new ConfigurationProvider() {
+        loadConfigurationProviders(new ConfigurationProvider() {
             Configuration configuration;
             public void destroy() {
             }
@@ -85,11 +83,11 @@ public class PreResultListenerTest extends XWorkTestCase {
             }
 
             public void register(ContainerBuilder builder, LocatableProperties props) throws ConfigurationException {
-                // TODO Auto-generated method stub
+                builder.factory(ActionProxyFactory.class, DefaultActionProxyFactory.class);
+                builder.factory(ObjectFactory.class);
                 
             }
         });
-       configurationManager.reload();
     }
 
     protected void tearDown() throws Exception {

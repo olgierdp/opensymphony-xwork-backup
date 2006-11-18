@@ -8,6 +8,7 @@ import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
 import com.opensymphony.xwork2.util.profiling.UtilTimerStack;
 
@@ -38,6 +39,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     protected Configuration configuration;
     protected ActionConfig config;
     protected ActionInvocation invocation;
+    protected UnknownHandler unknownHandler;
     protected Map extraContext;
     protected String actionName;
     protected String namespace;
@@ -53,45 +55,34 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
      * The reason for the builder methods is so that you can use a subclass to create your own DefaultActionProxy instance
      * (like a RMIActionProxy).
      */
-    protected DefaultActionProxy(ObjectFactory objectFactory, Configuration cfg, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
-    	this.objectFactory = objectFactory;
-        String profileKey = "create DefaultActionProxy: ";
-    	try {
-    		UtilTimerStack.push(profileKey);
+    protected DefaultActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+        
     		
-    		this.cleanupContext = cleanupContext;
-    		if (LOG.isDebugEnabled()) {
-    			LOG.debug("Creating an DefaultActionProxy for namespace " + namespace + " and action name " + actionName);
-    		}
+		this.cleanupContext = cleanupContext;
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Creating an DefaultActionProxy for namespace " + namespace + " and action name " + actionName);
+		}
 
-    		this.configuration = cfg;
-    		this.actionName = actionName;
-    		this.namespace = namespace;
-    		this.executeResult = executeResult;
-    		this.extraContext = extraContext;
-
-    		config = configuration.getRuntimeConfiguration().getActionConfig(namespace, actionName);
-
-    		if (config == null) {
-    			String message;
-
-    			if ((namespace != null) && (namespace.trim().length() > 0)) {
-    				message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
-                        namespace, actionName
-    				});
-    			} else {
-    				message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
-                        actionName
-    				});
-    			}
-    			throw new ConfigurationException(message);
-    		}	
-
-    		prepare();
-    	}
-    	finally {
-    		UtilTimerStack.pop(profileKey);
-    	}
+		this.actionName = actionName;
+		this.namespace = namespace;
+		this.executeResult = executeResult;
+		this.extraContext = extraContext;
+    	
+    }
+    
+    @Inject
+    public void setObjectFactory(ObjectFactory factory) {
+        this.objectFactory = factory;
+    }
+    
+    @Inject
+    public void setConfiguration(Configuration config) {
+        this.configuration = config;
+    }
+    
+    @Inject(required=false)
+    public void setUnknownHandler(UnknownHandler handler) {
+        this.unknownHandler = handler;
     }
 
     public Object getAction() {
@@ -164,12 +155,34 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
         }
     }
 
-    protected void prepare() throws Exception {
-        invocation = new DefaultActionInvocation(objectFactory, this, extraContext);
-        resolveMethod();
-    }
+    public void prepare() throws Exception {
+        String profileKey = "create DefaultActionProxy: ";
+        try {
+            UtilTimerStack.push(profileKey);
+            config = configuration.getRuntimeConfiguration().getActionConfig(namespace, actionName);
     
-    public Configuration getConfiguration() {
-        return configuration;
+            if (config == null && unknownHandler != null) {
+                config = unknownHandler.handleUnknownAction(namespace, actionName);
+            }
+            if (config == null) {
+                String message;
+    
+                if ((namespace != null) && (namespace.trim().length() > 0)) {
+                    message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_PACKAGE_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
+                        namespace, actionName
+                    });
+                } else {
+                    message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[]{
+                        actionName
+                    });
+                }
+                throw new ConfigurationException(message);
+            }
+            
+            invocation = new DefaultActionInvocation(objectFactory, unknownHandler, this, extraContext);
+            resolveMethod();
+        } finally {
+            UtilTimerStack.pop(profileKey);
+        }
     }
 }

@@ -38,9 +38,8 @@ public class AliasInterceptorTest extends XWorkTestCase {
         params.put("aliasSource", "source here");
 
         ActionProxyFactory factory = container.getInstance(ActionProxyFactory.class);
-        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
-        ActionProxy proxy = factory.createActionProxy(
-                configurationManager.getConfiguration(), "", "aliasTest", params);
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-sample.xml"));
+        ActionProxy proxy = actionProxyFactory.createActionProxy("", "aliasTest", params);
         SimpleAction actionOne = (SimpleAction) proxy.getAction();
         actionOne.setAliasSource("name to be copied");
         proxy.execute();

@@ -28,6 +28,8 @@ public class MockActionProxy implements ActionProxy {
     String returnedResult;
     Configuration configuration;
 
+    public void prepare() throws Exception {}
+    
     public String execute() throws Exception {
         executedCalled = true;
 
@@ -98,11 +100,4 @@ public class MockActionProxy implements ActionProxy {
         this.method = method;
     }
 
-    public Configuration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
-    }
 }

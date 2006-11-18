@@ -14,6 +14,8 @@ import com.opensymphony.xwork2.config.RuntimeConfiguration;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
+import com.opensymphony.xwork2.inject.Context;
+import com.opensymphony.xwork2.inject.Factory;
 
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +37,13 @@ public class MockConfiguration implements Configuration {
         container = new ContainerBuilder()
             .factory(ObjectFactory.class)
             .factory(ActionProxyFactory.class, DefaultActionProxyFactory.class)
+            .factory(Configuration.class, new Factory() {
+
+                public Object create(Context context) throws Exception {
+                    return MockConfiguration.this;
+                }
+                
+            })
             .create(true);
     }
 

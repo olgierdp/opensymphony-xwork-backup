@@ -67,11 +67,13 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected boolean pushAction = true;
     protected ObjectFactory objectFactory;
 
-    protected DefaultActionInvocation(ObjectFactory objectFactory, ActionProxy proxy, Map extraContext) throws Exception {
-        this(objectFactory, proxy, extraContext, true);
+    protected UnknownHandler unknownHandler;
+
+    protected DefaultActionInvocation(ObjectFactory objectFactory, UnknownHandler handler, ActionProxy proxy, Map extraContext) throws Exception {
+        this(objectFactory, handler, proxy, extraContext, true);
     }
 
-    protected DefaultActionInvocation(final ObjectFactory objectFactory, final ActionProxy proxy, final Map extraContext, final boolean pushAction) throws Exception {
+    protected DefaultActionInvocation(final ObjectFactory objectFactory, final UnknownHandler handler, final ActionProxy proxy, final Map extraContext, final boolean pushAction) throws Exception {
     	UtilTimerStack.profile("create DefaultActionInvocation: ", 
     			new UtilTimerStack.ProfilingBlock<Object>() {
 					public Object doProfiling() throws Exception {
@@ -79,6 +81,7 @@ public class DefaultActionInvocation implements ActionInvocation {
                         DefaultActionInvocation.this.objectFactory = objectFactory;
 				        DefaultActionInvocation.this.extraContext = extraContext;
 				        DefaultActionInvocation.this.pushAction = pushAction;
+                        DefaultActionInvocation.this.unknownHandler = handler;
 				        init();
 						return null;
 					}
@@ -193,9 +196,10 @@ public class DefaultActionInvocation implements ActionInvocation {
                 LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClassName(), e);
                 throw new XWorkException(e, resultConfig);
             }
-        } else {
-            return null;
+        } else if (resultCode != null && !Action.NONE.equals(resultCode)) {
+            return unknownHandler.handleUnknownResult(invocationContext, proxy.getConfig(), resultCode);
         }
+        return null;
     }
 
     /**

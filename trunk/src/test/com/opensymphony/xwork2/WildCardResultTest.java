@@ -20,24 +20,19 @@ public class WildCardResultTest extends XWorkTestCase {
         super.setUp();
 
         // ensure we're using the default configuration, not simple config
-        configurationManager.clearConfigurationProviders();
-        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-sample.xml"));
-        configurationManager.getConfiguration().reload(configurationManager.getConfigurationProviders());
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-sample.xml"));
     }
 
     public void testWildCardEvaluation() throws Exception {
-        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                configurationManager.getConfiguration(), null, "WildCard", null);
+        ActionProxy proxy = actionProxyFactory.createActionProxy(null, "WildCard", null);
         assertEquals("success", proxy.execute());
         assertEquals(VoidResult.class, proxy.getInvocation().getResult().getClass());
 
-        proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                configurationManager.getConfiguration(), null, "WildCardInput", null);
+        proxy = actionProxyFactory.createActionProxy(null, "WildCardInput", null);
         assertEquals("input", proxy.execute());
         assertEquals(MockResult.class, proxy.getInvocation().getResult().getClass());
 
-        proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                configurationManager.getConfiguration(), null, "WildCardError", null);
+        proxy = actionProxyFactory.createActionProxy(null, "WildCardError", null);
         assertEquals("error", proxy.execute());
         assertEquals(MockResult.class, proxy.getInvocation().getResult().getClass());
     }

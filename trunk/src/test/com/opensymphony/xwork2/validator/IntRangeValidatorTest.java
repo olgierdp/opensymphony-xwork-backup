@@ -31,8 +31,7 @@ public class IntRangeValidatorTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                    configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
+            ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
             proxy.execute();
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
@@ -49,11 +48,6 @@ public class IntRangeValidatorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        configurationManager = new ConfigurationManager();
-        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-test-beans.xml"));
-        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
-        configurationManager.reload();
-        container = configurationManager.getConfiguration().getContainer();
-        ObjectFactory.setObjectFactory(container.getInstance(ObjectFactory.class));
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
     }
 }

@@ -22,8 +22,7 @@ import java.util.Map;
 public class DoubleRangeValidatorTest extends XWorkTestCase {
 
     public void testRangeValidationWithError() throws Exception {
-        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                configurationManager.getConfiguration(), "", MockConfigurationProvider.VALIDATION_ACTION_NAME, null);
+        ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, null);
         proxy.execute();
         assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
@@ -40,8 +39,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
     }
 
     public void testRangeValidationNoError() throws Exception {
-        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(
-                configurationManager.getConfiguration(), "", "percentage", null);
+        ActionProxy proxy = actionProxyFactory.createActionProxy("", "percentage", null);
         proxy.execute();
         assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
@@ -164,12 +162,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        configurationManager = new ConfigurationManager();
-        configurationManager.addConfigurationProvider(new XmlConfigurationProvider("xwork-test-beans.xml"));
-        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
-        configurationManager.reload();
-        container = configurationManager.getConfiguration().getContainer();
-        ObjectFactory.setObjectFactory(container.getInstance(ObjectFactory.class));
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
     }
 
     private class MyTestProduct {

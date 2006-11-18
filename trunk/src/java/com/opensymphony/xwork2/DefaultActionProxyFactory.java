@@ -20,7 +20,6 @@ import com.opensymphony.xwork2.inject.Inject;
 public class DefaultActionProxyFactory implements ActionProxyFactory {
 
     protected Container container;
-    protected ObjectFactory objectFactory;
     
     public DefaultActionProxyFactory() {
         super();
@@ -31,26 +30,20 @@ public class DefaultActionProxyFactory implements ActionProxyFactory {
         this.container = container;
     }
     
-    @Inject
-    public void setObjectFactory(ObjectFactory factory) {
-        this.objectFactory = factory;
+    /**
+     * Use this method to build an DefaultActionProxy instance.
+     */
+    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext) throws Exception {
+        return createActionProxy(namespace, actionName, extraContext, true, true);
     }
 
     /**
      * Use this method to build an DefaultActionProxy instance.
      */
-    public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext) throws Exception {
-        ActionProxy proxy = new DefaultActionProxy(objectFactory, config, namespace, actionName, extraContext, true, true);
+    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+        ActionProxy proxy = new DefaultActionProxy(namespace, actionName, extraContext, executeResult, cleanupContext);
         container.inject(proxy);
-        return proxy;
-    }
-
-    /**
-     * Use this method to build an DefaultActionProxy instance.
-     */
-    public ActionProxy createActionProxy(Configuration config, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
-        ActionProxy proxy = new DefaultActionProxy(objectFactory, config, namespace, actionName, extraContext, executeResult, cleanupContext);
-        container.inject(proxy);
+        proxy.prepare();
         return proxy;
     }
 }

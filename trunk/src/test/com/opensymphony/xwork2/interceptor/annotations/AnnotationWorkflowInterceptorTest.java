@@ -35,11 +35,7 @@ public class AnnotationWorkflowInterceptorTest extends XWorkTestCase {
     private final AnnotationWorkflowInterceptor annotationInterceptor = new AnnotationWorkflowInterceptor();
 
     public void setUp() {
-        configurationManager = new ConfigurationManager();
-        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
-        configurationManager.getConfiguration().reload(configurationManager.getConfigurationProviders());
-        container = configurationManager.getConfiguration().getContainer();
-        ObjectFactory.setObjectFactory(container.getInstance(ObjectFactory.class));
+        loadConfigurationProviders(new MockConfigurationProvider());
 
         ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         ActionContext.setContext(new ActionContext(stack.getContext()));
@@ -47,14 +43,14 @@ public class AnnotationWorkflowInterceptorTest extends XWorkTestCase {
     }
 
     public void testInterceptsBeforeAndAfter() throws Exception {
-        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(configurationManager.getConfiguration(), "", ANNOTATED_ACTION, null);
+        ActionProxy proxy = actionProxyFactory.createActionProxy("", ANNOTATED_ACTION, null);
         assertEquals(Action.SUCCESS, proxy.execute());
         AnnotatedAction action = (AnnotatedAction)proxy.getInvocation().getAction();
         assertEquals("baseBefore-before-execute-beforeResult-after", action.log);
     }
 
     public void testInterceptsShortcircuitedAction() throws Exception {
-        ActionProxy proxy = container.getInstance(ActionProxyFactory.class).createActionProxy(configurationManager.getConfiguration(), "", SHORTCIRCUITED_ACTION, null);
+        ActionProxy proxy = actionProxyFactory.createActionProxy("", SHORTCIRCUITED_ACTION, null);
         assertEquals("shortcircuit", proxy.execute());
         ShortcircuitedAction action = (ShortcircuitedAction)proxy.getInvocation().getAction();
         assertEquals("baseBefore-before", action.log);
