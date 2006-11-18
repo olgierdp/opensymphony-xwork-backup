@@ -123,12 +123,19 @@ public class ConfigurationManager {
      */
     public void clearConfigurationProviders() {
         for (ConfigurationProvider configurationProvider : configurationProviders) {
-            configurationProvider.destroy();
+        	try {
+        		configurationProvider.destroy();
+        	}
+        	catch(Exception e) {
+        		LOG.warn("error while destroying configuration provider ["+configurationProvider+"]", e);
+        	}
         }
-
         configurationProviders.clear();
     }
 
+    /**
+     * Destroy its managing Configuration instance
+     */
     public synchronized void destroyConfiguration() {
         clearConfigurationProviders(); // let's destroy the ConfigurationProvider first
         setConfigurationProviders(new CopyOnWriteArrayList<ConfigurationProvider>());
@@ -164,6 +171,14 @@ public class ConfigurationManager {
             }
 
             if (reload) {
+            	for (ConfigurationProvider configurationProvider : configurationProviders) {
+                	try {
+                		configurationProvider.destroy();
+                	}
+                	catch(Exception e) {
+                		LOG.warn("error while destroying configuration provider ["+configurationProvider+"]", e);
+                	}
+                }
                 configuration.reload(providers);
             }
         }

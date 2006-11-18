@@ -6,9 +6,13 @@ package com.opensymphony.xwork2.config;
 
 //import org.easymock.MockControl;
 
+import java.util.Properties;
+
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
+import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.util.FileManager;
+import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.XWorkTestCase;
 
 
@@ -31,6 +35,7 @@ public class ConfigurationManagerTest extends XWorkTestCase {
         configProviderMock.expect("init", C.isA(Configuration.class));
         configProviderMock.expect("register", C.ANY_ARGS);
         configProviderMock.expect("loadPackages", C.ANY_ARGS);
+        configProviderMock.expect("destroy", C.ANY_ARGS);
         configProviderMock.matchAndReturn("toString", "mock");
         configurationManager.getConfiguration();
         configProviderMock.verify();
@@ -50,18 +55,83 @@ public class ConfigurationManagerTest extends XWorkTestCase {
         configProviderMock.expect("destroy");
     }
 
-//    public void testDestroyConfiguration() throws Exception {
-//    	MockControl control = MockControl.createControl(Configuration.class);
-//    	Configuration configuration = (Configuration) control.getMock();
-//    	ConfigurationManager.setConfiguration(configuration);
-//
-//    	configuration.destroy();		// EasyMock
-//    	configProviderMock.expect("destroy");  // MockObject
-//    	control.replay();
-//    	ConfigurationManager.destroyConfiguration();
-//    	configProviderMock.verify();
-//    	control.verify();
-//    }
+    public void testDestroyConfiguration() throws Exception {
+    	class State {
+    		public boolean isDestroyed1 =false;
+    		public boolean isDestroyed2 =false;
+    	};
+    	
+    	final State state = new State();
+    	ConfigurationManager configurationManager = new ConfigurationManager();
+    	configurationManager.addConfigurationProvider(new ConfigurationProvider() {
+			public void destroy() { 
+				throw new RuntimeException("testing testing 123");
+			}
+			public void init(Configuration configuration) throws ConfigurationException {
+			}
+			public void loadPackages() throws ConfigurationException {
+			}
+			public boolean needsReload() { return false;
+			}
+			public void register(ContainerBuilder builder, Properties props) throws ConfigurationException {
+			}
+			public void register(ContainerBuilder builder, LocatableProperties props) throws ConfigurationException {
+			}
+    	});
+    	configurationManager.addConfigurationProvider(new ConfigurationProvider() {
+			public void destroy() { 
+				state.isDestroyed1 = true;
+			}
+			public void init(Configuration configuration) throws ConfigurationException {
+			}
+			public void loadPackages() throws ConfigurationException {
+			}
+			public boolean needsReload() { return false;
+			}
+			public void register(ContainerBuilder builder, Properties props) throws ConfigurationException {
+			}
+			public void register(ContainerBuilder builder, LocatableProperties props) throws ConfigurationException {
+			}
+    	});
+    	configurationManager.addConfigurationProvider(new ConfigurationProvider() {
+			public void destroy() { 
+				throw new RuntimeException("testing testing 123");
+			}
+			public void init(Configuration configuration) throws ConfigurationException {
+			}
+			public void loadPackages() throws ConfigurationException {
+			}
+			public boolean needsReload() { return false;
+			}
+			public void register(ContainerBuilder builder, Properties props) throws ConfigurationException {
+			}
+			public void register(ContainerBuilder builder, LocatableProperties props) throws ConfigurationException {
+			}
+    	});
+    	configurationManager.addConfigurationProvider(new ConfigurationProvider() {
+			public void destroy() { 
+				state.isDestroyed2 = true;
+			}
+			public void init(Configuration configuration) throws ConfigurationException {
+			}
+			public void loadPackages() throws ConfigurationException {
+			}
+			public boolean needsReload() { return false;
+			}
+			public void register(ContainerBuilder builder, Properties props) throws ConfigurationException {
+			}
+			public void register(ContainerBuilder builder, LocatableProperties props) throws ConfigurationException {
+			}
+    	});
+    	
+    	assertFalse(state.isDestroyed1);
+    	assertFalse(state.isDestroyed2);
+    	
+    	configurationManager.clearConfigurationProviders();
+    	
+    	assertTrue(state.isDestroyed1);
+    	assertTrue(state.isDestroyed2);
+    }
 
     public void testClearConfigurationProviders() throws Exception {
         configProviderMock.expect("destroy");

@@ -105,6 +105,7 @@ public class DefaultConfiguration implements Configuration {
      */
     public void destroy() {
         packageContexts.clear();
+        loadedFileNames.clear();
     }
 
     public void rebuildRuntimeConfiguration() {
