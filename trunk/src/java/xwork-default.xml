@@ -4,6 +4,34 @@
     <package name="xwork-default">
     
     	<!-- START SNIPPET: xwork2-default-result-types -->
+    	
+    	<bean name="xwork" 
+    				class="com.opensymphony.xwork2.ObjectFactory"  />
+    	<bean name="xwork" 
+    				type="com.opensymphony.xwork2.ActionProxyFactory"  
+    				class="com.opensymphony.xwork2.DefaultActionProxyFactory"/>
+		<bean name="tiger" 
+					type="com.opensymphony.xwork2.util.ObjectTypeDeterminer"  
+					class="com.opensymphony.xwork2.util.GenericsObjectTypeDeterminer"/>
+		<bean name="notiger" 
+					type="com.opensymphony.xwork2.util.ObjectTypeDeterminer"  
+					class="com.opensymphony.xwork2.util.DefaultObjectTypeDeterminer"/>
+		<bean name="struts" 
+					type="com.opensymphony.xwork2.util.ObjectTypeDeterminer"  
+					class="com.opensymphony.xwork2.util.DefaultObjectTypeDeterminer"/>
+    	<bean name="xwork1" 
+    				type="com.opensymphony.xwork2.util.XWorkConverter"  
+    				class="com.opensymphony.xwork2.util.XWorkConverter" />    
+    	<bean type="com.opensymphony.xwork2.util.XWorkConverter" 
+    				name="struts" 
+    				class="com.opensymphony.xwork2.util.AnnotationXWorkConverter" />
+
+
+		<!--  static injections -->
+		<bean class="com.opensymphony.xwork2.util.OgnlValueStack" static="true" />
+		<bean class="com.opensymphony.xwork2.util.XWorkConverter" static="true" />
+    	<bean class="com.opensymphony.xwork2.ObjectFactory" static="true" />
+    
     
         <result-types>
             <result-type name="chain" class="com.opensymphony.xwork2.ActionChainResult"/>
