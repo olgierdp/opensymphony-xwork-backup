@@ -27,10 +27,11 @@ public interface UnknownHandler {
      * Handles the case when a result cannot be found for an action and result code. 
      * 
      * @param actionContext The action context
+     * @param actionName The action name
      * @param actionConfig The action config
      * @param resultCode The returned result code
      * @return A result to be executed, can return null
      * @throws XWorkException
      */
-    public Result handleUnknownResult(ActionContext actionContext, ActionConfig actionConfig, String resultCode) throws XWorkException;
+    public Result handleUnknownResult(ActionContext actionContext, String actionName, ActionConfig actionConfig, String resultCode) throws XWorkException;
 }

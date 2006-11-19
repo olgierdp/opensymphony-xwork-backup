@@ -197,7 +197,7 @@ public class DefaultActionInvocation implements ActionInvocation {
                 throw new XWorkException(e, resultConfig);
             }
         } else if (resultCode != null && !Action.NONE.equals(resultCode)) {
-            return unknownHandler.handleUnknownResult(invocationContext, proxy.getConfig(), resultCode);
+            return unknownHandler.handleUnknownResult(invocationContext, proxy.getActionName(), proxy.getConfig(), resultCode);
         }
         return null;
     }
