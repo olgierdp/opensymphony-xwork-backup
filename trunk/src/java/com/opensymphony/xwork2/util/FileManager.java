@@ -77,7 +77,7 @@ public class FileManager {
     /**
      * Loads opens the named file and returns the InputStream
      *
-     * @param fileName - the name of the file to open
+     * @param fileUrl - the URL of the file to open
      * @return an InputStream of the file contents or null
      * @throws IllegalArgumentException if there is no file with the given file name
      */

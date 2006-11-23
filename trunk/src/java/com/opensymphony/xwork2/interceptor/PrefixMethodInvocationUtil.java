@@ -157,7 +157,7 @@ public class PrefixMethodInvocationUtil {
 	 * will return "SomeMethod".
 	 * 
 	 * @param methodName
-	 * @return
+	 * @return String
 	 */
 	public static String capitalizeMethodName(String methodName) {
 		assert(methodName != null);

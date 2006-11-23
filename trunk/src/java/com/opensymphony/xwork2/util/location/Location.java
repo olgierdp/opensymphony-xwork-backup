@@ -36,27 +36,28 @@ public interface Location {
      * 
      * @return the description (can be <code>null</code>)
      */
-    public String getDescription();
+    String getDescription();
     
     /**
      * Get the URI of this location
      * 
      * @return the URI (<code>null</code> if unknown).
      */
-    public String getURI();
+    String getURI();
+
     /**
      * Get the line number of this location
      * 
      * @return the line number (<code>-1</code> if unknown)
      */
-    public int getLineNumber();
+    int getLineNumber();
     
     /**
      * Get the column number of this location
      * 
      * @return the column number (<code>-1</code> if unknown)
      */
-    public int getColumnNumber();
+    int getColumnNumber();
     
     /**
      * Gets a source code snippet with the default padding
@@ -64,5 +65,5 @@ public interface Location {
      * @param padding The amount of lines before and after the error to include
      * @return A list of source lines
      */
-    public List getSnippet(int padding);
+    List getSnippet(int padding);
 }

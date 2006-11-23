@@ -203,7 +203,6 @@ public class ActionConfigMatcher implements Serializable {
      * </p>
      *
      * @param orig  The original parameters with placehold values
-     * @param map The target parameters to store the processed values
      * @param vars  A Map of wildcard-matched strings
      */
     protected Map<String,Object> replaceParameters(Map<String, Object> orig, Map vars) {

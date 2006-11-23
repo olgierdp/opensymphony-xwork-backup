@@ -30,7 +30,7 @@ import com.opensymphony.xwork2.Preparable;
  * <p/><b>Update</b>: Added logic to execute a prepare{MethodName} and conditionally
  * the a general prepare() Method, depending on the 'alwaysInvokePrepare' parameter/property
  * which is by default true. This allows us to run some logic based on the method 
- * name we specify in the {@link ActionProxy}. For example, you can specify a 
+ * name we specify in the {@link com.opensymphony.xwork2.ActionProxy}. For example, you can specify a
  * prepareInput() method that will be run before the invocation of the input method.
  *
  * <!-- END SNIPPET: description -->

@@ -47,7 +47,6 @@ public class TextParseUtil {
      * A typical use-case would be when we need to URL Encode the parsed value. To do so 
      * we could just supply a URLEncodingEvaluator for example. 
      * 
-     * @see {@link TextParseUtil.ParsedValueEvaluator}
      * @param expression
      * @param stack
      * @param evaluator The parsed Value evaluator (could be null).

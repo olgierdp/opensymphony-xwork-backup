@@ -339,7 +339,7 @@ public class OgnlUtil {
     /**
      * Get's the java bean info for the given source.
      * 
-     * @param source  the source object.
+     * @param from  the source object.
      * @return  java bean info.
      * @throws IntrospectionException is thrown if an exception occurs during introspection.
      */

@@ -392,7 +392,7 @@ public class UtilTimerStack
      * Determine if profiling is being activated, by searching for a system property
      * 'xwork.profile.activate', default to false (profiling is off).
      * 
-     * @return
+     * @return <tt>true</tt>, if active, <tt>false</tt> otherwise.
      */
     public static boolean isActive()
     {
@@ -473,7 +473,7 @@ public class UtilTimerStack
     	/**
     	 * Method that execute the code subjected to profiling.
     	 * 
-    	 * @return
+    	 * @return  profiles Type
     	 * @throws Exception
     	 */
     	T doProfiling() throws Exception;

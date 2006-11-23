@@ -43,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
  * methods.</p>
  *
  * <p>General searches are initiated by calling the
- * {@link #find(com.opensymphony.xwork2.util.ResolverUtil.Test, String)} ()} method and supplying
+ * {@link #find(com.opensymphony.xwork2.util.ResolverUtil.Test, String...)} ()} method and supplying
  * a package name and a Test instance. This will cause the named package <b>and all sub-packages</b>
  * to be scanned for classes that meet the test. There are also utility methods for the common
  * use cases of scanning multiple packages for extensions of particular classes, or classes

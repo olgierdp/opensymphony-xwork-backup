@@ -82,7 +82,7 @@ public class ObjectProfiler
     }
 
     /**
-     * A profiled call {@link Method#invoke(java.lang.Object, java.lang.Object[]). If {@link UtilTimerStack#isActive() }
+     * A profiled call {@link Method#invoke(java.lang.Object, java.lang.Object[])}. If {@link UtilTimerStack#isActive() }
      * returns false, then no profiling is performed.
      */
     public static Object profiledInvoke(Method target, Object value, Object[] args) throws IllegalAccessException, InvocationTargetException

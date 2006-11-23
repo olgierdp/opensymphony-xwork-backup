@@ -10,8 +10,7 @@ import com.opensymphony.xwork2.util.TextParseUtil;
 
 /**
  * Utility class contains common methods used by 
- * {@link com.opensymphony.xwork2.interceptor.MethodFilterInterceptorterceptor}
- * and {@link org.apache.struts.action2.components.Form}.
+ * {@link com.opensymphony.xwork2.interceptor.MethodFilterInterceptor}.
  * 
  * @author tm_jee
  * @version $Date$ $Id$
@@ -48,13 +47,13 @@ public class MethodFilterInterceptorUtil {
     }
     
     /**
-     * Same as {@link #isMethodFiltered(Set, Set, String)}, except that <code>excludeMethods</code>
+     * Same as {@link #applyMethod(Set, Set, String)}, except that <code>excludeMethods</code>
      * and <code>includeMethods</code> are supplied as comma separated string.
      * 
      * @param excludeMethods
      * @param includeMethods
      * @param method
-     * @return
+     * @return boolean
      */
     public static boolean applyMethod(String excludeMethods, String includeMethods, String method) {
     	Set includeMethodsSet = TextParseUtil.commaDelimitedStringToSet(includeMethods == null? "" : includeMethods);
