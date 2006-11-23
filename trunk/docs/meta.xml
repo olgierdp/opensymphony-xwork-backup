@@ -74,6 +74,28 @@
 
     <releases>
         <release>
+            <version>2.0-beta-2 (maven2 based assembly release)</version>
+            <date>11/24/2006</date>
+            <jiraId>21650</jiraId>
+            <downloads>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/44418/xwork-2.0-beta2-all.zip</url>
+                    <name>Full</name>
+                </download>
+            </downloads>
+        </release>
+        <release>
+            <version>2.0-beta-2 (ant/ivy based release)</version>
+            <date>11/24/2006</date>
+            <jiraId>21650</jiraId>
+            <downloads>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/44417/xwork-2.0-beta-2.zip</url>
+                    <name>Full</name>
+                </download>
+            </downloads>
+        </release>
+        <release>
             <version>2.0-beta-1</version>
             <date>07/10/2006</date>
             <jiraId>21650</jiraId>
