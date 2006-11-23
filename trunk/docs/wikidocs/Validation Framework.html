@@ -65,10 +65,10 @@
 <span class="code-tag">&lt;/validators&gt;</span></pre>
 </div></div>
 
-<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Useful Information</b><br />
+<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Useful Information</b><br />
 <p>validators.xml if being defined should be available in the classpath. However this is not necessary, if no custom validator is needed. Webwork will automatically picked up a predefined sets of validators defined in com/opensymphony/xwork/validator/validators/default.xml packaged together in xwork jar file that comes with webwork distribution. See ValidatorFactory static block for details.</p></td></tr></table>
 
-<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Warning</b><br />
+<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Warning</b><br />
 <p>If custom validator is being defined and a validators.xml is created and place in the classpath, do remember to copy all the other pre-defined validators that is needed into the validators.xml as if not they will not be registered. Once a validators.xml is detected in the classpath, the default one (com/opensymphony/xwork/validator/validators/default.xml) will not be loaded. It is only loaded when a custom validators.xml cannot be found in the classpath. Be careful.</p></td></tr></table>
 
 
@@ -157,7 +157,7 @@
 
 <p>While this process is similar to what the <a href="Localization.html" title="Localization">XW:Localization</a> framework does when finding messages, there are some subtle differences.  The most important difference is that validation rules are discovered from the parent downwards.</p>
 
-<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Take Note</b><br />
+<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Take Note</b><br />
 <p>Child's *-validation.xml will override parent's *-validation.xml according to the class hierarchi defined above.</p></td></tr></table>
 
 
@@ -294,7 +294,7 @@ The &lt;field-validator&gt; elements are basically the same as the &lt;validator
 <span class="code-tag">&lt;/validator&gt;</span></pre>
 </div></div>
 
-<table cellpadding='5' width='85%' cellspacing='8px' class='tipMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/check.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Hint</b><br />
+<table cellpadding='5' width='85%' cellspacing='8px' class='tipMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/check.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Hint</b><br />
 <p>It is always better to defined field-validator inside a &lt;field&gt; tag instead of using a &lt;validator&gt; tag and supplying fieldName as its param as the xml code itself is clearer (grouping of field is clearer)</p></td></tr></table>
 
 <p>Note that you should only use FieldValidators (<b>not</b> plain Validators) within a &lt;field-validator&gt; block. A plain Validator inside a &lt;field&gt; will not be allowed and would generate error when parsing the xml, as it is not allowed in the defined dtd (xwork-validator-1.0.2.dtd)</p>
@@ -356,7 +356,7 @@ Plain validator takes precedence over field-validator. They get validated first 
 <p>Since Field Validator 2 is short-circuited, if its validation failed, it will causes Field validators for email field and Field validators for email2 field to not be validated as well.</p>
 
 
-<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Useful Information</b><br />
+<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Useful Information</b><br />
 <p>More complecated validation should probably be done in the validate() method on the action itself (assuming the action implements Validatable interface which ActionSupport already does).</p></td></tr></table>
 
 <p>A plain Validator (non FieldValidator) that gets short-circuited will completely break out of the validation stack &#8211; no other validators will be evaluated and plain validator takes precedence over field validator meaning that they get evaluated in the order they are defined before field validator gets a chance to be evaludated again according to their order defined.</p>

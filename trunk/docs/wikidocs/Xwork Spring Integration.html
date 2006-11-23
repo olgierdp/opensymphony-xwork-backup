@@ -89,13 +89,13 @@
   &lt;/beans&gt;</pre>
 </div></div>
 
-<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
+<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
 <p>  XWork2 action needs to be configured with singleton="false", cause XWork2 expect Action a new instance for each request / invocation</p></td></tr></table>
 
-<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
+<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
 <p>  XWork2 result is preferably configured with singleton="false", unless some information needs to be kept between invocation. By default, without using SpringObjectFactory, a new instance of Result would be created per invocation.</p></td></tr></table>
 
-<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
+<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
 <p>  XWork2 interceptors are created once and being repeatably used unless XWork2 is configured to be reloadable. It is preferable that XWork interceptors being configured with singleton="false" as well.</p></td></tr></table>
 
 <p>With this configuration, XWork2's "components" could be instantiated and possibly have its dependencies wired-up through Spring.</p>
