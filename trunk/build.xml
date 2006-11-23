@@ -23,11 +23,12 @@
     <target name="compile" depends="common.compile">
     </target>
 
+    <target name="dist" depends="common.dist">
+    </target>
+
     <target name="predist" depends="common.predist">
         <!-- grab the README.txt file -->
         <copy file="${src}/etc/README.txt" todir="${dist}"/>
-
-        <!--copy file="${build}/${name}-tiger-${version}.jar" todir="${dist}"/-->
     </target>
 
     <target name="test" depends="junit-check, clover-check, compile, test-compile" description="run tests"

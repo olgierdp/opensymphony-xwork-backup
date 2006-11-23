@@ -285,13 +285,6 @@
             <fileset dir="${src}"/>
         </copy>
 
-        <copy todir="${dist}/tiger">
-            <fileset dir="tiger">
-                <exclude name="build/"/>
-                <exclude name="*.i*"/>
-            </fileset>
-        </copy>
-
         <mkdir dir="${dist}/lib"/>
         <copy todir="${dist}/lib">
             <fileset dir="${lib}">
@@ -348,23 +341,6 @@
                       **/*.xslt,
                       **/*.html"/>
 
-        <fixcrlf eol="lf" srcdir="${basedir}/tiger/src"
-                 includes="**/*.sh,
-                      **/*.properties,
-                      **/*.sql,
-                      **/*.script,
-                      **/*.java,
-                      **/*.css,
-                      **/*.js,
-                      **/*.jsp,
-                      **/*.ftl,
-                      **/*.txt,
-                      **/*.vm,
-                      **/*.xml,
-                      **/*.dtd,
-                      **/*.xsl,
-                      **/*.xslt,
-                      **/*.html"/>
     </target>
 
 
