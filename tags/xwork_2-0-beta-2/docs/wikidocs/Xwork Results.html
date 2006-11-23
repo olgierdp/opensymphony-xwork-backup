@@ -1,0 +1,67 @@
+<html>
+    <head>
+        <title>XWork - 
+        Xwork Results
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>Result represents the 'receiver' in a command pattern. It might be used to generate a response for a webapp, render ui for a Swing base app, execute a batch update etc.</p>
+
+<h2><a name="XworkResults-Code"></a>Code</h2>
+<p>XWork2 result should extends off Result interface. The custom result could have paremeter injected into it from xwork.xml file as well, just be sure to have getter / setters for those parameters.</p>
+
+<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
+<p>The parameter needs to be String, however one could write up a Abstract result which allows syntax like ${...} to be evaluated against XWork2 Ognl Value Stack. StrutsResultSupport does that actually. In order to help out with that, XWork2 have an utility class called TextParseUtil that does that parsing functionality.</p></td></tr></table>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">public</span> class MyResult <span class="code-keyword">implements</span> Result {
+    <span class="code-comment">// let's have getter/setter <span class="code-keyword">for</span> our 'injectable' paremeter.
+</span>    <span class="code-keyword">private</span> <span class="code-object">String</span> myParam;
+    <span class="code-keyword">public</span> <span class="code-object">String</span> getMyParam() { <span class="code-keyword">return</span> <span class="code-keyword">this</span>.myParam; }
+    <span class="code-keyword">public</span> void setMyParam(<span class="code-object">String</span> myParam) { <span class="code-keyword">this</span>.myParam = myParam; }
+
+    ....
+    <span class="code-keyword">public</span> void execute(ActionInvocation invocation) <span class="code-keyword">throws</span> Exception {
+        ....
+    }
+    ....
+  }</pre>
+</div></div>
+
+<p>and registered it in xwork.xml before using it</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;xwork&gt;
+   &lt;<span class="code-keyword">package</span> name=<span class="code-quote">"myPackage"</span> ...&gt;
+      &lt;!-- registre our custom result --&gt;
+      &lt;result-types&gt;
+        &lt;result-type name=<span class="code-quote">"myResult"</span> class=<span class="code-quote">"foo.bar.MyResult"</span>&gt;
+          &lt;param name=<span class="code-quote">"myParam"</span>&gt;some param value&lt;/param&gt;
+        &lt;/result&gt;
+      &lt;result-types&gt;
+
+      &lt;action ....&gt;
+         &lt;!-- Now we could use it --&gt;
+         &lt;result type=<span class="code-quote">"myResult"</span> ...&gt;
+            ....
+         &lt;/result&gt;
+      &lt;/action&gt;
+   &lt;/<span class="code-keyword">package</span>&gt;
+ &lt;/xwork&gt;</pre>
+</div></div>
+
+<h2><a name="XworkResults-Defaultresulttypes"></a>Default result types</h2>
+<p>// TODO: pull from svn using snippet<br/>
+// snippet id: 'xwork2-default-result-types'<br/>
+// location xwork-default.xml</p>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

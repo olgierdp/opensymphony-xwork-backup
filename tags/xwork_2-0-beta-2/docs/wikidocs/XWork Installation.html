@@ -1,0 +1,97 @@
+<html>
+    <head>
+        <title>XWork - 
+        XWork Installation
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
+<p> XWork2 requires at least JDK 5 (Tiger) to work.</p></td></tr></table>
+
+<p>To start using XWork2, it is required to have the folloing in the classpath :-</p>
+<ul>
+	<li>XWork2 jar</li>
+	<li>xwork.xml</li>
+	<li><a href="XWork Requirements And Dependencies.html" title="XWork Requirements And Dependencies">Other jar dependencies</a></li>
+</ul>
+
+
+<h2><a name="XWorkInstallation-Usingcommandline"></a>Using command line</h2>
+<p>Assuing the following structure.</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">+ classes/
+    + xwork-xxx.jar
+    + xwork.xml
+    + otherJars.jar
+    + myPackage/
+      + MyMain.class</pre>
+</div></div>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-comment">// Linux / Unix like environment
+</span> java -cp xwork-xxx.jar:xwork.xml:otherJars.jar myPackage.MyMain
+
+ <span class="code-comment">// Windows
+</span> java -cp xwork-xxx.jar;xwork.xml;ohterJars.jar myPackage.MyMain</pre>
+</div></div>
+
+<h2><a name="XWorkInstallation-Usingant"></a>Using ant</h2>
+<p>Assuming the following structure</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">+ src
+   + myPackage
+     + MyMain.java
+ + lib
+   + xwork-xxx.jar
+   + ... jar
+ + classes
+   + myPackage
+     + MyMain.class
+ + resources
+   + xwork.xml</pre>
+</div></div>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;procject ... &gt;
+  ...
+  &lt;path id=<span class="code-quote">"classpath"</span>&gt;
+    &lt;fileset dir=<span class="code-quote">"lib"</span>&gt;
+       &lt;include name=<span class="code-quote">"**/*.jar"</span>/&gt;
+    &lt;/fileset&gt;
+    &lt;pathelement location=<span class="code-quote">"resources"</span>/&gt;
+  &lt;/path&gt;
+  ....
+  &lt;target ...&gt;
+     &lt;!-- your target refer to path with id as 'classpath' when necessary --&gt;
+  &lt;/target&gt;</pre>
+</div></div>
+
+<h2><a name="XWorkInstallation-Usingmaven2"></a>Using maven2</h2>
+<p>When using maven2, one might want to have the following dependencies</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;pom ...&gt;
+ ....
+        &lt;dependency&gt;
+            &lt;groupId&gt;commons-logging&lt;/groupId&gt;
+            &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
+            &lt;version&gt;1.0.4&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+           .... other dependencies
+        &lt;/dependency&gt;
+  .....
+&lt;/pom&gt;</pre>
+</div></div> 
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

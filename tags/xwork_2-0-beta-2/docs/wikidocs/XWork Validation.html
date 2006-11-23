@@ -1,0 +1,112 @@
+<html>
+    <head>
+        <title>XWork - 
+        XWork Validation
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>XWork2 have build-in validation. They are done through the following major classes:-</p>
+<ul>
+	<li>ActionVaidatorManagerFactory</li>
+	<li>ActionValidatorManager</li>
+	<li>Validator</li>
+</ul>
+
+
+<h2><a name="XWorkValidation-ActionValidatorManagerFactory"></a>ActionValidatorManagerFactory</h2>
+<p>ActionValidatorManagerFactory serves as a static factory for ActionValidatorManager.</p>
+
+<h2><a name="XWorkValidation-ActionValidatorManager"></a>ActionValidatorManager</h2>
+<p>This class is the main entry point to trigger XWork2 validation. Its default implementation (DefaultActionValidatorManager also takes care of loading the validators defined through xml file (default.xml) located in XWOrk2 jar file)</p>
+
+<p>To trigger validation through code use:-</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">ActionValidatorManager actionValidatorManager = ....
+  actionValidatorManager.validate(myAction, <span class="code-quote">"actionAlias"</span>);</pre>
+</div></div>
+
+<h2><a name="XWorkValidation-Validator"></a>Validator</h2>
+<p>A validator needs to implement the Validator interface. XWork2 provides supporting base class that makes creating a custom validator easier. Typically one would like to extends from either :-</p>
+<ul>
+	<li>ValidatorSupport</li>
+	<li>FieldValidatorSupport</li>
+</ul>
+
+
+<p>Extending ValidatorSupport is ideal for if its a global level validator while extending from FieldValidatorSupport is for validator that are meant to validate at a field level. </p>
+
+<h3><a name="XWorkValidation-HowtoWriteaCustomValidator"></a>How to Write a Custom Validator</h3>
+<h4><a name="XWorkValidation-Globalvalidator"></a>Global validator</h4>
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-comment">// pick up from svn
+</span>  <span class="code-comment">// id: 'global-level-validator'
+</span>  <span class="code-comment">// location: ExpressionValidator</span></pre>
+</div></div>
+
+<h4><a name="XWorkValidation-Fieldvalidator"></a>Field validator</h4>
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-comment">// pick up from svn
+</span>  <span class="code-comment">// id: 'field-level-validator'
+</span>  <span class="code-comment">// location: DoubleRangeFieldValidator</span></pre>
+</div></div>
+
+<h3><a name="XWorkValidation-DefaultValidators"></a>Default Validators</h3>
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-comment">// pick up from svn
+</span>  <span class="code-comment">// id: validators-<span class="code-keyword">default</span>
+</span>  <span class="code-comment">// location: <span class="code-keyword">default</span>.xml</span></pre>
+</div></div>
+
+
+<h2><a name="XWorkValidation-IntegratevalidationintoAction"></a>Integrate validation into Action</h2>
+<h3><a name="XWorkValidation-Actionlevelvalidation"></a>Action-level validation</h3>
+<p>To create an action level validation, create a file 'ActionClass-validation.xml' at the same location where the Action class itself lies. Example, if the action class is MyAction, the xml file would be named 'MyAction-validation.xml'</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;action name=<span class="code-quote">"myAlias"</span> class=<span class="code-quote">"foo.bar.MyAction"</span>&gt;
+     ....
+   &lt;/action&gt;
+   &lt;action name=<span class="code-quote">"myAnotherAlias"</span> class=<span class="code-quote">"foo.bar.MyAction"</span> method=<span class="code-quote">"create"</span>&gt;
+    .....
+   &lt;/action&gt;</pre>
+</div></div>
+
+<p>An action-level validation allows the validation to be applied to all 'MyAction' action class. In the example above, both action 'myAlias' and 'myAnotherAlias' will have the validation applied.</p>
+
+<h3><a name="XWorkValidation-ActionAliaslevelvalidation"></a>Action Alias-level validation</h3>
+<p>To create an action alias level validation, create a file 'ActionClass-actionAlias-validation.xml' at the same location where the Action class itself lies. Example if the action class is MyAction with an alias 'myAlias', the xml file would be named 'MyAction-myAlias-validation.xml'.</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;action name=<span class="code-quote">"myAlias"</span> class=<span class="code-quote">"foo.bar.MyAction"</span>&gt;
+    ...
+  &lt;/action&gt;
+  &lt;action name=<span class="code-quote">"myAnotherAlias"</span> class=<span class="code-quote">"foo.bar.MyAction"</span> method=<span class="code-quote">"create"</span>&gt;
+    .....
+   &lt;/action&gt;</pre>
+</div></div>
+
+<p>An action-alias-level validation allows the validation to be applied to all 'MyAction' action class with alias 'myAlias' only, hence limiting the scope where the validation is applied compared to global-level validation.</p>
+
+<p>In the example above, action 'myAlias' will have the validation applied whereas action 'myAnotherAlias' will not.</p>
+
+<h3><a name="XWorkValidation-Validationconfiguration"></a>Validation configuration</h3>
+<p>Following is an example how a validation xml configuration file looks like</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-comment">// pick up from svn
+</span> <span class="code-comment">// id=xwork-validation
+</span> <span class="code-comment">// location: showcase -&gt; ValidationExampleAction-validation.xml</span></pre>
+</div></div>
+
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
