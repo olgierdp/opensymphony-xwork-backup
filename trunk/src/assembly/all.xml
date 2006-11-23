@@ -35,6 +35,9 @@
             <outputDirectory></outputDirectory>
             <includes>
                 <include>pom*</include>
+                <include>osbuild*</include>
+                <include>build*</include>
+                <include>ivy*</include>
             </includes>
         </fileSet>
         <fileSet>
