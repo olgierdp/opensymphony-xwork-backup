@@ -207,7 +207,7 @@
 
     <target name="javadocs" description="generate javadocs" depends="init">
         <mkdir dir="${dist.docs}/api"/>
-        <!--javadoc sourcepath="${src.java}"
+        <javadoc sourcepath="${src.java}"
                  destdir="${dist.docs}/api"
                  packagenames="${docs.packages}"
                  classpathref="cp"
@@ -224,7 +224,7 @@
             <link href="http://java.sun.com/j2se/1.5.0/docs/api" />
             <link href="http://java.sun.com/javaee/5/docs/api/" />
             <link href="http://struts.apache.org/2.x/struts2-core/apidocs"/>
-        </javadoc-->
+        </javadoc>
         <!-- <copy overwrite="yes" file="${docs}/main.css" tofile="${docs}/api/stylesheet.css"/> -->
     </target>
 
