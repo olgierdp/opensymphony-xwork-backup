@@ -44,7 +44,7 @@
     <property name="dist" location="dist"/>
 
     <property name="docs" location="docs"/>
-    <property name="docs.packages" value="com.opensymphony.*"/>
+    <property name="docs.packages" value="com.opensymphony.xwork2.*"/>
 
     <property name="jar.manifest" value="${common.dir}/EMPTY.MF"/>
     <property name="jar.excludes" value=""/>
@@ -207,7 +207,7 @@
 
     <target name="javadocs" description="generate javadocs" depends="init">
         <mkdir dir="${dist.docs}/api"/>
-        <javadoc sourcepath="${src.java}"
+        <!--javadoc sourcepath="${src.java}"
                  destdir="${dist.docs}/api"
                  packagenames="${docs.packages}"
                  classpathref="cp"
@@ -217,12 +217,14 @@
                  windowTitle="${fullname} API - ${version}"
                  doctitle="${fullname} API (${version})"
                  footer="&lt;a href=&quot;http://www.opensymphony.com/${name}/&quot; target=&quot;_top&quot;&gt;${fullname} Project Page&lt;/a&gt;"
-                 use="true"                
+                 use="true"
+                failonerror="false"
                  verbose="false"
-                 source="${compile.version}">
-            <link href="http://java.sun.com/j2se/${compile.version}/docs/api/"/>
-            <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api"/>
-        </javadoc>
+                 source="1.5">
+            <link href="http://java.sun.com/j2se/1.5.0/docs/api" />
+            <link href="http://java.sun.com/javaee/5/docs/api/" />
+            <link href="http://struts.apache.org/2.x/struts2-core/apidocs"/>
+        </javadoc-->
         <!-- <copy overwrite="yes" file="${docs}/main.css" tofile="${docs}/api/stylesheet.css"/> -->
     </target>
 
