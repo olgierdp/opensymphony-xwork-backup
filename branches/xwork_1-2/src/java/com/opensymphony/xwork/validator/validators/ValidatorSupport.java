@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
  * Abstract implementation of the Validator interface suitable for subclassing.
  *
  * @author Jason Carreira
+ * @author tmjee
  */
 public abstract class ValidatorSupport implements Validator, ShortCircuitableValidator {
 
@@ -24,9 +25,18 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
     protected String messageKey = null;
     private ValidatorContext validatorContext;
     private boolean shortCircuit;
+    private boolean parse = false;
     private String type;
 
 
+    public void setParse(boolean parse) { 
+    	this.parse = parse;
+    }
+    
+    public boolean getParse() {
+    	return parse;
+    }
+    
     public void setDefaultMessage(String message) {
         this.defaultMessage = message;
     }
@@ -101,7 +111,31 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
     public String getValidatorType() {
         return type;
     }
+    
+    /**
+     * Parse <code>expression</code> passed in against value stack. Only parse
+     * when 'parse' param is set to true, else just returns the expression unparsed.
+     * 
+     * @param expression
+     * @return
+     */
+    protected Object conditionalParse(String expression) {
+    	if (parse) {
+    		OgnlValueStack stack = ActionContext.getContext().getValueStack();
+    		return TextParseUtil.translateVariables('$', expression, stack);
+    	}
+    	return expression;
+    }
 
+    /**
+     * Return the field value named <code>name</code> from <code>object</code>, 
+     * <code>object</code> should have the appropriate getter/setter.
+     * 
+     * @param name
+     * @param object
+     * @return
+     * @throws ValidationException
+     */
     protected Object getFieldValue(String name, Object object) throws ValidationException {
         OgnlValueStack stack = ActionContext.getContext().getValueStack();
 
