@@ -126,6 +126,9 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
     }
 
     private void validateArrayElements(Object[] array, String fieldName, String visitorContext) throws ValidationException {
+        if ( array == null) {
+            return;
+        }
         for (int i = 0; i < array.length; i++) {
             Object o = array[i];
             validateObject(fieldName + "[" + i + "]", o, visitorContext);
