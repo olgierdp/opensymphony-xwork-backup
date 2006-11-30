@@ -7,7 +7,7 @@
  */
 -->
 <assembly>
-    <id>lib</id>
+    <id>java14</id>
     <formats>
         <format>zip</format>
     </formats>
@@ -15,6 +15,9 @@
         <dependencySet>
             <outputDirectory>lib</outputDirectory>
             <scope>runtime</scope>
+            <excludes>
+                <exclude>opensymphony:xwork</exclude>
+            </excludes>
         </dependencySet>
     </dependencySets>
     <fileSets>
@@ -26,14 +29,17 @@
                 <include>LICENSE*</include>
             </includes>
         </fileSet>
+
+        <!-- Include the backport jars into java14 dir -->
         <fileSet>
             <directory>target</directory>
             <outputDirectory></outputDirectory>
             <includes>
                 <include>xwork-${version}-javadoc.jar</include>
                 <include>xwork-${version}-sources.jar</include>
-                <include>xwork-${version}.jar</include>
+                <include>xwork-${version}-j4.jar</include>
             </includes>
         </fileSet>
+
     </fileSets>
 </assembly>

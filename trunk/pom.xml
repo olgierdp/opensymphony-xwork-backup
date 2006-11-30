@@ -332,6 +332,7 @@
                     <descriptors>
                         <descriptor>src/assembly/all.xml</descriptor>
                         <descriptor>src/assembly/lib.xml</descriptor>
+                        <descriptor>src/assembly/java14.xml</descriptor>
                         <descriptor>src/assembly/src.xml</descriptor>
                     </descriptors>
                     <finalName>xwork-${version}</finalName>
