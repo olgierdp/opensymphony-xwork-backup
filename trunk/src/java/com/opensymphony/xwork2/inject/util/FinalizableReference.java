@@ -24,9 +24,9 @@ package com.opensymphony.xwork2.inject.util;
  */
 interface FinalizableReference {
 
-  /**
-   * Invoked on a background thread after the referent has been garbage
-   * collected.
-   */
-  void finalizeReferent();
+    /**
+     * Invoked on a background thread after the referent has been garbage
+     * collected.
+     */
+    void finalizeReferent();
 }
