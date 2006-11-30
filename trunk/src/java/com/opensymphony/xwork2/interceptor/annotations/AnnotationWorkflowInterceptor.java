@@ -77,12 +77,12 @@ import com.opensymphony.xwork2.interceptor.PreResultListener;
  * <p/>Configure a stack in xwork.xml that replaces the PrepareInterceptor with the AnnotationWorkflowInterceptor:
  * <pre>
  * <!-- START SNIPPET: stack -->
- * <interceptor-stack name="annotatedStack">
- *	<interceptor-ref name="static-params"/>
- *	<interceptor-ref name="params"/>
- *	<interceptor-ref name="conversionError"/>
- *	<interceptor-ref name="annotationInterceptor"/>
- * </interceptor-stack>
+ * &lt;interceptor-stack name="annotatedStack"&gt;
+ *	&lt;interceptor-ref name="static-params"/&gt;
+ *	&lt;interceptor-ref name="params"/&gt;
+ *	&lt;interceptor-ref name="conversionError"/&gt;
+ *	&lt;interceptor-ref name="annotationInterceptor"/&gt;
+ * &lt;/interceptor-stack&gt;
  *  <!-- END SNIPPET: stack -->
  * </pre>
 
