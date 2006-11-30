@@ -17,6 +17,128 @@
         <name>OpenSymphony</name>
         <url>http://www.opensymphony.com/</url>
     </organization>
+
+    <developers>
+        <developer>
+            <id>plightbo</id>
+            <name>Patrick Lightbody</name>
+            <email>plightbo at gmail.com</email>
+            <roles>
+                <role>Owner</role>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>jcarreira</id>
+            <name>Jason Carreira</name>
+            <email>jcarreira at gmail.com</email>
+            <roles>
+                <role>Owner</role>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>rainerh</id>
+            <name>Rainer Hermanns</name>
+            <email>hermanns at apache.org</email>
+            <roles>
+                <role>Release Manager</role>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Gabriel Zimmermann</name>
+            <id>gjz22</id>
+        </developer>
+        <developer>
+            <name>Peter Kelley</name>
+            <id>pkelley</id>
+            <email>yellekau at yahoo.com</email>
+        </developer>
+        <developer>
+            <name>Ted Husted</name>
+            <id>husted</id>
+            <email>husted at apache.org</email>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Alexandru Popescu</name>
+            <id>apopescu</id>
+            <email>apopescu at apache.org</email>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Rene Gielen</name>
+            <id>rgielen</id>
+            <email>rgielen at apache.org</email>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Toby Jee</name>
+            <id>tmjee</id>
+            <email>tmjee at apache.org</email>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Bob Lee</name>
+            <id>crazybob</id>
+            <email>crazybob at apache.org</email>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Matt Ho</name>
+            <email>matt at xtreme.com</email>
+        </developer>
+        <developer>
+            <name>Cameron Braid</name>
+            <email>cameron at braid.com.au</email>
+        </developer>
+        <developer>
+            <name>Bill Lynch</name>
+            <email>bill at jivesoftware.com</email>
+        </developer>
+        <developer>
+            <name>James House</name>
+            <email>jhouse at revolition.net</email>
+        </developer>
+        <developer>
+            <id>jon_lipsky</id>
+            <name>Jon Lipsky</name>
+            <email>jon.lipsky at xesoft.com</email>
+            <roles>
+                <role>XWork Configuration Editor</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Matthew Payne</name>
+            <email>matthew.payne at sutternow.com</email>
+        </developer>
+        <developer>
+            <name>Mark Woon</name>
+            <email>morpheus at helix.stanford.edu</email>
+        </developer>
+        <developer>
+            <id>jmitchell</id>
+            <name>James Mitchell</name>
+            <email>jmitchell at apache.org</email>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Eric Molitor</name>
+        </contributor>
+    </contributors>
+    <ciManagement/>
     <issueManagement>
         <system>JIRA</system>
         <url>http://jira.opensymphony.com/browse/XW</url>
@@ -60,7 +182,8 @@
     <licenses>
         <license>
             <name>The OpenSymphony Software License 1.1</name>
-            <url>http://opensymphony.com/xwork/license.action</url>
+            <!--<url>http://opensymphony.com/xwork/license.action</url>-->
+            <url>src/etc/LICENSE.txt</url>
             <comments>
                 This license is derived and fully compatible with the Apache Software
                 License - see http://www.apache.org/LICENSE.txt
@@ -86,7 +209,22 @@
                         <artifactId>retrotranslator-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>retrotranslate</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>translate</goal>
+                                </goals>
+                                <configuration>
+                                    <verify>false</verify>
+                                    <failonwarning>true</failonwarning>
+                                    <lazy>true</lazy>
+                                    <verbose>false</verbose>
+                                    <destdir>${project.build.directory}/classes-retro</destdir>
+                                    <includes>
+                                        <include>
+                                            <directory>${project.build.directory}/classes</directory>
+                                        </include>
+                                    </includes>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -94,10 +232,10 @@
                         <artifactId>maven-jar-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>create-j4-jar</id>
                                 <goals>
                                     <goal>jar</goal>
                                 </goals>
+                                <phase>package</phase>
                                 <configuration>
                                     <classesDirectory>${project.build.directory}/classes-retro</classesDirectory>
                                     <classifier>j4</classifier>
@@ -164,6 +302,7 @@
             </testResource>
         </testResources>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-idea-plugin</artifactId>
@@ -214,6 +353,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-source</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <sourcepath>src/java</sourcepath>
                     <encoding>UTF-8</encoding>
@@ -245,7 +392,31 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <!--plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>retrotranslator-maven-plugin</artifactId>
+              <version>1.0-SNAPSHOT</version>
+              <executions>
+                <execution>
+                    <id>attach-source</id>
+                    <goals>
+                        <goal>translate</goal>
+                    </goals>
+                </execution>
+              </executions>
+                <configuration>
+                    <verify>false</verify>
+                    <failonwarning>true</failonwarning>
+                    <lazy>true</lazy>
+                    <verbose>false</verbose>
+                    <includes>
+                        <include>
+                            <directory>${pom.basedir}/target/classes</directory>
+                        </include>
+                    </includes>
+                    <destdir>${project.build.directory}/classes-retro</destdir>
+                </configuration>
+            </plugin-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
@@ -257,7 +428,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
         <defaultGoal>install</defaultGoal>
     </build>

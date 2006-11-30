@@ -19,69 +19,68 @@
 -->
 
 <assembly>
-  <id>src</id>
-  <formats>
-    <format>zip</format>
-  </formats>
-  <includeBaseDirectory>true</includeBaseDirectory>
-  <dependencySets>
-    <dependencySet>
-      <outputDirectory>lib</outputDirectory>
-      <scope>optional</scope>
-    </dependencySet>
-    <dependencySet>
-      <outputDirectory>lib</outputDirectory>
-      <scope>compile</scope>
-    </dependencySet>
-    <dependencySet>
-      <outputDirectory>lib</outputDirectory>
-      <scope>provided</scope>
-    </dependencySet>
-  </dependencySets>
-  <fileSets>
+    <id>src</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>true</includeBaseDirectory>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <scope>optional</scope>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <scope>compile</scope>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <scope>provided</scope>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
 
-      <fileSet>
-          <directory></directory>
-          <outputDirectory></outputDirectory>
-          <includes>
-              <include>pom*</include>
-              <include>osbuild*</include>
-              <include>build*</include>
-              <include>ivy*</include>
-          </includes>
-      </fileSet>
-      
-      <fileSet>
-          <directory>src/etc</directory>
-          <outputDirectory></outputDirectory>
-          <includes>
-              <include>README*</include>
-              <!--include>LICENSE*</include>
-              <include>NOTICE*</include>
-              <include>build.xml</include-->
-          </includes>
-      </fileSet>
+        <fileSet>
+            <directory></directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>pom*</include>
+                <!--include>osbuild*</include>
+                <include>build*</include>
+                <include>ivy*</include-->
+            </includes>
+        </fileSet>
 
-      <!-- Include the source code in the assembly -->
-      <fileSet>
-          <directory>src</directory>
-          <outputDirectory>src/</outputDirectory>
-          <includes>
-              <include>java/</include>
-              <include>test/</include>
-              <include>etc/</include>
-              <include>assembly/</include>
-          </includes>
-      </fileSet>
+        <fileSet>
+            <directory>src/etc</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+                <include>build*</include>
+            </includes>
+        </fileSet>
 
-      <fileSet>
-          <directory>showcase</directory>
-          <outputDirectory>showcase</outputDirectory>
-          <includes>
-              <include>pom.xml</include>
-              <include>src/</include>
-          </includes>
-      </fileSet>
+        <!-- Include the source code in the assembly -->
+        <fileSet>
+            <directory>src</directory>
+            <outputDirectory>src/</outputDirectory>
+            <includes>
+                <include>java/</include>
+                <include>test/</include>
+                <include>etc/</include>
+                <include>assembly/</include>
+            </includes>
+        </fileSet>
 
-  </fileSets>
+        <fileSet>
+            <directory>showcase</directory>
+            <outputDirectory>showcase</outputDirectory>
+            <includes>
+                <include>pom.xml</include>
+                <include>src/</include>
+            </includes>
+        </fileSet>
+
+    </fileSets>
 </assembly>

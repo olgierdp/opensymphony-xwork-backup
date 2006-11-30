@@ -35,9 +35,9 @@
             <outputDirectory></outputDirectory>
             <includes>
                 <include>pom*</include>
-                <include>osbuild*</include>
+                <!--include>osbuild*</include>
                 <include>build*</include>
-                <include>ivy*</include>
+                <include>ivy*</include-->
             </includes>
         </fileSet>
         <fileSet>
@@ -45,14 +45,10 @@
             <outputDirectory></outputDirectory>
             <includes>
                 <include>README*</include>
+                <include>LICENSE*</include>
+                <include>build*</include>
             </includes>
         </fileSet>
-
-        <!-- Include the XWork Javadoc in the assembly -->
-        <!--fileSet>
-          <directory>target/xwork-apidocs</directory>
-          <outputDirectory>docs/xwork-apidocs</outputDirectory>
-        </fileSet-->
 
         <!-- Include the website in the assembly -->
         <fileSet>
@@ -60,10 +56,16 @@
             <outputDirectory>docs</outputDirectory>
         </fileSet>
 
+        <!-- Include the XWork Javadoc in the assembly -->
+        <fileSet>
+          <directory>target/xwork-apidocs</directory>
+          <outputDirectory>docs/xwork-apidocs</outputDirectory>
+        </fileSet>
+
         <!-- Include the maven site in the assembly -->
         <fileSet>
             <directory>target/site</directory>
-            <outputDirectory>site</outputDirectory>
+            <outputDirectory>docs/site</outputDirectory>
         </fileSet>
 
         <!-- Include the source code in the assembly -->
@@ -86,5 +88,17 @@
                 <include>src/</include>
             </includes>
         </fileSet>
+
+        <!-- Include the generated jars in archive root -->
+        <fileSet>
+            <directory>target</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>xwork-${version}-javadoc.jar</include>
+                <include>xwork-${version}-sources.jar</include>
+                <include>xwork-${version}.jar</include>
+            </includes>
+        </fileSet>
+
     </fileSets>
 </assembly>
