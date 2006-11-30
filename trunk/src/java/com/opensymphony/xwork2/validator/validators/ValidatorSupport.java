@@ -21,9 +21,10 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
 
     protected final Log log = LogFactory.getLog(this.getClass());
     protected String defaultMessage = "";
-    protected String messageKey = null;
+    protected String messageKey;
     private ValidatorContext validatorContext;
     private boolean shortCircuit;
+    private boolean parse;
     private String type;
 
 
@@ -35,6 +36,14 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
         return defaultMessage;
     }
 
+    public void setParse(boolean parse) {
+    	this.parse = parse;
+    }
+
+    public boolean getParse() {
+    	return parse;
+    }
+    
     public String getMessage(Object object) {
         String message;
         ValueStack stack = ActionContext.getContext().getValueStack();
@@ -102,6 +111,30 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
         return type;
     }
 
+    /**
+     * Parse <code>expression</code> passed in against value stack. Only parse
+     * when 'parse' param is set to true, else just returns the expression unparsed.
+     *
+     * @param expression
+     * @return Object
+     */
+    protected Object conditionalParse(String expression) {
+        if (parse) {
+            ValueStack stack = ActionContext.getContext().getValueStack();
+            return TextParseUtil.translateVariables('$', expression, stack);
+        }
+        return expression;
+    }
+
+    /**
+     * Return the field value named <code>name</code> from <code>object</code>,
+     * <code>object</code> should have the appropriate getter/setter.
+     *
+     * @param name
+     * @param object
+     * @return Object as field value
+     * @throws ValidationException
+     */
     protected Object getFieldValue(String name, Object object) throws ValidationException {
         ValueStack stack = ActionContext.getContext().getValueStack();
 
