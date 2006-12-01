@@ -415,10 +415,18 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
         System.out.println("gb.getExtendedMap(): " + gb.getExtendedMap());
 
         assertEquals(2, gb.getExtendedMap().size());
+        System.out.println(stack.findValue("extendedMap"));
         assertEquals(4, stack.findValue("extendedMap.get(123.12).size"));
         assertEquals(5, stack.findValue("extendedMap.get(456.12).size"));
+
+        assertEquals("1", stack.findValue("extendedMap.get(123.12).get(0)"));
+        assertEquals("5", stack.findValue("extendedMap.get(456.12).get(0)"));
+        assertEquals(Integer.class, stack.findValue("extendedMap.get(123.12).get(0).class"));
+        assertEquals(Integer.class, stack.findValue("extendedMap.get(456.12).get(0).class"));
+
         assertEquals(List.class, stack.findValue("extendedMap.get(123.12).class"));
         assertEquals(List.class, stack.findValue("extendedMap.get(456.12).class"));
+
     }
 
     public static class Foo1 {
