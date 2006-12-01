@@ -546,6 +546,15 @@
             <version>3.8.1</version>
             <optional>true</optional>
         </dependency>
+        
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>5.1</version>
+            <optional>true</optional>
+            <classifier>jdk15</classifier>
+        </dependency>
+        
         <dependency>
             <groupId>mockobjects</groupId>
             <artifactId>mockobjects-core</artifactId>
