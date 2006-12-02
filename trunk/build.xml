@@ -29,6 +29,7 @@
     <target name="predist" depends="common.predist">
         <!-- grab the README.txt file -->
         <copy file="${src}/etc/README.txt" todir="${dist}"/>
+        <copy file="${src}/etc/LICENSE.txt" todir="${dist}"/>
     </target>
 
     <target name="test" depends="junit-check, clover-check, compile, test-compile" description="run tests"
