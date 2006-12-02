@@ -2,9 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="http://www.jayasoft.fr/org/ivyrep/ivy-doc.xsl"?>
 <ivy-module version="1.0">
     <info organisation="opensymphony" module="xwork"
-          revision="2.0-beta-3"
+          revision="2.0-beta-RC1"
           status="integration"
-          publication="20061123000000">
+          publication="20061202000000">
         <license name="Apache" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
         <ivyauthor name="opensymphony" url="http://www.opensymphony.com/"/>
 
@@ -23,7 +23,7 @@
     </configurations>
     <publications>
         <artifact name="xwork" type="jar" conf="default"/>
-        <artifact name="xwork-src" type="jar" conf="source"/>
+        <!--artifact name="xwork-src" type="jar" conf="source"/-->
     </publications>
     <dependencies>
         <!-- build -->
