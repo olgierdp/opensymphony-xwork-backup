@@ -16,14 +16,23 @@
         <dependencySet>
             <outputDirectory>lib</outputDirectory>
             <scope>optional</scope>
+            <excludes>
+                <exclude>sun.jdk:rt</exclude>
+            </excludes>
         </dependencySet>
         <dependencySet>
             <outputDirectory>lib</outputDirectory>
             <scope>compile</scope>
+            <excludes>
+                <exclude>sun.jdk:rt</exclude>
+            </excludes>
         </dependencySet>
         <dependencySet>
             <outputDirectory>lib</outputDirectory>
             <scope>provided</scope>
+            <excludes>
+                <exclude>sun.jdk:rt</exclude>
+            </excludes>
         </dependencySet>
     </dependencySets>
     <fileSets>

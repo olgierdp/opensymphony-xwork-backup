@@ -15,6 +15,9 @@
         <dependencySet>
             <outputDirectory>lib</outputDirectory>
             <scope>runtime</scope>
+            <excludes>
+                <exclude>sun.jdk:rt</exclude>
+            </excludes>
         </dependencySet>
     </dependencySets>
     <fileSets>

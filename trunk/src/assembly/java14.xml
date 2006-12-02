@@ -17,6 +17,7 @@
             <scope>runtime</scope>
             <excludes>
                 <exclude>opensymphony:xwork</exclude>
+                <exclude>sun.jdk:rt</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
