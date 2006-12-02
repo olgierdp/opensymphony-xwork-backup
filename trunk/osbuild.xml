@@ -137,7 +137,7 @@
                 <attribute name="Implementation-Vendor" value="OpenSymphony"/>
             </manifest>
         </jar>
-        <jar basedir="${src.java}" jarfile="${build}/${name}-src-${version}.jar">
+        <jar basedir="${src.java}" jarfile="${build}/${name}-${version}-sources.jar">
             <manifest>
                 <attribute name="Implementation-Title" value="${fullname}"/>
                 <attribute name="Implementation-Version" value="${version}"/>
@@ -148,7 +148,18 @@
 
     <target name="src-jar" depends="init" description="build a jar of the project source code">
         <mkdir dir="${build}"/>
-        <jar basedir="${src.java}" jarfile="${build}/${name}-${version}-src.jar">
+        <jar basedir="${src.java}" jarfile="${build}/${name}-${version}-sources.jar">
+            <manifest>
+                <attribute name="Implementation-Title" value="${fullname}"/>
+                <attribute name="Implementation-Version" value="${version}"/>
+                <attribute name="Implementation-Vendor" value="OpenSymphony"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="javadoc-jar" depends="javadocs" description="build a jar of the project javadocs">
+        <mkdir dir="${build}"/>
+        <jar basedir="${dist.docs}/api" jarfile="${build}/${name}-${version}-javadoc.jar">
             <manifest>
                 <attribute name="Implementation-Title" value="${fullname}"/>
                 <attribute name="Implementation-Version" value="${version}"/>
@@ -208,7 +219,6 @@
     <target name="javadocs" description="generate javadocs" depends="init">
         <mkdir dir="${dist.docs}/api"/>
         <javadoc sourcepath="${src.java}"
-                defaultexcludes="**/package-info.java"
                  destdir="${dist.docs}/api"
                  packagenames="${docs.packages}"
                  classpathref="cp"
@@ -230,6 +240,14 @@
             <link href="http://jakarta.apache.org/commons/logging/apidocs"/>
             <link href="http://logging.apache.org/log4j/docs/api"/>
         </javadoc>
+        <jar basedir="${dist.docs}/api" jarfile="${build}/${name}-${version}-javadoc.jar">
+            <manifest>
+                <attribute name="Implementation-Title" value="${fullname}"/>
+                <attribute name="Implementation-Version" value="${version}"/>
+                <attribute name="Implementation-Vendor" value="OpenSymphony"/>
+            </manifest>
+        </jar>
+
         <!-- <copy overwrite="yes" file="${docs}/main.css" tofile="${docs}/api/stylesheet.css"/> -->
     </target>
 
@@ -368,7 +386,6 @@
         <!-- delete the old timestamped builds and commit -->
         <fileset dir="${ivyrep.path}/opensymphony/${name}" id="filesref">
             <include name="${name}-${version}-*"/>
-            <include name="${name}-src-${version}-*"/>
             <include name="ivy-${version}-*"/>
         </fileset>
         <pathconvert property="files" refid="filesref" pathsep=" "/>
@@ -381,8 +398,10 @@
         <!-- copy over the new build and source -->
         <copy file="${build}/${name}-${version}.jar"
               tofile="${ivyrep.path}/opensymphony/${name}/${name}-${version}-${TIME}.jar"/>
-        <copy file="${build}/${name}-src-${version}.jar"
-              tofile="${ivyrep.path}/opensymphony/${name}/${name}-src-${version}-${TIME}.jar"/>
+        <copy file="${build}/${name}-${version}-sources.jar"
+              tofile="${ivyrep.path}/opensymphony/${name}/${name}-${version}-${TIME}-sources.jar"/>
+        <copy file="${build}/${name}-${version}-javadoc.jar"
+              tofile="${ivyrep.path}/opensymphony/${name}/${name}-${version}-${TIME}-javadoc.jar"/>
         <echo>svn add (jar)</echo>
         <exec executable="svn">
             <arg value="add"/>
@@ -390,7 +409,11 @@
         </exec>
         <exec executable="svn">
             <arg value="add"/>
-            <arg value="${ivyrep.path}/opensymphony/${name}/${name}-src-${version}-${TIME}.jar"/>
+            <arg value="${ivyrep.path}/opensymphony/${name}/${name}-${version}-${TIME}-sources.jar"/>
+        </exec>
+        <exec executable="svn">
+            <arg value="add"/>
+            <arg value="${ivyrep.path}/opensymphony/${name}/${name}-${version}-${TIME}-javadoc.jar"/>
         </exec>
 
         <antcall target="ivyrep.copy-ivy"/>
