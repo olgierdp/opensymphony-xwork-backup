@@ -1,0 +1,109 @@
+<html>
+    <head>
+        <title>XWork - 
+        Xwork Spring Integration
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>XWork2 allows its "components" like XWork2's action, interceptor, results etc. to be configured using Spring.</p>
+
+<h3><a name="XworkSpringIntegration-Configuration"></a>Configuration</h3>
+<p>To configured XWork2 to integrate with Spring, one need to use SpringObjectFactory. XWork2 "components" are created through ObjectFactory. SpringObjectFactory and its subclass are extension of ObjectFactory coded for Spring integration.</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">static</span> {
+    <span class="code-comment">// setup Spring's ApplicationContext, probably an ClassPathXmlApplicationContext or others.
+</span>    ApplicationContext appContext = ....
+
+    <span class="code-comment">// create XWork2's ObjectFactory <span class="code-keyword">for</span> Spring integration
+</span>    SpringObjectFactory springObjectFactory = <span class="code-keyword">new</span> SpringObjectFactory();
+
+    <span class="code-comment">// hook up Spring's ApplicationContext
+</span>    springObjectFactory.setApplicationContext(xmlConfigurationApplicationContext);
+
+    <span class="code-comment">// set our auto-wiring strategy
+</span>    springObjectFactory.setAuowiringStrategy(AutowireCapableBeanFactory.AUTOWIRE_BYNAME);
+
+    <span class="code-comment">// <span class="code-keyword">do</span> we want to cache classes loaded through Spring?
+</span>    springObjectFactory.setUseClassCache(<span class="code-keyword">true</span>);
+
+    ObjectFactory.setObjectFactory(springObjectFactory);
+ }</pre>
+</div></div>
+
+<p>Hereafter, whenever XWork2 needs an object it will go through ObjectFactory which will allows Spring beans to be returned.</p>
+
+<h3><a name="XworkSpringIntegration-Integration"></a>Integration</h3>
+<p>XWork's Action, Interceptor, Result class name are actually intepreted as Spring beans name. For example, </p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;xwork ...&gt;
+    &lt;<span class="code-keyword">package</span> ...&gt;
+       &lt;result-types&gt;
+         ...
+         &lt;result name=<span class="code-quote">"myResult"</span> class=<span class="code-quote">"myResultBean"</span> /&gt;
+         ...
+       &lt;/result-types&gt;
+
+        ...
+       &lt;interceptors&gt;
+          ...
+          &lt;interceptor name=<span class="code-quote">"myInterceptor"</span> class=<span class="code-quote">"myInterceptorBean"</span> /&gt;
+          ...
+       &lt;/interceptors&gt;
+        ...
+
+       &lt;action name=<span class="code-quote">"myAction"</span> class=<span class="code-quote">"myActionBean"</span>&gt;
+          ...
+          &lt;interceptor-ref name=<span class="code-quote">"myInterceptor"</span> /&gt;
+          ...
+          &lt;result name=<span class="code-quote">"success"</span> type=<span class="code-quote">"myResult"</span> /&gt;
+          ...
+       &lt;/action&gt;
+    &lt;/<span class="code-keyword">package</span>&gt;
+ &lt;/xwork&gt;</pre>
+</div></div>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;beans&gt;
+     &lt;!-- XWork2 Result instantiated, wired using Spring --&gt;
+     &lt;bean name=<span class="code-quote">"myResultBean"</span> class=<span class="code-quote">"...."</span> singleton=<span class="code-quote">"<span class="code-keyword">false</span>"</span>&gt;
+       ....
+     &lt;/bean&gt;
+
+    &lt;!-- XWork2 Interceptor instantiated, wired using Spring --&gt;
+    &lt;bean name=<span class="code-quote">"myInterceptorBean"</span> class=<span class="code-quote">"...."</span> singleton=<span class="code-quote">"<span class="code-keyword">false</span>"</span>&gt;
+      .....
+    &lt;/bean&gt;
+
+    &lt;!-- XWork2 Action instantiated, wired using Spring --&gt;
+    &lt;bean name=<span class="code-quote">"myActionBean"</span> class=<span class="code-quote">"...."</span> singleton=<span class="code-quote">"<span class="code-keyword">false</span>"</span>&gt;
+      ....
+    &lt;/bean&gt;
+  &lt;/beans&gt;</pre>
+</div></div>
+
+<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
+<p>  XWork2 action needs to be configured with singleton="false", cause XWork2 expect Action a new instance for each request / invocation</p></td></tr></table>
+
+<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
+<p>  XWork2 result is preferably configured with singleton="false", unless some information needs to be kept between invocation. By default, without using SpringObjectFactory, a new instance of Result would be created per invocation.</p></td></tr></table>
+
+<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
+<p>  XWork2 interceptors are created once and being repeatably used unless XWork2 is configured to be reloadable. It is preferable that XWork interceptors being configured with singleton="false" as well.</p></td></tr></table>
+
+<p>With this configuration, XWork2's "components" could be instantiated and possibly have its dependencies wired-up through Spring.</p>
+
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

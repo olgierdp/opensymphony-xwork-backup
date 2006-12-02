@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <title>XWork - 
+        XWork specific OGNL Features
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>OGNL is the Object Graph Navigation Language - see <a href="http://www.ognl.org" title="Visit page outside Confluence">&#104;ttp://www.ognl.org</a> for the full documentation of OGNL. In this document we will only show the additional language features that are provided on top of the base OGNL EL. </p>
+
+
+<h2><a name="XWorkspecificOGNLFeatures-XWorkspecificLanguageFeatures"></a>XWork-specific Language Features</h2>
+
+<h3><a name="XWorkspecificOGNLFeatures-TheValueStack"></a>The ValueStack</h3>
+
+<p>The biggest addition that XWork provides on top of OGNL is the support for the ValueStack. While OGNL operates under the assumption there is only one "root", XWork's ValueStack concept requires there be many "roots". </p>
+
+<p>For example, suppose we are using standard OGNL (not using XWork) and there are two objects in the OgnlContext map: "foo" -&gt; foo and "bar" -&gt; bar and that the foo object is also configured to be the single <b>root</b> object. The following code illustrates how OGNL deals with these three situations:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-none">#foo.blah // returns foo.getBlah()
+#bar.blah // returns bar.getBlah()
+blah      // returns foo.getBlah() because foo is the root</pre>
+</div></div>
+
+<p>What this means is that OGNL allows many objects in the context, but unless the object you are trying to access is the root, it must be prepended with a namespaces such as @bar. XWork, however, is a little different...</p>
+
+<p>In XWork, the entire ValueStack is the root object in the context. But rather than having your expressions get the object you want from the stack and then get properties from that (ie: peek().blah), XWork has a special OGNL PropertyAccessor that will automatically look at the all entries in the stack (from the top down) until it finds an object with the property you are looking for.</p>
+
+<p>For example, suppose the stack contains two objects: Animal and Person. Both objects have a "name" property, Animal has a "species" property, and Person has a "salary" property. Animal is on the top of the stack, and Person is below it. The follow code fragments help you get an idea of what is going on here:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-none">species    // call to animal.getSpecies()
+salary     // call to person.getSalary()
+name       // call to animal.getName() because animal is on the top</pre>
+</div></div>
+
+<p>In the last example, there was a tie and so the animal's name was returned. Usually this is the desired effect, but sometimes you want the property of a lower-level object. To do this, XWork has added support for indexes on the ValueStack. All you have to do is:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-none">\[0\].name   // call to animal.getName()
+\[1\].name   // call to person.getName()</pre>
+</div></div>
+
+<p>Note that the ValueStack is essentially a List.  Calling [1] on the stack returns a sub-stack beginning with the element at index 1.  It's only when you call methods on the stack that your actual objects will be called.  Said another way, let's say I have a ValueStack that consists of a model and an action ([ model, action ]).  Here's how the following OGNL expressions would resolve:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-none">\[0\]      // a CompoundRoot object that contains our stack, \[model, action\]
+\[1\]      // another CompoundRoot that contains only \[action\]
+\[0\].toString() // calls toString() on the first object in the ValueStack
+               // (excluding the CompoundRoot) that supports the toString() method
+\[1\].foo  // call getFoo() on the first object in the ValueStack starting from action
+         // (excluding the CompoundRoot) that supports a getFoo() method</pre>
+</div></div>
+
+
+
+
+
+
+<h3><a name="XWorkspecificOGNLFeatures-Accessingstaticproperties"></a>Accessing static properties</h3>
+
+<p>OGNL supports accessing static properties as well as static methods. As the OGNL docs point out, you can explicetly call statics by doing the following:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-none">@some.package.ClassName@FOO_PROPERTY
+@some.package.ClassName@someMethod()</pre>
+</div></div>
+
+<p>However, XWork allows you to avoid having to specify the full package name and call static properties and methods of your action classes using the "vs" (short for ValueStack) prefix:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-none">@vs@FOO_PROPERTY
+@vs@someMethod()
+
+@vs1@FOO_PROPERTY
+@vs1@someMethod()
+
+@vs2@BAR_PROPERTY
+@vs2@someOtherMethod()</pre>
+</div></div>
+
+<p>The important thing to note here is that if the class name you specify is just "vs", the class for the object on the top of the stack is used. If you specify a number after the "vs" string, an object's class deeper in the stack is used instead.</p>
+
+
+<h3><a name="XWorkspecificOGNLFeatures-Thetopkeyword"></a>The <em>top</em> keyword</h3>
+
+<p>XWork also adds a new keyword &#8211; <b>top</b> &#8211; that can be used to access to first object in the ValueStack.</p>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
