@@ -1,0 +1,68 @@
+<html>
+    <head>
+        <title>XWork - 
+        XWork Actions
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>XWork2 Action serves as to capture a particular execution logic. It is distinguished by its unique name and namespace combination. </p>
+
+<table cellpadding='5' width='85%' cellspacing='8px' class='warningMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/forbidden.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
+<p>XWork2 parses its xml configuration according to order. If an action extends off another parent action, the parent action MUST be defined before the action that planned to extend it</p></td></tr></table>
+
+<h2><a name="XWorkActions-Nameandnamespace"></a>Name and namespace</h2>
+<p>An action is identified by its name and namespace combination. By default, if an action with a specified name and namespace does not exists, it will fall back to an action with the same name but a default namespace (empty namespace) if such a combination exists.</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;xwork&gt;
+  &lt;<span class="code-keyword">package</span> name=<span class="code-quote">"<span class="code-keyword">default</span>"</span> namespace=<span class="code-quote">"/myNamespace"</span>&gt;
+     ...
+     &lt;action name=<span class="code-quote">"myAction"</span> ...&gt;
+       ....
+     &lt;/action&gt;
+     ...
+  &lt;/<span class="code-keyword">package</span>&gt;
+&lt;/xwork&gt;</pre>
+</div></div>
+
+<h2><a name="XWorkActions-Actionclass"></a>Action class</h2>
+<p>An action class could be :-</p>
+<ul>
+	<li>plain pojo (extends java.lang.Object which by default every java class does)</li>
+	<li>implements com.opensymphony.xwork2.Action interface</li>
+	<li>extends com.opensymphony.xwork2.ActionSupport</li>
+</ul>
+
+
+<h3><a name="XWorkActions-ActionContext"></a>Action Context</h3>
+<p>Action could access its context using ActionContext. Parmameter passing could be done using this action context. Following is an example</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">ActionProxyFactory factory = ActionProxyFactory.getFactory();
+ factory.createActionProxy(configuration, <span class="code-quote">"actionAlias"</span>, <span class="code-quote">"/namespace"</span>, 
+   <span class="code-keyword">new</span> LinkedHashMap() {
+      {
+         <span class="code-comment">// pass in parameter 
+</span>         put(<span class="code-quote">"someParameter"</span>, <span class="code-quote">"some parameter value"</span>);
+      }
+   }
+ );
+
+ <span class="code-comment">// latter on, we could <span class="code-keyword">do</span> <span class="code-keyword">this</span>
+</span>
+ ActionContext context = ActionContext.getContext();
+ Map contextMap = context.getContextMap();
+ contextMap.get(<span class="code-quote">"someParameter"</span>);</pre>
+</div></div>
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
