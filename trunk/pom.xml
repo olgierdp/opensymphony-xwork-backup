@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>opensymphony</groupId>
     <artifactId>xwork</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>2.0-beta-3</version>
     <name>XWork</name>
     <description>
         XWork is an command-pattern framework that is used to power WebWork
@@ -136,6 +136,9 @@
     <contributors>
         <contributor>
             <name>Eric Molitor</name>
+        </contributor>
+        <contributor>
+            <name>Philip Luppens</name>
         </contributor>
     </contributors>
     <ciManagement/>
@@ -393,31 +396,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>retrotranslator-maven-plugin</artifactId>
-              <version>1.0-SNAPSHOT</version>
-              <executions>
-                <execution>
-                    <id>attach-source</id>
-                    <goals>
-                        <goal>translate</goal>
-                    </goals>
-                </execution>
-              </executions>
-                <configuration>
-                    <verify>false</verify>
-                    <failonwarning>true</failonwarning>
-                    <lazy>true</lazy>
-                    <verbose>false</verbose>
-                    <includes>
-                        <include>
-                            <directory>${pom.basedir}/target/classes</directory>
-                        </include>
-                    </includes>
-                    <destdir>${project.build.directory}/classes-retro</destdir>
-                </configuration>
-            </plugin-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
