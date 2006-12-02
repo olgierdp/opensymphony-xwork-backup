@@ -273,7 +273,7 @@ package com.opensymphony.xwork2.validator;
  * interface which ActionSupport already does).</p>
  * 
  * <p>
- * A plain Validator (non FieldValidator) that gets short-circuited will 
+ * A plain Validator (non FieldValidator) that gets short-circuited will
  * completely break out of the validation stackâ no other validators will be 
  * evaluated and plain validator takes precedence over field validator meaning 
  * that they get evaluated in the order they are defined before field validator 

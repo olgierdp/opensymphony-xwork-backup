@@ -32,7 +32,7 @@
         <copy file="${src}/etc/LICENSE.txt" todir="${dist}"/>
     </target>
 
-    <target name="test" depends="junit-check, clover-check, compile, test-compile" description="run tests"
+    <target name="test" depends="junit-check, compile, test-compile" description="run tests"
             unless="skip.tests">
         <run-junit />
     </target>
@@ -52,10 +52,10 @@
 
     <target name="mavenrep" depends="jar">
         <!-- xwork -->
-        <copy file="pom.xml" tofile="/opt/repository/ibiblio.org/opensymphony/poms/${name}-${version}-SNAPSHOT.pom"/>
-        <copy file="${build}/${name}-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT.jar"/>
-        <copy file="${build}/${name}-${version}-sources.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT-sources.jar"/>
-        <copy file="${build}/${name}-${version}-javadoc.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT-javadoc.jar"/>
+        <copy file="pom.xml" tofile="/opt/repository/ibiblio.org/opensymphony/poms/${name}-${version}-SNAPSHOT.pom" overwrite="true"/>
+        <copy file="${build}/${name}-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT.jar" overwrite="true"/>
+        <copy file="${build}/${name}-${version}-sources.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT-sources.jar" overwrite="true"/>
+        <copy file="${build}/${name}-${version}-javadoc.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT-javadoc.jar" overwrite="true"/>
     </target>
 
 </project>

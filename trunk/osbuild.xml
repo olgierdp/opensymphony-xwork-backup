@@ -40,7 +40,6 @@
     <property name="build.test" value="${build}/test"/>
     <property name="build.java-test" value="${build}/java-test"/>
     <property name="build.java" value="${build}/java"/>
-    <property name="build.clover" value="${build}/clover"/>
     <property name="dist" location="dist"/>
 
     <property name="docs" location="docs"/>
@@ -71,7 +70,6 @@
     </path>
 
     <available property="junit.available" classname="junit.framework.TestCase"/>
-    <available property="clover.available" classname="org.apache.tools.ant.taskdefs.CloverCompilerAdapter"/>
 
     <target name="init" depends="init-anthill, init-standalone">
         <tstamp/>
@@ -89,10 +87,6 @@
 
     <target name="junit-check" depends="init" unless="junit.available">
         <fail message="Cannot run test cases. Please copy lib/build/junit.jar to ${ant.home}/lib"/>
-    </target>
-
-    <target name="clover-check" depends="init" unless="clover.available">
-        <fail message="Cannot run coverage tests. Please copy lib/build/clover.jar and lib/build/clover.license (if it exists) to ${ant.home}/lib"/>
     </target>
 
     <target name="clean">
@@ -129,6 +123,8 @@
 
     <target name="jar" depends="compile" description="build the project jar file">
         <mkdir dir="${build}"/>
+        <mkdir dir="${build.java}/maven/com/opensymphony/xwork" />
+        <copy file="pom.xml" todir="${build.java}/maven/com/opensymphony/xwork" />
 
         <jar basedir="${build.java}" excludes="${jar.excludes}" jarfile="${build}/${name}-${version}.jar">
             <manifest>
@@ -172,23 +168,11 @@
         <compile srcdir="${src.test}" destdir="${build.test}" classpath="${build.java}"
                  source="${test.compile.version}" target="${test.compile.version}"/>
 
-        <taskdef resource="clovertasks"/>
         <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
-
-        <mkdir dir="${build.clover}"/>
-        <clover-setup initString="${build.clover}/coverage.db">
-            <statementContext name="logIsDebugEnabled"
-                              regexp="[\s]*if[\s]*\([\s]*(log|_log|LOG|_LOG)\.isDebugEnabled.*"/>
-            <statementContext name="logDebug" regexp="[\s]*(log|_log|LOG|_LOG)\.debug[\s]*\(.*"/>
-            <files>
-                <exclude name="${src.test}/**/*.java"/>
-            </files>
-        </clover-setup>
-
         <compile srcdir="${src.java}" destdir="${build.java-test}"/>
     </target>
 
-    <target name="test" depends="junit-check, clover-check, compile, test-compile" description="run tests"
+    <target name="test" depends="junit-check, compile, test-compile" description="run tests"
             unless="skip.tests">
         <run-junit/>
     </target>
@@ -257,31 +241,10 @@
         </copy>
     </target>
 
-    <target name="reports" depends="junit.report, clover.report, javadocs"
+    <target name="reports" depends="junit.report, javadocs"
             description="generate javadocs and junit and coverage reports"/>
 
     <target name="docs" depends="reports, docs.impl"/>
-
-    <target name="clover.report" depends="test" description="generate coverage reports" unless="skip.tests">
-        <clover-report>
-            <current outfile="${dist.docs}/clover">
-                <format type="html" filter="logDebug,logIsDebugEnabled"/>
-            </current>
-        </clover-report>
-        <clover-log filter="logDebug,logIsDebugEnabled"/>
-    </target>
-
-    <target name="clover.historical" depends="clover.report" description="generate coverage historical reports"
-            unless="skip.tests">
-        <clover-historypoint historyDir="${build.clover}"/>
-
-        <clover-report>
-            <historical outfile="${dist.docs}/clover" historyDir="${build.clover}">
-                <format type="html" filter="logDebug,logIsDebugEnabled"/>
-            </historical>
-        </clover-report>
-        <clover-log filter="logDebug,logIsDebugEnabled"/>
-    </target>
 
     <target name="junit.report" depends="test" description="generate junit reports" unless="skip.tests">
         <junitreport todir="${dist.docs}/junit">
@@ -333,7 +296,6 @@
 
         <zip zipfile="${build}/${name}-${version}.zip">
             <zipfileset prefix="${name}-${version}" dir="${dist}">
-                <exclude name="docs/clover/**/*"/>
                 <exclude name="docs/junit/**/*"/>
             </zipfileset>
         </zip>

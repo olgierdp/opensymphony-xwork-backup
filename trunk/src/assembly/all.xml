@@ -23,10 +23,12 @@
             <outputDirectory></outputDirectory>
             <includes>
                 <include>pom*</include>
-                <!--include>osbuild*</include>
-                <include>build*</include>
-                <include>ivy*</include-->
             </includes>
+            <excludes>
+                <exclude>null</exclude>
+                <exclude>dist</exclude>
+                <exclude>build</exclude>
+            </excludes>
         </fileSet>
         <fileSet>
             <directory>src/etc</directory>
@@ -68,14 +70,14 @@
             </includes>
         </fileSet>
 
-        <fileSet>
+        <!--fileSet>
             <directory>showcase</directory>
             <outputDirectory>showcase</outputDirectory>
             <includes>
                 <include>pom.xml</include>
                 <include>src/</include>
             </includes>
-        </fileSet>
+        </fileSet-->
 
         <!-- Include the generated jars in archive root -->
         <fileSet>
