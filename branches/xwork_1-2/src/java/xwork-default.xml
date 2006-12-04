@@ -19,6 +19,8 @@
             <interceptor name="prepare" class="com.opensymphony.xwork.interceptor.PrepareInterceptor"/>
             <interceptor name="conversionError"  class="com.opensymphony.xwork.interceptor.ConversionErrorInterceptor"/>
 			<interceptor name="alias" class="com.opensymphony.xwork.interceptor.AliasInterceptor"/>
+			<interceptor name="paramFilter" class="com.opensymphony.xwork.interceptor.ParameterFilterInterceptor" />
+			<interceptor name="paramRemover" class="com.opensymphony.xwork.interceptor.ParameterRemoverInterceptor" />
   
             <interceptor-stack name="defaultStack">
                 <interceptor-ref name="static-params"/>
