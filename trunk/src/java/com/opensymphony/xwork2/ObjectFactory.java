@@ -46,12 +46,13 @@ import org.apache.commons.logging.LogFactory;
 public class ObjectFactory {
     private static final Log LOG = LogFactory.getLog(ObjectFactory.class);
 
-    private static ClassLoader ccl;
+    private ClassLoader ccl;
     private static ObjectFactory self = new ObjectFactory();
-    private static String continuationPackage;
+    private String continuationPackage;
     private Container container;
 
-    public static void setContinuationPackage(String continuationPackage) {
+    @Inject(value="continuations.package", required=false)
+    public void setContinuationPackage(String continuationPackage) {
         
         // This reflection silliness is to ensure Rife is optional
         Class contConfig = null;
@@ -71,11 +72,11 @@ public class ObjectFactory {
         } catch (InvocationTargetException ex) {
             throw new XWorkException("Unable to initialize the Rife continuation library", ex);
         }
-        ObjectFactory.continuationPackage = continuationPackage;
-        ObjectFactory.ccl = new ContinuationsClassLoader(continuationPackage, Thread.currentThread().getContextClassLoader());
+        this.continuationPackage = continuationPackage;
+        this.ccl = new ContinuationsClassLoader(continuationPackage, Thread.currentThread().getContextClassLoader());
     }
 
-    public static String getContinuationPackage() {
+    public String getContinuationPackage() {
         return continuationPackage;
     }
 
