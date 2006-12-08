@@ -31,7 +31,7 @@ public class PackageConfig extends Located implements Comparable, Serializable {
     private Map interceptorConfigs = new LinkedHashMap();
     private Map<String, ResultTypeConfig> resultTypeConfigs = new LinkedHashMap<String, ResultTypeConfig>();
     private List globalExceptionMappingConfigs = new ArrayList();
-    private Set<PackageConfig> parents = new HashSet<PackageConfig>();
+    private List<PackageConfig> parents = new ArrayList<PackageConfig>();
     private String defaultInterceptorRef;
     private String defaultActionRef;
     private String defaultResultType;
@@ -390,7 +390,7 @@ public class PackageConfig extends Located implements Comparable, Serializable {
             LOG.error("A package cannot extend itself: " + name);
         }
 
-        parents.add(parent);
+        parents.add(0, parent);
     }
 
     public void addResultTypeConfig(ResultTypeConfig config) {
