@@ -26,7 +26,10 @@ import java.util.Map;
  * @since 2005-8-6
  */
 public class DefaultActionProxy implements ActionProxy, Serializable {
-    private static final Log LOG = LogFactory.getLog(DefaultActionProxy.class);
+	
+	private static final long serialVersionUID = -7325819968808474533L;
+
+	private static final Log LOG = LogFactory.getLog(DefaultActionProxy.class);
 
     protected ActionConfig config;
     protected ActionInvocation invocation;

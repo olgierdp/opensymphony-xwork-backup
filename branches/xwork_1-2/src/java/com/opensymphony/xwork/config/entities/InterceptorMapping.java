@@ -17,7 +17,9 @@ import java.io.Serializable;
  */
 public class InterceptorMapping implements Serializable {
 
-    private String name;
+	private static final long serialVersionUID = -6916794422111224317L;
+	
+	private String name;
     private Interceptor interceptor;
 
     public InterceptorMapping() {

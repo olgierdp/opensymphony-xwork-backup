@@ -27,7 +27,9 @@ import java.util.*;
  */
 public class ActionConfig extends Located implements InterceptorListHolder, Parameterizable, Serializable {
 
-    protected List externalRefs;
+	private static final long serialVersionUID = -6785758611462211920L;
+	
+	protected List externalRefs;
     protected List interceptors;
     protected Map params;
     protected Map results;

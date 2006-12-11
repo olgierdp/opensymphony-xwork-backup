@@ -19,7 +19,9 @@ import com.opensymphony.xwork.util.location.Located;
  */
 public class InterceptorConfig extends Located implements Parameterizable, Serializable {
 
-    Map params;
+	private static final long serialVersionUID = 198028869049302691L;
+	
+	Map params;
     String className;
     String name;
 

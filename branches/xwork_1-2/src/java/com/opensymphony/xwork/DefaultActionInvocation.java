@@ -32,7 +32,10 @@ import java.util.*;
  * @see com.opensymphony.xwork.DefaultActionProxy
  */
 public class DefaultActionInvocation implements ActionInvocation {
-    public static ContinuationManager m;
+	
+	private static final long serialVersionUID = 3857082261177147501L;
+
+	public static ContinuationManager m;
 
     static {
         if (ContinuationConfig.getInstance() != null) {

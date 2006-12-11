@@ -12,10 +12,13 @@ import com.opensymphony.xwork.ActionInvocation;
  *
  * @author Mike
  * @author Rainer Hermanns
+ * @version $Date$ $Id$
  */
 public class MockResult implements Result {
 
-    public boolean equals(Object o) {
+	private static final long serialVersionUID = 5371782753949314951L;
+
+	public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
