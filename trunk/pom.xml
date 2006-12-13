@@ -465,13 +465,7 @@
             <artifactId>commons-logging</artifactId>
             <version>1.0.4</version>
         </dependency>
-        <dependency>
-            <groupId>org.rifers</groupId>
-            <artifactId>rife-continuations</artifactId>
-            <version>0.0.2</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
+       <dependency>
             <groupId>ognl</groupId>
             <artifactId>ognl</artifactId>
             <version>2.6.9</version>

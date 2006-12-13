@@ -13,7 +13,6 @@ import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.interceptor.Interceptor;
 import com.opensymphony.xwork2.util.OgnlUtil;
-import com.opensymphony.xwork2.util.XWorkContinuationConfig;
 import com.opensymphony.xwork2.validator.Validator;
 
 import java.io.IOException;
@@ -47,37 +46,12 @@ public class ObjectFactory {
     private static final Log LOG = LogFactory.getLog(ObjectFactory.class);
 
     private ClassLoader ccl;
-    private static ObjectFactory self = new ObjectFactory();
-    private String continuationPackage;
+    private static ThreadLocal<ObjectFactory> thSelf = new ThreadLocal<ObjectFactory>();
     private Container container;
 
-    @Inject(value="continuations.package", required=false)
-    public void setContinuationPackage(String continuationPackage) {
-        
-        // This reflection silliness is to ensure Rife is optional
-        Class contConfig = null;
-        try {
-            contConfig = Class.forName("com.uwyn.rife.continuations.ContinuationConfig");
-        } catch (ClassNotFoundException ex) {
-            throw new XWorkException("Unable to use continuations package, as the Rife " +
-                    "continuations jar is missing", ex);
-        }
-        try {
-            Method m = contConfig.getMethod("setInstance", contConfig);
-            m.invoke(contConfig, new XWorkContinuationConfig());
-        } catch (NoSuchMethodException ex) {
-            throw new XWorkException("Incorrect version of the Rife continuation library", ex);
-        } catch (IllegalAccessException ex) {
-            throw new XWorkException("Incorrect version of the Rife continuation library", ex);
-        } catch (InvocationTargetException ex) {
-            throw new XWorkException("Unable to initialize the Rife continuation library", ex);
-        }
-        this.continuationPackage = continuationPackage;
-        this.ccl = new ContinuationsClassLoader(continuationPackage, Thread.currentThread().getContextClassLoader());
-    }
-
-    public String getContinuationPackage() {
-        return continuationPackage;
+    @Inject(value="objectFactory.classloader", required=false)
+    public void setClassLoader(ClassLoader cl) {
+        this.ccl = cl;
     }
 
     public ObjectFactory() {
@@ -90,11 +64,11 @@ public class ObjectFactory {
 
     @Inject
     public static void setObjectFactory(ObjectFactory factory) {
-        self = factory;
+        thSelf.set(factory);
     }
 
     public static ObjectFactory getObjectFactory() {
-        return self;
+        return thSelf.get();
     }
 
     /**
@@ -262,54 +236,6 @@ public class ObjectFactory {
     }
 
     static class ContinuationsClassLoader extends ClassLoader {
-        private String base;
-        private ClassLoader parent;
-
-        public ContinuationsClassLoader(String base, ClassLoader parent) {
-            super(parent);
-            this.base = base;
-            this.parent = parent;
-        }
-
-        public Class loadClass(String name) throws ClassNotFoundException {
-            if (validName(name)) {
-                Class clazz = findLoadedClass(name);
-                if (clazz == null) {
-                    try {
-                        byte[] bytes = com.uwyn.rife.continuations.util.ClassByteUtil.getBytes(name, parent);
-                        if (bytes == null) {
-                            throw new ClassNotFoundException(name);
-                        }
-
-                        byte[] resume_bytes = null;
-                        try {
-                            resume_bytes = com.uwyn.rife.continuations.ContinuationInstrumentor.instrument(bytes, name, false);
-                        } catch (ClassNotFoundException e) {
-                            // this can happen when the Rife Continuations code gets broken (there are bugs in it still, ya know!)
-                            // rather than making a big deal, we'll quietly log this and move on
-                            // when more people are using continuations, perhaps we'll raise the log level
-                            LOG.debug("Error instrumenting with RIFE/Continuations, " +
-                                    "loading class normally without continuation support", e);
-                        }
-
-                        if (resume_bytes == null) {
-                            return parent.loadClass(name);
-                        } else {
-                            return defineClass(name, resume_bytes, 0, resume_bytes.length);
-                        }
-                    } catch (IOException e) {
-                        throw new XWorkException("Continuation error", e);
-                    }
-                } else {
-                    return clazz;
-                }
-            } else {
-                return parent.loadClass(name);
-            }
-        }
-
-        private boolean validName(String name) {
-            return name.startsWith(base + ".");
-        }
+        
     }
 }

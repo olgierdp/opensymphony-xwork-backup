@@ -4,6 +4,7 @@
 package com.opensymphony.xwork2.spring.interceptor;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionEventListener;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.Result;
@@ -66,5 +67,8 @@ public class TestActionInvocation implements ActionInvocation {
         executed = true;
         Method method = action.getClass().getMethod("execute", new Class[0]);
         return (String) method.invoke(action, new Object[0]);
+    }
+
+    public void setActionEventListener(ActionEventListener listener) {
     }
 }

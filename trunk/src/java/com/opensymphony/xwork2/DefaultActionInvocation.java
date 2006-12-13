@@ -11,13 +11,7 @@ import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
-import com.opensymphony.xwork2.util.XWorkContinuationConfig;
 import com.opensymphony.xwork2.util.profiling.UtilTimerStack;
-import com.uwyn.rife.continuations.ContinuableObject;
-import com.uwyn.rife.continuations.ContinuationConfig;
-import com.uwyn.rife.continuations.ContinuationContext;
-import com.uwyn.rife.continuations.ContinuationManager;
-import com.uwyn.rife.continuations.exceptions.PauseException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,8 +39,6 @@ public class DefaultActionInvocation implements ActionInvocation {
     
 	private static final long serialVersionUID = -585293628862447329L;
 
-	public static ContinuationHandler continuationHandler;
-
     //static {
     //    if (ObjectFactory.getContinuationPackage() != null) {
     //        continuationHandler = new ContinuationHandler();
@@ -66,6 +58,7 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected boolean executed = false;
     protected boolean pushAction = true;
     protected ObjectFactory objectFactory;
+    protected ActionEventListener actionEventListener;
 
     protected UnknownHandler unknownHandler;
 
@@ -86,6 +79,10 @@ public class DefaultActionInvocation implements ActionInvocation {
 						return null;
 					}
     			});
+    }
+    
+    public void setActionEventListener(ActionEventListener listener) {
+        this.actionEventListener = listener;
     }
 
     public Object getAction() {
@@ -294,8 +291,8 @@ public class DefaultActionInvocation implements ActionInvocation {
             UtilTimerStack.pop(timerKey);
         }
 
-        if (continuationHandler != null) {
-            continuationHandler.prepareContinuation(action, stack);
+        if (actionEventListener != null) {
+            action = actionEventListener.prepare(action, stack);
         }
     }
 
@@ -409,8 +406,8 @@ public class DefaultActionInvocation implements ActionInvocation {
             // We try to return the source exception.
             Throwable t = e.getTargetException();
 
-            if (continuationHandler != null) {
-                String result = continuationHandler.handleException(t, getStack());
+            if (actionEventListener != null) {
+                String result = actionEventListener.handleException(t, getStack());
                 if (result != null) {
                     return result;
                 }
@@ -425,54 +422,6 @@ public class DefaultActionInvocation implements ActionInvocation {
         }
     }
     
-    static class ContinuationHandler {
-        ContinuationManager cm;
-        
-        public ContinuationHandler() {
-            if (ContinuationConfig.getInstance() != null) {
-                cm = new ContinuationManager();
-            }
-        }
-        
-        public void prepareContinuation(Object action, ValueStack stack) {
-            if (action instanceof ContinuableObject) {
-                ContinuationContext ctx = ContinuationContext.createInstance((ContinuableObject) action);
-                if (action instanceof NonCloningContinuableObject) {
-                    ctx.setShouldClone(false);
-                }
-            }
-
-            try {
-                String id = (String) stack.getContext().get(XWorkContinuationConfig.CONTINUE_KEY);
-                stack.getContext().remove(XWorkContinuationConfig.CONTINUE_KEY);
-                if (id != null) {
-                    ContinuationContext context = cm.getContext(id);
-                    if (context != null) {
-                        ContinuationContext.setContext(context);
-                        // use the original action instead
-                        Object original = context.getContinuable();
-                        action = original;
-                    }
-                }
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
-
-        }
-        
-        public String handleException(Throwable t, ValueStack stack) {
-            if (t instanceof PauseException) {
-                // continuations in effect!
-                PauseException pe = ((PauseException) t);
-                ContinuationContext context = pe.getContext();
-                String result = (String) pe.getParameters();
-                stack.getContext().put(XWorkContinuationConfig.CONTINUE_KEY, context.getId());
-                cm.addContext(context);
-
-                return result;
-            }
-            return null;
-        }
-            
-    }
+    
+    
 }

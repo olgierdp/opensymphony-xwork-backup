@@ -49,6 +49,8 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
 
     protected ObjectFactory objectFactory;
 
+    protected ActionEventListener actionEventListener;
+
     /**
      * This constructor is private so the builder methods (create*) should be used to create an DefaultActionProxy.
      * <p/>
@@ -83,6 +85,11 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     @Inject(required=false)
     public void setUnknownHandler(UnknownHandler handler) {
         this.unknownHandler = handler;
+    }
+    
+    @Inject(required=false) 
+    public void setActionEventListener(ActionEventListener listener) {
+        this.actionEventListener = listener;
     }
 
     public Object getAction() {
@@ -180,6 +187,9 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
             }
             
             invocation = new DefaultActionInvocation(objectFactory, unknownHandler, this, extraContext);
+            if (actionEventListener != null) {
+                invocation.setActionEventListener(actionEventListener);
+            }
             resolveMethod();
         } finally {
             UtilTimerStack.pop(profileKey);

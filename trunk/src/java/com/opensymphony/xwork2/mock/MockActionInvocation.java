@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.opensymphony.xwork2.ActionEventListener;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionProxy;
@@ -28,6 +29,7 @@ public class MockActionInvocation implements ActionInvocation {
 
     private Object action;
     private ActionContext invocationContext;
+    private ActionEventListener actionEventListener;
     private ActionProxy proxy;
     private Result result;
     private String resultCode;
@@ -101,6 +103,14 @@ public class MockActionInvocation implements ActionInvocation {
 
     public String invokeActionOnly() throws Exception {
         return resultCode;
+    }
+
+    public void setActionEventListener(ActionEventListener listener) {
+        this.actionEventListener = listener;
+    }
+    
+    public ActionEventListener getActionEventListener() {
+        return this.actionEventListener;
     }
 
 }

@@ -118,4 +118,9 @@ public interface ActionInvocation extends Serializable {
      * with the interceptor/action/result workflow is being manipulated for certain functionality. 
      */
     String invokeActionOnly() throws Exception;
+
+    /**
+     * Sets the action event listener to respond to key action events
+     */
+    void setActionEventListener(ActionEventListener listener);
 }
