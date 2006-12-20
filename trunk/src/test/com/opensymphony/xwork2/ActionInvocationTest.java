@@ -25,6 +25,12 @@ public class ActionInvocationTest extends XWorkTestCase {
         assertEquals(SimpleAction.COMMAND_RETURN_CODE, commandActionProxy.execute());
     }
     
+    public void testCommandInvocationDoMethod() throws Exception {
+        ActionProxy baseActionProxy = actionProxyFactory.createActionProxy(
+                "baz", "doMethodTest", null);
+        assertEquals("input", baseActionProxy.execute());
+    }
+    
     public void testResultReturnInvocation() throws Exception {
         ActionProxy baseActionProxy = actionProxyFactory.createActionProxy(
                 "baz", "resultAction", null);

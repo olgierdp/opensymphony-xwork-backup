@@ -381,7 +381,20 @@ public class DefaultActionInvocation implements ActionInvocation {
         String timerKey = "invokeAction: "+proxy.getActionName();
         try {
             UtilTimerStack.push(timerKey);
-            Method method = getAction().getClass().getMethod(methodName, new Class[0]);
+            
+            Method method;
+            try {
+                method = getAction().getClass().getMethod(methodName, new Class[0]);
+            } catch (NoSuchMethodException e) {
+                // hmm -- OK, try doXxx instead
+                try {
+                    String altMethodName = "do" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
+                    method = getAction().getClass().getMethod(altMethodName, new Class[0]);
+                } catch (NoSuchMethodException e1) {
+                    // throw the original one
+                    throw e;
+                }
+            }
 
             Object methodResult = null;
             if (action instanceof Proxy) {

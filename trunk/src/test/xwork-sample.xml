@@ -162,6 +162,9 @@
             <result name="com.opensymphony.xwork2.SimpleAction.CommandInvoked" type="mock"/>
             <interceptor-ref name="logger"/>
         </action>
+        <action name="doMethodTest" class="com.opensymphony.xwork2.SimpleAction" method="input">
+            <result name="input" type="mock" />
+        </action>
         <action name="resultAction" class="com.opensymphony.xwork2.SimpleAction" method="resultAction">
             <param name="bar">456</param>
             <result name="success" type="chain">

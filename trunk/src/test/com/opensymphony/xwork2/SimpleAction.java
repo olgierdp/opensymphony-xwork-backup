@@ -185,4 +185,8 @@ public class SimpleAction extends ActionSupport {
 
         return SUCCESS;
     }
+    
+    public String doInput() throws Exception {
+        return INPUT;
+    }
 }
