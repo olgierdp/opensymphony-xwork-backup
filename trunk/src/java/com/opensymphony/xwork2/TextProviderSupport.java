@@ -184,7 +184,12 @@ public class TextProviderSupport implements TextProvider {
      */
     public String getText(String key, String defaultValue, List args, ValueStack stack) {
         Object[] argsArray = ((args != null) ? args.toArray() : null);
-        Locale locale = (Locale) stack.getContext().get(ActionContext.LOCALE);
+        Locale locale = null;
+        if (stack == null){
+        	locale = getLocale();
+        }else{
+        	locale = (Locale) stack.getContext().get(ActionContext.LOCALE);
+        }
         if (locale == null) {
             locale = getLocale();
         }
@@ -209,7 +214,12 @@ public class TextProviderSupport implements TextProvider {
      * @return the message as found in the resource bundle, or defaultValue if none is found
      */
     public String getText(String key, String defaultValue, String[] args, ValueStack stack) {
-        Locale locale = (Locale) stack.getContext().get(ActionContext.LOCALE);
+        Locale locale = null;
+        if (stack == null){
+        	locale = getLocale();
+        }else{
+        	locale = (Locale) stack.getContext().get(ActionContext.LOCALE);
+        }
         if (locale == null) {
             locale = getLocale();
         }

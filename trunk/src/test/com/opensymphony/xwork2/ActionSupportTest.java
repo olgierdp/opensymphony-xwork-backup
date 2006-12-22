@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ArrayList;
 
+import junit.framework.TestCase;
+
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 
@@ -17,7 +19,7 @@ import com.opensymphony.xwork2.util.ValueStackFactory;
  *
  * @author Claus Ibsen
  */
-public class ActionSupportTest extends XWorkTestCase {
+public class ActionSupportTest extends TestCase {
 
     private ActionSupport as;
 
@@ -31,7 +33,7 @@ public class ActionSupportTest extends XWorkTestCase {
         as = null;
     }
 
-    public void testNothingDoneOnActionSupport() {
+    public void testNothingDoneOnActionSupport() throws Exception{
         assertEquals(false, as.hasErrors());
 
         assertNotNull(as.getActionErrors());
@@ -45,7 +47,31 @@ public class ActionSupportTest extends XWorkTestCase {
         assertNotNull(as.getFieldErrors());
         assertEquals(0, as.getFieldErrors().size());
         assertEquals(false, as.hasFieldErrors());
+        
+        assertNull(as.getText(null));
+        
+        assertEquals(Action.INPUT, as.input());
+        assertEquals(Action.SUCCESS, as.doDefault());
+        assertEquals(Action.SUCCESS, as.execute());
+        try{
+        	as.clone();
+        	fail("Failure expected for clone()");
+        }catch(CloneNotSupportedException e){
+        	// success!
+        }
+        
+        
+        assertNull(as.getText(null, (List)null));
+        assertNull(as.getText(null, (String)null));
+        assertNull(as.getText(null, (String[])null));
+        
+        assertNull(as.getText(null, (String)null, (List)null));
+        assertNull(as.getText(null, (String)null, (String)null));
+        assertNull(as.getText(null, (String)null, (String[])null));
 
+        assertNull(as.getText(null, (String)null, (List)null, (ValueStack)null));
+        assertNull(as.getText(null, (String)null, (String[])null, (ValueStack)null));
+        
         assertNotNull(as.getLocale());
         assertEquals(ActionContext.getContext().getLocale(), as.getLocale());
 
