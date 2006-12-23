@@ -30,6 +30,14 @@ import java.util.ResourceBundle;
  */
 public interface TextProvider {
 
+	/**
+	 * Checks if a message key exists.
+	 * 
+	 * @param key
+	 * @return boolean true if key exists, false otherwise.
+	 */
+	boolean hasKey(String key);
+	
     /**
      * Gets a message based on a message key, or null if no message is found.
      *

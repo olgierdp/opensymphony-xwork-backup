@@ -25,11 +25,17 @@ import java.text.MessageFormat;
  */
 public class DefaultTextProvider implements TextProvider, Serializable, Unchainable {
 
-    private static final Object[] EMPTY_ARGS = new Object[0];
+	private static final long serialVersionUID = 5559215734038422388L;
+
+	private static final Object[] EMPTY_ARGS = new Object[0];
 
     public static final DefaultTextProvider INSTANCE = new DefaultTextProvider();
 
     private DefaultTextProvider() {
+    }
+    
+    public boolean hasKey(String key) {
+    	return getText(key) == null ? false : true;
     }
 
     public String getText(String key) {

@@ -98,6 +98,10 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return localeProvider.getLocale();
     }
 
+    public boolean hasKey(String key) {
+    	return textProvider.hasKey(key);
+    }
+    
     public String getText(String aTextName) {
         return textProvider.getText(aTextName);
     }

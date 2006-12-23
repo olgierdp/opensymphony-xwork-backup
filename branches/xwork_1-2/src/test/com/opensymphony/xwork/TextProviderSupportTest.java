@@ -11,12 +11,19 @@ import java.util.*;
  * Unit test for {@link TextProviderSupport}.
  *
  * @author Claus Ibsen
+ * @author tmjee
  */
 public class TextProviderSupportTest extends XWorkTestCase {
 
     private TextProviderSupport tp;
     private java.util.ResourceBundle rb;
 
+    public void testHasKey() throws Exception {
+    	assertTrue(tp.hasKey("hello"));
+    	assertFalse(tp.hasKey("not.in.bundle"));
+    }
+    
+    
     public void testSimpleGetTexts() throws Exception {
         assertEquals("Hello World", tp.getText("hello"));
         assertEquals("not.in.bundle", tp.getText("not.in.bundle"));

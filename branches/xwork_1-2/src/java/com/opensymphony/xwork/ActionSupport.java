@@ -67,6 +67,10 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
         return ActionContext.getContext().getLocale();
     }
 
+    public boolean hasKey(String key) {
+    	return textProvider.hasKey(key);
+    }
+    
     public String getText(String aTextName) {
         return textProvider.getText(aTextName);
     }

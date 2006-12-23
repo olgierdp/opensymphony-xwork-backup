@@ -31,6 +31,12 @@ import java.util.Locale;
  */
 public class LocalizedTextUtilTest extends TestCase {
 
+	public void testHasKey() throws Exception {
+		OgnlValueStack stack = new OgnlValueStack();
+		assertNull(LocalizedTextUtil.findText(MyObject.class, "doesnotexist.nothing", Locale.ENGLISH, null, new Object[0], stack, false));
+	}
+	
+	
 	public void testNpeWhenClassIsPrimitive() throws Exception {
 		OgnlValueStack stack = new OgnlValueStack();
 		stack.push(new MyObject());
