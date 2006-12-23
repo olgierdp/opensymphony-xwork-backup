@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
+import com.uwyn.rife.continuations.exceptions.PauseException;
 
 /**
  * Unit test for {@link ActionSupport}.
@@ -49,6 +50,11 @@ public class ActionSupportTest extends TestCase {
         assertEquals(false, as.hasFieldErrors());
         
         assertNull(as.getText(null));
+        try{
+        	as.pause(null);
+        catch(PauseException e){
+        	fail("Should not fail");
+        }
         
         assertEquals(Action.INPUT, as.input());
         assertEquals(Action.SUCCESS, as.doDefault());
