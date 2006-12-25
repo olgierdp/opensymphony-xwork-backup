@@ -13,5 +13,6 @@
     <validator name="conversion" class="com.opensymphony.xwork.validator.validators.ConversionErrorFieldValidator"/>
     <validator name="stringlength" class="com.opensymphony.xwork.validator.validators.StringLengthFieldValidator"/>
     <validator name="regex" class="com.opensymphony.xwork.validator.validators.RegexFieldValidator"/>
+    <validator name="collection" class="com.opensymphony.xwork.validator.validators.CollectionFieldValidator" />
 </validators>
 <!--  END SNIPPET: validators-default -->

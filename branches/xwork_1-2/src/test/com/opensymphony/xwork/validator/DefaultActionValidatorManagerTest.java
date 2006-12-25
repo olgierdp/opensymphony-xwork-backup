@@ -208,7 +208,7 @@ public class DefaultActionValidatorManagerTest extends XWorkTestCase {
             user.setEmail2("bad_email");
 
             ValidatorContext context = new GenericValidatorContext(user);
-            actionValidatorManager.validate(user, null, context);
+            actionValidatorManager.validate(user, (String) null, context);
             assertTrue(context.hasFieldErrors());
 
             // check field errors
@@ -250,7 +250,7 @@ public class DefaultActionValidatorManagerTest extends XWorkTestCase {
             user.setEmail2("mark_bad_email_for_field_val@foo.com");
 
             ValidatorContext context = new GenericValidatorContext(user);
-            actionValidatorManager.validate(user, null, context);
+            actionValidatorManager.validate(user, (String) null, context);
             assertTrue(context.hasFieldErrors());
 
             // check field errors
@@ -286,7 +286,7 @@ public class DefaultActionValidatorManagerTest extends XWorkTestCase {
         user.setEmail("tm_jee(at)yahoo.co.uk");
         
         ValidatorContext context = new GenericValidatorContext(user);
-        actionValidatorManager.validate(user, null, context);
+        actionValidatorManager.validate(user, (String) null, context);
     	
     	// check field level errors
         // shouldn't have any because action error prevents validation of anything else
@@ -317,7 +317,7 @@ public class DefaultActionValidatorManagerTest extends XWorkTestCase {
             user.setEmail2("mark@mycompany.com");
 
             ValidatorContext context = new GenericValidatorContext(user);
-            actionValidatorManager.validate(user, null, context);
+            actionValidatorManager.validate(user, (String) null, context);
             assertFalse(context.hasErrors());
         } catch (ValidationException ex) {
             ex.printStackTrace();

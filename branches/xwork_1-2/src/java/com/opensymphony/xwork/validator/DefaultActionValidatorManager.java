@@ -27,6 +27,7 @@ import java.util.*;
  * @author Mark Woon
  * @author James House
  * @author Rainer Hermanns
+ * @author tmjee
  */
 public class DefaultActionValidatorManager implements ActionValidatorManager {
 
@@ -93,7 +94,20 @@ public class DefaultActionValidatorManager implements ActionValidatorManager {
      */
     public void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException {
         List validators = getValidators(object.getClass(), context);
-        Set shortcircuitedFields = null;
+        validate(object, validators, validatorContext);
+    }
+    
+    /**
+     * Validates an action through a series of <code>validators</code> with 
+     * the given <code>validatorContext</code>
+     * 
+     * @param object
+     * @param validators
+     * @param validatorContext
+     * @throws ValidationException
+     */
+    public void validate(Object object, List validators, ValidatorContext validatorContext) throws ValidationException {
+    	Set shortcircuitedFields = null;
 
         for (Iterator iterator = validators.iterator(); iterator.hasNext();) {
             final Validator validator = (Validator) iterator.next();

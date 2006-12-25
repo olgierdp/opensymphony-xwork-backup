@@ -43,4 +43,16 @@ public interface ActionValidatorManager {
      * @throws ValidationException if an error happens when validating the action.
      */
     void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException;
+    
+    
+    /**
+     * Validates an action through a series of <code>validators</code> with 
+     * the given <code>validatorContext</code>.
+     * 
+     * @param object
+     * @param validators
+     * @param validatorContext
+     * @throws ValidationException
+     */
+    void validate(Object object, List validators, ValidatorContext validatorContext) throws ValidationException;
 }
