@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <title>XWork - 
+        XWork Configurations
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>Configuring XWork2 centers around the following classes:-</p>
+<ul>
+	<li>ConfigurationManager</li>
+	<li>ConfigurationProvider</li>
+	<li>Configuration</li>
+</ul>
+
+
+<p>where by both ConfigurationProvider and Configuration are java interface.</p>
+
+<h2><a name="XWorkConfigurations-ConfigurationManager"></a>ConfigurationManager</h2>
+<p>This is the center for configuring XWork2. It allows ConfigurationProvider to be pluged in and setting a custom Configuration to be used. Typically one would like to just create one instance of ConfigurationManager for a XWork2 usage. </p>
+
+<h3><a name="XWorkConfigurations-Code"></a>Code</h3>
+<p>To create a ConfigurationManager :-</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">ConfigurationManager confManager = <span class="code-keyword">new</span> ConfigurationManager();</pre>
+</div></div>
+
+<h2><a name="XWorkConfigurations-ConfigurationProvider"></a>ConfigurationProvider</h2>
+<p>ConfigurationProvider helps configuring a Configuration, populating it with information regarding what actions it has, how does the results get mapped and what interceptors are there and how they are related to each action etc. A default ConfigurationProvider that comes with XWork2 would be XmlConfigurationProvider and as the name suggest populate information into a Configuration object according the the xml provided.</p>
+
+<h3><a name="XWorkConfigurations-Code"></a>Code</h3>
+<p>To create a plug in a custom configuration provider</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">ConfigurationManager confManager = <span class="code-keyword">new</span> ConfigurationManager();
+  confManager.addConfigurationProvider(
+    <span class="code-keyword">new</span> MyCustomConfigurationProvider(....));</pre>
+</div></div>
+<p>To create an XmlConfigurationProvider that points to a particular xml file in the classpath:-</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">ConfigurationManager confManager = <span class="code-keyword">new</span> ConfigurationManager();
+  confManager.addConfigurationProvider(
+    <span class="code-keyword">new</span> XmlConfigurationProvider(<span class="code-quote">"foo/bar/myConf.xml"</span>));</pre>
+</div></div>
+
+<h2><a name="XWorkConfigurations-Configuration"></a>Configuration</h2>
+<p>Configuration is a typical value object that contains configuration information. There's only one instance of it for each ConfigurationManager, where it is passed to different ConfigurationProvider in order for information to get stoted in it. The default implementation would be DefaultConfiguration.</p>
+
+<h3><a name="XWorkConfigurations-Code"></a>Code</h3>
+<p>To plug in a custom Configuration </p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">ConfigurationManager confManager = <span class="code-keyword">new</span> ConfigurationManager();
+  confManager.setConfiguration(<span class="code-keyword">new</span> MyCustomConfiguration(...));</pre>
+</div></div>
+
+<p>The following illustrates typically how XWork2 is configured.</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-comment">// <span class="code-keyword">this</span> is in SVN Head, we need to get the snippet stuff fix, so we could just grab it from the svn</span></pre>
+</div></div>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

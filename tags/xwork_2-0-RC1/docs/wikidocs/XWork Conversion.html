@@ -1,0 +1,86 @@
+<html>
+    <head>
+        <title>XWork - 
+        XWork Conversion
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <ul class="alternate" type="square">
+	<li>how conversion works (plugin in through Ognl)</li>
+	<li>how to have custom converters</li>
+	<li>examples</li>
+</ul>
+
+
+<p>XWork2 supports validation at a global and action level</p>
+
+<h2><a name="XWorkConversion-Howitworks"></a>How it works</h2>
+
+<p>XWork2 make use of Ognl to do its conversion, by plugging in XWork2 specifi PropertyAccessor, MethodAccessor,  NullHandler  and TypeConverter etc. into Ognl runtime.</p>
+
+<h2><a name="XWorkConversion-GlobalLevel"></a>Global Level</h2>
+
+<p>To create a global level conversion, create an file called 'xwork-conversion.properties' at the root level of classpath. The entry in 'xwork-conversion.properties' should be a key-value pair just like any Java property file, where the key represents the FQN (Fully-Qualified-Name) of a particular object where conversion is to be done, whereas the value would be the FQN of the XWork2 converter itself.</p>
+
+<p>The following is an example of a hypotenical 'xwork-conversion.properties'</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">....
+ java.lang.<span class="code-object">Boolean</span>=foo.bar.MyBooleanConverter
+ foo.bar.MyObject=foo.bar.MyObjectConverter
+ ...</pre>
+</div></div>
+<p>&nbsp;</p>
+
+<h2><a name="XWorkConversion-ActionLevel"></a>Action Level</h2>
+
+<p>To create an action-level conversion, create a file called 'ActionClassName-conversion.properties' in the same location at the classpath where the Action class itself resides. Eg. if the action class name is MyAction, the action-level convertion properties file should be named 'MyAction-conversion.properties'.</p>
+
+<p>Assuming that 'MyAction' action class looks as follows. Note the properties it has.</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">public</span> class MyAction <span class="code-keyword">extends</span> ActionSupport {
+   <span class="code-keyword">private</span> <span class="code-object">Boolean</span> myBool;
+   <span class="code-keyword">private</span> <span class="code-object">Double</span> myDouble;
+
+   <span class="code-keyword">public</span> <span class="code-object">Boolean</span> getMyBool() { <span class="code-keyword">return</span> <span class="code-keyword">this</span>.myBool; }
+   <span class="code-keyword">public</span> void setMyBool(<span class="code-object">Boolean</span> myBool) { <span class="code-keyword">this</span>.myBool = myBool; }
+
+   <span class="code-keyword">public</span> <span class="code-object">Double</span> getMyDouble() { <span class="code-keyword">return</span> <span class="code-keyword">this</span>.myDouble; }
+   <span class="code-keyword">public</span> void setMyDouble(<span class="code-object">Double</span> myDouble) { <span class="code-keyword">this</span>.myDouble = myDouble; }
+
+   .....
+ }</pre>
+</div></div>
+<p>&nbsp;</p>
+
+<p>The following would an example of a hypotenical 'MyAction-conversion.properties'.</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">myBool=foo.bar.MyBooleanConverter
+myDouble=foo.bar.MyDoubleConverter</pre>
+</div></div>
+<p>&nbsp;</p>
+
+<h2><a name="XWorkConversion-CustomConverter"></a>Custom Converter</h2>
+
+<p>The following is an example of a converter. It extends DefaultTypeConverter (part of Ognl).</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">public</span> class MyConverter <span class="code-keyword">extends</span> DefaultTypeConverter {
+   <span class="code-keyword">public</span> <span class="code-object">Object</span> convertValue(Map context, <span class="code-object">Object</span> target, Member member, <span class="code-object">String</span> propertyName,
+                              <span class="code-object">Object</span> value, <span class="code-object">Class</span> toType) {
+       <span class="code-comment">// type conversion goes here.
+</span>       ....
+   }
+ }</pre>
+</div></div>
+<p>&nbsp;</p>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
