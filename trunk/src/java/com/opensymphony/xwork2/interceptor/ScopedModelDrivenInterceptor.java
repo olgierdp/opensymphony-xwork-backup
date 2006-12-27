@@ -60,9 +60,9 @@ import com.opensymphony.xwork2.inject.Inject;
  * 
  * &lt;-- Using all available parameters --&gt;
  * &lt;interceptor name="gangsterForm" class="com.opensymphony.interceptor.ScopedModelDrivenInterceptor"&gt;
- *      &lt;param name="scope"gt;sessionlt;/param&gt;
- *      &lt;param name="name"gt;gangsterFormlt;/param&gt;
- *      &lt;param name="className"gt;com.opensymphony.example.GangsterFormlt;/param&gt;
+ *      &lt;param name="scope"&gt;session&lt;/param&gt;
+ *      &lt;param name="name"&gt;gangsterForm&lt;/param&gt;
+ *      &lt;param name="className"&gt;com.opensymphony.example.GangsterForm&lt;/param&gt;
  *  &lt;/interceptor&gt;
  * 
  * <!-- END SNIPPET: example -->
