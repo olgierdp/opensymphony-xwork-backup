@@ -30,11 +30,11 @@
 
 <h3><a name="XWorkCoreConcepts-ActionContext"></a>ActionContext</h3>
 
-<p>The ActionContext provides access to the execution environment in the form of named objects during an Action invocation. A new ActionContext is created for each invocation allowing developers to access/modify these properties in a thread safe manner. The ActionContext makes a number of properties available that are typically set to appropriate values by the framework. In WebWork 2 for example, the ActionContext session map wraps an underlying HttpSession object. This allows access to environment specific properties without tying the core framework to a specific execution environment. For more information, see ActionContext in <a href="http://wiki.opensymphony.com/display/XW/Basics" title="Basics">Basics</a>.</p>
+<p>The ActionContext provides access to the execution environment in the form of named objects during an Action invocation. A new ActionContext is created for each invocation allowing developers to access/modify these properties in a thread safe manner. The ActionContext makes a number of properties available that are typically set to appropriate values by the framework. In WebWork 2 for example, the ActionContext session map wraps an underlying HttpSession object. This allows access to environment specific properties without tying the core framework to a specific execution environment. For more information, see ActionContext in <a href="Basics.html" title="Basics">Basics</a>.</p>
 
 <h3><a name="XWorkCoreConcepts-Interceptors"></a>Interceptors</h3>
 
-<p>In XWork, Interceptors are objects that dynamically intercept Action invocations. They provide the developer with the opportunity to define code that can be executed before and/or after the execution of an action. They also have the ability to prevent an action from executing. Interceptors provide developers a way to encapulate common functionality in a re-usable form that can be applied to one or more Actions. See <a href="http://wiki.opensymphony.com/display/XW/Interceptors" title="Interceptors">Interceptors</a> for further details.</p>
+<p>In XWork, Interceptors are objects that dynamically intercept Action invocations. They provide the developer with the opportunity to define code that can be executed before and/or after the execution of an action. They also have the ability to prevent an action from executing. Interceptors provide developers a way to encapulate common functionality in a re-usable form that can be applied to one or more Actions. See <a href="Interceptors.html" title="Interceptors">Interceptors</a> for further details.</p>
 
 <h3><a name="XWorkCoreConcepts-Stacks"></a>Stacks</h3>
 
@@ -58,7 +58,7 @@
 
 <h3><a name="XWorkCoreConcepts-Components"></a>Components</h3>
 
-<p>XWork provides the ComponentManager interface (and a corresponding implementation in the DefaultComponentManager class) to apply a design pattern known as <b>Inversion of Control</b> (or IoC for short). In a nutshell, the IoC pattern allows a parent object (in this case XWork's ComponentManager instance) to control a client object (usually an action, but it could be any object that implements the appropriate <em>enabler</em>). See <a href="http://wiki.opensymphony.com/display/XW/Components" title="Components">Components</a> for further details.</p>
+<p>XWork provides the ComponentManager interface (and a corresponding implementation in the DefaultComponentManager class) to apply a design pattern known as <b>Inversion of Control</b> (or IoC for short). In a nutshell, the IoC pattern allows a parent object (in this case XWork's ComponentManager instance) to control a client object (usually an action, but it could be any object that implements the appropriate <em>enabler</em>). See <a href="Components.html" title="Components">Components</a> for further details.</p>
 
                     			    </td>
 		    </tr>

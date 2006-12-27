@@ -53,13 +53,13 @@
 <h1><a name="NamespaceConfiguration-Explanation"></a>Explanation</h1>
 <p>If a request for /barspace/bar.action is made, '/barspace' namespace is searched and if it is found the bar action is executed, else it will fall back to the default namespace.  In this example bar alias do exists in the '/barspace' namespace, so it will get executed and if success, the request will be forwarded to bar2.jsp.</p>
 
-<p><u>Note:</u> If a request is made to /barspace/foo.action, the action foo will be searched for in a namespace of /barspace.  If the action is not found, the action will then be searched for in the default namespace.  Unless specified, the default namespace will be "".  In our example above, their is no action foo in the namespace /barspace, therefore the default will be searched and /foo.action will be executed.</p>
+<p><ins>Note:</ins> If a request is made to /barspace/foo.action, the action foo will be searched for in a namespace of /barspace.  If the action is not found, the action will then be searched for in the default namespace.  Unless specified, the default namespace will be "".  In our example above, their is no action foo in the namespace /barspace, therefore the default will be searched and /foo.action will be executed.</p>
 
 <p>If a request for /moo.action is made, the root namespace ('/') is searched for 'moo' action alias, if it is not found it will fall back to trying to find it in the default namespace. In this example, moo action alias does exists and hence will be executed. Upon sucess, the request will get forwarded to bar2.jsp.</p>
 
-<p><u>Note:</u> If a request is made to '/foo.action', '/' namespace will be searched and if it is found it will be execueted, else an attempt to try to find it in the default namespace will occurred. In this example foo action alias does not exist in the '/' namespace, hence it will falled back to the default namespace and execute the foo alias there.</p>
+<p><ins>Note:</ins> If a request is made to '/foo.action', '/' namespace will be searched and if it is found it will be execueted, else an attempt to try to find it in the default namespace will occurred. In this example foo action alias does not exist in the '/' namespace, hence it will falled back to the default namespace and execute the foo alias there.</p>
 
-<p><u>Note:</u> Namespace is only one level. For example if the url '/barspace/myspace/bar.action' is requested, Webwork will try to search for namespace '/barspace/myspace', which does not exist in this case, and will fall back to the default namespace '' and tried the search for action with 'bar' alias. As a result the bar action in the default will be used.</p>
+<p><ins>Note:</ins> Namespace is only one level. For example if the url '/barspace/myspace/bar.action' is requested, Webwork will try to search for namespace '/barspace/myspace', which does not exist in this case, and will fall back to the default namespace '' and tried the search for action with 'bar' alias. As a result the bar action in the default will be used.</p>
 
                     			    </td>
 		    </tr>

@@ -13,7 +13,7 @@
 			    <td valign="top" class="pagebody">
 				    <p>Value stack is a fundamental part of XWork2. As XWork2 processed a command request, objects of interest could be pushed into the value stack or set into its context. This could be done by XWork2 itself, Action, Interceptors, Results etc. </p>
 
-<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
+<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="./icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
 <p> XWork2 Action itself is actually pushed into the stack during the invocation process.</p></td></tr></table>
 
 <h2><a name="XWorkValueStack-WorkingConcept"></a>Working Concept</h2>
@@ -27,7 +27,7 @@
 <pre class="code-java">valueStack.push(anObject);</pre>
 </div></div>
 
-<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
+<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="./icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>
 <p> Actually XWork2 uses Ognl underneath. By having a CompoundRoot that allows objects to be stack up on as Ognl root, the effect of a stack is achieved. </p></td></tr></table>
 
 <p>When value the stack is queried for object using the followng method signature eg.</p>
