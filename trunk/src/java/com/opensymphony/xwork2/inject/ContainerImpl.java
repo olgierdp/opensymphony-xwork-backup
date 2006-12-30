@@ -29,9 +29,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 /**
  * Default {@link Container} implementation.
@@ -42,9 +47,25 @@ import java.util.Map;
 class ContainerImpl implements Container {
 
   final Map<Key<?>, InternalFactory<?>> factories;
+  final Map<Class<?>,Set<String>> factoryNamesByType;
 
   ContainerImpl(Map<Key<?>, InternalFactory<?>> factories) {
     this.factories = factories;
+    Map<Class<?>,Set<String>> map = new HashMap<Class<?>,Set<String>>();
+    for (Key<?> key : factories.keySet()) {
+      Set<String> names = map.get(key.getType());
+      if (names == null) {
+        names = new HashSet<String>();
+        map.put(key.getType(), names);
+      }
+      names.add(key.getName());
+    }
+    
+    for (Entry<Class<?>,Set<String>> entry : map.entrySet()) {
+      entry.setValue(Collections.unmodifiableSet(entry.getValue()));
+    }
+    
+    this.factoryNamesByType = Collections.unmodifiableMap(map);
   }
 
   @SuppressWarnings("unchecked")
@@ -493,6 +514,10 @@ class ContainerImpl implements Container {
         return getInstance(type, context);
       }
     });
+  }
+  
+  public Set<String> getInstanceNames(final Class<?> type) {
+    return factoryNamesByType.get(type);
   }
 
   ThreadLocal<InternalContext[]> localContext =

@@ -16,6 +16,8 @@
 
 package com.opensymphony.xwork2.inject;
 
+import java.util.Set;
+
 /**
  * Injects dependencies into constructors, methods and fields annotated with
  * {@link Inject}. Immutable.
@@ -90,6 +92,13 @@ public interface Container {
    * DEFAULT_NAME)}.
    */
   <T> T getInstance(Class<T> type);
+  
+  /**
+   * Gets a set of all registered names for the given type
+   * @param type The instance type
+   * @return A set of registered names
+   */
+  Set<String> getInstanceNames(Class<?> type);
 
   /**
    * Sets the scope strategy for the current thread.
