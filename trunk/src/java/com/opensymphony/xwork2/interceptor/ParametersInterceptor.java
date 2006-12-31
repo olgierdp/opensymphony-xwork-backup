@@ -10,10 +10,16 @@ import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.*;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -102,6 +108,7 @@ public class ParametersInterceptor extends AbstractInterceptor {
     private static final Log LOG = LogFactory.getLog(ParametersInterceptor.class);
 
     boolean ordered = false;
+    Set<Pattern> excludeParams = Collections.EMPTY_SET;
     static boolean devMode = false;
     
     @Inject("devMode")
@@ -238,11 +245,23 @@ public class ParametersInterceptor extends AbstractInterceptor {
 
     protected boolean acceptableName(String name) {
         if (name.indexOf('=') != -1 || name.indexOf(',') != -1 || name.indexOf('#') != -1
-                || name.indexOf(':') != -1) {
+                || name.indexOf(':') != -1 || isExcluded(name)) {
             return false;
         } else {
             return true;
         }
+    }
+    
+    protected boolean isExcluded(String paramName) {
+        if (!this.excludeParams.isEmpty()) {
+            for (Pattern pattern : excludeParams) {
+                Matcher matcher = pattern.matcher(paramName);
+                if (matcher.matches()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -261,5 +280,44 @@ public class ParametersInterceptor extends AbstractInterceptor {
      */
     public void setOrdered(boolean ordered) {
         this.ordered = ordered;
+    }
+    
+    /**
+     * Gets a set of regular expressions of parameters to remove
+     * from the parameter map
+     * 
+     * @return A set of compiled regular expression patterns
+     */
+    protected Set getExcludeParamsSet() {
+        return excludeParams;
+    }
+
+    /**
+     * Sets a comma-delimited list of regular expressions to match 
+     * parameters that should be removed from the parameter map.
+     * 
+     * @param commaDelim A comma-delimited list of regular expressions
+     */
+    public void setExcludeParams(String commaDelim) {
+        Collection<String> excludePatterns = asCollection(commaDelim);
+        if (excludePatterns != null) {
+            excludeParams = new HashSet<Pattern>();
+            for (String pattern : excludePatterns) {
+                excludeParams.add(Pattern.compile(pattern));
+            }
+        }
+    }
+
+    /**
+     * Return a collection from the comma delimited String.
+     *
+     * @param commaDelim
+     * @return A collection from the comma delimited String.
+     */
+    private Collection asCollection(String commaDelim) {
+        if (commaDelim == null || commaDelim.trim().length() == 0) {
+            return null;
+        }
+        return TextParseUtil.commaDelimitedStringToSet(commaDelim);
     }
 }

@@ -160,6 +160,32 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         interceptor.intercept(mai);
         interceptor.destroy();
     }
+    
+    public void testExcludedParametersAreIgnored() throws Exception {
+        ParametersInterceptor pi = new ParametersInterceptor();
+        pi.setExcludeParams("dojo\\..*");
+        final Map actual = new HashMap();
+        ValueStack stack = new OgnlValueStack() {
+            public void setValue(String expr, Object value) {
+                actual.put(expr, value);
+            }
+        };
+        final Map expected = new HashMap() {
+            {
+                put("fooKey", "fooValue");
+            }
+        };
+
+        Map parameters = new HashMap() {
+            {
+                put("dojo.test", "dojoValue");
+                put("fooKey", "fooValue");
+            }
+        };
+        pi.setParameters(new NoParametersAction(), stack, parameters);
+        assertEquals(expected, actual);
+    }
+
 
     private class NoParametersAction implements Action, NoParameters {
 
