@@ -193,7 +193,7 @@ public class DefaultActionInvocation implements ActionInvocation {
                 LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClassName(), e);
                 throw new XWorkException(e, resultConfig);
             }
-        } else if (resultCode != null && !Action.NONE.equals(resultCode)) {
+        } else if (resultCode != null && !Action.NONE.equals(resultCode) && unknownHandler != null) {
             return unknownHandler.handleUnknownResult(invocationContext, proxy.getActionName(), proxy.getConfig(), resultCode);
         }
         return null;
