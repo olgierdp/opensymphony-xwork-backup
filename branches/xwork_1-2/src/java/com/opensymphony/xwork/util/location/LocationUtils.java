@@ -290,7 +290,7 @@ public class LocationUtils {
                             }
                         }
                         if (description == null) {
-                            StringBuilder sb = new StringBuilder();
+                            StringBuffer sb = new StringBuffer();
                             sb.append("Class: ").append(trace.getClassName()).append("\n");
                             sb.append("File: ").append(trace.getFileName()).append("\n");
                             sb.append("Method: ").append(trace.getMethodName()).append("\n");
