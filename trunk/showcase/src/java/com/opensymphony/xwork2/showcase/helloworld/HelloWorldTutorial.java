@@ -20,20 +20,17 @@ import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 public class HelloWorldTutorial {
 
 	public static void main(String[] args) throws Exception {
-		
+
 		ConfigurationManager confManager = new ConfigurationManager();
 		confManager.addConfigurationProvider(
 				new XmlConfigurationProvider(
 						"com/opensymphony/xwork2/showcase/helloworld/xwork-hello-world.xml", 
 						true));
-		
-		
-		Configuration conf = confManager.getConfiguration();
-		
-		
-		ActionProxyFactory actionProxyFactory = ActionProxyFactory.getFactory();
+        
+        Configuration conf = confManager.getConfiguration();
+		ActionProxyFactory actionProxyFactory = conf.getContainer().getInstance(ActionProxyFactory.class);
 		ActionProxy actionProxy = actionProxyFactory.createActionProxy(
-				conf, "/helloWorld", "helloWorld", new LinkedHashMap());
+				"/helloWorld", "helloWorld", new LinkedHashMap());
 		
 		
 		actionProxy.execute();
