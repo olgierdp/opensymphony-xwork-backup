@@ -1,7 +1,10 @@
-package com.opensymphony.xwork2.inject;
+package com.opensymphony.xwork2.config.impl;
 
 import com.opensymphony.xwork2.util.location.Located;
 import com.opensymphony.xwork2.util.location.LocationUtils;
+import com.opensymphony.xwork2.inject.Factory;
+import com.opensymphony.xwork2.inject.Scope;
+import com.opensymphony.xwork2.inject.Context;
 
 import java.util.LinkedHashMap;
 
@@ -10,7 +13,7 @@ import java.util.LinkedHashMap;
  */
 public class LocatableFactory<T> extends Located implements Factory<T> {
 
-    volatile ContainerImpl.ConstructorInjector<? extends T> constructor;
+
     private Class implementation;
     private Class type;
     private String name;
@@ -26,13 +29,8 @@ public class LocatableFactory<T> extends Located implements Factory<T> {
 
     @SuppressWarnings("unchecked")
     public T create(Context context) {
-        if (constructor == null) {
-            this.constructor =
-                    ((ContainerImpl)context.getContainer()).getConstructor(implementation);
-        }
-        InternalContext ctx = new InternalContext((ContainerImpl) context.getContainer());
-        ctx.setExternalContext((ExternalContext)context);
-        return (T) constructor.construct(ctx, type);
+        Object obj = context.getContainer().inject(implementation);
+        return (T) obj;
     }
 
     public String toString() {
