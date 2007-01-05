@@ -6,8 +6,7 @@ import com.opensymphony.xwork2.util.location.LocationUtils;
 import java.util.LinkedHashMap;
 
 /**
- * Attaches location information to the factory.  Construction limited to no-arg
- * constructors.
+ * Attaches location information to the factory.
  */
 public class LocatableFactory<T> extends Located implements Factory<T> {
 
