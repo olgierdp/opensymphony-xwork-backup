@@ -13,11 +13,8 @@ import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.config.*;
 import com.opensymphony.xwork2.config.entities.*;
-import com.opensymphony.xwork2.config.impl.LocatableFactory;
-import com.opensymphony.xwork2.inject.Container;
-import com.opensymphony.xwork2.inject.ContainerBuilder;
-import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.inject.Scope;
+import com.opensymphony.xwork2.inject.LocatableFactory;
+import com.opensymphony.xwork2.inject.*;
 import com.opensymphony.xwork2.util.DomHelper;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.util.location.Location;
@@ -204,7 +201,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                                 if (LOG.isDebugEnabled()) {
                                     LOG.debug("Loaded type:"+type+" name:"+name+" impl:"+impl);
                                 }
-                                containerBuilder.factory(ctype, name, new LocatableFactory(cimpl, childNode), scope);
+                                containerBuilder.factory(ctype, name, new LocatableFactory(name, ctype, cimpl, scope, childNode), scope);
                             }
                             loadedBeans.put(ctype.getName()+name, child);
                         } catch (Throwable ex) {
