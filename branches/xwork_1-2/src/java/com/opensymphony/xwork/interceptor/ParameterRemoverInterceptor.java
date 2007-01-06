@@ -128,15 +128,6 @@ public class ParameterRemoverInterceptor extends AroundInterceptor {
 
 
 	/**
-	 * Return the csv <code>paramNames</code> as a <code>Set</code>.
-	 * 
-	 * @return the paramNames
-	 */
-	public Set getParamNames() {
-		return this.paramNames;
-	}
-
-	/**
 	 * Allows <code>paramNames</code> attribute to be set as comma-separated-values (csv).
 	 * 
 	 * @param paramNames the paramNames to set
@@ -145,14 +136,6 @@ public class ParameterRemoverInterceptor extends AroundInterceptor {
 		this.paramNames = TextParseUtil.commaDelimitedStringToSet(paramNames);
 	}
 
-	/**
-	 * Return the csv <code>paramValues</code> as a <code>Set</code>.
-	 * 
-	 * @return the paramValues
-	 */
-	public Set getParamValues() {
-		return this.paramValues;
-	}
 
 	/**
 	 * Allows <code>paramValues</code> attribute to be set as a comma-separated-values (csv).
