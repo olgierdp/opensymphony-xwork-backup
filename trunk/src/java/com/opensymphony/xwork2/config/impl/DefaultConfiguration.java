@@ -137,16 +137,24 @@ public class DefaultConfiguration implements Configuration {
             }
         });
         
-        container = builder.create(false);
-        objectFactory = container.getInstance(ObjectFactory.class);
-        
-        for (ConfigurationProvider configurationProvider : providers)
-        {
-            container.inject(configurationProvider);
-            configurationProvider.loadPackages();
+        try {
+            // Set the object factory for the purposes of factory creation
+            ObjectFactory.setObjectFactory(new ObjectFactory());
+            
+            container = builder.create(false);
+            objectFactory = container.getInstance(ObjectFactory.class);
+            ObjectFactory.setObjectFactory(objectFactory);
+            
+            for (ConfigurationProvider configurationProvider : providers)
+            {
+                container.inject(configurationProvider);
+                configurationProvider.loadPackages();
+            }
+    
+            rebuildRuntimeConfiguration();
+        } finally {
+            ObjectFactory.setObjectFactory(null);
         }
-
-        rebuildRuntimeConfiguration();
     }
 
     public void removePackageConfig(String name) {
