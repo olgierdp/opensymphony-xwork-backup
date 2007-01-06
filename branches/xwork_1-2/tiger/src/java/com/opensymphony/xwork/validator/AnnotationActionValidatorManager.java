@@ -26,7 +26,7 @@ import com.opensymphony.util.FileManager;
  */
 public class AnnotationActionValidatorManager implements ActionValidatorManager {
 
-
+    
     /**
      * The file suffix for any validation file.
      */
@@ -90,10 +90,25 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
      * @throws ValidationException if an error happens when validating the action.
      */
     public void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException {
-        List<Validator> validators = getValidators(object.getClass(), context);
+        List validators = getValidators(object.getClass(), context);
+        validate(object, validators, validatorContext);
+    }
+
+    /**
+     * Validates an action through a series of <code>validators</code> with
+     * the given <code>validatorContext</code>
+     *
+     * @param object
+     * @param validators
+     * @param validatorContext
+     * @throws ValidationException
+     */
+    public void validate(Object object, List validators, ValidatorContext validatorContext) throws ValidationException {
         Set<String> shortcircuitedFields = null;
 
-        for (final Validator validator: validators) {
+        for (Iterator iterator = validators.iterator(); iterator.hasNext();) {
+            final Validator validator = (Validator) iterator.next();
+
             try {
                 validator.setValidatorContext(validatorContext);
 
@@ -176,7 +191,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
                 validator.setValidatorContext( null );
             }
 
-        }
+        }        
     }
 
     /**
