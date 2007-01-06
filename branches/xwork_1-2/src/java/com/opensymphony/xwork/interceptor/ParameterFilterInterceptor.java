@@ -62,7 +62,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ParameterFilterInterceptor implements Interceptor {
 
-    private static final Log LOG = LogFactory.getLog(ParameterFilterInterceptor.class);
+	private static final long serialVersionUID = -7467459931718970229L;
+
+	private static final Log LOG = LogFactory.getLog(ParameterFilterInterceptor.class);
 
     private Collection allowed;
 
