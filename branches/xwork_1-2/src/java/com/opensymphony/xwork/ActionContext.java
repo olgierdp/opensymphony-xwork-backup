@@ -28,7 +28,10 @@ import java.util.Map;
  * @author Bill Lynch (docs)
  */
 public class ActionContext implements Serializable {
-    static ThreadLocal actionContext = new ActionContextThreadLocal();
+	
+	private static final long serialVersionUID = -2764764616805176907L;
+
+	static ThreadLocal actionContext = new ActionContextThreadLocal();
 
     /**
      * Constant that indicates the action is running under a "development mode".

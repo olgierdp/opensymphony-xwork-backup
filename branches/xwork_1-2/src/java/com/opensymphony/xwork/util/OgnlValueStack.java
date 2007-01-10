@@ -24,7 +24,10 @@ import java.util.*;
  * @author Patrick Lightbody
  */
 public class OgnlValueStack implements Serializable {
-    public static final String VALUE_STACK = "com.opensymphony.xwork.util.OgnlValueStack.ValueStack";
+	
+	private static final long serialVersionUID = -3444677371593148954L;
+	
+	public static final String VALUE_STACK = "com.opensymphony.xwork.util.OgnlValueStack.ValueStack";
     public static final String REPORT_ERRORS_ON_NO_PROP = "com.opensymphony.xwork.util.OgnlValueStack.ReportErrorsOnNoProp";
     private static CompoundRootAccessor accessor;
     private static Log LOG = LogFactory.getLog(OgnlValueStack.class);
