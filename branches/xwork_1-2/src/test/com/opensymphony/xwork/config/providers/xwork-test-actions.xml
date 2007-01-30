@@ -31,6 +31,10 @@
         <action name="Bar" class="com.opensymphony.xwork.SimpleAction">
             <param name="foo">17</param>
             <param name="bar">23</param>
+            <param name="testXW412">foo.jspa?fooID=${fooID}&amp;something=bar</param>
+            <param name="testXW412Again">
+            		something
+            </param>
             <param name="testForXW171"></param>
         </action>
 
