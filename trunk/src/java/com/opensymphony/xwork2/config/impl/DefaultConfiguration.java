@@ -227,19 +227,15 @@ public class DefaultConfiguration implements Configuration {
      */
     private ActionConfig buildFullActionConfig(PackageConfig packageContext, ActionConfig baseConfig) throws ConfigurationException {
         Map<String, Object> params = new TreeMap<String, Object>(baseConfig.getParams());
-        Map<String, ResultConfig> results = new TreeMap<String, ResultConfig>(packageContext.getAllGlobalResults());
-        if (baseConfig.getPackageName().equals(packageContext.getName())) {
-        	results = new TreeMap<String, ResultConfig>(packageContext.getAllGlobalResults());
-        	results.putAll(baseConfig.getResults());
-        }
-        else {
-        	PackageConfig baseConfigPackageConfig = (PackageConfig) packageContexts.get(baseConfig.getPackageName());
-            if ( baseConfigPackageConfig != null) {
-                results = new TreeMap<String, ResultConfig>(baseConfigPackageConfig.getAllGlobalResults());
-            }
+        Map<String, ResultConfig> results = new TreeMap<String, ResultConfig>();
 
-        	results.putAll(baseConfig.getResults());
-        }        
+        if (!baseConfig.getPackageName().equals(packageContext.getName()) && packageContexts.containsKey(baseConfig.getPackageName())) {
+            results.putAll(packageContexts.get(baseConfig.getPackageName()).getGlobalResultConfigs());
+        } else {
+            results.putAll(packageContext.getAllGlobalResults());
+        }
+
+       	results.putAll(baseConfig.getResults());
 
         setDefaultResults(results, packageContext);
 
