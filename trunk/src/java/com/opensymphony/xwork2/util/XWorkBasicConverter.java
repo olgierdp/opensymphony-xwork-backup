@@ -74,7 +74,7 @@ import com.opensymphony.xwork2.XWorkException;
 public class XWorkBasicConverter extends DefaultTypeConverter {
 
     private static String MILLISECOND_FORMAT = ".SSS";
-
+    final private static SimpleDateFormat RFC3399_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     public Object convertValue(Map context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;
 
@@ -118,7 +118,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             } else if (!"".equals(value)) { // we've already tried the types we know
                 result = super.convertValue(context, value, toType);
             }
-            
+
             if (result == null && value != null && !"".equals(value)) {
                 throw new XWorkException("Cannot create type " + toType + " from value " + value);
             }
@@ -319,7 +319,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 SimpleDateFormat d1 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG, locale);
                 SimpleDateFormat d2 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale);
                 SimpleDateFormat d3 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
-                SimpleDateFormat[] dfs = {d1, d2, d3};
+                SimpleDateFormat[] dfs = {d1, d2, d3, RFC3399_FORMAT}; //added RFC 3339 date format (XW-473)
                 for (int i = 0; i < dfs.length; i++) {
                 	try {
                 		check = dfs[i].parse(sa);
@@ -327,14 +327,14 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 		if (check != null) {
                 			break;
                 		}
-                	} 
+                	}
                 	catch (ParseException ignore) {
                 	}
                 }
             }
             //final fallback for dates without time
             if (df == null){
-            	df = DateFormat.getDateInstance(DateFormat.SHORT, locale); 
+            	df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
             }
             try {
             	df.setLenient(false); // let's use strict parsing (XW-341)
@@ -374,7 +374,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 }
                 numFormat.setGroupingUsed(true);
                 Number number = numFormat.parse(stringValue, parsePos);
-                
+
                 if (parsePos.getIndex() != stringValue.length()) {
                     throw new XWorkException("Unparseable number: \"" + stringValue + "\" at position "
                             + parsePos.getIndex());
@@ -400,10 +400,10 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 || char.class == type || Character.class == type) {
             return false;
         }
-        
+
         return true;
     }
-    
+
     private String doConvertToString(Map context, Object value) {
         String result = null;
 

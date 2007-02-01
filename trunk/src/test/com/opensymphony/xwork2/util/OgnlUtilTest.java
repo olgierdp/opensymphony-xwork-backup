@@ -13,6 +13,7 @@ import com.opensymphony.xwork2.test.User;
 import ognl.*;
 
 import java.lang.reflect.Method;
+import java.text.*;
 import java.util.*;
 
 
@@ -351,6 +352,21 @@ public class OgnlUtilTest extends XWorkTestCase {
         Locale.setDefault(orig);
          
         Locale.setDefault(orig);
+        
+        //test RFC 3339 date format for JSON
+        props.put("event", "1996-12-19T16:39:57Z");
+        OgnlUtil.setProperties(props, foo, context);
+        
+        cal = Calendar.getInstance();
+        cal.clear();
+        cal.set(Calendar.MONTH, Calendar.DECEMBER);
+        cal.set(Calendar.DAY_OF_MONTH, 19);
+        cal.set(Calendar.YEAR, 1996);
+        cal.set(Calendar.HOUR_OF_DAY, 16);
+        cal.set(Calendar.MINUTE, 39);
+        cal.set(Calendar.SECOND, 57);
+        
+        assertEquals(cal.getTime(), foo.getEvent());
     }
 
     public void testSetPropertiesInt() {
