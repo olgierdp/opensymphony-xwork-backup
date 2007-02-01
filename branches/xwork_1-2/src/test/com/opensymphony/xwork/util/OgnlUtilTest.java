@@ -308,6 +308,7 @@ public class OgnlUtilTest extends XWorkTestCase {
 
         Map props = new HashMap();
         props.put("birthday", "02/12/1982");
+        // US style test
         OgnlUtil.setProperties(props, foo, context);
 
         Calendar cal = Calendar.getInstance();
@@ -317,7 +318,52 @@ public class OgnlUtilTest extends XWorkTestCase {
         cal.set(Calendar.YEAR, 1982);
 
         assertEquals(cal.getTime(), foo.getBirthday());
+        
+        Locale.setDefault(Locale.UK);
+        //UK style test
+        props.put("event", "18/10/2006 14:23:45");
+        props.put("meeting", "09/09/2006 14:30");
+        OgnlUtil.setProperties(props, foo, context);
+        
+        cal = Calendar.getInstance();
+        cal.clear();
+        cal.set(Calendar.MONTH, Calendar.OCTOBER);
+        cal.set(Calendar.DAY_OF_MONTH, 18);
+        cal.set(Calendar.YEAR, 2006);
+        cal.set(Calendar.HOUR_OF_DAY, 14);
+        cal.set(Calendar.MINUTE, 23);
+        cal.set(Calendar.SECOND, 45);
+        
+        assertEquals(cal.getTime(), foo.getEvent());
+        
+        cal = Calendar.getInstance();
+        cal.clear();
+        cal.set(Calendar.MONTH, Calendar.SEPTEMBER);
+        cal.set(Calendar.DAY_OF_MONTH, 9);
+        cal.set(Calendar.YEAR, 2006);
+        cal.set(Calendar.HOUR_OF_DAY, 14);
+        cal.set(Calendar.MINUTE, 30);
+        
+        assertEquals(cal.getTime(), foo.getMeeting());
+        
         Locale.setDefault(orig);
+         
+        Locale.setDefault(orig);
+        
+        //test RFC 3339 date format for JSON
+        props.put("event", "1996-12-19T16:39:57Z");
+        OgnlUtil.setProperties(props, foo, context);
+        
+        cal = Calendar.getInstance();
+        cal.clear();
+        cal.set(Calendar.MONTH, Calendar.DECEMBER);
+        cal.set(Calendar.DAY_OF_MONTH, 19);
+        cal.set(Calendar.YEAR, 1996);
+        cal.set(Calendar.HOUR_OF_DAY, 16);
+        cal.set(Calendar.MINUTE, 39);
+        cal.set(Calendar.SECOND, 57);
+        
+        assertEquals(cal.getTime(), foo.getEvent());
     }
 
     public void testSetPropertiesInt() {
@@ -480,7 +526,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         // just do some of the 15 tests
         Map beans = OgnlUtil.getBeanMap(foo);
         assertNotNull(beans);
-        assertEquals(15, beans.size());
+        assertEquals(17, beans.size());
         assertEquals("Hello Santa", beans.get("title"));
         assertEquals(new Long("123"), beans.get("ALong"));
         assertEquals(new Integer("44"), beans.get("number"));
