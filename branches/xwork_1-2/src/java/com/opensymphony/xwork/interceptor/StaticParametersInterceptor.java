@@ -59,10 +59,15 @@ import java.util.Map;
  * </pre>
  *
  * @author Patrick Lightbody
+ * @author tmjee
+ * 
+ * @version $Date$ $Id$
  */
 public class StaticParametersInterceptor extends AroundInterceptor {
 
-    private boolean parse;
+	private static final long serialVersionUID = -5364822129178790799L;
+	
+	private boolean parse;
 
     public void setParse(String value) {
         this.parse = Boolean.valueOf(value).booleanValue();
@@ -92,7 +97,6 @@ public class StaticParametersInterceptor extends AroundInterceptor {
             for (Iterator iterator = parameters.entrySet().iterator();
                  iterator.hasNext();) {
                 Map.Entry entry = (Map.Entry) iterator.next();
-                stack.setValue(entry.getKey().toString(), entry.getValue());
                 Object val = entry.getValue();
                 if (parse && val instanceof String) {
                     val = TextParseUtil.translateVariables((String) val, stack);
