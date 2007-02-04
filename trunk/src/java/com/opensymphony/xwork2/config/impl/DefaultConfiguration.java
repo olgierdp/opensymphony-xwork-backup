@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
+import java.io.Serializable;
 
 
 /**
@@ -29,7 +30,7 @@ import java.util.*;
  * @author Jason Carreira
  *         Created Feb 24, 2003 7:38:06 AM
  */
-public class DefaultConfiguration implements Configuration {
+public class DefaultConfiguration implements Configuration, Serializable {
 
     protected static final Log LOG = LogFactory.getLog(DefaultConfiguration.class);
 
