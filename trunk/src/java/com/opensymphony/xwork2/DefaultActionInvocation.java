@@ -396,17 +396,7 @@ public class DefaultActionInvocation implements ActionInvocation {
                 }
             }
 
-            Object methodResult = null;
-            if (action instanceof Proxy) {
-                try {
-                    methodResult = Proxy.getInvocationHandler(action).invoke(action, method, new Object[0]);
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                    throw new Exception("Error invoking on proxy: " + throwable.getMessage());
-                }
-            } else {
-                methodResult = method.invoke(action, new Object[0]);
-            }
+            Object methodResult = method.invoke(action, new Object[0]);
             if (methodResult instanceof Result) {
             	this.result = (Result) methodResult;
             	return null;
