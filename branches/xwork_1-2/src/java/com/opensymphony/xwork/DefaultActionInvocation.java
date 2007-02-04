@@ -356,16 +356,7 @@ public class DefaultActionInvocation implements ActionInvocation {
                 }
             }
 
-            if (action instanceof Proxy) {
-                try {
-                    return (String) Proxy.getInvocationHandler(action).invoke(action, method, new Object[0]);
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                    throw new Exception("Error invoking on proxy: " + throwable.getMessage());
-                }
-            } else {
-                return (String) method.invoke(action, new Object[0]);
-            }
+            return (String) method.invoke(action, new Object[0]);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException("Neither " + methodName + "() nor it's doXxx() equivalent is defined in action " + getAction().getClass() + "");
         } catch (InvocationTargetException e) {

@@ -24,6 +24,8 @@
             <interceptor-ref name="defaultStack"/>
         </action>
 
+        <action name="ProxyInvocation" method="show" class="com.opensymphony.xwork.ProxyInvocationAction"/>
+
         <action name="WildCard" class="com.opensymphony.xwork.SimpleAction">
             <param name="foo">17</param>
             <param name="bar">23</param>
