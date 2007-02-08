@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * @author CameronBraid
  */
-public class ChainResultTest extends TestCase {
+public class ChainResultTest extends XWorkTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();

@@ -6,8 +6,6 @@ package com.opensymphony.xwork;
 
 import java.util.HashMap;
 
-import junit.framework.TestCase;
-
 
 /**
  * Simple Test ActionContext's ThreadLocal
@@ -15,7 +13,7 @@ import junit.framework.TestCase;
  * @author tm_jee
  * @version $Date$ $Id$
  */
-public class ActionContextThreadLocalTest extends TestCase {
+public class ActionContextThreadLocalTest extends XWorkTestCase {
 
 	
 	public void testGetContext() throws Exception {

@@ -5,7 +5,6 @@
 package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.config.ConfigurationManager;
-import junit.framework.TestCase;
 
 import java.util.HashMap;
 
@@ -14,7 +13,7 @@ import java.util.HashMap;
  * @author $Author$
  * @version $Revision$
  */
-public class ActionInvocationTest extends TestCase {
+public class ActionInvocationTest extends XWorkTestCase {
 
     public void testCommandInvocation() throws Exception {
         ActionProxy baseActionProxy = ActionProxyFactory.getFactory().createActionProxy("baz", "commandTest", null);

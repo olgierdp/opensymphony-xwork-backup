@@ -5,7 +5,6 @@
 
 package com.opensymphony.xwork;
 
-import junit.framework.TestCase;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.mock.MockResult;
 
@@ -15,7 +14,7 @@ import com.opensymphony.xwork.mock.MockResult;
  * @author <a href="mailto:hermanns@aixcept.de">Rainer Hermanns</a>
  * @version $Id$
  */
-public class WildCardResultTest extends TestCase {
+public class WildCardResultTest extends XWorkTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
