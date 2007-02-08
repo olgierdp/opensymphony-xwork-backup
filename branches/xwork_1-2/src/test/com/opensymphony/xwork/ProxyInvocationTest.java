@@ -10,16 +10,13 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
-import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 
 /**
  * Contribed by: Ruben Inoto
  * @version $Date$ $Id$
  */
-public class ProxyInvocationTest extends TestCase {
+public class ProxyInvocationTest extends XWorkTestCase {
 
     /**
      * Sets a ProxyObjectFactory as ObjectFactory (so the FooAction will always be retrieved
@@ -107,13 +104,5 @@ public class ProxyInvocationTest extends TestCase {
             }
             return bean;
         }
-    }
-    
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        // ensure we're using the default configuration, not simple config
-        ConfigurationManager.clearConfigurationProviders();
-        ConfigurationManager.getConfiguration().reload();
     }
 }

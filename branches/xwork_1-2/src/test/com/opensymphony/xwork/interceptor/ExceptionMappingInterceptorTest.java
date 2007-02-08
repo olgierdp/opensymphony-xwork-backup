@@ -10,7 +10,6 @@ import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.ExceptionMappingConfig;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.ValidationException;
-import junit.framework.TestCase;
 
 import java.util.HashMap;
 
@@ -19,7 +18,7 @@ import java.util.HashMap;
  * 
  * @author Matthew E. Porter (matthew dot porter at metissian dot com)
  */
-public class ExceptionMappingInterceptorTest extends TestCase {
+public class ExceptionMappingInterceptorTest extends XWorkTestCase {
 
     ActionInvocation invocation;
     ExceptionMappingInterceptor interceptor;

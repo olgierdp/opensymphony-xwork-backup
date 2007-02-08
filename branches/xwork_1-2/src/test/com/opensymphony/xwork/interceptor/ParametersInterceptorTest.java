@@ -9,7 +9,6 @@ import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.mock.MockActionInvocation;
 import com.opensymphony.xwork.util.OgnlValueStack;
-import junit.framework.TestCase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +19,7 @@ import java.util.Map;
  *
  * @author Jason Carreira
  */
-public class ParametersInterceptorTest extends TestCase {
+public class ParametersInterceptorTest extends XWorkTestCase {
 
     public void testParameterNameAware() {
         ParametersInterceptor pi = new ParametersInterceptor();
@@ -167,6 +166,7 @@ public class ParametersInterceptorTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
+    	super.setUp();
         ConfigurationManager.clearConfigurationProviders();
         ConfigurationManager.addConfigurationProvider(new MockConfigurationProvider());
         ConfigurationManager.getConfiguration().reload();
