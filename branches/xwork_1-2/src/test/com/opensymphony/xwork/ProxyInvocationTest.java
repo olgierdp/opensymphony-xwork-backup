@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork;
 
 import java.lang.reflect.InvocationHandler;
@@ -8,10 +12,12 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.entities.ActionConfig;
 
 /**
  * Contribed by: Ruben Inoto
+ * @version $Date$ $Id$
  */
 public class ProxyInvocationTest extends TestCase {
 
@@ -68,7 +74,10 @@ public class ProxyInvocationTest extends TestCase {
      * Subclass of DefaultActionInvocation, to provide a visible constructor
      */
     private class TestActionInvocation extends DefaultActionInvocation {
-        protected TestActionInvocation(ActionProxy proxy) throws Exception {
+    	
+		private static final long serialVersionUID = -7015263281680465248L;
+
+		protected TestActionInvocation(ActionProxy proxy) throws Exception {
             super(proxy);
         }
 
@@ -98,5 +107,13 @@ public class ProxyInvocationTest extends TestCase {
             }
             return bean;
         }
+    }
+    
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        // ensure we're using the default configuration, not simple config
+        ConfigurationManager.clearConfigurationProviders();
+        ConfigurationManager.getConfiguration().reload();
     }
 }
