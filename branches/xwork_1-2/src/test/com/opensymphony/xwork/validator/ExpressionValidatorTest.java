@@ -12,7 +12,6 @@ import com.opensymphony.xwork.validator.validators.ExpressionValidator;
 
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
-import junit.framework.TestCase;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,7 +24,7 @@ import java.util.Map;
  * @author Jason Carreira
  * @author Claus Ibsen
  */
-public class ExpressionValidatorTest extends TestCase {
+public class ExpressionValidatorTest extends XWorkTestCase {
 
     public void testExpressionValidationOfStringLength() throws ValidationException {
         TestBean bean = new TestBean();

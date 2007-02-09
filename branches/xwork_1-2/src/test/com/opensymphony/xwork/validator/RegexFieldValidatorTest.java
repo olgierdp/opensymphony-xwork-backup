@@ -5,9 +5,9 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.validators.RegexFieldValidator;
-import junit.framework.TestCase;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author Claus Ibsen
  */
-public class RegexFieldValidatorTest extends TestCase {
+public class RegexFieldValidatorTest extends XWorkTestCase {
 
     public void testMatch() throws Exception {
         MyTestPerson testPerson = new MyTestPerson();

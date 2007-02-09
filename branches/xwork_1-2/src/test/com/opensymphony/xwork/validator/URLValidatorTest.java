@@ -5,10 +5,9 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ActionContext;
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.validators.URLValidator;
-
-import junit.framework.TestCase;
 
 /**
  * Test case for URLValidator
@@ -16,7 +15,7 @@ import junit.framework.TestCase;
  * @author tm_jee
  * @version $Date$ $Id$
  */
-public class URLValidatorTest extends TestCase {
+public class URLValidatorTest extends XWorkTestCase {
 
 	
 	OgnlValueStack stack;

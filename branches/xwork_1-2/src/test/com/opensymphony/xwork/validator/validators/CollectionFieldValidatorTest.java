@@ -9,16 +9,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.opensymphony.xwork.ActionSupport;
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.validator.DelegatingValidatorContext;
 import com.opensymphony.xwork.validator.validators.CollectionFieldValidator.PropertySpliter;
-
-import junit.framework.TestCase;
 
 /**
  * @author tmjee
  * @version $Date$ $Id$
  */
-public class CollectionFieldValidatorTest extends TestCase {
+public class CollectionFieldValidatorTest extends XWorkTestCase {
 
 	public void testValidator1() throws Exception {
 		TestAction action = new TestAction();

@@ -6,9 +6,9 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.TestBean;
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.test.TestBean2;
 import com.opensymphony.xwork.util.OgnlValueStack;
-import junit.framework.TestCase;
 
 import java.util.*;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * @author Jason Carreira
  *         Date: Mar 18, 2004 2:51:42 PM
  */
-public class VisitorFieldValidatorModelTest extends TestCase {
+public class VisitorFieldValidatorModelTest extends XWorkTestCase {
 
     protected VisitorValidatorModelAction action;
     private Locale origLocale;

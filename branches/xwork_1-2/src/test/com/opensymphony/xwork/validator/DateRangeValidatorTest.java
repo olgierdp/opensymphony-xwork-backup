@@ -7,10 +7,10 @@ package com.opensymphony.xwork.validator;
 import com.opensymphony.xwork.ActionProxy;
 import com.opensymphony.xwork.ActionProxyFactory;
 import com.opensymphony.xwork.ValidationAware;
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.validator.validators.DateRangeFieldValidator;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
-import junit.framework.TestCase;
 
 import java.util.*;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * @author Jason Carreira
  *         Created Feb 9, 2003 1:25:42 AM
  */
-public class DateRangeValidatorTest extends TestCase {
+public class DateRangeValidatorTest extends XWorkTestCase {
 
     private Locale origLocale;
 

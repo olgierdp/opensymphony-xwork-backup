@@ -6,12 +6,12 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ValidationAwareSupport;
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.validator.validators.RequiredStringValidator;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.test.Equidae;
 import com.opensymphony.xwork.util.OgnlValueStack;
-import junit.framework.TestCase;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +20,7 @@ import java.util.Map;
  * @author Mark Woon
  * @author tm_jee (tm_jee (at) yahoo.co.uk )
  */
-public class StringValidatorTest extends TestCase {
+public class StringValidatorTest extends XWorkTestCase {
 
 	public void testRequiredStringWithNullValue() throws Exception {
 		Equidae equidae = new Equidae();

@@ -9,7 +9,6 @@ import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork.util.OgnlValueStack;
 import com.opensymphony.xwork.validator.validators.ValidatorSupport;
-import junit.framework.TestCase;
 
 import java.util.*;
 
@@ -21,7 +20,7 @@ import java.util.*;
  *
  * @author Jason Carreira
  */
-public class SimpleActionValidationTest extends TestCase {
+public class SimpleActionValidationTest extends XWorkTestCase {
 
     private Locale origLocale;
 

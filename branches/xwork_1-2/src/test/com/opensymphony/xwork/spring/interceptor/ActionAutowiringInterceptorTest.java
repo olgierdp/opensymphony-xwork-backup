@@ -7,6 +7,7 @@ import com.opensymphony.xwork.ActionContext;
 import com.opensymphony.xwork.ActionInvocation;
 import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.TestBean;
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
 
@@ -17,12 +18,10 @@ import org.springframework.web.context.support.StaticWebApplicationContext;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 /**
  * @author Simon Stewart
  */
-public class ActionAutowiringInterceptorTest extends TestCase {
+public class ActionAutowiringInterceptorTest extends XWorkTestCase {
 
   public void testShouldAutowireAction() throws Exception {
     StaticWebApplicationContext context = new StaticWebApplicationContext();

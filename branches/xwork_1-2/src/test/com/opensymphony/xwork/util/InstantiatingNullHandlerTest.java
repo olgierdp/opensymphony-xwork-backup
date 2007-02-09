@@ -9,6 +9,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 import ognl.OgnlContext;
 
+import com.opensymphony.xwork.XWorkTestCase;
 import com.opensymphony.xwork.test.TestBean2;
 
 
@@ -18,7 +19,7 @@ import com.opensymphony.xwork.test.TestBean2;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  * @version $Revision$
  */
-public class InstantiatingNullHandlerTest extends TestCase {
+public class InstantiatingNullHandlerTest extends XWorkTestCase {
 
     /*public void testInheritance() {
         Tiger t = new Tiger();
