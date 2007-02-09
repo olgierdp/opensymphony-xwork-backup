@@ -177,11 +177,11 @@
         </mailingList>
     </mailingLists>
     <scm>
-        <connection>scm:svn:http://svn.opensymphony.com/svn/xwork/trunk</connection>
+        <connection>scm:svn:http://svn.opensymphony.com/svn/xwork/branches/2.0</connection>
         <developerConnection>
-            scm:svn:https://svn.opensymphony.com/svn/xwork/trunk
+            scm:svn:https://svn.opensymphony.com/svn/xwork/branches/2.0
         </developerConnection>
-        <url>https://svn.opensymphony.com/svn/xwork/trunk</url>
+        <url>https://svn.opensymphony.com/svn/xwork/branches/2.0</url>
     </scm>
     <licenses>
         <license>
