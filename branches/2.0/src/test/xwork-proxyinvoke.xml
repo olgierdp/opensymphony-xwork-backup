@@ -1,0 +1,13 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 2.0//EN" "http://www.opensymphony.com/xwork/xwork-2.0.dtd">
+
+<xwork>
+    <bean type="com.opensymphony.xwork2.ObjectFactory" name="default" class="com.opensymphony.xwork2.ProxyObjectFactory" />
+    
+ 	<bean type="com.opensymphony.xwork2.ActionProxyFactory" name="default" class="com.opensymphony.xwork2.DefaultActionProxyFactory"/>
+	<constant name="devMode" value="false" />
+ 
+    <package name="default" extends="xwork-test-default">
+
+        <action name="ProxyInvocation" method="show" class="com.opensymphony.xwork2.ProxyInvocationAction"/>
+    </package>
+</xwork>
