@@ -330,8 +330,9 @@ class ContainerImpl implements Container {
 
     private Constructor<T> findConstructorIn(Class<T> implementation) {
       Constructor<T> found = null;
-      for (Constructor<T> constructor
-          : implementation.getDeclaredConstructors()) {
+      Constructor<T>[] declaredConstructors = (Constructor<T>[]) implementation
+                    .getDeclaredConstructors();
+      for(Constructor<T> constructor :  declaredConstructors) {
         if (constructor.getAnnotation(Inject.class) != null) {
           if (found != null) {
             throw new DependencyException("More than one constructor annotated"
