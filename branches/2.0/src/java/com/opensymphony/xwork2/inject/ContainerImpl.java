@@ -328,6 +328,7 @@ class ContainerImpl implements Container {
       injectors = container.injectors.get(implementation);
     }
 
+    @SuppressWarnings("unchecked")
     private Constructor<T> findConstructorIn(Class<T> implementation) {
       Constructor<T> found = null;
       Constructor<T>[] declaredConstructors = (Constructor<T>[]) implementation
