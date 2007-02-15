@@ -133,13 +133,15 @@
             <name>James Mitchell</name>
             <email>jmitchell at apache.org</email>
         </developer>
+        <developer>
+            <id>phil</id>
+            <name>Philip Luppens</name>
+            <email>philip.luppens at gmail.com</email>
+        </developer>
     </developers>
     <contributors>
         <contributor>
             <name>Eric Molitor</name>
-        </contributor>
-        <contributor>
-            <name>Philip Luppens</name>
         </contributor>
     </contributors>
     <ciManagement/>
