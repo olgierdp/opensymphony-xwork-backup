@@ -213,6 +213,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>retrotranslator-maven-plugin</artifactId>
+                        <version>1.0-SNAPSHOT</version>
                         <executions>
                             <execution>
                                 <phase>process-classes</phase>
@@ -223,6 +224,7 @@
                                     <verify>false</verify>
                                     <failonwarning>true</failonwarning>
                                     <lazy>true</lazy>
+                                    <advanced>true</advanced>
                                     <verbose>false</verbose>
                                     <destdir>${project.build.directory}/classes-retro</destdir>
                                     <includes>
@@ -273,7 +275,12 @@
                 <dependency>
                     <groupId>net.sf.retrotranslator</groupId>
                     <artifactId>retrotranslator-runtime</artifactId>
-                    <version>1.0.8</version>
+                    <version>1.2.1</version>
+                </dependency>
+                <dependency>
+                    <groupId>net.sf.retrotranslator</groupId>
+                    <artifactId>retrotranslator-transformer</artifactId>
+                    <version>1.2.1</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -360,6 +367,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <!--version>2.2</version-->
                 <executions>
                     <execution>
                         <id>attach-source</id>
@@ -469,44 +477,44 @@
             <version>1.0.4</version>
         </dependency>
        <dependency>
-            <groupId>ognl</groupId>
+            <groupId>opensymphony</groupId>
             <artifactId>ognl</artifactId>
-            <version>2.6.9</version>
+            <version>2.6.10</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.8</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.8</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.8</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.8</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.8</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-mock</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.8</version>
             <scope>test</scope>
         </dependency>
         <dependency>
