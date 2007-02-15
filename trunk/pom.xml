@@ -133,13 +133,15 @@
             <name>James Mitchell</name>
             <email>jmitchell at apache.org</email>
         </developer>
+        <developer>
+            <id>phil</id>
+            <name>Philip Luppens</name>
+            <email>philip.luppens at gmail.com</email>
+        </developer>
     </developers>
     <contributors>
         <contributor>
             <name>Eric Molitor</name>
-        </contributor>
-        <contributor>
-            <name>Philip Luppens</name>
         </contributor>
     </contributors>
     <ciManagement/>
@@ -194,7 +196,6 @@
             </comments>
         </license>
     </licenses>
-
     <profiles>
         <profile>
             <!--
@@ -211,6 +212,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>retrotranslator-maven-plugin</artifactId>
+                        <version>1.0-SNAPSHOT</version>
                         <executions>
                             <execution>
                                 <phase>process-classes</phase>
@@ -221,6 +223,7 @@
                                     <verify>false</verify>
                                     <failonwarning>true</failonwarning>
                                     <lazy>true</lazy>
+                                    <advanced>true</advanced>
                                     <verbose>false</verbose>
                                     <destdir>${project.build.directory}/classes-retro</destdir>
                                     <includes>
@@ -271,7 +274,12 @@
                 <dependency>
                     <groupId>net.sf.retrotranslator</groupId>
                     <artifactId>retrotranslator-runtime</artifactId>
-                    <version>1.0.8</version>
+                    <version>1.2.1</version>
+                </dependency>
+                <dependency>
+                    <groupId>net.sf.retrotranslator</groupId>
+                    <artifactId>retrotranslator-transformer</artifactId>
+                    <version>1.2.1</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -474,37 +482,37 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.8</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.8</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.8</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.8</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.8</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-mock</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.8</version>
             <scope>test</scope>
         </dependency>
         <dependency>
