@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.io.Serializable;
 
 /**
  * Default {@link Container} implementation.
@@ -575,7 +576,7 @@ class ContainerImpl implements Container {
   /**
    * Injects a field or method in a given object.
    */
-  interface Injector {
+  interface Injector extends Serializable {
     void inject(InternalContext context, Object o);
   }
 

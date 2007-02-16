@@ -17,6 +17,7 @@
 package com.opensymphony.xwork2.inject;
 
 import java.util.Set;
+import java.io.Serializable;
 
 /**
  * Injects dependencies into constructors, methods and fields annotated with
@@ -64,7 +65,7 @@ import java.util.Set;
  * @see ContainerBuilder
  * @author crazybob@google.com (Bob Lee)
  */
-public interface Container {
+public interface Container extends Serializable {
 
   /**
    * Default dependency name.

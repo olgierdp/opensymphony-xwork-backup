@@ -16,6 +16,7 @@ import com.opensymphony.xwork2.util.OgnlUtil;
 import com.opensymphony.xwork2.validator.Validator;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -42,10 +43,10 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Jason Carreira
  */
-public class ObjectFactory {
+public class ObjectFactory implements Serializable {
     private static final Log LOG = LogFactory.getLog(ObjectFactory.class);
 
-    private ClassLoader ccl;
+    private transient ClassLoader ccl;
     private static ThreadLocal<ObjectFactory> thSelf = new ThreadLocal<ObjectFactory>();
     private Container container;
 

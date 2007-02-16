@@ -16,12 +16,14 @@
 
 package com.opensymphony.xwork2.inject;
 
+import java.io.Serializable;
+
 /**
  * Creates objects which will be injected.
  *
  * @author crazybob@google.com (Bob Lee)
  */
-interface InternalFactory<T> {
+interface InternalFactory<T> extends Serializable {
 
   /**
    * Creates an object to be injected.
