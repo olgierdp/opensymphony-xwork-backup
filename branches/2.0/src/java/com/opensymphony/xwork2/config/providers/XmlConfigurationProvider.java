@@ -449,7 +449,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         for (int i = 0; i < interceptorRefList.getLength(); i++) {
             Element interceptorRefElement = (Element) interceptorRefList.item(i);
 
-            if (interceptorRefElement.getParentNode().equals(element)) {
+            if (interceptorRefElement.getParentNode().equals(element) || interceptorRefElement.getParentNode().getNodeName().equals(element.getNodeName())) {
                 List interceptors = lookupInterceptorReference(context, interceptorRefElement);
                 interceptorList.addAll(interceptors);
             }
@@ -605,7 +605,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         for (int i = 0; i < exceptionMappingEls.getLength(); i++) {
             Element ehElement = (Element) exceptionMappingEls.item(i);
 
-            if (ehElement.getParentNode().equals(element)) {
+            if (ehElement.getParentNode().equals(element) || ehElement.getParentNode().getNodeName().equals(element.getNodeName())) {
                 String emName = ehElement.getAttribute("name");
                 String exceptionClassName = ehElement.getAttribute("exception");
                 String exceptionResult = ehElement.getAttribute("result");
