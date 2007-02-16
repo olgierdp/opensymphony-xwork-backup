@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- * <p/>The Element annotation must be applied at field level.
+ * <p/>The Element annotation must be applied at field or method level.
  * <!-- END SNIPPET: usage -->
  * <p/> <u>Annotation parameters:</u>
  *
@@ -58,8 +58,8 @@ import java.lang.annotation.Target;
  * @author Rainer Hermanns
  * @version $Id$
  */
-@Target({ ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD})
 public @interface Element {
 
     /**
