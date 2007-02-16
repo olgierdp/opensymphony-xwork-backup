@@ -82,7 +82,7 @@ import java.util.Map;
  * <p><b>Non Field Validators</b>
  * <!-- START SNIPPET: nonFieldValidators -->
  * Non-field validators only add action level messages. Non-field validators 
- * are mostly domain specific and therefore often custom implementations. 
+ * are mostly domain specific and therefore offer custom implementations. 
  * The most important standard non-field validator provided by XWork/WebWork 
  * is ExpressionValidator.
  * <!-- END SNIPPET: nonFieldValidators -->
