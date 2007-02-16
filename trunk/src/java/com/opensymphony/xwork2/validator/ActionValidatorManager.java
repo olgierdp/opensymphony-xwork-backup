@@ -16,6 +16,17 @@ import java.util.List;
 public interface ActionValidatorManager {
 
     /**
+     * Returns a list of validators for the given class, context, and method. This is the primary
+     * lookup method for validators.
+     *
+     * @param clazz the class to lookup.
+     * @param context the context of the action class - can be <tt>null</tt>.
+     * @param method the name of the method being invoked on the action - can be <tt>null</tt>.
+     * @return a list of all validators for the given class and context.
+     */
+    List<Validator> getValidators(Class clazz, String context, String method);
+
+    /**
      * Returns a list of validators for the given class and context. This is the primary
      * lookup method for validators.
      *
@@ -23,7 +34,7 @@ public interface ActionValidatorManager {
      * @param context the context of the action class - can be <tt>null</tt>.
      * @return a list of all validators for the given class and context.
      */
-    List getValidators(Class clazz, String context);
+     List<Validator> getValidators(Class clazz, String context);
 
     /**
      * Validates the given object using action and its context.
@@ -43,4 +54,25 @@ public interface ActionValidatorManager {
      * @throws ValidationException if an error happens when validating the action.
      */
     void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException;
+
+    /**
+     * Validates the given object using an action, its context, and the name of the method being invoked on the action.
+     *
+     * @param object the action to validate.
+     * @param context the action's context.
+     * @param method the name of the method being invoked on the action - can be <tt>null</tt>.
+     * @throws ValidationException if an error happens when validating the action.
+     */
+    void validate(Object object, String context, String method) throws ValidationException;
+
+    /**
+     * Validates an action give its context and a validation context.
+     *
+     * @param object the action to validate.
+     * @param context the action's context.
+     * @param validatorContext
+     * @param method the name of the method being invoked on the action - can be <tt>null</tt>.
+     * @throws ValidationException if an error happens when validating the action.
+     */
+    void validate(Object object, String context, ValidatorContext validatorContext, String method) throws ValidationException;
 }
