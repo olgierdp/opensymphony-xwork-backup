@@ -105,13 +105,18 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
 
     private boolean validateAnnotatedMethodOnly;
 
-
     public boolean isValidateAnnotatedMethodOnly() {
         return validateAnnotatedMethodOnly;
     }
 
-    public void setValidateAnnotatedMethodOnly(boolean validateAnnotatedMethodOnly) {
-        this.validateAnnotatedMethodOnly = validateAnnotatedMethodOnly;
+    /**
+     * Determine if <code>validate()</code> should always be called or only per annotated method.
+     * Default to "false".
+     *
+     * @param validateAnnotatedMethodOnly
+     */
+    public void setValidateAnnotatedMethodOnly(String validateAnnotatedMethodOnly) {
+        this.validateAnnotatedMethodOnly = Boolean.parseBoolean(validateAnnotatedMethodOnly);
     }
 
     /**
