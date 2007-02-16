@@ -290,7 +290,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         for (int i = 0; i < externalRefList.getLength(); i++) {
             Element refElement = (Element) externalRefList.item(i);
 
-            if (refElement.getParentNode().equals(element)) {
+            if (refElement.getParentNode().equals(element) || refElement.getParentNode().getNodeName().equals(element.getNodeName())) {
                 refName = refElement.getAttribute("name");
 
                 //If the external ref is not declared explicitly, we can introspect the
@@ -321,7 +321,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         for (int i = 0; i < interceptorRefList.getLength(); i++) {
             Element interceptorRefElement = (Element) interceptorRefList.item(i);
 
-            if (interceptorRefElement.getParentNode().equals(element)) {
+            if (interceptorRefElement.getParentNode().equals(element) || interceptorRefElement.getParentNode().getNodeName().equals(element.getNodeName())) {
                 List interceptors = lookupInterceptorReference(context, interceptorRefElement);
                 interceptorList.addAll(interceptors);
             }
@@ -397,7 +397,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         for (int i = 0; i < resultEls.getLength(); i++) {
             Element resultElement = (Element) resultEls.item(i);
 
-            if (resultElement.getParentNode().equals(element)) {
+            if (resultElement.getParentNode().equals(element) || resultElement.getParentNode().getNodeName().equals(element.getNodeName())) {
                 String resultName = resultElement.getAttribute("name");
                 String resultType = resultElement.getAttribute("type");
 
@@ -490,7 +490,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         for (int i = 0; i < exceptionMappingEls.getLength(); i++) {
             Element ehElement = (Element) exceptionMappingEls.item(i);
 
-            if (ehElement.getParentNode().equals(element)) {
+            if (ehElement.getParentNode().equals(element) || ehElement.getParentNode().getNodeName().equals(element.getNodeName())) {
                 String emName = ehElement.getAttribute("name");
                 String exceptionClassName = ehElement.getAttribute("exception");
                 String exceptionResult = ehElement.getAttribute("result");
