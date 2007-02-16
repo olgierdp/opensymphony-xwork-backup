@@ -185,8 +185,8 @@ import java.util.Map;
  * 
  *
  * <p>If the validator fails, the validator is pushed onto the ValueStack and the 
- * message – either the default or the locale-specific one if the key attribute is 
- * defined (and such a message exists) – is parsed for ${...} sections which are 
+ * message - either the default or the locale-specific one if the key attribute is
+ * defined (and such a message exists) - is parsed for ${...} sections which are 
  * replaced with the evaluated value of the string between the ${ and }. This 
  * allows you to parameterize your messages with values from the validator, the 
  * Action, or both. </p>
