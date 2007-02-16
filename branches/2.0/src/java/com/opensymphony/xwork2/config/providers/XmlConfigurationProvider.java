@@ -511,7 +511,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         for (int i = 0; i < resultEls.getLength(); i++) {
             Element resultElement = (Element) resultEls.item(i);
 
-            if (resultElement.getParentNode().equals(element)) {
+            if (resultElement.getParentNode().equals(element) || resultElement.getParentNode().getNodeName().equals(element.getNodeName())) {
                 String resultName = resultElement.getAttribute("name");
                 String resultType = resultElement.getAttribute("type");
 
