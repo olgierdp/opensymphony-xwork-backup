@@ -81,7 +81,7 @@ import java.util.Map;
  * <p><b>Non Field Validators</b>
  * <!-- START SNIPPET: nonFieldValidators -->
  * Non-field validators only add action level messages. Non-field validators 
- * are mostly domain specific and therefore often custom implementations. 
+ * are mostly domain specific and therefore offer custom implementations. 
  * The most important standard non-field validator provided by XWork
  * is ExpressionValidator.
  * <!-- END SNIPPET: nonFieldValidators -->
@@ -184,8 +184,8 @@ import java.util.Map;
  * 
  *
  * <p>If the validator fails, the validator is pushed onto the ValueStack and the 
- * messageâ either the default or the locale-specific one if the key attribute is
- * defined (and such a message exists)â is parsed for ${...} sections which are 
+ * message - either the default or the locale-specific one if the key attribute is
+ * defined (and such a message exists) - is parsed for ${...} sections which are 
  * replaced with the evaluated value of the string between the ${ and }. This 
  * allows you to parameterize your messages with values from the validator, the 
  * Action, or both. </p>
