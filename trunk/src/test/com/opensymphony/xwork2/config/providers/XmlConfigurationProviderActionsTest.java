@@ -40,6 +40,9 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         // bar action is very simple, just two params
         params.put("foo", "17");
         params.put("bar", "23");
+        params.put("testXW412", "foo.jspa?fooID=${fooID}&something=bar");
+        params.put("testXW412Again", "something");
+
 
         ActionConfig barAction = new ActionConfig(null, SimpleAction.class, params, new HashMap(), new ArrayList());
 

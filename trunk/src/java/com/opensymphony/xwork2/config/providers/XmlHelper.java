@@ -35,17 +35,20 @@ public class XmlHelper {
                 Element paramElement = (Element) childNode;
                 String paramName = paramElement.getAttribute("name");
 
-
-                if (paramElement.getChildNodes().item(0) != null) {
-                    String paramValue = paramElement.getChildNodes().item(0).getNodeValue();
-                    if (paramValue != null) {
-                        paramValue = paramValue.trim();
-                    } else {
-                        paramValue = "";
-                    }
-                    params.put(paramName, paramValue);
+                StringBuffer paramValue = new StringBuffer();
+                for (int j=0; j <paramElement.getChildNodes().getLength(); j++) {
+                	if (paramElement.getChildNodes().item(j) != null && 
+                			paramElement.getChildNodes().item(j).getNodeType() == Node.TEXT_NODE) {
+                		String val = paramElement.getChildNodes().item(j).getNodeValue();
+                		if (val != null) {
+                			paramValue .append(val.trim());
+                		} 
+                	}
                 }
-
+                String val = paramValue.toString().trim();
+                if (val.length() > 0) {
+                	params.put(paramName, val);
+                }
             }
         }
 
