@@ -19,9 +19,9 @@ import java.util.*;
  */
 public class ActionSupport implements Action, Validateable, ValidationAware, TextProvider, LocaleProvider, Serializable {
 
-    protected transient static final Log LOG = LogFactory.getLog(ActionSupport.class);
+    protected static Log LOG = LogFactory.getLog(ActionSupport.class);
 
-    private transient final TextProvider textProvider = new TextProviderSupport(getClass(), this);
+    private final transient TextProvider textProvider = TextProviderFactory.getInstance(getClass(), this);
     private final ValidationAwareSupport validationAware = new ValidationAwareSupport();
 
 

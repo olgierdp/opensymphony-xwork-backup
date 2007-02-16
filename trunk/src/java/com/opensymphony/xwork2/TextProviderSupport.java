@@ -22,12 +22,17 @@ public class TextProviderSupport implements TextProvider {
     private LocaleProvider localeProvider;
     private ResourceBundle bundle;
 
+    /**
+     * Default constructor
+     */
+    public TextProviderSupport() {
+    }
 
     /**
      * Constructor.
      *
-     * @param clazz   a clazz to use for reading the resource bundle.
-     * @param provider  a locale provider.
+     * @param clazz    a clazz to use for reading the resource bundle.
+     * @param provider a locale provider.
      */
     public TextProviderSupport(Class clazz, LocaleProvider provider) {
         this.clazz = clazz;
@@ -37,14 +42,35 @@ public class TextProviderSupport implements TextProvider {
     /**
      * Constructor.
      *
-     * @param bundle    the resource bundle.
-     * @param provider  a locale provider.
+     * @param bundle   the resource bundle.
+     * @param provider a locale provider.
      */
     public TextProviderSupport(ResourceBundle bundle, LocaleProvider provider) {
         this.bundle = bundle;
         this.localeProvider = provider;
     }
 
+    /**
+     * @param bundle the resource bundle.
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
+
+    /**
+     * @param clazz a clazz to use for reading the resource bundle.
+     */
+    public void setClazz(Class clazz) {
+        this.clazz = clazz;
+    }
+
+
+    /**
+     * @param localeProvider a locale provider.
+     */
+    public void setLocaleProvider(LocaleProvider localeProvider) {
+        this.localeProvider = localeProvider;
+    }
 
     /**
      * Get a text from the resource bundles associated with this action.
