@@ -78,7 +78,18 @@ import com.opensymphony.xwork2.interceptor.MethodFilterInterceptor;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
  * 
- * 
+ * &lt;-- in the following case only annotated methods of the action class will
+ *        be validated --&gt;
+ * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
+ *     &lt;interceptor-ref name="params"/&gt;
+ *     &lt;interceptor-ref name="validation"&gt;
+ *         &lt;param name="validateAnnotatedMethodOnly"&gt;true&lt;/param&gt;
+ *     &lt;/interceptor-ref&gt;
+ *     &lt;interceptor-ref name="workflow"/&gt;
+ *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
+ * &lt;/action&gt;
+ *
+ *
  * <!-- END SNIPPET: example -->
  * </pre>
  *
@@ -91,6 +102,18 @@ import com.opensymphony.xwork2.interceptor.MethodFilterInterceptor;
  * @version $Date$ $Id$
  */
 public class ValidationInterceptor extends MethodFilterInterceptor {
+
+    private boolean validateAnnotatedMethodOnly;
+
+
+    public boolean isValidateAnnotatedMethodOnly() {
+        return validateAnnotatedMethodOnly;
+    }
+
+    public void setValidateAnnotatedMethodOnly(boolean validateAnnotatedMethodOnly) {
+        this.validateAnnotatedMethodOnly = validateAnnotatedMethodOnly;
+    }
+
     /**
      * Gets the current action and its context and calls {@link DefaultActionValidatorManager#validate(Object, String)}.
      *
@@ -100,13 +123,20 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
     protected void doBeforeInvocation(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
         String context = invocation.getProxy().getActionName();
+        String method = invocation.getProxy().getMethod();
 
         if (log.isDebugEnabled()) {
             log.debug("Validating "
-                    + invocation.getProxy().getNamespace() + "/" + invocation.getProxy().getActionName() + " with method "+invocation.getProxy().getMethod()+".");
+                    + invocation.getProxy().getNamespace() + "/" + invocation.getProxy().getActionName() + " with method "+ method +".");
+
         }
 
-        ActionValidatorManagerFactory.getInstance().validate(action, context);
+        if (validateAnnotatedMethodOnly) {
+            ActionValidatorManagerFactory.getInstance().validate(action, context, method);
+        } else {
+            ActionValidatorManagerFactory.getInstance().validate(action, context);
+        }
+
     }
 
     protected String doIntercept(ActionInvocation invocation) throws Exception {

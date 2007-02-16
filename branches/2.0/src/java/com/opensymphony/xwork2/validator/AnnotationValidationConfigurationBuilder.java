@@ -34,6 +34,7 @@ public class AnnotationValidationConfigurationBuilder {
         List<ValidatorConfig> result = new ArrayList<ValidatorConfig>();
 
         String fieldName = null;
+        String methodName = null;
 
         Annotation[] annotations = null;
 
@@ -45,6 +46,7 @@ public class AnnotationValidationConfigurationBuilder {
         if (o instanceof Method) {
             Method method = (Method) o;
             fieldName = resolvePropertyName(method);
+            methodName = method.getName();
 
             annotations = method.getAnnotations();
         }
@@ -202,6 +204,12 @@ public class AnnotationValidationConfigurationBuilder {
                         result.add(temp);
                     }
 
+                }
+            }
+            
+            if (methodName != null) {
+                for (ValidatorConfig vc : result) {
+                    vc.getParams().put("methodName", methodName);
                 }
             }
         }

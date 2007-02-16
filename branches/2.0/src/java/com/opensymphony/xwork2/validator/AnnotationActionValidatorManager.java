@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.IOException;
 
 import com.opensymphony.xwork2.util.FileManager;
+import com.opensymphony.xwork2.ObjectFactory;
 
 /**
  * <code>AnnotationActionValidatorManager</code>
@@ -45,6 +46,19 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
      * @return a list of all validators for the given class and context.
      */
     public synchronized List<Validator> getValidators(Class clazz, String context) {
+        return getValidators(clazz, context, null);
+    }
+
+    /**
+     * Returns a list of validators for the given class, context, and method. This is the primary
+     * lookup method for validators.
+     *
+     * @param clazz   the class to lookup.
+     * @param context the context of the action class - can be <tt>null</tt>.
+     * @param method  the name of the method being invoked on the action - can be <tt>null</tt>.
+     * @return a list of all validators for the given class and context.
+     */
+    public synchronized List<Validator> getValidators(Class clazz, String context, String method) {
         final String validatorKey = buildValidatorKey(clazz, context);
 
         if (validatorCache.containsKey(validatorKey)) {
@@ -61,9 +75,11 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
         // create clean instances of the validators for the caller's use
         ArrayList<Validator> validators = new ArrayList<Validator>(cfgs.size());
         for (ValidatorConfig cfg : cfgs) {
-            Validator validator = ValidatorFactory.getValidator(cfg);
-            validator.setValidatorType(cfg.getType());
-            validators.add(validator);
+            if (method == null || method.equals(cfg.getParams().get("methodName"))) {
+                Validator validator = ValidatorFactory.getValidator(cfg, ObjectFactory.getObjectFactory());
+                validator.setValidatorType(cfg.getType());
+                validators.add(validator);
+            }
         }
 
         return validators;
@@ -77,8 +93,20 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
      * @throws ValidationException if an error happens when validating the action.
      */
     public void validate(Object object, String context) throws ValidationException {
+        validate(object, context, (String) null);
+    }
+
+    /**
+     * Validates the given object using action, its context, and the name of the method being invoked on the action.
+     *
+     * @param object  the action to validate.
+     * @param context the action's context.
+     * @param method  the name of the method being invoked on the action.
+     * @throws ValidationException if an error happens when validating the action.
+     */
+    public void validate(Object object, String context, String method) throws ValidationException {
         ValidatorContext validatorContext = new DelegatingValidatorContext(object);
-        validate(object, context, validatorContext);
+        validate(object, context, validatorContext, method);
     }
 
     /**
@@ -90,7 +118,20 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
      * @throws ValidationException if an error happens when validating the action.
      */
     public void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException {
-        List<Validator> validators = getValidators(object.getClass(), context);
+        validate(object, context, validatorContext, null);
+    }
+
+    /**
+     * Validates an action give its context, a validation context, and the name of the method being invoked on the action.
+     *
+     * @param object           the action to validate.
+     * @param context          the action's context.
+     * @param validatorContext
+     * @param method           the name of the method being invoked on the action.
+     * @throws ValidationException if an error happens when validating the action.
+     */
+    public void validate(Object object, String context, ValidatorContext validatorContext, String method) throws ValidationException {
+        List<Validator> validators = getValidators(object.getClass(), context, method);
         Set<String> shortcircuitedFields = null;
 
         for (final Validator validator: validators) {
@@ -98,7 +139,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
                 validator.setValidatorContext(validatorContext);
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Running validator: " + validator + " for object " + object);
+                    LOG.debug("Running validator: " + validator + " for object " + object + " and method " + method);
                 }
 
                 FieldValidator fValidator = null;
@@ -278,9 +319,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
         }
 
         // look for validators for implemented interfaces
-        Class[] interfaces = clazz.getInterfaces();
-
-        for (Class anInterface1 : interfaces) {
+        for (Class anInterface1 : clazz.getInterfaces()) {
             if (checked.contains(anInterface1.getName())) {
                 continue;
             }
