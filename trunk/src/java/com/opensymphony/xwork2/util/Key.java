@@ -5,6 +5,11 @@
 
 package com.opensymphony.xwork2.util;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+
 /**
  * <!-- START SNIPPET: description -->
  * <p/>Sets the Key for type conversion.
@@ -13,7 +18,7 @@ package com.opensymphony.xwork2.util;
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- * <p/>The Key annotation must be applied at field level.
+ * <p/>The Key annotation must be applied at field or method level.
  * <!-- END SNIPPET: usage -->
  * <p/> <u>Annotation parameters:</u>
  *
@@ -50,6 +55,8 @@ package com.opensymphony.xwork2.util;
  * @author Rainer Hermanns
  * @version $Id$
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD})
 public @interface Key {
 
     /**

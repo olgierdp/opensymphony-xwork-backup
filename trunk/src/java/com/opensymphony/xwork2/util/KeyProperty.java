@@ -5,6 +5,11 @@
 
 package com.opensymphony.xwork2.util;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+
 /**
  * <!-- START SNIPPET: description -->
  * <p/>Sets the KeyProperty for type conversion.
@@ -13,7 +18,7 @@ package com.opensymphony.xwork2.util;
  * <p/> <u>Annotation usage:</u>
  *
  * <!-- START SNIPPET: usage -->
- * <p/>The KeyProperty annotation must be applied at field level.
+ * <p/>The KeyProperty annotation must be applied at field or method level.
  * <p/>This annotation should be used with Generic types, if the key property of the key element needs to be specified.
  * <!-- END SNIPPET: usage -->
  * <p/> <u>Annotation parameters:</u>
@@ -51,6 +56,8 @@ package com.opensymphony.xwork2.util;
  * @author Patrick Lightbody
  * @author Rainer Hermanns
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD})
 public @interface KeyProperty {
 
     /**
