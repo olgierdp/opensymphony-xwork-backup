@@ -1,0 +1,91 @@
+<html>
+    <head>
+        <title>XWork - 
+        XWork2 Hello World Tutorial
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>The objective of this simple 'Hello World' tutorial is to be a gentle introduction of the components in xwork2. It shows how to execute a command (an action) that simply prints out 'Hello World' the XWork 2 way.</p>
+
+<h2><a name="XWork2HelloWorldTutorial-Step1%3AWriteupxwork.xml"></a>Step 1: Write up xwork.xml</h2>
+
+<p>The <tt>xwork.xml</tt> configuration file, in this case named <tt>xwork-hello-world.xml</tt>, defines a simple package that contains one action and a simple result that prints the data to the console.</p>
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;?xml version=<span class="code-quote">"1.0"</span> encoding=<span class="code-quote">"UTF-8"</span>?&gt;</span>
+&lt;!DOCTYPE xwork PUBLIC 
+	<span class="code-quote">"-//OpenSymphony Group//XWork 1.1.1//EN"</span>
+	<span class="code-quote">"http://www.opensymphony.com/xwork/xwork-1.1.1.dtd"</span>&gt;
+
+
+<span class="code-tag">&lt;xwork&gt;</span>
+	<span class="code-tag">&lt;include file=<span class="code-quote">"xwork-default.xml"</span> /&gt;</span>
+	<span class="code-tag">&lt;package name=<span class="code-quote">"default-hello-world"</span> extends=<span class="code-quote">"xwork-default"</span> namespace=<span class="code-quote">"/helloWorld"</span>&gt;</span>
+		<span class="code-tag">&lt;result-types&gt;</span>
+			<span class="code-tag">&lt;result-type name=<span class="code-quote">"printToConsole"</span> class=<span class="code-quote">"com.opensymphony.xwork2.showcase.PrintToConsoleResult"</span> /&gt;</span>
+		<span class="code-tag">&lt;/result-types&gt;</span>
+		
+		<span class="code-tag">&lt;action name=<span class="code-quote">"helloWorld"</span> class=<span class="code-quote">"com.opensymphony.xwork2.showcase.helloworld.HelloWorldAction"</span>&gt;</span>
+			<span class="code-tag">&lt;result type=<span class="code-quote">"printToConsole"</span>&gt;</span>
+				<span class="code-tag">&lt;param name=<span class="code-quote">"param"</span>&gt;</span>${message}<span class="code-tag">&lt;/param&gt;</span>
+			<span class="code-tag">&lt;/result&gt;</span>
+		<span class="code-tag">&lt;/action&gt;</span>
+	<span class="code-tag">&lt;/package&gt;</span>
+<span class="code-tag">&lt;/xwork&gt;</span></pre>
+</div></div>
+
+<h2><a name="XWork2HelloWorldTutorial-Step2%3ACodeitup"></a>Step 2: Code it up</h2>
+
+<p>Next, we need to write the Java code that will initialize XWork and execute our action.  The entry point into our application will be a class titled <tt>com.opensymphony.xwork2.showcase.helloworld.HelloWorldTutorial</tt>.</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">01. /*
+02.  * Copyright (c) 2002-2006 by OpenSymphony
+03.  * All rights reserved.
+04.  */
+05. <span class="code-keyword">package</span> com.opensymphony.xwork2.showcase.helloworld;
+06. 
+07. <span class="code-keyword">import</span> java.util.LinkedHashMap;
+08. 
+09. <span class="code-keyword">import</span> com.opensymphony.xwork2.ActionProxy;
+10. <span class="code-keyword">import</span> com.opensymphony.xwork2.ActionProxyFactory;
+11. <span class="code-keyword">import</span> com.opensymphony.xwork2.config.Configuration;
+12. <span class="code-keyword">import</span> com.opensymphony.xwork2.config.ConfigurationManager;
+13. <span class="code-keyword">import</span> com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+14. 
+15. /**
+16.  * 
+17.  * @author tm_jee
+18.  * @version $Date$ $Id$
+19.  */
+20. <span class="code-keyword">public</span> class HelloWorldTutorial {
+21. 
+22. 	<span class="code-keyword">public</span> <span class="code-keyword">static</span> void main(<span class="code-object">String</span>[] args) <span class="code-keyword">throws</span> Exception {
+23. 
+24. 		ConfigurationManager confManager = <span class="code-keyword">new</span> ConfigurationManager();
+25. 		confManager.addConfigurationProvider(
+26. 				<span class="code-keyword">new</span> XmlConfigurationProvider(
+27. 						<span class="code-quote">"com/opensymphony/xwork2/showcase/helloworld/xwork-hello-world.xml"</span>, 
+28. 						<span class="code-keyword">true</span>));
+29.         
+30.         Configuration conf = confManager.getConfiguration();
+31. 		ActionProxyFactory actionProxyFactory = conf.getContainer().getInstance(ActionProxyFactory.class);
+32. 		ActionProxy actionProxy = actionProxyFactory.createActionProxy(
+33. 				<span class="code-quote">"/helloWorld"</span>, <span class="code-quote">"helloWorld"</span>, <span class="code-keyword">new</span> LinkedHashMap());
+34. 		
+35. 		
+36. 		actionProxy.execute();
+37. 	}
+38. }</pre>
+</div></div>
+<p>Lines 24-28 show the XWork framework being initialized with our configuration file.  Lines 30-33 show how we obtain an <tt>ActionProxy</tt> object that handles the Action, Interceptors, and Result execution.  Finally, in line 36, we execute XWork.</p>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
