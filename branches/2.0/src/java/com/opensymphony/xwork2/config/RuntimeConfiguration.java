@@ -7,6 +7,7 @@ package com.opensymphony.xwork2.config;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 
 import java.util.Map;
+import java.io.Serializable;
 
 
 /**
@@ -15,7 +16,7 @@ import java.util.Map;
  * @author Jason Carreira
  *         Created Feb 25, 2003 10:56:02 PM
  */
-public interface RuntimeConfiguration {
+public interface RuntimeConfiguration extends Serializable {
 
     /**
      * get the fully expanded ActionConfig for a specified namespace and (action) name

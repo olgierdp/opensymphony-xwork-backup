@@ -10,6 +10,7 @@ import com.opensymphony.xwork2.inject.Container;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.Serializable;
 
 
 /**
@@ -17,9 +18,9 @@ import java.util.Set;
  *
  * @author Mike
  */
-public interface Configuration {
+public interface Configuration extends Serializable {
     
-    public void rebuildRuntimeConfiguration();
+    void rebuildRuntimeConfiguration();
 
     PackageConfig getPackageConfig(String name);
 
@@ -49,7 +50,7 @@ public interface Configuration {
     /**
      * @return the container
      */
-    public Container getContainer();
+    Container getContainer();
 
-    public Set<String> getLoadedFileNames();
+    Set<String> getLoadedFileNames();
 }

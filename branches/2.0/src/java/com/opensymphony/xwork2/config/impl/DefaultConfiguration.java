@@ -30,7 +30,7 @@ import java.io.Serializable;
  * @author Jason Carreira
  *         Created Feb 24, 2003 7:38:06 AM
  */
-public class DefaultConfiguration implements Configuration, Serializable {
+public class DefaultConfiguration implements Configuration {
 
     protected static final Log LOG = LogFactory.getLog(DefaultConfiguration.class);
 
