@@ -48,7 +48,7 @@ import java.util.LinkedList;
 * <b>Example:</b>
 *
 * <pre><!-- START SNIPPET: example -->
-* &lt;package name="public" extends="webwork-default"&gt;
+* &lt;package name="public" extends="struts-default"&gt;
 *     &lt;!-- Chain creatAccount to login, using the default parameter --&gt;
 *     &lt;action name="createAccount" class="..."&gt;
 *         &lt;result type="chain"&gt;login&lt;/result&gt;
@@ -63,7 +63,7 @@ import java.util.LinkedList;
 *     &lt;/action&gt;
 * &lt;/package&gt;
 *
-* &lt;package name="secure" extends="webwork-default" namespace="/secure"&gt;
+* &lt;package name="secure" extends="struts-default" namespace="/secure"&gt;
 *     &lt;action name="dashboard" class="..."&gt;
 *         &lt;result&gt;dashboard.jsp&lt;/result&gt;
 *     &lt;/action&gt;
