@@ -40,7 +40,7 @@ import java.util.*;
  * <!-- END SNIPPET: searchorder -->
  *
  * <!-- START SNIPPET: packagenote -->
- * To clarify #5, while traversing the package hierarchy, WW will look for a file package.properties:<p/>
+ * To clarify #5, while traversing the package hierarchy, Struts 2 will look for a file package.properties:<p/>
  * com/<br/>
  * &nbsp; acme/<br/>
  * &nbsp; &nbsp; package.properties<br/>

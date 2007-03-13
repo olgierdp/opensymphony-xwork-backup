@@ -71,11 +71,6 @@ import java.lang.annotation.Target;
  * <td class='confluenceTd'> Add list of IntRangeFieldValidators </td>
  * </tr>
  * <tr>
- * <td class='confluenceTd'> requiredFields </td>
- * <td class='confluenceTd'> no </td>
- * <td class='confluenceTd'> Add list of RequiredFieldValidators </td>
- * </tr>
- * <tr>
  * <td class='confluenceTd'> requiredStrings </td>
  * <td class='confluenceTd'> no </td>
  * <td class='confluenceTd'> Add list of RequiredStringValidators </td>

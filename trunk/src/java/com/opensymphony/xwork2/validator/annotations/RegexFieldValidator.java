@@ -58,6 +58,12 @@ import java.lang.annotation.*;
  * <td class='confluenceTd'>ValidatorType.FIELD</td>
  * <td class='confluenceTd'>Enum value from ValidatorType. Either FIELD or SIMPLE can be used here.</td>
  * </tr>
+ * <tr>
+ * <td class='confluenceTd'>expression</td>
+ * <td class='confluenceTd'>yes</td>
+ * <td class='confluenceTd'>&nbsp;</td>
+ * <td class='confluenceTd'>The regex to validate the field value against.</td>
+ * </tr>
  * </table>
  * <!-- END SNIPPET: parameters -->
  *

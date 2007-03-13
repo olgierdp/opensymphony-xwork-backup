@@ -60,12 +60,6 @@ import java.lang.annotation.*;
  * <td class='confluenceTd'>If this validator should be used as shortCircuit.</td>
  * </tr>
  * <tr>
- * <td class='confluenceTd'>type</td>
- * <td class='confluenceTd'>yes</td>
- * <td class='confluenceTd'>ValidatorType.FIELD</td>
- * <td class='confluenceTd'>Enum value from ValidatorType. Either FIELD or SIMPLE can be used here.</td>
- * </tr>
- * <tr>
  * <td class='confluenceTd'> context </td>
  * <td class='confluenceTd'> no </td>
  * <td class='confluenceTd'> action alias </td>
