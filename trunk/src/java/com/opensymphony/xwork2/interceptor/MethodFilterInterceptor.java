@@ -18,7 +18,7 @@ import com.opensymphony.xwork2.util.TextParseUtil;
 /**
  * <!-- START SNIPPET: javadoc -->
  * 
- * An abstract <code>Interceptor</code> that is applied to selectively according
+ * An abstract <code>Interceptor</code> that is applied to filter method names according
  * to specified included/excluded method lists.
  * 
  * <p/>

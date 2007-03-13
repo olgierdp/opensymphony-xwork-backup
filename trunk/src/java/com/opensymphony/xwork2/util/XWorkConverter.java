@@ -28,19 +28,19 @@ import com.opensymphony.xwork2.XWorkMessages;
 
 
 /**
- * XWorkConverter is a singleton used by many of the WebWork's Ognl extention points,
+ * XWorkConverter is a singleton used by many of the Struts 2's Ognl extention points,
  * such as InstantiatingNullHandler, XWorkListPropertyAccessor etc to do object 
  * conversion.
  * 
  * <!-- START SNIPPET: javadoc -->
  *
  * Type conversion is great for situations where you need to turn a String in to a more complex object. Because the web
- * is type-agnostic (everything is a string in HTTP), WebWork's type conversion features are very useful. For instance,
+ * is type-agnostic (everything is a string in HTTP), Struts 2's type conversion features are very useful. For instance,
  * if you were prompting a user to enter in coordinates in the form of a string (such as "3, 22"), you could have
- * WebWork do the conversion both from String to Point and from Point to String.
+ * Struts 2 do the conversion both from String to Point and from Point to String.
  *
  * <p/> Using this "point" example, if your action (or another compound object in which you are setting properties on)
- * has a corresponding ClassName-conversion.properties file, WebWork will use the configured type converters for
+ * has a corresponding ClassName-conversion.properties file, Struts 2 will use the configured type converters for
  * conversion to and from strings. So turning "3, 22" in to new Point(3, 22) is done by merely adding the following
  * entry to <b>ClassName-conversion.properties</b> (Note that the PointConverter should impl the ognl.TypeConverter
  * interface):
@@ -51,7 +51,7 @@ import com.opensymphony.xwork2.XWorkMessages;
  * for both to and from strings, you will need to split the conversion method in to two parts: one that turns Strings in
  * to Points, and one that turns Points in to Strings.
  *
- * <p/> After this is done, you can now reference your point (using &lt;ww:property value="post"/&gt; in JSP or ${point}
+ * <p/> After this is done, you can now reference your point (using &lt;s:property value="point"/&gt; in JSP or ${point}
  * in FreeMarker) and it will be printed as "3, 22" again. As such, if you submit this back to an action, it will be
  * converted back to a Point once again.
  *
@@ -70,7 +70,7 @@ import com.opensymphony.xwork2.XWorkMessages;
  * <!-- START SNIPPET: i18n-note -->
  *
  * Type conversion should not be used as a substitute for i18n. It is not recommended to use this feature to print out
- * properly formatted dates. Rather, you should use the i18n features of WebWork (and consult the JavaDocs for JDK's
+ * properly formatted dates. Rather, you should use the i18n features of Struts 2 (and consult the JavaDocs for JDK's
  * MessageFormat object) to see how a properly formatted date should be displayed.
  *
  * <!-- END SNIPPET: i18n-note -->
