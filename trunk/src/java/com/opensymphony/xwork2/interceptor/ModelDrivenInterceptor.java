@@ -49,7 +49,7 @@ import com.opensymphony.xwork2.util.ValueStack;
  * <pre>
  * <!-- START SNIPPET: example -->
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
- *     &lt;interceptor-ref name="model-driven"/&gt;
+ *     &lt;interceptor-ref name="modelDriven"/&gt;
  *     &lt;interceptor-ref name="basicStack"/&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
