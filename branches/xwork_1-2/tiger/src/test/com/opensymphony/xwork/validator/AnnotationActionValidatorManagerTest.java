@@ -14,6 +14,7 @@ import com.opensymphony.xwork.test.AnnotationUser;
 import com.opensymphony.xwork.validator.validators.*;
 
 import java.util.List;
+import java.util.Collections;
 
 
 /**
@@ -224,7 +225,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
             user.setEmail2("bad_email");
 
             ValidatorContext context = new GenericValidatorContext(user);
-            annotationActionValidatorManager.validate(user, null, context);
+            annotationActionValidatorManager.validate(user, "", context);
             assertTrue(context.hasFieldErrors());
 
             // check field errors
@@ -266,7 +267,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
             user.setEmail2("mark_bad_email_for_field_val@foo.com");
 
             ValidatorContext context = new GenericValidatorContext(user);
-            annotationActionValidatorManager.validate(user, null, context);
+            annotationActionValidatorManager.validate(user, "", context);
             assertTrue(context.hasFieldErrors());
 
             // check field errors
@@ -304,7 +305,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
 
 
         ValidatorContext context = new GenericValidatorContext(user);
-        annotationActionValidatorManager.validate(user, null, context);
+        annotationActionValidatorManager.validate(user, "", context);
     	
     	// check field level errors
         // shouldn't have any because action error prevents validation of anything else
@@ -335,7 +336,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
             user.setEmail2("mark@mycompany.com");
 
             ValidatorContext context = new GenericValidatorContext(user);
-            annotationActionValidatorManager.validate(user, null, context);
+            annotationActionValidatorManager.validate(user, "", context);
             assertFalse(context.hasErrors());
         } catch (ValidationException ex) {
             ex.printStackTrace();
