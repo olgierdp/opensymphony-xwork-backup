@@ -17,8 +17,9 @@ import com.opensymphony.xwork.ActionInvocation;
 public class MockResult implements Result {
 
 	private static final long serialVersionUID = 5371782753949314951L;
+    public static final Object DEFAULT_PARAM = "location";
 
-	public boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
