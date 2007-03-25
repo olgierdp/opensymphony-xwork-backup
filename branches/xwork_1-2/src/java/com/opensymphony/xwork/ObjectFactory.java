@@ -220,7 +220,7 @@ public class ObjectFactory {
                     try {
                         byte[] bytes = ClassByteUtil.getBytes(name, parent);
                         if (bytes == null) {
-                            throw new XworkException("Continuation error: no bytes loaded");
+                            throw new XworkException("Continuation error: no bytes loaded for class '" + name + "'");
                         }
 
                         byte[] resume_bytes = null;
