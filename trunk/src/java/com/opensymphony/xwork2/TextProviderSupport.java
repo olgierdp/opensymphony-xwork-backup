@@ -16,7 +16,7 @@ import java.util.*;
  * @author Jason Carreira
  * @author Rainer Hermanns
  */
-public class TextProviderSupport implements TextProvider {
+public class TextProviderSupport implements ResourceBundleTextProvider {
 
     private Class clazz;
     private LocaleProvider localeProvider;

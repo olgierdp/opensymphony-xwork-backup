@@ -62,7 +62,7 @@ public class DelegatingValidatorContext implements ValidatorContext {
      */
     public DelegatingValidatorContext(Class clazz) {
         localeProvider = new ActionContextLocaleProvider();
-        textProvider = TextProviderFactory.getInstance(clazz, localeProvider);
+        textProvider = new TextProviderFactory().createInstance(clazz, localeProvider);
         validationAware = new LoggingValidationAware(clazz);
     }
 
@@ -174,7 +174,7 @@ public class DelegatingValidatorContext implements ValidatorContext {
         if (object instanceof TextProvider) {
             return (TextProvider) object;
         } else {
-            return TextProviderFactory.getInstance(object.getClass(), localeProvider);
+            return new TextProviderFactory().createInstance(object.getClass(), localeProvider);
         }
     }
 

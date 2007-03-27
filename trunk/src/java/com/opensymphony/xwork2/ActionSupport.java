@@ -21,7 +21,7 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
 
     protected static Log LOG = LogFactory.getLog(ActionSupport.class);
 
-    private final transient TextProvider textProvider = TextProviderFactory.getInstance(getClass(), this);
+    private final transient TextProvider textProvider = new TextProviderFactory().createInstance(getClass(), this);
     private final ValidationAwareSupport validationAware = new ValidationAwareSupport();
 
 

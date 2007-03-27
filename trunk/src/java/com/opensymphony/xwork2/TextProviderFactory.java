@@ -4,40 +4,47 @@
  */
 package com.opensymphony.xwork2;
 
+import com.opensymphony.xwork2.inject.Inject;
+
 import java.util.ResourceBundle;
 
 /**
- * <code>TextProviderFactory</code>
+ * This factory enables users to provide and correctly initialize a custom TextProvider.
  *
  * @author Oleg Gorobets
+ * @author Rene Gielen
  */
 public class TextProviderFactory {
 
-    private static TextProvider instance = new TextProviderSupport();
+    private TextProvider textProvider;
 
-    /**
-     * @param instance Text provider
-     */
-    public static void setInstance(TextProvider instance) {
-        TextProviderFactory.instance = instance;
+    @Inject
+    public void setTextProvider(TextProvider textProvider) {
+        this.textProvider = textProvider;
     }
 
-    public static TextProvider getInstance() {
-        return instance;
+    protected TextProvider getTextProvider() {
+        if (this.textProvider == null) {
+            return new TextProviderSupport();
+        } else {
+            return textProvider;
+        }
     }
 
-    public static TextProvider getInstance(Class clazz, LocaleProvider provider) {
-        if (instance instanceof TextProviderSupport) {
-            ((TextProviderSupport) instance).setClazz(clazz);
-            ((TextProviderSupport) instance).setLocaleProvider(provider);
+    public TextProvider createInstance(Class clazz, LocaleProvider provider) {
+        TextProvider instance = getTextProvider();
+        if (instance instanceof ResourceBundleTextProvider) {
+            ((ResourceBundleTextProvider) instance).setClazz(clazz);
+            ((ResourceBundleTextProvider) instance).setLocaleProvider(provider);
         }
         return instance;
     }
 
-    public static TextProvider getInstance(ResourceBundle bundle, LocaleProvider provider) {
-        if (instance instanceof TextProviderSupport) {
-            ((TextProviderSupport) instance).setBundle(bundle);
-            ((TextProviderSupport) instance).setLocaleProvider(provider);
+    public TextProvider createInstance(ResourceBundle bundle, LocaleProvider provider) {
+        TextProvider instance = getTextProvider();
+        if (instance instanceof ResourceBundleTextProvider) {
+            ((ResourceBundleTextProvider) instance).setBundle(bundle);
+            ((ResourceBundleTextProvider) instance).setLocaleProvider(provider);
         }
         return instance;
     }
