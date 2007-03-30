@@ -34,15 +34,19 @@ import org.apache.commons.logging.LogFactory;
  *
  * </ol>
  *
- * <p/> Note: if the action doesn't implement either interface, this interceptor effectively does nothing. This
+ * <p/>
+ * <b>Note:</b> if the action doesn't implement either interface, this interceptor effectively does nothing. This
  * interceptor is often used with the <b>validation</b> interceptor. However, it does not have to be, especially if you
  * wish to write all your validation rules by hand in the validate() method rather than in XML files.
  *
  * <p/>
  *
- * <b>NOTE:</b> As this method extends off MethodFilterInterceptor, it is capable of
- * deciding if it is applicable only to selective methods in the action class. See
- * <code>MethodFilterInterceptor</code> for more info.
+ * <b>Note:</b> As this method extends off MethodFilterInterceptor, it is capable of
+ * deciding if it is applicable only to selective methods in the action class. This is done by adding param tags
+ * for the interceptor element, naming either a list of excluded method names and/or a list of included method
+ * names, whereby includeMethods overrides excludedMethods. A single * sign is interpreted as wildcard matching
+ * all methods for both parameters.
+ * See {@link MethodFilterInterceptor} for more info.
  * 
  * <p/><b>Update:</b> Added logic to execute a validate{MethodName} and then conditionally
  * followed than a general validate method, depending on the 'alwaysInvokeValidate' 
@@ -90,24 +94,28 @@ import org.apache.commons.logging.LogFactory;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
  * 
- * &lt;-- In this case myMethod of the action class will not pass through 
- *        the workflow process --&gt;
+ * &lt;-- In this case myMethod as well as mySecondMethod of the action class
+ *        will not pass through the workflow process --&gt;
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
  *     &lt;interceptor-ref name="params"/&gt;
  *     &lt;interceptor-ref name="validation"/&gt;
  *     &lt;interceptor-ref name="workflow"&gt;
- *         &lt;param name="excludeMethods"&gt;myMethod&lt;/param&gt;
+ *         &lt;param name="excludeMethods"&gt;myMethod,mySecondMethod&lt;/param&gt;
  *     &lt;/interceptor-ref name="workflow"&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
  * 
  * &lt;-- In this case, the result named "error" will be used when 
  *        an action / field error is found --&gt;
+ * &lt;-- The Interceptor will only be applied for myWorkflowMethod method of action
+ *        classes, since this is the only included method while any others are excluded --&gt;
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
  *     &lt;interceptor-ref name="params"/&gt;
  *     &lt;interceptor-ref name="validation"/&gt;
  *     &lt;interceptor-ref name="workflow"&gt;
  *        &lt;param name="inputResultName"&gt;error&lt;/param&gt;
+*         &lt;param name="excludeMethods"&gt;*&lt;/param&gt;
+*         &lt;param name="includeMethods"&gt;myWorkflowMethod&lt;/param&gt;
  *     &lt;/interceptor-ref&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
@@ -120,7 +128,7 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  * @author Philip Luppens
  * @author tm_jee
- * 
+ *
  * @version $Date$ $Id$
  */
 public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {

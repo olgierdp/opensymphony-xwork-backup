@@ -43,7 +43,7 @@ public class PrepareInterceptorTest extends TestCase {
         MockActionInvocation mai = new MockActionInvocation();
         mai.setAction(new SimpleFooAction());
 
-        interceptor.intercept(mai);
+        interceptor.doIntercept(mai);
     }
     
     public void testPrefixInvocation1() throws Exception {

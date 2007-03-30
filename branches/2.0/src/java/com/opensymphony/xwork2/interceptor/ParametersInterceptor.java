@@ -66,6 +66,11 @@ import org.apache.commons.logging.LogFactory;
  * <p/> If you are looking for detailed logging information about your parameters, turn on DEBUG level logging for this
  * interceptor. A detailed log of all the parameter keys and values will be reported.
  *
+ * <p/>
+ * <b>Note:</b> Since XWork 2.0.2, this interceptor extends {@link MethodFilterInterceptor}, therefore being
+ * able to deal with excludeMethods / includeMethods parameters. See [Workflow Interceptor]
+ * (class {@link DefaultWorkflowInterceptor}) for documentation and examples on how to use this feature.
+ *
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Interceptor parameters:</u>
@@ -102,8 +107,9 @@ import org.apache.commons.logging.LogFactory;
  * </pre>
  *
  * @author Patrick Lightbody
+ * @author Rene Gielen
  */
-public class ParametersInterceptor extends AbstractInterceptor {
+public class ParametersInterceptor extends MethodFilterInterceptor {
 
     private static final Log LOG = LogFactory.getLog(ParametersInterceptor.class);
 
@@ -132,7 +138,7 @@ public class ParametersInterceptor extends AbstractInterceptor {
         };
     };
     
-    public String intercept(ActionInvocation invocation) throws Exception {
+    public String doIntercept(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
         if (!(action instanceof NoParameters)) {
             ActionContext ac = invocation.getInvocationContext();
