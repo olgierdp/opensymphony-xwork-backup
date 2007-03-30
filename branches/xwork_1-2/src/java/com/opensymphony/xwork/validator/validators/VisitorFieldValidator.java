@@ -25,8 +25,8 @@ import java.util.Collection;
  * <!-- START SNIPPET: parameters -->
  * <ul>
  *    <li>fieldName - field name if plain-validator syntax is used, not needed if field-validator syntax is used</li>
- *    <li>context - the context of which validation should take place. Optional</li>
- *    <li>appendPrefix - the prefix to be added to field. Optional </li>
+ *    <li>context - the context of which validation should take place. If it is not used, will default to the name of the action. Optional</li>
+ *    <li>appendPrefix - (true/false) determine if prefix is to be added to field. Optional </li>
  * </ul>
  * <!-- END SNIPPET: parameters -->
  *
