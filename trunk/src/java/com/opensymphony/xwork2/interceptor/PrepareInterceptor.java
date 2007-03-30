@@ -27,6 +27,11 @@ import com.opensymphony.xwork2.Preparable;
  * parameter <i>user.name</i> will be set, as desired, on the actual object
  * loaded from the database. See the example for more info.
  * 
+ * <p/>
+ * <b>Note:</b> Since XWork 2.0.2, this interceptor extends {@link MethodFilterInterceptor}, therefore being
+ * able to deal with excludeMethods / includeMethods parameters. See [Workflow Interceptor]
+ * (class {@link DefaultWorkflowInterceptor}) for documentation and examples on how to use this feature.
+ *
  * <p/><b>Update</b>: Added logic to execute a prepare{MethodName} and conditionally
  * the a general prepare() Method, depending on the 'alwaysInvokePrepare' parameter/property
  * which is by default true. This allows us to run some logic based on the method 
@@ -80,7 +85,7 @@ import com.opensymphony.xwork2.Preparable;
  * @author tm_jee
  * @see com.opensymphony.xwork2.Preparable
  */
-public class PrepareInterceptor extends AbstractInterceptor {
+public class PrepareInterceptor extends MethodFilterInterceptor {
 	
 	private static final long serialVersionUID = -5216969014510719786L;
 
@@ -95,7 +100,7 @@ public class PrepareInterceptor extends AbstractInterceptor {
 		this.alwaysInvokePrepare = Boolean.parseBoolean(alwaysInvokePrepare);
 	}
 	
-    public String intercept(ActionInvocation invocation) throws Exception {
+    public String doIntercept(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
 
         if (action instanceof Preparable) {

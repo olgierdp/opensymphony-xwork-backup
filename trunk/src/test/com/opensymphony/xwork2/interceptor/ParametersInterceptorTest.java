@@ -157,7 +157,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         Action action = new NoParametersAction();
         mai.setAction(action);
 
-        interceptor.intercept(mai);
+        interceptor.doIntercept(mai);
         interceptor.destroy();
     }
     
