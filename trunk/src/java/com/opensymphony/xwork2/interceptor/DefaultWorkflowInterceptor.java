@@ -48,10 +48,6 @@ import org.apache.commons.logging.LogFactory;
  * all methods for both parameters.
  * See {@link MethodFilterInterceptor} for more info.
  *
- * <b>Note:</b> As this method extends off MethodFilterInterceptor, it is capable of
- * deciding if it is applicable only to selective methods in the action class. See
- * <code>MethodFilterInterceptor</code> for more info.
- * 
  * <p/><b>Update:</b> Added logic to execute a validate{MethodName} and then conditionally
  * followed than a general validate method, depending on the 'alwaysInvokeValidate' 
  * parameter/property which  is by default set to true.
