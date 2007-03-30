@@ -69,11 +69,11 @@ import com.opensymphony.xwork2.Preparable;
  * <!-- START SNIPPET: example -->
  * &lt;!-- Calls the params interceptor twice, allowing you to
  *       pre-load data for the second time parameters are set --&gt;
- *  &lt;action name=&quot;someAction&quot; class=&quot;com.examples.SomeAction&quot;&gt;
- *      &lt;interceptor-ref name=&quot;params&quot;/&gt;
- *      &lt;interceptor-ref name=&quot;prepare&quot;/&gt;
- *      &lt;interceptor-ref name=&quot;basicStack&quot;/&gt;
- *      &lt;result name=&quot;success&quot;&gt;good_result.ftl&lt;/result&gt;
+ *  &lt;action name="someAction" class="com.examples.SomeAction"&gt;
+ *      &lt;interceptor-ref name="params"/&gt;
+ *      &lt;interceptor-ref name="prepare"/&gt;
+ *      &lt;interceptor-ref name="basicStack"/&gt;
+ *      &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  *  &lt;/action&gt;
  * <!-- END SNIPPET: example -->
  * </pre>
