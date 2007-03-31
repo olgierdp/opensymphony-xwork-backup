@@ -27,8 +27,6 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
     private static final String[] INDEX_ACCESS_PROPS = new String[]
             {"size", "isEmpty", "keys", "values"};
 
-    private static final XWorkConverter _converter = XWorkConverter.getInstance();
-
     public Object getProperty(Map context, Object target, Object name) throws OgnlException {
 
         if (_log.isDebugEnabled()) {
@@ -58,7 +56,7 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
             if (lastClass == null || lastProperty == null) {
                 return super.getProperty(context, target, name);
             }
-            Class keyClass = _converter.getObjectTypeDeterminer()
+            Class keyClass = XWorkConverter.getInstance().getObjectTypeDeterminer()
                     .getKeyClass(lastClass, lastProperty);
 
             if (keyClass == null) {
@@ -73,7 +71,7 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
                     context.get(InstantiatingNullHandler.CREATE_NULL_OBJECTS) != null
                     &&  XWorkConverter.getInstance()
                     .getObjectTypeDeterminer().shouldCreateIfNew(lastClass,lastProperty,target,null,false)) {
-                Class valueClass = _converter.getObjectTypeDeterminer().getElementClass(lastClass, lastProperty, key);
+                Class valueClass = XWorkConverter.getInstance().getObjectTypeDeterminer().getElementClass(lastClass, lastProperty, key);
 
                 try {
                     result = ObjectFactory.getObjectFactory().buildBean(valueClass, context);
@@ -117,12 +115,12 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
          if (lastClass == null || lastProperty == null) {
              return value;
          }
-         Class elementClass = _converter.getObjectTypeDeterminer()
+         Class elementClass = XWorkConverter.getInstance().getObjectTypeDeterminer()
                  .getElementClass(lastClass, lastProperty, null);
          if (elementClass == null) {
              return value; // nothing is specified, we assume it will be the value passed in.
          }
-         return _converter.convertValue(context, value, elementClass);
+         return XWorkConverter.getInstance().convertValue(context, value, elementClass);
 }
 
     private Object getKey(Map context, Object name) {
@@ -133,13 +131,13 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
             // commented out the above -- it makes absolutely no sense for when setting basic maps!
             return name;
         }
-        Class keyClass = _converter.getObjectTypeDeterminer()
+        Class keyClass = XWorkConverter.getInstance().getObjectTypeDeterminer()
                 .getKeyClass(lastClass, lastProperty);
         if (keyClass == null) {
             keyClass = java.lang.String.class;
         }
 
-        return _converter.convertValue(context, name, keyClass);
+        return XWorkConverter.getInstance().convertValue(context, name, keyClass);
 
     }
 }
