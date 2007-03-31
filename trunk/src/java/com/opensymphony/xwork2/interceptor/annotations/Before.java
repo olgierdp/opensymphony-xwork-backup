@@ -21,9 +21,20 @@ import java.lang.annotation.*;
  * <p/> <u>Annotation parameters:</u>
  *
  * <!-- START SNIPPET: parameters -->
- *
- * no parameters
- *
+ * <table class='confluenceTable'>
+ * <tr>
+ * <th class='confluenceTh'> Parameter </th>
+ * <th class='confluenceTh'> Required </th>
+ * <th class='confluenceTh'> Default </th>
+ * <th class='confluenceTh'> Notes </th>
+ * </tr>
+ * <tr>
+ * <td class='confluenceTd'>priority</td>
+ * <td class='confluenceTd'>no</td>
+ * <td class='confluenceTd'>10</td>
+ * <td class='confluenceTd'>Priority order of method execution</td>
+ * </tr>
+ * </table>
  * <!-- END SNIPPET: parameters -->
  *
  * <p/> <u>Example code:</u>
@@ -51,5 +62,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface Before {
-
+    int priority() default 10; 
 }
