@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
  * 	  <li>fieldName - The field name this validator is validating. Required if using Plain-Validator Syntax otherwise not required</li>
  *    <li>expression - The RegExp expression  REQUIRED</li>
  *    <li>caseSensitive - Boolean (Optional). Sets whether the expression should be matched against in a case-sensitive way. Default is <code>true</code>.</li>
+ *    <li>trim - Boolean (Optional). Sets whether the expression should be trimed before matching. Default is <code>true</code>.</li>
  * </ul>
  * <!-- END SNIPPET: parameters -->
  * 
