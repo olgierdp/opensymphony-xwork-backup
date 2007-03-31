@@ -73,7 +73,7 @@ public class LocalizedTextUtil {
     private static List DEFAULT_RESOURCE_BUNDLES = null;
     private static final Log LOG = LogFactory.getLog(LocalizedTextUtil.class);
     private static boolean reloadBundles = false;
-    private static final Collection misses = new HashSet();
+    private static final Map<String, String> misses = new HashMap<String, String>();
     private static final Map messageFormats = new HashMap();
 
     static {
@@ -216,16 +216,28 @@ public class LocalizedTextUtil {
      */
     public static ResourceBundle findResourceBundle(String aBundleName, Locale locale) {
         synchronized (misses) {
+            String key = createMissesKey(aBundleName, locale);
             try {
-                if (!misses.contains(aBundleName)) {
+                if (!misses.containsKey(key)) {
                     return ResourceBundle.getBundle(aBundleName, locale, Thread.currentThread().getContextClassLoader());
                 }
             } catch (MissingResourceException ex) {
-                misses.add(aBundleName);
+                misses.put(key, aBundleName);
             }
         }
 
         return null;
+    }
+
+    /**
+     * Creates a key to used for lookup/storing in the bundle misses cache.
+     *
+     * @param aBundleName  the name of the bundle (usually it's FQN classname).
+     * @param locale       the locale.
+     * @return the key to use for lookup/storing in the bundle misses cache.
+     */
+    private static String createMissesKey(String aBundleName, Locale locale) {
+        return aBundleName + "_" + locale.toString();
     }
 
     /**
@@ -472,10 +484,6 @@ public class LocalizedTextUtil {
      * Determines if we found the text in the bundles.
      * 
      * @param result   the result so far
-     * @param locale   the locale
-     * @param key1     the first key used for lookup
-     * @param key2     the second key (indexed) used for kookup
-     * @param defaultMessage  the provided default message
      * @return  <tt>true</tt> if we could <b>not</b> find the text, <tt>false</tt> if the text was found (=success). 
      */
     private static boolean unableToFindTextForKey(GetDefaultMessageReturnArg result) {
