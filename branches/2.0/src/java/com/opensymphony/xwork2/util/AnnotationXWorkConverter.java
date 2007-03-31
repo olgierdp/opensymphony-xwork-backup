@@ -95,20 +95,6 @@ public class AnnotationXWorkConverter extends XWorkConverter {
 
     private static final Log _log = LogFactory.getLog(AnnotationXWorkConverter.class);  
   
-    public AnnotationXWorkConverter() {
-        try {
-            // note: this file is deprecated
-            loadConversionProperties("xwork-default-conversion.properties");
-        } catch (Exception e) {
-        }
-
-        try {
-            loadConversionProperties("xwork-conversion.properties");
-        } catch (Exception e) {
-        }
-    }
-
-
     /**
      * Looks for converter mappings for the specified class and adds it to an existing map.  Only new converters are
      * added.  If a converter is defined on a key that already exists, the converter is ignored.
