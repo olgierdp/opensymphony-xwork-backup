@@ -314,14 +314,14 @@ public class OgnlValueStackTest extends XWorkTestCase {
         try {
             vs.setValue("count", "1", true);
             fail("Expected an exception for mismatched getter and setter");
-        } catch (RuntimeException e) {
+        } catch (XWorkException e) {
             //expected
         }
 
         try {
             vs.setValue("count2", "a", true);
             fail("Expected an exception for mismatched getter and setter");
-        } catch (RuntimeException e) {
+        } catch (XWorkException e) {
             //expected
         }
     }
@@ -334,14 +334,16 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
         try {
             vs.setValue("count", "1");
-        } catch (RuntimeException e) {
-            fail("Unexpected exception for mismatched getter and setter");
+            fail("Expected an exception for mismatched getter and setter");
+        } catch (XWorkException e) {
+            //expected
         }
 
         try {
             vs.setValue("count2", "a");
-        } catch (RuntimeException e) {
-            fail("Unexpected exception for mismatched getter and setter");
+            fail("Expected an exception for mismatched getter and setter");
+        } catch (XWorkException e) {
+            //expected
         }
     }
 
@@ -419,7 +421,12 @@ public class OgnlValueStackTest extends XWorkTestCase {
         OgnlValueStack stack = new OgnlValueStack();
         stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         stack.push(action);
-        stack.setValue("bean", "foobar");
+        try {
+            stack.setValue("bean", "foobar");
+            fail("Should have thrown a type conversion exception");
+        } catch (XWorkException e) {
+            // expected
+        }
 
         Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
         assertTrue(conversionErrors.containsKey("bean"));
@@ -648,7 +655,12 @@ public class OgnlValueStackTest extends XWorkTestCase {
         OgnlValueStack stack = new OgnlValueStack();
         stack.push(bean);
         stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-        stack.setValue("count", "a");
+        try {
+            stack.setValue("count", "a");
+            fail("Should have thrown a type conversion exception");
+        } catch (XWorkException e) {
+            // expected
+        }
 
         Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
         assertTrue(conversionErrors.containsKey("count"));
