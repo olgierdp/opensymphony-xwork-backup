@@ -196,15 +196,6 @@ public class AnnotationValidationConfigurationBuilder {
                     }
 
                 }
-                // Process StringRegexValidator
-                else if ( a instanceof StringRegexValidator) {
-                    StringRegexValidator v = (StringRegexValidator) a;
-                    ValidatorConfig temp = processStringRegexValidatorAnnotation(v, fieldName);
-                    if ( temp != null) {
-                        result.add(temp);
-                    }
-
-                }
             }
             
             if (methodName != null) {
@@ -317,15 +308,6 @@ public class AnnotationValidationConfigurationBuilder {
                 }
             }
         }
-        StringRegexValidator[] srv = validations.stringRegexs();
-        if ( srv != null ) {
-            for (StringRegexValidator v : srv) {
-                ValidatorConfig temp = processStringRegexValidatorAnnotation(v, fieldName);
-                if (temp != null) {
-                    result.add(temp);
-                }
-            }
-        }
         UrlValidator[] uv = validations.urls();
         if ( uv != null ) {
             for (UrlValidator v : uv) {
@@ -403,34 +385,6 @@ public class AnnotationValidationConfigurationBuilder {
             }
         }
 
-        ValidatorConfig vCfg = new ValidatorConfig(validatorType, params);
-        vCfg.setShortCircuit(v.shortCircuit());
-        vCfg.setDefaultMessage(v.message());
-
-        String key = v.key();
-
-        if ((key != null) && (key.trim().length() > 0)) {
-            vCfg.setMessageKey(key);
-        }
-
-        return vCfg;
-    }
-
-    private static ValidatorConfig processStringRegexValidatorAnnotation(StringRegexValidator v, String fieldName) {
-        String validatorType = "stringregex";
-
-        Map<String, Object> params = new HashMap<String, Object>();
-
-        if (fieldName != null) {
-            params.put("fieldName", fieldName);
-        } else if (v.fieldName() != null && v.fieldName().length() > 0 ) {
-            params.put("fieldName", v.fieldName());
-        }
-
-        params.put("caseSensitive", v.caseSensitive());
-        params.put("regex", v.regex());
-
-        ValidatorFactory.lookupRegisteredValidatorType(validatorType);
         ValidatorConfig vCfg = new ValidatorConfig(validatorType, params);
         vCfg.setShortCircuit(v.shortCircuit());
         vCfg.setDefaultMessage(v.message());
