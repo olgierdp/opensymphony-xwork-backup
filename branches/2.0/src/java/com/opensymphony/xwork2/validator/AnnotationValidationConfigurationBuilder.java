@@ -766,10 +766,12 @@ public class AnnotationValidationConfigurationBuilder {
             params.put("fieldName", v.fieldName());
         }
         if ( v.min() != null && v.min().length() > 0) {
-            params.put("min", parseDateString(v.min()));
+             final Date minDate = parseDateString(v.min());
+             params.put("min", minDate == null ? v.min() : minDate);
         }
         if ( v.max() != null && v.max().length() > 0) {
-            params.put("max", parseDateString(v.max()));
+             final Date maxDate = parseDateString(v.max());
+             params.put("max", maxDate == null ? v.max() : maxDate);
         }
 
         ValidatorFactory.lookupRegisteredValidatorType(validatorType);
