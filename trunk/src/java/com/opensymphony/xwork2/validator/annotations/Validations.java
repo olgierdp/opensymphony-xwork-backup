@@ -91,12 +91,6 @@ import java.lang.annotation.Target;
  * <td class='confluenceTd'> Add list of VisitorFieldValidators </td>
  * </tr>
  * <tr>
- * <td class='confluenceTd'> stringRegexs </td>
- *
- * <td class='confluenceTd'> no </td>
- * <td class='confluenceTd'> Add list of StringRegexValidator </td>
- * </tr>
- * <tr>
  * <td class='confluenceTd'> regexFields </td>
  * <td class='confluenceTd'> no </td>
  * <td class='confluenceTd'> Add list of RegexFieldValidator </td>
@@ -174,8 +168,6 @@ public @interface Validations {
     public UrlValidator[] urls() default {};
     
     public VisitorFieldValidator[] visitorFields() default {};
-
-    public StringRegexValidator[] stringRegexs() default {};
 
     public RegexFieldValidator[] regexFields() default {};
 
