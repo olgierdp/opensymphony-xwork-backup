@@ -7,6 +7,7 @@ package com.opensymphony.xwork2.interceptor.annotations;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
+import java.util.Comparator;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.XWorkException;
@@ -90,7 +91,6 @@ import com.opensymphony.xwork2.interceptor.PreResultListener;
  * @author Rainer Hermanns
  */
 public class AnnotationWorkflowInterceptor implements Interceptor, PreResultListener {
-
     /**
      * Discovers annotated methods on the action and calls them according to the workflow
      *
@@ -99,23 +99,41 @@ public class AnnotationWorkflowInterceptor implements Interceptor, PreResultList
     public String intercept(ActionInvocation invocation) throws Exception {
         final Object action = invocation.getAction();
         invocation.addPreResultListener(this);
-        for (Method m : AnnotationUtils.findAnnotatedMethods(action.getClass(), Before.class)) {
-            // action superclass methods first then action methods
-            final String resultCode = (String) m.invoke(action, (Object[]) null);
-            if (resultCode != null) {
-                // shortcircuit execution
-                return resultCode;
+        List<Method> methods = AnnotationUtils.findAnnotatedMethods(action.getClass(), Before.class);
+        if (methods != null && methods.size() > 0) {
+            Collections.sort(methods, new Comparator<Method>() {
+                public int compare(Method method1, Method method2) {
+                    return method2.getAnnotation(Before.class).priority()
+                            - method1.getAnnotation(Before.class).priority();
+                }
+            });
+            for (Method m : methods) {
+                // action superclass methods first then action methods
+                final String resultCode = (String) m
+                        .invoke(action, (Object[]) null);
+                if (resultCode != null) {
+                    // shortcircuit execution
+                    return resultCode;
+                }
             }
         }
 
         String invocationResult = invocation.invoke();
 
         // invoke any @After methods
-        List<Method> list = AnnotationUtils.findAnnotatedMethods(action.getClass(), After.class);
-        // action methods first then action superclass methods
-        Collections.reverse(list);
-        for (Method m : list) {
-            m.invoke(action, (Object[]) null);
+        methods = AnnotationUtils.findAnnotatedMethods(action.getClass(), After.class);
+
+        if (methods != null && methods.size() > 0) {
+            // action methods first then action superclass methods
+            Collections.sort(methods, new Comparator<Method>() {
+                public int compare(Method method1, Method method2) {
+                    return method2.getAnnotation(After.class).priority()
+                            - method1.getAnnotation(After.class).priority();
+                }
+            });
+            for (Method m : methods) {
+                m.invoke(action, (Object[]) null);
+            }
         }
 
         return invocationResult;
@@ -130,19 +148,26 @@ public class AnnotationWorkflowInterceptor implements Interceptor, PreResultList
     /**
      * Invokes any &#64;BeforeResult annotated methods
      *
-     * @see com.opensymphony.xwork2.interceptor.PreResultListener#beforeResult(com.opensymphony.xwork2.ActionInvocation, String)
+     * @see com.opensymphony.xwork2.interceptor.PreResultListener#beforeResult(com.opensymphony.xwork2.ActionInvocation,String)
      */
     public void beforeResult(ActionInvocation invocation, String resultCode) {
         Object action = invocation.getAction();
-        List<Method> methods = AnnotationUtils.findAnnotatedMethods(action.getClass(),
-                BeforeResult.class);
-        for (Method m : methods) {
-            try {
-                m.invoke(action, (Object[]) null);
-            } catch (Exception e) {
-                throw new XWorkException(e);
+        List<Method> methods = AnnotationUtils.findAnnotatedMethods(action.getClass(), BeforeResult.class);
+
+        if (methods != null && methods.size() > 0) {
+            Collections.sort(methods, new Comparator<Method>() {
+                public int compare(Method method1, Method method2) {
+                    return method2.getAnnotation(BeforeResult.class).priority()
+                            - method1.getAnnotation(BeforeResult.class).priority();
+                }
+            });
+            for (Method m : methods) {
+                try {
+                    m.invoke(action, (Object[]) null);
+                } catch (Exception e) {
+                    throw new XWorkException(e);
+                }
             }
         }
     }
-
 }
