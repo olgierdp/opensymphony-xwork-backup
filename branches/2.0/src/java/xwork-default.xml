@@ -53,6 +53,7 @@
   
   
   			<!-- START SNIPPET: xwork2-default-interceptor-stack -->
+            <interceptor-stack name="emptyStack"/>
   
             <interceptor-stack name="defaultStack">
                 <interceptor-ref name="static-params"/>
