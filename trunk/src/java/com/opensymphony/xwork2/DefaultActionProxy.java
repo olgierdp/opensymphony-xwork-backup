@@ -186,10 +186,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
                 throw new ConfigurationException(message);
             }
             
-            invocation = new DefaultActionInvocation(objectFactory, unknownHandler, this, extraContext);
-            if (actionEventListener != null) {
-                invocation.setActionEventListener(actionEventListener);
-            }
+            invocation = new DefaultActionInvocation(objectFactory, unknownHandler, this, extraContext, true, actionEventListener);
             resolveMethod();
         } finally {
             UtilTimerStack.pop(profileKey);

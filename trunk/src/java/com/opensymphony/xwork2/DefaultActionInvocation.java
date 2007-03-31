@@ -63,11 +63,15 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected UnknownHandler unknownHandler;
 
     protected DefaultActionInvocation(ObjectFactory objectFactory, UnknownHandler handler, ActionProxy proxy, Map extraContext) throws Exception {
-        this(objectFactory, handler, proxy, extraContext, true);
+        this(objectFactory, handler, proxy, extraContext, true, null);
     }
 
     protected DefaultActionInvocation(final ObjectFactory objectFactory, final UnknownHandler handler, final ActionProxy proxy, final Map extraContext, final boolean pushAction) throws Exception {
-    	UtilTimerStack.profile("create DefaultActionInvocation: ", 
+        this(objectFactory, handler, proxy, extraContext, pushAction, null);
+    }
+
+    protected DefaultActionInvocation(final ObjectFactory objectFactory, final UnknownHandler handler, final ActionProxy proxy, final Map extraContext, final boolean pushAction, final ActionEventListener actionEventListener) throws Exception {
+    	UtilTimerStack.profile("create DefaultActionInvocation: ",
     			new UtilTimerStack.ProfilingBlock<Object>() {
 					public Object doProfiling() throws Exception {
 						DefaultActionInvocation.this.proxy = proxy;
@@ -75,7 +79,8 @@ public class DefaultActionInvocation implements ActionInvocation {
 				        DefaultActionInvocation.this.extraContext = extraContext;
 				        DefaultActionInvocation.this.pushAction = pushAction;
                         DefaultActionInvocation.this.unknownHandler = handler;
-				        init();
+                        DefaultActionInvocation.this.actionEventListener = actionEventListener;
+                        init();
 						return null;
 					}
     			});
