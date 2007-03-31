@@ -22,8 +22,6 @@ import java.util.Map;
  * <p/>
  * e.g.
  * <action name="aliasTest" class="com.opensymphony.xwork2.SimpleAction">
- *    <param name="foo">17</param>
- *    <param name="bar">23</param>
  *    <param name="aliases">#{ "aliasSource" : "aliasDest", "bar":"baz" }</param>
  *    <interceptor-ref name="defaultStack"/>
  *    <interceptor-ref name="alias"/>
@@ -37,14 +35,14 @@ public class AliasInterceptorTest extends XWorkTestCase {
         Map params = new HashMap();
         params.put("aliasSource", "source here");
 
-        ActionProxyFactory factory = container.getInstance(ActionProxyFactory.class);
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-sample.xml"));
         ActionProxy proxy = actionProxyFactory.createActionProxy("", "aliasTest", params);
         SimpleAction actionOne = (SimpleAction) proxy.getAction();
         actionOne.setAliasSource("name to be copied");
+        actionOne.setFoo(17);
+        actionOne.setBar(23);
         proxy.execute();
         assertEquals(actionOne.getAliasSource(), actionOne.getAliasDest());
-
     }
 
     public void testInvalidAliasExpression() throws Exception {

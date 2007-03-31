@@ -55,10 +55,8 @@
         </action>
 
         <action name="aliasTest" class="com.opensymphony.xwork2.SimpleAction">
-            <param name="foo">17</param>
-            <param name="bar">23</param>
            	<param name="aliases">#{ "aliasSource" : "aliasDest", "bar":"baz" }</param>
-			<interceptor-ref name="defaultStack"/>
+			<interceptor-ref name="params"/>
          	<interceptor-ref name="alias"/>
          	<result name="success" type="mock" />
         </action>

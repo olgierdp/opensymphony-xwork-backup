@@ -28,7 +28,7 @@ public class MockResult implements Result {
     }
 
     public void execute(ActionInvocation invocation) throws Exception {
-        System.out.println("MockResult.execute");
+        // no op
     }
 
     public int hashCode() {
