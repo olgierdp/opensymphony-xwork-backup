@@ -274,7 +274,7 @@ package com.opensymphony.xwork2.validator;
  * 
  * <p>
  * A plain Validator (non FieldValidator) that gets short-circuited will
- * completely break out of the validation stackâ no other validators will be 
+ * completely break out of the validation stack no other validators will be 
  * evaluated and plain validator takes precedence over field validator meaning 
  * that they get evaluated in the order they are defined before field validator 
  * gets a chance to be evaludated again according to their order defined.
@@ -324,7 +324,6 @@ package com.opensymphony.xwork2.validator;
  * 
  *
  * @author Jason Carreira
- *         Created Feb 15, 2003 3:55:51 PM
  */
 public interface Validator {
 
@@ -341,22 +340,28 @@ public interface Validator {
     /**
      * This method will be called before validate with a non-null ValidatorContext.
      *
-     * @param validatorContext
+     * @param validatorContext  the validation context to use.
      */
     void setValidatorContext(ValidatorContext validatorContext);
-
+    
     ValidatorContext getValidatorContext();
 
     /**
      * The validation implementation must guarantee that setValidatorContext will
      * be called with a non-null ValidatorContext before validate is called.
      *
-     * @param object
-     * @throws ValidationException
+     * @param object  the object to be validated.
+     * @throws ValidationException is thrown if there is validation error(s).
      */
     void validate(Object object) throws ValidationException;
 
+    /**
+     * Sets the validator type to use (see class javadoc).
+     *
+     * @param type  the type to use.
+     */
     void setValidatorType(String type);
 
     String getValidatorType();
+
 }

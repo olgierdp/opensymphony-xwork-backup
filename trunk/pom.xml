@@ -396,6 +396,7 @@
                         <link>http://struts.apache.org/2.x/struts2-core/apidocs</link>
                         <link>http://jakarta.apache.org/commons/logging/apidocs/</link>
                         <link>http://logging.apache.org/log4j/docs/api/</link>
+                        <link>http://static.springframework.org/spring/docs/2.0.x/api</link>
                     </links>
                 </configuration>
             </plugin>
