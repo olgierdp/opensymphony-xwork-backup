@@ -381,7 +381,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <sourcepath>src/java</sourcepath>
+                    <!-- sourcepath>src/java</sourcepath  does not work when eanbled -->
                     <encoding>UTF-8</encoding>
                     <groups>
                         <group>
