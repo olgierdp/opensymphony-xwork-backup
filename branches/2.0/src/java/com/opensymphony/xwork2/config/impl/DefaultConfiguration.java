@@ -231,7 +231,7 @@ public class DefaultConfiguration implements Configuration {
         Map<String, ResultConfig> results = new TreeMap<String, ResultConfig>();
 
         if (!baseConfig.getPackageName().equals(packageContext.getName()) && packageContexts.containsKey(baseConfig.getPackageName())) {
-            results.putAll(packageContexts.get(baseConfig.getPackageName()).getGlobalResultConfigs());
+            results.putAll(packageContexts.get(baseConfig.getPackageName()).getAllGlobalResults());
         } else {
             results.putAll(packageContext.getAllGlobalResults());
         }
