@@ -116,7 +116,6 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
      * @param validateAnnotatedMethodOnly
      */
     public void setValidateAnnotatedMethodOnly(boolean validateAnnotatedMethodOnly) {
-        log.error("Settiong validateAnnotatedMethodOnly=" + validateAnnotatedMethodOnly);
         this.validateAnnotatedMethodOnly = validateAnnotatedMethodOnly;
     }
 
