@@ -110,22 +110,27 @@ public class ValidatorFileParser {
         
         InputSource in = new InputSource(is);
         in.setSystemId(resourceName);
-            
-        Document doc = DomHelper.parse(in);
-        
-        NodeList nodes = doc.getElementsByTagName("validator");
 
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Element validatorElement = (Element) nodes.item(i);
-            String name = validatorElement.getAttribute("name");
-            String className = validatorElement.getAttribute("class");
+        Map dtdMappings = new HashMap();
+        dtdMappings.put("-//OpenSymphony Group//XWork Validator Config 1.0//EN", "xwork-validator-config-1.0.dtd");
 
-            try {
-                // catch any problems here
-                objectFactory.buildValidator(className, new HashMap(), null);
-                ValidatorFactory.registerValidator(name, className);
-            } catch (Exception e) {
-                throw new XWorkException("Unable to load validator class " + className, e, validatorElement);
+        Document doc = DomHelper.parse(in, dtdMappings);
+
+        if (doc != null) {
+            NodeList nodes = doc.getElementsByTagName("validator");
+
+            for (int i = 0; i < nodes.getLength(); i++) {
+                Element validatorElement = (Element) nodes.item(i);
+                String name = validatorElement.getAttribute("name");
+                String className = validatorElement.getAttribute("class");
+
+                try {
+                    // catch any problems here
+                    objectFactory.buildValidator(className, new HashMap(), null);
+                    ValidatorFactory.registerValidator(name, className);
+                } catch (Exception e) {
+                    throw new XWorkException("Unable to load validator class " + className, e, validatorElement);
+                }
             }
         }
     }

@@ -29,6 +29,7 @@ public class ValidatorFileParserTest extends XWorkTestCase {
     private static final String testFileName3 = "com/opensymphony/xwork2/validator/validator-parser-test3.xml";
     private static final String testFileName4 = "com/opensymphony/xwork2/validator/validator-parser-test4.xml";
     private static final String testFileName5 = "com/opensymphony/xwork2/validator/validator-parser-test5.xml";
+    private static final String testFileName6 = "com/opensymphony/xwork2/validator/validators-fail.xml";
 
     public void testParserActionLevelValidatorsShouldBeBeforeFieldLevelValidators() throws Exception {
         InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName2, this.getClass());
@@ -110,6 +111,19 @@ public class ValidatorFileParserTest extends XWorkTestCase {
             ValidatorFileParser.parseActionValidatorConfigs(is, testFileName4);
         } catch (XWorkException ex) {
             assertTrue("Wrong line number: " + ex.getLocation(), 13 == ex.getLocation().getLineNumber());
+            pass = true;
+        }
+        assertTrue("Validation file should have thrown exception", pass);
+    }
+
+    public void testParserWithBadXML2() {
+        InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName6, this.getClass());
+
+        boolean pass = false;
+        try {
+            ValidatorFileParser.parseValidatorDefinitions(is, testFileName6);
+        } catch (XWorkException ex) {
+            assertTrue("Wrong line number: " + ex.getLocation(), 8 == ex.getLocation().getLineNumber());
             pass = true;
         }
         assertTrue("Validation file should have thrown exception", pass);
