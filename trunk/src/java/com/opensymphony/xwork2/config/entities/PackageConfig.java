@@ -39,6 +39,7 @@ public class PackageConfig extends Located implements Comparable, Serializable {
     private String name;
     private String namespace = "";
     private boolean isAbstract = false;
+    private boolean needsRefresh;
 
 
     public PackageConfig() {
@@ -339,6 +340,15 @@ public class PackageConfig extends Located implements Comparable, Serializable {
      */
     public Map<String, ResultTypeConfig> getResultTypeConfigs() {
         return resultTypeConfigs;
+    }
+
+
+    public boolean isNeedsRefresh() {
+        return needsRefresh;
+    }
+
+    public void setNeedsRefresh(boolean needsRefresh) {
+        this.needsRefresh = needsRefresh;
     }
 
     /**

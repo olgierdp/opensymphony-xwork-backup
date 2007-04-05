@@ -222,6 +222,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     }
 
     public void loadPackages() throws ConfigurationException {
+        List<ReloadPackage> reloads = new ArrayList<ReloadPackage>();
         for (Document doc : documents) {
             Element rootElement = doc.getDocumentElement();
             NodeList children = rootElement.getChildNodes();
@@ -236,15 +237,89 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     final String nodeName = child.getNodeName();
 
                     if (nodeName.equals("package")) {
-                        addPackage(child);
+                        PackageConfig cfg = addPackage(child);
+                        if (cfg.isNeedsRefresh()) {
+                            reloads.add(new ReloadPackage(doc, child));
+                        }
                     } 
                 }
             }
             loadExtraConfiguration(doc);
         }
+
+        if (reloads.size() > 0) {
+            reloadRequiredPackages(reloads);
+        }
+
+        reloads.clear();
         documents.clear();
         configuration = null;
     }
+
+    private void reloadRequiredPackages(List<ReloadPackage> reloads) {
+        List<ReloadPackage> result = new ArrayList<ReloadPackage>();
+        if ( reloads.size() > 0) {
+            for (ReloadPackage pkg : reloads) {
+                Document doc = pkg.getDoc();
+                Element rootElement = doc.getDocumentElement();
+                NodeList children = rootElement.getChildNodes();
+                int childSize = children.getLength();
+
+                for (int i = 0; i < childSize; i++) {
+                    Node childNode = children.item(i);
+
+                    if (childNode instanceof Element) {
+                        Element child = (Element) childNode;
+
+                        final String nodeName = child.getNodeName();
+
+                        if (nodeName.equals("package")) {
+                            PackageConfig cfg = addPackage(child);
+                            if (cfg.isNeedsRefresh()) {
+                                result.add(new ReloadPackage(doc, child));
+                            }
+                        }
+                    }
+                }
+                loadExtraConfiguration(doc);
+            }
+        }
+        if ( result.size() > 0 && reloads.size() > result.size() && result.size() != reloads.size()) {
+            reloadRequiredPackages(result);
+        }
+
+        // Print out error messages for all misconfigured inheritence packages
+        if (result.size() > 0 ) {
+            for (ReloadPackage rp : result) {
+                String parent = rp.getChild().getAttribute("extends");
+                if ( parent != null) {
+                    List parents = ConfigurationUtil.buildParentsFromString(configuration, parent);
+                    if (parents != null && parents.size() <= 0) {
+                        LOG.error("Unable to find parent packages " + parent);
+                    }
+                }
+            }
+        }
+    }
+
+    private class ReloadPackage {
+        Element child;
+        Document doc;
+
+        public ReloadPackage(Document doc, Element child) {
+            this.child = child;
+            this.doc = doc;
+        }
+
+        public Element getChild() {
+            return child;
+        }
+
+        public Document getDoc() {
+            return doc;
+        }
+    }
+
 
     /**
      * Tells whether the ConfigurationProvider should reload its configuration. This method should only be called
@@ -351,8 +426,12 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     /**
      * Create a PackageConfig from an XML element representing it.
      */
-    protected void addPackage(Element packageElement) throws ConfigurationException {
+    protected PackageConfig addPackage(Element packageElement) throws ConfigurationException {
         PackageConfig newPackage = buildPackageContext(packageElement);
+
+        if (newPackage.isNeedsRefresh()) {
+            return newPackage;
+        }
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("Loaded " + newPackage);
@@ -388,6 +467,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         loadDefaultActionRef(newPackage, packageElement);
 
         configuration.addPackageConfig(newPackage.getName(), newPackage);
+        return newPackage;
     }
 
     protected void addResultTypes(PackageConfig packageContext, Element element) {
@@ -486,9 +566,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             List parents = ConfigurationUtil.buildParentsFromString(configuration, parent);
 
             if (parents.size() <= 0) {
-                LOG.error("Unable to find parent packages " + parent);
-
                 cfg = new PackageConfig(name, namespace, isAbstract);
+                cfg.setNeedsRefresh(true);
             } else {
                 cfg = new PackageConfig(name, namespace, isAbstract, parents);
             }
@@ -815,9 +894,6 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     
                         final String nodeName = child.getNodeName();
     
-                        //if (nodeName.equals("package")) {
-                        //    addPackage(child);
-                        //} else 
                         if (nodeName.equals("include")) {
                             String includeFileName = child.getAttribute("file");
                             docs.addAll(loadConfigurationFiles(includeFileName, child));

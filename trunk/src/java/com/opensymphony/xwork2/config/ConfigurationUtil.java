@@ -43,9 +43,7 @@ public class ConfigurationUtil {
             if (!parentName.equals("")) {
                 PackageConfig parentPackageContext = configuration.getPackageConfig(parentName);
 
-                if (parentPackageContext == null) {
-                    LOG.error("Unable to find parent package " + parentName);
-                } else {
+                if (parentPackageContext != null) {
                     parents.add(parentPackageContext);
                 }
             }
