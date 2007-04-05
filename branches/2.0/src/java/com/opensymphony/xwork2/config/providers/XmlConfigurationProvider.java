@@ -287,6 +287,19 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         if ( result.size() > 0 && reloads.size() > result.size() && result.size() != reloads.size()) {
             reloadRequiredPackages(result);
         }
+
+        // Print out error messages for all misconfigured inheritence packages
+        if (result.size() > 0 ) {
+            for (ReloadPackage rp : result) {
+                String parent = rp.getChild().getAttribute("extends");
+                if ( parent != null) {
+                    List parents = ConfigurationUtil.buildParentsFromString(configuration, parent);
+                    if (parents != null && parents.size() <= 0) {
+                        LOG.error("Unable to find parent packages " + parent);
+                    }
+                }
+            }
+        }
     }
 
     private class ReloadPackage {
@@ -552,8 +565,6 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             List parents = ConfigurationUtil.buildParentsFromString(configuration, parent);
 
             if (parents.size() <= 0) {
-                LOG.error("Unable to find parent packages " + parent);
-
                 cfg = new PackageConfig(name, namespace, isAbstract);
                 cfg.setNeedsRefresh(true);
             } else {

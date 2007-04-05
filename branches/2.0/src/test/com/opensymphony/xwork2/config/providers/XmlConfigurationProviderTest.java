@@ -70,5 +70,13 @@ public class XmlConfigurationProviderTest extends ConfigurationTestBase {
         assertEquals(1, namespace5.getParents().size());
         assertEquals(namespace4, namespace5.getParents().get(0));
 
+        configurationManager.addConfigurationProvider(provider);
+
+        RuntimeConfiguration runtimeConfiguration = configurationManager.getConfiguration().getRuntimeConfiguration();
+        assertNotNull(runtimeConfiguration.getActionConfig("/namespace1", "action1"));
+        assertNotNull(runtimeConfiguration.getActionConfig("/namespace2", "action2"));
+        assertNotNull(runtimeConfiguration.getActionConfig("/namespace4", "action4"));
+        assertNotNull(runtimeConfiguration.getActionConfig("/namespace5", "action5"));
+
     }
 }
