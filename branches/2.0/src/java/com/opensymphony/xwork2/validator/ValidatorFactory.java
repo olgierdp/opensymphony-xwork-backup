@@ -11,8 +11,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URL;
+import java.net.URISyntaxException;
 
 
 /**
@@ -303,13 +307,39 @@ public class ValidatorFactory {
             LOG.debug("Loading validator definitions.");
         }
 
-        String resourceName = "validators.xml";
-        InputStream is = ClassLoaderUtil.getResourceAsStream(resourceName, ValidatorFactory.class);
-        if (is == null) {
-            resourceName = "com/opensymphony/xwork2/validator/validators/default.xml";
-            is = ClassLoaderUtil.getResourceAsStream(resourceName, ValidatorFactory.class);
+        // Get custom validator configurations via the classpath
+        URL u = ClassLoaderUtil.getResource("", ValidatorFactory.class);
+        File[] files = null;
+        try {
+            File f = new File(u.toURI());
+            FilenameFilter filter = new FilenameFilter() {
+                public boolean accept(File file, String fileName) {
+                    return fileName.contains("-validators.xml");
+                }
+            };
+            files = f.listFiles(filter);
+        } catch (URISyntaxException e) {
+            // swallow
         }
 
+        // Parse default validator configurations
+        String resourceName = "com/opensymphony/xwork2/validator/validators/default.xml";
+        retrieveValidatorConfiguration(resourceName);
+
+        // Overwrite and extend defaults with application specific validator configurations
+        resourceName = "validators.xml";
+        retrieveValidatorConfiguration(resourceName);
+
+        // Add custom (plugin) specific validator configurations
+        if ( files != null && files.length > 0 ) {
+            for (File file : files) {
+                retrieveValidatorConfiguration(file.getName());
+            }
+        }
+    }
+
+    private static void retrieveValidatorConfiguration(String resourceName) {
+        InputStream is = ClassLoaderUtil.getResourceAsStream(resourceName, ValidatorFactory.class);
         if (is != null) {
             ValidatorFileParser.parseValidatorDefinitions(is, resourceName);
         }
