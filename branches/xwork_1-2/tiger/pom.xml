@@ -49,8 +49,11 @@
         </mailingList>
     </mailingLists>
     <scm>
-        <connection>:pserver:[username]@cvs.dev.java.net:/cvs/xwork/tiger</connection>
-        <url>https://xwork.dev.java.net/source/browse/xwork/tiger</url>
+        <connection>scm:svn:http://svn.opensymphony.com/svn/xwork/branches/xwork_1-2/tiger</connection>
+        <developerConnection>
+            scm:svn:https://svn.opensymphony.com/svn/xwork/branches/xwork_1-2/tiger
+        </developerConnection>
+        <url>https://svn.opensymphony.com/svn/xwork/branches/xwork_1-2/tiger</url>
     </scm>
     <licenses>
         <license>

@@ -130,10 +130,19 @@
         <copy file="${build}/${name}-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT.jar"/>
         <copy file="${build}/${name}-src-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-src-${version}-SNAPSHOT.jar"/>
 
+        <copy file="pom.xml" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/poms/${name}-${version}-SNAPSHOT.pom" overwrite="true"/>
+        <copy file="${build}/${name}-${version}.jar" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/jars/${name}-${version}-SNAPSHOT.jar" overwrite="true"/>
+        <copy file="${build}/${name}-src-${version}.jar" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/jars/${name}-src-${version}-SNAPSHOT.jar" overwrite="true"/>
+
         <!-- xwork-tiger -->
         <copy file="tiger/pom.xml" tofile="/opt/repository/ibiblio.org/opensymphony/poms/${name}-tiger-${version}-SNAPSHOT.pom"/>
         <copy file="${build}/${name}-tiger-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-tiger-${version}-SNAPSHOT.jar"/>
         <copy file="${build}/${name}-tiger-src-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-tiger-src-${version}-SNAPSHOT.jar"/>
+
+
+        <copy file="pom.xml" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/poms/${name}-tiger-${version}-SNAPSHOT.pom" overwrite="true"/>
+        <copy file="${build}/${name}-tiger-${version}.jar" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/jars/${name}-tiger-${version}-SNAPSHOT.jar" overwrite="true"/>
+        <copy file="${build}/${name}-tiger-src-${version}.jar" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/jars/${name}-tiger-src-${version}-SNAPSHOT.jar" overwrite="true"/>
     </target>
 
     <macrodef name="run-tiger-junit">

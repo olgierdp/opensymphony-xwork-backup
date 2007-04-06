@@ -51,8 +51,11 @@
         </mailingList>
     </mailingLists>
     <scm>
-        <connection>:pserver:[username]@cvs.dev.java.net:/cvs/xwork</connection>
-        <url>https://xwork.dev.java.net/source/browse/xwork/</url>
+        <connection>scm:svn:http://svn.opensymphony.com/svn/xwork/branches/xwork_1-2</connection>
+        <developerConnection>
+            scm:svn:https://svn.opensymphony.com/svn/xwork/branches/xwork_1-2
+        </developerConnection>
+        <url>https://svn.opensymphony.com/svn/xwork/branches/xwork_1-2</url>
     </scm>
     <licenses>
         <license>
@@ -119,13 +122,60 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <!--version>2.2</version-->
+                <executions>
+                    <execution>
+                        <id>attach-source</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sourcepath>src/java</sourcepath>
+                    <encoding>UTF-8</encoding>
+                    <groups>
+                        <group>
+                            <title>XWork Packages</title>
+                            <packages>com.opensymphony.xwork2*</packages>
+                        </group>
+                    </groups>
+                    <show>private</show>
+                    <links>
+                        <link>http://java.sun.com/j2se/1.4.2/docs/api</link>
+                        <link>http://jakarta.apache.org/commons/logging/apidocs/</link>
+                        <link>http://logging.apache.org/log4j/docs/api/</link>
+                    </links>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-source</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+	<defaultGoal>install</defaultGoal>
     </build>
     <dependencies>
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.0.4</version>
+        </dependency>
+       <dependency>
+            <groupId>opensymphony</groupId>
+            <artifactId>ognl</artifactId>
+            <version>2.6.11</version>
         </dependency>
         <dependency>
             <groupId>org.rifers</groupId>
@@ -139,44 +189,39 @@
             <version>2.2.4</version>
         </dependency>
         <dependency>
-            <groupId>opensymphony</groupId>
-            <artifactId>ognl</artifactId>
-            <version>2.6.11</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.9</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.9</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.9</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.9</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.9</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-mock</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.9</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -210,4 +255,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>Maven Snapshots</id>
+            <url>http://snapshots.maven.codehaus.org/maven2/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
