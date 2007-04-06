@@ -333,14 +333,14 @@ public class OgnlValueStackTest extends XWorkTestCase {
         vs.push(bean);
 
         try {
-            vs.setValue("count", "1");
+            vs.setValue("count", "1", true);
             fail("Expected an exception for mismatched getter and setter");
         } catch (XWorkException e) {
             //expected
         }
 
         try {
-            vs.setValue("count2", "a");
+            vs.setValue("count2", "a", true);
             fail("Expected an exception for mismatched getter and setter");
         } catch (XWorkException e) {
             //expected
@@ -422,7 +422,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         stack.push(action);
         try {
-            stack.setValue("bean", "foobar");
+            stack.setValue("bean", "foobar", true);
             fail("Should have thrown a type conversion exception");
         } catch (XWorkException e) {
             // expected
@@ -656,7 +656,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         stack.push(bean);
         stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         try {
-            stack.setValue("count", "a");
+            stack.setValue("count", "a", true);
             fail("Should have thrown a type conversion exception");
         } catch (XWorkException e) {
             // expected
