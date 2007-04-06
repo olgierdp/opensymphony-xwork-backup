@@ -56,6 +56,11 @@
         <copy file="${build}/${name}-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT.jar" overwrite="true"/>
         <copy file="${build}/${name}-${version}-sources.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT-sources.jar" overwrite="true"/>
         <copy file="${build}/${name}-${version}-javadoc.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT-javadoc.jar" overwrite="true"/>
+
+        <copy file="pom.xml" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/poms/${name}-${version}-SNAPSHOT.pom" overwrite="true"/>
+        <copy file="${build}/${name}-${version}.jar" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/jars/${name}-${version}-SNAPSHOT.jar" overwrite="true"/>
+        <copy file="${build}/${name}-${version}-sources.jar" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/jars/${name}-${version}-SNAPSHOT-sources.jar" overwrite="true"/>
+        <copy file="${build}/${name}-${version}-javadoc.jar" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/jars/${name}-${version}-SNAPSHOT-javadoc.jar" overwrite="true"/>
     </target>
 
 </project>
