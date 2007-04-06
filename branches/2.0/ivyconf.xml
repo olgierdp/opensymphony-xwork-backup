@@ -8,6 +8,9 @@
                 <artifact
                         pattern="http://ivyrep.opensymphony.com/[organisation]/[module]/[artifact]-[revision].[type]"/>
             </url>
+            <url name="spring">
+                <artifact pattern="https://svn.sourceforge.net/svnroot/springframework/repos/repo/[organisation]/[module]/[revision]/[module]-[revision].[type]"/>
+            </url>
             <url name="contegix">
                 <ivy pattern="http://repository.contegix.com/ivyrep/[organisation]/[module]/ivy-[revision].xml"/>
                 <artifact
