@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork;
@@ -19,15 +19,18 @@ import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.config.entities.ResultConfig;
 
-import junit.framework.TestCase;
-
 /**
- * Test for XW-465
+ * Test for XW-465.
+ * <p/>
+ * Must extend XWorkTestCase to make sure the static ConfigurationManager and ActionProxyFactory doesn't cause sideeffects
+ * in other tests.
+ * <br/>
+ * See XW-506 where we had such a corner case where a test in ParametersInterceptorTest was failing because this unit test
+ * was extended TestCase directly.
  * 
  * @author tmjee
- * @version $Date$ $Id$
  */
-public class ActionProxyTest extends TestCase {
+public class ActionProxyTest extends XWorkTestCase {
 	
 	public static interface ProxyAction {
 		String show() throws Exception;
