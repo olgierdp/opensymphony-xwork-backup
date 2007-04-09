@@ -107,8 +107,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         assertNull(session.get("foo"));
     }
 
-    // TODO: This tests fails in maven... There seems to be a cacheing issue...
-    public void no_testParameters() throws Exception {
+    public void testParameters() throws Exception {
         Map params = new HashMap();
         params.put("blah", "This is blah");
 
