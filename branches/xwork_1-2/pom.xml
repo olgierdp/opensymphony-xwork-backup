@@ -141,7 +141,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <sourcepath>src/java</sourcepath>
+                    <!-- sourcepath>src/java</sourcepath  does not work when enabled -->
                     <encoding>UTF-8</encoding>
                     <groups>
                         <group>
@@ -154,6 +154,7 @@
                         <link>http://java.sun.com/j2se/1.4.2/docs/api</link>
                         <link>http://jakarta.apache.org/commons/logging/apidocs/</link>
                         <link>http://logging.apache.org/log4j/docs/api/</link>
+                        <link>http://static.springframework.org/spring/docs/1.2.x/api</link>
                     </links>
                 </configuration>
             </plugin>
