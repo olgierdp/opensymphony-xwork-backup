@@ -1,18 +1,17 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork2;
 
 /**
- * All actions may implement this interface, which exposes
- * the execute() method. However, as of XWork 1.1, this is
- * not required and is only here to assist users. You are
- * free to create POJOs that honor the same contract
- * defined by this interface without actually implementing
- * the interface.
+ * All actions <b>may</b> implement this interface, which exposes the <code>execute()</code> method.
+ * <p/>
+ * However, as of XWork 1.1, this is <b>not</b> required and is only here to assist users. You are free to create POJOs
+ * that honor the same contract defined by this interface without actually implementing the interface.
  */
 public interface Action {
+
     /**
      * The action execution was successful. Show result
      * view to the end user.
@@ -62,8 +61,9 @@ public interface Action {
      * @return a string representing the logical result of the execution.
      *         See constants in this interface for a list of standard result values.
      * @throws Exception thrown if a system level exception occurs.
-     *                   Application level exceptions should be handled by returning
-     *                   an error value, such as Action.ERROR.
+     *                   <b>Note:</b> Application level exceptions should be handled by returning
+     *                   an error value, such as <code>Action.ERROR</code>.
      */
     public String execute() throws Exception;
+
 }

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2002-2007 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork2;
 
 import java.util.ResourceBundle;
@@ -7,7 +11,6 @@ import java.util.ResourceBundle;
  *
  * @author Rene Gielen
  */
-
 public interface ResourceBundleTextProvider extends TextProvider {
 
     /**

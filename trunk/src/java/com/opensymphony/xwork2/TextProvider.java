@@ -69,6 +69,7 @@ public interface TextProvider {
      * @return the message as found in the resource bundle, or null if none is found.
      */
     String getText(String key, List args);
+
     /**
      * Gets a message based on a key using the supplied args, as defined in
      * {@link java.text.MessageFormat}, or null if no message is found.
@@ -134,12 +135,15 @@ public interface TextProvider {
     /**
      * Get the named bundle, such as "com/acme/Foo".
      *
-     * @param bundleName the name of the resource bundle, such as "com/acme/Foo"
+     * @param bundleName the name of the resource bundle, such as <code>"com/acme/Foo"</code>.
+     * @return the bundle
      */
     ResourceBundle getTexts(String bundleName);
 
     /**
      * Get the resource bundle associated with the implementing class (usually an action).
+     *
+     * @return the bundle
      */
     ResourceBundle getTexts();
 }

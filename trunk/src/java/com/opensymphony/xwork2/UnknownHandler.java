@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork2;
@@ -7,8 +7,9 @@ package com.opensymphony.xwork2;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 
 /**
- * Handles cases when the result or action is unknown.  This allows other classes like Struts plugins to
- * provide intelligent defaults easier.
+ * Handles cases when the result or action is unknown.
+ * <p/>
+ * This allows other classes like Struts plugins to provide intelligent defaults easier.
  */
 public interface UnknownHandler {
     
@@ -18,7 +19,7 @@ public interface UnknownHandler {
      * 
      * @param namespace The namespace
      * @param actionName The action name
-     * @return An generated ActionConfig, can return null;
+     * @return An generated ActionConfig, can return <tt>null</tt>
      * @throws XWorkException
      */
     public ActionConfig handleUnknownAction(String namespace, String actionName) throws XWorkException;
@@ -30,7 +31,7 @@ public interface UnknownHandler {
      * @param actionName The action name
      * @param actionConfig The action config
      * @param resultCode The returned result code
-     * @return A result to be executed, can return null
+     * @return A result to be executed, can return <tt>null</tt>
      * @throws XWorkException
      */
     public Result handleUnknownResult(ActionContext actionContext, String actionName, ActionConfig actionConfig, String resultCode) throws XWorkException;
