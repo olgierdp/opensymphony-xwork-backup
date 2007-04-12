@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork2.validator;
@@ -7,7 +7,7 @@ package com.opensymphony.xwork2.validator;
 
 /**
  * <!-- START SNIPPET: validatorFlavours -->
- * <p>The validators supplied by the Xwork distribution (and any validators you 
+ * <p>The validators supplied by the XWork distribution (and any validators you
  * might write yourself) come in two different flavors:</p>
  *
  * <ol>
@@ -327,14 +327,40 @@ package com.opensymphony.xwork2.validator;
  */
 public interface Validator {
 
+    /**
+     * Sets the default message to use for validation failure
+     *
+     * @param message  the default message
+     */
     void setDefaultMessage(String message);
 
+    /**
+     * Gets the default message used for validation failures
+     *
+     * @return the default message
+     */
     String getDefaultMessage();
 
+    /**
+     * Gets the validation failure message for the given object
+     *
+     * @param object  object being validated (eg. a domain model object)
+     * @return  the validation failure message
+     */
     String getMessage(Object object);
 
+    /**
+     * Sets a resource bundle key to be used for lookup of validation failure message
+     *
+     * @param key  the resource bundle key
+     */
     void setMessageKey(String key);
 
+    /**
+     * Gets the resource bundle key used for lookup of validation failure message
+     *
+     * @return  the resource bundle key
+     */
     String getMessageKey();
 
     /**
@@ -343,7 +369,12 @@ public interface Validator {
      * @param validatorContext  the validation context to use.
      */
     void setValidatorContext(ValidatorContext validatorContext);
-    
+
+    /**
+     * Gets the validation context used
+     *
+     * @return the validation context
+     */
     ValidatorContext getValidatorContext();
 
     /**
@@ -362,6 +393,11 @@ public interface Validator {
      */
     void setValidatorType(String type);
 
+    /**
+     * Gets the vaildator type used (see class javadoc).
+     *
+     * @return  the type used
+     */
     String getValidatorType();
 
 }

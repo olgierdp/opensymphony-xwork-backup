@@ -1,17 +1,15 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
-
 package com.opensymphony.xwork2.validator;
 
 import java.util.List;
 
 /**
- * <code>ActionValidatorManager</code>
+ * ActionValidatorManager is the main interface for validation managers (regular and annotation based).
  *
  * @author Rainer Hermanns
- * @version $Id$
  */
 public interface ActionValidatorManager {
 
@@ -34,7 +32,7 @@ public interface ActionValidatorManager {
      * @param context the context of the action class - can be <tt>null</tt>.
      * @return a list of all validators for the given class and context.
      */
-     List<Validator> getValidators(Class clazz, String context);
+    List<Validator> getValidators(Class clazz, String context);
 
     /**
      * Validates the given object using action and its context.
@@ -50,7 +48,7 @@ public interface ActionValidatorManager {
      *
      * @param object the action to validate.
      * @param context the action's context.
-     * @param validatorContext
+     * @param validatorContext the validation context to use
      * @throws ValidationException if an error happens when validating the action.
      */
     void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException;
@@ -70,7 +68,7 @@ public interface ActionValidatorManager {
      *
      * @param object the action to validate.
      * @param context the action's context.
-     * @param validatorContext
+     * @param validatorContext the validation context to use
      * @param method the name of the method being invoked on the action - can be <tt>null</tt>.
      * @throws ValidationException if an error happens when validating the action.
      */

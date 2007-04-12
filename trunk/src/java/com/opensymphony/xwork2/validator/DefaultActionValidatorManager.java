@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
-
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.util.FileManager;
@@ -18,8 +17,9 @@ import java.util.*;
 
 
 /**
- * This is the entry point into XWork's rule-based validation framework.  Validation rules are
- * specified in XML configuration files named "className-contextName-validation.xml" where
+ * This is the entry point into XWork's rule-based validation framework.
+ * <p/>
+ * Validation rules are specified in XML configuration files named <code>className-contextName-validation.xml</code> where
  * className is the name of the class the configuration is for and -contextName is optional
  * (contextName is an arbitrary key that is used to look up additional validation rules for a
  * specific context).
@@ -38,27 +38,10 @@ public class DefaultActionValidatorManager implements ActionValidatorManager {
     private static final Map<String, List<ValidatorConfig>> validatorFileCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
     private static final Log LOG = LogFactory.getLog(DefaultActionValidatorManager.class);
 
-    /**
-     * Returns a list of validators for the given class and context. This is the primary
-     * lookup method for validators.
-     *
-     * @param clazz the class to lookup.
-     * @param context the context of the action class - can be <tt>null</tt>.
-     * @return a list of all validators for the given class and context.
-     */
     public synchronized List<Validator> getValidators(Class clazz, String context) {
         return getValidators(clazz, context, null);
     }
 
-    /**
-     * Returns a list of validators for the given class, context, and method name. This is the primary
-     * lookup method for validators.
-     *
-     * @param clazz the class to lookup.
-     * @param context the context of the action class - can be <tt>null</tt>.
-     * @param method the name of the method being invoked on the action - can be <tt>null</tt>.
-     * @return a list of all validators for the given class and context.
-     */
     public synchronized List<Validator> getValidators(Class clazz, String context, String method) {
         final String validatorKey = buildValidatorKey(clazz, context);
 
@@ -85,51 +68,19 @@ public class DefaultActionValidatorManager implements ActionValidatorManager {
         return validators;
     }
 
-    /**
-     * Validates the given object using action and its context.
-     *
-     * @param object the action to validate.
-     * @param context the action's context.
-     * @throws ValidationException if an error happens when validating the action.
-     */
     public void validate(Object object, String context) throws ValidationException {
         validate(object, context, (String) null);
     }
 
-    /**
-     * Validates the given object using action, its context, and the name of the method being invoked on the action.
-     *
-     * @param object the action to validate.
-     * @param context the action's context.
-     * @param method the name of the method being invoked on the action.
-     * @throws ValidationException if an error happens when validating the action.
-     */
     public void validate(Object object, String context, String method) throws ValidationException {
         ValidatorContext validatorContext = new DelegatingValidatorContext(object);
         validate(object, context, validatorContext, method);
     }
 
-    /**
-     * Validates an action give its context and a validation context.
-     *
-     * @param object the action to validate.
-     * @param context the action's context.
-     * @param validatorContext
-     * @throws ValidationException if an error happens when validating the action.
-     */
     public void validate(Object object, String context, ValidatorContext validatorContext) throws ValidationException {
         validate(object, context, validatorContext, null);
     }
 
-    /**
-     * Validates an action give its context, a validation context, and the name of the method being invoked on the action.
-     *
-     * @param object the action to validate.
-     * @param context the action's context.
-     * @param validatorContext
-     * @param method the name of the method being invoked on the action.
-     * @throws ValidationException if an error happens when validating the action.
-     */
     public void validate(Object object, String context, ValidatorContext validatorContext, String method) throws ValidationException {
         List<Validator> validators = getValidators(object.getClass(), context, method);
         Set<String> shortcircuitedFields = null;
@@ -360,4 +311,5 @@ public class DefaultActionValidatorManager implements ActionValidatorManager {
 
         return retList;
     }
+
 }
