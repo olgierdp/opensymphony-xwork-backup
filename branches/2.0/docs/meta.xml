@@ -18,57 +18,57 @@
     <owners>
         <person>
             <name>Patrick Lightbody</name>
-            <email>plightbo@gmail.com</email>
+            <email>plightbo (AT) gmail (DOT) com</email>
             <role>OGNL and TypeConversion</role>
         </person>
         <person>
             <name>Jason Carreira</name>
-            <email>jcarreira@gmail.com</email>
+            <email>jcarreira (AT) gmail (DOT) com</email>
             <role>Validation Framework, Interceptors, ActionInvocation / ActionProxy</role>
         </person>
         <person>
             <name>Rainer Hermanns</name>
-            <email>rainerh@gmail.com</email>
+            <email>rainerh (AT) gmail (DOT) com</email>
         </person>
     </owners>
 
     <developers>
         <person>
             <name>Cameron Braid</name>
-            <email>cameron@braid.com.au</email>
+            <email>cameron (AT) braid (DOT) com (DOT) au</email>
         </person>
         <person>
             <name>Bill Lynch</name>
-            <email>bill@jivesoftware.com</email>
+            <email>bill (AT) jivesoftware (DOT) com</email>
         </person>
         <person>
             <name>James House</name>
-            <email>jhouse@revolition.net</email>
+            <email>jhouse (AT) revolition (DOT) net</email>
         </person>
         <person>
             <name>Jon Lipsky</name>
-            <email>jon.lipsky@xesoft.com</email>
+            <email>jon (DOT) lipsky (AT) xesoft (DOT) com</email>
             <role>XWork Configuration Editor</role>
         </person>
         <person>
             <name>Matthew Payne</name>
-            <email>matthew.payne@sutternow.com</email>
+            <email>matthew (DOT) payne (AT) sutternow (DOT) com</email>
         </person>
         <person>
             <name>Matt Ho</name>
-            <email>matt@xtreme.com</email>
+            <email>matt (AT) xtreme (DOT) com</email>
         </person>
         <person>
             <name>Mark Woon</name>
-            <email>morpheus@helix.stanford.edu</email>
+            <email>morpheus (AT) helix (DOT) stanford (DOT) edu</email>
         </person>
         <person>
             <name>Peter Kelley</name>
-            <email>yellekau@yahoo.com</email>
+            <email>yellekau (AT) yahoo (DOT) com</email>
         </person>
         <person>
             <name>Don Brown</name>
-            <email>mrdon@twdata.org</email>
+            <email>mrdon (AT) twdata (DOT) org</email>
         </person>
     </developers>
 
