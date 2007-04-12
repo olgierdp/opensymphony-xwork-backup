@@ -1,0 +1,188 @@
+<!DOCTYPE xwork PUBLIC
+    "-//OpenSymphony Group//XWork 1.1.1//EN"
+    "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd"
+ >
+ <!-- "file:///temp/ross/xwork/src/etc/xwork-1.0.dtd"  -->
+
+<xwork>
+    <include file="xwork-default.xml"/>
+    <package name="default" extends="xwork-default" externalReferenceResolver="com.opensymphony.xwork.config.TestExternalReferenceResolver">
+
+        <global-results>
+            <result name="login"> <!-- should be chain type since it is the default -->
+                <param name="actionName">login</param>
+            </result>
+        </global-results>
+
+        <action name="Foo" class="com.opensymphony.xwork.SimpleAction">
+            <param name="foo">17</param>
+            <param name="bar">23</param>
+            <result name="success" type="chain">
+                <param name="actionName">Bar</param>
+            </result>
+            <interceptor-ref name="debugStack"/>
+            <interceptor-ref name="defaultStack"/>
+        </action>
+
+        <action name="ProxyInvocation" method="show" class="com.opensymphony.xwork.ProxyInvocationAction"/>
+
+        <action name="WildCard" class="com.opensymphony.xwork.SimpleAction">
+            <param name="foo">17</param>
+            <param name="bar">23</param>
+            <result name="success" type="void" />
+            <result name="*" type="mock" />
+            <interceptor-ref name="defaultStack"/>
+        </action>
+
+        <action name="WildCardInput" class="com.opensymphony.xwork.SimpleAction" method="input">
+            <param name="foo">17</param>
+            <param name="bar">23</param>
+            <result name="success" type="void" />
+            <result name="*" type="mock" />
+            <interceptor-ref name="defaultStack"/>
+        </action>
+
+        <action name="WildCardError" class="com.opensymphony.xwork.SimpleAction">
+            <result name="success" type="void" />
+            <result name="*" type="mock" />
+            <interceptor-ref name="defaultStack"/>
+        </action>
+
+        <action name="aliasTest" class="com.opensymphony.xwork.SimpleAction">
+            <param name="foo">17</param>
+            <param name="bar">23</param>
+           	<param name="aliases">#{ "aliasSource" : "aliasDest", "bar":"baz" }</param>
+			<interceptor-ref name="defaultStack"/>
+         	<interceptor-ref name="alias"/>
+        </action>
+      
+        <action name="packagelessAction" class="PackagelessAction">
+        </action>
+
+        <action name="Bar" class="com.opensymphony.xwork.SimpleAction">
+        	<param name="foo">17</param>
+            <param name="bar">23</param>
+        </action>
+
+        <action name="MyBean" class="com.opensymphony.xwork.util.MyBeanAction">
+            <interceptor-ref name="debugStack"/>
+            <interceptor-ref name="defaultStack"/>
+        </action>
+
+        <action name="TestInterceptorParam" class="com.opensymphony.xwork.SimpleAction">
+            <interceptor-ref name="test">
+                <param name="expectedFoo">expectedFoo</param>
+            </interceptor-ref>
+        </action>
+
+        <action name="TestInterceptorParamOverride" class="com.opensymphony.xwork.SimpleAction">
+            <interceptor-ref name="test">
+                <param name="foo">foo123</param>
+                <param name="expectedFoo">foo123</param>
+            </interceptor-ref>
+        </action>
+
+        <action name="TestModelDrivenValidation" class="com.opensymphony.xwork.ModelDrivenAction">
+            <interceptor-ref name="defaultStack"/>
+            <interceptor-ref name="validation"/>
+        </action>
+        <!-- test resolution  -->
+        <action name="TestExternalRefResolver" class="com.opensymphony.xwork.ExternalReferenceAction">
+                <external-ref name="foo">myFoo</external-ref>
+            <interceptor-ref name="debugStack"/>
+            <interceptor-ref name="defaultStack"/>
+        </action>
+        <!-- test required flag -->
+        <action name="TestExternalRefResolver2" class="com.opensymphony.xwork.ExternalReferenceAction">
+                <external-ref name="foo">myFoo</external-ref>
+                <external-ref required="false" name="does_not_exist">Does Not Exist</external-ref>
+            <interceptor-ref name="debugStack"/>
+            <interceptor-ref name="defaultStack"/>
+        </action>
+        <!-- test where required reference is not found -->
+        <action name="TestExternalRefResolver3" class="com.opensymphony.xwork.ExternalReferenceAction">
+                <external-ref required="true" name="Boo">myBoo</external-ref>
+            <interceptor-ref name="debugStack"/>
+            <interceptor-ref name="defaultStack"/>
+        </action>
+
+        <!-- chain resursion detection -->
+        <action name="InfiniteRecursionChain" class="com.opensymphony.xwork.ActionSupport">
+                <result name="success" type="chain">InfiniteRecursionChain</result>
+        </action>
+
+   </package>
+
+           <package name="test-external-refs" extends="default" namespace="test/externalRef/">
+        <!-- test resolution when Resolver is declared on parent -->
+        <action name="TestExternalRefResolver4" class="com.opensymphony.xwork.ExternalReferenceAction">
+                <external-ref name="foo">myFoo</external-ref>
+            <interceptor-ref name="defaultStack"/>
+        </action>
+
+   </package>
+
+    <package name="bar" extends="default" namespace="/foo/bar">
+        <interceptors>
+            <interceptor-stack name="barDefaultStack">
+                <interceptor-ref name="debugStack"/>
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+        </interceptors>
+
+        <global-exception-mappings>
+            <exception-mapping name="foo" exception="com.opensymphony.TestException" result="foo"/>
+        </global-exception-mappings>
+
+        <action name="Bar" class="com.opensymphony.xwork.SimpleAction">
+            <interceptor-ref name="barDefaultStack"/>
+        </action>
+
+        <action name="TestInterceptorParamInheritance" class="com.opensymphony.xwork.SimpleAction">
+            <interceptor-ref name="test">
+                <param name="expectedFoo">expectedFoo</param>
+            </interceptor-ref>
+        </action>
+
+        <action name="TestInterceptorParamInehritanceOverride" class="com.opensymphony.xwork.SimpleAction">
+            <interceptor-ref name="test">
+                <param name="foo">foo123</param>
+                <param name="expectedFoo">foo123</param>
+            </interceptor-ref>
+        </action>
+    </package>
+
+    <package name="abstractPackage" namespace="/abstract" abstract="true">
+        <action name="test" class="com.opensymphony.xwork.SimpleAction"/>
+    </package>
+
+    <package name="nonAbstractPackage" extends="abstractPackage" namespace="/nonAbstract"/>
+
+    <package name="baz" extends="default" namespace="baz">
+        <action name="commandTest" class="com.opensymphony.xwork.SimpleAction">
+            <param name="foo">123</param>
+            <result name="error" type="chain">
+                <param name="actionName">bar</param>
+            </result>
+            <interceptor-ref name="static-params"/>
+        </action>
+        <action name="myCommand" class="com.opensymphony.xwork.SimpleAction" method="commandMethod">
+            <param name="bar">456</param>
+            <result name="success" type="chain">
+                <param name="actionName">foo</param>
+            </result>
+            <interceptor-ref name="logger"/>
+        </action>
+    </package>
+
+    <package name="multipleInheritance" extends="default,abstractPackage,bar" namespace="multipleInheritance">
+        <action name="testMultipleInheritance" class="com.opensymphony.xwork.SimpleAction">
+            <result name="success" type="chain">
+                <param name="actionName">foo</param>
+            </result>
+            <interceptor-ref name="barDefaultStack"/>
+        </action>
+    </package>
+
+    <include file="includeTest.xml"/>
+</xwork>

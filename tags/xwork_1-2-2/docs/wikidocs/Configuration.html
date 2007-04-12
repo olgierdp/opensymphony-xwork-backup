@@ -1,0 +1,283 @@
+<html>
+    <head>
+        <title>XWork - 
+        Configuration
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <ul>
+	<li>xwork.xml</li>
+	<li><a href="Logging.html" title="Logging">Logging</a></li>
+</ul>
+
+
+
+<h2><a name="Configuration-xwork.xml"></a>xwork.xml</h2>
+
+<p><a name="Configuration-top"></a><br/>
+XWork is configured through the use of a file named xwork.xml in the root of the classpath which conforms to the DTD.  This file defines the action, interceptor, and result configurations and mappings. The following is a sample xwork.xml file; it's a condensed version of the one used in the XWork test cases.  It's a long example, but it exhibits all the major configuration possibilites:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-xml">&lt;!DOCTYPE xwork PUBLIC <span class="code-quote">"-//OpenSymphony Group//XWork 1.0//EN"</span>
+  <span class="code-quote">"http://www.opensymphony.com/xwork/xwork-1.0.dtd"</span>&gt;
+
+<span class="code-tag">&lt;xwork&gt;</span>
+  <span class="code-tag">&lt;package name=<span class="code-quote">"default"</span>&gt;</span>
+    <span class="code-tag">&lt;result-types&gt;</span>
+      <span class="code-tag">&lt;result-type name=<span class="code-quote">"chain"</span> class=<span class="code-quote">"com.opensymphony.xwork.ActionChainResult"</span>/&gt;</span>
+    <span class="code-tag">&lt;/result-types&gt;</span>
+
+    <span class="code-tag">&lt;interceptors&gt;</span>
+      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"timer"</span> class=<span class="code-quote">"com.opensymphony.xwork.interceptor.TimerInterceptor"</span>/&gt;</span>
+      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"logger"</span> class=<span class="code-quote">"com.opensymphony.xwork.interceptor.LoggingInterceptor"</span>/&gt;</span>
+      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"chain"</span> class=<span class="code-quote">"com.opensymphony.xwork.interceptor.ChainingInterceptor"</span>/&gt;</span>
+      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"params"</span> class=<span class="code-quote">"com.opensymphony.xwork.interceptor.ParametersInterceptor"</span>/&gt;</span>
+      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"static-params"</span> class=<span class="code-quote">"com.opensymphony.xwork.interceptor.StaticParametersInterceptor"</span>/&gt;</span>
+      <span class="code-tag">&lt;interceptor name=<span class="code-quote">"test"</span> class=<span class="code-quote">"com.opensymphony.xwork.TestInterceptor"</span>&gt;</span>
+        <span class="code-tag">&lt;param name=<span class="code-quote">"foo"</span>&gt;</span>expectedFoo<span class="code-tag">&lt;/param&gt;</span>
+      <span class="code-tag">&lt;/interceptor&gt;</span>
+
+      <span class="code-tag">&lt;interceptor-stack name=<span class="code-quote">"defaultStack"</span>&gt;</span>
+        <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"static-params"</span>/&gt;</span>
+        <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"params"</span>/&gt;</span>
+      <span class="code-tag">&lt;/interceptor-stack&gt;</span>
+      <span class="code-tag">&lt;interceptor-stack name=<span class="code-quote">"debugStack"</span>&gt;</span>
+        <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"timer"</span>/&gt;</span>
+        <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"logger"</span>/&gt;</span>
+      <span class="code-tag">&lt;/interceptor-stack&gt;</span>
+    <span class="code-tag">&lt;/interceptors&gt;</span>
+
+    <span class="code-tag">&lt;global-results&gt;</span>
+      <span class="code-tag">&lt;result name=<span class="code-quote">"login"</span> type=<span class="code-quote">"chain"</span>&gt;</span>
+        <span class="code-tag">&lt;param name=<span class="code-quote">"actionName"</span>&gt;</span>login<span class="code-tag">&lt;/param&gt;</span>
+      <span class="code-tag">&lt;/result&gt;</span>
+    <span class="code-tag">&lt;/global-results&gt;</span>
+
+    <span class="code-tag">&lt;action name=<span class="code-quote">"Foo"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+      <span class="code-tag">&lt;param name=<span class="code-quote">"foo"</span>&gt;</span>17<span class="code-tag">&lt;/param&gt;</span>
+      <span class="code-tag">&lt;param name=<span class="code-quote">"bar"</span>&gt;</span>23<span class="code-tag">&lt;/param&gt;</span>
+      <span class="code-tag">&lt;result name=<span class="code-quote">"success"</span> type=<span class="code-quote">"chain"</span>&gt;</span>
+        <span class="code-tag">&lt;param name=<span class="code-quote">"actionName"</span>&gt;</span>Bar<span class="code-tag">&lt;/param&gt;</span>
+      <span class="code-tag">&lt;/result&gt;</span>
+      <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"debugStack"</span>/&gt;</span>
+      <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"defaultStack"</span>/&gt;</span>
+    <span class="code-tag">&lt;/action&gt;</span>
+
+    <span class="code-tag">&lt;action name=<span class="code-quote">"Bar"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+      <span class="code-tag">&lt;param name=<span class="code-quote">"foo"</span>&gt;</span>17<span class="code-tag">&lt;/param&gt;</span>
+      <span class="code-tag">&lt;param name=<span class="code-quote">"bar"</span>&gt;</span>23<span class="code-tag">&lt;/param&gt;</span>
+    <span class="code-tag">&lt;/action&gt;</span>
+
+    <span class="code-tag">&lt;action name=<span class="code-quote">"TestInterceptorParam"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+      <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"test"</span>&gt;</span>
+        <span class="code-tag">&lt;param name=<span class="code-quote">"expectedFoo"</span>&gt;</span>expectedFoo<span class="code-tag">&lt;/param&gt;</span>
+      <span class="code-tag">&lt;/interceptor-ref&gt;</span>
+    <span class="code-tag">&lt;/action&gt;</span>
+
+    <span class="code-tag">&lt;action name=<span class="code-quote">"TestInterceptorParamOverride"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+      <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"test"</span>&gt;</span>
+        <span class="code-tag">&lt;param name=<span class="code-quote">"foo"</span>&gt;</span>foo123<span class="code-tag">&lt;/param&gt;</span>
+        <span class="code-tag">&lt;param name=<span class="code-quote">"expectedFoo"</span>&gt;</span>foo123<span class="code-tag">&lt;/param&gt;</span>
+      <span class="code-tag">&lt;/interceptor-ref&gt;</span>
+    <span class="code-tag">&lt;/action&gt;</span>
+  <span class="code-tag">&lt;/package&gt;</span>
+
+  <span class="code-tag">&lt;package name=<span class="code-quote">"bar"</span> extends=<span class="code-quote">"default"</span> namespace=<span class="code-quote">"/foo/bar"</span>&gt;</span>
+    <span class="code-tag">&lt;interceptors&gt;</span>
+      <span class="code-tag">&lt;interceptor-stack name=<span class="code-quote">"barDefaultStack"</span>&gt;</span>
+        <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"debugStack"</span>/&gt;</span>
+        <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"defaultStack"</span>/&gt;</span>
+      <span class="code-tag">&lt;/interceptor-stack&gt;</span>
+    <span class="code-tag">&lt;/interceptors&gt;</span>
+
+    <span class="code-tag">&lt;action name=<span class="code-quote">"Bar"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+      <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"barDefaultStack"</span>/&gt;</span>
+    <span class="code-tag">&lt;/action&gt;</span>
+
+    <span class="code-tag">&lt;action name=<span class="code-quote">"TestInterceptorParamInheritance"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+      <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"test"</span>&gt;</span>
+        <span class="code-tag">&lt;param name=<span class="code-quote">"expectedFoo"</span>&gt;</span>expectedFoo<span class="code-tag">&lt;/param&gt;</span>
+      <span class="code-tag">&lt;/interceptor-ref&gt;</span>
+    <span class="code-tag">&lt;/action&gt;</span>
+
+  <span class="code-tag">&lt;/package&gt;</span>
+
+  <span class="code-tag">&lt;package name=<span class="code-quote">"abstractPackage"</span> namespace=<span class="code-quote">"/abstract"</span> abstract=<span class="code-quote">"true"</span>&gt;</span>
+    <span class="code-tag">&lt;action name=<span class="code-quote">"test"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>/&gt;</span>
+  <span class="code-tag">&lt;/package&gt;</span>
+
+  <span class="code-tag">&lt;package name=<span class="code-quote">"nonAbstractPackage"</span> extends=<span class="code-quote">"abstractPackage"</span> namespace=<span class="code-quote">"/nonAbstract"</span>/&gt;</span>
+
+  <span class="code-tag">&lt;package name=<span class="code-quote">"multipleInheritance"</span> extends=<span class="code-quote">"default,abstractPackage,bar"</span> namespace=<span class="code-quote">"multipleInheritance"</span>&gt;</span>
+    <span class="code-tag">&lt;action name=<span class="code-quote">"testMultipleInheritance"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;</span>
+      <span class="code-tag">&lt;result name=<span class="code-quote">"success"</span> type=<span class="code-quote">"chain"</span>&gt;</span>
+        <span class="code-tag">&lt;param name=<span class="code-quote">"actionName"</span>&gt;</span>foo<span class="code-tag">&lt;/param&gt;</span>
+      <span class="code-tag">&lt;/result&gt;</span>
+      <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"barDefaultStack"</span>/&gt;</span>
+    <span class="code-tag">&lt;/action&gt;</span>
+  <span class="code-tag">&lt;/package&gt;</span>
+
+  <span class="code-tag">&lt;include file=<span class="code-quote">"includeTest.xml"</span>/&gt;</span>
+<span class="code-tag">&lt;/xwork&gt;</span></pre>
+</div></div>
+
+
+<h2><a name="Configuration-xwork.xmlelements"></a>xwork.xml elements</h2>
+
+<h3><a name="Configuration-Package"></a>Package <a name="Configuration-Package"></a></h3>
+
+<p>The package element has one required attribute, "name", which acts as the key to later reference this package. The "extends" attribute is optional and allows one package to inherit the configuration of one or more previous packages including all interceptor, interceptor-stack, and action configurations. Note that the configuration file is processed sequentially down the document, so the package referenced by an "extends" should be defined above the package which extends it. The "abstract" optional attribute allows you to make a package abstract, which will allow you to extend from it without the action configurations defined in the abstract package actually being available at runtime. (<a href="#Configuration-top" title="top on Configuration">see above for example</a>)</p>
+
+<table class='confluenceTable'><tbody>
+<tr>
+<th class='confluenceTh'> Attribute </th>
+<th class='confluenceTh'> Required </th>
+<th class='confluenceTh'> Description </th>
+</tr>
+<tr>
+<td class='confluenceTd'> name </td>
+<td class='confluenceTd'> <b>yes</b> </td>
+<td class='confluenceTd'> key to for other packages to reference </td>
+</tr>
+<tr>
+<td class='confluenceTd'> extends </td>
+<td class='confluenceTd'> no </td>
+<td class='confluenceTd'> inherits package behavior of the package it extends </td>
+</tr>
+<tr>
+<td class='confluenceTd'> namespace </td>
+<td class='confluenceTd'> no </td>
+<td class='confluenceTd'> see <a href="#Configuration-Namespace" title="Namespace on Configuration">Namespace</a> </td>
+</tr>
+<tr>
+<td class='confluenceTd'> abstract </td>
+<td class='confluenceTd'> no </td>
+<td class='confluenceTd'> declares package to be abstract (no action configurations required in package) </td>
+</tr>
+</tbody></table>
+
+<h4><a name="Configuration-Namespace"></a>Namespace <a name="Configuration-Namespace"></a></h4>
+
+<p>The optional namespace attribute warrants its own discussion section. The namespace attribute allows you to segregate action configurations into namespaces, so that you may use the same action alias in more than one namespace with different classes, parameters, etc. This is in contrast to Webwork 1.x, where all action names and aliases were global and could not be re-used in an application. The default namespace, which is "" (an empty string) is used as a "catch-all" namespace, so if an action configuration is not found in a specified namespace, the default namespace will also be searched. This allows you to have global action configurations outside of the "extends" hierarchy, as well as to allow the previous Webwork 1.x behavior by not specifying namespaces. It is also intended that the namespace functionality can be used for security, for instance by having the path before the action name be used as the namespace by the Webwork 2.0 ServletDispatcher, thus allowing the use of J2EE declarative security on paths to be easily implemented and maintained. (<a href="#Configuration-top" title="top on Configuration">see above for example</a>)</p>
+<h3><a name="Configuration-ResultType"></a>Result-Type</h3>
+
+<p>Result types define classes and map them to names to be referred in the action configuration results. This serves as a shorthand name-value pair for these classes.</p>
+
+
+<h3><a name="Configuration-Interceptors"></a>Interceptors</h3>
+
+<p>Interceptors also serve as a name-value pairing for referring to specific Interceptor classes by a shorthand name where we use interceptor-ref elements, such as in Interceptor stacks and action configurations.</p>
+
+
+<h3><a name="Configuration-InterceptorStack"></a>Interceptor-Stack</h3>
+
+<p>The interceptor-stack element allows you to assign a name for later referencing via interceptor-ref to an ordered list of interceptors. This allows you to create standard groups of interceptors to be used in a certain order. The interceptor stack name/value pairs are stored in the same map as the interceptor definitions, so anywhere you use an interceptor-ref to refer to an interceptor you may also refer to an interceptor stack.</p>
+<h3><a name="Configuration-InterceptorParameterization"></a>Interceptor Parameterization</h3>
+
+<p>Interceptors are instantiated and stored at the ActionConfig level, i.e. there will be one instance per action configured in xwork.xml. These Interceptor instances may be parameterized at either the declaration level, where you map an Interceptor class to a name to be referenced later, like so:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;interceptor name=<span class="code-quote">"test"</span> class=<span class="code-quote">"com.opensymphony.xwork.TestInterceptor"</span>&gt;
+    &lt;param name=<span class="code-quote">"foo"</span>&gt;expectedFoo&lt;/param&gt;
+&lt;/interceptor&gt;</pre>
+</div></div>
+
+<p>or at the interceptor-ref level, either inside an interceptor-stack or in an action declaration, like so:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;interceptor-ref name=<span class="code-quote">"test"</span>&gt;
+    &lt;param name=<span class="code-quote">"expectedFoo"</span>&gt;expectedFoo&lt;/param&gt;
+&lt;/interceptor-ref&gt;</pre>
+</div></div>
+
+<p>Although it is allowed by the DTD, parameters applied to interceptor-refs which refer to interceptor-stack elements will NOT be applied, and will cause a warning message.</p>
+
+<h3><a name="Configuration-Globalresults"></a>Global-results</h3>
+
+<p>The global results allows you to define result mappings which will be used as defaults for all action configurations and will be automatically inherited by all action configurations in this package and all packages which extend this package.</p>
+
+<h3><a name="Configuration-Action"></a>Action</h3>
+
+<p>The action element allows the mapping of names to action classes. These names are used, along with the namespace described above, to retrieve the action config from the configuration. The action may also be parameterized by using the param elements, as above, which will set parameters into the Action at execution (with the help of the StaticParametersInterceptor). </p>
+
+<p>When defining actions, sometimes you actually don't need any class, but rather are just putting in a placeholder for accessing interceptors and results. You can use ActionSupport for a simple action that has all of the XWork features but doesn't actually do anything. In fact, rather than defining your action class, if you leave it empty it defaults to ActionSupport. </p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;action name=<span class="code-quote">"foo"</span>&gt;
+    ...
+&lt;/action&gt;</pre>
+</div></div>
+
+<p>The action may also have one or more results mapped to string return codes, such as "success", "error", or "input", which are the default 3 return states for actions, although ANY return string may be used and mapped to a result. The result, which is mapped to a result class by the "type" attribute which refers to the result-type name defined above, may also be parameterized by using the param element. </p>
+
+<p>There is one shortcut when defining results, as a lot of the time a result will have only one parameter (which is often a location to redirect to (when using XWork in the web sense)).</p>
+
+<p>Here is the long form of a result with a single location parameter:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;result name=<span class="code-quote">"test"</span>&gt;
+    &lt;param name=<span class="code-quote">"location"</span>&gt;foo.jsp&lt;/param&gt;
+&lt;/result&gt;</pre>
+</div></div>
+
+<p>and this is the 'shortcut' form:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;result name=<span class="code-quote">"test"</span>&gt;foo.jsp&lt;/result&gt;</pre>
+</div></div>
+
+<p>Note that this shortcut <b>only</b> works when there is a single parameter for the result and the result has defined what its default parameter is.</p>
+
+<p>If your result name is "success", then you can take this shortcut even further by just doing:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;result&gt;success.jsp&lt;/result&gt;</pre>
+</div></div>
+
+<div class="panel"><div class="panelContent" style="background-color: #ffffce; ">
+<p><img class="emoticon" src="./icons/emoticons/information.gif" height="16" width="16" align="absmiddle" alt="" border="0"/> Tip: using the action class shorthand and the result shortcuts, you can do something as simple as this to define an XWork front-end to a result:</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;action name=<span class="code-quote">"foo"</span>&gt;
+    &lt;result&gt;foo.jsp&lt;/result&gt;
+&lt;/action&gt;</pre>
+</div></div>
+</div></div>
+
+<p>Similar to the interceptor Syntax shown above, actions may be parametrized:</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;action name=<span class="code-quote">"Foo"</span> class=<span class="code-quote">"com.opensymphony.xwork.SimpleAction"</span>&gt;
+    &lt;param name=<span class="code-quote">"foo"</span>&gt;17&lt;/param&gt;
+    ...
+&lt;/action&gt;</pre>
+</div></div>
+<p>In this example, it would be tried to call the setFoo() method in SimpleAction with the given value when Foo.action is called. If SimpleAction is model driven, setFoo() is invoked on the model.</p>
+
+<p>The action may also define one or more interceptor refs to either interceptors or interceptor stacks to be applied before and after the action execution (see the section on Interceptors below). The ordering of these interceptor refs determines the order in which they will be applied.</p>
+
+<h3><a name="Configuration-Includesusingmultipleconfigurationfiles"></a>Includes - using multiple configuration files</h3>
+
+<p>The xwork.xml configuration file may be broken up into several files, each with its own set of package declarations, by using the &lt;include&gt; element zero or more times at the bottom of your xwork.xml file, like so:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;include file=<span class="code-quote">"includeTest.xml"</span>/&gt;</pre>
+</div></div>
+
+<p>These files will be processed, in order, in the same manner as the main xwork.xml, thus may have all of the same structures, including the &lt;include&gt; element. Although it is, therefore, possible to have packages in configuration files listed later in an include element extend packages defined in an earlier included file, it is not recommended. It should be considered best practice, in the case of using multiple configuration files, to declare default packages meant to be extended in the xwork.xml and to have no dependencies between sub-configuration files.</p>
+
+<h2><a name="Configuration-ConfigurationProviders"></a>Configuration Providers</h2>
+
+<p>XWork configuration is handled through classes which implement the ConfigurationProvider interface.  The default implementation is the XmlConfigurationProvider class.  You can either create a new provider by implementing the ConfigurationProvider interface or you can extend the XmlConfigurationProvider class.  The XmlConfigurationProvider class includes a protected method called getInputStream() which is called to acquire the configuration InputStream which is expected to be an XML data stream.  The default implementation looks for a file called xwork.xml in the class path but by overriding the getInputStream() method you can pull configuration data from any source.</p>
+
+<p>Custom configuration providers must be registered with the ConfigurationManager before they will be used to load configuration data.  If no custom configuration providers are registered then the default configuration provider is used.  If any custom configuration providers are registered then the default configuration provider will no longer be used (although you could add a new instance of it yourself to include it in the list of providers which is searched).  To add a configuration provider just call the ConfigurationManager.addConfigurationProvider() method with the custom configuration provider as the argument.</p>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
