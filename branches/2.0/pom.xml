@@ -149,6 +149,32 @@
         <system>JIRA</system>
         <url>http://jira.opensymphony.com/browse/XW</url>
     </issueManagement>
+    <distributionManagement>
+        <!--
+          For this to work, you need to:
+
+          1) Get the private key from someone that trusts you :)
+          2) Add the following to ~/.m2/settings.xml
+
+          <settings>
+              ...
+              <servers>
+                  <server>
+                        <id>opensymphony</id>
+                        <username>maven</username>
+                        <privateKey>/path/to/private/maven_opensymphony_key</privateKey>
+                  </server>
+              </servers>
+              ...
+          </settings>
+          -->
+        <repository>
+            <id>opensymphony</id>
+            <name>OpenSymphony Maven Repository</name>
+            <url>scp://maven2.opensymphony.com/opt/repository/maven2</url>
+        </repository>
+    </distributionManagement>
+    
     <mailingLists>
         <mailingList>
             <name>WebWork users list</name>

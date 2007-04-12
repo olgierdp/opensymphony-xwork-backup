@@ -74,17 +74,6 @@
 
     <releases>
         <release>
-            <version>1.2.2</version>
-            <date>04/12/2007</date>
-            <jiraId>21671</jiraId>
-            <downloads>
-                <download>
-                    <url>https://xwork.dev.java.net/files/documents/709/55212/xwork-1.2.2.zip</url>
-                    <name>Full</name>
-                </download>
-            </downloads>
-        </release>
-        <release>
             <version>2.0.1</version>
             <date>02/16/2007</date>
             <jiraId>21681</jiraId>
@@ -127,6 +116,17 @@
                 <download>
                     <url>https://xwork.dev.java.net/files/documents/709/47679/xwork-2.0.0-lib.zip</url>
                     <name>Lib: Jars and Libs only</name>
+                </download>
+            </downloads>
+        </release>
+        <release>
+            <version>1.2.2</version>
+            <date>04/12/2007</date>
+            <jiraId>21671</jiraId>
+            <downloads>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/55212/xwork-1.2.2.zip</url>
+                    <name>Full</name>
                 </download>
             </downloads>
         </release>
