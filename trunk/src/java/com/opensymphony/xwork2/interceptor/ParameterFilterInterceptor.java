@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
-
 package com.opensymphony.xwork2.interceptor;
 
 import com.opensymphony.xwork2.ActionInvocation;
@@ -16,20 +15,19 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <!-- START SNIPPET: description -->
  *
- * <p>The Parameter Filter Interceptor blocks parameters from getting
+ * The Parameter Filter Interceptor blocks parameters from getting
  * to the rest of the stack or your action. You can use multiple 
  * parameter filter interceptors for a given action, so, for example,
  * you could use one in your default stack that filtered parameters
  * you wanted blocked from every action and those you wanted blocked 
  * from an individual action you could add an additional interceptor
- * for each action.</p>
+ * for each action.
  * 
  * <!-- END SNIPPET: description -->
  * 
  * <!-- START SNIPPET: parameters -->
  *
  * <ul>
- *
  * <li>allowed - a comma delimited list of parameter prefixes
  *  that are allowed to pass to the action</li>
  * <li>blocked - a comma delimited list of parameter prefixes 
@@ -59,44 +57,36 @@ import org.apache.commons.logging.LogFactory;
  * <!-- END SNIPPET: parameters -->
  *
  * <!-- START SNIPPET: extending -->
- * 
- * none
- * 
+ * There are no known extension points to this interceptor.
  * <!-- END SNIPPET: extending -->
  * 
  * <pre>
  * <!-- START SNIPPET: example -->
+ * &lt;interceptors&gt;
+ *   ...
+ *   &lt;interceptor name="parameterFilter" class="com.opensymphony.xwork2.interceptor.ParameterFilterInterceptor"/&gt;
+ *   ...
+ * &lt;/interceptors&gt;
  * 
- * <interceptors>
+ * &lt;action ....&gt;
  *   ...
- *   <interceptor name="parameterFilter" class="com.opensymphony.xwork2.interceptor.ParameterFilterInterceptor" />
+ *   &lt;interceptor-ref name="parameterFilter"&gt;
+ *     &lt;param name="blocked"&gt;person,person.address.createDate,personDao&lt;/param&gt;
+ *   &lt;/interceptor-ref&gt;
  *   ...
- * </interceptors>
- * 
- * <action ....>
- *   ...
- *   <interceptor-ref name="parameterFilter">
- *     <param name="blocked">person,person.address.createDate,personDao</param>
- *   </interceptor-ref>
- *   ...
- * </action> 
- * 
+ * &lt;/action&gt;
  * <!-- END SNIPPET: example -->
  * </pre>
  * 
  * @author Gabe
- * @version $Date$ $Id$
  */
 public class ParameterFilterInterceptor extends AbstractInterceptor {
 
     private static final Log LOG = LogFactory.getLog(ParameterFilterInterceptor.class);
 
     private Collection allowed;
-
     private Collection blocked;
-
     private Map includesExcludesMap;
-
     private boolean defaultBlock = false;
 
     public String intercept(ActionInvocation invocation) throws Exception {
@@ -144,10 +134,12 @@ public class ParameterFilterInterceptor extends AbstractInterceptor {
     }
 
     /**
-     * @param c
+     * Tests if the given char is a property seperator char <code>.([</code>.
+     *
+     * @param c the char
      * @return <tt>true</tt>, if char is property separator, <tt>false</tt> otherwise.
      */
-    private boolean isPropSeperator(char c) {
+    private static boolean isPropSeperator(char c) {
         return c == '.' || c == '(' || c == '[';
     }
 
@@ -229,8 +221,8 @@ public class ParameterFilterInterceptor extends AbstractInterceptor {
     /**
      * Return a collection from the comma delimited String.
      *
-     * @param commaDelim
-     * @return A collection from the comma delimited String.
+     * @param commaDelim the comma delimited String.
+     * @return A collection from the comma delimited String. Returns <tt>null</tt> if the string is empty.
      */
     private Collection asCollection(String commaDelim) {
         if (commaDelim == null || commaDelim.trim().length() == 0) {
@@ -238,4 +230,5 @@ public class ParameterFilterInterceptor extends AbstractInterceptor {
         }
         return TextParseUtil.commaDelimitedStringToSet(commaDelim);
     }
+
 }

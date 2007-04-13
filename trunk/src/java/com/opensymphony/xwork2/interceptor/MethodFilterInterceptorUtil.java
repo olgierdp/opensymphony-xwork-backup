@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork2.interceptor;
@@ -13,29 +13,25 @@ import com.opensymphony.xwork2.util.TextParseUtil;
  * {@link com.opensymphony.xwork2.interceptor.MethodFilterInterceptor}.
  * 
  * @author tm_jee
- * @version $Date$ $Id$
  */
 public class MethodFilterInterceptorUtil {
+
 	/**
      * Static method to decide if the specified <code>method</code> should be
      * apply (not filtered) depending on the set of <code>excludeMethods</code> and 
      * <code>includeMethods</code>. 
-     * 
-     * <p/>
-     * 
+     *
      * <ul>
      * <li>
      * 	<code>excludeMethods</code> takes precedence over <code>includeMethods</code>
      * </li>
-     * 
-     * <p/>
-     * 
-     * asterict '*' could be used to indicate all methods.
-     * 
-     * 
-     * @param excludeMethods
-     * @param includeMethods
-     * @return boolean
+     * </ul>
+     * <b>Note:</b> Asterict '*' could be used to indicate all methods.
+     *
+     * @param excludeMethods  list of methods to exclude.
+     * @param includeMethods  list of methods to include.
+     * @param method the specified method to check
+     * @return <tt>true</tt> if the method should be applied.
      */
     public static boolean applyMethod(Set excludeMethods, Set includeMethods, String method) {
     	if (((excludeMethods.contains("*") && !includeMethods.contains("*"))
@@ -50,10 +46,10 @@ public class MethodFilterInterceptorUtil {
      * Same as {@link #applyMethod(Set, Set, String)}, except that <code>excludeMethods</code>
      * and <code>includeMethods</code> are supplied as comma separated string.
      * 
-     * @param excludeMethods
-     * @param includeMethods
-     * @param method
-     * @return boolean
+     * @param excludeMethods  comma seperated string of methods to exclude.
+     * @param includeMethods  comma seperated string of methods to include.
+     * @param method the specified method to check
+     * @return <tt>true</tt> if the method should be applied.
      */
     public static boolean applyMethod(String excludeMethods, String includeMethods, String method) {
     	Set includeMethodsSet = TextParseUtil.commaDelimitedStringToSet(includeMethods == null? "" : includeMethods);
@@ -61,4 +57,5 @@ public class MethodFilterInterceptorUtil {
     	
     	return applyMethod(excludeMethodsSet, includeMethodsSet, method);
     }
+
 }

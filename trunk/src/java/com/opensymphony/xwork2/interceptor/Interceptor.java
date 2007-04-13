@@ -121,8 +121,10 @@ public interface Interceptor extends Serializable {
      * Allows the Interceptor to do some processing on the request before and/or after the rest of the processing of the
      * request by the {@link ActionInvocation} or to short-circuit the processing and just return a String return code.
      *
+     * @param invocation  the action invocation
      * @return the return code, either returned from {@link ActionInvocation#invoke()}, or from the interceptor itself.
      * @throws Exception any system-level error, as defined in {@link com.opensymphony.xwork2.Action#execute()}.
      */
     String intercept(ActionInvocation invocation) throws Exception;
+
 }

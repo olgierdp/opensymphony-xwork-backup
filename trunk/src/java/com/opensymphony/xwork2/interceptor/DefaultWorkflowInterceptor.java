@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork2.interceptor;
@@ -128,8 +128,6 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  * @author Philip Luppens
  * @author tm_jee
- * 
- * @version $Date$ $Id$
  */
 public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 	
@@ -148,7 +146,7 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 	 * Determine if {@link Validateable}'s <code>validate()</code> should always 
 	 * be invoked. Default to "true".
 	 * 
-	 * @param alwaysInvokeValidate
+	 * @param alwaysInvokeValidate <tt>true</tt> then <code>validate()</code> is always invoked.
 	 */
 	public void setAlwaysInvokeValidate(String alwaysInvokeValidate) {
 		this.alwaysInvokeValidate = Boolean.parseBoolean(alwaysInvokeValidate);
@@ -158,7 +156,7 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 	 * Set the <code>inputResultName</code> (result name to be returned when 
 	 * a action / field error is found registered). Default to {@link Action#INPUT}
 	 * 
-	 * @param inputResultName
+	 * @param inputResultName what result name to use when there was validation error(s).
 	 */
 	public void setInputResultName(String inputResultName) {
 		this.inputResultName = inputResultName;
@@ -220,4 +218,5 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 
         return invocation.invoke();
     }
+
 }

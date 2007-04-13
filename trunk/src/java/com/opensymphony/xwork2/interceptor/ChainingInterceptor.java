@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork2.interceptor;
@@ -25,9 +25,11 @@ import org.apache.commons.logging.LogFactory;
  * specified. Specifying both results in undefined behavior. See the javadocs for {@link OgnlUtil#copy(Object, Object,
  * java.util.Map, java.util.Collection, java.util.Collection)} for more information.
  *
- * <p/> It is important to remember that this interceptor does nothing if there are no objects already on the stack.
- * This means two things: One, you can safely apply it to all your actions without any worry of adverse affects. Two, it
- * is up to you to ensure an object exists in the stack prior to invoking this action. The most typical way this is done
+ * <p/>
+ * <b>Note:</b> It is important to remember that this interceptor does nothing if there are no objects already on the stack.
+ * <br/>This means two things:
+ * <br/><b>One</b>, you can safely apply it to all your actions without any worry of adverse affects.
+ * <br/><b/>Two</b>, it is up to you to ensure an object exists in the stack prior to invoking this action. The most typical way this is done
  * is through the use of the <b>chain</b> result type, which combines with this interceptor to make up the action
  * chaining feature.
  *
@@ -76,16 +78,16 @@ import org.apache.commons.logging.LogFactory;
  * <!-- END SNIPPET: example -->
  * </pre>
  *
- * @author $Author$
+ * @see com.opensymphony.xwork2.ActionChainResult
+ * @author mrdon
  * @author tm_jee ( tm_jee(at)yahoo.co.uk )
- * @version $Revision$
  */
 public class ChainingInterceptor extends AbstractInterceptor {
 	
 	private static final Log _log = LogFactory.getLog(ChainingInterceptor.class);
 	
-    Collection excludes;
-    Collection includes;
+    protected Collection excludes;
+    protected Collection includes;
 
     public String intercept(ActionInvocation invocation) throws Exception {
         ValueStack stack = invocation.getStack();
@@ -112,22 +114,44 @@ public class ChainingInterceptor extends AbstractInterceptor {
                 }
             }
         }
+        
         return invocation.invoke();
     }
     
+    /**
+     * Gets list of parameter names to exclude
+     *
+     * @return the exclude list
+     */
     public Collection getExcludes() {
         return excludes;
     }
 
+    /**
+     * Sets the list of parameter names to exclude from copying (all others will be included).
+     *
+     * @param excludes  the excludes list
+     */
     public void setExcludes(Collection excludes) {
         this.excludes = excludes;
     }
 
+    /**
+     * Gets list of parameter names to include
+     *
+     * @return the include list
+     */
     public Collection getIncludes() {
         return includes;
     }
 
+    /**
+     * Sets the list of parameter names to include when copying (all others will be excluded).
+     *
+     * @param includes  the includes list
+     */
     public void setIncludes(Collection includes) {
         this.includes = includes;
     }
+
 }

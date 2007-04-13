@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork2.interceptor;
@@ -14,7 +14,7 @@ import com.opensymphony.xwork2.Preparable;
 /**
  * <!-- START SNIPPET: description -->
  *
- * This interceptor calls prepare() on actions which implement
+ * This interceptor calls <code>prepare()</code> on actions which implement
  * {@link Preparable}. This interceptor is very useful for any situation where
  * you need to ensure some logic runs before the actual execute method runs.
  * 
@@ -78,8 +78,6 @@ import com.opensymphony.xwork2.Preparable;
  * <!-- END SNIPPET: example -->
  * </pre>
  *
- * Date: Nov 5, 2003 2:33:11 AM
- *
  * @author Jason Carreira
  * @author Philip Luppens
  * @author tm_jee
@@ -95,8 +93,15 @@ public class PrepareInterceptor extends MethodFilterInterceptor {
 	private final static String ALT_PREPARE_PREFIX = "prepareDo";
 
 	private boolean alwaysInvokePrepare = true;
-	
-	public void setAlwaysInvokePrepare(String alwaysInvokePrepare) {
+
+    /**
+     * Sets if the <code>preapare</code> method should always be executed.
+     * <p/>
+     * Default is <tt>true</tt>.
+     *
+     * @param alwaysInvokePrepare  if <code>prepare</code> should always be executed or not.
+     */
+    public void setAlwaysInvokePrepare(String alwaysInvokePrepare) {
 		this.alwaysInvokePrepare = Boolean.parseBoolean(alwaysInvokePrepare);
 	}
 	
@@ -104,19 +109,21 @@ public class PrepareInterceptor extends MethodFilterInterceptor {
         Object action = invocation.getAction();
 
         if (action instanceof Preparable) {
-            	try {
-            		PrefixMethodInvocationUtil.invokePrefixMethod(invocation, 
-            			new String[] { PREPARE_PREFIX, ALT_PREPARE_PREFIX });
-            	}
-            	catch(Exception e) {
-            		// just in case there's an exception while doing reflection, 
-            		// we still want prepare() to be able to get called.
-            		_log.warn("an exception occured while trying to execute prefixed method", e);
-            	}
-            	if (alwaysInvokePrepare) {
-            		((Preparable) action).prepare();
-            	}
+            try {
+                PrefixMethodInvocationUtil.invokePrefixMethod(invocation,
+                    new String[] { PREPARE_PREFIX, ALT_PREPARE_PREFIX });
+            }
+            catch(Exception e) {
+                // just in case there's an exception while doing reflection,
+                // we still want prepare() to be able to get called.
+                _log.warn("an exception occured while trying to execute prefixed method", e);
+            }
+            if (alwaysInvokePrepare) {
+                ((Preparable) action).prepare();
+            }
         }
+
         return invocation.invoke();
     }
+
 }

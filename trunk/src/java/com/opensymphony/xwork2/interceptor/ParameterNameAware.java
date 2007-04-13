@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
-
 package com.opensymphony.xwork2.interceptor;
 
 /**
@@ -20,7 +19,11 @@ package com.opensymphony.xwork2.interceptor;
 public interface ParameterNameAware {
 
     /**
-     * Returns true if the action will accept the parameter with the given name.
+     * Tests if the the action will accept the parameter with the given name.
+     *
+     * @param parameterName  the parameter name
+     * @return <tt> if accepted, <tt>false</tt> otherwise
      */
     boolean acceptableParameterName(String parameterName);
+    
 }
