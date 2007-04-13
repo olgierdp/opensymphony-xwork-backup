@@ -406,7 +406,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- sourcepath>src/java</sourcepath  does not work when eanbled -->
+                    <!-- sourcepath>src/java</sourcepath  does not work when enabled -->
                     <encoding>UTF-8</encoding>
                     <groups>
                         <group>
