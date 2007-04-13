@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork2.util;
@@ -30,40 +30,29 @@ import ognl.DefaultTypeConverter;
 import ognl.Ognl;
 import ognl.TypeConverter;
 
-import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkException;
 
 
 /**
  * <!-- START SNIPPET: javadoc -->
+ * XWork will automatically handle the most common type conversion for you.
  * <p/>
- * XWork will automatically handle the most common type conversion for you. This includes support for converting to
- * and from Strings for each of the following:
- * <p/>
+ * This includes support for converting to and from Strings for each of the following:
  * <ul>
- * <p/>
  * <li>String</li>
- * <p/>
  * <li>boolean / Boolean</li>
- * <p/>
  * <li>char / Character</li>
- * <p/>
  * <li>int / Integer, float / Float, long / Long, double / Double</li>
- * <p/>
- * <li>dates - uses the SHORT format for the Locale associated with the current request</li>
- * <p/>
+ * <li>dates - uses the SHORT or RFC3339 format (<code>yyyy-MM-dd'T'HH:mm:ss</code>) for the Locale associated with the current request</li>
  * <li>arrays - assuming the individual strings can be coverted to the individual items</li>
- * <p/>
  * <li>collections - if not object type can be determined, it is assumed to be a String and a new ArrayList is
  * created</li>
- * <p/>
  * </ul>
  * <p/>
- * <p/> Note that with arrays the type conversion will defer to the type of the array elements and try to convert each
+ * <b>Note:</b> that with arrays the type conversion will defer to the type of the array elements and try to convert each
  * item individually. As with any other type conversion, if the conversion can't be performed the standard type
  * conversion error reporting is used to indicate a problem occured while processing the type conversion.
- * <p/>
  * <!-- END SNIPPET: javadoc -->
  *
  * @author <a href="mailto:plightbo@gmail.com">Pat Lightbody</a>
@@ -73,8 +62,9 @@ import com.opensymphony.xwork2.XWorkException;
  */
 public class XWorkBasicConverter extends DefaultTypeConverter {
 
-    private static String MILLISECOND_FORMAT = ".SSS";
-    final private static SimpleDateFormat RFC3399_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private static final String MILLISECOND_FORMAT = ".SSS";
+    private static final String RFC3339_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+
     public Object convertValue(Map context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;
 
@@ -319,7 +309,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 SimpleDateFormat d1 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG, locale);
                 SimpleDateFormat d2 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale);
                 SimpleDateFormat d3 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
-                SimpleDateFormat[] dfs = {d1, d2, d3, RFC3399_FORMAT}; //added RFC 3339 date format (XW-473)
+                SimpleDateFormat rfc3339Format = new SimpleDateFormat(RFC3339_FORMAT);
+                SimpleDateFormat[] dfs = {d1, d2, d3, rfc3339Format}; //added RFC 3339 date format (XW-473)
                 for (int i = 0; i < dfs.length; i++) {
                 	try {
                 		check = dfs[i].parse(sa);
