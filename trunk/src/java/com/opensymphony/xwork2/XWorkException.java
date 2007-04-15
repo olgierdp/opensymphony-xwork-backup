@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork2;
@@ -98,7 +98,8 @@ public class XWorkException extends RuntimeException implements Locatable {
     /**
      * Gets the underlying cause
      * 
-     * @deprecated Use getCause()
+     * @return the underlying cause, <tt>null</tt> if no cause
+     * @deprecated Use {@link #getCause()} 
      */
     public Throwable getThrowable() {
         return getCause();
@@ -107,6 +108,8 @@ public class XWorkException extends RuntimeException implements Locatable {
 
     /**
      * Gets the location of the error, if available
+     *
+     * @return the location, <tt>null</tt> if not available 
      */
     public Location getLocation() {
         return this.location;
