@@ -41,6 +41,26 @@ public class RegexFieldValidatorTest extends TestCase {
         assertFalse(validator.getValidatorContext().hasFieldErrors());
     }
 
+    public void testMatchNoTrim() throws Exception {
+        MyTestPerson testPerson = new MyTestPerson();
+        testPerson.setUsername("Secret "); // must end with one whitespace
+
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ActionContext.getContext().setValueStack(stack);
+
+        RegexFieldValidator validator = new RegexFieldValidator();
+        validator.setTrim(false);
+        validator.setExpression("^Sec.*\\s");
+        validator.setValidatorContext(new GenericValidatorContext(new Object()));
+        validator.setFieldName("username");
+        validator.validate(testPerson);
+
+        assertFalse(validator.getValidatorContext().hasErrors());
+        assertFalse(validator.getValidatorContext().hasActionErrors());
+        assertFalse(validator.getValidatorContext().hasActionMessages());
+        assertFalse(validator.getValidatorContext().hasFieldErrors());
+    }
+
     public void testFail() throws Exception {
         MyTestPerson testPerson = new MyTestPerson();
         testPerson.setUsername("Superman");
@@ -90,8 +110,54 @@ public class RegexFieldValidatorTest extends TestCase {
         assertEquals("^Hello.*", validator.getExpression());
     }
 
+    public void testIsTrimmed() throws Exception {
+        RegexFieldValidator validator = new RegexFieldValidator();
+        assertEquals(true, validator.isTrimed());
+        validator.setTrim(false);
+        assertEquals(false, validator.isTrimed());
+    }
+
+    public void testEmptyName() throws Exception {
+        MyTestPerson testPerson = new MyTestPerson();
+        testPerson.setUsername("");
+
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ActionContext.getContext().setValueStack(stack);
+
+        RegexFieldValidator validator = new RegexFieldValidator();
+        validator.setExpression("^Sec.*");
+        validator.setValidatorContext(new GenericValidatorContext(new Object()));
+        validator.setFieldName("username");
+        validator.validate(testPerson);
+
+        assertFalse(validator.getValidatorContext().hasErrors());
+        assertFalse(validator.getValidatorContext().hasActionErrors());
+        assertFalse(validator.getValidatorContext().hasActionMessages());
+        assertFalse(validator.getValidatorContext().hasFieldErrors());
+    }
+
+    public void testNoStringField() throws Exception {
+        MyTestPerson testPerson = new MyTestPerson();
+        testPerson.setAge(33);
+
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ActionContext.getContext().setValueStack(stack);
+
+        RegexFieldValidator validator = new RegexFieldValidator();
+        validator.setExpression("[0-9][0-9]");
+        validator.setValidatorContext(new GenericValidatorContext(new Object()));
+        validator.setFieldName("age");
+        validator.validate(testPerson);
+
+        assertFalse(validator.getValidatorContext().hasErrors());
+        assertFalse(validator.getValidatorContext().hasActionErrors());
+        assertFalse(validator.getValidatorContext().hasActionMessages());
+        assertFalse(validator.getValidatorContext().hasFieldErrors());
+    }
+
     private class MyTestPerson {
         private String username;
+        private int age;
 
         public String getUsername() {
             return username;
@@ -99,6 +165,14 @@ public class RegexFieldValidatorTest extends TestCase {
 
         public void setUsername(String username) {
             this.username = username;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
         }
     }
 

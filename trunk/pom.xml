@@ -429,7 +429,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clover-plugin</artifactId>
                 <configuration>
-                      <jdk>1.5</jdk>
+                    <jdk>1.5</jdk>
                     <licenseLocation>lib/bootstrap/clover.license</licenseLocation>
                 </configuration>
             </plugin>

@@ -161,6 +161,21 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         assertTrue(context.hasErrors());
     }
 
+    public void testNoValue() throws Exception {
+        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ActionContext.getContext().setValueStack(stack);
+
+        DoubleRangeFieldValidator val = new DoubleRangeFieldValidator();
+        val.setFieldName("price");
+
+        DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
+        val.setValidatorContext(context);
+
+        val.setMinInclusive("9.95");
+        val.validate(null);
+        assertTrue(!context.hasErrors()); // should pass as null value passed in
+    }
+
     protected void setUp() throws Exception {
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
     }
