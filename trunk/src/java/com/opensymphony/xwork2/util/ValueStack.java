@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork2.util;
@@ -18,21 +18,40 @@ public interface ValueStack {
 
     public static final String REPORT_ERRORS_ON_NO_PROP = "com.opensymphony.xwork2.util.ValueStack.ReportErrorsOnNoProp";
 
+    /**
+     * Gets the context for this value stack. The context holds all the information in the value stack and it's surrondings.
+     *
+     * @return  the context.
+     */
     public abstract Map getContext();
 
     /**
      * Sets the default type to convert to if no type is provided when getting a value.
      *
-     * @param defaultType
+     * @param defaultType the new default type
      */
     public abstract void setDefaultType(Class defaultType);
 
+    /**
+     * Set a override map containing <code>key -> values</code> that takes precedens when doing find operations on the ValueStack.
+     * <p/>
+     * See the unit test for ValueStackTest for examples.
+     *
+     * @param overrides  overrides map.
+     */
     public abstract void setExprOverrides(Map overrides);
 
+    /**
+     * Gets the override map if anyone exists.
+     *
+     * @return the override map, <tt>null</tt> if not set.
+     */
     public abstract Map getExprOverrides();
 
     /**
      * Get the CompoundRoot which holds the objects pushed onto the stack
+     *
+     * @return the root
      */
     public abstract CompoundRoot getRoot();
 
@@ -52,8 +71,7 @@ public interface ValueStack {
      * @param throwExceptionOnFailure a flag to tell whether an exception should be thrown if there is no property with
      *                                the given name.
      */
-    public abstract void setValue(String expr, Object value,
-            boolean throwExceptionOnFailure);
+    public abstract void setValue(String expr, Object value, boolean throwExceptionOnFailure);
 
     public abstract String findString(String expr);
 
@@ -75,14 +93,15 @@ public interface ValueStack {
     public abstract Object findValue(String expr, Class asType);
 
     /**
-     * Get the object on the top of the stack without changing the stack.
+     * Get the object on the top of the stack <b>without</b> changing the stack.
      *
+     * @return the object on the top.
      * @see CompoundRoot#peek()
      */
     public abstract Object peek();
 
     /**
-     * Get the object on the top of the stack and remove it from the stack.
+     * Get the object on the top of the stack and <b>remove</b> it from the stack.
      *
      * @return the object on the top of the stack
      * @see CompoundRoot#pop()
@@ -99,15 +118,15 @@ public interface ValueStack {
 
     /**
      * Sets an object on the stack with the given key
-     * so it is retrievable by findValue(key,...)
-     * @param key
-     * @param o
+     * so it is retrievable by {@link #findValue(String)}, {@link #findValue(String, Class)}
+     *
+     * @param key  the key
+     * @param o    the object
      */
     public abstract void set(String key, Object o);
 
     /**
      * Get the number of objects in the stack
-     * s
      *
      * @return the number of objects in the stack
      */
