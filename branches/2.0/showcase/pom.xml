@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>opensymphony</groupId>
     <artifactId>xwork-showcase</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.0.3-SNAPSHOT</version>
     <name>XWork Showcase</name>
     <description>
     	XWork showcase serves as an example section for XWork2. Its being used by snippet 
@@ -49,8 +49,11 @@
         </mailingList>
     </mailingLists>
     <scm>
-        <connection>:pserver:[username]@cvs.dev.java.net:/cvs/xwork/showcase</connection>
-        <url>https://xwork.dev.java.net/source/browse/xwork/showcase</url>
+        <connection>scm:svn:http://svn.opensymphony.com/svn/xwork/branches/2.0/showcase</connection>
+        <developerConnection>
+            scm:svn:https://svn.opensymphony.com/svn/xwork/branches/2.0/showcase
+        </developerConnection>
+        <url>https://svn.opensymphony.com/svn/xwork/branches/2.0/showcase</url>
     </scm>
     <licenses>
         <license>
@@ -66,7 +69,7 @@
         <dependency>
             <groupId>opensymphony</groupId>
             <artifactId>xwork</artifactId>
-            <version>2.0.1-SNAPSHOT</version>
+            <version>2.0.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
