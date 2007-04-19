@@ -36,23 +36,24 @@ import com.opensymphony.xwork2.XWorkException;
 
 /**
  * <!-- START SNIPPET: javadoc -->
- * XWork will automatically handle the most common type conversion for you.
  * <p/>
- * This includes support for converting to and from Strings for each of the following:
+ * XWork will automatically handle the most common type conversion for you. This includes support for converting to
+ * and from Strings for each of the following:
+ * <p/>
  * <ul>
  * <li>String</li>
  * <li>boolean / Boolean</li>
  * <li>char / Character</li>
  * <li>int / Integer, float / Float, long / Long, double / Double</li>
- * <li>dates - uses the SHORT or RFC3339 format (<code>yyyy-MM-dd'T'HH:mm:ss</code>) for the Locale associated with the current request</li>
+ * <li>dates - uses the SHORT format for the Locale associated with the current request</li>
  * <li>arrays - assuming the individual strings can be coverted to the individual items</li>
  * <li>collections - if not object type can be determined, it is assumed to be a String and a new ArrayList is
  * created</li>
  * </ul>
- * <p/>
- * <b>Note:</b> that with arrays the type conversion will defer to the type of the array elements and try to convert each
+ * <p/> Note that with arrays the type conversion will defer to the type of the array elements and try to convert each
  * item individually. As with any other type conversion, if the conversion can't be performed the standard type
  * conversion error reporting is used to indicate a problem occured while processing the type conversion.
+ * <p/>
  * <!-- END SNIPPET: javadoc -->
  *
  * @author <a href="mailto:plightbo@gmail.com">Pat Lightbody</a>
@@ -62,8 +63,7 @@ import com.opensymphony.xwork2.XWorkException;
  */
 public class XWorkBasicConverter extends DefaultTypeConverter {
 
-    private static final String MILLISECOND_FORMAT = ".SSS";
-    private static final String RFC3339_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    private static String MILLISECOND_FORMAT = ".SSS";
 
     public Object convertValue(Map context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;
@@ -74,6 +74,15 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         }
 
         if (toType == String.class) {
+            Class inputType = value.getClass();
+            // if input (value) is a number then use special conversion method (XW-490)
+            if (Number.class.isAssignableFrom(inputType)) {
+                result = doConvertFromNumberToString(context, value, inputType);
+                if (result != null) {
+                    return result;
+                }
+            }
+            // okay use default string conversion
             result = doConvertToString(context, value);
         } else if (toType == boolean.class) {
             result = doConvertToBoolean(value);
@@ -221,7 +230,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     private Class doConvertToClass(Object value) {
         Class clazz = null;
 
-        if (value instanceof String && value != null && ((String)value).length() > 0) {
+        if (value instanceof String && value != null && ((String) value).length() > 0) {
             try {
                 clazz = Class.forName((String) value);
             } catch (ClassNotFoundException e) {
@@ -275,7 +284,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     private Object doConvertToDate(Map context, Object value, Class toType) {
         Date result = null;
 
-        if (value instanceof String && value != null && ((String)value).length() > 0) {
+        if (value instanceof String && value != null && ((String) value).length() > 0) {
             String sa = (String) value;
             Locale locale = getLocale(context);
 
@@ -304,33 +313,33 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                     } catch (ParseException ignore) {
                     }
                 }
-             } else if(java.util.Date.class == toType) {
-            	Date check = null;
-                SimpleDateFormat d1 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG, locale);
-                SimpleDateFormat d2 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale);
-                SimpleDateFormat d3 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
-                SimpleDateFormat rfc3339Format = new SimpleDateFormat(RFC3339_FORMAT);
-                SimpleDateFormat[] dfs = {d1, d2, d3, rfc3339Format}; //added RFC 3339 date format (XW-473)
+            } else if (java.util.Date.class == toType) {
+                Date check = null;
+                SimpleDateFormat d1 = (SimpleDateFormat) DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG, locale);
+                SimpleDateFormat d2 = (SimpleDateFormat) DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale);
+                SimpleDateFormat d3 = (SimpleDateFormat) DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
+                SimpleDateFormat rfc3399 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                SimpleDateFormat[] dfs = {d1, d2, d3, rfc3399}; //added RFC 3339 date format (XW-473)
                 for (int i = 0; i < dfs.length; i++) {
-                	try {
-                		check = dfs[i].parse(sa);
-                		df = dfs[i];
-                		if (check != null) {
-                			break;
-                		}
-                	}
-                	catch (ParseException ignore) {
-                	}
+                    try {
+                        check = dfs[i].parse(sa);
+                        df = dfs[i];
+                        if (check != null) {
+                            break;
+                        }
+                    }
+                    catch (ParseException ignore) {
+                    }
                 }
             }
             //final fallback for dates without time
-            if (df == null){
-            	df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+            if (df == null) {
+                df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
             }
             try {
-            	df.setLenient(false); // let's use strict parsing (XW-341)
+                df.setLenient(false); // let's use strict parsing (XW-341)
                 result = df.parse(sa);
-                if (! (Date.class == toType)) {
+                if (!(Date.class == toType)) {
                     try {
                         Constructor constructor = toType.getConstructor(new Class[]{long.class});
                         return constructor.newInstance(new Object[]{new Long(result.getTime())});
@@ -355,7 +364,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 return new BigInteger((String) value);
             } else {
                 String stringValue = (String) value;
-                if ( !toType.isPrimitive() && (stringValue == null || stringValue.length() == 0)) {
+                if (!toType.isPrimitive() && (stringValue == null || stringValue.length() == 0)) {
                     return null;
                 }
                 NumberFormat numFormat = NumberFormat.getInstance(getLocale(context));
@@ -369,8 +378,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 if (parsePos.getIndex() != stringValue.length()) {
                     throw new XWorkException("Unparseable number: \"" + stringValue + "\" at position "
                             + parsePos.getIndex());
-                }
-                else {
+                } else {
                     value = super.convertValue(context, number, toType);
                 }
             }
@@ -394,6 +402,29 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
         return true;
     }
+
+    /**
+     * Converts the input as a number using java's number formatter to a string output.
+     */
+    private String doConvertFromNumberToString(Map context, Object value, Class toType) {
+        // XW-409: If the input is a Number we should format it to a string using the choosen locale and use java's numberformatter
+        if (Number.class.isAssignableFrom(toType)) {
+            NumberFormat numFormat = NumberFormat.getInstance(getLocale(context));
+            if (isIntegerType(toType)) {
+                numFormat.setParseIntegerOnly(true);
+            }
+            numFormat.setGroupingUsed(true);
+            numFormat.setMaximumFractionDigits(99); // to be sure we include all digits after decimal seperator, otherwise some of the fractions can be chopped
+
+            String number = numFormat.format(value);
+            if (number != null) {
+                return number;
+            }
+        }
+
+        return null; // no number
+    }
+
 
     private String doConvertToString(Map context, Object value) {
         String result = null;

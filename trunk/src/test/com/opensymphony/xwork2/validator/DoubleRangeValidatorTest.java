@@ -11,6 +11,7 @@ import com.opensymphony.xwork2.validator.validators.DoubleRangeFieldValidator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 /**
  * Unit test for {@link DoubleRangeFieldValidator}.
@@ -22,6 +23,10 @@ import java.util.Map;
 public class DoubleRangeValidatorTest extends XWorkTestCase {
 
     public void testRangeValidationWithError() throws Exception {
+        // must set a locale to US as error message contains a locale dependent number (see XW-490)
+        Locale defLocale = Locale.getDefault();
+        Locale.setDefault(Locale.US);
+        
         ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, null);
         proxy.execute();
         assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
@@ -36,6 +41,8 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         String errorMessage = (String) errorMessages.get(0);
         assertNotNull("Expecting: percentage must be between 0.1 and 10.1, current value is 100.0123.", errorMessage);
         assertEquals("percentage must be between 0.1 and 10.1, current value is 100.0123.", errorMessage);
+
+        Locale.setDefault(defLocale);
     }
 
     public void testRangeValidationNoError() throws Exception {
