@@ -74,6 +74,29 @@
 
     <releases>
         <release>
+            <version>2.0.2</version>
+            <date>04/18/2007</date>
+            <jiraId>21682</jiraId>
+            <downloads>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/55851/xwork-2.0.2-all.zip</url>
+                    <name>All: Contains all jars, libs, sources and docs</name>
+                </download>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/55854/xwork-2.0.2-src.zip</url>
+                    <name>Sources: Sources and deps with maven2 pom and basic ant build</name>
+                </download>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/55852/xwork-2.0.2-java14.zip</url>
+                    <name>Java14: Java 1.4 compliant jars and deps</name>
+                </download>
+                <download>
+                    <url>https://xwork.dev.java.net/files/documents/709/55853/xwork-2.0.2-lib.zip</url>
+                    <name>Lib: Jars and Libs only</name>
+                </download>
+            </downloads>
+        </release>
+        <release>
             <version>2.0.1</version>
             <date>02/16/2007</date>
             <jiraId>21681</jiraId>
