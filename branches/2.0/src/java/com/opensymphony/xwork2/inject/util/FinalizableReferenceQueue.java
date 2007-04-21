@@ -16,8 +16,6 @@
 
 package com.opensymphony.xwork2.inject.util;
 
-import com.opensymphony.xwork2.inject.util.FinalizableReference;
-
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.util.logging.Level;
