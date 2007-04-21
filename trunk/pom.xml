@@ -138,6 +138,11 @@
             <name>Philip Luppens</name>
             <email>philip.luppens at gmail.com</email>
         </developer>
+        <developer>
+            <id>davsclaus</id>
+            <name>Claus Ibsen</name>
+            <email>claus.ibsen at gmail.com</email>
+        </developer>
     </developers>
     <contributors>
         <contributor>
@@ -414,7 +419,7 @@
                             <packages>com.opensymphony.xwork2*</packages>
                         </group>
                     </groups>
-                    <show>private</show>
+                    <show>protected</show>
                     <links>
                         <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
                         <link>http://java.sun.com/javaee/5/docs/api/</link>
