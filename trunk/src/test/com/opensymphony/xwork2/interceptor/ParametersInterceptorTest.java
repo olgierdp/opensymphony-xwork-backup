@@ -12,8 +12,7 @@ import com.opensymphony.xwork2.mock.MockActionInvocation;
 import com.opensymphony.xwork2.util.OgnlValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -159,6 +158,71 @@ public class ParametersInterceptorTest extends XWorkTestCase {
 
         interceptor.doIntercept(mai);
         interceptor.destroy();
+    }
+
+    public void testNoOrdered() throws Exception {
+        ParametersInterceptor pi = new ParametersInterceptor();
+
+        final Map actual = new LinkedHashMap();
+        ValueStack stack = new OgnlValueStack() {
+            public void setValue(String expr, Object value) {
+                actual.put(expr, value);
+            }
+        };
+
+        Map parameters = new HashMap();
+        parameters.put("user.address.city", "London");
+        parameters.put("user.name", "Superman");
+
+        Action action = new SimpleAction();
+        pi.setParameters(action, stack, parameters);
+
+        assertEquals("ordered should be false by default", false, pi.isOrdered());
+        assertEquals(2, actual.size());
+        assertEquals("London", actual.get("user.address.city"));
+        assertEquals("Superman", actual.get("user.name"));
+
+        // is not ordered
+        List values = new ArrayList(actual.values());
+        assertEquals("London", values.get(0));
+        assertEquals("Superman", values.get(1));
+    }
+
+    public void testOrdered() throws Exception {
+        ParametersInterceptor pi = new ParametersInterceptor();
+        pi.setOrdered(true);
+
+        final Map actual = new LinkedHashMap();
+        ValueStack stack = new OgnlValueStack() {
+            public void setValue(String expr, Object value) {
+                actual.put(expr, value);
+            }
+        };
+
+        Map parameters = new HashMap();
+        parameters.put("user.address.city", "London");
+        parameters.put("user.name", "Superman");
+
+        Action action = new SimpleAction();
+        pi.setParameters(action, stack, parameters);
+
+        assertEquals(true, pi.isOrdered());
+        assertEquals(2, actual.size());
+        assertEquals("London", actual.get("user.address.city"));
+        assertEquals("Superman", actual.get("user.name"));
+
+        // should be ordered so user.name should be first
+        List values = new ArrayList(actual.values());
+        assertEquals("Superman", values.get(0));
+        assertEquals("London", values.get(1));
+    }
+
+    public void testSetOrdered() throws Exception {
+        ParametersInterceptor pi = new ParametersInterceptor();
+
+        assertEquals("ordered should be false by default", false, pi.isOrdered());
+        pi.setOrdered(true);
+        assertEquals(true, pi.isOrdered());
     }
     
     public void testExcludedParametersAreIgnored() throws Exception {
