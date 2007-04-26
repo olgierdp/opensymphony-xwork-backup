@@ -163,6 +163,9 @@
         <action name="doMethodTest" class="com.opensymphony.xwork2.SimpleAction" method="input">
             <result name="input" type="mock" />
         </action>
+        <action name="unknownMethodTest" class="com.opensymphony.xwork2.SimpleAction">
+            <result name="found" type="mock" />
+        </action>
         <action name="resultAction" class="com.opensymphony.xwork2.SimpleAction" method="resultAction">
             <param name="bar">456</param>
             <result name="success" type="chain">

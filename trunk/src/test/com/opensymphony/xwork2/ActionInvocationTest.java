@@ -6,6 +6,7 @@ package com.opensymphony.xwork2;
 
 import java.util.HashMap;
 
+import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 
 
@@ -29,6 +30,27 @@ public class ActionInvocationTest extends XWorkTestCase {
         ActionProxy baseActionProxy = actionProxyFactory.createActionProxy(
                 "baz", "doMethodTest", null);
         assertEquals("input", baseActionProxy.execute());
+    }
+    
+    public void testCommandInvocationUnknownHandler() throws Exception {
+    	
+        DefaultActionProxy baseActionProxy = (DefaultActionProxy) actionProxyFactory.createActionProxy(
+                "baz", "unknownMethodTest", null);
+        ((DefaultActionInvocation)baseActionProxy.getInvocation()).unknownHandler = new UnknownHandler() {
+			public ActionConfig handleUnknownAction(String namespace, String actionName) throws XWorkException { return null;}
+			public Result handleUnknownResult(ActionContext actionContext, String actionName, ActionConfig actionConfig, String resultCode) throws XWorkException {
+				return null;
+			}
+			public Object handleUnknownActionMethod(Object action, String methodName) throws NoSuchMethodException {
+				if (methodName.equals("unknownmethod")) {
+					return "found";
+				} else {
+					return null;
+				}
+			}
+        };
+        baseActionProxy.setMethod("unknownmethod");
+        assertEquals("found", baseActionProxy.execute());
     }
     
     public void testResultReturnInvocation() throws Exception {

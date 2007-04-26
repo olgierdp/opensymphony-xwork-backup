@@ -35,4 +35,15 @@ public interface UnknownHandler {
      * @throws XWorkException
      */
     public Result handleUnknownResult(ActionContext actionContext, String actionName, ActionConfig actionConfig, String resultCode) throws XWorkException;
+    
+    /**
+     * Handles the case when an action method cannot be found.  This method is responsible both for finding the method and executing it.
+     * 
+     * @since 2.1
+     * @param action The action object
+     * @param methodName The method name to call
+     * @return The result returned from invoking the action method
+     * @throws NoSuchMethodException If the method cannot be found
+     */
+	public Object handleUnknownActionMethod(Object action, String methodName) throws NoSuchMethodException;
 }

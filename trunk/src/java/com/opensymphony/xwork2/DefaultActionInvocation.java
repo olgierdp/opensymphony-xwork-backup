@@ -387,7 +387,9 @@ public class DefaultActionInvocation implements ActionInvocation {
         try {
             UtilTimerStack.push(timerKey);
             
-            Method method;
+            boolean methodCalled = false;
+            Object methodResult = null;
+            Method method = null;
             try {
                 method = getAction().getClass().getMethod(methodName, new Class[0]);
             } catch (NoSuchMethodException e) {
@@ -396,12 +398,25 @@ public class DefaultActionInvocation implements ActionInvocation {
                     String altMethodName = "do" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
                     method = getAction().getClass().getMethod(altMethodName, new Class[0]);
                 } catch (NoSuchMethodException e1) {
-                    // throw the original one
-                    throw e;
+                	// well, give the unknown handler a shot
+                	if (unknownHandler != null) {
+	                	try {
+	                		methodResult = unknownHandler.handleUnknownActionMethod(action, methodName);
+	                		methodCalled = true;
+	                	} catch (NoSuchMethodException e2) {
+	                		// throw the original one
+	                		throw e;
+	                	}
+                	} else {
+	            		throw e;
+	            	}
                 }
             }
-
-            Object methodResult = method.invoke(action, new Object[0]);
+        	
+        	if (!methodCalled) {
+        		methodResult = method.invoke(action, new Object[0]);
+        	}
+        	
             if (methodResult instanceof Result) {
             	this.result = (Result) methodResult;
             	return null;
