@@ -31,7 +31,25 @@ import com.opensymphony.xwork.validator.ValidatorFactory;
 /**
  * <!-- START SNIPPET: javadoc -->
  * 
- * Validate a property available in the object of a collection.
+ * Validate a property available in the object of a collection. This validator will not work
+ * when the 'nested' validator is an 'fieldexpression' or 'expression' validator.. If we want to use
+ * 'fieldexpression' or 'expression' validator we might want to use eg. the following 
+ * expression for validation collections (using OGNL's projection and filtering capabilities.
+ * <p/>
+ * For example if we have a collection of <code>person</code>s objects with 'name'
+ * properties we might want to consider the following OGNL expression.
+ * <pre>
+ * persons.{#this.name.length() > 4}.{? #this == false }.size() <= 0 
+ * </pre>
+ * 
+ * The idea is 
+ * <ul>
+ * 	<li>- project across the collection of <code>person</code> objects 
+ *              and make sure the conditions are valid (eg. name is more than 4 characters</li>
+ *      <li>- filter out the result of previous projection that are not valid (eg. false)</li>
+ *      <li>- check the size of the filtered collection, if its greater than zero, 
+ *               we have some validation that fails</li>
+ * </ul>
  * 
  * <!-- END SNIPPET: javadoc -->
  * 
@@ -50,7 +68,7 @@ import com.opensymphony.xwork.validator.ValidatorFactory;
  * 
  * <!-- END SNIPPET: parameters -->
  * 
- * 
+ * <pre>
  * <!-- START SNIPPET: examples -->
  * 
  * public class MyAction extends ActionSupport {
@@ -73,31 +91,32 @@ import com.opensymphony.xwork.validator.ValidatorFactory;
  * }
  * 
  * 
- * <validators>
- *    <field name="persons">
- *        <field-validator type="collection">
- *        		<param name="property">persons.name</param>
- *        		<param name="validatorRef">requiredstring</param>
- *             <param name="validatorParams['defaultMessage']">Must be String</param>
- *             <param name="validatorParams['trim']">true</param>
- *             <message></message>
- *        </field-validator>
- *        <field-validator type="collection">
- *            <param name="property">persons.age</param>
- *            <param name="validatorRef"></required</param>
- *            <param name="validatorParams['defaultMessage']">Must be filled in</param>
- *            <message></message>
- *        </field-validator>
- *        <field-validator type="collection">
- *        		<param name="property">persons.age</param>
- *             <param name="validatorRef">int</param>
- *             <param name="validatorParams['defaultMessage']">Needs to be an integer</param>
- *             <message></message>
- *        </field-validator>
- *    </field>
- * </validators>
+ * &lt;validators&gt;
+ *    &lt;field name="persons"&gt;
+ *        &lt;field-validator type="collection"&gt;
+ *        		&lt;param name="property"&gt;persons.name&lt;/param&gt;
+ *        		&lt;param name="validatorRef"&gt;requiredstring&lt;/param&gt;
+ *             &lt;param name="validatorParams['defaultMessage']"&gt;Must be String&lt;/param&gt;
+ *             &lt;param name="validatorParams['trim']"&gt;true&lt;/param&gt;
+ *             &lt;message&gt; ... &lt;/message&gt;
+ *        &lt;/field-validator&gt;
+ *        &lt;field-validator type="collection"&gt;
+ *            &lt;param name="property"&gt;persons.age&lt;/param&gt;
+ *            &lt;param name="validatorRef"&gt;required&lt;/param&gt;
+ *            &lt;param name="validatorParams['defaultMessage']"&gt;Must be filled in&lt;/param&gt;
+ *            &lt;message&gt; ... &lt;/message&gt;
+ *        &lt;/field-validator&gt;
+ *        &lt;field-validator type="collection"&gt;
+ *        		&lt;param name="property"&gt;persons.age&lt;/param&gt;
+ *             &lt;param name="validatorRef"&gt;int&lt;/param&gt;
+ *             &lt;param name="validatorParams['defaultMessage']"&gt;Needs to be an integer&lt;/param&gt;
+ *             &lt;message&gt; ... &lt;/message&gt;
+ *        &lt;/field-validator&gt;
+ *    &lt;/field&gt;
+ * &lt;/validators&gt;
  * 
  * <!-- END SNIPPET: examples -->
+ * </pre>
  * 
  * @author tmjee
  * @version $Date$ $Id$
