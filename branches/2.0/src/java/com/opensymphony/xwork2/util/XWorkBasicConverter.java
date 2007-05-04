@@ -73,14 +73,15 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         }
 
         if (toType == String.class) {
-            Class inputType = value.getClass();
+            /* the code below has been disabled as it causes sideffects in Strtus2 (XW-512)
             // if input (value) is a number then use special conversion method (XW-490)
+            Class inputType = value.getClass();
             if (Number.class.isAssignableFrom(inputType)) {
                 result = doConvertFromNumberToString(context, value, inputType);
                 if (result != null) {
                     return result;
                 }
-            }
+            }*/
             // okay use default string conversion
             result = doConvertToString(context, value);
         } else if (toType == boolean.class) {

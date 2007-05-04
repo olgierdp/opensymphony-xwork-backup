@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork2.util;
@@ -22,14 +22,10 @@ import junit.framework.TestCase;
  */
 public class XWorkBasicConverterTest extends TestCase {
 
-    public void test() {
-        // TODO: test for every possible conversion
-        // take into account of empty string
-        // primitive -> conversion error when empty string is passed
-        // object -> return null when empty string is passed
-    }
-
-    // TODO: more test will come soon !!!
+    // TODO: test for every possible conversion
+    // take into account of empty string
+    // primitive -> conversion error when empty string is passed
+    // object -> return null when empty string is passed
 
     public void testDateConversionWithEmptyValue() {
         XWorkBasicConverter basicConverter = new XWorkBasicConverter();
@@ -48,6 +44,7 @@ public class XWorkBasicConverterTest extends TestCase {
         }
     }
 
+    /* the code below has been disabled as it causes sideffects in Strtus2 (XW-512)
     public void testXW490ConvertStringToDobule() throws Exception {
         Locale locale = new Locale("DA"); // let's use a not common locale such as Denmark
 
@@ -77,4 +74,5 @@ public class XWorkBasicConverterTest extends TestCase {
         // output should be formatted according to Danish locale using , as decimal seperator
         assertEquals("123,99", value);
     }
+    */
 }
