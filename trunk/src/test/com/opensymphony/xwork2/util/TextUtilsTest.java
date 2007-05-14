@@ -45,7 +45,7 @@ public class TextUtilsTest extends XWorkTestCase {
     }
 
     public void testSpecialChars() {
-        assertEquals("Sp&#xE9;cial", TextUtils.htmlEncode("Spécial"));
+        assertEquals("Sp&#xE9;cial", TextUtils.htmlEncode("Sp\u00e9cial"));
     }
 
     public void testVerifyUrl() {
