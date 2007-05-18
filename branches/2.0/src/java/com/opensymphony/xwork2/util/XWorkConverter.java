@@ -689,7 +689,6 @@ public class XWorkConverter extends DefaultTypeConverter {
     /**
      * @param determiner
      */
-    @Inject
     public void setObjectTypeDeterminer(ObjectTypeDeterminer determiner) {
         objectTypeDeterminer = determiner;
     }
