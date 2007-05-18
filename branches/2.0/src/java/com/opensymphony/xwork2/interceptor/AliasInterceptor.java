@@ -105,7 +105,7 @@ public class AliasInterceptor extends AbstractInterceptor {
                     Object value = stack.findValue(name);
                     if (null == value) {
                         // workaround
-                        Map contextParameters = (Map) stack.getContext().get("parameters");
+                        Map contextParameters = ac.getParameters();
                         
                         if (null != contextParameters) {
                             value = contextParameters.get(name);
