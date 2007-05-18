@@ -117,7 +117,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     Set<Pattern> excludeParams = Collections.EMPTY_SET;
     static boolean devMode = false;
     
-    @Inject("devMode")
+    @Inject(value = "devMode", required = false)
     public static void setDevMode(String mode) {
         devMode = "true".equals(mode);
     }

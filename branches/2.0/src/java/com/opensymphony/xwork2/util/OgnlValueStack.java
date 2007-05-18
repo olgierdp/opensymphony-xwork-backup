@@ -94,7 +94,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
         return accessor;
     }
     
-    @Inject("devMode")
+    @Inject(value = "devMode", required = false)
     public static void setDevMode(String mode) {
         devMode = "true".equals(mode);
     }
