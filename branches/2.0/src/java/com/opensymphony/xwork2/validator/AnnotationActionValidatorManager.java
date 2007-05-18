@@ -76,8 +76,11 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
         ArrayList<Validator> validators = new ArrayList<Validator>(cfgs.size());
         for (ValidatorConfig cfg : cfgs) {
             if (method == null || method.equals(cfg.getParams().get("methodName"))) {
-                cfg.getParams().remove("methodName");
+                // Remove methodName temporary
+                Object methodName = cfg.getParams().remove("methodName");
                 Validator validator = ValidatorFactory.getValidator(cfg, ObjectFactory.getObjectFactory());
+                // Readd methodName temporary
+                cfg.getParams().put("methodName", methodName);
                 validator.setValidatorType(cfg.getType());
                 validators.add(validator);
             }
