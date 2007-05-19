@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import ognl.OgnlException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -216,7 +218,22 @@ public class ObjectFactory implements Serializable {
 
         if (resultClassName != null) {
             result = (Result) buildBean(resultClassName, extraContext);
-            OgnlUtil.setProperties(resultConfig.getParams(), result, extraContext);
+            try {
+            	OgnlUtil.setProperties(resultConfig.getParams(), result, extraContext, true);
+            } catch (XWorkException ex) {
+            	Throwable reason = ex.getCause();
+            	if (reason instanceof OgnlException)
+            	{
+            		// ognl exceptions could be thrown and be ok if, for example, the result uses parameters in ways other than
+            		// as properties for the result object.  For example, the redirect result from Struts 2 allows any parameters
+            		// to be set on the result, which it appends to the redirecting url.  These parameters wouldn't have a 
+            		// corresponding setter on the result object, so an OGNL exception could be thrown.  Still, this is a misuse
+            		// of exceptions, so we should look at improving it.
+            		LOG.debug(ex.getMessage(), reason);
+            	} else {
+            		throw ex;
+            	}
+            }
         }
 
         return result;
