@@ -185,6 +185,20 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         pi.setParameters(new NoParametersAction(), stack, parameters);
         assertEquals(expected, actual);
     }
+    
+    /*
+    public void testIndexedParameters() throws Exception {
+        Map params = new HashMap();
+        params.put("indexedProp[33]", "This is blah");
+
+        HashMap extraContext = new HashMap();
+        extraContext.put(ActionContext.PARAMETERS, params);
+
+        ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
+        proxy.execute();
+        assertEquals("This is blah", ((SimpleAction) proxy.getAction()).getIndexedProp(33));
+    }
+    */
 
 
     private class NoParametersAction implements Action, NoParameters {
