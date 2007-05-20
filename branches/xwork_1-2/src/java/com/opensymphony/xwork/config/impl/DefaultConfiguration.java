@@ -9,6 +9,7 @@ import com.opensymphony.xwork.config.entities.ActionConfig;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 import com.opensymphony.xwork.config.entities.ResultTypeConfig;
 import com.opensymphony.xwork.config.providers.InterceptorBuilder;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -180,7 +181,7 @@ public class DefaultConfiguration implements Configuration {
         setDefaultResults(results, packageContext);
 
         List interceptors = new ArrayList(baseConfig.getInterceptors());
-
+        
         if (interceptors.size() <= 0) {
             String defaultInterceptorRefName = packageContext.getFullDefaultInterceptorRef();
 

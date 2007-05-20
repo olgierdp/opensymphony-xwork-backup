@@ -4,6 +4,14 @@
  */
 package com.opensymphony.xwork.config.providers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.interceptor.Interceptor;
 import com.opensymphony.xwork.config.ConfigurationException;
@@ -14,7 +22,6 @@ import com.opensymphony.xwork.config.entities.InterceptorMapping;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.*;
 
 
 /**
@@ -23,6 +30,7 @@ import java.util.*;
  * @author Mike
  * @author Rainer Hermanns
  * @author tmjee
+ * 
  * @version $Date$ $Id$
  */
 public class InterceptorBuilder {
@@ -31,12 +39,12 @@ public class InterceptorBuilder {
 
 
     /**
-     * Builds a list of interceptors referenced by the refName in the supplied PackageConfig.
+     * Builds a list of interceptors referenced by the refName in the supplied PackageConfig (InterceptorMapping object).
      *
      * @param packageConfig
      * @param refName
      * @param refParams
-     * @return list of interceptors referenced by the refName in the supplied PackageConfig.
+     * @return list of interceptors referenced by the refName in the supplied PackageConfig (InterceptorMapping object).
      * @throws ConfigurationException
      */
     public static List constructInterceptorReference(PackageConfig packageConfig, String refName, Map refParams) throws ConfigurationException {
@@ -74,10 +82,32 @@ public class InterceptorBuilder {
      * @param refParams The overridden interceptor properies
      * @return list of interceptors referenced by the refName in the supplied PackageConfig overridden with refParams.
      */
-    private static List constructParameterizedInterceptorReferences(PackageConfig packageConfig, InterceptorStackConfig stackConfig, Map refParams) {
-        List result;
+    private static List constructParameterizedInterceptorReferences(PackageConfig packageConfig, 
+    		InterceptorStackConfig stackConfig, Map refParams) {
+        Set result;
         Map params = new HashMap();
-
+        
+        /*
+         * We strip
+         * 
+         * <interceptor-ref name="someStack">
+         *    <param name="interceptor1.param1">someValue</param>
+         *    <param name="interceptor1.param2">anotherValue</param>
+         * </interceptor-ref>
+         * 
+         * down to map 
+         *  interceptor1 -> [param1 -> someValue, param2 -> anotherValue]
+         * 
+         * or
+         * <interceptor-ref name="someStack">
+         *    <param name="interceptorStack1.interceptor1.param1">someValue</param>
+         *    <param name="interceptorStack1.interceptor1.param2">anotherValue</param>
+         * </interceptor-ref>
+         * 
+         * down to map
+         *  interceptorStack1 -> [interceptor1.param1 -> someValue, interceptor1.param2 -> anotherValue]
+         * 
+         */
         for ( Iterator iter = refParams.keySet().iterator(); iter.hasNext();) {
             String key = (String) iter.next();
             String value = (String) refParams.get(key);
@@ -101,25 +131,60 @@ public class InterceptorBuilder {
             }
         }
 
-        result = new ArrayList(stackConfig.getInterceptors());
+        result = new LinkedHashSet(stackConfig.getInterceptors());
 
         for ( Iterator iter = params.keySet().iterator(); iter.hasNext();) {
-
             String key = (String) iter.next();
             Map map = (Map) params.get(key);
+            
+            Object interceptorCfgObj = packageConfig.getAllInterceptorConfigs().get(key);
+            
+            /*
+             * Now we attempt to separate out param that refers to Interceptor 
+             * and Interceptor stack, eg.
+             * 
+             * <interceptor-ref name="someStack">
+             *    <param name="interceptor1.param1">someValue</param>
+             *    ...
+             * </interceptor-ref>
+             * 
+             *  vs
+             *  
+             *  <interceptor-ref name="someStack">
+             *    <param name="interceptorStack1.interceptor1.param1">someValue</param>
+             *    ...
+             *  </interceptor-ref>
+             */
+            if(interceptorCfgObj instanceof InterceptorConfig) {  //  interceptor-ref param refer to an interceptor
+            	InterceptorConfig cfg = (InterceptorConfig) interceptorCfgObj;
+            	Interceptor interceptor = ObjectFactory.getObjectFactory().buildInterceptor(cfg, map);
 
-            InterceptorConfig cfg = (InterceptorConfig) packageConfig.getAllInterceptorConfigs().get(key);
-            Interceptor interceptor = ObjectFactory.getObjectFactory().buildInterceptor(cfg, map);
-
-            InterceptorMapping mapping = new InterceptorMapping(key, interceptor);
-            if ( result != null && result.contains(mapping)) {
-                int index = result.indexOf(mapping);
-                result.set(index, mapping);
-            } else {
+            	InterceptorMapping mapping = new InterceptorMapping(key, interceptor);
+            	if ( result != null && result.contains(mapping)) {
+            		// if an existing interceptor mapping exists, 
+            		// we remove from the result Set, just to make sure 
+            		// there's always one unique mapping.
+            		result.remove(mapping);
+            	}
                 result.add(mapping);
             }
+            else if (interceptorCfgObj instanceof InterceptorStackConfig){  // interceptor-ref param refer to an interceptor stack
+            	
+            	// If its an interceptor-stack, we call this method recursively untill, 
+            	// all the params (eg. interceptorStack1.interceptor1.param etc.) 
+            	// are resolved down to a specific interceptor.
+            	
+            	InterceptorStackConfig stackCfg = (InterceptorStackConfig) interceptorCfgObj;
+            	List tmpResult = constructParameterizedInterceptorReferences(packageConfig, stackCfg, map);
+            	for (Iterator i = tmpResult.iterator(); i.hasNext(); ) {
+            		InterceptorMapping tmpInterceptorMapping = (InterceptorMapping) i.next();
+            		if (result.contains(tmpInterceptorMapping)) {
+            			result.remove(tmpInterceptorMapping);
+            		}
+            		result.add(tmpInterceptorMapping);
+            	}
+            }
         }
-
-        return result;
+        return new ArrayList(result);
     }
 }

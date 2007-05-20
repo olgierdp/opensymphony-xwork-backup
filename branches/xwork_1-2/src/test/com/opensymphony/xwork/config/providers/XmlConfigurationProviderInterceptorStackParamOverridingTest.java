@@ -1,6 +1,5 @@
-/*
- * Copyright (c) 2002-2006 by OpenSymphony
- * All rights reserved.
+/**
+ * 
  */
 package com.opensymphony.xwork.config.providers;
 
@@ -15,15 +14,14 @@ import com.opensymphony.xwork.config.entities.InterceptorMapping;
 import com.opensymphony.xwork.config.impl.DefaultConfiguration;
 
 /**
- * 
- * @author tm_jee
- * @version $Date$ $Id$
+ * @author tmjee
+ *
  */
-public class XmlConfigurationProviderInterceptorParamOverridingTest extends XWorkTestCase {
+public class XmlConfigurationProviderInterceptorStackParamOverridingTest extends XWorkTestCase {
 
-	public void testInterceptorParamOveriding() throws Exception {
+	public void testInterceptorStackParamOveriding() throws Exception {
 		DefaultConfiguration conf = new DefaultConfiguration();
-		XmlConfigurationProvider p = new XmlConfigurationProvider("com/opensymphony/xwork/config/providers/xwork-test-interceptor-param-overriding.xml");
+		XmlConfigurationProvider p = new XmlConfigurationProvider("com/opensymphony/xwork/config/providers/xwork-test-interceptor-stack-param-overriding.xml");
 		ConfigurationManager.addConfigurationProvider(p);
 		conf.reload();
 		
@@ -56,6 +54,7 @@ public class XmlConfigurationProviderInterceptorParamOverridingTest extends XWor
 		assertNotNull(actionTwoInterceptorMapping2);
 		assertNotNull(actionTwoInterceptorMapping3);
 		
+		
 		assertInterceptorParamOneEquals(actionOne, "interceptorOne", "i1p1");
 		assertInterceptorParamTwoEquals(actionOne, "interceptorOne", "i1p2");
 		assertInterceptorParamOneEquals(actionOne, "interceptorTwo", "i2p1" );
@@ -69,6 +68,7 @@ public class XmlConfigurationProviderInterceptorParamOverridingTest extends XWor
 		assertInterceptorParamTwoEquals(actionTwo, "interceptorTwo", "i2p2");
 		assertInterceptorParamOneEquals(actionTwo, "interceptorThree", "i3p1");
 		assertInterceptorParamTwoEquals(actionTwo, "interceptorThree", "i3p2");
+		
 	}
 	
 	protected void assertInterceptorParamOneEquals(ActionConfig actionConfig,String interceptorName,  String paramValue) {
@@ -100,7 +100,5 @@ public class XmlConfigurationProviderInterceptorParamOverridingTest extends XWor
 	protected void tearDown() throws Exception {
 		ConfigurationManager.clearConfigurationProviders();
 	}
+	
 }
-
-
-

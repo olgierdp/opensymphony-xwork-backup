@@ -2,7 +2,6 @@
  * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
-
 package com.opensymphony.xwork;
 
 import com.opensymphony.xwork.config.ConfigurationManager;
