@@ -162,7 +162,7 @@ public class XWorkConverter extends DefaultTypeConverter {
     protected HashSet<String> unknownMappings = new HashSet<String>(); 	// non-action (eg. returned value)
     
     protected TypeConverter defaultTypeConverter = new XWorkBasicConverter();
-    protected ObjectTypeDeterminer objectTypeDeterminer = ObjectTypeDeterminerFactory.getInstance();
+    protected ObjectTypeDeterminer objectTypeDeterminer = null;
 
 
     protected XWorkConverter() {
@@ -683,7 +683,11 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     public ObjectTypeDeterminer getObjectTypeDeterminer() {
-        return objectTypeDeterminer;
+        if (objectTypeDeterminer == null) {
+        	return ObjectTypeDeterminerFactory.getInstance();
+        } else {
+        	return objectTypeDeterminer;
+        }
     }
 
     /**
