@@ -6,6 +6,8 @@ package com.opensymphony.xwork2;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 
@@ -31,6 +33,7 @@ public class SimpleAction extends ActionSupport {
     private int baz;
     private int foo;
     private double percentage;
+    private Map<Integer,String> indexedProps = new HashMap<Integer,String>();
 
     private String aliasSource;
     private String aliasDest;
@@ -147,8 +150,17 @@ public class SimpleAction extends ActionSupport {
     public ArrayList getSomeList() {
         return someList;
     }
+    
+    public String getIndexedProp(int index) {
+    	return indexedProps.get(index);
+    }
+    
+    public void setIndexedProp(int index, String val) {
+    	indexedProps.put(index, val);
+    }
+    
 
-    public void setThrowException(boolean throwException) {
+    public void setThrowException(boolean   throwException) {
         this.throwException = throwException;
     }
 
