@@ -98,6 +98,14 @@ public class ValidatorFileParser {
     public static void parseValidatorDefinitions(InputStream is, String resourceName) {
         parseValidatorDefinitions(is, resourceName, ObjectFactory.getObjectFactory());
     }
+
+
+	private static void verifyObjectFactory(ObjectFactory objectFactory) {
+		if (objectFactory == null) {
+    		throw new IllegalStateException("Cannot find the ObjectFactory.  "+
+    				"Please initialize it by calling 'ObjectFactory.setObjectFactory'.");
+    	}
+	}
     
     /**
      * Parses validator definitions
@@ -118,6 +126,8 @@ public class ValidatorFileParser {
 
         if (doc != null) {
             NodeList nodes = doc.getElementsByTagName("validator");
+            
+            verifyObjectFactory(objectFactory);
 
             for (int i = 0; i < nodes.getLength(); i++) {
                 Element validatorElement = (Element) nodes.item(i);
