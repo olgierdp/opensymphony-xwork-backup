@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.util.ClassLoaderUtil;
+import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
@@ -32,6 +33,7 @@ public class ValidatorFileParserTest extends XWorkTestCase {
     private static final String testFileName6 = "com/opensymphony/xwork2/validator/validators-fail.xml";
 
     public void testParserActionLevelValidatorsShouldBeBeforeFieldLevelValidators() throws Exception {
+    	ObjectFactory.setObjectFactory(new ObjectFactory());
         InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName2, this.getClass());
 
         List configs = ValidatorFileParser.parseActionValidatorConfigs(is, testFileName2);
@@ -54,6 +56,7 @@ public class ValidatorFileParserTest extends XWorkTestCase {
 
 
     public void testParser() {
+    	ObjectFactory.setObjectFactory(new ObjectFactory());
         InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName, this.getClass());
 
         List configs = ValidatorFileParser.parseActionValidatorConfigs(is, testFileName);
