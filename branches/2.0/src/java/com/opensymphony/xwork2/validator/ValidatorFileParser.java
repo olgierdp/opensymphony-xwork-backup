@@ -103,7 +103,7 @@ public class ValidatorFileParser {
 	private static void verifyObjectFactory(ObjectFactory objectFactory) {
 		if (objectFactory == null) {
     		throw new IllegalStateException("Cannot find the ObjectFactory.  "+
-    				"Please initialize it by calling 'ObjectFactory.setObjectFactory'.");
+    				"Please initialize it by calling 'ObjectFactory.setObjectFactory()'.");
     	}
 	}
     
