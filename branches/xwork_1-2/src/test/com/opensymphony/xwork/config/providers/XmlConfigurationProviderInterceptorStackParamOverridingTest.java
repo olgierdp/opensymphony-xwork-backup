@@ -3,7 +3,6 @@
  */
 package com.opensymphony.xwork.config.providers;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.opensymphony.xwork.XWorkTestCase;
@@ -15,7 +14,7 @@ import com.opensymphony.xwork.config.impl.DefaultConfiguration;
 
 /**
  * @author tmjee
- *
+ * @version $Date$ $Id$
  */
 public class XmlConfigurationProviderInterceptorStackParamOverridingTest extends XWorkTestCase {
 
@@ -55,46 +54,19 @@ public class XmlConfigurationProviderInterceptorStackParamOverridingTest extends
 		assertNotNull(actionTwoInterceptorMapping3);
 		
 		
-		assertInterceptorParamOneEquals(actionOne, "interceptorOne", "i1p1");
-		assertInterceptorParamTwoEquals(actionOne, "interceptorOne", "i1p2");
-		assertInterceptorParamOneEquals(actionOne, "interceptorTwo", "i2p1" );
-		assertInterceptorParamTwoEquals(actionOne, "interceptorTwo", null);
-		assertInterceptorParamOneEquals(actionOne, "interceptorThree", null);
-		assertInterceptorParamTwoEquals(actionOne, "interceptorThree", null);
+		assertEquals(((InterceptorForTestPurpose)actionOneInterceptorMapping1.getInterceptor()).getParamOne(), "i1p1");
+		assertEquals(((InterceptorForTestPurpose)actionOneInterceptorMapping1.getInterceptor()).getParamTwo(), "i1p2");
+		assertEquals(((InterceptorForTestPurpose)actionOneInterceptorMapping2.getInterceptor()).getParamOne(), "i2p1");
+		assertEquals(((InterceptorForTestPurpose)actionOneInterceptorMapping2.getInterceptor()).getParamTwo(), null);
+		assertEquals(((InterceptorForTestPurpose)actionOneInterceptorMapping3.getInterceptor()).getParamOne(), null);
+		assertEquals(((InterceptorForTestPurpose)actionOneInterceptorMapping3.getInterceptor()).getParamTwo(), null);
 		
-		assertInterceptorParamOneEquals(actionTwo, "interceptorOne", null);
-		assertInterceptorParamTwoEquals(actionTwo, "interceptorOne", null);
-		assertInterceptorParamOneEquals(actionTwo, "interceptorTwo", null);
-		assertInterceptorParamTwoEquals(actionTwo, "interceptorTwo", "i2p2");
-		assertInterceptorParamOneEquals(actionTwo, "interceptorThree", "i3p1");
-		assertInterceptorParamTwoEquals(actionTwo, "interceptorThree", "i3p2");
-		
-	}
-	
-	protected void assertInterceptorParamOneEquals(ActionConfig actionConfig,String interceptorName,  String paramValue) {
-		List interceptorMappings = actionConfig.getInterceptors();
-		for (Iterator i = interceptorMappings.iterator(); i.hasNext();) {
-			InterceptorMapping interceptorMapping = (InterceptorMapping) i.next();
-			assertNotNull(interceptorMapping.getInterceptor());
-			if (interceptorMapping.getName().equals(interceptorName)) {
-				assertEquals(((InterceptorForTestPurpose)interceptorMapping.getInterceptor()).getParamOne(), paramValue);
-				return;
-			}
-		}
-		fail();
-	}
-	
-	protected void assertInterceptorParamTwoEquals(ActionConfig actionConfig, String interceptorName, String paramValue) {
-		List interceptorMappings = actionConfig.getInterceptors();
-		for (Iterator i = interceptorMappings.iterator(); i.hasNext();) {
-			InterceptorMapping interceptorMapping = (InterceptorMapping) i.next();
-			assertNotNull(interceptorMapping.getInterceptor());
-			if (interceptorMapping.getName().equals(interceptorName)) {
-				assertEquals(((InterceptorForTestPurpose)interceptorMapping.getInterceptor()).getParamTwo(), paramValue);
-				return;
-			}
-		}
-		fail();
+		assertEquals(((InterceptorForTestPurpose)actionTwoInterceptorMapping1.getInterceptor()).getParamOne(), null);
+		assertEquals(((InterceptorForTestPurpose)actionTwoInterceptorMapping1.getInterceptor()).getParamTwo(), null);
+		assertEquals(((InterceptorForTestPurpose)actionTwoInterceptorMapping2.getInterceptor()).getParamOne(), null);
+		assertEquals(((InterceptorForTestPurpose)actionTwoInterceptorMapping2.getInterceptor()).getParamTwo(), "i2p2");
+		assertEquals(((InterceptorForTestPurpose)actionTwoInterceptorMapping3.getInterceptor()).getParamOne(), "i3p1");
+		assertEquals(((InterceptorForTestPurpose)actionTwoInterceptorMapping3.getInterceptor()).getParamTwo(), "i3p2");
 	}
 	
 	protected void tearDown() throws Exception {

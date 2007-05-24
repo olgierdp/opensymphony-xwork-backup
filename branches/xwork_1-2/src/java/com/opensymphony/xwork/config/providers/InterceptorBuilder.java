@@ -7,6 +7,7 @@ package com.opensymphony.xwork.config.providers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -84,8 +85,8 @@ public class InterceptorBuilder {
      */
     private static List constructParameterizedInterceptorReferences(PackageConfig packageConfig, 
     		InterceptorStackConfig stackConfig, Map refParams) {
-        Set result;
-        Map params = new HashMap();
+        List result;
+        Map params = new LinkedHashMap();
         
         /*
          * We strip
@@ -120,7 +121,7 @@ public class InterceptorBuilder {
                 if ( params.containsKey(name)) {
                     map = (Map) params.get(name);
                 } else {
-                    map = new HashMap();
+                    map = new LinkedHashMap();
                 }
 
                 map.put(key, value);
@@ -131,7 +132,7 @@ public class InterceptorBuilder {
             }
         }
 
-        result = new LinkedHashSet(stackConfig.getInterceptors());
+        result = new ArrayList(stackConfig.getInterceptors());
 
         for ( Iterator iter = params.keySet().iterator(); iter.hasNext();) {
             String key = (String) iter.next();
@@ -164,9 +165,12 @@ public class InterceptorBuilder {
             		// if an existing interceptor mapping exists, 
             		// we remove from the result Set, just to make sure 
             		// there's always one unique mapping.
-            		result.remove(mapping);
+            		int index = result.indexOf(mapping);
+            		result.set(index, mapping);
             	}
-                result.add(mapping);
+            	else {
+            		result.add(mapping);
+            	}
             }
             else if (interceptorCfgObj instanceof InterceptorStackConfig){  // interceptor-ref param refer to an interceptor stack
             	
@@ -179,12 +183,15 @@ public class InterceptorBuilder {
             	for (Iterator i = tmpResult.iterator(); i.hasNext(); ) {
             		InterceptorMapping tmpInterceptorMapping = (InterceptorMapping) i.next();
             		if (result.contains(tmpInterceptorMapping)) {
-            			result.remove(tmpInterceptorMapping);
+            			int index = result.indexOf(tmpInterceptorMapping);
+            			result.set(index, tmpInterceptorMapping);
             		}
-            		result.add(tmpInterceptorMapping);
+            		else {
+            			result.add(tmpInterceptorMapping);
+            		}
             	}
             }
         }
-        return new ArrayList(result);
+        return result;
     }
 }
