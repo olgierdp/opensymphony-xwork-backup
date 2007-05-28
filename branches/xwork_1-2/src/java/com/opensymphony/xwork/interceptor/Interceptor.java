@@ -158,7 +158,6 @@ import java.io.Serializable;
  *           &lt;param name="interceptor4.param4"&gt; ... &lt;/param&gt;
  *        &lt;/interceptor-ref&gt;
  *    &lt;/action&gt;
- *    
  *    &lt;action ... &gt;
  *        &lt;!-- to override parameters of interceptor located under nested stack --&gt;
  *        &lt;interceptor-ref name="stack4"&gt;
