@@ -128,7 +128,7 @@ import java.io.Serializable;
  *  &lt;/interceptor-stack&gt;
  * </pre>
  *  Assuming the interceptor has the following properties
- *  <table border="1">
+ *  <table border="1" width="100%">
  *    <tr>
  *       <td>Interceptor</td>
  *       <td>property</td>
