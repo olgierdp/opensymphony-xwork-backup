@@ -106,33 +106,27 @@ import java.io.Serializable;
  * 
  *  Interceptor stack parameter overriding could be nested into as many level as possible, though it would
  *  be advisable not to nest it too deep as to avoid confusion, For example, 
- *  
- *  <pre>
- *    &lt;interceptor name="interceptor1" class="foo.bar.Interceptor1" /&gt;
- *    &lt;interceptor name="interceptor2" class="foo.bar.Interceptor2" /&gt;
- *    &lt;interceptor name="interceptor3" class="foo.bar.Interceptor3" /&gt;
- *    &lt;interceptor name="interceptor4" class="foo.bar.Interceptor4" /&gt;
- *    
- *    &lt;interceptor-stack name="stack1"&gt;
- *        &lt;interceptor-ref name="interceptor1" /&gt;
- *    &lt;/interceptor-stack&gt;
- *    
- *    &lt;interceptor-stack name="stack2"&gt;
- *        &lt;interceptor-ref name="intercetor2" /&gt;
- *        &lt;interceptor-ref name="stack1" /&gt;
- *    &lt;/interceptor-stack&gt;
- *    
- *     &lt;interceptor-stack name="stack3"&gt;
- *        &lt;interceptor-ref name="interceptor3" /&gt;
- *        &lt;interceptor-ref name="stack2" /&gt;
- *     &lt;/interceptor-stack&gt;
- *     
- *     &lt;interceptor-stack name="stack4"&gt;
- *        &lt;interceptor-ref name="interceptor4" /&gt;
- *        &lt;interceptor-ref name="stack3" /&gt;
- *     &lt;/interceptor-stack&gt;
- *  </pre>
- *  
+ * <pre>
+ * &lt;interceptor name="interceptor1" class="foo.bar.Interceptor1" /&gt;
+ * &lt;interceptor name="interceptor2" class="foo.bar.Interceptor2" /&gt;
+ * &lt;interceptor name="interceptor3" class="foo.bar.Interceptor3" /&gt;
+ * &lt;interceptor name="interceptor4" class="foo.bar.Interceptor4" /&gt;
+ * &lt;interceptor-stack name="stack1"&gt;
+ *     &lt;interceptor-ref name="interceptor1" /&gt;
+ * &lt;/interceptor-stack&gt;
+ * &lt;interceptor-stack name="stack2"&gt;
+ *     &lt;interceptor-ref name="intercetor2" /&gt;
+ *     &lt;interceptor-ref name="stack1" /&gt;
+ * &lt;/interceptor-stack&gt;
+ * &lt;interceptor-stack name="stack3"&gt;
+ *     &lt;interceptor-ref name="interceptor3" /&gt;
+ *     &lt;interceptor-ref name="stack2" /&gt;
+ * &lt;/interceptor-stack&gt;
+ * &lt;interceptor-stack name="stack4"&gt;
+ *     &lt;interceptor-ref name="interceptor4" /&gt;
+ *     &lt;interceptor-ref name="stack3" /&gt;
+ *  &lt;/interceptor-stack&gt;
+ * </pre>
  *  Assuming the interceptor has the following properties
  *  <table border="1">
  *    <tr>
@@ -156,9 +150,7 @@ import java.io.Serializable;
  *        <td>param4</td>
  *    </tr>
  *  </table>
- *  
  *  We could override them as follows :-
- *  
  *  <pre>
  *    &lt;action ... &gt;
  *        &lt;!-- to override parameters of interceptor located directly in the stack  --&gt;
