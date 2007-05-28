@@ -99,8 +99,89 @@ import java.io.Serializable;
  * 
  * <!-- END SNIPPET: parameterOverriding -->
  * 
+ * <p/>
+ * <b>Nested Interceptor param overriding</b>
+ * <p/>
+ * <!-- START SNIPPET: nestedParameterOverriding -->
+ * 
+ *  Interceptor stack parameter overriding could be nested into as many level as possible, though it would
+ *  be advisable not to nest it too deep as to avoid confusion, For example, 
+ *  
+ *  <pre>
+ *    &lt;interceptor name="interceptor1" class="foo.bar.Interceptor1" /&gt;
+ *    &lt;interceptor name="interceptor2" class="foo.bar.Interceptor2" /&gt;
+ *    &lt;interceptor name="interceptor3" class="foo.bar.Interceptor3" /&gt;
+ *    &lt;interceptor name="interceptor4" class="foo.bar.Interceptor4" /&gt;
+ *    
+ *    &lt;interceptor-stack name="stack1"&gt;
+ *        &lt;interceptor-ref name="interceptor1" /&gt;
+ *    &lt;/interceptor-stack&gt;
+ *    
+ *    &lt;interceptor-stack name="stack2"&gt;
+ *        &lt;interceptor-ref name="intercetor2" /&gt;
+ *        &lt;interceptor-ref name="stack1" /&gt;
+ *    &lt;/interceptor-stack&gt;
+ *    
+ *     &lt;interceptor-stack name="stack3"&gt;
+ *        &lt;interceptor-ref name="interceptor3" /&gt;
+ *        &lt;interceptor-ref name="stack2" /&gt;
+ *     &lt;/interceptor-stack&gt;
+ *     
+ *     &lt;interceptor-stack name="stack4"&gt;
+ *        &lt;interceptor-ref name="interceptor4" /&gt;
+ *        &lt;interceptor-ref name="stack3" /&gt;
+ *     &lt;/interceptor-stack&gt;
+ *  </pre>
+ *  
+ *  Assuming the interceptor has the following properties
+ *  <table border="1">
+ *    <tr>
+ *       <td>Interceptor</td>
+ *       <td>property</td>
+ *    </tr>
+ *    <tr>	
+ *    	   <td>Interceptor1</td>
+ *        <td>param1</td>
+ *    </tr>
+ *    <tr>	
+ *    	   <td>Interceptor2</td>
+ *        <td>param2</td>
+ *    </tr>
+ *    <tr>	
+ *    	   <td>Interceptor3</td>
+ *        <td>param3</td>
+ *    </tr>
+ *    <tr>	
+ *    	   <td>Interceptor4</td>
+ *        <td>param4</td>
+ *    </tr>
+ *  </table>
+ *  
+ *  We could override them as follows :-
+ *  
+ *  <pre>
+ *    &lt;action ... &gt;
+ *        &lt;!-- to override parameters of interceptor located directly in the stack  --&gt;
+ *        &lt;interceptor-ref name="stack4"&gt;
+ *           &lt;param name="interceptor4.param4"&gt; ... &lt;/param&gt;
+ *        &lt;/interceptor-ref&gt;
+ *    &lt;/action&gt;
+ *    
+ *    &lt;action ... &gt;
+ *        &lt;!-- to override parameters of interceptor located under nested stack --&gt;
+ *        &lt;interceptor-ref name="stack4"&gt;
+ *            &lt;param name="stack3.interceptor3.param3"&gt; ... &lt;/param&gt;
+ *            &lt;param name="stack3.stack2.interceptor2.param2"&gt; ... &lt;/param&gt;
+ *            &lt;param name="stack3.stack2.stack1.interceptor1.param1"&gt; ... &lt;/param&gt;
+ *        &lt;/interceptor-ref&gt;
+ *    &lt;/action&gt;
+ *  </pre>
+ * 
+ * <!-- END SNIPPET: nestedParameterOverriding -->
+ * 
  * 
  * @author Jason Carreira
+ * @author tmjee
  * @version $Date$ $Id$
  */
 public interface Interceptor extends Serializable {
