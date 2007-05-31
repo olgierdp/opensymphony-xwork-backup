@@ -86,10 +86,15 @@ import org.apache.commons.logging.LogFactory;
  * </pre>
  *
  * @author Patrick Lightbody
+ * @author tmjee
+ * 
+ * @version $Date$ $Id$
  */
 public class ParametersInterceptor extends AroundInterceptor {
 
-    private static final Log LOG = LogFactory.getLog(ParametersInterceptor.class);
+	private static final long serialVersionUID = 1939469770555684892L;
+	
+	private static final Log LOG = LogFactory.getLog(ParametersInterceptor.class);
 
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }
@@ -170,7 +175,6 @@ public class ParametersInterceptor extends AroundInterceptor {
                 logEntry.append("[ ");
                 for (int indexA = 0; indexA < (valueArray.length - 1); indexA++) {
                     Object valueAtIndex = valueArray[indexA];
-                    logEntry.append(valueAtIndex);
                     logEntry.append(String.valueOf(valueAtIndex));
                     logEntry.append(", ");
                 }
