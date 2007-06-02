@@ -14,6 +14,9 @@ import junit.framework.TestCase;
  * Base JUnit TestCase to extend for XWork specific unit tests.
  *
  * @author plightbo
+ * @author tmjee
+ * 
+ * @version $Date$ $Id$
  */
 public abstract class XWorkTestCase extends TestCase {
     
@@ -24,6 +27,7 @@ public abstract class XWorkTestCase extends TestCase {
 
         //  clear out configuration
         ConfigurationManager.destroyConfiguration();
+        ConfigurationManager.setConfiguration(null);
 
         // clear out localization
         LocalizedTextUtil.reset();
@@ -41,5 +45,6 @@ public abstract class XWorkTestCase extends TestCase {
         
         //  clear out configuration
         ConfigurationManager.destroyConfiguration();
+        ConfigurationManager.setConfiguration(null);
     }
 }

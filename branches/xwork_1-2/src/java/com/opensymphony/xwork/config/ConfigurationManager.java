@@ -5,14 +5,19 @@
 package com.opensymphony.xwork.config;
 
 import com.opensymphony.util.FileManager;
+import com.opensymphony.xwork.config.entities.ActionConfig;
+import com.opensymphony.xwork.config.entities.InterceptorMapping;
 import com.opensymphony.xwork.config.impl.DefaultConfiguration;
 import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
+import com.opensymphony.xwork.interceptor.Interceptor;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -29,11 +34,7 @@ public class ConfigurationManager {
     protected static Configuration configurationInstance;
     private static List configurationProviders = new ArrayList();
 
-    static {
-        destroyConfiguration();
-    }
-
-
+    
     private ConfigurationManager() {
     }
 
@@ -125,8 +126,49 @@ public class ConfigurationManager {
         	clearConfigurationProviders(); // let's destroy the ConfigurationProvider first
             configurationProviders = new ArrayList();
             
-            if (configurationInstance != null)
+            if (configurationInstance != null) {
+            	/*  let's destroy the interceptors used. */
+            	
+            	// keeps a copy of the interceptor that we've destroyed before, so we don't destroy them twice
+            	List destroyedInterceptors = new ArrayList();  
+            	Map namespacesMap = configurationInstance.getRuntimeConfiguration().getActionConfigs();
+            	if (namespacesMap != null) {
+            		for (Iterator i = namespacesMap.entrySet().iterator(); i.hasNext(); ) {
+            			Map.Entry namespaceMapEntry = (Map.Entry) i.next();
+            			String namespace = (String) namespaceMapEntry.getKey();
+            			Map actionConfigsMap = (Map) namespaceMapEntry.getValue();
+            		
+            			for (Iterator ii = actionConfigsMap.entrySet().iterator(); ii.hasNext(); ) {
+            				Map.Entry actionConfigMapEntry = (Map.Entry) ii.next();
+            				String actionName = (String) actionConfigMapEntry.getKey();
+            				ActionConfig actionConfig = (ActionConfig) actionConfigMapEntry.getValue();
+            			
+            				List interceptorMappings = actionConfig.getInterceptors();
+            				for (Iterator iii = interceptorMappings.iterator(); iii.hasNext(); ) {
+            					InterceptorMapping interceptorMapping = (InterceptorMapping) iii.next();
+            					if (interceptorMapping != null && interceptorMapping.getInterceptor() != null) {
+            						Interceptor interceptor = interceptorMapping.getInterceptor();
+            						if (! destroyedInterceptors.contains(interceptor)) {
+            							destroyedInterceptors.add(interceptor);  // keep a copy so we know we've destroy this interceptor before.
+            							try {
+            								if (LOG.isDebugEnabled())
+            									LOG.debug("destroying interceptor ["+interceptor+"] registered under name ["+interceptorMapping.getName()+"] with namespace ["+namespace+"] in package ["+actionConfig.getPackageName()+"]");
+            								interceptor.destroy();
+            							}
+            							catch(Exception e) {
+            								// we don't want a bad interceptor to cause the whole destoy process to blow 
+            								// everything up, if this happens, just inform the user by logging the error
+            								LOG.error("an exception occurred while calling destroy() method on interceptor ["+interceptor+"] registered under name ["+interceptorMapping.getName()+"] with namespace ["+namespace+"] in package ["+actionConfig.getPackageName()+"]");
+            							}
+            						}
+            					}
+            				}
+            			}
+            		}
+            	}
+            	
             	configurationInstance.destroy(); // let's destroy it first, before nulling it.
+            }
             configurationInstance = null;
         }
     }
