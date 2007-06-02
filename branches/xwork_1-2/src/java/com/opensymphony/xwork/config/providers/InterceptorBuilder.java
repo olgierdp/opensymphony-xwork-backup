@@ -5,13 +5,10 @@
 package com.opensymphony.xwork.config.providers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.interceptor.Interceptor;
