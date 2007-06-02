@@ -30,7 +30,7 @@ public class ActionConfig extends Located implements InterceptorListHolder, Para
 	private static final long serialVersionUID = -6785758611462211920L;
 	
 	protected List externalRefs;
-    protected List interceptors;
+    protected List interceptors;	// a list of interceptorMapping Objects eg. List<InterceptorMapping>
     protected Map params;
     protected Map results;
     protected List exceptionMappings;
