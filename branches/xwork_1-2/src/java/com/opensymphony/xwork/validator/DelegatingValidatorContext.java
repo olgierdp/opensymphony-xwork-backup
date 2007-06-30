@@ -178,7 +178,17 @@ public class DelegatingValidatorContext implements ValidatorContext {
         if (object instanceof TextProvider) {
             return (TextProvider) object;
         } else {
-            return new TextProviderSupport(object.getClass(), localeProvider);
+            // the object argument passed through here will most probably be an ActionSupport decendant which does
+            // implements TextProvider.
+            if ((object != null) && (object instanceof TextProvider)) {
+                 return new CompositeTextProvider(new TextProvider[] {
+                                ((TextProvider) object),
+                                new TextProviderSupport(object.getClass(), localeProvider)
+                            });
+            }
+            else {
+                return new TextProviderSupport(object.getClass(), localeProvider);
+            }
         }
     }
 
