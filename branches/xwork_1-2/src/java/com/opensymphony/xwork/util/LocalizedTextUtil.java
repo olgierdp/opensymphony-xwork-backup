@@ -532,10 +532,6 @@ public class LocalizedTextUtil {
      * Determines if we found the text in the bundles.
      * 
      * @param result   the result so far
-     * @param locale   the locale
-     * @param key1     the first key used for lookup
-     * @param key2     the second key (indexed) used for kookup
-     * @param defaultMessage  the provided default message
      * @return  <tt>true</tt> if we could <b>not</b> find the text, <tt>false</tt> if the text was found (=success). 
      */
     private static boolean unableToFindTextForKey(GetDefaultMessageReturnArg result) {
