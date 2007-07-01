@@ -296,7 +296,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 //If the external ref is not declared explicitly, we can introspect the
                 //reference type using it's name and try resolving the reference using it's class type
                 if (refElement.getChildNodes().getLength() > 0) {
-                    refValue = refElement.getChildNodes().item(0).getNodeValue();
+                    refValue = XmlHelper.getContent(refElement);
                 }
 
                 requiredTemp = refElement.getAttribute("required");
@@ -442,16 +442,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
                         String paramName = config.getDefaultResultParam();
                         if (paramName != null) {
-                            StringBuffer paramValue = new StringBuffer();
-                            for (int j=0; j<resultElement.getChildNodes().getLength(); j++) {
-                                if (resultElement.getChildNodes().item(j).getNodeType() == Node.TEXT_NODE) {
-                                    String val = resultElement.getChildNodes().item(j).getNodeValue();
-                                    if (val != null) {
-                                        paramValue.append(val);
-                                    }
-                                }
-                            }
-                            String val = paramValue.toString().trim();
+                            String val = XmlHelper.getContent(resultElement);
                             if (val.length() > 0) {
                                 resultParams.put(paramName, val);
                             }
