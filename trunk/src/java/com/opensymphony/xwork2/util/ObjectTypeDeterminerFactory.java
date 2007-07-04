@@ -10,29 +10,23 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Factory for getting an instance of {@link ObjectTypeDeterminer}.
  * <p/>
- * Will use <code>com.opensymphony.xwork2.util.GenericsObjectTypeDeterminer</code> if running on JDK5 or higher.
- * If not <code>com.opensymphony.xwork2.util.ObjectTypeDeterminer</code> is used.
+ * Will use <code>com.opensymphony.xwork2.util.GenericsObjectTypeDeterminer</code> by default.
+ *
+ * @see com.opensymphony.xwork2.util.GenericsObjectTypeDeterminer
+ * @see com.opensymphony.xwork2.util.ObjectTypeDeterminer
+ * @see com.opensymphony.xwork2.util.DefaultObjectTypeDeterminer
  *
  * @author plightbo
  * @author Rainer Hermanns
+ * @author Rene Gielen
  */
 public class ObjectTypeDeterminerFactory {
     private static final Log LOG = LogFactory.getLog(ObjectTypeDeterminerFactory.class);
 
-    private static ObjectTypeDeterminer instance = new DefaultObjectTypeDeterminer();
+    private static ObjectTypeDeterminer instance = new GenericsObjectTypeDeterminer();
 
     static {
-        try {
-            Class c = ClassLoaderUtil.loadClass("com.opensymphony.xwork2.util.GenericsObjectTypeDeterminer",
-                    ObjectTypeDeterminerFactory.class);
-
-            LOG.info("Detected GenericsObjectTypeDeterminer, initializing it...");
-            instance = (ObjectTypeDeterminer) c.newInstance();
-        } catch (ClassNotFoundException e) {
-            // this is fine, just fall back to the default object type determiner
-        } catch (Exception e) {
-            LOG.error("Exception when trying to create new GenericsObjectTypeDeterminer", e);
-        }
+        LOG.info("Setting GenericsObjectTypeDeterminer as default ...");
     }
 
     /**
@@ -41,7 +35,12 @@ public class ObjectTypeDeterminerFactory {
      * @param instance  instance of ObjectTypeDeterminer
      */
     public static void setInstance(ObjectTypeDeterminer instance) {
-        ObjectTypeDeterminerFactory.instance = instance;
+        if (instance != null) {
+            if (!instance.getClass().equals(ObjectTypeDeterminerFactory.instance.getClass())) {
+                LOG.info("Switching to ObjectTypeDeterminer of type " + instance.getClass().getName());
+            }
+            ObjectTypeDeterminerFactory.instance = instance;
+        }
     }
 
     /**
