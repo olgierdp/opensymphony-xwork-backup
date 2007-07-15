@@ -25,10 +25,12 @@ import com.opensymphony.xwork.XworkException;
 
 
 /**
- * Utility class that provides common access to the Ognl APIs for
+ * Utility class that provides common access to the <a href="www.ognl.org">Ognl</a> APIs for
  * setting and getting properties from objects (usually Actions).
  *
  * @author Jason Carreira
+ * @author tmjee
+ * @version $Date$ $Id$
  */
 public class OgnlUtil {
 
@@ -339,7 +341,7 @@ public class OgnlUtil {
     /**
      * Get's the java bean info for the given source.
      * 
-     * @param source  the source object.
+     * @param from  the source object.
      * @return  java bean info.
      * @throws IntrospectionException is thrown if an exception occurs during introspection.
      */
