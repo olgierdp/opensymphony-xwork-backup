@@ -11,7 +11,7 @@ public class ObjectTypeDeterminerFactoryTest extends TestCase {
 
 
     public void testDefaultInstanceTypeIsGenericsObjectTypeDeterminer() throws Exception {
-        assertEquals(ObjectTypeDeterminerFactory.getInstance().getClass(),GenericsObjectTypeDeterminer.class);
+        assertEquals(ObjectTypeDeterminerFactory.getInstance().getClass(),DefaultObjectTypeDeterminer.class);
     }
 
     public void testSetInstance() throws Exception {
@@ -20,7 +20,7 @@ public class ObjectTypeDeterminerFactoryTest extends TestCase {
             ObjectTypeDeterminerFactory.setInstance(null);
             assertEquals(ObjectTypeDeterminerFactory.getInstance(), objectTypeDeterminer);
             ObjectTypeDeterminerFactory.setInstance(new DefaultObjectTypeDeterminer());
-            assertFalse(ObjectTypeDeterminerFactory.getInstance().getClass().equals(objectTypeDeterminer.getClass()));
+            assertTrue(ObjectTypeDeterminerFactory.getInstance().getClass().equals(objectTypeDeterminer.getClass()));
         } finally {
             ObjectTypeDeterminerFactory.setInstance(objectTypeDeterminer);
         }
