@@ -7,6 +7,8 @@ package com.opensymphony.xwork2.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,6 +27,10 @@ import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkMessages;
+import com.opensymphony.xwork2.conversion.annotations.Conversion;
+import com.opensymphony.xwork2.conversion.annotations.ConversionType;
+import com.opensymphony.xwork2.conversion.annotations.ConversionRule;
+import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
 
 
 /**
@@ -108,6 +114,7 @@ import com.opensymphony.xwork2.XWorkMessages;
  * @see XWorkBasicConverter
  */
 public class XWorkConverter extends DefaultTypeConverter {
+
     private static XWorkConverter instance;
     protected static final Log LOG = LogFactory.getLog(XWorkConverter.class);
     public static final String REPORT_CONVERSION_ERRORS = "report.conversion.errors";
@@ -197,18 +204,7 @@ public class XWorkConverter extends DefaultTypeConverter {
 
     public static XWorkConverter getInstance() {
          if (instance == null) {
-             try {
-                 Class clazz = Thread.currentThread().getContextClassLoader().loadClass("com.opensymphony.xwork2.util.AnnotationXWorkConverter");
-                 instance = (XWorkConverter) clazz.newInstance();
-                 LOG.info("Detected AnnotationXWorkConverter, initializing it...");
-             } catch (ClassNotFoundException e) {
-                 // this is fine, just fall back to the default object type determiner
-             } catch (Exception e) {
-                 LOG.error("Exception when trying to create new AnnotationXWorkConverter", e);
-             }
-             if ( instance == null ) {
-                 instance = new XWorkConverter();
-             }
+             instance = new XWorkConverter();
          }
 
          return instance;
@@ -564,6 +560,152 @@ public class XWorkConverter extends DefaultTypeConverter {
             }
         } catch (Exception ex) {
             LOG.error("Problem loading properties for " + clazz.getName(), ex);
+        }
+
+        // Process annotations
+        Annotation[] annotations = clazz.getAnnotations();
+
+        for (Annotation annotation : annotations) {
+            if (annotation instanceof Conversion) {
+                Conversion conversion = (Conversion) annotation;
+
+                for (TypeConversion tc : conversion.conversions()) {
+
+                    String key = tc.key();
+
+                    if (mapping.containsKey(key)) {
+                        break;
+                    }
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(key + ":" + key);
+                    }
+
+                    if (key != null) {
+                        try {
+                        	if (tc.type()  == ConversionType.APPLICATION) {
+                                defaultMappings.put(key, createTypeConverter(tc.converter()));
+                            } else {
+                                if (tc.rule().toString().equals(ConversionRule.KEY_PROPERTY) || tc.rule().toString().equals(ConversionRule.CREATE_IF_NULL)) {
+                                    mapping.put(key, tc.value());
+                                }
+                                //for properties of classes
+                                else if (!(tc.rule().toString().equals(ConversionRule.ELEMENT.toString())) ||
+                                        tc.rule().toString().equals(ConversionRule.KEY.toString()) ||
+                                        tc.rule().toString().equals(ConversionRule.COLLECTION.toString())
+                                        ) {
+                                    mapping.put(key, createTypeConverter(tc.converter()));
+                               
+
+
+                                }
+                                //for keys of Maps
+                                else if (tc.rule().toString().equals(ConversionRule.KEY.toString())) {
+                                    Class converterClass = Thread.currentThread().getContextClassLoader().loadClass(tc.converter());
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.debug("Converter class: " + converterClass);
+                                    }
+                                    //check if the converter is a type converter if it is one
+                                    //then just put it in the map as is. Otherwise
+                                    //put a value in for the type converter of the class
+                                    if (converterClass.isAssignableFrom(TypeConverter.class)) {
+                                        mapping.put(key, createTypeConverter(tc.converter()));
+                                    } else {
+                                        mapping.put(key, converterClass);
+                                        if (LOG.isDebugEnabled()) {
+                                            LOG.debug("Object placed in mapping for key "
+                                                    + key
+                                                    + " is "
+                                                    + mapping.get(key));
+                                        }
+
+                                    }
+
+                                }
+                                //elements(values) of maps / lists
+                                else {
+                                    mapping.put(key, Thread.currentThread().getContextClassLoader().loadClass(tc.converter()));
+                                }
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
+                }
+            }
+        }
+
+        Method[] methods = clazz.getMethods();
+
+        for (Method method : methods) {
+
+            annotations = method.getAnnotations();
+
+            for (Annotation annotation : annotations) {
+                if (annotation instanceof TypeConversion) {
+                    TypeConversion tc = (TypeConversion) annotation;
+
+                    String key = tc.key();
+                    if (mapping.containsKey(key)) {
+                        break;
+                    }
+                    // Default to the property name
+                    if ( key != null && key.length() == 0) {
+                        key = AnnotationUtils.resolvePropertyName(method);
+                        LOG.debug("key from method name... " + key + " - " + method.getName());
+                    }
+
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(key + ":" + key);
+                    }
+
+                    if (key != null) {
+                        try {
+                        	if (tc.type() == ConversionType.APPLICATION) {
+                                defaultMappings.put(key, createTypeConverter(tc.converter()));
+                            } else {
+                                if (tc.rule().toString().equals(ConversionRule.KEY_PROPERTY)) {
+                                    mapping.put(key, tc.value());
+                                }
+                                //for properties of classes
+                                else if (!(tc.rule().toString().equals(ConversionRule.ELEMENT.toString())) ||
+                                        tc.rule().toString().equals(ConversionRule.KEY.toString()) ||
+                                        tc.rule().toString().equals(ConversionRule.COLLECTION.toString())
+                                        ) {
+                                    mapping.put(key, createTypeConverter(tc.converter()));
+                                }
+                                //for keys of Maps
+                                else if (tc.rule().toString().equals(ConversionRule.KEY.toString())) {
+                                    Class converterClass = Thread.currentThread().getContextClassLoader().loadClass(tc.converter());
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.debug("Converter class: " + converterClass);
+                                    }
+                                    //check if the converter is a type converter if it is one
+                                    //then just put it in the map as is. Otherwise
+                                    //put a value in for the type converter of the class
+                                    if (converterClass.isAssignableFrom(TypeConverter.class)) {
+                                        mapping.put(key, createTypeConverter(tc.converter()));
+                                    } else {
+                                        mapping.put(key, converterClass);
+                                        if (LOG.isDebugEnabled()) {
+                                            LOG.debug("Object placed in mapping for key "
+                                                    + key
+                                                    + " is "
+                                                    + mapping.get(key));
+                                        }
+
+                                    }
+
+                                }
+                                //elements(values) of maps / lists
+                                else {
+                                    mapping.put(key, Thread.currentThread().getContextClassLoader().loadClass(tc.converter()));
+                                }
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
+                }
+            }
         }
     }
 

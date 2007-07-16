@@ -23,10 +23,10 @@ import org.apache.commons.logging.LogFactory;
 public class ObjectTypeDeterminerFactory {
     private static final Log LOG = LogFactory.getLog(ObjectTypeDeterminerFactory.class);
 
-    private static ObjectTypeDeterminer instance = new GenericsObjectTypeDeterminer();
+    private static ObjectTypeDeterminer instance = new DefaultObjectTypeDeterminer();
 
     static {
-        LOG.info("Setting GenericsObjectTypeDeterminer as default ...");
+        LOG.info("Setting DefaultObjectTypeDeterminer as default ...");
     }
 
     /**

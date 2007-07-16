@@ -6,7 +6,7 @@
     <bean type="com.opensymphony.xwork2.ActionProxyFactory"
           class="com.opensymphony.xwork2.DefaultActionProxyFactory"/>
     <bean type="com.opensymphony.xwork2.util.ObjectTypeDeterminer"
-          class="com.opensymphony.xwork2.util.GenericsObjectTypeDeterminer"/>
+          class="com.opensymphony.xwork2.util.DefaultObjectTypeDeterminer"/>
     <bean name="xwork1"
           type="com.opensymphony.xwork2.util.ObjectTypeDeterminer"
           class="com.opensymphony.xwork2.util.DefaultObjectTypeDeterminer"/>
@@ -14,7 +14,7 @@
           type="com.opensymphony.xwork2.util.XWorkConverter"
           class="com.opensymphony.xwork2.util.XWorkConverter"/>
     <bean type="com.opensymphony.xwork2.util.XWorkConverter"
-          class="com.opensymphony.xwork2.util.AnnotationXWorkConverter"/>
+          class="com.opensymphony.xwork2.util.XWorkConverter"/>
 
     <!--  static injections -->
     <bean class="com.opensymphony.xwork2.util.OgnlValueStack" static="true"/>
