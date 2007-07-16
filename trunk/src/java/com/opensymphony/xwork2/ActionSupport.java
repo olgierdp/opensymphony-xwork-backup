@@ -162,6 +162,38 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
     }
 
     /**
+     * Clears field errors. Useful for Continuations and other situations
+     * where you might want to clear parts of the state on the same action.
+     */
+    public void clearFieldErrors() {
+        validationAware.clearFieldErrors();
+    }
+
+    /**
+     * Clears action errors. Useful for Continuations and other situations
+     * where you might want to clear parts of the state on the same action.
+     */
+    public void clearActionErrors() {
+        validationAware.clearActionErrors();
+    }
+
+    /**
+     * Clears messages. Useful for Continuations and other situations
+     * where you might want to clear parts of the state on the same action.
+     */
+    public void clearMessages() {
+        validationAware.clearMessages();
+    }
+
+    /**
+     * Clears all errors. Useful for Continuations and other situations
+     * where you might want to clear parts of the state on the same action.
+     */
+    public void clearErrors() {
+        validationAware.clearErrors();
+    }
+
+    /**
      * Clears all errors and messages. Useful for Continuations and other situations
      * where you might want to clear parts of the state on the same action.
      */
