@@ -20,6 +20,8 @@ import java.util.Set;
  * @version $Date$ $Id$
  */
 public class TextParseUtil {
+    
+    private static final int MAX_RECURSION = 1;
 
     /**
      * Converts all instances of ${...} in <code>expression</code> to the value returned
@@ -96,12 +98,38 @@ public class TextParseUtil {
      * @return Converted object from variable translation.
      */
     public static Object translateVariables(char open, String expression, OgnlValueStack stack, Class asType, ParsedValueEvaluator evaluator) {
+        return translateVariables(open, expression, stack, asType, evaluator, MAX_RECURSION);
+    }
+        
+    
+    /**
+     * Converted object from variable translation.
+     *
+     * @param open
+     * @param expression
+     * @param stack
+     * @param asType
+     * @param evaluator
+     * @return Converted object from variable translation.
+     */
+    public static Object translateVariables(char open, String expression, OgnlValueStack stack, Class asType, ParsedValueEvaluator evaluator, int maxLoopCount) {
         // deal with the "pure" expressions first!
         //expression = expression.trim();
         Object result = expression;
-
+        int loopCount = 1;
+        int pos = 0;
         while (true) {
-            int start = expression.indexOf(open + "{");
+            
+            int start = expression.indexOf(open + "{", pos);
+            if (start == -1) {
+                pos = 0;
+                loopCount++;
+                start = expression.indexOf(open + "{");
+            }
+            if (loopCount > maxLoopCount) {
+                // translateVariables prevent infinite loop / expression recursive evaluation
+                break;
+            }
             int length = expression.length();
             int x = start + 2;
             int end;
@@ -122,29 +150,35 @@ public class TextParseUtil {
 
                 Object o = stack.findValue(var, asType);
                 if (evaluator != null) {
-                	o = evaluator.evaluate(o);
+                    o = evaluator.evaluate(o);
                 }
                 
 
                 String left = expression.substring(0, start);
                 String right = expression.substring(end + 1);
+                String middle = null;
                 if (o != null) {
-                    if (TextUtils.stringSet(left)) {
-                        result = left + o;
-                    } else {
+                    middle = o.toString();
+                    if (!TextUtils.stringSet(left)) {
                         result = o;
+                    } else {
+                        result = left + middle;
                     }
-
+    
                     if (TextUtils.stringSet(right)) {
                         result = result + right;
                     }
 
-                    expression = left + o + right;
+                    expression = left + middle + right;
                 } else {
                     // the variable doesn't exist, so don't display anything
                     result = left + right;
                     expression = left + right;
                 }
+                pos = (left != null && left.length() > 0 ? left.length() - 1: 0) +
+                      (middle != null && middle.length() > 0 ? middle.length() - 1: 0) +
+                      1;
+                pos = Math.max(pos, 1);
             } else {
                 break;
             }

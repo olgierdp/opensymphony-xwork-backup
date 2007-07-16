@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.HashSet;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Unit test of {@link TextParseUtil}.
@@ -99,6 +100,22 @@ public class TextParseUtilTest extends XWorkTestCase {
 
         Object s = TextParseUtil.translateVariables('$', "foo: ${}", stack);
         assertEquals("foo: ", s);
+    }
+    
+    public void testTranslateVariablesNoRecursive() {
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(new HashMap() {{ put("foo", "${1+1}"); }});
+
+        Object s = TextParseUtil.translateVariables('$', "foo: ${foo}", stack, String.class, null, 1);
+        assertEquals("foo: ${1+1}", s);
+    }
+    
+    public void testTranslateVariablesRecursive() {
+        OgnlValueStack stack = new OgnlValueStack();
+        stack.push(new HashMap() {{ put("foo", "${1+1}"); }});
+
+        Object s = TextParseUtil.translateVariables('$', "foo: ${foo}", stack, String.class, null, 2);
+        assertEquals("foo: 2", s);
     }
 
 }
