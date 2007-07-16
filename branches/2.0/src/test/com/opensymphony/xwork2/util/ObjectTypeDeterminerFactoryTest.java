@@ -10,7 +10,7 @@ import junit.framework.*;
 public class ObjectTypeDeterminerFactoryTest extends TestCase {
 
 
-    public void testDefaultInstanceTypeIsGenericsObjectTypeDeterminer() throws Exception {
+    public void testDefaultInstanceTypeIsDefaultObjectTypeDeterminer() throws Exception {
         assertEquals(ObjectTypeDeterminerFactory.getInstance().getClass(),DefaultObjectTypeDeterminer.class);
     }
 
