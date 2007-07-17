@@ -167,8 +167,30 @@ public class OgnlValueStack implements Serializable, ValueStack {
             }
         } catch (RuntimeException re) { //XW-281
             if (throwExceptionOnFailure) {
-                String msg = "Error setting expression '" + expr + "' with value '" + value + "'";
-                throw new XWorkException(msg, re);
+                StringBuffer msg = new StringBuffer();
+                msg.append("Error setting expression '");
+                msg.append(expr);
+                msg.append("' with value ");
+
+                if (value instanceof Object[]) {
+                    Object[] valueArray = (Object[]) value;
+                    msg.append("[");
+                    for (int index = 0; index < valueArray.length; index++) {
+                        msg.append("'");
+                        msg.append(valueArray[index]);
+                        msg.append("'");
+
+                        if (index < (valueArray.length + 1))
+                            msg.append(", ");
+                    }
+                    msg.append("]");
+                } else {
+                    msg.append("'");
+                    msg.append(value);
+                    msg.append("'");
+                }
+
+                throw new XWorkException(msg.toString(), re);
             } else {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Error setting value", re);
