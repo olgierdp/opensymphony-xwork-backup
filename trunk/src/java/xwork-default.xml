@@ -20,7 +20,7 @@
     <bean class="com.opensymphony.xwork2.util.OgnlValueStack" static="true"/>
     <bean class="com.opensymphony.xwork2.util.XWorkConverter" static="true"/>
 
-    <package name="xwork-default">
+    <package name="xwork-default" abstract="true">
 
         <!-- START SNIPPET: xwork2-default-result-types -->
         <result-types>
