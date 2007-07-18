@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>XWork - 
+        Upgrading from 1.0.4
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>Upgrading to XWork 1.0.5 from 1.0.4 is mostly backwards compatible. However, there is one change you should be aware of:</p>
+
+<p><b>ParametersInterceptor changes</b><br/>
+ParametersInterceptor has been modified to not allow any parameter names to be used that contain any special OGNL characters, such as "#", ",", and "=". This fixes a security hole, but if you were depending on it we recommend that you figure out an alternative way to do what you are doing rather than depend on this vulnerability. Upgrading to 1.0.5 fixes this issue.</p>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

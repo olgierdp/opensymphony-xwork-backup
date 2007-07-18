@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <title>XWork - 
+        Custom Action Validation
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>XWork's validators work great when you need to apply a common validation to your Action, particularly syntatic validations that simply check values for the correct format.  In a real world application, you might need to execute custom validation code that runs checks that are specific to an Action.  XWork allows you to, by implementing the <em>Validatable</em> interface, define a custom <em>validate()</em> method on your action, which will be called before the Action will be executed. </p>
+
+<p>For example, say you were developing a To Do list application, which contains a form that allows the user to modify an existing todo entry.  You need to create an Action which processes the submitted information and updates the todo information in database.  To check that the fields' values were in the correct formation, you might use the following XWork validators on the following fields:</p>
+
+<table class='confluenceTable'><tbody>
+<tr>
+<th class='confluenceTh'> Validator </th>
+<th class='confluenceTh'> Field(s) </th>
+</tr>
+<tr>
+<td class='confluenceTd'> <a href="Standard Validators.html#StandardValidators-RequiredFieldValidator" title="RequiredFieldValidator on Standard Validators">RequiredFieldValidator</a> </td>
+<td class='confluenceTd'> <em>id</em>,<em>name</em>,<em>description</em>,<em>completed</em> </td>
+</tr>
+<tr>
+<td class='confluenceTd'> <a href="Standard Validators.html#StandardValidators-StringLengthFieldValidator" title="StringLengthFieldValidator on Standard Validators">StringLengthFieldValidator</a> </td>
+<td class='confluenceTd'> <em>name</em> </td>
+</tr>
+<tr>
+<td class='confluenceTd'> <a href="Standard Validators.html#StandardValidators-IntRangeFieldValidator" title="IntRangeFieldValidator on Standard Validators">IntRangeFieldValidator</a> </td>
+<td class='confluenceTd'> <em>id</em> </td>
+</tr>
+</tbody></table>
+
+<p>However, you want to make sure the <em>id</em> of the todo form actually exists before you have the business layer make update the database.  While the XWork validators checked that the <em>id</em> field existed and contained a numeric value, you need to ensure custom validation code will be called during the validation process.</p>
+
+<p>The solution is to have your Action implement the <em>Validatable</em> interface, which defines a <em>validate()</em> method that you must implement.  If your action has the <em>DefaultWorkflowInterceptor</em> in its interceptor stack, your <em>validate()</em> method will be called.  If the <em>validate()</em> method, or any validators previously have generated any error messages, the chain will abort processing and return the <em>Action.INPUT</em> result (see <a href="DefaultWorkflowInterceptor.html" title="DefaultWorkflowInterceptor">DefaultWorkflowInterceptor</a> for more information).</p>
+
+<p>This is what the <em>validate()</em> method of our todo Action, which extends <em>ActionSupport</em>, might look like:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">public</span> void validate() {
+    <span class="code-keyword">if</span> (todoManager.getTodo(id) == <span class="code-keyword">null</span>) {
+        <span class="code-object">String</span> error = getText(<span class="code-quote">"todo.err.notFound"</span>);
+        addActionError(error);
+    }
+}</pre>
+</div></div>
+
+<p>The <em>todoManager</em> variable is a instance of the business management object that handles all todo database operations.  If the <em>id</em> field as submitted by the form doesn't exist, we lookup the text for the error and add it as an action error.</p>
+
+<p>If, however, you allowed todo entries to be modified in an other area of the application, you might consider converting this code into a custom Validator to avoid code duplication.  See <a href="Building a Validator.html" title="Building a Validator">Building a Validator</a> for details.</p>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

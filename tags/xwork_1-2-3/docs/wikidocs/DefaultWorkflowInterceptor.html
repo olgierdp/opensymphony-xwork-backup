@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>XWork - 
+        DefaultWorkflowInterceptor
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <div class="code"><div class="codeContent">
+<pre class="code-java">&lt;interceptor name=<span class="code-quote">"workflow"</span> class=<span class="code-quote">"com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor"</span>/&gt;</pre>
+</div></div>
+
+<p>This interceptor  implements the workflow that was found in ActionSupport in WebWork 1.x. The following workflow steps are applied before the rest of the Interceptors and the Action are executed, and may short-circuit their execution:</p>
+
+<ol>
+	<li>If the Action implements <b>com.opensymphony.xwork.Validateable</b>, the <b>validate()</b> method is called on it, to allow the Action to execute any validation logic coded into it.</li>
+	<li>If the Action implements <b>com.opensymphony.xwork.ValidationAware</b> the <b>hasErrors()</b> method is called to check if the Action has any registered error messages (either Action-level or field-level). If the ValidationAware Action has any errors, <b>Action.INPUT</b> ("input") is returned without executing the rest of the Interceptors or the Action.</li>
+	<li>If the execution did not short-circuit in the step above, the rest of the Interceptors and the Action are executed by calling <b>invocation.invoke()</b></li>
+</ol>
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
