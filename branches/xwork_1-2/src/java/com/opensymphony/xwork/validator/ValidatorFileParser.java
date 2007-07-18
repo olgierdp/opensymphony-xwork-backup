@@ -137,11 +137,6 @@ public class ValidatorFileParser {
             if ((item instanceof CharacterData && !(item instanceof Comment)) || item instanceof EntityReference) {
                 final String nodeValue = item.getNodeValue();
                 if (nodeValue != null) {
-                    if (firstCDataFound) {
-                        value.append(MULTI_TEXTVALUE_SEPARATOR);
-                    } else {
-                        firstCDataFound = true;
-                    }
                     value.append(nodeValue.trim());
                 }
             }
