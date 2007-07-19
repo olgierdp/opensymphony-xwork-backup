@@ -45,7 +45,7 @@ public class DefaultActionValidatorManagerTest extends XWorkTestCase {
 
 
     public void testBuildValidatorKey() {
-        String validatorKey = DefaultActionValidatorManager.buildValidatorKey(SimpleAction.class, alias);
+        String validatorKey = new DefaultActionValidatorManager().buildValidatorKey(SimpleAction.class, alias);
         assertEquals(SimpleAction.class.getName() + "/" + alias, validatorKey);
     }
 
