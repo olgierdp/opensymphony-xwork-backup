@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>opensymphony</groupId>
+    <artifactId>xwork-showcase</artifactId>
+    <version>2.0.3-SNAPSHOT</version>
+    <name>XWork Showcase</name>
+    <description>
+    	XWork showcase serves as an example section for XWork2. Its being used by snippet 
+    	in XWork2 confluence as well.
+    </description>
+    <url>http://www.opensymphony.com/xwork/</url>
+    <organization>
+        <name>OpenSymphony</name>
+        <url>http://www.opensymphony.com/</url>
+    </organization>
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://jira.opensymphony.com/browse/XW</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>WebWork users list</name>
+            <post>mailto:users@webwork.dev.java.net</post>
+            <subscribe>https://webwork.dev.java.net/servlets/ProjectMailingListList</subscribe>
+            <archive>https://webwork.dev.java.net/servlets/SummarizeList?listName=users</archive>
+            <otherArchives>
+                <otherArchive>http://forums.opensymphony.com/forum.jspa?forumID=1</otherArchive>
+            </otherArchives>
+        </mailingList>
+        <mailingList>
+            <name>WebWork developers list</name>
+            <post>mailto:dev@webwork.dev.java.net</post>
+            <subscribe>https://webwork.dev.java.net/servlets/ProjectMailingListList</subscribe>
+            <archive>https://webwork.dev.java.net/servlets/SummarizeList?listName=dev</archive>
+            <otherArchives>
+                <otherArchive>http://forums.opensymphony.com/forum.jspa?forumID=32</otherArchive>
+            </otherArchives>
+        </mailingList>
+        <mailingList>
+            <name>XWork cvs commit list</name>
+            <post>mailto:cvs@xwork.dev.java.net</post>
+            <subscribe>https://xwork.dev.java.net/servlets/ProjectMailingListList</subscribe>
+            <archive>https://xwork.dev.java.net/servlets/SummarizeList?listName=cvs</archive>
+            <otherArchives>
+                <otherArchive>http://forums.opensymphony.com/forum.jspa?forumID=9</otherArchive>
+            </otherArchives>
+        </mailingList>
+    </mailingLists>
+    <scm>
+        <connection>scm:svn:http://svn.opensymphony.com/svn/xwork/branches/2.0/showcase</connection>
+        <developerConnection>
+            scm:svn:https://svn.opensymphony.com/svn/xwork/branches/2.0/showcase
+        </developerConnection>
+        <url>https://svn.opensymphony.com/svn/xwork/branches/2.0/showcase</url>
+    </scm>
+    <licenses>
+        <license>
+            <name>The OpenSymphony Software License 1.1</name>
+            <url>http://opensymphony.com/xwork/license.action</url>
+            <comments>
+                This license is derived and fully compatible with the Apache Software
+                License - see http://www.apache.org/LICENSE.txt
+            </comments>
+        </license>
+    </licenses>
+    <dependencies>
+        <dependency>
+            <groupId>opensymphony</groupId>
+            <artifactId>xwork</artifactId>
+            <version>2.0.3-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <testSourceDirectory>src/test</testSourceDirectory>
+        <testResources>
+            <testResource>
+                <directory>src/test</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
+        </testResources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <!--
+                    <excludes>
+                        <exclude>**/XWorkTestCase.java</exclude>
+                    </excludes>
+                    -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                  <source>1.5</source>
+                  <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
