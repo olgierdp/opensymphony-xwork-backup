@@ -361,6 +361,13 @@ public class XWorkConverterTest extends XWorkTestCase {
         assertEquals("blah", bar.getTitle());
     }
 
+    public void testRegisterCustomConverter() {
+        converter.registerConverter(Boolean.class.getName(), new MyBooleanConverter());
+        Boolean value = (Boolean) converter.convertValue(null, null, null, null, "Y", Boolean.class);
+        assertNotNull("conversion failed", value);
+        assertEquals(Boolean.TRUE, value);
+    }
+
     public void testStringToPrimitiveWrappers() {
         assertEquals(new Long(123), converter.convertValue(context, null, null, null, "123", Long.class));
         assertEquals(new Integer(123), converter.convertValue(context, null, null, null, "123", Integer.class));
