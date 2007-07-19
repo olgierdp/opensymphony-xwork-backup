@@ -1,7 +1,0 @@
-<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 2.0//EN" "http://www.opensymphony.com/xwork/xwork-2.0.dtd">
-
-<xwork>
-	<bean class="com.opensymphony.xwork2.ObjectFactory" name="default" />
-	<bean type="com.opensymphony.xwork2.ActionProxyFactory" name="default" class="com.opensymphony.xwork2.DefaultActionProxyFactory"/>
-	<constant name="devMode" value="false" />
-</xwork>
