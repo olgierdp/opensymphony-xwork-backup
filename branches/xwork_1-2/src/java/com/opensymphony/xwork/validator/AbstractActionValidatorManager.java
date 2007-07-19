@@ -160,4 +160,16 @@ public abstract class AbstractActionValidatorManager implements ActionValidatorM
         sb.append(context);
         return sb.toString();
     }
+
+
+    protected List buildValidatorsFromValidatorConfig(List validatorConfigs) {
+        ArrayList validators = new ArrayList(validatorConfigs.size());
+        for (Iterator iterator = validatorConfigs.iterator(); iterator.hasNext(); ) {
+            ValidatorConfig cfg = (ValidatorConfig) iterator.next();
+            Validator validator = ValidatorFactory.getValidator(cfg);
+            validator.setValidatorType(cfg.getType());
+            validators.add(validator);
+        }
+        return validators;
+    }
 }

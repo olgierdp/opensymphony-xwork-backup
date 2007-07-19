@@ -61,15 +61,7 @@ public class DefaultActionValidatorManager extends AbstractActionValidatorManage
         List cfgs = (List) validatorCache.get(validatorKey);
 
         // create clean instances of the validators for the caller's use
-        ArrayList validators = new ArrayList(cfgs.size());
-        for (Iterator iterator = cfgs.iterator(); iterator.hasNext(); ) {
-            ValidatorConfig cfg = (ValidatorConfig) iterator.next();
-            Validator validator = ValidatorFactory.getValidator(cfg);
-            validator.setValidatorType(cfg.getType());
-            validators.add(validator);
-        }
-
-        return validators;
+        return buildValidatorsFromValidatorConfig(cfgs);
     }
 
 
