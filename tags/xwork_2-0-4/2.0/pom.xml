@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.opensymphony</groupId>
+    <artifactId>xwork</artifactId>
+    <version>2.0.4</version>
+    <name>XWork</name>
+    <description>
+        XWork is an command-pattern framework that is used to power WebWork
+        as well as other applications. XWork provides an Inversion of Control
+        container, a powerful expression language, data type conversion,
+        validation, and pluggable configuration.
+    </description>
+    <url>http://www.opensymphony.com/xwork/</url>
+    <organization>
+        <name>OpenSymphony</name>
+        <url>http://www.opensymphony.com/</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>plightbo</id>
+            <name>Patrick Lightbody</name>
+            <email>plightbo at gmail.com</email>
+            <roles>
+                <role>Owner</role>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>jcarreira</id>
+            <name>Jason Carreira</name>
+            <email>jcarreira at gmail.com</email>
+            <roles>
+                <role>Owner</role>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>rainerh</id>
+            <name>Rainer Hermanns</name>
+            <email>hermanns at apache.org</email>
+            <roles>
+                <role>Owner</role>
+                <role>Release Manager</role>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Gabriel Zimmermann</name>
+            <id>gjz22</id>
+        </developer>
+        <developer>
+            <name>Peter Kelley</name>
+            <id>pkelley</id>
+            <email>yellekau at yahoo.com</email>
+        </developer>
+        <developer>
+            <name>Ted Husted</name>
+            <id>husted</id>
+            <email>husted at apache.org</email>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Alexandru Popescu</name>
+            <id>apopescu</id>
+            <email>apopescu at apache.org</email>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Rene Gielen</name>
+            <id>rgielen</id>
+            <email>rgielen at apache.org</email>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Toby Jee</name>
+            <id>tmjee</id>
+            <email>tmjee at apache.org</email>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Bob Lee</name>
+            <id>crazybob</id>
+            <email>crazybob at apache.org</email>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Matt Ho</name>
+            <email>matt at xtreme.com</email>
+        </developer>
+        <developer>
+            <name>Cameron Braid</name>
+            <email>cameron at braid.com.au</email>
+        </developer>
+        <developer>
+            <name>Bill Lynch</name>
+            <email>bill at jivesoftware.com</email>
+        </developer>
+        <developer>
+            <name>James House</name>
+            <email>jhouse at revolition.net</email>
+        </developer>
+        <developer>
+            <id>jon_lipsky</id>
+            <name>Jon Lipsky</name>
+            <email>jon.lipsky at xesoft.com</email>
+            <roles>
+                <role>XWork Configuration Editor</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Matthew Payne</name>
+            <email>matthew.payne at sutternow.com</email>
+        </developer>
+        <developer>
+            <name>Mark Woon</name>
+            <email>morpheus at helix.stanford.edu</email>
+        </developer>
+        <developer>
+            <id>jmitchell</id>
+            <name>James Mitchell</name>
+            <email>jmitchell at apache.org</email>
+        </developer>
+        <developer>
+            <id>phil</id>
+            <name>Philip Luppens</name>
+            <email>philip.luppens at gmail.com</email>
+        </developer>
+        <developer>
+            <id>davsclaus</id>
+            <name>Claus Ibsen</name>
+            <email>claus.ibsen at gmail.com</email>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Eric Molitor</name>
+        </contributor>
+    </contributors>
+    <ciManagement/>
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://jira.opensymphony.com/browse/XW</url>
+    </issueManagement>
+    <distributionManagement>
+        <!--
+          For this to work, you need to:
+
+          1) Get the private key from someone that trusts you :)
+          2) Add the following to ~/.m2/settings.xml
+
+          <settings>
+              ...
+              <servers>
+                  <server>
+                        <id>opensymphony</id>
+                        <username>maven</username>
+                        <privateKey>/path/to/private/maven_opensymphony_key</privateKey>
+                  </server>
+              </servers>
+              ...
+          </settings>
+          -->
+        <repository>
+            <id>opensymphony</id>
+            <name>OpenSymphony Maven Repository</name>
+            <url>scp://maven2.opensymphony.com/opt/repository/maven2</url>
+        </repository>
+    </distributionManagement>
+    
+    <mailingLists>
+        <mailingList>
+            <name>XWork users list</name>
+            <post>mailto:users@xwork.dev.java.net</post>
+            <subscribe>https://xwork.dev.java.net/servlets/ProjectMailingListList</subscribe>
+            <archive>https://xwork.dev.java.net/servlets/SummarizeList?listName=users</archive>
+            <otherArchives>
+                <otherArchive>http://forums.opensymphony.com/forum.jspa?forumID=39</otherArchive>
+            </otherArchives>
+        </mailingList>
+        <mailingList>
+            <name>XWork developers list</name>
+            <post>mailto:dev@xwork.dev.java.net</post>
+            <subscribe>https://xwork.dev.java.net/servlets/ProjectMailingListList</subscribe>
+            <archive>https://xwork.dev.java.net/servlets/SummarizeList?listName=dev</archive>
+            <otherArchives>
+                <otherArchive>http://forums.opensymphony.com/forum.jspa?forumID=40</otherArchive>
+            </otherArchives>
+        </mailingList>
+        <mailingList>
+            <name>XWork SVN commit list</name>
+            <post>mailto:xwork-svn@opensymphony.com</post>
+            <subscribe>mailto:xwork-svn-subscribe@opensymphony.com</subscribe>
+            <otherArchives>
+                <otherArchive>http://forums.opensymphony.com/forum.jspa?forumID=41</otherArchive>
+            </otherArchives>
+        </mailingList>
+    </mailingLists>
+    <scm>
+        <connection>scm:svn:http://svn.opensymphony.com/svn/xwork/branches/2.0</connection>
+        <developerConnection>
+            scm:svn:https://svn.opensymphony.com/svn/xwork/branches/2.0
+        </developerConnection>
+        <url>https://svn.opensymphony.com/svn/xwork/branches/2.0</url>
+    </scm>
+    <licenses>
+        <license>
+            <name>The OpenSymphony Software License 1.1</name>
+            <!--<url>http://opensymphony.com/xwork/license.action</url>-->
+            <url>src/etc/LICENSE.txt</url>
+            <comments>
+                This license is derived and fully compatible with the Apache Software
+                License - see http://www.apache.org/LICENSE.txt
+            </comments>
+        </license>
+    </licenses>
+
+    <profiles>
+        <profile>
+            <!--
+                   Run the translator for Java 1.4 compatiblity
+
+                   OS/X Sample:
+                   $ cd xwork/
+                   $ mvn clean install -Pj4 -Djava14.jar=$JAVA_HOME/../Classes/classes.jar
+
+                -->
+            <id>j4</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>retrotranslator-maven-plugin</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>translate</goal>
+                                </goals>
+                                <configuration>
+                                    <verify>false</verify>
+                                    <failonwarning>true</failonwarning>
+                                    <lazy>true</lazy>
+                                    <advanced>true</advanced>
+                                    <verbose>false</verbose>
+                                    <destdir>${project.build.directory}/classes-retro</destdir>
+                                    <includes>
+                                        <include>
+                                            <directory>${project.build.directory}/classes</directory>
+                                        </include>
+                                    </includes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <classesDirectory>${project.build.directory}/classes-retro</classesDirectory>
+                                    <classifier>j4</classifier>
+                                    <archive>
+                                        <manifestEntries>
+                                            <Extension-Name>${project.artifactId}-j4</Extension-Name>
+                                            <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                                            <Implementation-Title>${project.description}</Implementation-Title>
+                                            <Implementation-Version>${project.version}</Implementation-Version>
+                                            <Revision>${scm.revision}</Revision>
+                                        </manifestEntries>
+                                    </archive>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>sun.jdk</groupId>
+                    <artifactId>rt</artifactId>
+                    <version>1.4.0</version>
+                    <scope>system</scope>
+                    <!-- path to rt.jar (on OSX, it's classes.jar) -->
+                    <systemPath>${java14.jar}</systemPath>
+                </dependency>
+                <dependency>
+                    <groupId>net.sf.retrotranslator</groupId>
+                    <artifactId>retrotranslator-runtime</artifactId>
+                    <version>1.2.1</version>
+                </dependency>
+                <dependency>
+                    <groupId>net.sf.retrotranslator</groupId>
+                    <artifactId>retrotranslator-transformer</artifactId>
+                    <version>1.2.1</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <testSourceDirectory>src/test</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/java</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                    <exclude>**/*.html</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                    <exclude>**/*.html</exclude>
+                </excludes>
+            </testResource>
+        </testResources>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-idea-plugin</artifactId>
+                <configuration>
+                    <jdkName>1.5</jdkName>
+                    <exclude>target,test-output,.clover,build</exclude>
+                    <useShortDependencyNames>true</useShortDependencyNames>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>2.0-beta-5</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <!--version>2.0.2-SNAPSHOT</version-->
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/assembly/all.xml</descriptor>
+                        <descriptor>src/assembly/lib.xml</descriptor>
+                        <descriptor>src/assembly/java14.xml</descriptor>
+                        <descriptor>src/assembly/src.xml</descriptor>
+                    </descriptors>
+                    <finalName>xwork-${version}</finalName>
+                    <outputDirectory>target/assembly/out</outputDirectory>
+                    <workDirectory>target/assembly/work</workDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/XWorkTestCase.java</exclude>
+                        <exclude>**/TestBean.java</exclude>
+                        <exclude>**/TestBean2.java</exclude>
+                        <exclude>**/TestInterceptor.java</exclude>
+                        <exclude>**/AnnotatedTestBean.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-source</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- sourcepath>src/java</sourcepath  does not work when enabled -->
+                    <encoding>UTF-8</encoding>
+                    <groups>
+                        <group>
+                            <title>XWork Packages</title>
+                            <packages>com.opensymphony.xwork2*</packages>
+                        </group>
+                    </groups>
+                    <show>protected</show>
+                    <links>
+                        <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+                        <link>http://java.sun.com/javaee/5/docs/api/</link>
+                        <link>http://struts.apache.org/2.x/struts2-core/apidocs</link>
+                        <link>http://jakarta.apache.org/commons/logging/apidocs/</link>
+                        <link>http://logging.apache.org/log4j/docs/api/</link>
+                        <link>http://static.springframework.org/spring/docs/2.0.x/api</link>
+                    </links>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-source</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <defaultGoal>install</defaultGoal>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+            </plugin>
+            <!--plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                </configuration>
+            </plugin-->
+            <plugin>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jxr-maven-plugin</artifactId>
+            </plugin>
+            <!--plugin>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <linkXref>true</linkXref>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>1.5</targetJdk>
+                </configuration>
+            </plugin-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>jira-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+
+    </reporting>
+
+    <dependencies>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+       <dependency>
+            <groupId>opensymphony</groupId>
+            <artifactId>ognl</artifactId>
+            <version>2.6.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>2.0.5</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>2.0.5</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>2.0.5</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>2.0.5</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>2.0.5</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-mock</artifactId>
+            <version>2.0.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>2.1_3</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <optional>true</optional>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>5.1</version>
+            <optional>true</optional>
+            <classifier>jdk15</classifier>
+        </dependency>
+        
+        <dependency>
+            <groupId>mockobjects</groupId>
+            <artifactId>mockobjects-core</artifactId>
+            <version>0.09</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>2.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>Maven Snapshots</id>
+            <url>http://snapshots.maven.codehaus.org/maven2/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>
