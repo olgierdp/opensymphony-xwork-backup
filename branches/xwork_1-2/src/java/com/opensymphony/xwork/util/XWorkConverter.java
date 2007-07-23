@@ -515,7 +515,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      * @param clazz the class to look for converter mappings for
      * @return the converter mappings
      */
-    private Map buildConverterMapping(Class clazz) throws Exception {
+    protected Map buildConverterMapping(Class clazz) throws Exception {
         Map mapping = new HashMap();
 
         // check for conversion mapping associated with super classes and any implemented interfaces
