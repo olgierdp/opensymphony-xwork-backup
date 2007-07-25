@@ -7,11 +7,7 @@ package com.opensymphony.xwork.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Member;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import ognl.DefaultTypeConverter;
 import ognl.OgnlRuntime;
@@ -113,12 +109,12 @@ public class XWorkConverter extends DefaultTypeConverter {
     public static final String LAST_BEAN_CLASS_ACCESSED = "last.bean.accessed";
     public static final String LAST_BEAN_PROPERTY_ACCESSED = "last.property.accessed";
 
-    HashMap defaultMappings = new HashMap();
-    HashMap mappings = new HashMap();
-    HashSet noMapping = new HashSet();
-    HashSet unknownMappings = new HashSet();
-    TypeConverter defaultTypeConverter = new XWorkBasicConverter();
-    ObjectTypeDeterminer objectTypeDeterminer = ObjectTypeDeterminerFactory.getInstance();
+    protected HashMap defaultMappings = new HashMap();
+    protected HashMap mappings = new HashMap();
+    protected HashSet noMapping = new HashSet();
+    protected HashSet unknownMappings = new HashSet();
+    protected TypeConverter defaultTypeConverter = new XWorkBasicConverter();
+    protected ObjectTypeDeterminer objectTypeDeterminer = ObjectTypeDeterminerFactory.getInstance();
 
 
     protected XWorkConverter() {
@@ -435,7 +431,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      * @param mapping an existing map to add new converter mappings to
      * @param clazz   class to look for converter mappings for
      */
-    void addConverterMapping(Map mapping, Class clazz) {
+    protected void addConverterMapping(Map mapping, Class clazz) {
         try {
             InputStream is = FileManager.loadFile(buildConverterFilename(clazz), clazz);
 
