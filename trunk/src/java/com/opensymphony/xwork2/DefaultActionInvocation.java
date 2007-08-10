@@ -366,6 +366,7 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         if (pushAction) {
             stack.push(action);
+            contextMap.put("action", action);
         }
 
         invocationContext = new ActionContext(contextMap);
