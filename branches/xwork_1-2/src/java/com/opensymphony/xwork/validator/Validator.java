@@ -338,6 +338,44 @@ package com.opensymphony.xwork.validator;
  * </p>
  * <!-- END SNIPPET: howXworkFindsValidatorForAction -->
  *
+ *
+ * <p/>
+ * <!-- START SNIPPET: i18n -->
+ * Validator's validation messages could be internatinalized. For example,
+ * <pre>
+ *   &lt;field-validator type="required"&gt;
+ *      &lt;message key="required.field" /&gt;
+ *   &lt;/field-validator&gt;
+ * </pre>
+ * or
+ * <pre>
+ *   &lt;validator type="expression"&gt;
+ *      &lt;param name="expression"&gt;email.startsWith('Mark')&lt;/param&gt;
+ *      &lt;message key="email.invalid" /&gt;
+ *   &lt;/validator&gt;
+ * </pre>
+ * In the first case, WebWork would look for i18n with key 'required.field' as the validation error message if
+ * validation fails, and 'email.invalid' in the second case.
+ * <p/>
+ * We could also provide a default message such that if validation failed and the i18n key for the message
+ * cannot be found, WebWork would fall back and use the default message. An example would be as follows :-
+ * <pre>
+ *   &lt;field-validator type="required"&gt;
+ *      &lt;message key="required.field"&gt;This field is required.&lt;/message&gt;
+ *   &lt;/field-validator&gt;
+ * </pre>
+ * or
+ * <pre>
+ *   &lt;validator type="expression"&gt;
+ *      &lt;param name="expression"&gt;email.startsWith('Mark')&lt;/param&gt;
+ *      &lt;message key="email.invalid"&gt;Email needs with starts with Mark&lt;/message&gt;
+ *   &lt;/validator&gt;
+ * </pre>
+ *
+ *
+ * <!-- END SNIPPET: i18n -->
+ *
+ *
  * @author Jason Carreira
  * @author tmjee
  * 
