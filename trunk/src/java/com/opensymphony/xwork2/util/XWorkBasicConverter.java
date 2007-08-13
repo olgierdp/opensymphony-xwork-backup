@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -93,6 +94,13 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = doConvertToArray(context, o, member, s, value, toType);
         } else if (Date.class.isAssignableFrom(toType)) {
             result = doConvertToDate(context, value, toType);
+        } else if (Calendar.class.isAssignableFrom(toType)) {
+            Date dateResult = (Date) doConvertToDate(context, value, Date.class);
+            if (dateResult != null) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(dateResult);
+                result = calendar;
+            } 
         } else if (Collection.class.isAssignableFrom(toType)) {
             result = doConvertToCollection(context, o, member, s, value, toType);
         } else if (toType == Character.class) {

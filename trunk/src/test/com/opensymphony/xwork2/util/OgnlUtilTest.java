@@ -367,6 +367,11 @@ public class OgnlUtilTest extends XWorkTestCase {
         cal.set(Calendar.SECOND, 57);
         
         assertEquals(cal.getTime(), foo.getEvent());
+        
+        //test setting a calendar property
+        props.put("calendar", "1996-12-19T16:39:57Z");
+        OgnlUtil.setProperties(props, foo, context);
+        assertEquals(cal, foo.getCalendar());
     }
 
     public void testSetPropertiesInt() {
@@ -529,7 +534,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         // just do some of the 15 tests
         Map beans = OgnlUtil.getBeanMap(foo);
         assertNotNull(beans);
-        assertEquals(17, beans.size());
+        assertEquals(18, beans.size());
         assertEquals("Hello Santa", beans.get("title"));
         assertEquals(new Long("123"), beans.get("ALong"));
         assertEquals(new Integer("44"), beans.get("number"));
