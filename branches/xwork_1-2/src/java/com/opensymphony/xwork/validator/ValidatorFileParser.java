@@ -18,23 +18,35 @@ import java.util.Map;
 
 
 /**
- * Parse the validation file. (eg. MyAction-validation.xml, MyAction-actionAlias-validation.xml)
+ * This class serves 2 purpose :-
+ * <ul>
+ * <li>
+ * Parse the validation config file. (eg. MyAction-validation.xml, MyAction-actionAlias-validation.xml)
  * to return a List of ValidatorConfig encapsulating the validator information.
+ * </li>
+ * <li>
+ * Parse the validator definition file, (eg. validators.xml) that defines the {@link Validator}s
+ * registered with XWork.
+ * </li>
+ * </ul>
  *
  * @author Jason Carreira
  * @author James House
- * @author tm_jee ( tm_jee (at) yahoo.co.uk )
+ * @author tm_jee 
  * @author Rob Harrop
  * @author Rene Gielen
  *
  * @see com.opensymphony.xwork.validator.ValidatorConfig
+ *
+ * @version $Date$ $Id$
  */
 public class ValidatorFileParser {
 
     static final String MULTI_TEXTVALUE_SEPARATOR = " ";
 
     /**
-     * Parse resource for a list of ValidatorConfig objects.
+     * Parse resource for a list of ValidatorConfig objects (configuring which validator(s) are
+     * being applied to a particular field etc.)
      *
      * @param is input stream to the resource
      * @param resourceName file name of the resource
@@ -89,7 +101,7 @@ public class ValidatorFileParser {
     
     
     /**
-     * Parses validator definitions
+     * Parses validator definitions (register various validators with XWork).
      *
      * @since 1.2
      * @param is The input stream
