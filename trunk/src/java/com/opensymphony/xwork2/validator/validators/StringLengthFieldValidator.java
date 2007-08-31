@@ -83,7 +83,7 @@ public class StringLengthFieldValidator extends FieldValidatorSupport {
         doTrim = trim;
     }
 
-    public boolen getTrim() {
+    public boolean getTrim() {
         return doTrim;
     }
 
