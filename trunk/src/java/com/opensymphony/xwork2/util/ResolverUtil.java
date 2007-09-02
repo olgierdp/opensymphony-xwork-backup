@@ -441,7 +441,10 @@ public class ResolverUtil<T> {
                 }
             }
             if (test.doesMatchResource()) {
-                URL url = loader.getResource(fqn.substring(1));
+                URL url = loader.getResource(fqn);
+                if (url == null) {
+                    url = loader.getResource(fqn.substring(1));
+                }
                 if (url != null && test.matches(url)) {
                     resourceMatches.add(url);
                 }

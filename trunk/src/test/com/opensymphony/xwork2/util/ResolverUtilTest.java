@@ -39,5 +39,13 @@ public class ResolverUtilTest extends TestCase {
         
         assertTrue(impls.size() > 0);
     }
+    
+    public void testFindNamedResourceInDir() throws Exception {
+        ResolverUtil resolver = new ResolverUtil();
+        resolver.findNamedResource("SimpleAction.properties", "com/opensymphony");
+        Set<URL> impls = resolver.getResources();
+        
+        assertTrue(impls.size() > 0);
+    }
 
 }
