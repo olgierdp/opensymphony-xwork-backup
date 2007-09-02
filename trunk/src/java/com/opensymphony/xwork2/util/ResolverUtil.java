@@ -78,13 +78,44 @@ public class ResolverUtil<T> {
          * is to be included in the results, false otherwise.
          */
         boolean matches(Class type);
+        
+        boolean matches(URL resource);
+
+        boolean doesMatchClass();
+        boolean doesMatchResource();
+    }
+    
+    public static abstract class ClassTest implements Test {
+        public boolean matches(URL resource) {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean doesMatchClass() {
+            return true;
+        }
+        public boolean doesMatchResource() {
+            return false;
+        }
+    }
+    
+    public static abstract class ResourceTest implements Test {
+        public boolean matches(Class cls) {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean doesMatchClass() {
+            return false;
+        }
+        public boolean doesMatchResource() {
+            return true;
+        }
     }
 
     /**
      * A Test that checks to see if each class is assignable to the provided class. Note
      * that this test will match the parent type itself if it is presented for matching.
      */
-    public static class IsA implements Test {
+    public static class IsA extends ClassTest {
         private Class parent;
 
         /** Constructs an IsA test using the supplied Class as the parent class/interface. */
@@ -103,7 +134,7 @@ public class ResolverUtil<T> {
     /**
      * A Test that checks to see if each class name ends with the provided suffix.
      */
-    public static class NameEndsWith implements Test {
+    public static class NameEndsWith extends ClassTest {
         private String suffix;
 
         /** Constructs a NameEndsWith test using the supplied suffix. */
@@ -123,7 +154,7 @@ public class ResolverUtil<T> {
      * A Test that checks to see if each class is annotated with a specific annotation. If it
      * is, then the test returns true, otherwise false.
      */
-    public static class AnnotatedWith implements Test {
+    public static class AnnotatedWith extends ClassTest {
         private Class<? extends Annotation> annotation;
 
         /** Construts an AnnotatedWith test for the specified annotation type. */
@@ -138,9 +169,26 @@ public class ResolverUtil<T> {
             return "annotated with @" + annotation.getSimpleName();
         }
     }
+    
+    public static class NameIs extends ResourceTest {
+        private String name;
+        
+        public NameIs(String name) { this.name = "/" + name; }
+        
+        public boolean matches(URL resource) {
+            return (resource.getPath().endsWith(name));
+        }
+        
+        @Override public String toString() {
+            return "named " + name;
+        }
+    }
 
     /** The set of matches being accumulated. */
-    private Set<Class<? extends T>> matches = new HashSet<Class<?extends T>>();
+    private Set<Class<? extends T>> classMatches = new HashSet<Class<?extends T>>();
+    
+    /** The set of matches being accumulated. */
+    private Set<URL> resourceMatches = new HashSet<URL>();
 
     /**
      * The ClassLoader to use when looking for classes. If null then the ClassLoader returned
@@ -155,8 +203,13 @@ public class ResolverUtil<T> {
      * @return the set of classes that have been discovered.
      */
     public Set<Class<? extends T>> getClasses() {
-        return matches;
+        return classMatches;
     }
+    
+    public Set<URL> getResources() {
+        return resourceMatches;
+    }
+    
 
     /**
      * Returns the classloader that will be used for scanning for classes. If no explicit
@@ -222,6 +275,15 @@ public class ResolverUtil<T> {
 
         Test test = new AnnotatedWith(annotation);
         for (String pkg : packageNames) {
+            findInPackage(test, pkg);
+        }
+    }
+    
+    public void findNamedResource(String name, String... pathNames) {
+        if (pathNames == null) return;
+        
+        Test test = new NameIs(name);
+        for (String pkg : pathNames) {
             findInPackage(test, pkg);
         }
     }
@@ -319,10 +381,14 @@ public class ResolverUtil<T> {
             if (file.isDirectory()) {
                 loadImplementationsInDirectory(test, packageOrClass, file);
             }
-            else if (file.getName().endsWith(".class")) {
+            else if (isTestApplicable(test, file.getName())) {
                 addIfMatching(test, packageOrClass);
             }
         }
+    }
+
+    private boolean isTestApplicable(Test test, String path) {
+        return test.doesMatchResource() || path.endsWith(".class") && test.doesMatchClass();
     }
 
     /**
@@ -342,7 +408,7 @@ public class ResolverUtil<T> {
 
             while ( (entry = jarStream.getNextJarEntry() ) != null) {
                 String name = entry.getName();
-                if (!entry.isDirectory() && name.startsWith(parent) && name.endsWith(".class")) {
+                if (!entry.isDirectory() && name.startsWith(parent) && isTestApplicable(test, name)) {
                     addIfMatching(test, name);
                 }
             }
@@ -362,15 +428,23 @@ public class ResolverUtil<T> {
      */
     protected void addIfMatching(Test test, String fqn) {
         try {
-            String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');
             ClassLoader loader = getClassLoader();
-            if (log.isDebugEnabled()) {
-                log.debug("Checking to see if class " + externalName + " matches criteria [" + test + "]");
+            if (test.doesMatchClass()) {
+                String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');
+                if (log.isDebugEnabled()) {
+                    log.debug("Checking to see if class " + externalName + " matches criteria [" + test + "]");
+                }
+    
+                Class type = loader.loadClass(externalName);
+                if (test.matches(type) ) {
+                    classMatches.add( (Class<T>) type);
+                }
             }
-
-            Class type = loader.loadClass(externalName);
-            if (test.matches(type) ) {
-                matches.add( (Class<T>) type);
+            if (test.doesMatchResource()) {
+                URL url = loader.getResource(fqn.substring(1));
+                if (url != null && test.matches(url)) {
+                    resourceMatches.add(url);
+                }
             }
         }
         catch (Throwable t) {
