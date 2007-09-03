@@ -371,11 +371,13 @@ public class LocalizedTextUtil {
             // ActionInvocation may be null if we're being run from a Sitemesh filter, so we won't get model texts if this is null
             if (actionInvocation != null) {
                 Object action = actionInvocation.getAction();
-                Object model = ((ModelDriven) action).getModel();
-                if (model != null) {
-                    msg = findMessage(model.getClass(), aTextName, indexedTextName, locale, args, null, valueStack);
-                    if (msg != null) {
-                        return msg;
+                if (action instanceof ModelDriven) {
+                    Object model = ((ModelDriven) action).getModel();
+                    if (model != null) {
+                        msg = findMessage(model.getClass(), aTextName, indexedTextName, locale, args, null, valueStack);
+                        if (msg != null) {
+                            return msg;
+                        }
                     }
                 }
             }
