@@ -37,6 +37,20 @@
             <message key="baz.range">Could not find baz.range!</message>
         </field-validator>
     </field>
+    <field name="longFoo">
+        <field-validator type="long">
+            <param name="min">0</param>
+            <param name="max">100</param>
+            <message key="foo.range">Could not find foo.range!</message>
+        </field-validator>
+    </field>
+    <field name="shortFoo">
+        <field-validator type="short">
+            <param name="min">0</param>
+            <param name="max">100</param>
+            <message key="foo.range">Could not find foo.range!</message>
+        </field-validator>
+    </field>
     <validator type="expression">
         <param name="expression">foo > bar</param>
         <message>Foo must be greater than Bar. Foo = ${foo}, Bar = ${bar}.</message>

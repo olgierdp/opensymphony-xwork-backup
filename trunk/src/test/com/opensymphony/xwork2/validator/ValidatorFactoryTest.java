@@ -34,7 +34,7 @@ public class ValidatorFactoryTest extends XWorkTestCase {
             // 13 from default.xml overwritten by validators.xml
             //  1 from my-Validators.xml
             //  1 from myOther-validators.xml
-            assertEquals(15, validators.size());
+            assertEquals(17, validators.size());
         } catch (Exception e) {
             fail("We shouldn't get here...");
         }

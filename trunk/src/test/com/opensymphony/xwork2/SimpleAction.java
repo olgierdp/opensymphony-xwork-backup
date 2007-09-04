@@ -32,6 +32,8 @@ public class SimpleAction extends ActionSupport {
     private int bar;
     private int baz;
     private int foo;
+    private long longFoo;
+    private short shortFoo;
     private double percentage;
     private Map<Integer,String> indexedProps = new HashMap<Integer,String>();
 
@@ -200,5 +202,25 @@ public class SimpleAction extends ActionSupport {
     
     public String doInput() throws Exception {
         return INPUT;
+    }
+
+
+    public long getLongFoo() {
+        return longFoo;
+    }
+
+
+    public void setLongFoo(long longFoo) {
+        this.longFoo = longFoo;
+    }
+
+
+    public short getShortFoo() {
+        return shortFoo;
+    }
+
+
+    public void setShortFoo(short shortFoo) {
+        this.shortFoo = shortFoo;
     }
 }
