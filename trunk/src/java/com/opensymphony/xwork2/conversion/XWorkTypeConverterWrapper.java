@@ -1,8 +1,15 @@
+/*
+ * Copyright (c) 2002-2007 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork2.conversion;
 
 import java.lang.reflect.Member;
 import java.util.Map;
 
+/**
+ * Wraps an OGNL TypeConverter as an XWork TypeConverter
+ */
 public class XWorkTypeConverterWrapper implements TypeConverter {
 
     private ognl.TypeConverter typeConverter;
