@@ -4,15 +4,27 @@
  */
 package com.opensymphony.xwork2.util;
 
-import com.opensymphony.xwork2.DefaultTextProvider;
-import com.opensymphony.xwork2.XWorkException;
-import com.opensymphony.xwork2.inject.Inject;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import ognl.ObjectPropertyAccessor;
+import ognl.Ognl;
+import ognl.OgnlContext;
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import ognl.*;
-import java.io.Serializable;
-import java.util.*;
+
+import com.opensymphony.xwork2.DefaultTextProvider;
+import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.inject.Inject;
 
 /**
  * Ognl implementation of a value stack that allows for dynamic Ognl expressions to be evaluated against it. When
@@ -32,6 +44,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
 	private static CompoundRootAccessor accessor;
     private static Log LOG = LogFactory.getLog(OgnlValueStack.class);
     private static boolean devMode;
+    private static boolean allowStaticMethodAccess = true;
 
     static {
         reset();
@@ -97,6 +110,11 @@ public class OgnlValueStack implements Serializable, ValueStack {
     @Inject(value = "devMode", required = false)
     public static void setDevMode(String mode) {
         devMode = "true".equals(mode);
+    }
+
+    @Inject(value="allowStaticMethodAccess", required=false)
+    public static void setAllowStaticMethodAccess(boolean allowStaticMethodAccess) {
+        OgnlValueStack.allowStaticMethodAccess = allowStaticMethodAccess;
     }
 
     /* (non-Javadoc)
@@ -337,7 +355,8 @@ public class OgnlValueStack implements Serializable, ValueStack {
 
     private void setRoot(CompoundRoot compoundRoot) {
         this.root = compoundRoot;
-        this.context = Ognl.createDefaultContext(this.root, accessor, XWorkConverter.getInstance());
+        this.context = Ognl.createDefaultContext(this.root, accessor, XWorkConverter.getInstance(),
+                new StaticMemberAccess(allowStaticMethodAccess));
         context.put(VALUE_STACK, this);
         Ognl.setClassResolver(context, accessor);
         ((OgnlContext) context).setTraceEvaluations(false);
