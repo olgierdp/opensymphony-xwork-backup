@@ -22,6 +22,7 @@ public class Dog implements Serializable {
     int[] childAges;
     boolean male;
     int age;
+    static String deity;
 
 
     public void setAge(int age) {
@@ -70,6 +71,14 @@ public class Dog implements Serializable {
 
     public String getName() {
         return name;
+    }
+    
+    public static String getDeity() {
+        return deity;
+    }
+
+    public static void setDeity(String deity) {
+        Dog.deity = deity;
     }
 
     public int computeDogYears() {

@@ -122,16 +122,7 @@ public class SetPropertiesTest extends XWorkTestCase {
         vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
         vs.push(foo);
         try {
-            System.out.println("*********");
-            System.out.println("*********");
-            System.out.println("*********");
-            System.out.println("*********");
-            System.out.println("*********");
-            System.out.println("         ================== type: "+XWorkConverter.getInstance().getObjectTypeDeterminer());
-            System.out.println("*********");
-            System.out.println("*********");
-            System.out.println("*********");
-        vs.setValue("moreCats[2].name", spielname);
+            vs.setValue("moreCats[2].name", spielname);
         } catch (IndexOutOfBoundsException e) {
             if (allowAdditions) {
                 throw e;

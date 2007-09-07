@@ -67,6 +67,29 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertEquals("Rover", vs.findValue("name", String.class));
     }
     
+    public void testStatic() {
+        OgnlValueStack vs = new OgnlValueStack();
+
+        Dog dog = new Dog();
+        dog.setDeity("fido");
+        vs.push(dog);
+        assertEquals("fido", vs.findValue("@com.opensymphony.xwork2.util.Dog@getDeity()", String.class));
+    }
+    
+    public void testStaticMethodDisallow() {
+        OgnlValueStack.setAllowStaticMethodAccess(false);
+        try {
+            OgnlValueStack vs = new OgnlValueStack();
+    
+            Dog dog = new Dog();
+            dog.setDeity("fido");
+            vs.push(dog);
+            assertNull(vs.findValue("@com.opensymphony.xwork2.util.Dog@getDeity()", String.class));
+        } finally {
+            OgnlValueStack.setAllowStaticMethodAccess(true);
+        }
+    }
+    
     public void testBasicSet() {
     	OgnlValueStack vs = new OgnlValueStack();
         
