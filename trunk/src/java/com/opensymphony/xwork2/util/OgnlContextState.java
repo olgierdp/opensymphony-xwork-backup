@@ -8,6 +8,8 @@ package com.opensymphony.xwork2.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+
 /**
  * Manages variables in the OgnlContext and returns values
  * to be used by the application.

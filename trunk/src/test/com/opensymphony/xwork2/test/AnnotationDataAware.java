@@ -25,7 +25,7 @@ public interface AnnotationDataAware {
     void setBarObj(Bar b);
 
     @TypeConversion(
-            converter = "com.opensymphony.xwork2.util.FooBarConverter"
+            converter = "com.opensymphony.xwork2.conversion.impl.FooBarConverter"
     )
     Bar getBarObj();
 

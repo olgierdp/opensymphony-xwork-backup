@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.xwork2.util;
+package com.opensymphony.xwork2.conversion;
 
 /**
  * Determines what the key and and element class of a Map or Collection should be. For Maps, the elements are the

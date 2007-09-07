@@ -7,6 +7,7 @@ package com.opensymphony.xwork2.util;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 
 import ognl.OgnlRuntime;
 

@@ -6,6 +6,7 @@ package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.DefaultTextProvider;
 import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Inject;
 
 import org.apache.commons.logging.Log;
@@ -158,6 +159,8 @@ public class OgnlValueStack implements Serializable, ValueStack {
             OgnlUtil.setValue(expr, context, root, value);
         } catch (OgnlException e) {
             if (throwExceptionOnFailure) {
+                e.printStackTrace(System.out);
+                System.out.println("expr: "+expr+" val: "+value+" context: "+context+" root:"+root+" value: "+value);
                 String msg = "Error setting expression '" + expr + "' with value '" + value + "'";
                 throw new XWorkException(msg, e);
             } else {
@@ -359,7 +362,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
 
     private void setRoot(CompoundRoot compoundRoot) {
         this.root = compoundRoot;
-        this.context = Ognl.createDefaultContext(this.root, accessor, XWorkConverter.getInstance());
+        this.context = Ognl.createDefaultContext(this.root, accessor, XWorkConverter.getOgnlInstance());
         context.put(VALUE_STACK, this);
         Ognl.setClassResolver(context, accessor);
         ((OgnlContext) context).setTraceEvaluations(false);

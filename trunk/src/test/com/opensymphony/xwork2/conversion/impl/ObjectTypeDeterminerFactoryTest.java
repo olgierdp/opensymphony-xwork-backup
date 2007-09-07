@@ -1,4 +1,8 @@
-package com.opensymphony.xwork2.util;
+package com.opensymphony.xwork2.conversion.impl;
+
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminerFactory;
+import com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer;
 
 import junit.framework.*;
 

@@ -2,6 +2,7 @@ package com.opensymphony.xwork2.test.annotations;
 
 import java.util.Map;
 
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.util.*;
 import com.opensymphony.xwork2.XWorkTestCase;
 

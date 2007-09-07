@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.xwork2.util;
+package com.opensymphony.xwork2.conversion.impl;
 
 import java.util.Map;
 import java.lang.annotation.Annotation;
@@ -14,6 +14,16 @@ import java.beans.IntrospectionException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
+import com.opensymphony.xwork2.util.CreateIfNull;
+import com.opensymphony.xwork2.util.Element;
+import com.opensymphony.xwork2.util.Key;
+import com.opensymphony.xwork2.util.KeyProperty;
+import com.opensymphony.xwork2.util.XWorkCollectionPropertyAccessor;
+import com.opensymphony.xwork2.util.XWorkListPropertyAccessor;
+import com.opensymphony.xwork2.util.XWorkMapPropertyAccessor;
+
 import ognl.OgnlRuntime;
 import ognl.OgnlException;
 
@@ -57,7 +67,7 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
      *
      * @param parentClass the Class which contains as a property the Map or Collection we are finding the key for.
      * @param property    the property of the Map or Collection for the given parent class
-     * @see com.opensymphony.xwork2.util.ObjectTypeDeterminer#getKeyClass(Class, String)
+     * @see com.opensymphony.xwork2.conversion.ObjectTypeDeterminer#getKeyClass(Class, String)
      */
     public Class getKeyClass(Class parentClass, String property) {
         Key annotation = getAnnotation(parentClass, property, Key.class);
@@ -86,7 +96,7 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
      *
      * @param parentClass the Class which contains as a property the Map or Collection we are finding the key for.
      * @param property    the property of the Map or Collection for the given parent class
-     * @see com.opensymphony.xwork2.util.ObjectTypeDeterminer#getElementClass(Class, String, Object)
+     * @see com.opensymphony.xwork2.conversion.ObjectTypeDeterminer#getElementClass(Class, String, Object)
      */
     public Class getElementClass(Class parentClass, String property, Object key) {
         Element annotation = getAnnotation(parentClass, property, Element.class);
@@ -124,7 +134,7 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
      *
      * @param parentClass the Class which contains as a property the Map or Collection we are finding the key for.
      * @param property    the property of the Map or Collection for the given parent class
-     * @see com.opensymphony.xwork2.util.ObjectTypeDeterminer#getKeyProperty(Class, String)
+     * @see com.opensymphony.xwork2.conversion.ObjectTypeDeterminer#getKeyProperty(Class, String)
      */
     public String getKeyProperty(Class parentClass, String property) {
         KeyProperty annotation = getAnnotation(parentClass, property, KeyProperty.class);

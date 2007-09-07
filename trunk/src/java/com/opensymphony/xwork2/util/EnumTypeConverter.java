@@ -5,9 +5,9 @@
 
 package com.opensymphony.xwork2.util;
 
-import ognl.DefaultTypeConverter;
-
 import java.util.Map;
+
+import com.opensymphony.xwork2.conversion.impl.DefaultTypeConverter;
 
 /**
  * <code>EnumTypeConverter</code>

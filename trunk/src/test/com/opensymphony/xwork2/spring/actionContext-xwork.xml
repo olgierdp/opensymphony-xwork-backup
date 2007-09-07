@@ -5,7 +5,7 @@
 	<constant name="applicationContextPath" value="com/opensymphony/xwork2/spring/actionContext-spring.xml" />
     <package name="default">
         <result-types>
-            <result-type name="null" class="com.opensymphony.xwork2.result.NullResult" default="true"/>
+            <result-type name="null" class="com.opensymphony.xwork2.mock.MockResult" default="true"/>
             <result-type name="springResult" class="springResult" />
         </result-types>
 

@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.xwork2.util;
+package com.opensymphony.xwork2.conversion.impl;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -27,12 +27,11 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import ognl.DefaultTypeConverter;
-import ognl.Ognl;
-import ognl.TypeConverter;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.conversion.TypeConverter;
+import com.opensymphony.xwork2.util.TextUtils;
+import com.opensymphony.xwork2.util.XWorkList;
 
 
 /**
@@ -197,7 +196,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         Class componentType = toType.getComponentType();
 
         if (componentType != null) {
-            TypeConverter converter = Ognl.getTypeConverter(context);
+            TypeConverter converter = getTypeConverter(context);
 
             if (value.getClass().isArray()) {
                 int length = Array.getLength(value);
@@ -268,7 +267,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = (Collection) value;
         } else if (value.getClass().isArray()) {
             Object[] objArray = (Object[]) value;
-            TypeConverter converter = Ognl.getTypeConverter(context);
+            TypeConverter converter = getTypeConverter(context);
             result = createCollection(o, prop, toType, memberType, objArray.length);
 
             for (int i = 0; i < objArray.length; i++) {
@@ -276,7 +275,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             }
         } else if (Collection.class.isAssignableFrom(value.getClass())) {
             Collection col = (Collection) value;
-            TypeConverter converter = Ognl.getTypeConverter(context);
+            TypeConverter converter = getTypeConverter(context);
             result = createCollection(o, prop, toType, memberType, col.size());
 
             for (Iterator it = col.iterator(); it.hasNext();) {

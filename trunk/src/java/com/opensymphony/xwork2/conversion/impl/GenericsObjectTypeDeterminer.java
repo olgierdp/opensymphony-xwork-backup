@@ -3,7 +3,8 @@
  * All rights reserved.
  */
 
-package com.opensymphony.xwork2.util;
+package com.opensymphony.xwork2.conversion.impl;
+
 
 /**
  * GenericsObjectTypeDeterminer

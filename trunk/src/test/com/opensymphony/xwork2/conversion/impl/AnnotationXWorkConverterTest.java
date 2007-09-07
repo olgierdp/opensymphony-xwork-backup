@@ -2,12 +2,19 @@
  * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.xwork2.util;
+package com.opensymphony.xwork2.conversion.impl;
 
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.test.ModelDrivenAnnotationAction2;
 import com.opensymphony.xwork2.test.AnnotationUser;
+import com.opensymphony.xwork2.util.Bar;
+import com.opensymphony.xwork2.util.InstantiatingNullHandler;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
+import com.opensymphony.xwork2.util.XWorkMethodAccessor;
 import com.opensymphony.xwork2.config.ConfigurationManager;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 

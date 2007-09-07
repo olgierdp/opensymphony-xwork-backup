@@ -7,7 +7,7 @@ package com.opensymphony.xwork2.conversion.metadata;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.opensymphony.xwork2.conversion.annotations.ConversionRule;
-import com.opensymphony.xwork2.util.DefaultObjectTypeDeterminer;
+import com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer;
 
 import java.io.StringWriter;
 import java.io.PrintWriter;

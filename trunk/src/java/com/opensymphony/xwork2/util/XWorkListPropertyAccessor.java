@@ -6,6 +6,7 @@ package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 
 import ognl.ListPropertyAccessor;
 import ognl.OgnlException;

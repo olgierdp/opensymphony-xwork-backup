@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.xwork2.util;
+package com.opensymphony.xwork2.conversion.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,18 +15,24 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import ognl.DefaultTypeConverter;
-import ognl.OgnlRuntime;
-import ognl.TypeConverter;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.util.AnnotationUtils;
+import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.FileManager;
+import com.opensymphony.xwork2.util.LocalizedTextUtil;
+import com.opensymphony.xwork2.util.OgnlContextState;
+import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkMessages;
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminerFactory;
+import com.opensymphony.xwork2.conversion.OgnlTypeConverterWrapper;
+import com.opensymphony.xwork2.conversion.TypeConverter;
+import com.opensymphony.xwork2.conversion.XWorkTypeConverterWrapper;
 import com.opensymphony.xwork2.conversion.annotations.Conversion;
 import com.opensymphony.xwork2.conversion.annotations.ConversionType;
 import com.opensymphony.xwork2.conversion.annotations.ConversionRule;
@@ -209,6 +215,11 @@ public class XWorkConverter extends DefaultTypeConverter {
 
          return instance;
      }
+    
+    public static ognl.TypeConverter getOgnlInstance() {
+        //return getInstance();
+        return new OgnlTypeConverterWrapper(getInstance());
+    }
 
     
     @Inject
@@ -310,7 +321,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             } catch (Exception e) {
                 handleConversionException(context, property, value, target);
 
-                return OgnlRuntime.NoConversionPossible;
+                return TypeConverter.NO_CONVERSION_POSSIBLE;
             }
         }
 
@@ -322,7 +333,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             } catch (Exception e) {
                 handleConversionException(context, property, value, target);
 
-                return OgnlRuntime.NoConversionPossible;
+                return TypeConverter.NO_CONVERSION_POSSIBLE;
             }
         } else {
             try {
@@ -332,7 +343,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             } catch (Exception e) {
                 handleConversionException(context, property, value, target);
 
-                return OgnlRuntime.NoConversionPossible;
+                return TypeConverter.NO_CONVERSION_POSSIBLE;
             }
         }
     }
@@ -760,7 +771,14 @@ public class XWorkConverter extends DefaultTypeConverter {
 
     TypeConverter createTypeConverter(String className) throws Exception {
         // type converters are used across users
-        return (TypeConverter) ObjectFactory.getObjectFactory().buildBean(className, null);
+        Object obj = ObjectFactory.getObjectFactory().buildBean(className, null);
+        if (obj instanceof TypeConverter) {
+            return (TypeConverter) obj;
+        } else if (obj instanceof ognl.TypeConverter) {
+            return new XWorkTypeConverterWrapper((ognl.TypeConverter)obj);
+        } else {
+            throw new IllegalArgumentException("Type converter class "+obj.getClass()+" doesn't implement com.opensymphony.xwork2.conversion.TypeConverter");
+        }
     }
 
     public void loadConversionProperties(String propsName) throws IOException {

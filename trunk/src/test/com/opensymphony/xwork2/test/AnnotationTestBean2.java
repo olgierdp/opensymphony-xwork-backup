@@ -46,7 +46,7 @@ public class AnnotationTestBean2 extends AnnotatedTestBean implements Annotation
     }
 
     @TypeConversion(
-            key = "cat", converter = "com.opensymphony.xwork2.util.FooBarConverter"
+            key = "cat", converter = "com.opensymphony.xwork2.conversion.impl.FooBarConverter"
     )
     public void setCat(Cat cat) {
         this.cat = cat;

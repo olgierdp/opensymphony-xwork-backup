@@ -18,6 +18,10 @@ import java.util.Map;
 import ognl.Ognl;
 
 import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.conversion.OgnlTypeConverterWrapper;
+import com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer;
+import com.opensymphony.xwork2.conversion.impl.FooBarConverter;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.mock.MockObjectTypeDeterminer;
 
 
@@ -53,7 +57,7 @@ public class SetPropertiesTest extends XWorkTestCase {
         ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
-        XWorkConverter c = (XWorkConverter) Ognl.getTypeConverter(vs.getContext());
+        XWorkConverter c = (XWorkConverter)((OgnlTypeConverterWrapper) Ognl.getTypeConverter(vs.getContext())).getTarget();
         c.registerConverter(Cat.class.getName(), new FooBarConverter());
         vs.push(foo);
 
@@ -69,7 +73,7 @@ public class SetPropertiesTest extends XWorkTestCase {
         ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
-        XWorkConverter c = (XWorkConverter) Ognl.getTypeConverter(vs.getContext());
+        XWorkConverter c = (XWorkConverter)((OgnlTypeConverterWrapper) Ognl.getTypeConverter(vs.getContext())).getTarget();
         c.registerConverter(Cat.class.getName(), new FooBarConverter());
         vs.push(foo);
 
@@ -82,7 +86,7 @@ public class SetPropertiesTest extends XWorkTestCase {
         assertEquals(Cat.class, foo.getCats().get(0).getClass());
         assertEquals(Cat.class, foo.getCats().get(1).getClass());
     }
-
+    
     public void testValueStackSetValueEmptyStringAsLong() {
         Bar bar = new Bar();
         ValueStack vs = ValueStackFactory.getFactory().createValueStack();
@@ -118,6 +122,15 @@ public class SetPropertiesTest extends XWorkTestCase {
         vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
         vs.push(foo);
         try {
+            System.out.println("*********");
+            System.out.println("*********");
+            System.out.println("*********");
+            System.out.println("*********");
+            System.out.println("*********");
+            System.out.println("         ================== type: "+XWorkConverter.getInstance().getObjectTypeDeterminer());
+            System.out.println("*********");
+            System.out.println("*********");
+            System.out.println("*********");
         vs.setValue("moreCats[2].name", spielname);
         } catch (IndexOutOfBoundsException e) {
             if (allowAdditions) {

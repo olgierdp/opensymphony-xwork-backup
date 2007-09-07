@@ -2,7 +2,7 @@ package com.opensymphony.xwork2.test.annotations;
 
 import java.util.Map;
 
-import ognl.DefaultTypeConverter;
+import com.opensymphony.xwork2.conversion.impl.DefaultTypeConverter;
 
 public class AddressTypeConverter extends DefaultTypeConverter {
 	public Object convertValue(Map context, Object value, Class toType) {

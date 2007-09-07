@@ -4,7 +4,7 @@
  */
 package com.opensymphony.xwork2.mock;
 
-import com.opensymphony.xwork2.util.ObjectTypeDeterminer;
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 
 /**
  * Mocks the function of an ObjectTypeDeterminer for testing purposes.

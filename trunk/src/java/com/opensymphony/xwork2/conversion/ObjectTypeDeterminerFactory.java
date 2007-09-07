@@ -2,19 +2,22 @@
  * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.xwork2.util;
+package com.opensymphony.xwork2.conversion;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer;
+import com.opensymphony.xwork2.conversion.impl.GenericsObjectTypeDeterminer;
 
 /**
  * Factory for getting an instance of {@link ObjectTypeDeterminer}.
  * <p/>
  * Will use <code>com.opensymphony.xwork2.util.GenericsObjectTypeDeterminer</code> by default.
  *
- * @see com.opensymphony.xwork2.util.GenericsObjectTypeDeterminer
- * @see com.opensymphony.xwork2.util.ObjectTypeDeterminer
- * @see com.opensymphony.xwork2.util.DefaultObjectTypeDeterminer
+ * @see com.opensymphony.xwork2.conversion.impl.GenericsObjectTypeDeterminer
+ * @see com.opensymphony.xwork2.conversion.ObjectTypeDeterminer
+ * @see com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer
  *
  * @author plightbo
  * @author Rainer Hermanns

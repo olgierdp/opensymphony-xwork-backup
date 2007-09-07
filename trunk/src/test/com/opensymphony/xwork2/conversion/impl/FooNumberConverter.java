@@ -1,8 +1,8 @@
-package com.opensymphony.xwork2.util;
-
-import ognl.DefaultTypeConverter;
+package com.opensymphony.xwork2.conversion.impl;
 
 import java.util.Map;
+
+import com.opensymphony.xwork2.conversion.impl.DefaultTypeConverter;
 
 public class FooNumberConverter extends DefaultTypeConverter {
     public Object convertValue(Map map, Object object, Class aClass) {

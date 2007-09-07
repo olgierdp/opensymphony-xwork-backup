@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -63,7 +64,7 @@ public class OgnlUtil {
             return;
         }
 
-        Ognl.setTypeConverter(context, XWorkConverter.getInstance());
+        Ognl.setTypeConverter(context, XWorkConverter.getOgnlInstance());
 
         Object oldRoot = Ognl.getRoot(context);
         Ognl.setRoot(context, o);
@@ -127,7 +128,7 @@ public class OgnlUtil {
      *                                problems setting the property
      */
     public static void setProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
-        Ognl.setTypeConverter(context, XWorkConverter.getInstance());
+        Ognl.setTypeConverter(context, XWorkConverter.getOgnlInstance());
 
         Object oldRoot = Ognl.getRoot(context);
         Ognl.setRoot(context, o);
@@ -210,7 +211,7 @@ public class OgnlUtil {
 
     /**
      * Copies the properties in the object "from" and sets them in the object "to"
-     * using specified type converter, or {@link com.opensymphony.xwork2.util.XWorkConverter} if none
+     * using specified type converter, or {@link com.opensymphony.xwork2.conversion.impl.XWorkConverter} if none
      * is specified.
      *
      * @param from       the source object
@@ -228,9 +229,9 @@ public class OgnlUtil {
         }
 
         Map contextFrom = Ognl.createDefaultContext(from);
-        Ognl.setTypeConverter(contextFrom, XWorkConverter.getInstance());
+        Ognl.setTypeConverter(contextFrom, XWorkConverter.getOgnlInstance());
         Map contextTo = Ognl.createDefaultContext(to);
-        Ognl.setTypeConverter(contextTo, XWorkConverter.getInstance());
+        Ognl.setTypeConverter(contextTo, XWorkConverter.getOgnlInstance());
 
         PropertyDescriptor[] fromPds;
         PropertyDescriptor[] toPds;
@@ -283,7 +284,7 @@ public class OgnlUtil {
 
     /**
      * Copies the properties in the object "from" and sets them in the object "to"
-     * using specified type converter, or {@link com.opensymphony.xwork2.util.XWorkConverter} if none
+     * using specified type converter, or {@link com.opensymphony.xwork2.conversion.impl.XWorkConverter} if none
      * is specified.
      *
      * @param from    the source object

@@ -9,6 +9,8 @@ import ognl.OgnlException;
 
 import java.util.Map;
 
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+
 /**
  * @author Gabe
  */

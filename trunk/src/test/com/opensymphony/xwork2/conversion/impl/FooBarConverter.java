@@ -2,12 +2,15 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.xwork2.util;
-
-import ognl.DefaultTypeConverter;
+package com.opensymphony.xwork2.conversion.impl;
 
 import java.lang.reflect.Member;
 import java.util.Map;
+
+import com.opensymphony.xwork2.conversion.impl.DefaultTypeConverter;
+import com.opensymphony.xwork2.util.AnnotatedCat;
+import com.opensymphony.xwork2.util.Bar;
+import com.opensymphony.xwork2.util.Cat;
 
 
 /**

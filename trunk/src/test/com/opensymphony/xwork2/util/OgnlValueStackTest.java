@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.test.TestBean2;
 
 import java.io.*;
