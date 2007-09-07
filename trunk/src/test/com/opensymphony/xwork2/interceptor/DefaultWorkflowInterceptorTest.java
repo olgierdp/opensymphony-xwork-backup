@@ -7,6 +7,8 @@ package com.opensymphony.xwork2.interceptor;
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.mock.MockActionProxy;
+import com.opensymphony.xwork2.validator.ValidationInterceptor;
+
 import junit.framework.TestCase;
 
 
@@ -23,124 +25,288 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
     private Mock invocationMock;
     private Action action;
     private ActionProxy proxy;
+    private Mock proxyMock;
 
 
     public void testInvokesActionInvocationIfNoErrors() throws Exception {
-        actionMock.expectAndReturn("hasErrors", false);
-        actionMock.expect("validate");
         final String result = "testing123";
-        invocationMock.expectAndReturn("invoke", result);
-        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        actionMock.expect("validate");
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        actionMock.expectAndReturn("hasErrors", false);
+        invocationMock.expectAndReturn("invoke", result);
+        invocationMock.expectAndReturn("invoke", result);
+        
+        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        validationInterceptor.intercept(invocation);
         assertEquals(result, interceptor.intercept(invocation));
     }
 
     public void testReturnsInputWithoutExecutingIfHasErrors() throws Exception {
-        actionMock.expectAndReturn("hasErrors", true);
-        actionMock.expect("validate");
-        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        actionMock.expect("validate");
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        actionMock.expectAndReturn("hasErrors", false);
+        invocationMock.expectAndReturn("invoke", Action.INPUT);
+        invocationMock.expectAndReturn("invoke", Action.INPUT);
+        
+        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        validationInterceptor.intercept(invocation);
         assertEquals(Action.INPUT, interceptor.intercept(invocation));
     }
 
     public void testExcludesMethod() throws Exception {
         interceptor.setExcludeMethods("execute");
         final String result = "testing123";
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("invoke", result);
+        proxyMock.expectAndReturn("getMethod", "execute");        
+        invocationMock.expectAndReturn("invoke", result);
+                
+        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        validationInterceptor.setExcludeMethods("execute");
+        interceptor.setExcludeMethods("execute");
+        validationInterceptor.intercept(invocation);
+        
         assertEquals(result, interceptor.intercept(invocation));
     }
 
     public void testExcludesMethodWithWildCard() throws Exception {
         interceptor.setExcludeMethods("*");
         final String result = "testing123";
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        actionMock.expect("validate");
+        proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("invoke", result);
+        invocationMock.expectAndReturn("invoke", result);
+        
+        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        validationInterceptor.intercept(invocation);
+        validationInterceptor.setExcludeMethods("*");
         assertEquals(result, interceptor.intercept(invocation));
     }
 
     public void testIncludesMethodWithWildcard() throws Exception {
         interceptor.setIncludeMethods("*");
-        actionMock.expectAndReturn("hasErrors", false);
-        actionMock.expect("validate");
         final String result = "testing123";
-        invocationMock.expectAndReturn("invoke", result);
-        invocationMock.expectAndReturn("getAction", action);
+        proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        actionMock.expect("validate");
+        invocationMock.expectAndReturn("invoke", result);
+        
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        actionMock.expectAndReturn("hasErrors", false);
+        invocationMock.expectAndReturn("invoke", result);
+        
+        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        validationInterceptor.setIncludeMethods("*");
+        validationInterceptor.intercept(invocation);
+        
         assertEquals(result, interceptor.intercept(invocation));
     }
 
 
     public void testIncludesMethod() throws Exception {
         interceptor.setIncludeMethods("execute");
-        actionMock.expectAndReturn("hasErrors", false);
-        actionMock.expect("validate");
         final String result = "testing123";
-        invocationMock.expectAndReturn("invoke", result);
-        invocationMock.expectAndReturn("getAction", action);
+        proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        actionMock.expect("validate");
+        invocationMock.expectAndReturn("invoke", result);
+        
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        actionMock.expectAndReturn("hasErrors", false);
+        invocationMock.expectAndReturn("invoke", result);
+        
+        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        validationInterceptor.setIncludeMethods("execute");
+        validationInterceptor.intercept(invocation);
+        
         assertEquals(result, interceptor.intercept(invocation));
     }
 
     public void testIncludesAndExcludesMethod() throws Exception {
         interceptor.setExcludeMethods("execute,input,validate");
         interceptor.setIncludeMethods("execute");
-        actionMock.expectAndReturn("hasErrors", false);
-        actionMock.expect("validate");
+        
         final String result = "testing123";
-        invocationMock.expectAndReturn("invoke", result);
-        invocationMock.expectAndReturn("getAction", action);
+        proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        actionMock.expect("validate");
+        invocationMock.expectAndReturn("invoke", result);
+        
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        actionMock.expectAndReturn("hasErrors", false);
+        invocationMock.expectAndReturn("invoke", result);
+        
+        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        validationInterceptor.setExcludeMethods("execute,input,validate");
+        validationInterceptor.setIncludeMethods("execute");
+        validationInterceptor.intercept(invocation);
+        
         assertEquals(result, interceptor.intercept(invocation));
     }
 
     public void testIncludesAndExcludesMethodAllWildCarded() throws Exception {
         interceptor.setExcludeMethods("*");
         interceptor.setIncludeMethods("*");
-        actionMock.expectAndReturn("hasErrors", false);
-        actionMock.expect("validate");
+        
         final String result = "testing123";
-        invocationMock.expectAndReturn("invoke", result);
-        invocationMock.expectAndReturn("getAction", action);
+        proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        actionMock.expect("validate");
+        invocationMock.expectAndReturn("invoke", result);
+        
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        actionMock.expectAndReturn("hasErrors", false);
+        invocationMock.expectAndReturn("invoke", result);
+        
+        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        validationInterceptor.setExcludeMethods("*");
+        validationInterceptor.setIncludeMethods("*");
+        validationInterceptor.intercept(invocation);
+        
         assertEquals(result, interceptor.intercept(invocation));
     }
 
     public void testIncludesAndExcludesMethodWithExcludeWildcard() throws Exception {
         interceptor.setExcludeMethods("*");
         interceptor.setIncludeMethods("execute");
-        actionMock.expectAndReturn("hasErrors", false);
-        actionMock.expect("validate");
+        
         final String result = "testing123";
-        invocationMock.expectAndReturn("invoke", result);
-        invocationMock.expectAndReturn("getAction", action);
+        proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        actionMock.expect("validate");
+        invocationMock.expectAndReturn("invoke", result);
+        
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        actionMock.expectAndReturn("hasErrors", false);
+        invocationMock.expectAndReturn("invoke", result);
+        
+        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        validationInterceptor.setExcludeMethods("*");
+        validationInterceptor.setIncludeMethods("execute");
+        validationInterceptor.intercept(invocation);
+        
         assertEquals(result, interceptor.intercept(invocation));
     }
 
     public void testIncludesAndExcludesMethodWithIncludeWildcardAndNoMatches() throws Exception {
         interceptor.setExcludeMethods("execute,input,validate");
         interceptor.setIncludeMethods("*");
+        
         final String result = "testing123";
+        proxyMock.expectAndReturn("getMethod", "execute");
+        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("invoke", result);
+        
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("invoke", result);
+        
+        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        validationInterceptor.setExcludeMethods("execute,input,validate");
+        validationInterceptor.setIncludeMethods("*");
+        validationInterceptor.intercept(invocation);
+        
         assertEquals(result, interceptor.intercept(invocation));
     }
 
     public void testIncludesAndExcludesMethodWithIncludeWildcard() throws Exception {
         interceptor.setExcludeMethods("input,validate");
         interceptor.setIncludeMethods("*");
-        actionMock.expectAndReturn("hasErrors", false);
-        actionMock.expect("validate");
+        
         final String result = "testing123";
-        invocationMock.expectAndReturn("invoke", result);
-        invocationMock.expectAndReturn("getAction", action);
+        proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        actionMock.expect("validate");
+        invocationMock.expectAndReturn("invoke", result);
+        
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        actionMock.expectAndReturn("hasErrors", false);
+        invocationMock.expectAndReturn("invoke", result);
+        
+        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        validationInterceptor.setExcludeMethods("input,validate");
+        validationInterceptor.setIncludeMethods("*");
+        validationInterceptor.intercept(invocation);
+        
         assertEquals(result, interceptor.intercept(invocation));
     }
 
@@ -150,9 +316,24 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
 
         interceptor.setExcludeMethods("execute,input,validate");
         interceptor.setIncludeMethods("execute");
+        
         final String result = "testing123";
-        invocationMock.expectAndReturn("invoke", result);
+        proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("getAction", action);
+        invocationMock.expectAndReturn("getProxy", proxy);
+        proxyMock.expectAndReturn("getMethod", "execute");
+        invocationMock.expectAndReturn("invoke", result);
+        invocationMock.expectAndReturn("invoke", result);
+        
+        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        validationInterceptor.setExcludeMethods("execute,input,validate");
+        validationInterceptor.setIncludeMethods("execute");
+        validationInterceptor.intercept(invocation);
+        
         assertEquals(result, interceptor.intercept(invocation));
     }
     
@@ -162,11 +343,11 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         actionMock = new Mock(ValidateAction.class);
         action = (ValidateAction) actionMock.proxy();
         invocationMock = new Mock(ActionInvocation.class);
-        proxy = new MockActionProxy();
-        proxy.setMethod("execute");
+        interceptor = new DefaultWorkflowInterceptor();
+        proxyMock = new Mock(ActionProxy.class);
+        proxy = (ActionProxy) proxyMock.proxy();
         invocationMock.expectAndReturn("getProxy", proxy);
         invocation = (ActionInvocation) invocationMock.proxy();
-        interceptor = new DefaultWorkflowInterceptor();
     }
 
     protected void tearDown() throws Exception {

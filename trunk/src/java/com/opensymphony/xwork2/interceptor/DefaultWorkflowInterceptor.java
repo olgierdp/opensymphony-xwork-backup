@@ -4,42 +4,23 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import com.opensymphony.xwork2.Action;
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.Validateable;
-import com.opensymphony.xwork2.ValidationAware;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.ValidationAware;
 
 /**
  * <!-- START SNIPPET: description -->
  *
- * An interceptor that does some basic validation workflow before allowing the interceptor chain to continue.
+ * An interceptor that makes sure there are not validation errors before allowing the interceptor chain to continue.
+ * <b>This interceptor does not perform any validation</b>.
  *
  * <p/>This interceptor does nothing if the name of the method being invoked is specified in the <b>excludeMethods</b>
  * parameter. <b>excludeMethods</b> accepts a comma-delimited list of method names. For example, requests to
  * <b>foo!input.action</b> and <b>foo!back.action</b> will be skipped by this interceptor if you set the
  * <b>excludeMethods</b> parameter to "input, back".
- *
- * <p/>The order of execution in the workflow is:
- *
- * <ol>
- *
- * <li>If the action being executed implements {@link Validateable}, the action's {@link Validateable#validate()
- * validate} method is called.</li>
- *
- * <li>Next, if the action implements {@link ValidationAware}, the action's {@link ValidationAware#hasErrors()
- * hasErrors} method is called. If this method returns true, this interceptor stops the chain from continuing and
- * immediately returns {@link Action#INPUT}</li>
- *
- * </ol>
- *
- * <p/>
- * <b>NOTE:</b> if the action doesn't implement either interface, this interceptor effectively does nothing. This
- * interceptor is often used with the <b>validation</b> interceptor. However, it does not have to be, especially if you
- * wish to write all your validation rules by hand in the validate() method rather than in XML files.
- *
- * <p/>
  *
  * <b>Note:</b> As this method extends off MethodFilterInterceptor, it is capable of
  * deciding if it is applicable only to selective methods in the action class. This is done by adding param tags
@@ -48,13 +29,6 @@ import org.apache.commons.logging.LogFactory;
  * all methods for both parameters.
  * See {@link MethodFilterInterceptor} for more info.
  *
- * <p/><b>Update:</b> Added logic to execute a validate{MethodName} and then conditionally
- * followed than a general validate method, depending on the 'alwaysInvokeValidate' 
- * parameter/property which  is by default set to true.
- * This allows us to run some validation logic based on the method name we specify in the 
- * ActionProxy. For example, you can specify a validateInput() method 
- * that will be run before the invocation of the input method.
- * 
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Interceptor parameters:</u>
@@ -63,8 +37,6 @@ import org.apache.commons.logging.LogFactory;
  *
  * <ul>
  *
- * <li>alwaysInvokeValidate - Default to true. If true validate() method will always
- * be invoked, otherwise it will not.</li>
  * <li>inputResultName - Default to "input". Determine the result name to be returned when
  * an action / field error is found.</li>
  *
@@ -135,22 +107,7 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 
 	private static final Log _log = LogFactory.getLog(DefaultWorkflowInterceptor.class);
 	
-	private final static String VALIDATE_PREFIX = "validate";
-	private final static String ALT_VALIDATE_PREFIX = "validateDo";
-	
-	private boolean alwaysInvokeValidate = true;
-	
 	private String inputResultName = Action.INPUT;
-	
-	/**
-	 * Determine if {@link Validateable}'s <code>validate()</code> should always 
-	 * be invoked. Default to "true".
-	 * 
-	 * @param alwaysInvokeValidate <tt>true</tt> then <code>validate()</code> is always invoked.
-	 */
-	public void setAlwaysInvokeValidate(String alwaysInvokeValidate) {
-		this.alwaysInvokeValidate = Boolean.parseBoolean(alwaysInvokeValidate);
-	}
 	
 	/**
 	 * Set the <code>inputResultName</code> (result name to be returned when 
@@ -171,40 +128,6 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
     protected String doIntercept(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
         
-        
-        if (action instanceof Validateable) {
-        	// keep exception that might occured in validateXXX or validateDoXXX
-        	Exception exception = null; 
-        	
-            Validateable validateable = (Validateable) action;
-            if (_log.isDebugEnabled()) {
-            	_log.debug("Invoking validate() on action "+validateable);
-            }
-            
-            try {
-            	PrefixMethodInvocationUtil.invokePrefixMethod(
-            			invocation, 
-            			new String[] { VALIDATE_PREFIX, ALT_VALIDATE_PREFIX });
-            }
-            catch(Exception e) {
-            	// If any exception occurred while doing reflection, we want 
-            	// validate() to be executed
-            	_log.warn("an exception occured while executing the prefix method", e);
-            	exception = e;
-            }
-            
-            
-            if (alwaysInvokeValidate) {
-            	validateable.validate();
-            }
-            
-            if (exception != null) { 
-            	// rethrow if something is wrong while doing validateXXX / validateDoXXX 
-            	throw exception;
-            }
-        }
-        
-
         if (action instanceof ValidationAware) {
             ValidationAware validationAwareAction = (ValidationAware) action;
 

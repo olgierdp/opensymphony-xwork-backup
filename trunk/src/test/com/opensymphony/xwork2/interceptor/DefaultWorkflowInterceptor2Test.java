@@ -13,6 +13,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.interceptor.DefaultWorkflowInterceptor;
+import com.opensymphony.xwork2.validator.ValidationInterceptor;
 
 /**
  * 
@@ -98,12 +99,16 @@ public class DefaultWorkflowInterceptor2Test extends TestCase {
 		actionInvocationControl.expectAndDefaultReturn(null, actionProxy);
 		actionInvocation.getAction();
 		actionInvocationControl.expectAndDefaultReturn(null, action);
+		actionProxy.getActionName();
+		actionProxyControl.expectAndDefaultReturn(null, "action");
 		
 		actionInvocationControl.replay();
 		actionProxyControl.replay();
 		
+		ValidationInterceptor validationInterceptor = new ValidationInterceptor();
 		DefaultWorkflowInterceptor interceptor = new DefaultWorkflowInterceptor();
 		try {
+		        validationInterceptor.intercept(actionInvocation);
 			interceptor.intercept(actionInvocation);
 			fail();
 		}
@@ -134,12 +139,16 @@ public class DefaultWorkflowInterceptor2Test extends TestCase {
 		actionInvocationControl.expectAndDefaultReturn(null, actionProxy);
 		actionInvocation.getAction();
 		actionInvocationControl.expectAndDefaultReturn(null, action);
+		actionProxy.getActionName();
+                actionProxyControl.expectAndDefaultReturn(null, "action");
 		
 		actionInvocationControl.replay();
 		actionProxyControl.replay();
 		
+		ValidationInterceptor validationInterceptor = new ValidationInterceptor();
 		DefaultWorkflowInterceptor interceptor = new DefaultWorkflowInterceptor();
 		try {
+		        validationInterceptor.intercept(actionInvocation);
 			interceptor.intercept(actionInvocation);
 			fail();
 		}

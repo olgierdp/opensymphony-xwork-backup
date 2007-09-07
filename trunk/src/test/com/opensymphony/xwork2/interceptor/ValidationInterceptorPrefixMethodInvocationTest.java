@@ -11,23 +11,22 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.Validateable;
 import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.validator.ValidationInterceptor;
 
 import junit.framework.TestCase;
 
 /**
- * Test DefaultWorkflowInterceptor's prefix method invocation capabilities.
+ * Test ValidationInterceptor's prefix method invocation capabilities.
  * 
  * @author tm_jee
  * @version $Date$ $Id$
  */
-public class DefaultWorkflowInterceptorPrefixMethodInvocationTest extends TestCase {
+public class ValidationInterceptorPrefixMethodInvocationTest extends TestCase {
 
 	public void testPrefixMethodInvocation1() throws Exception {
 		
 		MockControl controlAction = MockControl.createControl(ValidateAction.class);
 		ValidateAction mockAction = (ValidateAction) controlAction.getMock();
-		mockAction.hasErrors();
-		controlAction.setReturnValue(true);
 		mockAction.validateDoSave();
 		controlAction.setVoidCallable(1);
 		mockAction.validate();
@@ -37,6 +36,8 @@ public class DefaultWorkflowInterceptorPrefixMethodInvocationTest extends TestCa
 		ActionProxy mockActionProxy = (ActionProxy) controlActionProxy.getMock();
 		mockActionProxy.getMethod();
 		controlActionProxy.setDefaultReturnValue("save");
+		mockActionProxy.getActionName();
+		controlActionProxy.setDefaultReturnValue("something");
 		
 		MockControl controlActionInvocation = MockControl.createControl(ActionInvocation.class);
 		ActionInvocation mockActionInvocation = (ActionInvocation) controlActionInvocation.getMock();
@@ -44,13 +45,15 @@ public class DefaultWorkflowInterceptorPrefixMethodInvocationTest extends TestCa
 		controlActionInvocation.setDefaultReturnValue(mockAction);
 		mockActionInvocation.getProxy();
 		controlActionInvocation.setDefaultReturnValue(mockActionProxy);
+		mockActionInvocation.invoke();
+		controlActionInvocation.setDefaultReturnValue(Action.INPUT);
 		
 		
 		controlAction.replay();
 		controlActionProxy.replay();
 		controlActionInvocation.replay();
 		
-		DefaultWorkflowInterceptor interceptor = new DefaultWorkflowInterceptor();
+		ValidationInterceptor interceptor = new ValidationInterceptor();
 		String result = interceptor.intercept(mockActionInvocation);
 		
 		assertEquals(Action.INPUT, result);
@@ -62,8 +65,6 @@ public class DefaultWorkflowInterceptorPrefixMethodInvocationTest extends TestCa
 	public void testPrefixMethodInvocation2() throws Exception {
 		MockControl controlAction = MockControl.createControl(ValidateAction.class);
 		ValidateAction mockAction = (ValidateAction) controlAction.getMock();
-		mockAction.hasErrors();
-		controlAction.setReturnValue(false);
 		mockAction.validateSubmit();
 		controlAction.setVoidCallable(1);
 		mockAction.validate();
@@ -73,6 +74,8 @@ public class DefaultWorkflowInterceptorPrefixMethodInvocationTest extends TestCa
 		ActionProxy mockActionProxy = (ActionProxy) controlActionProxy.getMock();
 		mockActionProxy.getMethod();
 		controlActionProxy.setDefaultReturnValue("submit");
+		mockActionProxy.getActionName();
+                controlActionProxy.setDefaultReturnValue("something");
 		
 		MockControl controlActionInvocation = MockControl.createControl(ActionInvocation.class);
 		ActionInvocation mockActionInvocation = (ActionInvocation) controlActionInvocation.getMock();
@@ -88,7 +91,7 @@ public class DefaultWorkflowInterceptorPrefixMethodInvocationTest extends TestCa
 		controlActionProxy.replay();
 		controlActionInvocation.replay();
 		
-		DefaultWorkflowInterceptor interceptor = new DefaultWorkflowInterceptor();
+		ValidationInterceptor interceptor = new ValidationInterceptor();
 		String result = interceptor.intercept(mockActionInvocation);
 		
 		assertEquals("okok", result);
