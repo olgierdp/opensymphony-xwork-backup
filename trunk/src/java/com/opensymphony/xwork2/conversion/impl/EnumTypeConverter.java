@@ -74,6 +74,7 @@ import java.util.Map;
  * @author Tamara Cattivelli
  * @author <a href="mailto:hermanns@aixcept.de">Rainer Hermanns</a>
  * @version $Id: EnumTypeConverter.java 1050 2006-06-26 21:46:27 +0200 (Mon, 26 Jun 2006) rainerh $
+ * @deprecated Since Struts 2.1.0 as enum support is now built into XWork
  */
 public class EnumTypeConverter extends DefaultTypeConverter {
 
