@@ -77,7 +77,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
     
     public void testStaticMethodDisallow() {
-        OgnlValueStack.setAllowStaticMethodAccess(false);
+        OgnlValueStack.setAllowStaticMethodAccess("false");
         try {
             OgnlValueStack vs = new OgnlValueStack();
     
@@ -86,7 +86,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
             vs.push(dog);
             assertNull(vs.findValue("@com.opensymphony.xwork2.util.Dog@getDeity()", String.class));
         } finally {
-            OgnlValueStack.setAllowStaticMethodAccess(true);
+            OgnlValueStack.setAllowStaticMethodAccess("true");
         }
     }
     

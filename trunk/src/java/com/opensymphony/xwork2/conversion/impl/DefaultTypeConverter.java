@@ -138,6 +138,8 @@ public class DefaultTypeConverter implements TypeConverter {
                     result = bigDecValue(value);
                 if (toType == String.class)
                     result = stringValue(value);
+                if (Enum.class.isAssignableFrom(toType))
+                    result = enumValue((Class<Enum>)toType, value);
             }
         } else {
             if (toType.isPrimitive()) {
@@ -169,6 +171,18 @@ public class DefaultTypeConverter implements TypeConverter {
         if (value instanceof Number)
             return ((Number) value).doubleValue() != 0;
         return true; // non-null
+    }
+    
+    public Enum<?> enumValue(Class toClass, Object o) {
+        Enum<?> result = null;
+        if (o == null) {
+            result = null;
+        } else if (o instanceof String[]) {
+            result = Enum.valueOf(toClass, ((String[]) o)[0]);
+        } else if (o instanceof String) {
+            result = Enum.valueOf(toClass, (String) o);
+        }
+        return result;
     }
 
     /**

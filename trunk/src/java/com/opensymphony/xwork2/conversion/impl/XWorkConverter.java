@@ -462,35 +462,6 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     /**
-     * not used
-     */
-    private Object acceptableErrorValue(Class toClass) {
-        if (!toClass.isPrimitive()) {
-            return null;
-        }
-        
-        if (toClass == int.class) {
-            return new Integer(0);
-        } else if (toClass == double.class) {
-            return new Double(0);
-        } else if (toClass == long.class) {
-            return new Long(0);
-        } else if (toClass == boolean.class) {
-            return Boolean.FALSE;
-        } else if (toClass == short.class) {
-            return new Short((short) 0);
-        } else if (toClass == float.class) {
-            return new Float(0);
-        } else if (toClass == byte.class) {
-            return new Byte((byte) 0);
-        } else if (toClass == char.class) {
-            return new Character((char) 0);
-        }
-        
-        return null;
-    }
-
-    /**
      * Looks for converter mappings for the specified class and adds it to an existing map.  Only new converters are
      * added.  If a converter is defined on a key that already exists, the converter is ignored.
      *

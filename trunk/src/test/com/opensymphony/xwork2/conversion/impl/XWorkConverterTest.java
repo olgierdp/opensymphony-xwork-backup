@@ -12,6 +12,7 @@ import com.opensymphony.xwork2.test.User;
 import com.opensymphony.xwork2.util.Bar;
 import com.opensymphony.xwork2.util.Cat;
 import com.opensymphony.xwork2.util.Foo;
+import com.opensymphony.xwork2.util.FurColor;
 import com.opensymphony.xwork2.util.InstantiatingNullHandler;
 import com.opensymphony.xwork2.util.OgnlValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
@@ -484,6 +485,12 @@ public class XWorkConverterTest extends XWorkTestCase {
         assertEquals(new Double(1234), converter.convertValue(context, null, null, null, "1.234", Double.class));
         assertEquals(new Double(1234.12), converter.convertValue(context, null, null, null, "1.234,12", Double.class));
 
+    }
+    
+    public void testStringToEnum() {
+        assertEquals(FurColor.BLACK, converter.convertValue(context, null, null, null, "BLACK", FurColor.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "black", FurColor.class));
+        assertEquals(OgnlRuntime.NoConversionPossible, converter.convertValue(context, null, null, null, "red", FurColor.class));
     }
 
     // Testing for null result on non-primitive Number types supplied as empty String or 

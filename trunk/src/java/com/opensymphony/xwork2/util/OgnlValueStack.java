@@ -110,12 +110,12 @@ public class OgnlValueStack implements Serializable, ValueStack {
     
     @Inject("devMode")
     public static void setDevMode(String mode) {
-        devMode = "true".equals(mode);
+        devMode = "true".equalsIgnoreCase(mode);
     }
 
     @Inject(value="allowStaticMethodAccess", required=false)
-    public static void setAllowStaticMethodAccess(boolean allowStaticMethodAccess) {
-        OgnlValueStack.allowStaticMethodAccess = allowStaticMethodAccess;
+    public static void setAllowStaticMethodAccess(String allowStaticMethodAccess) {
+        OgnlValueStack.allowStaticMethodAccess = "true".equalsIgnoreCase(allowStaticMethodAccess);
     }
 
     /* (non-Javadoc)
