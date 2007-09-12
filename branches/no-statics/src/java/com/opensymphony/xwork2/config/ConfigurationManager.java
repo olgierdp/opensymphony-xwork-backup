@@ -6,6 +6,7 @@ package com.opensymphony.xwork2.config;
 
 import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.config.impl.DefaultConfiguration;
+import com.opensymphony.xwork2.config.providers.XWorkConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -80,7 +81,7 @@ public class ConfigurationManager {
         providerLock.lock();
         try {
             if (configurationProviders.size() == 0) {
-                configurationProviders.add(new XmlConfigurationProvider("xwork-default.xml", true));
+                configurationProviders.add(new XWorkConfigurationProvider());
                 configurationProviders.add(new XmlConfigurationProvider("xwork.xml", false));
             }
 
