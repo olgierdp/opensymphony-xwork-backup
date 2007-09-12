@@ -36,7 +36,7 @@ import java.util.Map;
 /**
  * Interface for accessing the type conversion facilities within a context.
  * 
- * This interface was copied from OGNL's ognl.TypeConverter
+ * This interface was copied from OGNL's TypeConverter
  * 
  * @author Luke Blanshard (blanshlu@netscape.net)
  * @author Drew Davidson (drew@ognl.org)

@@ -3,7 +3,10 @@ package com.opensymphony.xwork2;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+import com.opensymphony.xwork2.inject.ContainerBuilder;
+import com.opensymphony.xwork2.util.location.LocatableProperties;
 
 /**
  * Contribed by: Ruben Inoto
@@ -18,9 +21,6 @@ public class ProxyInvocationTest extends XWorkTestCase {
      * will be executed on the InvocationHandler of the action (so, in the action itself). 
      */
     public void testProxyInvocation() throws Exception {
-
-        
-        ObjectFactory.setObjectFactory(new ProxyObjectFactory());
 
         ActionProxy proxy = actionProxyFactory
             .createActionProxy("", "ProxyInvocation", createDummyContext());
@@ -46,6 +46,6 @@ public class ProxyInvocationTest extends XWorkTestCase {
         super.setUp();
 
         // ensure we're using the default configuration, not simple config
-        loadConfigurationProviders(new XmlConfigurationProvider("xwork-proxyinvoke.xml"));
+        loadWithOverriding(new XmlConfigurationProvider("xwork-proxyinvoke.xml"));
     }
 }

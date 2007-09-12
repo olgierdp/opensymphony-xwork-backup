@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.util.*;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import com.opensymphony.xwork2.XWorkTestCase;
 
 
@@ -12,8 +13,8 @@ public class PersonActionTest extends XWorkTestCase {
         ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 
         Map stackContext = stack.getContext();
-        stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-        stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+        stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
+        stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
         stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         PersonAction action = new PersonAction();
@@ -35,8 +36,8 @@ public class PersonActionTest extends XWorkTestCase {
 	public void testAddAddress() {
         ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 		Map stackContext = stack.getContext();
-		stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-		stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+		stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
+		stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
 		stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
 		PersonAction action = new PersonAction();
@@ -60,8 +61,8 @@ public class PersonActionTest extends XWorkTestCase {
 	public void testAddAddressesNoGenericElementAnnotation() {
         ValueStack stack = ValueStackFactory.getFactory().createValueStack();
 		Map stackContext = stack.getContext();
-		stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-		stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+		stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
+		stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
 		stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
 		PersonAction action = new PersonAction();

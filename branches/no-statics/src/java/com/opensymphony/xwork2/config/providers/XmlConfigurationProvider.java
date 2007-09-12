@@ -57,6 +57,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     private boolean errorIfMissing;
     private Map<String, String> dtdMappings;
     private Configuration configuration;
+    private boolean throwExceptionOnDuplicateBeans = true;
 
     public XmlConfigurationProvider() {
         this("xwork.xml", true);
@@ -76,6 +77,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         mappings.put("-//OpenSymphony Group//XWork 1.1//EN", "xwork-1.1.dtd");
         mappings.put("-//OpenSymphony Group//XWork 1.0//EN", "xwork-1.0.dtd");
         setDtdMappings(mappings);
+    }
+    
+    public void setThrowExceptionOnDuplicateBeans(boolean val) {
+        this.throwExceptionOnDuplicateBeans = val;
     }
 
     public void setDtdMappings(Map<String, String> mappings) {
@@ -190,8 +195,12 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                             } else {
                                 if (containerBuilder.contains(ctype, name)) {
                                     Location loc = LocationUtils.getLocation(loadedBeans.get(ctype.getName() + name));
-                                    throw new ConfigurationException("Bean type " + ctype + " with the name " +
-                                            name + " has already been loaded by " + loc, child);
+                                    if (throwExceptionOnDuplicateBeans) {
+                                        throw new ConfigurationException("Bean type " + ctype + " with the name " +
+                                                name + " has already been loaded by " + loc, child);
+                                    } else {
+                                        continue;
+                                    }
                                 }
 
                                 // Force loading of class to detect no class def found exceptions

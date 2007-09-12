@@ -31,7 +31,6 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.conversion.TypeConverter;
 import com.opensymphony.xwork2.util.TextUtils;
-import com.opensymphony.xwork2.util.XWorkList;
 
 
 /**
@@ -182,9 +181,9 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = new TreeSet();
         } else {
             if (size > 0) {
-                result = new XWorkList(memberType, size);
+                result = new ArrayList(size);
             } else {
-                result = new XWorkList(memberType);
+                result = new ArrayList();
             }
         }
 

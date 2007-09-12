@@ -61,9 +61,9 @@ public class XmlConfigurationProviderInterceptorsSpringTest extends Configuratio
 
         sac = new StaticApplicationContext();
 
-        SpringObjectFactory objFactory = new SpringObjectFactory();
-        objFactory.setApplicationContext(sac);
-        ObjectFactory.setObjectFactory(objFactory);
+        //SpringObjectFactory objFactory = new SpringObjectFactory();
+        //objFactory.setApplicationContext(sac);
+        //ObjectFactory.setObjectFactory(objFactory);
 
         configurationManager.destroyConfiguration();
     }

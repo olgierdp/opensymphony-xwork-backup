@@ -17,7 +17,7 @@ import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
  * <p/> Using this "point" example, if your action (or another compound object in which you are setting properties on)
  * has a corresponding ClassName-conversion.properties file, XWork will use the configured type converters for
  * conversion to and from strings. So turning "3, 22" in to new Point(3, 22) is done by merely adding the following
- * entry to <b>ClassName-conversion.properties</b> (Note that the PointConverter should impl the ognl.TypeConverter
+ * entry to <b>ClassName-conversion.properties</b> (Note that the PointConverter should impl the TypeConverter
  * interface):
  * <p/>
  * <p/><b>point = com.acme.PointConverter</b>

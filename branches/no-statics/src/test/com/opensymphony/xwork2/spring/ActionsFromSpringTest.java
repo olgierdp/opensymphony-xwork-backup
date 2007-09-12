@@ -19,8 +19,11 @@ public class ActionsFromSpringTest extends XWorkTestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
+        XmlConfigurationProvider defaults = new XmlConfigurationProvider("xwork-default.xml");
+        defaults.setThrowExceptionOnDuplicateBeans(false);
         // Set up XWork
-        loadConfigurationProviders(new XmlConfigurationProvider("com/opensymphony/xwork2/spring/actionContext-xwork.xml"));
+        loadConfigurationProviders(new XmlConfigurationProvider("com/opensymphony/xwork2/spring/actionContext-xwork.xml"),
+                defaults);
         appContext = ((SpringObjectFactory)container.getInstance(ObjectFactory.class)).appContext;
     }
 

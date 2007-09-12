@@ -18,11 +18,13 @@ import java.util.Map;
 import ognl.Ognl;
 
 import com.opensymphony.xwork2.XWorkTestCase;
-import com.opensymphony.xwork2.conversion.OgnlTypeConverterWrapper;
 import com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.impl.FooBarConverter;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.mock.MockObjectTypeDeterminer;
+import com.opensymphony.xwork2.ognl.OgnlTypeConverterWrapper;
+import com.opensymphony.xwork2.ognl.OgnlUtil;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 
 
 /**
@@ -119,7 +121,7 @@ public class SetPropertiesTest extends XWorkTestCase {
         String spielname = "Spielen";
         ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-        vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+        vs.getContext().put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
         vs.push(foo);
         try {
             vs.setValue("moreCats[2].name", spielname);
@@ -171,7 +173,7 @@ public class SetPropertiesTest extends XWorkTestCase {
         String spielname = "Spielen";
         ValueStack vs = ValueStackFactory.getFactory().createValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
-        vs.getContext().put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
+        vs.getContext().put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
         vs.push(foo);
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         vs.setValue("anotherCatMap[\"3\"].name", spielname);
@@ -209,8 +211,8 @@ public class SetPropertiesTest extends XWorkTestCase {
         //try modifying bar1 and bar2
         //check the logs here to make sure
         //the Map is being created
-        OgnlContextState.setCreatingNullObjects(vs.getContext(), true);
-        OgnlContextState.setReportingConversionErrors(vs.getContext(), true);
+        ReflectionContextState.setCreatingNullObjects(vs.getContext(), true);
+        ReflectionContextState.setReportingConversionErrors(vs.getContext(), true);
         vs.push(foo);
         String bar1Title = "The Phantom Menace";
         String bar2Title = "The Clone Wars";
@@ -254,8 +256,8 @@ public class SetPropertiesTest extends XWorkTestCase {
         Collection barColl=new HashSet();
 
         ValueStack vs = ValueStackFactory.getFactory().createValueStack();
-        OgnlContextState.setCreatingNullObjects(vs.getContext(), true);
-        OgnlContextState.setReportingConversionErrors(vs.getContext(), true);
+        ReflectionContextState.setCreatingNullObjects(vs.getContext(), true);
+        ReflectionContextState.setReportingConversionErrors(vs.getContext(), true);
         Foo foo = new Foo();
 
         foo.setBarCollection(barColl);

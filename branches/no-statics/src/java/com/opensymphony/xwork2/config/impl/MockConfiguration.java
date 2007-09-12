@@ -12,10 +12,15 @@ import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.RuntimeConfiguration;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
+import com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Context;
 import com.opensymphony.xwork2.inject.Factory;
+import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
+import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +40,9 @@ public class MockConfiguration implements Configuration {
     
     public MockConfiguration() {
         container = new ContainerBuilder()
+            .factory(ReflectionProvider.class, OgnlReflectionProvider.class)
+            .factory(XWorkConverter.class)
+            .factory(ObjectTypeDeterminer.class, DefaultObjectTypeDeterminer.class)
             .factory(ObjectFactory.class)
             .factory(ActionProxyFactory.class, DefaultActionProxyFactory.class)
             .factory(Configuration.class, new Factory() {

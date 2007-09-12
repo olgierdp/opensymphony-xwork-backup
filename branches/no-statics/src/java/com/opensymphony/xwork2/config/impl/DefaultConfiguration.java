@@ -4,18 +4,34 @@
  */
 package com.opensymphony.xwork2.config.impl;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.DefaultTextProvider;
 import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.RuntimeConfiguration;
 import com.opensymphony.xwork2.config.entities.*;
 import com.opensymphony.xwork2.config.providers.InterceptorBuilder;
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
+import com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Context;
 import com.opensymphony.xwork2.inject.Factory;
+import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
+import com.opensymphony.xwork2.ognl.OgnlValueStackFactory;
+import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
+import com.opensymphony.xwork2.util.CompoundRoot;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
+import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
+import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
+
+import ognl.PropertyAccessor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -139,12 +155,11 @@ public class DefaultConfiguration implements Configuration {
         });
         
         try {
-            // Set the object factory for the purposes of factory creation
-            ObjectFactory.setObjectFactory(new ObjectFactory());
-            
+            // Set the bootstrap container for the purposes of factory creation
+            Container bootstrap = createBootstrapContainer();
+            setContext(bootstrap);
             container = builder.create(false);
-            objectFactory = container.getInstance(ObjectFactory.class);
-            ObjectFactory.setObjectFactory(objectFactory);
+            setContext(container);
             
             for (ConfigurationProvider configurationProvider : providers)
             {
@@ -154,8 +169,27 @@ public class DefaultConfiguration implements Configuration {
     
             rebuildRuntimeConfiguration();
         } finally {
-            ObjectFactory.setObjectFactory(null);
+            ActionContext.setContext(null);
         }
+    }
+    
+    protected ActionContext setContext(Container cont) {
+        ValueStack vs = cont.getInstance(ValueStackFactory.class).createValueStack();
+        ActionContext context = new ActionContext(vs.getContext());
+        ActionContext.setContext(context);
+        return context;
+    }
+
+    protected Container createBootstrapContainer() {
+        ContainerBuilder builder = new ContainerBuilder();
+        builder.factory(ObjectFactory.class);
+        builder.factory(ReflectionProvider.class, OgnlReflectionProvider.class);
+        builder.factory(ValueStackFactory.class, OgnlValueStackFactory.class);
+        builder.factory(XWorkConverter.class);
+        builder.factory(TextProvider.class, DefaultTextProvider.class);
+        builder.factory(ObjectTypeDeterminer.class, DefaultObjectTypeDeterminer.class);
+        builder.factory(PropertyAccessor.class, CompoundRoot.class.getName(), CompoundRootAccessor.class);
+        return builder.create(true);
     }
 
     public void removePackageConfig(String name) {

@@ -15,10 +15,54 @@
           class="com.opensymphony.xwork2.conversion.impl.XWorkConverter"/>
     <bean type="com.opensymphony.xwork2.conversion.impl.XWorkConverter"
           class="com.opensymphony.xwork2.conversion.impl.XWorkConverter"/>
-
-    <!--  static injections -->
-    <bean class="com.opensymphony.xwork2.util.OgnlValueStack" static="true"/>
-    <bean class="com.opensymphony.xwork2.conversion.impl.XWorkConverter" static="true"/>
+          
+    <bean name="default"
+    	  type="com.opensymphony.xwork2.util.ValueStackFactory"
+    	  class="com.opensymphony.xwork2.ognl.OgnlValueStackFactory" />
+    <bean name="default"
+          type="com.opensymphony.xwork2.util.reflection.ReflectionProvider"
+          class="com.opensymphony.xwork2.ognl.OgnlReflectionProvider" />
+    <bean name="default"
+          type="com.opensymphony.xwork2.util.reflection.ReflectionContextFactory"
+          class="com.opensymphony.xwork2.ognl.OgnlReflectionContextFactory" />
+    
+    <bean name="com.opensymphony.xwork2.util.CompoundRoot" type="ognl.PropertyAccessor"
+    	  class="com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor" />
+    <bean name="java.lang.Object" type="ognl.PropertyAccessor"
+    	  class="com.opensymphony.xwork2.ognl.accessor.ObjectAccessor" />
+    <bean name="java.util.Iterator" type="ognl.PropertyAccessor"
+    	  class="com.opensymphony.xwork2.ognl.accessor.XWorkIteratorPropertyAccessor" />
+    <bean name="java.util.Enumeration" type="ognl.PropertyAccessor"
+    	  class="com.opensymphony.xwork2.ognl.accessor.XWorkEnumerationAcccessor" />
+    <bean name="java.util.List" type="ognl.PropertyAccessor"
+    	  class="com.opensymphony.xwork2.ognl.accessor.XWorkListPropertyAccessor" />
+    <bean name="java.util.Map" type="ognl.PropertyAccessor"
+    	  class="com.opensymphony.xwork2.ognl.accessor.XWorkMapPropertyAccessor" />
+    <bean name="java.util.Collection" type="ognl.PropertyAccessor"
+    	  class="com.opensymphony.xwork2.ognl.accessor.XWorkCollectionPropertyAccessor" />
+    <bean name="java.util.Set" type="ognl.PropertyAccessor"
+    	  class="com.opensymphony.xwork2.ognl.accessor.XWorkCollectionPropertyAccessor" />
+    <bean name="com.opensymphony.xwork2.ognl.ObjectProxy" type="ognl.PropertyAccessor"
+    	  class="com.opensymphony.xwork2.ognl.accessor.ObjectProxyPropertyAccessor" />
+    	  
+ 	<bean name="java.lang.Object" type="ognl.MethodAccessor"
+    	  class="com.opensymphony.xwork2.ognl.accessor.XWorkMethodAccessor" />
+  	<bean name="com.opensymphony.xwork2.util.CompoundRoot" type="ognl.MethodAccessor"
+    	  class="com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor" />
+    	  
+  	<bean name="java.lang.Object" type="com.opensymphony.xwork2.conversion.NullHandler"
+    	  class="com.opensymphony.xwork2.conversion.impl.InstantiatingNullHandler" />
+    	  
+ 	<bean name="no-annotations" type="com.opensymphony.xwork2.validator.ActionValidatorManager"
+ 		  class="com.opensymphony.xwork2.validator.DefaultActionValidatorManager" />
+ 		  
+    <bean type="com.opensymphony.xwork2.validator.ActionValidatorManager"
+ 		  class="com.opensymphony.xwork2.validator.AnnotationActionValidatorManager" />
+ 		  
+    <bean type="com.opensymphony.xwork2.TextProvider"
+    	  class="com.opensymphony.xwork2.DefaultTextProvider" />
+   	
+    <constant name="devMode" value="false" />
 
     <package name="xwork-default" abstract="true">
 

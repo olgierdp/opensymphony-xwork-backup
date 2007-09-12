@@ -15,6 +15,7 @@ import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.interceptor.Interceptor;
 import com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor;
 import com.opensymphony.xwork2.interceptor.TimerInterceptor;
+import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.validator.Validator;
 import com.opensymphony.xwork2.validator.validators.ExpressionValidator;
 import com.opensymphony.xwork2.validator.validators.RequiredStringValidator;
@@ -47,6 +48,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
 
         SpringObjectFactory objFactory = new SpringObjectFactory();
         objFactory.setApplicationContext(sac);
+        objFactory.setReflectionProvider(new OgnlReflectionProvider());
         ObjectFactory.setObjectFactory(objFactory);
     }
 

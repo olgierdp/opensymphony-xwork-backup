@@ -8,8 +8,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
-
-import ognl.OgnlRuntime;
+import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -431,9 +430,9 @@ public class LocalizedTextUtil {
             if (prop != null) {
                 Object obj = valueStack.findValue(prop);
                 try {
-                	Object actionObj = OgnlUtil.getRealTarget(prop, valueStack.getContext(), valueStack.getRoot());
+                	Object actionObj = ReflectionProviderFactory.getInstance().getRealTarget(prop, valueStack.getContext(), valueStack.getRoot());
                 	if (actionObj != null) {
-                		PropertyDescriptor propertyDescriptor = OgnlRuntime.getPropertyDescriptor(actionObj.getClass(), prop);
+                		PropertyDescriptor propertyDescriptor = ReflectionProviderFactory.getInstance().getPropertyDescriptor(actionObj.getClass(), prop);
 
                 		if (propertyDescriptor != null) {
                 			Class clazz=propertyDescriptor.getPropertyType();

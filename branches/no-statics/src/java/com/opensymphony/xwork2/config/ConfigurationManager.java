@@ -80,7 +80,8 @@ public class ConfigurationManager {
         providerLock.lock();
         try {
             if (configurationProviders.size() == 0) {
-                configurationProviders.add(new XmlConfigurationProvider("xwork.xml", true));
+                configurationProviders.add(new XmlConfigurationProvider("xwork-default.xml", true));
+                configurationProviders.add(new XmlConfigurationProvider("xwork.xml", false));
             }
 
             return configurationProviders;

@@ -9,7 +9,7 @@ import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.ognl.OgnlValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
 
 import java.util.*;
@@ -121,12 +121,13 @@ public class ParametersInterceptorTest extends XWorkTestCase {
     }
 
     public void testNonexistentParametersGetLoggedInDevMode() throws Exception {
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), 
+                new MockConfigurationProvider(Collections.singletonMap("devMode", "true")));
         Map params = new HashMap();
         params.put("not_a_property", "There is no action property named like this");
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
-        OgnlValueStack.setDevMode("true");
         ParametersInterceptor.setDevMode("true");
 
         ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
@@ -136,12 +137,13 @@ public class ParametersInterceptorTest extends XWorkTestCase {
     }
 
     public void testNonexistentParametersAreIgnoredInProductionMode() throws Exception {
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), 
+                new MockConfigurationProvider(Collections.singletonMap("devMode", "true")));
         Map params = new HashMap();
         params.put("not_a_property", "There is no action property named like this");
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
-        OgnlValueStack.setDevMode("false");
 
         ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
         proxy.execute();

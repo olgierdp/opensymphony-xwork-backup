@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.util.ClassLoaderUtil;
+import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorConfig;
@@ -12,7 +13,6 @@ import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.interceptor.Interceptor;
-import com.opensymphony.xwork2.util.OgnlUtil;
 import com.opensymphony.xwork2.validator.Validator;
 
 import java.io.IOException;
@@ -21,8 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-
-import ognl.OgnlException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,15 +47,24 @@ public class ObjectFactory implements Serializable {
     private static final Log LOG = LogFactory.getLog(ObjectFactory.class);
 
     private transient ClassLoader ccl;
-    private static ThreadLocal<ObjectFactory> thSelf = new ThreadLocal<ObjectFactory>();
     private Container container;
+    protected ReflectionProvider reflectionProvider;
 
     @Inject(value="objectFactory.classloader", required=false)
     public void setClassLoader(ClassLoader cl) {
         this.ccl = cl;
     }
+    
+    @Inject
+    public void setReflectionProvider(ReflectionProvider prov) {
+        this.reflectionProvider = prov;
+    }
 
     public ObjectFactory() {
+    }
+    
+    public ObjectFactory(ReflectionProvider prov) {
+        this.reflectionProvider = prov;
     }
     
     @Inject
@@ -65,13 +72,8 @@ public class ObjectFactory implements Serializable {
         this.container = container;
     }
 
-    @Inject
-    public static void setObjectFactory(ObjectFactory factory) {
-        thSelf.set(factory);
-    }
-
     public static ObjectFactory getObjectFactory() {
-        return thSelf.get();
+        return ActionContext.getContext().getContainer().getInstance(ObjectFactory.class);
     }
 
     /**
@@ -182,7 +184,7 @@ public class ObjectFactory implements Serializable {
         try {
             // interceptor instances are long-lived and used across user sessions, so don't try to pass in any extra context
             Interceptor interceptor = (Interceptor) buildBean(interceptorClassName, null);
-            OgnlUtil.setProperties(params, interceptor);
+            reflectionProvider.setProperties(params, interceptor);
             interceptor.init();
 
             return interceptor;
@@ -218,22 +220,7 @@ public class ObjectFactory implements Serializable {
 
         if (resultClassName != null) {
             result = (Result) buildBean(resultClassName, extraContext);
-            try {
-            	OgnlUtil.setProperties(resultConfig.getParams(), result, extraContext, true);
-            } catch (XWorkException ex) {
-            	Throwable reason = ex.getCause();
-            	if (reason instanceof OgnlException)
-            	{
-            		// ognl exceptions could be thrown and be ok if, for example, the result uses parameters in ways other than
-            		// as properties for the result object.  For example, the redirect result from Struts 2 allows any parameters
-            		// to be set on the result, which it appends to the redirecting url.  These parameters wouldn't have a 
-            		// corresponding setter on the result object, so an OGNL exception could be thrown.  Still, this is a misuse
-            		// of exceptions, so we should look at improving it.
-            		LOG.debug(ex.getMessage(), reason);
-            	} else {
-            		throw ex;
-            	}
-            }
+        	reflectionProvider.setProperties(resultConfig.getParams(), result, extraContext, true);
         }
 
         return result;
@@ -248,7 +235,7 @@ public class ObjectFactory implements Serializable {
      */
     public Validator buildValidator(String className, Map params, Map extraContext) throws Exception {
         Validator validator = (Validator) buildBean(className, null);
-        OgnlUtil.setProperties(params, validator);
+        reflectionProvider.setProperties(params, validator);
 
         return validator;
     }

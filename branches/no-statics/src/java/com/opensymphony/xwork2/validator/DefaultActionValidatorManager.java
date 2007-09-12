@@ -37,6 +37,9 @@ public class DefaultActionValidatorManager implements ActionValidatorManager {
     private static final Map<String, List<ValidatorConfig>> validatorCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
     private static final Map<String, List<ValidatorConfig>> validatorFileCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
     private static final Log LOG = LogFactory.getLog(DefaultActionValidatorManager.class);
+    private ObjectFactory objectFactory;
+    
+    
 
     public synchronized List<Validator> getValidators(Class clazz, String context) {
         return getValidators(clazz, context, null);

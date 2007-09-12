@@ -16,16 +16,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
+import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.ognl.accessor.XWorkCollectionPropertyAccessor;
+import com.opensymphony.xwork2.ognl.accessor.XWorkListPropertyAccessor;
+import com.opensymphony.xwork2.ognl.accessor.XWorkMapPropertyAccessor;
 import com.opensymphony.xwork2.util.CreateIfNull;
 import com.opensymphony.xwork2.util.Element;
 import com.opensymphony.xwork2.util.Key;
 import com.opensymphony.xwork2.util.KeyProperty;
-import com.opensymphony.xwork2.util.XWorkCollectionPropertyAccessor;
-import com.opensymphony.xwork2.util.XWorkListPropertyAccessor;
-import com.opensymphony.xwork2.util.XWorkMapPropertyAccessor;
-
-import ognl.OgnlRuntime;
-import ognl.OgnlException;
+import com.opensymphony.xwork2.util.reflection.ReflectionException;
+import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 
 /**
  * <!-- START SNIPPET: javadoc -->
@@ -43,9 +43,6 @@ import ognl.OgnlException;
  * 
  *
  * @author Gabriel Zimmerman
- * @see XWorkListPropertyAccessor
- * @see XWorkCollectionPropertyAccessor
- * @see XWorkMapPropertyAccessor
  */
 public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
     
@@ -57,6 +54,19 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
     public static final String KEY_PROPERTY_PREFIX = "KeyProperty_";
     public static final String CREATE_IF_NULL_PREFIX = "CreateIfNull_";
     public static final String DEPRECATED_ELEMENT_PREFIX = "Collection_";
+    
+    private ReflectionProvider reflectionProvider;
+    private XWorkConverter xworkConverter;
+    
+    @Inject
+    public void setReflectionProvider(ReflectionProvider prov) {
+        this.reflectionProvider = prov;
+    }
+    
+    @Inject
+    public void setXWorkConverter(XWorkConverter conv) {
+       this.xworkConverter = conv; 
+    }
 
     /**
      * Determines the key class by looking for the value of @Key annotation for the given class.
@@ -82,7 +92,7 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
             return clazz;
         }
 
-        return (Class) XWorkConverter.getInstance().getConverter(parentClass, KEY_PREFIX + property);
+        return (Class) xworkConverter.getConverter(parentClass, KEY_PREFIX + property);
     }
 
 
@@ -111,10 +121,10 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
             return clazz;
         }
 
-        clazz = (Class) XWorkConverter.getInstance().getConverter(parentClass, ELEMENT_PREFIX + property);
+        clazz = (Class) xworkConverter.getConverter(parentClass, ELEMENT_PREFIX + property);
 
         if (clazz == null) {
-            clazz = (Class) XWorkConverter.getInstance()
+            clazz = (Class) xworkConverter
                     .getConverter(parentClass, DEPRECATED_ELEMENT_PREFIX + property);
 
             if (clazz != null) {
@@ -143,7 +153,7 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
             return annotation.value();
         }
 
-        return (String) XWorkConverter.getInstance().getConverter(parentClass, KEY_PROPERTY_PREFIX + property);
+        return (String) xworkConverter.getConverter(parentClass, KEY_PROPERTY_PREFIX + property);
     }
 
 
@@ -173,7 +183,7 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
             return annotation.value();
         }
 
-        String configValue = (String) XWorkConverter.getInstance().getConverter(parentClass, CREATE_IF_NULL_PREFIX + property);
+        String configValue = (String) xworkConverter.getConverter(parentClass, CREATE_IF_NULL_PREFIX + property);
         //check if a value is in the config
         if (configValue!=null) {
             if (configValue.equals("true")) {
@@ -206,7 +216,7 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
      */
     protected <T extends Annotation> T getAnnotation(Class parentClass, String property, Class<T> annotationClass) {
         T annotation = null;
-        Field field = OgnlRuntime.getField(parentClass, property);
+        Field field = reflectionProvider.getField(parentClass, property);
 
         if (field != null) {
             annotation = field.getAnnotation(annotationClass);
@@ -231,13 +241,13 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
      */
     private <T extends Annotation>T getAnnotationFromGetter(Class parentClass, String property, Class<T> annotationClass) {
         try {
-            Method getter = OgnlRuntime.getGetMethod(null, parentClass, property);
+            Method getter = reflectionProvider.getGetMethod(parentClass, property);
 
             if (getter != null) {
                 return getter.getAnnotation(annotationClass);
             }
         }
-        catch (OgnlException ognle) {
+        catch (ReflectionException ognle) {
             ; // ignore
         }
         catch (IntrospectionException ie) {
@@ -256,13 +266,13 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
      */
     private <T extends Annotation>T getAnnotationFromSetter(Class parentClass, String property, Class<T> annotationClass) {
         try {
-            Method setter = OgnlRuntime.getSetMethod(null, parentClass, property);
+            Method setter = reflectionProvider.getSetMethod(parentClass, property);
 
             if (setter != null) {
                 return setter.getAnnotation(annotationClass);
             }
         }
-        catch (OgnlException ognle) {
+        catch (ReflectionException ognle) {
             ; // ignore
         }
         catch (IntrospectionException ie) {
@@ -284,7 +294,7 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
 
         try {
 
-            Field field = OgnlRuntime.getField(parentClass, property);
+            Field field = reflectionProvider.getField(parentClass, property);
 
             Type genericType = null;
 
@@ -296,10 +306,10 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
             // Try to get ParameterType from setter method
             if (genericType == null || !(genericType instanceof ParameterizedType)) {
                 try {
-                    Method setter = OgnlRuntime.getSetMethod(null, parentClass, property);
+                    Method setter = reflectionProvider.getSetMethod(parentClass, property);
                     genericType = setter.getGenericParameterTypes()[0];
                 }
-                catch (OgnlException ognle) {
+                catch (ReflectionException ognle) {
                     ; // ignore
                 }
                 catch (IntrospectionException ie) {
@@ -310,10 +320,10 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
             // Try to get ReturnType from getter method
             if (genericType == null || !(genericType instanceof ParameterizedType)) {
                 try {
-                    Method getter = OgnlRuntime.getGetMethod(null, parentClass, property);
+                    Method getter = reflectionProvider.getGetMethod(parentClass, property);
                     genericType = getter.getGenericReturnType();
                 }
-                catch (OgnlException ognle) {
+                catch (ReflectionException ognle) {
                     ; // ignore
                 }
                 catch (IntrospectionException ie) {

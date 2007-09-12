@@ -11,9 +11,11 @@ import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.mock.MockResult;
+import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
+import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -111,6 +113,7 @@ public class ActionNestingTest extends XWorkTestCase {
         public void register(ContainerBuilder builder, LocatableProperties props) {
             builder.factory(ObjectFactory.class);
             builder.factory(ActionProxyFactory.class, DefaultActionProxyFactory.class);
+            builder.factory(ReflectionProvider.class, OgnlReflectionProvider.class);
         }
         
         public void loadPackages() {

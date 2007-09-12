@@ -38,9 +38,10 @@ public class ActionAutowiringInterceptorTest extends XWorkTestCase {
     }
 
     public void testSetAutowireType() throws Exception {
+        XmlConfigurationProvider prov = new XmlConfigurationProvider("xwork-default.xml");
+        prov.setThrowExceptionOnDuplicateBeans(false);
         XmlConfigurationProvider c = new XmlConfigurationProvider("com/opensymphony/xwork2/spring/xwork-autowire.xml");
-        configurationManager.addConfigurationProvider(c);
-        configurationManager.reload();
+        loadConfigurationProviders(c, prov);
 
         StaticWebApplicationContext appContext = new StaticWebApplicationContext();
 

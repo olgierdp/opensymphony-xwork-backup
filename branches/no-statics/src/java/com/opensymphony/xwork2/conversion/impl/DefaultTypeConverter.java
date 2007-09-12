@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.opensymphony.xwork2.conversion.TypeConverter;
-import com.opensymphony.xwork2.conversion.XWorkTypeConverterWrapper;
+import com.opensymphony.xwork2.ognl.XWorkTypeConverterWrapper;
 
 /**
  * Default type conversion. Converts among numeric types and also strings.  Contains the basic 
@@ -82,6 +82,8 @@ public class DefaultTypeConverter implements TypeConverter {
         Object obj = context.get(TypeConverter.TYPE_CONVERTER_CONTEXT_KEY);
         if (obj instanceof TypeConverter) {
             return (TypeConverter) obj;
+            
+        // for backwards-compatibility
         } else if (obj instanceof ognl.TypeConverter) {
             return new XWorkTypeConverterWrapper((ognl.TypeConverter) obj);
         }

@@ -7,17 +7,17 @@ package com.opensymphony.xwork2.conversion.impl;
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
+import com.opensymphony.xwork2.ognl.OgnlValueStack;
 import com.opensymphony.xwork2.test.ModelDrivenAction2;
 import com.opensymphony.xwork2.test.User;
 import com.opensymphony.xwork2.util.Bar;
 import com.opensymphony.xwork2.util.Cat;
 import com.opensymphony.xwork2.util.Foo;
 import com.opensymphony.xwork2.util.FurColor;
-import com.opensymphony.xwork2.util.InstantiatingNullHandler;
-import com.opensymphony.xwork2.util.OgnlValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
-import com.opensymphony.xwork2.util.XWorkMethodAccessor;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
@@ -345,8 +345,8 @@ public class XWorkConverterTest extends XWorkTestCase {
     public void testStringToCollectionConversion() {
         ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         Map stackContext = stack.getContext();
-        stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-        stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+        stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
+        stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
         stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         User user = new User();
@@ -607,7 +607,7 @@ public class XWorkConverterTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        ObjectFactory.setObjectFactory(new ObjectFactory());
+        ObjectFactory.setObjectFactory(new ObjectFactory(new OgnlReflectionProvider()));
 
         configurationManager = new ConfigurationManager();
         converter = XWorkConverter.getInstance();
@@ -621,7 +621,6 @@ public class XWorkConverterTest extends XWorkTestCase {
     }
 
     protected void tearDown() throws Exception {
-        XWorkConverter.resetInstance();
         ActionContext.setContext(null);
     }
 }

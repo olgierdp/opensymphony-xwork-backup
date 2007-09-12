@@ -33,7 +33,15 @@ public class DefaultActionProxyFactory implements ActionProxyFactory {
     }
 
     public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
-        ActionProxy proxy = new DefaultActionProxy(namespace, actionName, extraContext, executeResult, cleanupContext);
+        
+        ActionInvocation inv = new DefaultActionInvocation(extraContext, true);
+        container.inject(inv);
+        return createActionProxy(inv, namespace, actionName, extraContext, executeResult, cleanupContext);
+    }
+    
+    public ActionProxy createActionProxy(ActionInvocation inv, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+        
+        ActionProxy proxy = new DefaultActionProxy(inv, namespace, actionName, extraContext, executeResult, cleanupContext);
         container.inject(proxy);
         proxy.prepare();
         return proxy;

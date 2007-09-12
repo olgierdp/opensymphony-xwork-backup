@@ -19,7 +19,7 @@ import com.opensymphony.xwork2.util.ValueStackFactory;
  *
  * @author Claus Ibsen
  */
-public class ActionSupportTest extends TestCase {
+public class ActionSupportTest extends XWorkTestCase {
 
     private ActionSupport as;
 

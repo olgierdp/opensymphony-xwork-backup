@@ -98,5 +98,10 @@ public class ChainResultTest extends XWorkTestCase {
 
             return returnVal;
         }
+
+        public ActionProxy createActionProxy(ActionInvocation inv, String namespace, String actionName,
+                Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+            return null;
+        }
     }
 }

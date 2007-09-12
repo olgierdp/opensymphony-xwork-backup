@@ -47,5 +47,8 @@ public interface ActionProxyFactory {
      * @throws Exception can be thrown
      */
     public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception;
+
+    public ActionProxy createActionProxy(ActionInvocation inv, String namespace, String actionName,
+            Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception;
     
 }

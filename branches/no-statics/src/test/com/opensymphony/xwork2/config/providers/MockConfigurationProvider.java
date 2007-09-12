@@ -7,6 +7,7 @@ package com.opensymphony.xwork2.config.providers;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionChainResult;
 import com.opensymphony.xwork2.ModelDrivenAction;
+import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.SimpleAction;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
@@ -20,12 +21,15 @@ import com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor;
 import com.opensymphony.xwork2.interceptor.ParametersInterceptor;
 import com.opensymphony.xwork2.interceptor.StaticParametersInterceptor;
 import com.opensymphony.xwork2.mock.MockResult;
+import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
+import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 import com.opensymphony.xwork2.validator.ValidationInterceptor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 
@@ -45,7 +49,12 @@ public class MockConfigurationProvider implements ConfigurationProvider {
     public static final String VALIDATION_ALIAS_NAME = "validationAlias";
     public static final String VALIDATION_SUBPROPERTY_NAME = "subproperty";
     private Configuration configuration;
+    private Map<String,String> params;
 
+    public MockConfigurationProvider() {}
+    public MockConfigurationProvider(Map<String,String> params) {
+        this.params = params;
+    }
 
     /**
      * Allows the configuration to clean up any resources used
@@ -151,7 +160,10 @@ public class MockConfigurationProvider implements ConfigurationProvider {
     }
 
     public void register(ContainerBuilder builder, LocatableProperties props) throws ConfigurationException {
-        // TODO Auto-generated method stub
-        
+        if (params != null) {
+            for (String key : params.keySet()) {
+                builder.constant(key, params.get(key));
+            }
+        }
     }
 }
