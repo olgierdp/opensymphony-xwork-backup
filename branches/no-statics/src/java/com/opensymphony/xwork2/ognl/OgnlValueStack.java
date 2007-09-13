@@ -5,41 +5,24 @@
 package com.opensymphony.xwork2.ognl;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
-import ognl.OgnlRuntime;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.opensymphony.xwork2.DefaultTextProvider;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.XWorkException;
-import com.opensymphony.xwork2.conversion.impl.InstantiatingNullHandler;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
-import com.opensymphony.xwork2.ognl.accessor.ObjectAccessor;
-import com.opensymphony.xwork2.ognl.accessor.ObjectProxyPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkCollectionPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkEnumerationAcccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkIteratorPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkListPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkMapPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkMethodAccessor;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
-import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
 
 /**
  * Ognl implementation of a value stack that allows for dynamic Ognl expressions to be evaluated against it. When
@@ -76,18 +59,24 @@ public class OgnlValueStack implements Serializable, ValueStack {
     transient Map context;
     Class defaultType;
     Map overrides;
+    OgnlUtil ognlUtil;
     
-    public OgnlValueStack(XWorkConverter xworkConverter, CompoundRootAccessor accessor, TextProvider prov) {
+    protected OgnlValueStack(XWorkConverter xworkConverter, CompoundRootAccessor accessor, TextProvider prov) {
         setRoot(xworkConverter, accessor, new CompoundRoot());
         push(prov);
     }
 
 
-    public OgnlValueStack(ValueStack vs, XWorkConverter xworkConverter, CompoundRootAccessor accessor) {
+    protected OgnlValueStack(ValueStack vs, XWorkConverter xworkConverter, CompoundRootAccessor accessor) {
         setRoot(xworkConverter, accessor, new CompoundRoot(vs.getRoot()));
     }
+    
+    @Inject
+    public void setOgnlUtil(OgnlUtil ognlUtil) {
+        this.ognlUtil = ognlUtil;
+    }
 
-    private void setRoot(XWorkConverter xworkConverter,
+    protected void setRoot(XWorkConverter xworkConverter,
             CompoundRootAccessor accessor, CompoundRoot compoundRoot) {
         this.root = compoundRoot;
         this.context = Ognl.createDefaultContext(this.root, accessor, new OgnlTypeConverterWrapper(xworkConverter),
@@ -164,7 +153,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
         try {
             context.put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, expr);
             context.put(REPORT_ERRORS_ON_NO_PROP, (throwExceptionOnFailure) ? Boolean.TRUE : Boolean.FALSE);
-            OgnlUtil.setValue(expr, context, root, value);
+            ognlUtil.setValue(expr, context, root, value);
         } catch (OgnlException e) {
             if (throwExceptionOnFailure) {
                 e.printStackTrace(System.out);
@@ -238,7 +227,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
                 return findValue(expr, defaultType);
             }
 
-            Object value = OgnlUtil.getValue(expr, context, root);
+            Object value = ognlUtil.getValue(expr, context, root);
             if (value != null) {
                 return value;
             } else {
@@ -268,7 +257,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
                 expr = (String) overrides.get(expr);
             }
 
-            Object value = OgnlUtil.getValue(expr, context, root, asType);
+            Object value = ognlUtil.getValue(expr, context, root, asType);
             if (value != null) {
                 return value;
             } else {

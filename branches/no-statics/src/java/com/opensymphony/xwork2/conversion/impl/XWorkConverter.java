@@ -172,8 +172,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      */
     protected HashSet<String> unknownMappings = new HashSet<String>(); 	// non-action (eg. returned value)
     
-    protected TypeConverter defaultTypeConverter = new XWorkBasicConverter();
-    protected ObjectTypeDeterminer objectTypeDeterminer = null;
+    private TypeConverter defaultTypeConverter;
     private ObjectFactory objectFactory;
 
 
@@ -207,24 +206,21 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
 
-    public static XWorkConverter getInstance() {
-         return ActionContext.getContext().getInstance(XWorkConverter.class);
-     }
-    
     @Inject
     public void setObjectFactory(ObjectFactory factory) {
         this.objectFactory = factory;
     }
-
+    
+    // HACK: Will actually be set by default object type determiner to get around the circular dep
+    public void setDefaultTypeConverter(TypeConverter conv) {
+        this.defaultTypeConverter = conv;
+    }
+    
     public static String buildConverterFilename(Class clazz) {
         String className = clazz.getName();
         String resource = className.replace('.', '/') + "-conversion.properties";
 
         return resource;
-    }
-
-    public void setDefaultConverter(TypeConverter defaultTypeConverter) {
-        this.defaultTypeConverter = defaultTypeConverter;
     }
 
     public Object convertValue(Map map, Object o, Class aClass) {
@@ -326,7 +322,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             try {
                 if (LOG.isDebugEnabled())
                     LOG.debug("falling back to Ognl's default type conversion");
-                return super.convertValue(context, target, member, property, value, toClass);
+                return super.convertValue(value, toClass);
             } catch (Exception e) {
                 e.printStackTrace();
                 handleConversionException(context, property, value, target);
@@ -803,16 +799,5 @@ public class XWorkConverter extends DefaultTypeConverter {
         return result;
     }
 
-    public ObjectTypeDeterminer getObjectTypeDeterminer() {
-        return objectTypeDeterminer;
-    }
-
-    /**
-     * @param determiner
-     */
-    @Inject
-    public void setObjectTypeDeterminer(ObjectTypeDeterminer determiner) {
-        objectTypeDeterminer = determiner;
-    }
 
 }

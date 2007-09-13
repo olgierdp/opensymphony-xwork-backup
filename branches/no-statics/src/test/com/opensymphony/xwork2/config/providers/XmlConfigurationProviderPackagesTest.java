@@ -88,6 +88,7 @@ public class XmlConfigurationProviderPackagesTest extends ConfigurationTestBase 
         assertTrue(multipleParents.contains(singlePackage));
 
         configurationManager.addConfigurationProvider(provider);
+        configurationManager.reload();
 
         RuntimeConfiguration runtimeConfiguration = configurationManager.getConfiguration().getRuntimeConfiguration();
         assertNotNull(runtimeConfiguration.getActionConfig("/multiple", "default"));

@@ -45,7 +45,7 @@ public class ChainResultTest extends XWorkTestCase {
         values.put("actionName", expectedActionName);
         values.put("namespace", expectedNamespace);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(values);
 
         Mock actionProxyMock = new Mock(ActionProxy.class);

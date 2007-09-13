@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork2;
 
+import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.List;
 import java.util.Locale;
@@ -150,7 +151,7 @@ public class ActionSupportTest extends XWorkTestCase {
         ActionContext.getContext().setLocale(Locale.ITALY);
         assertEquals(Locale.ITALY, as.getLocale());
 
-        ActionContext.setContext(null);
+        ActionContext.setContext(new ActionContext(new HashMap()));
         assertEquals(defLocale, as.getLocale()); // ActionContext will create a new context, when it was set to null before
     }
 
@@ -247,7 +248,7 @@ public class ActionSupportTest extends XWorkTestCase {
         ActionContext.getContext().setLocale(new Locale("da"));
         MyActionSupport mas = new MyActionSupport();
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
 
         List args = new ArrayList();
         args.add("Santa");
@@ -265,7 +266,7 @@ public class ActionSupportTest extends XWorkTestCase {
         ActionContext.getContext().setLocale(new Locale("da"));
         MyActionSupport mas = new MyActionSupport();
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
 
         String[] args = { "Santa", "loud" };
         assertEquals("Hello World", mas.getText("hello", "this is default", args, stack)); // no args in bundle

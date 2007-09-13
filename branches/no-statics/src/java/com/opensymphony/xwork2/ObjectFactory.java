@@ -72,6 +72,9 @@ public class ObjectFactory implements Serializable {
         this.container = container;
     }
 
+    /**
+     * @deprecated Since 2.1
+     */
     public static ObjectFactory getObjectFactory() {
         return ActionContext.getContext().getContainer().getInstance(ObjectFactory.class);
     }

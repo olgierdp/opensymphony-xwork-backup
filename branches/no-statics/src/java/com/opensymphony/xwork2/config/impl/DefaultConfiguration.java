@@ -22,6 +22,7 @@ import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Context;
 import com.opensymphony.xwork2.inject.Factory;
 import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
+import com.opensymphony.xwork2.ognl.OgnlUtil;
 import com.opensymphony.xwork2.ognl.OgnlValueStackFactory;
 import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
 import com.opensymphony.xwork2.util.CompoundRoot;
@@ -160,6 +161,7 @@ public class DefaultConfiguration implements Configuration {
             setContext(bootstrap);
             container = builder.create(false);
             setContext(container);
+            objectFactory = container.getInstance(ObjectFactory.class);
             
             for (ConfigurationProvider configurationProvider : providers)
             {
@@ -189,6 +191,8 @@ public class DefaultConfiguration implements Configuration {
         builder.factory(TextProvider.class, DefaultTextProvider.class);
         builder.factory(ObjectTypeDeterminer.class, DefaultObjectTypeDeterminer.class);
         builder.factory(PropertyAccessor.class, CompoundRoot.class.getName(), CompoundRootAccessor.class);
+        builder.factory(OgnlUtil.class);
+        builder.constant("devMode", "false");
         return builder.create(true);
     }
 

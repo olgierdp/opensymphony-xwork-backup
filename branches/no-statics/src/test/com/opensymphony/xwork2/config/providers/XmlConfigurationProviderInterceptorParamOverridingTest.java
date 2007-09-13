@@ -7,6 +7,7 @@ package com.opensymphony.xwork2.config.providers;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.RuntimeConfiguration;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
@@ -20,13 +21,14 @@ import junit.framework.TestCase;
  * @author tm_jee
  * @version $Date$ $Id$
  */
-public class XmlConfigurationProviderInterceptorParamOverridingTest extends TestCase {
+public class XmlConfigurationProviderInterceptorParamOverridingTest extends XWorkTestCase {
 
 	public void testParamOveriding() throws Exception {
 		DefaultConfiguration conf = new DefaultConfiguration();
 		final XmlConfigurationProvider p = new XmlConfigurationProvider("com/opensymphony/xwork2/config/providers/xwork-test-interceptor-param-overriding.xml");
 		conf.reload(new ArrayList<ConfigurationProvider>(){
 			{
+			    add(new XWorkConfigurationProvider());
 				add(p);
 			}
 		});

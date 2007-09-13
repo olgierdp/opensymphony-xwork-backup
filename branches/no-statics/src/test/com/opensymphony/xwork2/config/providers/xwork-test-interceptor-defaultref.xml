@@ -4,7 +4,6 @@
  >
 
 <xwork>
-	<include file="xwork-test-beans.xml" />
     <!-- this package has a default interceptor ref - so actions with no refs should have the default ref -->
     <package name="default">
         <interceptors>

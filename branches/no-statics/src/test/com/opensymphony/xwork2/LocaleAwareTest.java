@@ -50,7 +50,8 @@ public class LocaleAwareTest extends XWorkTestCase {
     protected void setUp() throws Exception {
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = container.getInstance(ValueStackFactory.class).createValueStack();
+        stack.getContext().put(ActionContext.CONTAINER, container);
         ActionContext.setContext(new ActionContext(stack.getContext()));
     }
 }

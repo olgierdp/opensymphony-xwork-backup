@@ -12,6 +12,7 @@ import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.RuntimeConfiguration;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
+import com.opensymphony.xwork2.config.providers.XWorkConfigurationProvider;
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
@@ -20,6 +21,7 @@ import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Context;
 import com.opensymphony.xwork2.inject.Factory;
 import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
+import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 
 import java.util.HashSet;
@@ -39,20 +41,11 @@ public class MockConfiguration implements Configuration {
     private Container container;
     
     public MockConfiguration() {
-        container = new ContainerBuilder()
-            .factory(ReflectionProvider.class, OgnlReflectionProvider.class)
-            .factory(XWorkConverter.class)
-            .factory(ObjectTypeDeterminer.class, DefaultObjectTypeDeterminer.class)
-            .factory(ObjectFactory.class)
-            .factory(ActionProxyFactory.class, DefaultActionProxyFactory.class)
-            .factory(Configuration.class, new Factory() {
-
-                public Object create(Context context) throws Exception {
-                    return MockConfiguration.this;
-                }
-                
-            })
-            .create(true);
+        ContainerBuilder builder = new ContainerBuilder();
+        LocatableProperties props = new LocatableProperties();
+        new XWorkConfigurationProvider().register(builder, props);
+        builder.constant("devMode", "false");
+        container = builder.create(true);
     }
 
     public PackageConfig getPackageConfig(String name) {

@@ -162,7 +162,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
     public void register(ContainerBuilder builder, LocatableProperties props) throws ConfigurationException {
         if (params != null) {
             for (String key : params.keySet()) {
-                builder.constant(key, params.get(key));
+                props.setProperty(key, params.get(key));
             }
         }
     }

@@ -5,6 +5,8 @@
 
 package com.opensymphony.xwork2.conversion.impl;
 
+import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
+
 
 /**
  * GenericsObjectTypeDeterminer
@@ -17,4 +19,9 @@ package com.opensymphony.xwork2.conversion.impl;
  *             annotation processing.
  */
 public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
+
+    public GenericsObjectTypeDeterminer(XWorkConverter conv,
+            XWorkBasicConverter basicConv, ReflectionProvider prov) {
+        super(conv, basicConv, prov);
+    }
 }

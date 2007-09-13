@@ -6,9 +6,11 @@ package com.opensymphony.xwork2.interceptor;
 
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 
@@ -21,7 +23,7 @@ import java.util.Date;
  * @author $Author$
  * @version $Revision$
  */
-public class ModelDrivenInterceptorTest extends TestCase {
+public class ModelDrivenInterceptorTest extends XWorkTestCase {
 
     Action action;
     Mock mockActionInvocation;
@@ -30,7 +32,7 @@ public class ModelDrivenInterceptorTest extends TestCase {
 
 
     public void testModelDrivenGetsPushedOntoStack() throws Exception {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         action = new ModelDrivenAction();
         mockActionInvocation.expectAndReturn("getAction", action);
         mockActionInvocation.expectAndReturn("getStack", stack);
@@ -52,12 +54,14 @@ public class ModelDrivenInterceptorTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
+        super.setUp();
         mockActionInvocation = new Mock(ActionInvocation.class);
         modelDrivenInterceptor = new ModelDrivenInterceptor();
         model = new Date(); // any object will do
     }
 
     protected void tearDown() throws Exception {
+        super.tearDown();
         mockActionInvocation.verify();
     }
 

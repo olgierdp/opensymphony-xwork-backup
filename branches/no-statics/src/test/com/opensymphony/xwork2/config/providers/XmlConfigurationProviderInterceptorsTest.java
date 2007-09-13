@@ -31,7 +31,12 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
     InterceptorConfig loggingInterceptor = new InterceptorConfig("logging", LoggingInterceptor.class, new HashMap());
     InterceptorConfig mockInterceptor = new InterceptorConfig("mock", MockInterceptor.class, new HashMap());
     InterceptorConfig timerInterceptor = new InterceptorConfig("timer", TimerInterceptor.class, new HashMap());
-    ObjectFactory objectFactory = new ObjectFactory();
+    ObjectFactory objectFactory;
+    
+    public void setUp() throws Exception {
+        super.setUp();
+        objectFactory = container.getInstance(ObjectFactory.class);
+    }
 
 
     public void testBasicInterceptors() throws ConfigurationException {
@@ -77,9 +82,7 @@ public class XmlConfigurationProviderInterceptorsTest extends ConfigurationTestB
     }
 
     public void testInterceptorDefaultRefs() throws ConfigurationException {
-        ConfigurationProvider provider = new XmlConfigurationProvider("com/opensymphony/xwork2/config/providers/xwork-test-interceptor-defaultref.xml");
-        configurationManager.clearConfigurationProviders();
-        configurationManager.addConfigurationProvider(provider);
+        loadConfigurationProviders(new XmlConfigurationProvider("com/opensymphony/xwork2/config/providers/xwork-test-interceptor-defaultref.xml"));
 
         // expectations - the inherited interceptor stack
         // default package

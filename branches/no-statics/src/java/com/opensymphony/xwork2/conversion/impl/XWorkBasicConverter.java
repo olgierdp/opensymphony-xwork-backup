@@ -29,7 +29,9 @@ import java.util.TreeSet;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.TypeConverter;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.TextUtils;
 
 
@@ -63,6 +65,12 @@ import com.opensymphony.xwork2.util.TextUtils;
 public class XWorkBasicConverter extends DefaultTypeConverter {
 
     private static String MILLISECOND_FORMAT = ".SSS";
+    
+    private ObjectTypeDeterminer objectTypeDeterminer;
+    
+    public void setObjectTypeDeterminer(ObjectTypeDeterminer det) {
+        this.objectTypeDeterminer = det;
+    }
 
     public Object convertValue(Map context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;
@@ -254,7 +262,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
         if (o != null) {
             //memberType = (Class) XWorkConverter.getInstance().getConverter(o.getClass(), XWorkConverter.CONVERSION_COLLECTION_PREFIX + prop);
-            memberType = XWorkConverter.getInstance().getObjectTypeDeterminer().getElementClass(o.getClass(), prop, null);
+            memberType = objectTypeDeterminer.getElementClass(o.getClass(), prop, null);
 
             if (memberType == null) {
                 memberType = String.class;

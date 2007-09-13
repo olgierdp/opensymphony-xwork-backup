@@ -51,20 +51,12 @@ public class ActionNestingTest extends XWorkTestCase {
         super.setUp();
         loadConfigurationProviders(new NestedTestConfigurationProvider());
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-
-        // create the action context
-        Map contextMap = stack.getContext();
-
-        // give the value stack a context
-        stack.push(this);
-        context = new ActionContext(contextMap);
-        ActionContext.setContext(context);
+        context = ActionContext.getContext();
+        context.getValueStack().push(this);
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        ActionContext.setContext(null);
     }
 
     public void testNestedContext() throws Exception {
@@ -111,9 +103,6 @@ public class ActionNestingTest extends XWorkTestCase {
         }
 
         public void register(ContainerBuilder builder, LocatableProperties props) {
-            builder.factory(ObjectFactory.class);
-            builder.factory(ActionProxyFactory.class, DefaultActionProxyFactory.class);
-            builder.factory(ReflectionProvider.class, OgnlReflectionProvider.class);
         }
         
         public void loadPackages() {

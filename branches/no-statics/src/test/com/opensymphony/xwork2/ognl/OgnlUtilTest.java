@@ -28,12 +28,19 @@ import java.util.*;
 
 
 /**
- * Unit test of {@link OgnlUtil}.
+ * Unit test of {@link ognlUtil}.
  * 
  * @version $Date$ $Id$
  */
 public class OgnlUtilTest extends XWorkTestCase {
-
+    
+    private OgnlUtil ognlUtil;
+    
+    public void setUp() throws Exception {
+        super.setUp();
+        ognlUtil = container.getInstance(OgnlUtil.class);
+    }
+    
     public void testCanSetADependentObject() throws Exception {
         String dogName = "fido";
 
@@ -76,7 +83,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         Map props = new HashMap();
         props.put("dog.name", dogName);
 
-        OgnlUtil.setProperties(props, owner, context);
+        ognlUtil.setProperties(props, owner, context);
         assertNotNull("expected Ognl to create an instance of Dog", owner.getDog());
         assertEquals(dogName, owner.getDog().getName());
     }
@@ -90,7 +97,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         props.put("email[1].address", "addr2");
         props.put("email[2].address", "addr3");
 
-        OgnlUtil.setProperties(props, action, context);
+        ognlUtil.setProperties(props, action, context);
         assertEquals(3, action.email.size());
         assertEquals("addr1", action.email.get(0).toString());
         assertEquals("addr2", action.email.get(1).toString());
@@ -115,7 +122,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         foo1.setBirthday(cal.getTime());
         foo1.setUseful(false);
 
-        OgnlUtil.copy(foo1, foo2, context);
+        ognlUtil.copy(foo1, foo2, context);
 
         assertEquals(foo1.getTitle(), foo2.getTitle());
         assertEquals(foo1.getNumber(), foo2.getNumber());
@@ -153,7 +160,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         excludes.add("title");
         excludes.add("number");
 
-        OgnlUtil.copy(foo1, foo2, context, excludes, null);
+        ognlUtil.copy(foo1, foo2, context, excludes, null);
         // these values should remain unchanged in foo2
         assertEquals(foo2.getTitle(), "foo2 title");
         assertEquals(foo2.getNumber(), 2);
@@ -181,7 +188,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         includes.add("title");
         includes.add("somethingElse");
 
-        OgnlUtil.copy(b1, b2, context, null, includes);
+        ognlUtil.copy(b1, b2, context, null, includes);
         // includes properties got copied
         assertEquals(b1.getTitle(), b2.getTitle());
         assertEquals(b1.getSomethingElse(), b2.getSomethingElse());
@@ -210,7 +217,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         foo.setBirthday(cal.getTime());
         foo.setUseful(false);
 
-        OgnlUtil.copy(foo, bar, context);
+        ognlUtil.copy(foo, bar, context);
 
         assertEquals(foo.getTitle(), bar.getTitle());
         assertEquals(0, bar.getSomethingElse());
@@ -224,7 +231,7 @@ public class OgnlUtilTest extends XWorkTestCase {
 
         Map props = new HashMap();
         props.put("bar.title", "i am barbaz");
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
 
         assertEquals(foo.getBar().getTitle(), "i am barbaz");
     }
@@ -236,7 +243,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         TestObject testObject = new TestObject();
 
         try {
-            OgnlUtil.setProperties(props, testObject, true);
+            ognlUtil.setProperties(props, testObject, true);
             fail("should rise IllegalAccessException because of Wrong getter method");
         } catch (Exception e) {
             //expected
@@ -250,7 +257,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         TestObject testObject = new TestObject();
 
         try {
-            OgnlUtil.setProperties(props, testObject, true);
+            ognlUtil.setProperties(props, testObject, true);
             fail("Should rise NoSuchPropertyException because of wrong property name");
         } catch (Exception e) {
             //expected
@@ -264,7 +271,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         Map props = new HashMap();
         props.put("aLong", "123a");
 
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
         assertEquals(0, foo.getALong());
     }
 
@@ -272,7 +279,7 @@ public class OgnlUtilTest extends XWorkTestCase {
      * Test that type conversion is performed on indexed collection properties.
      */
     public void testSetIndexedValue() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         Map stackContext = stack.getContext();
         stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
         stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
@@ -300,13 +307,13 @@ public class OgnlUtilTest extends XWorkTestCase {
 
         Map props = new HashMap();
         props.put("useful", "true");
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
 
         assertEquals(true, foo.isUseful());
 
         props = new HashMap();
         props.put("useful", "false");
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
 
         assertEquals(false, foo.isUseful());
     }
@@ -322,7 +329,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         Map props = new HashMap();
         props.put("birthday", "02/12/1982");
         // US style test
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
 
         Calendar cal = Calendar.getInstance();
         cal.clear();
@@ -336,7 +343,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         //UK style test
         props.put("event", "18/10/2006 14:23:45");
         props.put("meeting", "09/09/2006 14:30");
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
         
         cal = Calendar.getInstance();
         cal.clear();
@@ -365,7 +372,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         
         //test RFC 3339 date format for JSON
         props.put("event", "1996-12-19T16:39:57Z");
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
         
         cal = Calendar.getInstance();
         cal.clear();
@@ -380,7 +387,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         
         //test setting a calendar property
         props.put("calendar", "1996-12-19T16:39:57Z");
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
         assertEquals(cal, foo.getCalendar());
     }
 
@@ -391,7 +398,7 @@ public class OgnlUtilTest extends XWorkTestCase {
 
         Map props = new HashMap();
         props.put("number", "2");
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
 
         assertEquals(2, foo.getNumber());
     }
@@ -403,7 +410,7 @@ public class OgnlUtilTest extends XWorkTestCase {
 
         Map props = new HashMap();
         props.put("points", new String[]{"1", "2"});
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
 
         assertNotNull(foo.getPoints());
         assertEquals(2, foo.getPoints().length);
@@ -418,7 +425,7 @@ public class OgnlUtilTest extends XWorkTestCase {
 
         Map props = new HashMap();
         props.put("title", "this is a title");
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
 
         assertEquals(foo.getTitle(), "this is a title");
     }
@@ -427,7 +434,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         Foo foo = new Foo();
         Map context = Ognl.createDefaultContext(foo);
         assertFalse(123456 == foo.getNumber());
-        OgnlUtil.setProperty("number", "123456", foo, context);
+        ognlUtil.setProperty("number", "123456", foo, context);
         assertEquals(123456, foo.getNumber());
     }
 
@@ -444,7 +451,7 @@ public class OgnlUtilTest extends XWorkTestCase {
 
         final ValueStack stack = ActionContext.getContext().getValueStack();
 
-        Object result = Ognl.getValue(OgnlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo);
+        Object result = Ognl.getValue(ognlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo);
         foo.setIncludes((Collection) result);
 
         assertEquals(4, foo.getIncludes().size());
@@ -453,8 +460,8 @@ public class OgnlUtilTest extends XWorkTestCase {
         assertEquals("b", "" + foo.getIncludes().toArray()[2]);
         assertEquals("tom", foo.getIncludes().toArray()[3]);
 
-        Object result2 = Ognl.getValue(OgnlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo2);
-        OgnlUtil.setProperty("includes", result2, foo2, context);
+        Object result2 = Ognl.getValue(ognlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo2);
+        ognlUtil.setProperty("includes", result2, foo2, context);
 
         assertEquals(4, foo.getIncludes().size());
         assertEquals("foo", foo.getIncludes().toArray()[0]);
@@ -483,13 +490,13 @@ public class OgnlUtilTest extends XWorkTestCase {
         Map props = new HashMap();
         props.put("aLong", "123");
 
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
         assertEquals(123, foo.getALong());
 
         props.put("aLong", new String[]{"123"});
 
         foo.setALong(0);
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
         assertEquals(123, foo.getALong());
     }
 
@@ -499,22 +506,22 @@ public class OgnlUtilTest extends XWorkTestCase {
 
         Map context = Ognl.createDefaultContext(foo);
 
-        OgnlUtil.setProperties(null, foo, context);
+        ognlUtil.setProperties(null, foo, context);
         assertEquals(88, foo.getALong());
 
         Map props = new HashMap();
         props.put("aLong", "99");
-        OgnlUtil.setProperties(props, foo, context);
+        ognlUtil.setProperties(props, foo, context);
         assertEquals(99, foo.getALong());
     }
     
     public void testCopyNull() {
         Foo foo = new Foo();
         Map context = Ognl.createDefaultContext(foo);
-   		OgnlUtil.copy(null, null, context);
+   		ognlUtil.copy(null, null, context);
 
-   		OgnlUtil.copy(foo, null, context);
-   		OgnlUtil.copy(null, foo, context);
+   		ognlUtil.copy(foo, null, context);
+   		ognlUtil.copy(null, foo, context);
     }
     
     public void testGetTopTarget() throws Exception {
@@ -522,11 +529,11 @@ public class OgnlUtilTest extends XWorkTestCase {
         Map context = Ognl.createDefaultContext(foo);
 
         CompoundRoot root = new CompoundRoot();
-        Object top = OgnlUtil.getRealTarget("top", context, root);
+        Object top = ognlUtil.getRealTarget("top", context, root);
         assertEquals(root, top); // top should be root
         
         root.push(foo);
-        Object val = OgnlUtil.getRealTarget("unknown", context, root);
+        Object val = ognlUtil.getRealTarget("unknown", context, root);
         assertNull(val); // not found
     }
     
@@ -542,7 +549,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         foo.setUseful(true);
         
         // just do some of the 15 tests
-        Map beans = OgnlUtil.getBeanMap(foo);
+        Map beans = ognlUtil.getBeanMap(foo);
         assertNotNull(beans);
         assertEquals(18, beans.size());
         assertEquals("Hello Santa", beans.get("title"));
@@ -556,7 +563,7 @@ public class OgnlUtilTest extends XWorkTestCase {
     	MyWriteBar bar = new MyWriteBar();
     	bar.setBar("Sams");
     	
-    	Map beans = OgnlUtil.getBeanMap(bar);
+    	Map beans = ognlUtil.getBeanMap(bar);
     	assertEquals(2, beans.size());
     	assertEquals(new Integer("1"), beans.get("id"));
     	assertEquals("There is no read method for bar", beans.get("bar"));
@@ -566,7 +573,7 @@ public class OgnlUtilTest extends XWorkTestCase {
 	 * XW-281
 	 */
     public void testSetBigIndexedValue() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         Map stackContext = stack.getContext();
         stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.FALSE);
         stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);

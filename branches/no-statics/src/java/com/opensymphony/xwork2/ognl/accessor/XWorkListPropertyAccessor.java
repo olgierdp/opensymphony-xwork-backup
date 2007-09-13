@@ -33,6 +33,7 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
     private XWorkConverter xworkConverter;
     private ObjectFactory objectFactory;
     private ObjectTypeDeterminer objectTypeDeterminer;
+    private OgnlUtil ognlUtil;
     
     @Inject
     public void setXWorkConverter(XWorkConverter conv) {
@@ -47,6 +48,11 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
     @Inject
     public void setObjectTypeDeterminer(ObjectTypeDeterminer ot) {
         this.objectTypeDeterminer = ot;
+    }
+    
+    @Inject
+    public void setOgnlUtil(OgnlUtil util) {
+        this.ognlUtil = util;
     }
 
     public Object getProperty(Map context, Object target, Object name)
@@ -121,7 +127,7 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
                 Object v = values[i];
                 try {
                     Object o = objectFactory.buildBean(convertToClass, context);
-                    OgnlUtil.setValue((String) name, context, o, v);
+                    ognlUtil.setValue((String) name, context, o, v);
                     c.add(o);
                 } catch (Exception e) {
                     throw new OgnlException("Error converting given String values for Collection.", e);

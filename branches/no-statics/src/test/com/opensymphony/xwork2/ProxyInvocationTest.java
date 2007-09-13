@@ -46,6 +46,6 @@ public class ProxyInvocationTest extends XWorkTestCase {
         super.setUp();
 
         // ensure we're using the default configuration, not simple config
-        loadWithOverriding(new XmlConfigurationProvider("xwork-proxyinvoke.xml"));
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-proxyinvoke.xml"));
     }
 }

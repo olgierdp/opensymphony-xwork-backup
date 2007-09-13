@@ -4,7 +4,9 @@
  */
 package com.opensymphony.xwork2.util;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.util.TextUtils;
 
 import java.util.HashSet;
@@ -183,7 +185,8 @@ public class TextParseUtil {
             }
         }
 
-        return XWorkConverter.getInstance().convertValue(stack.getContext(), result, asType);
+        XWorkConverter conv = ((Container)stack.getContext().get(ActionContext.CONTAINER)).getInstance(XWorkConverter.class);
+        return conv.convertValue(stack.getContext(), result, asType);
     }
 
     /**

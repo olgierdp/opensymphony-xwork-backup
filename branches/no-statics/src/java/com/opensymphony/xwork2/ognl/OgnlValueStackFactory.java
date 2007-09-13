@@ -39,11 +39,12 @@ import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
 /**
  * Creates an Ognl value stack
  */
-public class OgnlValueStackFactory extends ValueStackFactory {
+public class OgnlValueStackFactory implements ValueStackFactory {
     
     private XWorkConverter xworkConverter;
     private CompoundRootAccessor compoundRootAccessor;
     private TextProvider textProvider;
+    private Container container;
 
     @Inject
     public void setXWorkConverter(XWorkConverter conv) {
@@ -55,14 +56,16 @@ public class OgnlValueStackFactory extends ValueStackFactory {
         this.textProvider = textProvider;
     }
 
-    @Override
     public ValueStack createValueStack() {
-        return new OgnlValueStack(xworkConverter, compoundRootAccessor, textProvider);
+        ValueStack stack = new OgnlValueStack(xworkConverter, compoundRootAccessor, textProvider);
+        container.inject(stack);
+        return stack;
     }
 
-    @Override
     public ValueStack createValueStack(ValueStack stack) {
-        return new OgnlValueStack(stack, xworkConverter, compoundRootAccessor);
+        ValueStack result = new OgnlValueStack(stack, xworkConverter, compoundRootAccessor);
+        container.inject(result);
+        return result;
     }
     
     @Inject
@@ -102,5 +105,6 @@ public class OgnlValueStackFactory extends ValueStackFactory {
         if (compoundRootAccessor == null) {
             throw new IllegalStateException("Couldn't find the compound root accessor");
         }
+        this.container = container;
     }
 }

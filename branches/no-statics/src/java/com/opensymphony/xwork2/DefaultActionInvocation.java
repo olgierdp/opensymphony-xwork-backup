@@ -8,6 +8,7 @@ import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
+import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
 import com.opensymphony.xwork2.util.ValueStack;
@@ -61,7 +62,7 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected ObjectFactory objectFactory;
     protected ActionEventListener actionEventListener;
     protected ValueStackFactory valueStackFactory;
-
+    protected Container container;
     protected UnknownHandler unknownHandler;
 
     public DefaultActionInvocation(final Map extraContext, final boolean pushAction) throws Exception {
@@ -77,6 +78,11 @@ public class DefaultActionInvocation implements ActionInvocation {
     @Inject
     public void setObjectFactory(ObjectFactory fac) {
         this.objectFactory = fac;
+    }
+    
+    @Inject
+    public void setContainer(Container cont) {
+        this.container = cont;
     }
     
     @Inject(required=false)
@@ -328,6 +334,7 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         //put this DefaultActionInvocation into the context map
         contextMap.put(ActionContext.ACTION_INVOCATION, this);
+        contextMap.put(ActionContext.CONTAINER, container);
 
         return contextMap;
     }

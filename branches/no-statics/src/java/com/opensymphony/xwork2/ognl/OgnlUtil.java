@@ -8,12 +8,18 @@ import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
+import ognl.TypeConverter;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.inject.Container;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.CompoundRoot;
+import com.opensymphony.xwork2.util.ValueStack;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -35,10 +41,16 @@ import java.util.Map;
 public class OgnlUtil {
 
     private static final Log log = LogFactory.getLog(OgnlUtil.class);
-    private static HashMap expressions = new HashMap();
-    private static HashMap beanInfoCache = new HashMap();
-
-
+    private HashMap expressions = new HashMap();
+    private HashMap beanInfoCache = new HashMap();
+    
+    private TypeConverter defaultConverter;
+    
+    @Inject
+    public void setXWorkConverter(XWorkConverter conv) {
+        this.defaultConverter = new OgnlTypeConverterWrapper(conv);
+    }
+    
     /**
      * Sets the object's properties using the default type converter, defaulting to not throw
      * exceptions for problems setting the properties.
@@ -47,7 +59,7 @@ public class OgnlUtil {
      * @param o       the object
      * @param context the action context
      */
-    public static void setProperties(Map props, Object o, Map context) {
+    public void setProperties(Map props, Object o, Map context) {
         setProperties(props, o, context, false);
     }
 
@@ -60,12 +72,12 @@ public class OgnlUtil {
      * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for
      *                                problems setting the properties
      */
-    public static void setProperties(Map props, Object o, Map context, boolean throwPropertyExceptions) {
+    public void setProperties(Map props, Object o, Map context, boolean throwPropertyExceptions) {
         if (props == null) {
             return;
         }
 
-        Ognl.setTypeConverter(context, new OgnlTypeConverterWrapper(XWorkConverter.getInstance()));
+        Ognl.setTypeConverter(context, getTypeConverterFromContext(context));
 
         Object oldRoot = Ognl.getRoot(context);
         Ognl.setRoot(context, o);
@@ -88,7 +100,7 @@ public class OgnlUtil {
      * @param properties
      * @param o
      */
-    public static void setProperties(Map properties, Object o) {
+    public void setProperties(Map properties, Object o) {
         setProperties(properties, o, false);
     }
 
@@ -100,7 +112,7 @@ public class OgnlUtil {
      * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for
      *                                problems setting the properties
      */
-    public static void setProperties(Map properties, Object o, boolean throwPropertyExceptions) {
+    public void setProperties(Map properties, Object o, boolean throwPropertyExceptions) {
         Map context = Ognl.createDefaultContext(o);
         setProperties(properties, o, context, throwPropertyExceptions);
     }
@@ -114,7 +126,7 @@ public class OgnlUtil {
      * @param o       the object upon which to set the property
      * @param context the context which may include the TypeConverter
      */
-    public static void setProperty(String name, Object value, Object o, Map context) {
+    public void setProperty(String name, Object value, Object o, Map context) {
         setProperty(name, value, o, context, false);
     }
 
@@ -128,8 +140,8 @@ public class OgnlUtil {
      * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for
      *                                problems setting the property
      */
-    public static void setProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
-        Ognl.setTypeConverter(context, new OgnlTypeConverterWrapper(XWorkConverter.getInstance()));
+    public void setProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
+        Ognl.setTypeConverter(context, getTypeConverterFromContext(context));
 
         Object oldRoot = Ognl.getRoot(context);
         Ognl.setRoot(context, o);
@@ -145,7 +157,7 @@ public class OgnlUtil {
      *
      * @return the real target or null if no object can be found with the specified property
      */
-    public static Object getRealTarget(String property, Map context, Object root) throws OgnlException {
+    public Object getRealTarget(String property, Map context, Object root) throws OgnlException {
         //special keyword, they must be cutting the stack
         if ("top".equals(property)) {
             return root;
@@ -184,20 +196,20 @@ public class OgnlUtil {
      * Wrapper around Ognl.setValue() to handle type conversion for collection elements.
      * Ideally, this should be handled by OGNL directly.
      */
-    public static void setValue(String name, Map context, Object root, Object value) throws OgnlException {
+    public void setValue(String name, Map context, Object root, Object value) throws OgnlException {
         Ognl.setValue(compile(name), context, root, value);
     }
 
-    public static Object getValue(String name, Map context, Object root) throws OgnlException {
+    public Object getValue(String name, Map context, Object root) throws OgnlException {
         return Ognl.getValue(compile(name), context, root);
     }
 
-    public static Object getValue(String name, Map context, Object root, Class resultType) throws OgnlException {
+    public Object getValue(String name, Map context, Object root, Class resultType) throws OgnlException {
         return Ognl.getValue(compile(name), context, root, resultType);
     }
 
 
-    public static Object compile(String expression) throws OgnlException {
+    public Object compile(String expression) throws OgnlException {
         synchronized (expressions) {
             Object o = expressions.get(expression);
 
@@ -222,17 +234,18 @@ public class OgnlUtil {
      * @param inclusions collection of method names to included copying  (can be null)
      *                   note if exclusions AND inclusions are supplied and not null nothing will get copied.
      */
-    public static void copy(Object from, Object to, Map context, Collection exclusions, Collection inclusions) {
+    public void copy(Object from, Object to, Map context, Collection exclusions, Collection inclusions) {
         if (from == null || to == null) {
             log.warn("Attempting to copy from or to a null source. This is illegal and is bein skipped. This may be due to an error in an OGNL expression, action chaining, or some other event.");
 
             return;
         }
 
+        TypeConverter conv = getTypeConverterFromContext(context);
         Map contextFrom = Ognl.createDefaultContext(from);
-        Ognl.setTypeConverter(contextFrom, new OgnlTypeConverterWrapper(XWorkConverter.getInstance()));
+        Ognl.setTypeConverter(contextFrom, conv);
         Map contextTo = Ognl.createDefaultContext(to);
-        Ognl.setTypeConverter(contextTo, new OgnlTypeConverterWrapper(XWorkConverter.getInstance()));
+        Ognl.setTypeConverter(contextTo, conv);
 
         PropertyDescriptor[] fromPds;
         PropertyDescriptor[] toPds;
@@ -267,7 +280,7 @@ public class OgnlUtil {
                     PropertyDescriptor toPd = (PropertyDescriptor) toPdHash.get(fromPd.getName());
                     if ((toPd != null) && (toPd.getWriteMethod() != null)) {
                         try {
-                            Object expr = OgnlUtil.compile(fromPd.getName());
+                            Object expr = compile(fromPd.getName());
                             Object value = Ognl.getValue(expr, contextFrom, from);
                             Ognl.setValue(expr, contextTo, to, value);
                         } catch (OgnlException e) {
@@ -292,8 +305,8 @@ public class OgnlUtil {
      * @param to      the target object
      * @param context the action context we're running under
      */
-    public static void copy(Object from, Object to, Map context) {
-        OgnlUtil.copy(from, to, context, null, null);
+    public void copy(Object from, Object to, Map context) {
+        copy(from, to, context, null, null);
     }
 
     /**
@@ -303,7 +316,7 @@ public class OgnlUtil {
      * @return  property descriptors.
      * @throws IntrospectionException is thrown if an exception occurs during introspection.
      */
-    public static PropertyDescriptor[] getPropertyDescriptors(Object source) throws IntrospectionException {
+    public PropertyDescriptor[] getPropertyDescriptors(Object source) throws IntrospectionException {
         BeanInfo beanInfo = getBeanInfo(source);
         return beanInfo.getPropertyDescriptors();
     }
@@ -319,7 +332,7 @@ public class OgnlUtil {
      * @throws IntrospectionException is thrown if an exception occurs during introspection.
      * @throws OgnlException is thrown by OGNL if the property value could not be retrieved
      */
-    public static Map getBeanMap(Object source) throws IntrospectionException, OgnlException {
+    public Map getBeanMap(Object source) throws IntrospectionException, OgnlException {
         Map beanMap = new HashMap();
         Map sourceMap = Ognl.createDefaultContext(source);
         PropertyDescriptor[] propertyDescriptors = getPropertyDescriptors(source);
@@ -328,7 +341,7 @@ public class OgnlUtil {
             String propertyName = propertyDescriptor.getDisplayName();
             Method readMethod = propertyDescriptor.getReadMethod();
             if (readMethod != null) {
-                Object expr = OgnlUtil.compile(propertyName);
+                Object expr = compile(propertyName);
                 Object value = Ognl.getValue(expr, sourceMap, source);
                 beanMap.put(propertyName, value);
             } else {
@@ -345,7 +358,7 @@ public class OgnlUtil {
      * @return  java bean info.
      * @throws IntrospectionException is thrown if an exception occurs during introspection.
      */
-    public static BeanInfo getBeanInfo(Object from) throws IntrospectionException {
+    public BeanInfo getBeanInfo(Object from) throws IntrospectionException {
         synchronized (beanInfoCache) {
             BeanInfo beanInfo;
             beanInfo = (BeanInfo) beanInfoCache.get(from.getClass());
@@ -357,7 +370,7 @@ public class OgnlUtil {
         }
     }
 
-    static void internalSetProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
+    void internalSetProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
         try {
             setValue(name, context, o, value);
         } catch (OgnlException e) {
@@ -371,5 +384,17 @@ public class OgnlUtil {
                 log.warn(msg, exception);
             }
         }
+    }
+    
+    TypeConverter getTypeConverterFromContext(Map context) {
+        /*ValueStack stack = (ValueStack) context.get(ActionContext.VALUE_STACK);
+        Container cont = (Container)stack.getContext().get(ActionContext.CONTAINER);
+        if (cont != null) {
+            return new OgnlTypeConverterWrapper(cont.getInstance(XWorkConverter.class));
+        } else {
+            throw new IllegalArgumentException("Cannot find type converter in context map");
+        }
+        */
+        return defaultConverter;
     }
 }

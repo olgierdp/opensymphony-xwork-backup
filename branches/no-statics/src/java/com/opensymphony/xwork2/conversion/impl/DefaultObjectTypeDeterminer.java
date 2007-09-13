@@ -59,15 +59,16 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
     private XWorkConverter xworkConverter;
     
     @Inject
-    public void setReflectionProvider(ReflectionProvider prov) {
+    public DefaultObjectTypeDeterminer(@Inject XWorkConverter conv, @Inject XWorkBasicConverter basicConv,
+                                       @Inject ReflectionProvider prov) {
         this.reflectionProvider = prov;
+        this.xworkConverter = conv;
+        
+        // HACK: this is to get around a dumb circular dependency
+        basicConv.setObjectTypeDeterminer(this);
+        this.xworkConverter.setDefaultTypeConverter(basicConv);
     }
     
-    @Inject
-    public void setXWorkConverter(XWorkConverter conv) {
-       this.xworkConverter = conv; 
-    }
-
     /**
      * Determines the key class by looking for the value of @Key annotation for the given class.
      * If no annotation is found, the key class is determined by using the generic parametrics.

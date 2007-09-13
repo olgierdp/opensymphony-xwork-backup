@@ -8,9 +8,11 @@ import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.ognl.OgnlUtil;
 import com.opensymphony.xwork2.ognl.OgnlValueStack;
+import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
 import com.opensymphony.xwork2.test.TestBean2;
 import com.opensymphony.xwork2.util.Bar;
 import com.opensymphony.xwork2.util.Cat;
+import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.Dog;
 import com.opensymphony.xwork2.util.Foo;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
@@ -21,6 +23,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import ognl.PropertyAccessor;
+
 
 /**
  * Unit test for OgnlValueStack.
@@ -30,13 +34,28 @@ public class OgnlValueStackTest extends XWorkTestCase {
     public static Integer staticNullMethod() {
         return null;
     }
+
+    private OgnlUtil ognlUtil;
     
+    public void setUp() throws Exception {
+        super.setUp();
+        ognlUtil = container.getInstance(OgnlUtil.class);
+    }
+    
+    private OgnlValueStack createValueStack() {
+        OgnlValueStack stack = new OgnlValueStack(
+                container.getInstance(XWorkConverter.class),
+                (CompoundRootAccessor)container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName()),
+                container.getInstance(TextProvider.class));
+        container.inject(stack);
+        return stack;
+    }
     
     public void testExpOverridesCanStackExpUp() throws Exception {
     	Map expr1 = new LinkedHashMap();
     	expr1.put("expr1", "'expr1value'");
     	
-    	OgnlValueStack vs = new OgnlValueStack();
+    	OgnlValueStack vs = createValueStack();
     	vs.setExprOverrides(expr1);
     	
     	assertEquals(vs.findValue("expr1"), "expr1value");
@@ -52,7 +71,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     
 
     public void testArrayAsString() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
         Dog dog = new Dog();
         dog.setAge(12);
@@ -64,7 +83,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testBasic() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
         Dog dog = new Dog();
         dog.setAge(12);
@@ -75,7 +94,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
     
     public void testStatic() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
         Dog dog = new Dog();
         dog.setDeity("fido");
@@ -84,7 +103,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
     
     public void testStaticMethodDisallow() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
         vs.setAllowStaticMethodAccess("false");
 
         Dog dog = new Dog();
@@ -94,7 +113,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
     
     public void testBasicSet() {
-    	OgnlValueStack vs = new OgnlValueStack();
+    	OgnlValueStack vs = createValueStack();
         
     	Dog dog = new Dog();
         dog.setAge(12);
@@ -105,13 +124,13 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testCallMethodOnNullObject() {
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         assertNull(stack.findValue("foo.size()"));
     }
 
     public void testCallMethodThatThrowsExceptionTwice() {
         SimpleAction action = new SimpleAction();
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         stack.push(action);
 
         action.setThrowException(true);
@@ -124,7 +143,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
     public void testCallMethodWithNullArg() {
         SimpleAction action = new SimpleAction();
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         stack.push(action);
 
         stack.findValue("setName(blah)");
@@ -137,7 +156,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
     public void testConvertStringArrayToList() {
         Foo foo = new Foo();
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
         vs.push(foo);
 
         vs.setValue("strings", new String[]{"one", "two"});
@@ -152,13 +171,13 @@ public class OgnlValueStackTest extends XWorkTestCase {
         // register converter
         TestBean2 tb2 = new TestBean2();
 
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         stack.push(tb2);
         Map myContext = stack.getContext();
 
         Map props = new HashMap();
         props.put("cat", "Kitty");
-        OgnlUtil.setProperties(props, tb2, myContext);
+        ognlUtil.setProperties(props, tb2, myContext);
         // expect String to be converted into a Cat
         assertEquals("Kitty", tb2.getCat().getName());
 
@@ -176,7 +195,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
 
     public void testDeepProperties() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
         Cat cat = new Cat();
         cat.setName("Smokey");
@@ -192,7 +211,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testFooBarAsString() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
         Foo foo = new Foo();
         Bar bar = new Bar();
         bar.setTitle("blah");
@@ -210,7 +229,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         bar.setSomethingElse(123);
         foo.setBar(bar);
 
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
         vs.push(foo);
 
         String output = (String) vs.findValue("bar", String.class);
@@ -249,7 +268,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         fooB.setBar(bar);
         fooC.setBar(bar);
 
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
         vs.push(foo);
 
         vs.getContext().put("foo", foo);
@@ -271,7 +290,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
     public void testGetNullValue() {
         Dog dog = new Dog();
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         stack.push(dog);
         assertNull(stack.findValue("name"));
     }
@@ -281,7 +300,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         String title = "a title";
         foo.setTitle(title);
 
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
         vs.push(foo);
 
         Map map = new HashMap();
@@ -301,7 +320,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testMethodCalls() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
         Dog dog1 = new Dog();
         dog1.setAge(12);
@@ -333,7 +352,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testMismatchedGettersAndSettersCauseExceptionInSet() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
         BadJavaBean bean = new BadJavaBean();
         vs.push(bean);
@@ -354,7 +373,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testNoExceptionInSetForDefault() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
         BadJavaBean bean = new BadJavaBean();
         vs.push(bean);
@@ -375,7 +394,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testNullEntry() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
         Dog dog = new Dog();
         dog.setName("Rover");
@@ -389,7 +408,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
     public void testNullMethod() {
         Dog dog = new Dog();
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         stack.push(dog);
         assertNull(stack.findValue("nullMethod()"));
         assertNull(stack.findValue("@com.opensymphony.xwork2.util.OgnlValueStackTest@staticNullMethod()"));
@@ -404,7 +423,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         bar.setSomethingElse(123);
         cat.getFoo().setBar(bar);
 
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
         vs.push(cat);
 
         assertEquals("bar:123", vs.findValue("foo.bar", String.class));
@@ -412,7 +431,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
     public void testPrimitiveSettingWithInvalidValueAddsFieldErrorInDevMode() {
         SimpleAction action = new SimpleAction();
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         stack.setDevMode("true");
         stack.push(action);
@@ -431,7 +450,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
     public void testPrimitiveSettingWithInvalidValueAddsFieldErrorInNonDevMode() {
         SimpleAction action = new SimpleAction();
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         stack.setDevMode("false");
         stack.push(action);
@@ -445,7 +464,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     public void testObjectSettingWithInvalidValueDoesNotCauseSetCalledWithNull() {
         SimpleAction action = new SimpleAction();
         action.setBean(new TestBean());
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         stack.push(action);
         try {
@@ -462,7 +481,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
 
     public void testSerializable() throws IOException, ClassNotFoundException {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
         Dog dog = new Dog();
         dog.setAge(12);
@@ -485,7 +504,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
     
     public void testSetAfterPush() {
-    	OgnlValueStack vs = new OgnlValueStack();
+    	OgnlValueStack vs = createValueStack();
 
     	Dog d=new Dog();
     	d.setName("Rover");
@@ -500,7 +519,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     public void testSetBarAsString() {
         Foo foo = new Foo();
 
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
         vs.push(foo);
 
         vs.setValue("bar", "bar:123");
@@ -510,7 +529,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testSetBeforePush() {
-    	OgnlValueStack vs = new OgnlValueStack();
+    	OgnlValueStack vs = createValueStack();
     	
     	vs.set("name","Bill");
     	Dog d=new Dog();
@@ -526,7 +545,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         Foo foo2 = new Foo();
         foo.setChild(foo2);
 
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
         vs.push(foo);
 
         vs.setValue("child.bar", "bar:123");
@@ -537,7 +556,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
     public void testSetNullList() {
         Foo foo = new Foo();
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
         vs.getContext().put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
         vs.push(foo);
 
@@ -557,7 +576,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
     
     public void testSetMultiple() {
-    	OgnlValueStack vs = new OgnlValueStack();
+    	OgnlValueStack vs = createValueStack();
     	int origSize=vs.getRoot().size();
     	vs.set("something",new Object());
     	vs.set("somethingElse",new Object());
@@ -568,7 +587,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     
     public void testSetNullMap() {
         Foo foo = new Foo();
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
         vs.getContext().put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
         vs.push(foo);
 
@@ -595,7 +614,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         Foo foo3 = new Foo();
         foo2.setChild(foo3);
 
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
         vs.push(foo);
 
         vs.setValue("child.child.bar", "bar:123");
@@ -605,7 +624,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testSettingDogGender() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
         Dog dog = new Dog();
         vs.push(dog);
@@ -616,7 +635,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testStatics() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
         Cat cat = new Cat();
         vs.push(cat);
@@ -635,7 +654,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testTop() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
         Dog dog1 = new Dog();
         dog1.setAge(12);
@@ -652,13 +671,13 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testTopIsDefaultTextProvider() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
-        assertEquals(DefaultTextProvider.INSTANCE, vs.findValue("top"));
+        assertEquals(container.getInstance(TextProvider.class), vs.findValue("top"));
     }
 
     public void testTwoDogs() {
-        OgnlValueStack vs = new OgnlValueStack();
+        OgnlValueStack vs = createValueStack();
 
         Dog dog1 = new Dog();
         dog1.setAge(12);
@@ -679,7 +698,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
     public void testTypeConversionError() {
         TestBean bean = new TestBean();
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         stack.push(bean);
         stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         try {
@@ -694,20 +713,22 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testConstructorWithAStack() {
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         stack.push("Hello World");
         
-        OgnlValueStack stack2 = new OgnlValueStack(stack);
+        OgnlValueStack stack2 = new OgnlValueStack(stack,
+                container.getInstance(XWorkConverter.class),
+                (CompoundRootAccessor)container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName()));
+        container.inject(stack2);
 
         assertEquals(stack.getRoot(), stack2.getRoot());
         assertEquals(stack.peek(), stack2.peek());
         assertEquals("Hello World", stack2.pop());
         
-        assertNotNull(OgnlValueStack.getAccessor());
     }
 
     public void testDefaultType() {
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         stack.setDefaultType(String.class);
         stack.push("Hello World");
         
@@ -720,7 +741,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
     
     public void testFindString() {
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         stack.setDefaultType(Integer.class);
         stack.push("Hello World");
     	
@@ -732,7 +753,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     	Map overrides = new HashMap();
     	overrides.put("claus", "top");
     	
-        OgnlValueStack stack = new OgnlValueStack();
+        OgnlValueStack stack = createValueStack();
         stack.setExprOverrides(overrides);
         stack.push("Hello World");
         

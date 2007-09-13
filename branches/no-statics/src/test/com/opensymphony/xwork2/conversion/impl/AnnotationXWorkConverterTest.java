@@ -93,7 +93,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
         SimpleAnnotationAction action = new SimpleAnnotationAction();
         action.setBean(new AnnotatedTestBean());
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -114,7 +114,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
         SimpleAnnotationAction action = new SimpleAnnotationAction();
         action.setDate(null);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -133,7 +133,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
 
     public void testFieldErrorMessageAddedWhenConversionFailsOnModelDriven() {
         ModelDrivenAnnotationAction action = new ModelDrivenAnnotationAction();
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -154,7 +154,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
 
     public void testFindConversionErrorMessage() {
         ModelDrivenAnnotationAction action = new ModelDrivenAnnotationAction();
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -169,7 +169,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
 
     public void testFindConversionMappingForInterface() {
         ModelDrivenAnnotationAction2 action = new ModelDrivenAnnotationAction2();
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -292,7 +292,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
 
     // TODO: Fixme... This test does not work with GenericsObjectDeterminer!
     public void testStringToCollectionConversion() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         Map stackContext = stack.getContext();
         stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
         stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
@@ -341,7 +341,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
     }
 
     public void testValueStackWithTypeParameter() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(new Foo1());
         Bar1 bar = (Bar1) stack.findValue("bar", Bar1.class);
         assertNotNull(bar);
@@ -453,10 +453,8 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
         super.setUp();
         converter = container.getInstance(XWorkConverter.class);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-        ac = new ActionContext(stack.getContext());
+        ac = ActionContext.getContext();
         ac.setLocale(Locale.US);
-        ActionContext.setContext(ac);
         context = ac.getContextMap();
     }
 

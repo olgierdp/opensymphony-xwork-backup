@@ -4,7 +4,6 @@
  >
 
 <xwork>
-	<include file="xwork-default.xml" />
     <package name="xwork-test-default">
         <result-types>
             <result-type name="chain" class="com.opensymphony.xwork2.ActionChainResult" default="true"/>

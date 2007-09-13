@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
+import com.opensymphony.xwork2.config.providers.XWorkConfigurationProvider;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
@@ -144,8 +145,10 @@ public class ConfigurationManagerTest extends XWorkTestCase {
         configurationManager.destroyConfiguration();
 
         configProviderMock = new Mock(ConfigurationProvider.class);
+        configProviderMock.matchAndReturn("equals", C.ANY_ARGS, false);
 
         ConfigurationProvider mockProvider = (ConfigurationProvider) configProviderMock.proxy();
+        configurationManager.addConfigurationProvider(new XWorkConfigurationProvider());
         configurationManager.addConfigurationProvider(mockProvider);
         
         //the first time it always inits
@@ -153,6 +156,7 @@ public class ConfigurationManagerTest extends XWorkTestCase {
         configProviderMock.expect("register", C.ANY_ARGS);
         configProviderMock.expect("loadPackages", C.ANY_ARGS);
         configProviderMock.matchAndReturn("toString", "mock");
+        
         configurationManager.getConfiguration();
     }
 

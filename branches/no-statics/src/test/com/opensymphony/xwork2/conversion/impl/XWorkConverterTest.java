@@ -39,6 +39,7 @@ public class XWorkConverterTest extends XWorkTestCase {
 
     Map context;
     XWorkConverter converter;
+    OgnlValueStack stack;
 
 //    public void testConversionToSetKeepsOriginalSetAndReplacesContents() {
 //        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
@@ -107,7 +108,6 @@ public class XWorkConverterTest extends XWorkTestCase {
         SimpleAction action = new SimpleAction();
         action.setBean(new TestBean());
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -128,7 +128,6 @@ public class XWorkConverterTest extends XWorkTestCase {
         SimpleAction action = new SimpleAction();
         action.setDate(null);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -147,7 +146,6 @@ public class XWorkConverterTest extends XWorkTestCase {
 
     public void testFieldErrorMessageAddedWhenConversionFailsOnModelDriven() {
         ModelDrivenAction action = new ModelDrivenAction();
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -188,7 +186,6 @@ public class XWorkConverterTest extends XWorkTestCase {
 
     public void testFindConversionErrorMessage() {
         ModelDrivenAction action = new ModelDrivenAction();
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -203,7 +200,6 @@ public class XWorkConverterTest extends XWorkTestCase {
 
     public void testFindConversionMappingForInterface() {
         ModelDrivenAction2 action = new ModelDrivenAction2();
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -232,7 +228,6 @@ public class XWorkConverterTest extends XWorkTestCase {
         SimpleAction action = new SimpleAction();
         action.setBean(new TestBean());
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -343,7 +338,6 @@ public class XWorkConverterTest extends XWorkTestCase {
     }
 
     public void testStringToCollectionConversion() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         Map stackContext = stack.getContext();
         stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
         stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
@@ -579,14 +573,12 @@ public class XWorkConverterTest extends XWorkTestCase {
     }
 
     public void testValueStackWithTypeParameter() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(new Foo1());
         Bar1 bar = (Bar1) stack.findValue("bar", Bar1.class);
         assertNotNull(bar);
     }
 
     public void testNestedConverters() {
-        OgnlValueStack stack = new OgnlValueStack();
         Cat cat = new Cat();
         cat.setFoo(new Foo());
         stack.push(cat);
@@ -607,20 +599,14 @@ public class XWorkConverterTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        ObjectFactory.setObjectFactory(new ObjectFactory(new OgnlReflectionProvider()));
+        super.setUp();
 
-        configurationManager = new ConfigurationManager();
-        converter = XWorkConverter.getInstance();
-        configurationManager.destroyConfiguration();
+        converter = container.getInstance(XWorkConverter.class);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-        ActionContext ac = new ActionContext(stack.getContext());
+        ActionContext ac = ActionContext.getContext();
         ac.setLocale(Locale.US);
-        ActionContext.setContext(ac);
         context = ac.getContextMap();
+        stack = (OgnlValueStack) ac.getValueStack();
     }
 
-    protected void tearDown() throws Exception {
-        ActionContext.setContext(null);
-    }
 }

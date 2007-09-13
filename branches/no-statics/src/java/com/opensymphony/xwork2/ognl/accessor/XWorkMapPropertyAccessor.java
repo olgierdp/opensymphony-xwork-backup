@@ -80,7 +80,7 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
             if (lastClass == null || lastProperty == null) {
                 return super.getProperty(context, target, name);
             }
-            Class keyClass = xworkConverter.getObjectTypeDeterminer()
+            Class keyClass = objectTypeDeterminer
                     .getKeyClass(lastClass, lastProperty);
 
             if (keyClass == null) {
