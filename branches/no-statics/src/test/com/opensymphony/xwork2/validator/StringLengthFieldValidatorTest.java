@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.validator.validators.StringLengthFieldValidator;
 
 import junit.framework.TestCase;
@@ -15,7 +16,7 @@ import junit.framework.TestCase;
  * @author tm_jee
  * @version $Date$ $Id$
  */
-public class StringLengthFieldValidatorTest extends TestCase {
+public class StringLengthFieldValidatorTest extends XWorkTestCase {
 
 	protected InternalActionSupport action;
 	protected StringLengthFieldValidator validator;

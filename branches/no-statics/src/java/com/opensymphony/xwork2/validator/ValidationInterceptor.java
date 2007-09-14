@@ -123,11 +123,6 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
     
     private ActionValidatorManager actionValidatorManager;
     
-    @Inject
-    public void setActionValidatorManager(ActionValidatorManager mgr) {
-        this.actionValidatorManager = mgr;
-    }
-
     private static final Log _log = LogFactory.getLog(DefaultWorkflowInterceptor.class);
     
     private final static String VALIDATE_PREFIX = "validate";
@@ -137,6 +132,11 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
     private boolean programmatic = true;
     private boolean declarative = true;
 
+    @Inject
+    public void setActionValidatorManager(ActionValidatorManager mgr) {
+        this.actionValidatorManager = mgr;
+    }
+    
     /**
      * Determines if {@link Validateable}'s <code>validate()</code> should be called,
      * as well as methods whose name that start with "validate". Defaults to "true".

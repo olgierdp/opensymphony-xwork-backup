@@ -13,10 +13,12 @@ import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
+import com.opensymphony.xwork2.config.entities.InterceptorConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor;
 import com.opensymphony.xwork2.interceptor.ParametersInterceptor;
 import com.opensymphony.xwork2.interceptor.StaticParametersInterceptor;
@@ -50,6 +52,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
     public static final String VALIDATION_SUBPROPERTY_NAME = "subproperty";
     private Configuration configuration;
     private Map<String,String> params;
+    private ObjectFactory objectFactory;
 
     public MockConfigurationProvider() {}
     public MockConfigurationProvider(Map<String,String> params) {
@@ -64,6 +67,11 @@ public class MockConfigurationProvider implements ConfigurationProvider {
     
     public void init(Configuration config) {
         this.configuration = config;
+    }
+    
+    @Inject
+    public void setObjectFactory(ObjectFactory fac) {
+        this.objectFactory = fac;
     }
 
     public void loadPackages() {
@@ -96,8 +104,10 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         defaultPackageContext.addActionConfig(PARAM_INTERCEPTOR_ACTION_NAME, paramInterceptorActionConfig);
 
         interceptors = new ArrayList();
-        interceptors.add(new InterceptorMapping("model", new ModelDrivenInterceptor()));
-        interceptors.add(new InterceptorMapping("params", new ParametersInterceptor()));
+        interceptors.add(new InterceptorMapping("model", 
+                objectFactory.buildInterceptor(new InterceptorConfig("model", ModelDrivenInterceptor.class.getName(), null), new HashMap())));
+        interceptors.add(new InterceptorMapping("params",
+                objectFactory.buildInterceptor(new InterceptorConfig("model", ParametersInterceptor.class.getName(), null), new HashMap())));
 
         ActionConfig modelParamActionConfig = new ActionConfig(null, ModelDrivenAction.class, null, null, interceptors);
         modelParamActionConfig.addResultConfig(new ResultConfig(Action.SUCCESS, MockResult.class.getName()));
@@ -115,10 +125,14 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         results.put("success", new ResultConfig("success", ActionChainResult.class.getName(), successParams));
 
         interceptors = new ArrayList();
-        interceptors.add(new InterceptorMapping("static-params", new StaticParametersInterceptor()));
-        interceptors.add(new InterceptorMapping("model", new ModelDrivenInterceptor()));
-        interceptors.add(new InterceptorMapping("params", new ParametersInterceptor()));
-        interceptors.add(new InterceptorMapping("validation", new ValidationInterceptor()));
+        interceptors.add(new InterceptorMapping("static-params", 
+                objectFactory.buildInterceptor(new InterceptorConfig("model", StaticParametersInterceptor.class.getName(), null), new HashMap())));
+        interceptors.add(new InterceptorMapping("model", 
+                objectFactory.buildInterceptor(new InterceptorConfig("model", ModelDrivenInterceptor.class.getName(), null), new HashMap())));
+        interceptors.add(new InterceptorMapping("params", 
+                objectFactory.buildInterceptor(new InterceptorConfig("model", ParametersInterceptor.class.getName(), null), new HashMap())));
+        interceptors.add(new InterceptorMapping("validation", 
+                objectFactory.buildInterceptor(new InterceptorConfig("model", ValidationInterceptor.class.getName(), null), new HashMap())));
 
         //Explicitly set an out-of-range date for DateRangeValidatorTest
         params = new HashMap();

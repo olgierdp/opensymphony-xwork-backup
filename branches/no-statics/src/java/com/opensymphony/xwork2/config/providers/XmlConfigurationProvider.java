@@ -198,9 +198,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                                     if (throwExceptionOnDuplicateBeans) {
                                         throw new ConfigurationException("Bean type " + ctype + " with the name " +
                                                 name + " has already been loaded by " + loc, child);
-                                    } else {
-                                        continue;
-                                    }
+                                    } 
                                 }
 
                                 // Force loading of class to detect no class def found exceptions

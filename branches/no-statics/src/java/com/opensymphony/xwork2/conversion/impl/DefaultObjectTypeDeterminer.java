@@ -59,14 +59,10 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
     private XWorkConverter xworkConverter;
     
     @Inject
-    public DefaultObjectTypeDeterminer(@Inject XWorkConverter conv, @Inject XWorkBasicConverter basicConv,
-                                       @Inject ReflectionProvider prov) {
+    public DefaultObjectTypeDeterminer(@Inject XWorkConverter conv, @Inject ReflectionProvider prov) {
         this.reflectionProvider = prov;
         this.xworkConverter = conv;
         
-        // HACK: this is to get around a dumb circular dependency
-        basicConv.setObjectTypeDeterminer(this);
-        this.xworkConverter.setDefaultTypeConverter(basicConv);
     }
     
     /**

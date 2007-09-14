@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
 public class LocalizedTextUtilTest extends XWorkTestCase {
 
 	public void testNpeWhenClassIsPrimitive() throws Exception {
-		ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+		ValueStack stack = ActionContext.getContext().getValueStack();
 		stack.push(new MyObject());
 		String result = LocalizedTextUtil.findText(MyObject.class, "someObj.someI18nKey", Locale.ENGLISH, "default message", null, stack);
 		System.out.println(result);
@@ -236,8 +236,6 @@ public class LocalizedTextUtilTest extends XWorkTestCase {
         super.setUp();
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-sample.xml"));
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-        ActionContext.setContext(new ActionContext(stack.getContext()));
         ActionContext.getContext().setLocale(Locale.US);
     }
 

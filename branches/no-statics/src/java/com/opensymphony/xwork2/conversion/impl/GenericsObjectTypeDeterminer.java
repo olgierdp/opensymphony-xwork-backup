@@ -22,6 +22,6 @@ public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
 
     public GenericsObjectTypeDeterminer(XWorkConverter conv,
             XWorkBasicConverter basicConv, ReflectionProvider prov) {
-        super(conv, basicConv, prov);
+        super(conv, prov);
     }
 }

@@ -28,11 +28,13 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.TypeConverter;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.TextUtils;
+import com.opensymphony.xwork2.util.XWorkList;
 
 
 /**
@@ -67,9 +69,22 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     private static String MILLISECOND_FORMAT = ".SSS";
     
     private ObjectTypeDeterminer objectTypeDeterminer;
+    private XWorkConverter xworkConverter;
+    private ObjectFactory objectFactory;
     
+    @Inject
     public void setObjectTypeDeterminer(ObjectTypeDeterminer det) {
         this.objectTypeDeterminer = det;
+    }
+    
+    @Inject
+    public void setXWorkConverter(XWorkConverter conv) {
+        this.xworkConverter = conv;
+    }
+    
+    @Inject
+    public void setObjectFactory(ObjectFactory fac) {
+        this.objectFactory = fac;
     }
 
     public Object convertValue(Map context, Object o, Member member, String s, Object value, Class toType) {
@@ -189,9 +204,9 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = new TreeSet();
         } else {
             if (size > 0) {
-                result = new ArrayList(size);
+                result = new XWorkList(objectFactory, xworkConverter, memberType, size);
             } else {
-                result = new ArrayList();
+                result = new XWorkList(objectFactory, xworkConverter, memberType);
             }
         }
 

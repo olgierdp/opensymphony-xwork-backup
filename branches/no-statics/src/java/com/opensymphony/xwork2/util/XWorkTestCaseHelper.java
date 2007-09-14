@@ -44,12 +44,12 @@ public class XWorkTestCaseHelper {
 
     public static ConfigurationManager loadConfigurationProviders(ConfigurationManager configurationManager,
             ConfigurationProvider... providers) {
-        if (configurationManager != null) {
-            configurationManager.clearConfigurationProviders();
-        } else {
-            configurationManager = new ConfigurationManager();
+        try {
+            tearDown(configurationManager);
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot clean old configuration", e);
         }
-        configurationManager.clearConfigurationProviders();
+        configurationManager = new ConfigurationManager();
         configurationManager.addConfigurationProvider(new ConfigurationProvider() {
             public void destroy() {}
             public void init(Configuration configuration) throws ConfigurationException {}
@@ -69,8 +69,6 @@ public class XWorkTestCaseHelper {
             }
             configurationManager.addConfigurationProvider(prov);
         }
-        configurationManager.getConfiguration().reload(
-                configurationManager.getConfigurationProviders());
         Container container = configurationManager.getConfiguration().getContainer();
         
         // Reset the value stack

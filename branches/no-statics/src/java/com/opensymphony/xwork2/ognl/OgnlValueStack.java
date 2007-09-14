@@ -11,13 +11,16 @@ import java.util.Map;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
+import ognl.PropertyAccessor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
 import com.opensymphony.xwork2.util.CompoundRoot;
@@ -41,14 +44,6 @@ public class OgnlValueStack implements Serializable, ValueStack {
 	
     private static Log LOG = LogFactory.getLog(OgnlValueStack.class);
     private boolean devMode;
-    private boolean allowStaticMethodAccess = true;
-
-    /**
-     * @depreated Since 2.1
-     */
-    public static void reset() {
-        // create a new OgnlValueStackFactory instead
-    }
 
     public static void link(Map context, Class clazz, String name) {
         context.put("__link", new Object[]{clazz, name});
@@ -59,25 +54,25 @@ public class OgnlValueStack implements Serializable, ValueStack {
     transient Map context;
     Class defaultType;
     Map overrides;
-    OgnlUtil ognlUtil;
+    transient OgnlUtil ognlUtil;
     
-    protected OgnlValueStack(XWorkConverter xworkConverter, CompoundRootAccessor accessor, TextProvider prov) {
-        setRoot(xworkConverter, accessor, new CompoundRoot());
+    protected OgnlValueStack(XWorkConverter xworkConverter, CompoundRootAccessor accessor, TextProvider prov, boolean allowStaticAccess) {
+        setRoot(xworkConverter, accessor, new CompoundRoot(), allowStaticAccess);
         push(prov);
     }
 
 
-    protected OgnlValueStack(ValueStack vs, XWorkConverter xworkConverter, CompoundRootAccessor accessor) {
-        setRoot(xworkConverter, accessor, new CompoundRoot(vs.getRoot()));
+    protected OgnlValueStack(ValueStack vs, XWorkConverter xworkConverter, CompoundRootAccessor accessor, boolean allowStaticAccess) {
+        setRoot(xworkConverter, accessor, new CompoundRoot(vs.getRoot()), allowStaticAccess);
     }
     
     @Inject
     public void setOgnlUtil(OgnlUtil ognlUtil) {
         this.ognlUtil = ognlUtil;
     }
-
+    
     protected void setRoot(XWorkConverter xworkConverter,
-            CompoundRootAccessor accessor, CompoundRoot compoundRoot) {
+            CompoundRootAccessor accessor, CompoundRoot compoundRoot, boolean allowStaticMethodAccess) {
         this.root = compoundRoot;
         this.context = Ognl.createDefaultContext(this.root, accessor, new OgnlTypeConverterWrapper(xworkConverter),
                 new StaticMemberAccess(allowStaticMethodAccess));
@@ -90,11 +85,6 @@ public class OgnlValueStack implements Serializable, ValueStack {
     @Inject("devMode")
     public void setDevMode(String mode) {
         devMode = "true".equalsIgnoreCase(mode);
-    }
-
-    @Inject(value="allowStaticMethodAccess", required=false)
-    public void setAllowStaticMethodAccess(String allowStaticMethodAccess) {
-        this.allowStaticMethodAccess = "true".equalsIgnoreCase(allowStaticMethodAccess);
     }
 
     /* (non-Javadoc)
@@ -356,5 +346,21 @@ public class OgnlValueStack implements Serializable, ValueStack {
     public int size() {
         return root.size();
     }
+    
+    private Object readResolve() {
+        // TODO: this should be done better
+        ActionContext ac = ActionContext.getContext();
+        Container cont = ac.getContainer();
+        XWorkConverter xworkConverter = cont.getInstance(XWorkConverter.class);
+        CompoundRootAccessor accessor = (CompoundRootAccessor) cont.getInstance(PropertyAccessor.class, CompoundRoot.class.getName());
+        TextProvider prov = cont.getInstance(TextProvider.class);
+        boolean allow = "true".equals(cont.getInstance(String.class, "allowStaticMethodAccess"));
+        OgnlValueStack aStack = new OgnlValueStack(xworkConverter, accessor, prov, allow);
+        aStack.setOgnlUtil(cont.getInstance(OgnlUtil.class));
+        aStack.setRoot(xworkConverter, accessor, this.root, allow);
+
+        return aStack;
+    }
+
  
 }

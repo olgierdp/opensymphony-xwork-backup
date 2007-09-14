@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork2.util;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkTestCase;
 
 import java.util.HashMap;
@@ -24,7 +25,7 @@ public class TextParseUtilTest extends XWorkTestCase {
 	
 	
 	public void testTranslateVariablesWithEvaluator() throws Exception {
-		ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+		ValueStack stack = ActionContext.getContext().getValueStack();
 		stack.push(new Object() {
 			public String getMyVariable() {
 				return "My Variable ";
@@ -43,7 +44,7 @@ public class TextParseUtilTest extends XWorkTestCase {
 	}
 
     public void testTranslateVariables() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
 
         Object s = TextParseUtil.translateVariables("foo: ${{1, 2, 3}}, bar: ${1}", stack);
         assertEquals("foo: [1, 2, 3], bar: 1", s);
@@ -86,7 +87,7 @@ public class TextParseUtilTest extends XWorkTestCase {
     public void testTranslateVariablesOpenChar() {
         // just a quick test to see if the open char works
         // most test are done the methods above
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
 
         Object s = TextParseUtil.translateVariables('$', "foo: ${{1, 2, 3}}, bar: ${1}", stack);
         assertEquals("foo: [1, 2, 3], bar: 1", s);
@@ -96,14 +97,14 @@ public class TextParseUtilTest extends XWorkTestCase {
     }
 
     public void testTranslateNoVariables() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
 
         Object s = TextParseUtil.translateVariables('$', "foo: ${}", stack);
         assertEquals("foo: ", s);
     }
     
     public void testTranslateVariablesNoRecursive() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(new HashMap() {{ put("foo", "${1+1}"); }});
 
         Object s = TextParseUtil.translateVariables('$', "foo: ${foo}", stack, String.class, null, 1);
@@ -111,7 +112,7 @@ public class TextParseUtilTest extends XWorkTestCase {
     }
     
     public void testTranslateVariablesRecursive() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(new HashMap() {{ put("foo", "${1+1}"); }});
 
         Object s = TextParseUtil.translateVariables('$', "foo: ${foo}", stack, String.class, null, 2);

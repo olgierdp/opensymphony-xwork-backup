@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
@@ -21,7 +22,7 @@ import junit.framework.TestCase;
  * @author tm_jee
  * @version $Date$ $Id$
  */
-public class RepopulateConversionErrorFieldValidatorSupportTest extends TestCase {
+public class RepopulateConversionErrorFieldValidatorSupportTest extends XWorkTestCase {
 
 	
 	InternalRepopulateConversionErrorFieldValidatorSupport validator1;
@@ -69,7 +70,8 @@ public class RepopulateConversionErrorFieldValidatorSupportTest extends TestCase
 	
 	
 	protected void setUp() throws Exception {
-		ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+	    super.setUp();
+		ValueStack stack = ActionContext.getContext().getValueStack();
 		MockActionInvocation invocation = new MockActionInvocation();
 		invocation.setStack(stack);
 		ActionContext.getContext().setValueStack(stack);
@@ -97,6 +99,7 @@ public class RepopulateConversionErrorFieldValidatorSupportTest extends TestCase
 	}
 	
 	protected void tearDown() throws Exception {
+	    super.tearDown();
 		validator1 = null;
 		action = null;
 	}

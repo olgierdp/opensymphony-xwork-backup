@@ -4,8 +4,11 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
+import java.util.HashMap;
+
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.config.entities.InterceptorConfig;
 import com.opensymphony.xwork2.mock.MockActionProxy;
 import com.opensymphony.xwork2.validator.ValidationInterceptor;
 
@@ -17,7 +20,7 @@ import junit.framework.TestCase;
  *
  * @author Jason Carreira
  */
-public class DefaultWorkflowInterceptorTest extends TestCase {
+public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
 
     DefaultWorkflowInterceptor interceptor;
     private ActionInvocation invocation;
@@ -46,7 +49,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         invocationMock.expectAndReturn("invoke", result);
         invocationMock.expectAndReturn("invoke", result);
         
-        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        ValidationInterceptor validationInterceptor = create();
         validationInterceptor.intercept(invocation);
         assertEquals(result, interceptor.intercept(invocation));
     }
@@ -68,7 +71,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         invocationMock.expectAndReturn("invoke", Action.INPUT);
         invocationMock.expectAndReturn("invoke", Action.INPUT);
         
-        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        ValidationInterceptor validationInterceptor = create();
         validationInterceptor.intercept(invocation);
         assertEquals(Action.INPUT, interceptor.intercept(invocation));
     }
@@ -82,7 +85,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         proxyMock.expectAndReturn("getMethod", "execute");        
         invocationMock.expectAndReturn("invoke", result);
                 
-        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        ValidationInterceptor validationInterceptor = create();
         validationInterceptor.setExcludeMethods("execute");
         interceptor.setExcludeMethods("execute");
         validationInterceptor.intercept(invocation);
@@ -107,7 +110,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         invocationMock.expectAndReturn("invoke", result);
         invocationMock.expectAndReturn("invoke", result);
         
-        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        ValidationInterceptor validationInterceptor = create();
         validationInterceptor.intercept(invocation);
         validationInterceptor.setExcludeMethods("*");
         assertEquals(result, interceptor.intercept(invocation));
@@ -133,7 +136,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         actionMock.expectAndReturn("hasErrors", false);
         invocationMock.expectAndReturn("invoke", result);
         
-        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        ValidationInterceptor validationInterceptor = create();
         validationInterceptor.setIncludeMethods("*");
         validationInterceptor.intercept(invocation);
         
@@ -161,7 +164,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         actionMock.expectAndReturn("hasErrors", false);
         invocationMock.expectAndReturn("invoke", result);
         
-        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        ValidationInterceptor validationInterceptor = create();
         validationInterceptor.setIncludeMethods("execute");
         validationInterceptor.intercept(invocation);
         
@@ -190,7 +193,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         actionMock.expectAndReturn("hasErrors", false);
         invocationMock.expectAndReturn("invoke", result);
         
-        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        ValidationInterceptor validationInterceptor = create();
         validationInterceptor.setExcludeMethods("execute,input,validate");
         validationInterceptor.setIncludeMethods("execute");
         validationInterceptor.intercept(invocation);
@@ -220,7 +223,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         actionMock.expectAndReturn("hasErrors", false);
         invocationMock.expectAndReturn("invoke", result);
         
-        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        ValidationInterceptor validationInterceptor = create();
         validationInterceptor.setExcludeMethods("*");
         validationInterceptor.setIncludeMethods("*");
         validationInterceptor.intercept(invocation);
@@ -250,7 +253,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         actionMock.expectAndReturn("hasErrors", false);
         invocationMock.expectAndReturn("invoke", result);
         
-        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        ValidationInterceptor validationInterceptor = create();
         validationInterceptor.setExcludeMethods("*");
         validationInterceptor.setIncludeMethods("execute");
         validationInterceptor.intercept(invocation);
@@ -272,7 +275,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("invoke", result);
         
-        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        ValidationInterceptor validationInterceptor = create();
         validationInterceptor.setExcludeMethods("execute,input,validate");
         validationInterceptor.setIncludeMethods("*");
         validationInterceptor.intercept(invocation);
@@ -302,7 +305,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         actionMock.expectAndReturn("hasErrors", false);
         invocationMock.expectAndReturn("invoke", result);
         
-        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        ValidationInterceptor validationInterceptor = create();
         validationInterceptor.setExcludeMethods("input,validate");
         validationInterceptor.setIncludeMethods("*");
         validationInterceptor.intercept(invocation);
@@ -329,7 +332,7 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         invocationMock.expectAndReturn("invoke", result);
         invocationMock.expectAndReturn("invoke", result);
         
-        ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+        ValidationInterceptor validationInterceptor = create();
         validationInterceptor.setExcludeMethods("execute,input,validate");
         validationInterceptor.setIncludeMethods("execute");
         validationInterceptor.intercept(invocation);
@@ -354,6 +357,11 @@ public class DefaultWorkflowInterceptorTest extends TestCase {
         super.tearDown();
         actionMock.verify();
         invocationMock.verify();
+    }
+    
+    protected ValidationInterceptor create() {
+        ObjectFactory objectFactory = container.getInstance(ObjectFactory.class);
+        return (ValidationInterceptor) objectFactory.buildInterceptor(new InterceptorConfig("model", ValidationInterceptor.class.getName(), null), new HashMap());
     }
 
     

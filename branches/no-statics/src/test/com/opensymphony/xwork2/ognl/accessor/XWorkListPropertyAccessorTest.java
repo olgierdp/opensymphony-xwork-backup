@@ -3,6 +3,7 @@
  */
 package com.opensymphony.xwork2.ognl.accessor;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.util.ListHolder;
 import com.opensymphony.xwork2.util.ValueStack;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 public class XWorkListPropertyAccessorTest extends XWorkTestCase {
 
     public void testContains() {
-        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
+        ValueStack vs = ActionContext.getContext().getValueStack();
         ListHolder listHolder = new ListHolder();
         vs.push(listHolder);
 
@@ -37,7 +38,7 @@ public class XWorkListPropertyAccessorTest extends XWorkTestCase {
     }
 
     public void testCanAccessListSizeProperty() {
-        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
+        ValueStack vs = ActionContext.getContext().getValueStack();
         List myList = new ArrayList();
         myList.add("a");
         myList.add("b");

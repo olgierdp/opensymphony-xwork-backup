@@ -6,24 +6,38 @@
  * Created on 6/10/2003
  *
  */
-package com.opensymphony.xwork2.util;
+package com.opensymphony.xwork2.ognl;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import ognl.Ognl;
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.StubConfigurationProvider;
 import com.opensymphony.xwork2.XWorkTestCase;
-import com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer;
+import com.opensymphony.xwork2.config.ConfigurationException;
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.impl.FooBarConverter;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.inject.ContainerBuilder;
+import com.opensymphony.xwork2.inject.Context;
+import com.opensymphony.xwork2.inject.Factory;
+import com.opensymphony.xwork2.inject.Scope;
 import com.opensymphony.xwork2.mock.MockObjectTypeDeterminer;
-import com.opensymphony.xwork2.ognl.OgnlTypeConverterWrapper;
-import com.opensymphony.xwork2.ognl.OgnlUtil;
+import com.opensymphony.xwork2.ognl.accessor.XWorkListPropertyAccessor;
+import com.opensymphony.xwork2.util.Bar;
+import com.opensymphony.xwork2.util.Cat;
+import com.opensymphony.xwork2.util.Foo;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 
 
@@ -32,7 +46,14 @@ import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
  * @author tm_jee
  */
 public class SetPropertiesTest extends XWorkTestCase {
-
+    
+    private OgnlUtil ognlUtil;
+    
+    public void setUp() throws Exception {
+        super.setUp();
+        ognlUtil = container.getInstance(OgnlUtil.class);
+        ((OgnlValueStack)ActionContext.getContext().getValueStack()).setDevMode("true");
+    }
     public void testOgnlUtilEmptyStringAsLong() {
         Bar bar = new Bar();
         Map context = Ognl.createDefaultContext(bar);
@@ -42,21 +63,21 @@ public class SetPropertiesTest extends XWorkTestCase {
         HashMap props = new HashMap();
         props.put("id", "");
 
-        OgnlUtil.setProperties(props, bar, context);
+        ognlUtil.setProperties(props, bar, context);
         assertNull(bar.getId());
         assertEquals(0, bar.getFieldErrors().size());
 
         props.put("id", new String[]{""});
 
         bar.setId(null);
-        OgnlUtil.setProperties(props, bar, context);
+        ognlUtil.setProperties(props, bar, context);
         assertNull(bar.getId());
         assertEquals(0, bar.getFieldErrors().size());
     }
 
     public void testSetCollectionByConverterFromArray() {
         Foo foo = new Foo();
-        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
+        ValueStack vs = ActionContext.getContext().getValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         XWorkConverter c = (XWorkConverter)((OgnlTypeConverterWrapper) Ognl.getTypeConverter(vs.getContext())).getTarget();
@@ -72,7 +93,7 @@ public class SetPropertiesTest extends XWorkTestCase {
 
     public void testSetCollectionByConverterFromCollection() {
         Foo foo = new Foo();
-        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
+        ValueStack vs = ActionContext.getContext().getValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         XWorkConverter c = (XWorkConverter)((OgnlTypeConverterWrapper) Ognl.getTypeConverter(vs.getContext())).getTarget();
@@ -91,7 +112,7 @@ public class SetPropertiesTest extends XWorkTestCase {
     
     public void testValueStackSetValueEmptyStringAsLong() {
         Bar bar = new Bar();
-        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
+        ValueStack vs = ActionContext.getContext().getValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         vs.push(bar);
 
@@ -105,21 +126,31 @@ public class SetPropertiesTest extends XWorkTestCase {
         assertNull(bar.getId());
         assertEquals(0, bar.getFieldErrors().size());
     }
-    public void testAddingToListsWithObjects() {
+    public void testAddingToListsWithObjectsTrue() {
         doTestAddingToListsWithObjects(true);
+    }
+    public void testAddingToListsWithObjectsFalse() {
         doTestAddingToListsWithObjects(false);
 
     }
-    public void doTestAddingToListsWithObjects(boolean allowAdditions) {
+    public void doTestAddingToListsWithObjects(final boolean allowAdditions) {
 
-        MockObjectTypeDeterminer determiner
-        =new MockObjectTypeDeterminer(null,Cat.class,null,allowAdditions);
-        XWorkConverter.getInstance().setObjectTypeDeterminer(determiner);
+        loadConfigurationProviders(new StubConfigurationProvider() {
+            public void register(ContainerBuilder builder,
+                    LocatableProperties props) throws ConfigurationException {
+                builder.factory(ObjectTypeDeterminer.class, new Factory() {
+                    public Object create(Context context) throws Exception {
+                        return new MockObjectTypeDeterminer(null,Cat.class,null,allowAdditions);
+                    }
+                    
+                });
+            }
+        });
 
         Foo foo = new Foo();
         foo.setMoreCats(new ArrayList());
         String spielname = "Spielen";
-        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
+        ValueStack vs = ActionContext.getContext().getValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         vs.getContext().put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
         vs.push(foo);
@@ -156,22 +187,24 @@ public class SetPropertiesTest extends XWorkTestCase {
 
     }
 
-    public void testAddingToMapsWithObjects() {
+    
+    public void testAddingToMapsWithObjectsTrue() throws Exception {
         doTestAddingToMapsWithObjects(true);
+    }
+    
+    public void testAddingToMapsWithObjectsFalse() throws Exception {
         doTestAddingToMapsWithObjects(false);
 
     }
 
-    public void doTestAddingToMapsWithObjects(boolean allowAdditions) {
+    public void doTestAddingToMapsWithObjects(boolean allowAdditions) throws Exception {
 
-        MockObjectTypeDeterminer determiner
-        =new MockObjectTypeDeterminer(Long.class,Cat.class,null,allowAdditions);
-        XWorkConverter.getInstance().setObjectTypeDeterminer(determiner);
+        loadButAdd(ObjectTypeDeterminer.class, new MockObjectTypeDeterminer(Long.class,Cat.class,null,allowAdditions));
 
         Foo foo = new Foo();
         foo.setAnotherCatMap(new HashMap());
         String spielname = "Spielen";
-        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
+        ValueStack vs = ActionContext.getContext().getValueStack();
         vs.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         vs.getContext().put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
         vs.push(foo);
@@ -188,17 +221,18 @@ public class SetPropertiesTest extends XWorkTestCase {
 
 
     }
-
-
-    public void testAddingAndModifyingCollectionWithObjects() {
+    
+    
+    public void testAddingAndModifyingCollectionWithObjectsSet() {
         doTestAddingAndModifyingCollectionWithObjects(new HashSet());
+    }
+    public void testAddingAndModifyingCollectionWithObjectsList() {
         doTestAddingAndModifyingCollectionWithObjects(new ArrayList());
 
     }
     public void doTestAddingAndModifyingCollectionWithObjects(Collection barColl) {
 
-        XWorkConverter.getInstance().setObjectTypeDeterminer(new DefaultObjectTypeDeterminer());
-        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
+        ValueStack vs = ActionContext.getContext().getValueStack();
         Foo foo = new Foo();
 
         foo.setBarCollection(barColl);
@@ -246,16 +280,23 @@ public class SetPropertiesTest extends XWorkTestCase {
         }
 
     }
-
     public void testAddingToCollectionBasedOnPermission() {
-
-        MockObjectTypeDeterminer determiner
-        =new MockObjectTypeDeterminer(Long.class,Bar.class,"id",true);
-        XWorkConverter.getInstance().setObjectTypeDeterminer(determiner);
+        final MockObjectTypeDeterminer determiner = new MockObjectTypeDeterminer(Long.class,Bar.class,"id",true);
+        loadConfigurationProviders(new StubConfigurationProvider() {
+            public void register(ContainerBuilder builder,
+                    LocatableProperties props) throws ConfigurationException {
+                builder.factory(ObjectTypeDeterminer.class, new Factory() {
+                    public Object create(Context context) throws Exception {
+                        return determiner;
+                    }
+                    
+                }, Scope.SINGLETON);
+            }
+        });
 
         Collection barColl=new HashSet();
 
-        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
+        ValueStack vs = ActionContext.getContext().getValueStack();
         ReflectionContextState.setCreatingNullObjects(vs.getContext(), true);
         ReflectionContextState.setReportingConversionErrors(vs.getContext(), true);
         Foo foo = new Foo();
@@ -287,6 +328,5 @@ public class SetPropertiesTest extends XWorkTestCase {
 
 
     }
-
 
 }

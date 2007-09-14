@@ -105,10 +105,9 @@ public class ExpressionValidatorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-        ActionContext.setContext(new ActionContext(stack.getContext()));
+        super.setUp();
 
-        loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
+        loadConfigurationProviders(new MockConfigurationProvider());
     }
 
 }

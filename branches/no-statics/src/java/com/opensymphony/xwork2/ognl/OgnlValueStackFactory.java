@@ -45,6 +45,7 @@ public class OgnlValueStackFactory implements ValueStackFactory {
     private CompoundRootAccessor compoundRootAccessor;
     private TextProvider textProvider;
     private Container container;
+    private boolean allowStaticMethodAccess;
 
     @Inject
     public void setXWorkConverter(XWorkConverter conv) {
@@ -55,15 +56,20 @@ public class OgnlValueStackFactory implements ValueStackFactory {
     public void setTextProvider(TextProvider textProvider) {
         this.textProvider = textProvider;
     }
+    
+    @Inject(value="allowStaticMethodAccess", required=false)
+    public void setAllowStaticMethodAccess(String allowStaticMethodAccess) {
+        this.allowStaticMethodAccess = "true".equalsIgnoreCase(allowStaticMethodAccess);
+    }
 
     public ValueStack createValueStack() {
-        ValueStack stack = new OgnlValueStack(xworkConverter, compoundRootAccessor, textProvider);
+        ValueStack stack = new OgnlValueStack(xworkConverter, compoundRootAccessor, textProvider, allowStaticMethodAccess);
         container.inject(stack);
         return stack;
     }
 
     public ValueStack createValueStack(ValueStack stack) {
-        ValueStack result = new OgnlValueStack(stack, xworkConverter, compoundRootAccessor);
+        ValueStack result = new OgnlValueStack(stack, xworkConverter, compoundRootAccessor, allowStaticMethodAccess);
         container.inject(result);
         return result;
     }
@@ -75,6 +81,9 @@ public class OgnlValueStackFactory implements ValueStackFactory {
             for (String name : names) {
                 Class cls = Class.forName(name);
                 if (cls != null) {
+                    if (Map.class.isAssignableFrom(cls)) {
+                        PropertyAccessor acc = container.getInstance(PropertyAccessor.class, name);
+                    }
                     OgnlRuntime.setPropertyAccessor(cls, container.getInstance(PropertyAccessor.class, name));
                     if (compoundRootAccessor == null && CompoundRoot.class.isAssignableFrom(cls)) {
                         compoundRootAccessor = (CompoundRootAccessor) container.getInstance(PropertyAccessor.class, name);

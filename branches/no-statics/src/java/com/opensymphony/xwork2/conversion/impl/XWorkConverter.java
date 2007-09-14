@@ -211,8 +211,8 @@ public class XWorkConverter extends DefaultTypeConverter {
         this.objectFactory = factory;
     }
     
-    // HACK: Will actually be set by default object type determiner to get around the circular dep
-    public void setDefaultTypeConverter(TypeConverter conv) {
+    @Inject
+    public void setDefaultTypeConverter(XWorkBasicConverter conv) {
         this.defaultTypeConverter = conv;
     }
     

@@ -16,11 +16,13 @@ import com.opensymphony.xwork2.config.entities.*;
 import com.opensymphony.xwork2.config.providers.InterceptorBuilder;
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer;
+import com.opensymphony.xwork2.conversion.impl.XWorkBasicConverter;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Context;
 import com.opensymphony.xwork2.inject.Factory;
+import com.opensymphony.xwork2.inject.Scope;
 import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.ognl.OgnlUtil;
 import com.opensymphony.xwork2.ognl.OgnlValueStackFactory;
@@ -184,14 +186,15 @@ public class DefaultConfiguration implements Configuration {
 
     protected Container createBootstrapContainer() {
         ContainerBuilder builder = new ContainerBuilder();
-        builder.factory(ObjectFactory.class);
-        builder.factory(ReflectionProvider.class, OgnlReflectionProvider.class);
-        builder.factory(ValueStackFactory.class, OgnlValueStackFactory.class);
-        builder.factory(XWorkConverter.class);
-        builder.factory(TextProvider.class, DefaultTextProvider.class);
-        builder.factory(ObjectTypeDeterminer.class, DefaultObjectTypeDeterminer.class);
-        builder.factory(PropertyAccessor.class, CompoundRoot.class.getName(), CompoundRootAccessor.class);
-        builder.factory(OgnlUtil.class);
+        builder.factory(ObjectFactory.class, Scope.SINGLETON);
+        builder.factory(ReflectionProvider.class, OgnlReflectionProvider.class, Scope.SINGLETON);
+        builder.factory(ValueStackFactory.class, OgnlValueStackFactory.class, Scope.SINGLETON);
+        builder.factory(XWorkConverter.class, Scope.SINGLETON);
+        builder.factory(XWorkBasicConverter.class, Scope.SINGLETON);
+        builder.factory(TextProvider.class, DefaultTextProvider.class, Scope.SINGLETON);
+        builder.factory(ObjectTypeDeterminer.class, DefaultObjectTypeDeterminer.class, Scope.SINGLETON);
+        builder.factory(PropertyAccessor.class, CompoundRoot.class.getName(), CompoundRootAccessor.class, Scope.SINGLETON);
+        builder.factory(OgnlUtil.class, Scope.SINGLETON);
         builder.constant("devMode", "false");
         return builder.create(true);
     }

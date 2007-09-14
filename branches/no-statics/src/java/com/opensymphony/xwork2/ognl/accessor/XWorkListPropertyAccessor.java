@@ -14,6 +14,7 @@ import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 
 import ognl.ListPropertyAccessor;
 import ognl.OgnlException;
+import ognl.PropertyAccessor;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,6 +35,11 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
     private ObjectFactory objectFactory;
     private ObjectTypeDeterminer objectTypeDeterminer;
     private OgnlUtil ognlUtil;
+    
+    @Inject("java.util.Collection")
+    public void setXWorkCollectionPropertyAccessor(PropertyAccessor acc) {
+        this._sAcc = (XWorkCollectionPropertyAccessor) acc;
+    }
     
     @Inject
     public void setXWorkConverter(XWorkConverter conv) {

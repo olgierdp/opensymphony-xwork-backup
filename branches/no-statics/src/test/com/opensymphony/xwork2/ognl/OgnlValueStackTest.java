@@ -43,10 +43,13 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
     
     private OgnlValueStack createValueStack() {
+        return createValueStack(true);
+    }
+    private OgnlValueStack createValueStack(boolean allowStaticMethodAccess) {
         OgnlValueStack stack = new OgnlValueStack(
                 container.getInstance(XWorkConverter.class),
                 (CompoundRootAccessor)container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName()),
-                container.getInstance(TextProvider.class));
+                container.getInstance(TextProvider.class), allowStaticMethodAccess);
         container.inject(stack);
         return stack;
     }
@@ -103,8 +106,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
     
     public void testStaticMethodDisallow() {
-        OgnlValueStack vs = createValueStack();
-        vs.setAllowStaticMethodAccess("false");
+        OgnlValueStack vs = createValueStack(false);
 
         Dog dog = new Dog();
         dog.setDeity("fido");
@@ -718,7 +720,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         
         OgnlValueStack stack2 = new OgnlValueStack(stack,
                 container.getInstance(XWorkConverter.class),
-                (CompoundRootAccessor)container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName()));
+                (CompoundRootAccessor)container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName()), true);
         container.inject(stack2);
 
         assertEquals(stack.getRoot(), stack2.getRoot());

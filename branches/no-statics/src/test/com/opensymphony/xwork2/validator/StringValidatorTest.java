@@ -182,9 +182,7 @@ public class StringValidatorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-        ActionContext.setContext(new ActionContext(stack.getContext()));
-
+        super.setUp();
         loadConfigurationProviders(new MockConfigurationProvider());
     }
 }
