@@ -68,7 +68,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         prod.setName("coca cola");
         prod.setPrice(5.99);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
@@ -85,7 +85,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         prod.setPrice(5.99);
         prod.setVolume(new Double(12.34));
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
@@ -100,7 +100,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         MyTestProduct prod = new MyTestProduct();
         prod.setName("coca cola");
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
@@ -123,7 +123,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         prod.setName("coca cola");
         prod.setPrice(9.95);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
@@ -149,7 +149,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         prod.setName("coca cola");
         prod.setPrice(9.95);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
@@ -169,7 +169,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
     }
 
     public void testNoValue() throws Exception {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         ActionContext.getContext().setValueStack(stack);
 
         DoubleRangeFieldValidator val = new DoubleRangeFieldValidator();
@@ -184,7 +184,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-default.xml"), new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
     }
 
     private class MyTestProduct {

@@ -7,6 +7,8 @@ package com.opensymphony.xwork2.validator;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.TestBean;
+import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 
@@ -21,13 +23,14 @@ import java.util.*;
  * @author Jason Carreira
  *         Created Aug 4, 2003 1:26:01 AM
  */
-public class VisitorFieldValidatorTest extends TestCase {
+public class VisitorFieldValidatorTest extends XWorkTestCase {
 
     protected VisitorValidatorTestAction action;
     private Locale origLocale;
 
 
-    public void setUp() {
+    public void setUp() throws Exception {
+        super.setUp();
         origLocale = Locale.getDefault();
         Locale.setDefault(Locale.US);
 
@@ -37,10 +40,6 @@ public class VisitorFieldValidatorTest extends TestCase {
         Calendar cal = new GregorianCalendar(1900, 01, 01);
         bean.setBirth(cal.getTime());
         bean.setCount(-1);
-
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-        ActionContext.setContext(new ActionContext(stack.getContext()));
-        ObjectFactory.setObjectFactory(new ObjectFactory());
     }
 
     public void testArrayValidation() throws Exception {
@@ -148,6 +147,6 @@ public class VisitorFieldValidatorTest extends TestCase {
     private void validate(String context) throws ValidationException {
         ActionContext actionContext = ActionContext.getContext();
         actionContext.setName(context);
-        ActionValidatorManagerFactory.getInstance().validate(action, context);
+        container.getInstance(ActionValidatorManager.class).validate(action, context);
     }
 }

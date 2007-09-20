@@ -16,7 +16,7 @@ import org.springframework.context.ApplicationContext;
 public class ActionsFromSpringTest extends XWorkTestCase {
     private ApplicationContext appContext;
 
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
 
         // Set up XWork

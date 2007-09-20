@@ -5,8 +5,10 @@
 package com.opensymphony.xwork2.validator.validators;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.ognl.OgnlValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.ValidationException;
 import com.opensymphony.xwork2.validator.validators.ValidatorSupport;
 
@@ -16,12 +18,13 @@ import junit.framework.TestCase;
  * @author tmjee
  * @version $Date$ $Id$
  */
-public class ValidatorSupportTest extends TestCase {
+public class ValidatorSupportTest extends XWorkTestCase {
 
 	public void testConditionalParseExpression()  throws Exception {
 		ValueStack oldStack = ActionContext.getContext().getValueStack();
 		try {
-			OgnlValueStack stack = new OgnlValueStack();
+			OgnlValueStack stack = (OgnlValueStack) container.getInstance(ValueStackFactory.class).createValueStack();
+			stack.getContext().put(ActionContext.CONTAINER, container);
 			stack.getContext().put("something", "somevalue");
 			ActionContext.getContext().setValueStack(stack);
 			ValidatorSupport validator = new ValidatorSupport() {

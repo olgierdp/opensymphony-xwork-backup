@@ -60,12 +60,14 @@ public class DateRangeValidatorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
+        super.setUp();
         origLocale = Locale.getDefault();
         Locale.setDefault(Locale.US);
-        loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
+        loadConfigurationProviders(new MockConfigurationProvider());
     }
 
     protected void tearDown() throws Exception {
+        super.tearDown();
         Locale.setDefault(origLocale);
     }
 }

@@ -7,9 +7,11 @@ package com.opensymphony.xwork2.interceptor;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.conversion.impl.InstantiatingNullHandler;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.*;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -50,12 +52,12 @@ import org.apache.commons.logging.LogFactory;
  * #acceptableName(String)} method. In addition to this method, if the action being invoked implements the {@link
  * ParameterNameAware} interface, the action will be consulted to determine if the parameter should be set.
  *
- * <p/> In addition to these restrictions, a flag ({@link XWorkMethodAccessor#DENY_METHOD_EXECUTION}) is set such that
+ * <p/> In addition to these restrictions, a flag ({@link ReflectionContextState#DENY_METHOD_EXECUTION}) is set such that
  * no methods are allowed to be invoked. That means that any expression such as <i>person.doSomething()</i> or
  * <i>person.getName()</i> will be explicitely forbidden. This is needed to make sure that your application is not
  * exposed to attacks by malicious users.
  *
- * <p/> While this interceptor is being invoked, a flag ({@link InstantiatingNullHandler#CREATE_NULL_OBJECTS}) is turned
+ * <p/> While this interceptor is being invoked, a flag ({@link ReflectionContextState#CREATE_NULL_OBJECTS}) is turned
  * on to ensure that any null reference is automatically created - if possible. See the type conversion documentation
  * and the {@link InstantiatingNullHandler} javadocs for more information.
  *
@@ -151,16 +153,16 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             if (parameters != null) {
             	Map contextMap = ac.getContextMap();
                 try {
-                	OgnlContextState.setCreatingNullObjects(contextMap, true);
-                	OgnlContextState.setDenyMethodExecution(contextMap, true);
-                	OgnlContextState.setReportingConversionErrors(contextMap, true);
+                	ReflectionContextState.setCreatingNullObjects(contextMap, true);
+                	ReflectionContextState.setDenyMethodExecution(contextMap, true);
+                	ReflectionContextState.setReportingConversionErrors(contextMap, true);
 
                     ValueStack stack = ac.getValueStack();
                     setParameters(action, stack, parameters);
                 } finally {
-                	OgnlContextState.setCreatingNullObjects(contextMap, false);
-                	OgnlContextState.setDenyMethodExecution(contextMap, false);
-                	OgnlContextState.setReportingConversionErrors(contextMap, false);
+                	ReflectionContextState.setCreatingNullObjects(contextMap, false);
+                	ReflectionContextState.setDenyMethodExecution(contextMap, false);
+                	ReflectionContextState.setReportingConversionErrors(contextMap, false);
                 }
             }
         }

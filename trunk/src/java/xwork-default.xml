@@ -1,25 +1,6 @@
 <!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 2.0//EN" "http://www.opensymphony.com/xwork/xwork-2.0.dtd">
 
 <xwork>
-
-    <bean class="com.opensymphony.xwork2.ObjectFactory"/>
-    <bean type="com.opensymphony.xwork2.ActionProxyFactory"
-          class="com.opensymphony.xwork2.DefaultActionProxyFactory"/>
-    <bean type="com.opensymphony.xwork2.conversion.ObjectTypeDeterminer"
-          class="com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer"/>
-    <bean name="xwork1"
-          type="com.opensymphony.xwork2.conversion.ObjectTypeDeterminer"
-          class="com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer"/>
-    <bean name="xwork1"
-          type="com.opensymphony.xwork2.conversion.impl.XWorkConverter"
-          class="com.opensymphony.xwork2.conversion.impl.XWorkConverter"/>
-    <bean type="com.opensymphony.xwork2.conversion.impl.XWorkConverter"
-          class="com.opensymphony.xwork2.conversion.impl.XWorkConverter"/>
-
-    <!--  static injections -->
-    <bean class="com.opensymphony.xwork2.util.OgnlValueStack" static="true"/>
-    <bean class="com.opensymphony.xwork2.conversion.impl.XWorkConverter" static="true"/>
-
     <package name="xwork-default" abstract="true">
 
         <!-- START SNIPPET: xwork2-default-result-types -->

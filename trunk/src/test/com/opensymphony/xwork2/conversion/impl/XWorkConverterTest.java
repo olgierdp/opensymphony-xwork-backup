@@ -7,17 +7,17 @@ package com.opensymphony.xwork2.conversion.impl;
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
+import com.opensymphony.xwork2.ognl.OgnlValueStack;
 import com.opensymphony.xwork2.test.ModelDrivenAction2;
 import com.opensymphony.xwork2.test.User;
 import com.opensymphony.xwork2.util.Bar;
 import com.opensymphony.xwork2.util.Cat;
 import com.opensymphony.xwork2.util.Foo;
 import com.opensymphony.xwork2.util.FurColor;
-import com.opensymphony.xwork2.util.InstantiatingNullHandler;
-import com.opensymphony.xwork2.util.OgnlValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
-import com.opensymphony.xwork2.util.XWorkMethodAccessor;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
@@ -39,6 +39,7 @@ public class XWorkConverterTest extends XWorkTestCase {
 
     Map context;
     XWorkConverter converter;
+    OgnlValueStack stack;
 
 //    public void testConversionToSetKeepsOriginalSetAndReplacesContents() {
 //        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
@@ -107,7 +108,6 @@ public class XWorkConverterTest extends XWorkTestCase {
         SimpleAction action = new SimpleAction();
         action.setBean(new TestBean());
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -128,7 +128,6 @@ public class XWorkConverterTest extends XWorkTestCase {
         SimpleAction action = new SimpleAction();
         action.setDate(null);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -147,7 +146,6 @@ public class XWorkConverterTest extends XWorkTestCase {
 
     public void testFieldErrorMessageAddedWhenConversionFailsOnModelDriven() {
         ModelDrivenAction action = new ModelDrivenAction();
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -188,7 +186,6 @@ public class XWorkConverterTest extends XWorkTestCase {
 
     public void testFindConversionErrorMessage() {
         ModelDrivenAction action = new ModelDrivenAction();
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -203,7 +200,6 @@ public class XWorkConverterTest extends XWorkTestCase {
 
     public void testFindConversionMappingForInterface() {
         ModelDrivenAction2 action = new ModelDrivenAction2();
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -232,7 +228,6 @@ public class XWorkConverterTest extends XWorkTestCase {
         SimpleAction action = new SimpleAction();
         action.setBean(new TestBean());
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -343,10 +338,9 @@ public class XWorkConverterTest extends XWorkTestCase {
     }
 
     public void testStringToCollectionConversion() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         Map stackContext = stack.getContext();
-        stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-        stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+        stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
+        stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
         stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         User user = new User();
@@ -579,14 +573,12 @@ public class XWorkConverterTest extends XWorkTestCase {
     }
 
     public void testValueStackWithTypeParameter() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
         stack.push(new Foo1());
         Bar1 bar = (Bar1) stack.findValue("bar", Bar1.class);
         assertNotNull(bar);
     }
 
     public void testNestedConverters() {
-        OgnlValueStack stack = new OgnlValueStack();
         Cat cat = new Cat();
         cat.setFoo(new Foo());
         stack.push(cat);
@@ -607,21 +599,14 @@ public class XWorkConverterTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        ObjectFactory.setObjectFactory(new ObjectFactory());
+        super.setUp();
 
-        configurationManager = new ConfigurationManager();
-        converter = XWorkConverter.getInstance();
-        configurationManager.destroyConfiguration();
+        converter = container.getInstance(XWorkConverter.class);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-        ActionContext ac = new ActionContext(stack.getContext());
+        ActionContext ac = ActionContext.getContext();
         ac.setLocale(Locale.US);
-        ActionContext.setContext(ac);
         context = ac.getContextMap();
+        stack = (OgnlValueStack) ac.getValueStack();
     }
 
-    protected void tearDown() throws Exception {
-        XWorkConverter.resetInstance();
-        ActionContext.setContext(null);
-    }
 }

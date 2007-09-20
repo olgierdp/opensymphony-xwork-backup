@@ -35,11 +35,7 @@ public class AnnotationWorkflowInterceptorTest extends XWorkTestCase {
     private final AnnotationWorkflowInterceptor annotationInterceptor = new AnnotationWorkflowInterceptor();
 
     public void setUp() {
-        loadConfigurationProviders(new MockConfigurationProvider());
-
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-        ActionContext.setContext(new ActionContext(stack.getContext()));
-        
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-default.xml"), new MockConfigurationProvider());
     }
 
     public void testInterceptsBeforeAndAfter() throws Exception {

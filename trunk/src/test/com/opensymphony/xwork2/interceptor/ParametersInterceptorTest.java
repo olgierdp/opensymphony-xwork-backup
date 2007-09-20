@@ -8,11 +8,16 @@ import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
-import com.opensymphony.xwork2.util.OgnlValueStack;
+import com.opensymphony.xwork2.ognl.OgnlValueStack;
+import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
+import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.ValueStack;
 
 import java.util.*;
+
+import ognl.PropertyAccessor;
 
 
 /**
@@ -24,12 +29,9 @@ public class ParametersInterceptorTest extends XWorkTestCase {
 
     public void testParameterNameAware() {
         ParametersInterceptor pi = new ParametersInterceptor();
+        container.inject(pi);
         final Map actual = new HashMap();
-        ValueStack stack = new OgnlValueStack() {
-            public void setValue(String expr, Object value) {
-                actual.put(expr, value);
-            }
-        };
+        ValueStack stack = createStubValueStack(actual);
         final Map expected = new HashMap() {
             {
                 put("fooKey", "fooValue");
@@ -121,12 +123,13 @@ public class ParametersInterceptorTest extends XWorkTestCase {
     }
 
     public void testNonexistentParametersGetLoggedInDevMode() throws Exception {
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), 
+                new MockConfigurationProvider(Collections.singletonMap("devMode", "true")));
         Map params = new HashMap();
         params.put("not_a_property", "There is no action property named like this");
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
-        OgnlValueStack.setDevMode("true");
         ParametersInterceptor.setDevMode("true");
 
         ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
@@ -136,12 +139,13 @@ public class ParametersInterceptorTest extends XWorkTestCase {
     }
 
     public void testNonexistentParametersAreIgnoredInProductionMode() throws Exception {
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), 
+                new MockConfigurationProvider(Collections.singletonMap("devMode", "false")));
         Map params = new HashMap();
         params.put("not_a_property", "There is no action property named like this");
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
-        OgnlValueStack.setDevMode("false");
 
         ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
         proxy.execute();
@@ -162,13 +166,9 @@ public class ParametersInterceptorTest extends XWorkTestCase {
 
     public void testNoOrdered() throws Exception {
         ParametersInterceptor pi = new ParametersInterceptor();
-
+        container.inject(pi);
         final Map actual = new LinkedHashMap();
-        ValueStack stack = new OgnlValueStack() {
-            public void setValue(String expr, Object value) {
-                actual.put(expr, value);
-            }
-        };
+        ValueStack stack = createStubValueStack(actual);
 
         Map parameters = new HashMap();
         parameters.put("user.address.city", "London");
@@ -191,13 +191,9 @@ public class ParametersInterceptorTest extends XWorkTestCase {
     public void testOrdered() throws Exception {
         ParametersInterceptor pi = new ParametersInterceptor();
         pi.setOrdered(true);
-
+        container.inject(pi);
         final Map actual = new LinkedHashMap();
-        ValueStack stack = new OgnlValueStack() {
-            public void setValue(String expr, Object value) {
-                actual.put(expr, value);
-            }
-        };
+        ValueStack stack = createStubValueStack(actual);
 
         Map parameters = new HashMap();
         parameters.put("user.address.city", "London");
@@ -219,7 +215,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
 
     public void testSetOrdered() throws Exception {
         ParametersInterceptor pi = new ParametersInterceptor();
-
+        container.inject(pi);
         assertEquals("ordered should be false by default", false, pi.isOrdered());
         pi.setOrdered(true);
         assertEquals(true, pi.isOrdered());
@@ -227,13 +223,11 @@ public class ParametersInterceptorTest extends XWorkTestCase {
     
     public void testExcludedParametersAreIgnored() throws Exception {
         ParametersInterceptor pi = new ParametersInterceptor();
+        container.inject(pi);
         pi.setExcludeParams("dojo\\..*");
         final Map actual = new HashMap();
-        ValueStack stack = new OgnlValueStack() {
-            public void setValue(String expr, Object value) {
-                actual.put(expr, value);
-            }
-        };
+        ValueStack stack = createStubValueStack(actual);
+        container.inject(stack);
         final Map expected = new HashMap() {
             {
                 put("fooKey", "fooValue");
@@ -248,6 +242,19 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         };
         pi.setParameters(new NoParametersAction(), stack, parameters);
         assertEquals(expected, actual);
+    }
+
+    private ValueStack createStubValueStack(final Map actual) {
+        ValueStack stack = new OgnlValueStack(
+                container.getInstance(XWorkConverter.class),
+                (CompoundRootAccessor)container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName()),
+                container.getInstance(TextProvider.class, "system"), true) {
+            public void setValue(String expr, Object value) {
+                actual.put(expr, value);
+            }
+        };
+        container.inject(stack);
+        return stack;
     }
     
     /*
@@ -273,6 +280,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
+        super.setUp();
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
     }
 }

@@ -27,9 +27,7 @@ public class DefaultTextProvider implements TextProvider, Serializable, Unchaina
 
     private static final Object[] EMPTY_ARGS = new Object[0];
 
-    public static final DefaultTextProvider INSTANCE = new DefaultTextProvider();
-
-    private DefaultTextProvider() {
+    public DefaultTextProvider() {
     }
 
     public String getText(String key) {
@@ -126,7 +124,4 @@ public class DefaultTextProvider implements TextProvider, Serializable, Unchaina
         return null;
     }
 
-    private Object readResolve() throws ObjectStreamException {
-        return INSTANCE;
-    }
 }

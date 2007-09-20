@@ -19,20 +19,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.ognl.OgnlTypeConverterWrapper;
+import com.opensymphony.xwork2.ognl.XWorkTypeConverterWrapper;
 import com.opensymphony.xwork2.util.AnnotationUtils;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
-import com.opensymphony.xwork2.util.OgnlContextState;
 import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkMessages;
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
-import com.opensymphony.xwork2.conversion.ObjectTypeDeterminerFactory;
-import com.opensymphony.xwork2.conversion.OgnlTypeConverterWrapper;
 import com.opensymphony.xwork2.conversion.TypeConverter;
-import com.opensymphony.xwork2.conversion.XWorkTypeConverterWrapper;
 import com.opensymphony.xwork2.conversion.annotations.Conversion;
 import com.opensymphony.xwork2.conversion.annotations.ConversionType;
 import com.opensymphony.xwork2.conversion.annotations.ConversionRule;
@@ -54,7 +53,7 @@ import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
  * <p/> Using this "point" example, if your action (or another compound object in which you are setting properties on)
  * has a corresponding ClassName-conversion.properties file, Struts 2 will use the configured type converters for
  * conversion to and from strings. So turning "3, 22" in to new Point(3, 22) is done by merely adding the following
- * entry to <b>ClassName-conversion.properties</b> (Note that the PointConverter should impl the ognl.TypeConverter
+ * entry to <b>ClassName-conversion.properties</b> (Note that the PointConverter should impl the TypeConverter
  * interface):
  *
  * <p/><b>point = com.acme.PointConverter</b>
@@ -121,7 +120,6 @@ import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
  */
 public class XWorkConverter extends DefaultTypeConverter {
 
-    private static XWorkConverter instance;
     protected static final Log LOG = LogFactory.getLog(XWorkConverter.class);
     public static final String REPORT_CONVERSION_ERRORS = "report.conversion.errors";
     public static final String CONVERSION_PROPERTY_FULLNAME = "conversion.property.fullName";
@@ -174,8 +172,8 @@ public class XWorkConverter extends DefaultTypeConverter {
      */
     protected HashSet<String> unknownMappings = new HashSet<String>(); 	// non-action (eg. returned value)
     
-    protected TypeConverter defaultTypeConverter = new XWorkBasicConverter();
-    protected ObjectTypeDeterminer objectTypeDeterminer = null;
+    private TypeConverter defaultTypeConverter;
+    private ObjectFactory objectFactory;
 
 
     protected XWorkConverter() {
@@ -208,38 +206,21 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
 
-    public static XWorkConverter getInstance() {
-         if (instance == null) {
-             instance = new XWorkConverter();
-         }
-
-         return instance;
-     }
-    
-    public static ognl.TypeConverter getOgnlInstance() {
-        //return getInstance();
-        return new OgnlTypeConverterWrapper(getInstance());
+    @Inject
+    public void setObjectFactory(ObjectFactory factory) {
+        this.objectFactory = factory;
     }
-
     
     @Inject
-    public static void setInstance(XWorkConverter instance) {
-        XWorkConverter.instance = instance;
+    public void setDefaultTypeConverter(XWorkBasicConverter conv) {
+        this.defaultTypeConverter = conv;
     }
-
+    
     public static String buildConverterFilename(Class clazz) {
         String className = clazz.getName();
         String resource = className.replace('.', '/') + "-conversion.properties";
 
         return resource;
-    }
-
-    public static void resetInstance() {
-        instance = null;
-    }
-
-    public void setDefaultConverter(TypeConverter defaultTypeConverter) {
-        this.defaultTypeConverter = defaultTypeConverter;
     }
 
     public Object convertValue(Map map, Object o, Class aClass) {
@@ -254,7 +235,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      * 		<li>supplying context, target and value.</li>
      * </ul>
      * 
-     * @see ognl.TypeConverter#convertValue(java.util.Map, java.lang.Object, java.lang.reflect.Member, java.lang.String, java.lang.Object, java.lang.Class)
+     * @see TypeConverter#convertValue(java.util.Map, java.lang.Object, java.lang.reflect.Member, java.lang.String, java.lang.Object, java.lang.Class)
      */
     public Object convertValue(Map context, Object target, Member member, String property, Object value, Class toClass) {
         //
@@ -291,7 +272,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         
         if (tc == null && context != null) {
             // ok, let's see if we can look it up by path as requested in XW-297
-            Object lastPropertyPath = context.get(OgnlContextState.CURRENT_PROPERTY_PATH);
+            Object lastPropertyPath = context.get(ReflectionContextState.CURRENT_PROPERTY_PATH);
             Class clazz = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
             if (lastPropertyPath != null && clazz != null) {
                 String path = lastPropertyPath + "." + property;
@@ -319,6 +300,7 @@ public class XWorkConverter extends DefaultTypeConverter {
             try {
                 return tc.convertValue(context, target, member, property, value, toClass);
             } catch (Exception e) {
+                e.printStackTrace();
                 handleConversionException(context, property, value, target);
 
                 return TypeConverter.NO_CONVERSION_POSSIBLE;
@@ -331,6 +313,7 @@ public class XWorkConverter extends DefaultTypeConverter {
                     LOG.debug("falling back to default type converter ["+defaultTypeConverter+"]");
                 return defaultTypeConverter.convertValue(context, target, member, property, value, toClass);
             } catch (Exception e) {
+                e.printStackTrace();
                 handleConversionException(context, property, value, target);
 
                 return TypeConverter.NO_CONVERSION_POSSIBLE;
@@ -339,8 +322,9 @@ public class XWorkConverter extends DefaultTypeConverter {
             try {
                 if (LOG.isDebugEnabled())
                     LOG.debug("falling back to Ognl's default type conversion");
-                return super.convertValue(context, target, member, property, value, toClass);
+                return super.convertValue(value, toClass);
             } catch (Exception e) {
+                e.printStackTrace();
                 handleConversionException(context, property, value, target);
 
                 return TypeConverter.NO_CONVERSION_POSSIBLE;
@@ -742,9 +726,11 @@ public class XWorkConverter extends DefaultTypeConverter {
 
     TypeConverter createTypeConverter(String className) throws Exception {
         // type converters are used across users
-        Object obj = ObjectFactory.getObjectFactory().buildBean(className, null);
+        Object obj = objectFactory.buildBean(className, null);
         if (obj instanceof TypeConverter) {
             return (TypeConverter) obj;
+            
+        // For backwards compatibility
         } else if (obj instanceof ognl.TypeConverter) {
             return new XWorkTypeConverterWrapper((ognl.TypeConverter)obj);
         } else {
@@ -813,20 +799,5 @@ public class XWorkConverter extends DefaultTypeConverter {
         return result;
     }
 
-    public ObjectTypeDeterminer getObjectTypeDeterminer() {
-        if (objectTypeDeterminer == null) {
-        	return ObjectTypeDeterminerFactory.getInstance();
-        } else {
-        	return objectTypeDeterminer;
-        }
-    }
-
-    /**
-     * @param determiner
-     */
-    @Inject
-    public void setObjectTypeDeterminer(ObjectTypeDeterminer determiner) {
-        objectTypeDeterminer = determiner;
-    }
 
 }

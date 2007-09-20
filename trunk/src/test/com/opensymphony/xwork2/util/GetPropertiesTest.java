@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.XWorkTestCase;
+
 import junit.framework.TestCase;
 
 /**
@@ -18,7 +21,7 @@ import junit.framework.TestCase;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class GetPropertiesTest extends TestCase {
+public class GetPropertiesTest extends XWorkTestCase {
 
     public void testGetCollectionProperties()  {
         doGetCollectionPropertiesTest(new ArrayList());
@@ -27,7 +30,7 @@ public class GetPropertiesTest extends TestCase {
     }
     
     public void doGetCollectionPropertiesTest(Collection c) {
-        ValueStack vs = ValueStackFactory.getFactory().createValueStack();
+        ValueStack vs = ActionContext.getContext().getValueStack();
         Foo foo = new Foo();
         foo.setBarCollection(c);
         vs.push(foo);

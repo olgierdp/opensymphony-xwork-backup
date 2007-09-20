@@ -47,6 +47,7 @@ public final class ContainerBuilder {
       new ArrayList<InternalFactory<?>>();
   final List<Class<?>> staticInjections = new ArrayList<Class<?>>();
   boolean created;
+  boolean allowDuplicates = false;
 
   private static final InternalFactory<Container> CONTAINER_FACTORY =
       new InternalFactory<Container>() {
@@ -108,7 +109,7 @@ public final class ContainerBuilder {
    * Ensures a key isn't already mapped.
    */
   private void checkKey(Key<?> key) {
-    if (factories.containsKey(key)) {
+    if (factories.containsKey(key) && !allowDuplicates) {
       throw new DependencyException(
           "Dependency mapping for " + key + " already exists.");
     }
@@ -507,6 +508,10 @@ public final class ContainerBuilder {
     if (created) {
       throw new IllegalStateException("Container already created.");
     }
+  }
+  
+  public void setAllowDuplicates(boolean val) {
+      allowDuplicates = val;
   }
 
   /**

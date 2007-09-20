@@ -57,9 +57,9 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
      * The reason for the builder methods is so that you can use a subclass to create your own DefaultActionProxy instance
      * (like a RMIActionProxy).
      */
-    protected DefaultActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+    protected DefaultActionProxy(ActionInvocation inv, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
         
-    		
+        this.invocation = inv;
 		this.cleanupContext = cleanupContext;
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Creating an DefaultActionProxy for namespace " + namespace + " and action name " + actionName);
@@ -186,7 +186,8 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
                 throw new ConfigurationException(message);
             }
             
-            invocation = new DefaultActionInvocation(objectFactory, unknownHandler, this, extraContext, true, actionEventListener);
+            
+            invocation.init(this);
             resolveMethod();
         } finally {
             UtilTimerStack.pop(profileKey);

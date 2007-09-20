@@ -6,9 +6,10 @@ package com.opensymphony.xwork2.interceptor;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.Unchainable;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.CompoundRoot;
-import com.opensymphony.xwork2.util.OgnlUtil;
 import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 
 import java.util.*;
 
@@ -22,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
  * An interceptor that copies all the properties of every object in the value stack to the currently executing object,
  * except for any object that implements {@link Unchainable}. A collection of optional <i>includes</i> and
  * <i>excludes</i> may be provided to control how and which parameters are copied. Only includes or excludes may be
- * specified. Specifying both results in undefined behavior. See the javadocs for {@link OgnlUtil#copy(Object, Object,
+ * specified. Specifying both results in undefined behavior. See the javadocs for {@link ReflectionProvider#copy(Object, Object,
  * java.util.Map, java.util.Collection, java.util.Collection)} for more information.
  *
  * <p/>
@@ -88,6 +89,13 @@ public class ChainingInterceptor extends AbstractInterceptor {
 	
     protected Collection excludes;
     protected Collection includes;
+    
+    protected ReflectionProvider reflectionProvider;
+    
+    @Inject
+    public void setReflectionProvider(ReflectionProvider prov) {
+        this.reflectionProvider = prov;
+    }
 
     public String intercept(ActionInvocation invocation) throws Exception {
         ValueStack stack = invocation.getStack();
@@ -106,7 +114,7 @@ public class ChainingInterceptor extends AbstractInterceptor {
                 Object o = iterator.next();
                 if (o != null) {
                 	if (!(o instanceof Unchainable)) {
-                		OgnlUtil.copy(o, invocation.getAction(), ctxMap, excludes, includes);
+                		reflectionProvider.copy(o, invocation.getAction(), ctxMap, excludes, includes);
                 	}
                 }
                 else {

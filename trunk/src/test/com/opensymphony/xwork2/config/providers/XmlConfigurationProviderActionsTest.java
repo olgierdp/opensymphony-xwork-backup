@@ -29,12 +29,12 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
     private List exceptionMappings;
     private Map params;
     private Map results;
+    private ObjectFactory objectFactory;
 
 
     public void testActions() throws Exception {
         final String filename = "com/opensymphony/xwork2/config/providers/xwork-test-actions.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
-        ObjectFactory objectFactory = ObjectFactory.getObjectFactory();
 
         // setup expectations
         // bar action is very simple, just two params
@@ -130,5 +130,6 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         results = new HashMap();
         interceptors = new ArrayList();
         exceptionMappings = new ArrayList();
+        this.objectFactory = container.getInstance(ObjectFactory.class);
     }
 }

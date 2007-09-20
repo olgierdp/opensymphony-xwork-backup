@@ -20,7 +20,7 @@ import java.util.HashMap;
  * 
  * @author Matthew E. Porter (matthew dot porter at metissian dot com)
  */
-public class ExceptionMappingInterceptorTest extends TestCase {
+public class ExceptionMappingInterceptorTest extends XWorkTestCase {
 
     ActionInvocation invocation;
     ExceptionMappingInterceptor interceptor;
@@ -275,7 +275,7 @@ public class ExceptionMappingInterceptorTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        stack = ValueStackFactory.getFactory().createValueStack();
+        stack = ActionContext.getContext().getValueStack();
         mockInvocation = new Mock(ActionInvocation.class);
         mockInvocation.expectAndReturn("getStack", stack);
         mockInvocation.expectAndReturn("getInvocationContext", new ActionContext(new HashMap()));

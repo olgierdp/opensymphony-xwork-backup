@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork2;
 
+import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 
@@ -29,7 +30,7 @@ import java.util.Map;
  * @author Bill Lynch (docs)
  */
 public class ActionContext implements Serializable {
-    static ThreadLocal actionContext = new ActionContextThreadLocal();
+    static ThreadLocal actionContext = new ThreadLocal();
 
     /**
      * Constant that indicates the action is running under a "development mode".
@@ -84,6 +85,11 @@ public class ActionContext implements Serializable {
     public static final String CONVERSION_ERRORS = "com.opensymphony.xwork2.ActionContext.conversionErrors";
 
 
+    /**
+     * Constant for the container
+     */
+    public static final String CONTAINER = "com.opensymphony.xwork.ActionContext.container";
+    
     Map context;
 
 
@@ -150,11 +156,13 @@ public class ActionContext implements Serializable {
     public static ActionContext getContext() {
         ActionContext context = (ActionContext) actionContext.get();
 
-        if (context == null) {
-            ValueStack vs = ValueStackFactory.getFactory().createValueStack();
-            context = new ActionContext(vs.getContext());
-            setContext(context);
-        }
+        // Don't do lazy context creation, as it requires container; the creation of which may 
+        // precede the context creation
+        //if (context == null) {
+        //    ValueStack vs = ValueStackFactory.getFactory().createValueStack();
+        //    context = new ActionContext(vs.getContext());
+        //    setContext(context);
+        //}
 
         return context;
     }
@@ -302,6 +310,33 @@ public class ActionContext implements Serializable {
     public ValueStack getValueStack() {
         return (ValueStack) get(VALUE_STACK);
     }
+    
+    /**
+     * Gets the container for this request
+     * 
+     * @param cont The container
+     */
+    public void setContainer(Container cont) {
+        put(CONTAINER, cont);
+    }
+    
+    /**
+     * Sets the container for this request
+     * 
+     * @return The container
+     */
+    public Container getContainer() {
+        return (Container) get(CONTAINER);
+    }
+    
+    public <T> T getInstance(Class<T> type) {
+        Container cont = getContainer();
+        if (cont != null) {
+            return cont.getInstance(type);
+        } else {
+            throw new XWorkException("Cannot find an initialized container for this request.");
+        }
+    }
 
     /**
      * Returns a value that is stored in the current ActionContext by doing a lookup using the value's key.
@@ -321,14 +356,5 @@ public class ActionContext implements Serializable {
      */
     public void put(Object key, Object value) {
         context.put(key, value);
-    }
-
-
-    private static class ActionContextThreadLocal extends ThreadLocal {
-        protected Object initialValue() {
-            ValueStack vs = ValueStackFactory.getFactory().createValueStack();
-
-            return new ActionContext(vs.getContext());
-        }
     }
 }

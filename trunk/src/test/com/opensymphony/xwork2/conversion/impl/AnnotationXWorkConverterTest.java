@@ -5,13 +5,14 @@
 package com.opensymphony.xwork2.conversion.impl;
 
 import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.test.ModelDrivenAnnotationAction2;
 import com.opensymphony.xwork2.test.AnnotationUser;
 import com.opensymphony.xwork2.util.Bar;
-import com.opensymphony.xwork2.util.InstantiatingNullHandler;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
-import com.opensymphony.xwork2.util.XWorkMethodAccessor;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
+import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
 import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 
@@ -92,7 +93,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
         SimpleAnnotationAction action = new SimpleAnnotationAction();
         action.setBean(new AnnotatedTestBean());
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -113,7 +114,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
         SimpleAnnotationAction action = new SimpleAnnotationAction();
         action.setDate(null);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(action);
 
         Map ognlStackContext = stack.getContext();
@@ -132,7 +133,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
 
     public void testFieldErrorMessageAddedWhenConversionFailsOnModelDriven() {
         ModelDrivenAnnotationAction action = new ModelDrivenAnnotationAction();
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -153,7 +154,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
 
     public void testFindConversionErrorMessage() {
         ModelDrivenAnnotationAction action = new ModelDrivenAnnotationAction();
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -168,7 +169,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
 
     public void testFindConversionMappingForInterface() {
         ModelDrivenAnnotationAction2 action = new ModelDrivenAnnotationAction2();
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(action);
         stack.push(action.getModel());
 
@@ -291,10 +292,10 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
 
     // TODO: Fixme... This test does not work with GenericsObjectDeterminer!
     public void testStringToCollectionConversion() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         Map stackContext = stack.getContext();
-        stackContext.put(InstantiatingNullHandler.CREATE_NULL_OBJECTS, Boolean.TRUE);
-        stackContext.put(XWorkMethodAccessor.DENY_METHOD_EXECUTION, Boolean.TRUE);
+        stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
+        stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
         stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         AnnotationUser user = new AnnotationUser();
@@ -340,7 +341,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
     }
 
     public void testValueStackWithTypeParameter() {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(new Foo1());
         Bar1 bar = (Bar1) stack.findValue("bar", Bar1.class);
         assertNotNull(bar);
@@ -449,21 +450,15 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        ObjectFactory.setObjectFactory(new ObjectFactory());
+        super.setUp();
+        converter = container.getInstance(XWorkConverter.class);
 
-        configurationManager = new ConfigurationManager();
-        converter = XWorkConverter.getInstance();
-        configurationManager.destroyConfiguration();
-
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-        ac = new ActionContext(stack.getContext());
+        ac = ActionContext.getContext();
         ac.setLocale(Locale.US);
-        ActionContext.setContext(ac);
         context = ac.getContextMap();
     }
 
     protected void tearDown() throws Exception {
-        XWorkConverter.resetInstance();
         ActionContext.setContext(null);
     }
 }

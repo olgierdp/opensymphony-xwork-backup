@@ -7,6 +7,8 @@ package com.opensymphony.xwork2.validator;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.TestBean;
+import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.test.TestBean2;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
@@ -22,14 +24,14 @@ import java.util.*;
  * @author Jason Carreira
  *         Date: Mar 18, 2004 2:51:42 PM
  */
-public class VisitorFieldValidatorModelTest extends TestCase {
+public class VisitorFieldValidatorModelTest extends XWorkTestCase {
 
     protected VisitorValidatorModelAction action;
     private Locale origLocale;
 
 
-    public void setUp() {
-        ObjectFactory.setObjectFactory(new ObjectFactory());
+    public void setUp() throws Exception {
+        super.setUp();
         origLocale = Locale.getDefault();
         Locale.setDefault(Locale.US);
 
@@ -40,12 +42,10 @@ public class VisitorFieldValidatorModelTest extends TestCase {
         bean.setBirth(cal.getTime());
         bean.setCount(-1);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-        ActionContext.setContext(new ActionContext(stack.getContext()));
     }
 
     public void testModelFieldErrorsAddedWithoutFieldPrefix() throws Exception {
-        ActionValidatorManagerFactory.getInstance().validate(action, null);
+        container.getInstance(ActionValidatorManager.class).validate(action, null);
         assertTrue(action.hasFieldErrors());
 
         Map fieldErrors = action.getFieldErrors();
@@ -71,7 +71,7 @@ public class VisitorFieldValidatorModelTest extends TestCase {
         action.setBean(bean);
         assertTrue(action.getBean() instanceof TestBean2);
 
-        ActionValidatorManagerFactory.getInstance().validate(action, null);
+        container.getInstance(ActionValidatorManager.class).validate(action, null);
         assertTrue(action.hasFieldErrors());
 
         Map fieldErrors = action.getFieldErrors();

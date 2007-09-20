@@ -8,6 +8,8 @@ import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
+import com.opensymphony.xwork2.inject.Container;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
@@ -59,33 +61,36 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected boolean pushAction = true;
     protected ObjectFactory objectFactory;
     protected ActionEventListener actionEventListener;
-
+    protected ValueStackFactory valueStackFactory;
+    protected Container container;
     protected UnknownHandler unknownHandler;
 
-    protected DefaultActionInvocation(ObjectFactory objectFactory, UnknownHandler handler, ActionProxy proxy, Map extraContext) throws Exception {
-        this(objectFactory, handler, proxy, extraContext, true, null);
-    }
-
-    protected DefaultActionInvocation(final ObjectFactory objectFactory, final UnknownHandler handler, final ActionProxy proxy, final Map extraContext, final boolean pushAction) throws Exception {
-        this(objectFactory, handler, proxy, extraContext, pushAction, null);
-    }
-
-    protected DefaultActionInvocation(final ObjectFactory objectFactory, final UnknownHandler handler, final ActionProxy proxy, final Map extraContext, final boolean pushAction, final ActionEventListener actionEventListener) throws Exception {
-    	UtilTimerStack.profile("create DefaultActionInvocation: ",
-    			new UtilTimerStack.ProfilingBlock<Object>() {
-					public Object doProfiling() throws Exception {
-						DefaultActionInvocation.this.proxy = proxy;
-                        DefaultActionInvocation.this.objectFactory = objectFactory;
-				        DefaultActionInvocation.this.extraContext = extraContext;
-				        DefaultActionInvocation.this.pushAction = pushAction;
-                        DefaultActionInvocation.this.unknownHandler = handler;
-                        DefaultActionInvocation.this.actionEventListener = actionEventListener;
-                        init();
-						return null;
-					}
-    			});
+    public DefaultActionInvocation(final Map extraContext, final boolean pushAction) throws Exception {
+        DefaultActionInvocation.this.extraContext = extraContext;
+        DefaultActionInvocation.this.pushAction = pushAction;
     }
     
+    @Inject
+    public void setValueStackFactory(ValueStackFactory fac) {
+        this.valueStackFactory = fac;
+    }
+    
+    @Inject
+    public void setObjectFactory(ObjectFactory fac) {
+        this.objectFactory = fac;
+    }
+    
+    @Inject
+    public void setContainer(Container cont) {
+        this.container = cont;
+    }
+    
+    @Inject(required=false)
+    public void setUnknownHandler(UnknownHandler hand) {
+        this.unknownHandler = hand;
+    }
+    
+    @Inject(required=false)
     public void setActionEventListener(ActionEventListener listener) {
         this.actionEventListener = listener;
     }
@@ -316,7 +321,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         } else {
             // create the value stack
             // this also adds the ValueStack to its context
-            stack = ValueStackFactory.getFactory().createValueStack();
+            stack = valueStackFactory.createValueStack();
 
             // create the action context
             contextMap = stack.getContext();
@@ -329,6 +334,7 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         //put this DefaultActionInvocation into the context map
         contextMap.put(ActionContext.ACTION_INVOCATION, this);
+        contextMap.put(ActionContext.CONTAINER, container);
 
         return contextMap;
     }
@@ -359,7 +365,8 @@ public class DefaultActionInvocation implements ActionInvocation {
         }
     }
 
-    private void init() throws Exception {
+    public void init(ActionProxy proxy) throws Exception {
+        this.proxy = proxy;
         Map contextMap = createContextMap();
 
         createAction(contextMap);

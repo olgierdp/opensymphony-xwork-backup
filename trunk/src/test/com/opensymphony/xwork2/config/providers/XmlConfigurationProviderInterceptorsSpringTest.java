@@ -28,7 +28,7 @@ import java.util.Map;
 public class XmlConfigurationProviderInterceptorsSpringTest extends ConfigurationTestBase {
 
     InterceptorConfig timerInterceptor = new InterceptorConfig("timer", TimerInterceptor.class, new HashMap());
-    ObjectFactory objectFactory = ObjectFactory.getObjectFactory();
+    ObjectFactory objectFactory;
     StaticApplicationContext sac;
 
 
@@ -61,10 +61,10 @@ public class XmlConfigurationProviderInterceptorsSpringTest extends Configuratio
 
         sac = new StaticApplicationContext();
 
-        SpringObjectFactory objFactory = new SpringObjectFactory();
-        objFactory.setApplicationContext(sac);
-        ObjectFactory.setObjectFactory(objFactory);
+        //SpringObjectFactory objFactory = new SpringObjectFactory();
+        //objFactory.setApplicationContext(sac);
+        //ObjectFactory.setObjectFactory(objFactory);
 
-        configurationManager.destroyConfiguration();
+        objectFactory = container.getInstance(ObjectFactory.class);
     }
 }

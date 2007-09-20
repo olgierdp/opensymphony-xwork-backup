@@ -4,13 +4,18 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
+import java.util.HashMap;
+
 import org.easymock.MockControl;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionProxy;
+import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.Validateable;
 import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.config.entities.InterceptorConfig;
 import com.opensymphony.xwork2.validator.ValidationInterceptor;
 
 import junit.framework.TestCase;
@@ -21,7 +26,7 @@ import junit.framework.TestCase;
  * @author tm_jee
  * @version $Date$ $Id$
  */
-public class ValidationInterceptorPrefixMethodInvocationTest extends TestCase {
+public class ValidationInterceptorPrefixMethodInvocationTest extends XWorkTestCase {
 
 	public void testPrefixMethodInvocation1() throws Exception {
 		
@@ -53,7 +58,7 @@ public class ValidationInterceptorPrefixMethodInvocationTest extends TestCase {
 		controlActionProxy.replay();
 		controlActionInvocation.replay();
 		
-		ValidationInterceptor interceptor = new ValidationInterceptor();
+		ValidationInterceptor interceptor = create();
 		String result = interceptor.intercept(mockActionInvocation);
 		
 		assertEquals(Action.INPUT, result);
@@ -91,13 +96,18 @@ public class ValidationInterceptorPrefixMethodInvocationTest extends TestCase {
 		controlActionProxy.replay();
 		controlActionInvocation.replay();
 		
-		ValidationInterceptor interceptor = new ValidationInterceptor();
+		ValidationInterceptor interceptor = create();
 		String result = interceptor.intercept(mockActionInvocation);
 		
 		assertEquals("okok", result);
 		controlAction.verify();
 		controlActionProxy.verify();
 		controlActionInvocation.verify();
+	}
+	
+	protected ValidationInterceptor create() {
+	    ObjectFactory objectFactory = container.getInstance(ObjectFactory.class);
+	    return (ValidationInterceptor) objectFactory.buildInterceptor(new InterceptorConfig("model", ValidationInterceptor.class.getName(), null), new HashMap());
 	}
 	
 	private interface ValidateAction extends Action, Validateable, ValidationAware {

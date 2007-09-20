@@ -33,7 +33,7 @@ public class ExpressionValidatorTest extends XWorkTestCase {
         ActionContext.getContext().getValueStack().push(bean);
 
         DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManagerFactory.getInstance().validate(bean, "expressionValidation", context);
+        container.getInstance(ActionValidatorManager.class).validate(bean, "expressionValidation", context);
         assertTrue(context.hasFieldErrors());
 
         final Map fieldErrors = context.getFieldErrors();
@@ -45,7 +45,7 @@ public class ExpressionValidatorTest extends XWorkTestCase {
 
         bean.setName("abcdefg");
         context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManagerFactory.getInstance().validate(bean, "expressionValidation", context);
+        container.getInstance(ActionValidatorManager.class).validate(bean, "expressionValidation", context);
         assertFalse(context.hasFieldErrors());
     }
 
@@ -105,10 +105,9 @@ public class ExpressionValidatorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-        ActionContext.setContext(new ActionContext(stack.getContext()));
+        super.setUp();
 
-        loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
+        loadConfigurationProviders(new MockConfigurationProvider());
     }
 
 }

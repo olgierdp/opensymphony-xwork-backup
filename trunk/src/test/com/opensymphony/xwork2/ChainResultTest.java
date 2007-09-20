@@ -45,7 +45,7 @@ public class ChainResultTest extends XWorkTestCase {
         values.put("actionName", expectedActionName);
         values.put("namespace", expectedNamespace);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(values);
 
         Mock actionProxyMock = new Mock(ActionProxy.class);
@@ -97,6 +97,11 @@ public class ChainResultTest extends XWorkTestCase {
             TestCase.assertEquals(expectedActionName, actionName);
 
             return returnVal;
+        }
+
+        public ActionProxy createActionProxy(ActionInvocation inv, String namespace, String actionName,
+                Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+            return null;
         }
     }
 }

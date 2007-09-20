@@ -4,37 +4,21 @@
  */
 package com.opensymphony.xwork2.util;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.ognl.OgnlValueStackFactory;
+
 /**
  * Factory that creates a value stack, defaulting to the OgnlValueStackFactory
  */
-public abstract class ValueStackFactory {
-
-    private static ValueStackFactory factory = new OgnlValueStackFactory();
-
-    /**
-     * Set a new factory to use.
-     *
-     * @param factory the new factory
-     */
-    public static void setFactory(ValueStackFactory factory) {
-        ValueStackFactory.factory = factory;
-    }
-
-    /**
-     * Gets the facatory to use for getting instances of {@link com.opensymphony.xwork2.util.ValueStack}
-     *
-     * @return the factory
-     */
-    public static ValueStackFactory getFactory() {
-        return factory;
-    }
+public interface ValueStackFactory {
 
     /**
      * Get a new instance of {@link com.opensymphony.xwork2.util.ValueStack}
      *
      * @return  a new {@link com.opensymphony.xwork2.util.ValueStack}.
      */
-    public abstract ValueStack createValueStack();
+    ValueStack createValueStack();
     
     /**
      * Get a new instance of {@link com.opensymphony.xwork2.util.ValueStack}
@@ -42,6 +26,6 @@ public abstract class ValueStackFactory {
      * @param stack an existing stack to include.
      * @return  a new {@link com.opensymphony.xwork2.util.ValueStack}.
      */
-    public abstract ValueStack createValueStack(ValueStack stack);
+    ValueStack createValueStack(ValueStack stack);
     
 }

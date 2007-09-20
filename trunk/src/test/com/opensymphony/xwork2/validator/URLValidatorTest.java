@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.URLValidator;
@@ -17,7 +18,7 @@ import junit.framework.TestCase;
  * @author tm_jee
  * @version $Date$ $Id$
  */
-public class URLValidatorTest extends TestCase {
+public class URLValidatorTest extends XWorkTestCase {
 
 	
 	ValueStack stack;
@@ -90,12 +91,13 @@ public class URLValidatorTest extends TestCase {
 	}
 	
 	protected void setUp() throws Exception {
-		stack = ValueStackFactory.getFactory().createValueStack();
+	    super.setUp();
+		stack = ActionContext.getContext().getValueStack();
 		actionContext = ActionContext.getContext();
-		actionContext.setValueStack(stack);
 	}
 	
 	protected void tearDown() throws Exception {
+	    super.tearDown();
 		stack = null;
 		actionContext = null;
 	}

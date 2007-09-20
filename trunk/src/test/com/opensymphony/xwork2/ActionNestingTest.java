@@ -11,9 +11,11 @@ import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.mock.MockResult;
+import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
+import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,20 +51,12 @@ public class ActionNestingTest extends XWorkTestCase {
         super.setUp();
         loadConfigurationProviders(new NestedTestConfigurationProvider());
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-
-        // create the action context
-        Map contextMap = stack.getContext();
-
-        // give the value stack a context
-        stack.push(this);
-        context = new ActionContext(contextMap);
-        ActionContext.setContext(context);
+        context = ActionContext.getContext();
+        context.getValueStack().push(this);
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        ActionContext.setContext(null);
     }
 
     public void testNestedContext() throws Exception {
@@ -109,8 +103,6 @@ public class ActionNestingTest extends XWorkTestCase {
         }
 
         public void register(ContainerBuilder builder, LocatableProperties props) {
-            builder.factory(ObjectFactory.class);
-            builder.factory(ActionProxyFactory.class, DefaultActionProxyFactory.class);
         }
         
         public void loadPackages() {

@@ -8,6 +8,7 @@ import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.impl.MockConfiguration;
+import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 
 
 /**
@@ -23,7 +24,7 @@ public abstract class ConfigurationTestBase extends XWorkTestCase {
         container = configuration.getContainer();
         
         XmlConfigurationProvider prov = new XmlConfigurationProvider(filename, true);
-        prov.setObjectFactory(new ObjectFactory());
+        prov.setObjectFactory(container.getInstance(ObjectFactory.class));
         prov.init(configuration);
         prov.loadPackages();
         return prov;

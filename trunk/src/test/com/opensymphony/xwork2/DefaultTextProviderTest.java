@@ -6,6 +6,7 @@ package com.opensymphony.xwork2;
 
 import junit.framework.TestCase;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.List;
 import java.util.ArrayList;
@@ -90,31 +91,27 @@ public class DefaultTextProviderTest extends TestCase {
     }
 
     public void testGetTextsWithListAndStack() throws Exception {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-
         List args = new ArrayList();
         args.add("Santa");
         args.add("loud");
-        assertEquals("Hello World", tp.getText("hello", "this is default", args, stack)); // no args in bundle
-        assertEquals("Hello World Santa", tp.getText("hello.0", "this is default", args, stack)); // only 1 arg in bundle
-        assertEquals("Hello World. This is Santa speaking loud", tp.getText("hello.1", "this is default", args, stack));
+        assertEquals("Hello World", tp.getText("hello", "this is default", args, null)); // no args in bundle
+        assertEquals("Hello World Santa", tp.getText("hello.0", "this is default", args, null)); // only 1 arg in bundle
+        assertEquals("Hello World. This is Santa speaking loud", tp.getText("hello.1", "this is default", args, null));
 
-        assertEquals("this is default", tp.getText("not.in.bundle", "this is default", args, stack));
-        assertEquals("this is default Santa", tp.getText("not.in.bundle", "this is default {0}", args, stack));
-        assertEquals("this is default Santa speaking loud", tp.getText("not.in.bundle", "this is default {0} speaking {1}", args, stack));
+        assertEquals("this is default", tp.getText("not.in.bundle", "this is default", args, null));
+        assertEquals("this is default Santa", tp.getText("not.in.bundle", "this is default {0}", args, null));
+        assertEquals("this is default Santa speaking loud", tp.getText("not.in.bundle", "this is default {0} speaking {1}", args, null));
     }
 
     public void testGetTextsWithArrayAndStack() throws Exception {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-
         String[] args = { "Santa", "loud" };
-        assertEquals("Hello World", tp.getText("hello", "this is default", args, stack)); // no args in bundle
-        assertEquals("Hello World Santa", tp.getText("hello.0", "this is default", args, stack)); // only 1 arg in bundle
-        assertEquals("Hello World. This is Santa speaking loud", tp.getText("hello.1", "this is default", args, stack));
+        assertEquals("Hello World", tp.getText("hello", "this is default", args, null)); // no args in bundle
+        assertEquals("Hello World Santa", tp.getText("hello.0", "this is default", args, null)); // only 1 arg in bundle
+        assertEquals("Hello World. This is Santa speaking loud", tp.getText("hello.1", "this is default", args, null));
 
-        assertEquals("this is default", tp.getText("not.in.bundle", "this is default", args, stack));
-        assertEquals("this is default Santa", tp.getText("not.in.bundle", "this is default {0}", args, stack));
-        assertEquals("this is default Santa speaking loud", tp.getText("not.in.bundle", "this is default {0} speaking {1}", args, stack));
+        assertEquals("this is default", tp.getText("not.in.bundle", "this is default", args, null));
+        assertEquals("this is default Santa", tp.getText("not.in.bundle", "this is default {0}", args, null));
+        assertEquals("this is default Santa speaking loud", tp.getText("not.in.bundle", "this is default {0} speaking {1}", args, null));
     }
 
     public void testGetBundle() throws Exception {
@@ -125,16 +122,18 @@ public class DefaultTextProviderTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        ActionContext.getContext().setLocale(Locale.CANADA);
+        ActionContext ctx = new ActionContext(new HashMap());
+        ActionContext.setContext(ctx);
+        ctx.setLocale(Locale.CANADA);
 
         LocalizedTextUtil.clearDefaultResourceBundles();
         LocalizedTextUtil.addDefaultResourceBundle(DefaultTextProviderTest.class.getName());
 
-        tp = DefaultTextProvider.INSTANCE;
+        tp = new DefaultTextProvider();
     }
 
     protected void tearDown() throws Exception {
-        ActionContext.getContext().setLocale(null);
+        ActionContext.setContext(null);
         tp = null;
     }
 

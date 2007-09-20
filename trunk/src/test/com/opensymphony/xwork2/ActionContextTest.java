@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author Jason Carreira
  */
-public class ActionContextTest extends TestCase {
+public class ActionContextTest extends XWorkTestCase {
 
     private static final String APPLICATION_KEY = "com.opensymphony.xwork2.ActionContextTest.application";
     private static final String SESSION_KEY = "com.opensymphony.xwork2.ActionContextTest.session";
@@ -27,8 +27,9 @@ public class ActionContextTest extends TestCase {
 
     private ActionContext context;
 
-    public void setUp() {
-        ValueStack valueStack = ValueStackFactory.getFactory().createValueStack();
+    public void setUp() throws Exception {
+        super.setUp();
+        ValueStack valueStack = container.getInstance(ValueStackFactory.class).createValueStack();
         Map extraContext = valueStack.getContext();
         Map application = new HashMap();
         application.put(APPLICATION_KEY, APPLICATION_KEY);
@@ -44,10 +45,6 @@ public class ActionContextTest extends TestCase {
         extraContext.put(ActionContext.ACTION_NAME, ACTION_NAME);
         context = new ActionContext(extraContext);
         ActionContext.setContext(context);
-    }
-
-    public void tearDown() {
-        ActionContext.setContext(null);
     }
 
     public void testContextParams() {

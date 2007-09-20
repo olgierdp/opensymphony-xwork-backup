@@ -1,7 +1,9 @@
 package com.opensymphony.xwork2.validator;
 
+import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
+import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Constructor;
@@ -43,9 +45,7 @@ public class ValidatorFactoryTest extends XWorkTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        configurationManager.clearConfigurationProviders();
-        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
-        configurationManager.reload();
+        loadConfigurationProviders(new MockConfigurationProvider());
     }
 
 }

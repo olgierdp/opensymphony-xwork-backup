@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.validator.validators;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.*;
 
@@ -68,7 +69,13 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
 
     private String context;
     private boolean appendPrefix = true;
+    private ActionValidatorManager actionValidatorManager;
 
+    
+    @Inject
+    public void setActionValidatorManager(ActionValidatorManager mgr) {
+        this.actionValidatorManager = mgr;
+    }
 
     /**
      * Sets whether the field name of this field validator should be prepended to the field name of
@@ -149,7 +156,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
             validatorContext = new DelegatingValidatorContext(parent, DelegatingValidatorContext.makeTextProvider(o, parent), parent);
         }
 
-        ActionValidatorManagerFactory.getInstance().validate(o, visitorContext, validatorContext);
+        actionValidatorManager.validate(o, visitorContext, validatorContext);
         stack.pop();
     }
 

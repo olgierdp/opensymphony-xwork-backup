@@ -25,26 +25,26 @@ import java.util.Map;
  * using ObjectFactory's {@link ObjectFactory#buildBean(Class,java.util.Map) buildBean} method.
  *
  * @author Patrick Lightbody
- * @deprecated Native support for expanding lists and maps is provided in XWork 1.1, so this is no longer needed.
  */
 public class XWorkList extends ArrayList {
     private static final Log LOG = LogFactory.getLog(XWorkConverter.class);
 
     private Class clazz;
+    private XWorkConverter conv;
 
-    public XWorkList(Class clazz) {
+    private ObjectFactory objectFactory;
+
+    public XWorkList(ObjectFactory fac, XWorkConverter conv, Class clazz) {
+        this.conv = conv;
         this.clazz = clazz;
+        this.objectFactory = fac;
     }
 
-    public XWorkList(Class clazz, Collection c) {
-        super(c.size());
-        this.clazz = clazz;
-        addAll(c);
-    }
-
-    public XWorkList(Class clazz, int initialCapacity) {
+    public XWorkList(ObjectFactory fac, XWorkConverter conv, Class clazz, int initialCapacity) {
         super(initialCapacity);
         this.clazz = clazz;
+        this.conv = conv;
+        this.objectFactory = fac;
     }
 
     /**
@@ -159,7 +159,7 @@ public class XWorkList extends ArrayList {
         while (index >= this.size()) {
             try {
                 //todo
-                this.add(ObjectFactory.getObjectFactory().buildBean(clazz, null)); //ActionContext.getContext().getContextMap()));
+                this.add(objectFactory.buildBean(clazz, null)); //ActionContext.getContext().getContextMap()));
             } catch (Exception e) {
                 throw new XWorkException(e);
             }
@@ -197,7 +197,7 @@ public class XWorkList extends ArrayList {
             }
 
             Map context = ActionContext.getContext().getContextMap();
-            element = XWorkConverter.getInstance().convertValue(context, null, null, null, element, clazz);
+            element = conv.convertValue(context, null, null, null, element, clazz);
         }
 
         return element;

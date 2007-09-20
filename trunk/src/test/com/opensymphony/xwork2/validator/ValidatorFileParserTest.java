@@ -33,7 +33,6 @@ public class ValidatorFileParserTest extends XWorkTestCase {
     private static final String testFileName6 = "com/opensymphony/xwork2/validator/validators-fail.xml";
 
     public void testParserActionLevelValidatorsShouldBeBeforeFieldLevelValidators() throws Exception {
-    	ObjectFactory.setObjectFactory(new ObjectFactory());
         InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName2, this.getClass());
 
         List configs = ValidatorFileParser.parseActionValidatorConfigs(is, testFileName2);
@@ -56,7 +55,6 @@ public class ValidatorFileParserTest extends XWorkTestCase {
 
 
     public void testParser() {
-    	ObjectFactory.setObjectFactory(new ObjectFactory());
         InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName, this.getClass());
 
         List configs = ValidatorFileParser.parseActionValidatorConfigs(is, testFileName);
@@ -148,8 +146,6 @@ public class ValidatorFileParserTest extends XWorkTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        configurationManager.clearConfigurationProviders();
-        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
-        configurationManager.reload();
+        loadConfigurationProviders(new MockConfigurationProvider());
     }
 }

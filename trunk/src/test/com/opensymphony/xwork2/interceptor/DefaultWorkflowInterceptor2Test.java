@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
+import java.util.HashMap;
+
 import junit.framework.TestCase;
 
 import org.easymock.MockControl;
@@ -12,6 +14,9 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.config.entities.InterceptorConfig;
 import com.opensymphony.xwork2.interceptor.DefaultWorkflowInterceptor;
 import com.opensymphony.xwork2.validator.ValidationInterceptor;
 
@@ -20,7 +25,7 @@ import com.opensymphony.xwork2.validator.ValidationInterceptor;
  * @author tm_jee
  * @version $Date$ $Id$
  */
-public class DefaultWorkflowInterceptor2Test extends TestCase {
+public class DefaultWorkflowInterceptor2Test extends XWorkTestCase {
 	
 	public void testDefaultResultNameIsReturnedWithBadValidation() throws Exception {
 		ValidationFailedAction action = new ValidationFailedAction();
@@ -105,7 +110,7 @@ public class DefaultWorkflowInterceptor2Test extends TestCase {
 		actionInvocationControl.replay();
 		actionProxyControl.replay();
 		
-		ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+		ValidationInterceptor validationInterceptor = create();
 		DefaultWorkflowInterceptor interceptor = new DefaultWorkflowInterceptor();
 		try {
 		        validationInterceptor.intercept(actionInvocation);
@@ -145,7 +150,7 @@ public class DefaultWorkflowInterceptor2Test extends TestCase {
 		actionInvocationControl.replay();
 		actionProxyControl.replay();
 		
-		ValidationInterceptor validationInterceptor = new ValidationInterceptor();
+		ValidationInterceptor validationInterceptor = create();
 		DefaultWorkflowInterceptor interceptor = new DefaultWorkflowInterceptor();
 		try {
 		        validationInterceptor.intercept(actionInvocation);
@@ -160,6 +165,11 @@ public class DefaultWorkflowInterceptor2Test extends TestCase {
 		actionInvocationControl.verify();
 		actionProxyControl.verify();
 	}
+	
+	protected ValidationInterceptor create() {
+        ObjectFactory objectFactory = container.getInstance(ObjectFactory.class);
+        return (ValidationInterceptor) objectFactory.buildInterceptor(new InterceptorConfig("model", ValidationInterceptor.class.getName(), null), new HashMap());
+    }
 	
 	
 	public class ValidationFailedAction extends ActionSupport {

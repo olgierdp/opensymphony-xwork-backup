@@ -5,14 +5,28 @@
 
 package com.opensymphony.xwork2;
 
+import java.util.Arrays;
+
 import junit.framework.TestCase;
 
 import com.opensymphony.xwork2.config.Configuration;
+import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
+import com.opensymphony.xwork2.config.impl.DefaultConfiguration;
 import com.opensymphony.xwork2.config.impl.MockConfiguration;
+import com.opensymphony.xwork2.config.providers.XWorkConfigurationProvider;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.inject.Container;
+import com.opensymphony.xwork2.inject.ContainerBuilder;
+import com.opensymphony.xwork2.inject.Context;
+import com.opensymphony.xwork2.inject.Factory;
+import com.opensymphony.xwork2.inject.Scope;
+import com.opensymphony.xwork2.mock.MockObjectTypeDeterminer;
+import com.opensymphony.xwork2.util.Cat;
 import com.opensymphony.xwork2.util.XWorkTestCaseHelper;
+import com.opensymphony.xwork2.util.location.LocatableProperties;
 
 
 /**
@@ -34,7 +48,7 @@ public abstract class XWorkTestCase extends TestCase {
     
     protected void setUp() throws Exception {
         configurationManager = XWorkTestCaseHelper.setUp();
-        configuration = new MockConfiguration();
+        configuration = configurationManager.getConfiguration();
         container = configuration.getContainer();
         actionProxyFactory = container.getInstance(ActionProxyFactory.class);
     }
@@ -53,4 +67,19 @@ public abstract class XWorkTestCase extends TestCase {
         container = configuration.getContainer();
         actionProxyFactory = container.getInstance(ActionProxyFactory.class);
     }
+    
+    protected void loadButAdd(final Class<?> type, final Object impl) {
+        loadConfigurationProviders(new StubConfigurationProvider() {
+            public void register(ContainerBuilder builder,
+                    LocatableProperties props) throws ConfigurationException {
+                builder.factory(type, new Factory() {
+                    public Object create(Context context) throws Exception {
+                        return impl;
+                    }
+                    
+                }, Scope.SINGLETON);
+            }
+        });
+    }
+    
 }

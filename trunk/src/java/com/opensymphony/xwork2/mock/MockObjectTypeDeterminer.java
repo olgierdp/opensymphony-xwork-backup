@@ -4,6 +4,11 @@
  */
 package com.opensymphony.xwork2.mock;
 
+import java.util.Map;
+
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
+
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 
 /**
@@ -50,6 +55,12 @@ public class MockObjectTypeDeterminer implements ObjectTypeDeterminer {
 
     public boolean shouldCreateIfNew(Class parentClass, String property,
                                      Object target, String keyProperty, boolean isIndexAccessed) {
+        try {
+            System.out.println("ognl:"+OgnlRuntime.getPropertyAccessor(Map.class)+" this:"+this);
+        } catch (OgnlException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return isShouldCreateIfNew();
     }
 

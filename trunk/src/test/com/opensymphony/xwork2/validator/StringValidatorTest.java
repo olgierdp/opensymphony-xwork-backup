@@ -29,7 +29,7 @@ public class StringValidatorTest extends XWorkTestCase {
         equidae.setHorse(null);
 
         DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+        container.getInstance(ActionValidatorManager.class).validate(equidae, null, context);
 
         assertTrue(context.hasFieldErrors());
     }
@@ -43,7 +43,7 @@ public class StringValidatorTest extends XWorkTestCase {
         ActionContext.getContext().getValueStack().push(equidae);
 
         DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+        container.getInstance(ActionValidatorManager.class).validate(equidae, null, context);
 
         assertTrue(context.hasFieldErrors());
 
@@ -55,7 +55,7 @@ public class StringValidatorTest extends XWorkTestCase {
         equidae.setHorse("  ");
         ActionContext.getContext().getValueStack().push(equidae);
         context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+        container.getInstance(ActionValidatorManager.class).validate(equidae, null, context);
 
         assertTrue(context.hasFieldErrors());
         fieldErrors = context.getFieldErrors();
@@ -74,7 +74,7 @@ public class StringValidatorTest extends XWorkTestCase {
         ActionContext.getContext().getValueStack().push(equidae);
 
         DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+        container.getInstance(ActionValidatorManager.class).validate(equidae, null, context);
         assertTrue(context.hasFieldErrors());
 
         Map fieldErrors = context.getFieldErrors();
@@ -98,7 +98,7 @@ public class StringValidatorTest extends XWorkTestCase {
         equidae.setDonkey("asdf  ");
         ActionContext.getContext().getValueStack().push(equidae);
         context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+        container.getInstance(ActionValidatorManager.class).validate(equidae, null, context);
         assertTrue(context.hasFieldErrors());
 
         fieldErrors = context.getFieldErrors();
@@ -117,7 +117,7 @@ public class StringValidatorTest extends XWorkTestCase {
         equidae.setDonkey("asdfasdf");
         ActionContext.getContext().getValueStack().push(equidae);
         context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+        container.getInstance(ActionValidatorManager.class).validate(equidae, null, context);
         assertTrue(context.hasFieldErrors());
 
         fieldErrors = context.getFieldErrors();
@@ -132,7 +132,7 @@ public class StringValidatorTest extends XWorkTestCase {
         equidae.setDonkey("asdfasdf   ");
         ActionContext.getContext().getValueStack().push(equidae);
         context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+        container.getInstance(ActionValidatorManager.class).validate(equidae, null, context);
         assertTrue(context.hasFieldErrors());
 
         fieldErrors = context.getFieldErrors();
@@ -151,7 +151,7 @@ public class StringValidatorTest extends XWorkTestCase {
         equidae.setDonkey("asdfasdfasdf");
         ActionContext.getContext().getValueStack().push(equidae);
         context = new DelegatingValidatorContext(new ValidationAwareSupport());
-        ActionValidatorManagerFactory.getInstance().validate(equidae, null, context);
+        container.getInstance(ActionValidatorManager.class).validate(equidae, null, context);
         assertTrue(context.hasFieldErrors());
 
         fieldErrors = context.getFieldErrors();
@@ -182,12 +182,7 @@ public class StringValidatorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
-        ActionContext.setContext(new ActionContext(stack.getContext()));
-
-        configurationManager = new ConfigurationManager();
-        configurationManager.addConfigurationProvider(new MockConfigurationProvider());
-        configurationManager.reload();
-        ObjectFactory.setObjectFactory(new ObjectFactory());
+        super.setUp();
+        loadConfigurationProviders(new MockConfigurationProvider());
     }
 }

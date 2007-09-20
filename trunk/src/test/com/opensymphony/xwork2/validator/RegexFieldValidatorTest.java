@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.RegexFieldValidator;
@@ -20,13 +21,13 @@ import java.util.List;
  *
  * @author Claus Ibsen
  */
-public class RegexFieldValidatorTest extends TestCase {
+public class RegexFieldValidatorTest extends XWorkTestCase {
 
     public void testMatch() throws Exception {
         MyTestPerson testPerson = new MyTestPerson();
         testPerson.setUsername("Secret");
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         ActionContext.getContext().setValueStack(stack);
 
         RegexFieldValidator validator = new RegexFieldValidator();
@@ -45,7 +46,7 @@ public class RegexFieldValidatorTest extends TestCase {
         MyTestPerson testPerson = new MyTestPerson();
         testPerson.setUsername("Secret "); // must end with one whitespace
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         ActionContext.getContext().setValueStack(stack);
 
         RegexFieldValidator validator = new RegexFieldValidator();
@@ -65,7 +66,7 @@ public class RegexFieldValidatorTest extends TestCase {
         MyTestPerson testPerson = new MyTestPerson();
         testPerson.setUsername("Superman");
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         ActionContext.getContext().setValueStack(stack);
 
         RegexFieldValidator validator = new RegexFieldValidator();
@@ -89,7 +90,7 @@ public class RegexFieldValidatorTest extends TestCase {
         MyTestPerson testPerson = new MyTestPerson();
         testPerson.setUsername("NoExpression");
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         ActionContext.getContext().setValueStack(stack);
 
         RegexFieldValidator validator = new RegexFieldValidator();
@@ -121,7 +122,7 @@ public class RegexFieldValidatorTest extends TestCase {
         MyTestPerson testPerson = new MyTestPerson();
         testPerson.setUsername("");
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         ActionContext.getContext().setValueStack(stack);
 
         RegexFieldValidator validator = new RegexFieldValidator();
@@ -140,7 +141,7 @@ public class RegexFieldValidatorTest extends TestCase {
         MyTestPerson testPerson = new MyTestPerson();
         testPerson.setAge(33);
 
-        ValueStack stack = ValueStackFactory.getFactory().createValueStack();
+        ValueStack stack = ActionContext.getContext().getValueStack();
         ActionContext.getContext().setValueStack(stack);
 
         RegexFieldValidator validator = new RegexFieldValidator();
