@@ -191,7 +191,7 @@ public class DefaultConfiguration implements Configuration {
         builder.factory(ValueStackFactory.class, OgnlValueStackFactory.class, Scope.SINGLETON);
         builder.factory(XWorkConverter.class, Scope.SINGLETON);
         builder.factory(XWorkBasicConverter.class, Scope.SINGLETON);
-        builder.factory(TextProvider.class, DefaultTextProvider.class, Scope.SINGLETON);
+        builder.factory(TextProvider.class, "system", DefaultTextProvider.class, Scope.SINGLETON);
         builder.factory(ObjectTypeDeterminer.class, DefaultObjectTypeDeterminer.class, Scope.SINGLETON);
         builder.factory(PropertyAccessor.class, CompoundRoot.class.getName(), CompoundRootAccessor.class, Scope.SINGLETON);
         builder.factory(OgnlUtil.class, Scope.SINGLETON);

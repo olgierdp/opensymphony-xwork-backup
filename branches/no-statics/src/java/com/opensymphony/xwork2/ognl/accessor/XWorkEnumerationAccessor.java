@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * @author plightbo
  */
-public class XWorkEnumerationAcccessor extends EnumerationPropertyAccessor {
+public class XWorkEnumerationAccessor extends EnumerationPropertyAccessor {
 
     ObjectPropertyAccessor opa = new ObjectPropertyAccessor();
 

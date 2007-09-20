@@ -45,7 +45,7 @@ import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
 import com.opensymphony.xwork2.ognl.accessor.ObjectAccessor;
 import com.opensymphony.xwork2.ognl.accessor.ObjectProxyPropertyAccessor;
 import com.opensymphony.xwork2.ognl.accessor.XWorkCollectionPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkEnumerationAcccessor;
+import com.opensymphony.xwork2.ognl.accessor.XWorkEnumerationAccessor;
 import com.opensymphony.xwork2.ognl.accessor.XWorkIteratorPropertyAccessor;
 import com.opensymphony.xwork2.ognl.accessor.XWorkListPropertyAccessor;
 import com.opensymphony.xwork2.ognl.accessor.XWorkMapPropertyAccessor;
@@ -79,7 +79,7 @@ public class XWorkConfigurationProvider implements ConfigurationProvider {
                .factory(PropertyAccessor.class, CompoundRoot.class.getName(), CompoundRootAccessor.class, Scope.SINGLETON)
                .factory(PropertyAccessor.class, Object.class.getName(), ObjectAccessor.class, Scope.SINGLETON)
                .factory(PropertyAccessor.class, Iterator.class.getName(), XWorkIteratorPropertyAccessor.class, Scope.SINGLETON)
-               .factory(PropertyAccessor.class, Enumeration.class.getName(), XWorkEnumerationAcccessor.class, Scope.SINGLETON)
+               .factory(PropertyAccessor.class, Enumeration.class.getName(), XWorkEnumerationAccessor.class, Scope.SINGLETON)
                
                // silly workarounds for ognl since there is no way to flush its caches
                .factory(PropertyAccessor.class, List.class.getName(), XWorkListPropertyAccessor.class, Scope.SINGLETON)
@@ -96,7 +96,7 @@ public class XWorkConfigurationProvider implements ConfigurationProvider {
                .factory(NullHandler.class, Object.class.getName(), InstantiatingNullHandler.class, Scope.SINGLETON)
                .factory(ActionValidatorManager.class, AnnotationActionValidatorManager.class, Scope.SINGLETON)
                .factory(ActionValidatorManager.class, "no-annotations", DefaultActionValidatorManager.class, Scope.SINGLETON)
-               .factory(TextProvider.class, DefaultTextProvider.class, Scope.SINGLETON)
+               .factory(TextProvider.class, "system", DefaultTextProvider.class, Scope.SINGLETON)
                .factory(OgnlUtil.class, Scope.SINGLETON)
                .factory(XWorkBasicConverter.class, Scope.SINGLETON);
         props.setProperty("devMode", Boolean.FALSE.toString());

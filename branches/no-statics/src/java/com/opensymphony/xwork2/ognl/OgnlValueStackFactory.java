@@ -25,7 +25,7 @@ import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
 import com.opensymphony.xwork2.ognl.accessor.ObjectAccessor;
 import com.opensymphony.xwork2.ognl.accessor.ObjectProxyPropertyAccessor;
 import com.opensymphony.xwork2.ognl.accessor.XWorkCollectionPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkEnumerationAcccessor;
+import com.opensymphony.xwork2.ognl.accessor.XWorkEnumerationAccessor;
 import com.opensymphony.xwork2.ognl.accessor.XWorkIteratorPropertyAccessor;
 import com.opensymphony.xwork2.ognl.accessor.XWorkListPropertyAccessor;
 import com.opensymphony.xwork2.ognl.accessor.XWorkMapPropertyAccessor;
@@ -52,7 +52,7 @@ public class OgnlValueStackFactory implements ValueStackFactory {
         this.xworkConverter = conv;
     }
     
-    @Inject
+    @Inject("system")
     public void setTextProvider(TextProvider textProvider) {
         this.textProvider = textProvider;
     }

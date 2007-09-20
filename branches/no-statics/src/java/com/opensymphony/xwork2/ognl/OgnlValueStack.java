@@ -353,7 +353,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
         Container cont = ac.getContainer();
         XWorkConverter xworkConverter = cont.getInstance(XWorkConverter.class);
         CompoundRootAccessor accessor = (CompoundRootAccessor) cont.getInstance(PropertyAccessor.class, CompoundRoot.class.getName());
-        TextProvider prov = cont.getInstance(TextProvider.class);
+        TextProvider prov = cont.getInstance(TextProvider.class, "system");
         boolean allow = "true".equals(cont.getInstance(String.class, "allowStaticMethodAccess"));
         OgnlValueStack aStack = new OgnlValueStack(xworkConverter, accessor, prov, allow);
         aStack.setOgnlUtil(cont.getInstance(OgnlUtil.class));

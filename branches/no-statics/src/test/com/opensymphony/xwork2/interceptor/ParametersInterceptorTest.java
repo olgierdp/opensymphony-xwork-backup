@@ -248,7 +248,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         ValueStack stack = new OgnlValueStack(
                 container.getInstance(XWorkConverter.class),
                 (CompoundRootAccessor)container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName()),
-                container.getInstance(TextProvider.class), true) {
+                container.getInstance(TextProvider.class, "system"), true) {
             public void setValue(String expr, Object value) {
                 actual.put(expr, value);
             }

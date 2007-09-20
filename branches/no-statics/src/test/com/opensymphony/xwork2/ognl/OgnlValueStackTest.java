@@ -49,7 +49,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         OgnlValueStack stack = new OgnlValueStack(
                 container.getInstance(XWorkConverter.class),
                 (CompoundRootAccessor)container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName()),
-                container.getInstance(TextProvider.class), allowStaticMethodAccess);
+                container.getInstance(TextProvider.class, "system"), allowStaticMethodAccess);
         container.inject(stack);
         return stack;
     }
@@ -675,7 +675,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
     public void testTopIsDefaultTextProvider() {
         OgnlValueStack vs = createValueStack();
 
-        assertEquals(container.getInstance(TextProvider.class), vs.findValue("top"));
+        assertEquals(container.getInstance(TextProvider.class, "system"), vs.findValue("top"));
     }
 
     public void testTwoDogs() {
