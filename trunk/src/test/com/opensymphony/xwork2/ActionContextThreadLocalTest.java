@@ -19,6 +19,7 @@ public class ActionContextThreadLocalTest extends TestCase {
 
 	
 	public void testGetContext() throws Exception {
+	    ActionContext.setContext(null);
 		assertNull(ActionContext.getContext());
 	}
 	

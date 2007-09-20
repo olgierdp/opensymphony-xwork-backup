@@ -26,6 +26,7 @@ public class XWorkTestCaseHelper {
 
     public static ConfigurationManager setUp() throws Exception {
         ConfigurationManager configurationManager = new ConfigurationManager();
+        configurationManager.addConfigurationProvider(new XWorkConfigurationProvider());
         Configuration config = configurationManager.getConfiguration();
         Container container = config.getContainer();
         
