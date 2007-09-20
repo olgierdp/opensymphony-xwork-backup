@@ -179,9 +179,11 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
     public Class getClassInstance(String className) throws ClassNotFoundException {
         Class clazz = null;
         if (useClassCache) {
-            // this cache of classes is needed because Spring sucks at dealing with situations where the
-            // class instance changes 
-            clazz = (Class) classes.get(className);
+            synchronized(classes) {
+                // this cache of classes is needed because Spring sucks at dealing with situations where the
+                // class instance changes 
+                clazz = (Class) classes.get(className);
+            }
         }
 
         if (clazz == null) {
@@ -192,7 +194,9 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
             }
 
             if (useClassCache) {
-                classes.put(className, clazz);
+                synchronized(classes) {
+                    classes.put(className, clazz);
+                }
             }
         }
 
