@@ -25,6 +25,7 @@ import java.util.Map;
  * before the xwork.xml file is parsed. In a servlet environment, this could be done using a ServletContextListener.
  *
  * @author Simon Stewart (sms@lateral.net)
+ * @author tmjee
  */
 public class SpringObjectFactory extends ObjectFactory implements ApplicationContextAware {
     private static final Log log = LogFactory.getLog(SpringObjectFactory.class);
@@ -161,26 +162,28 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
     }
 
     public Class getClassInstance(String className) throws ClassNotFoundException {
-        Class clazz = null;
-        if (useClassCache) {
-            // this cache of classes is needed because Spring sucks at dealing with situations where the
-            // class instance changes (such as WebWork's QuickStart)
-            clazz = (Class) classes.get(className);
-        }
-
-        if (clazz == null) {
-            if (appContext.containsBean(className)) {
-                clazz = appContext.getBean(className).getClass();
-            } else {
-                clazz = super.getClassInstance(className);
-            }
-
+        synchronized(classes) { // protect HashMap (classes) from concurrent read/write
+            Class clazz = null;
             if (useClassCache) {
-                classes.put(className, clazz);
+                // this cache of classes is needed because Spring sucks at dealing with situations where the
+                // class instance changes (such as WebWork's QuickStart)
+                clazz = (Class) classes.get(className);
             }
-        }
 
-        return clazz;
+            if (clazz == null) {
+                if (appContext.containsBean(className)) {
+                    clazz = appContext.getBean(className).getClass();
+                } else {
+                    clazz = super.getClassInstance(className);
+                }
+
+                if (useClassCache) {
+                    classes.put(className, clazz);
+                }
+            }
+
+            return clazz;
+        }
     }
 
     /**
