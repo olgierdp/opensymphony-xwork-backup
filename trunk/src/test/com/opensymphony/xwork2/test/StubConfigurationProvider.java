@@ -1,4 +1,4 @@
-package com.opensymphony.xwork2;
+package com.opensymphony.xwork2.test;
 
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
@@ -15,7 +15,6 @@ public class StubConfigurationProvider implements ConfigurationProvider {
 
     public void init(Configuration configuration) throws ConfigurationException {
         // TODO Auto-generated method stub
-
     }
 
     public void loadPackages() throws ConfigurationException {

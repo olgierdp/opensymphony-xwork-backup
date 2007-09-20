@@ -16,7 +16,6 @@ public class Cat {
 
     public static final String SCIENTIFIC_NAME = "Feline";
 
-
     Foo foo;
     List kittens;
     String name;

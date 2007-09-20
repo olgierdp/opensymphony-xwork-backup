@@ -18,6 +18,7 @@ import com.opensymphony.xwork2.interceptor.Interceptor;
 import com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor;
 import com.opensymphony.xwork2.interceptor.TimerInterceptor;
 import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
+import com.opensymphony.xwork2.test.StubConfigurationProvider;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.validator.Validator;
 import com.opensymphony.xwork2.validator.validators.ExpressionValidator;

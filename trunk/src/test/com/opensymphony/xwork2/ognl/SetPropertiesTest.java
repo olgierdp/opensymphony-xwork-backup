@@ -21,7 +21,6 @@ import ognl.OgnlException;
 import ognl.OgnlRuntime;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.StubConfigurationProvider;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
@@ -33,6 +32,7 @@ import com.opensymphony.xwork2.inject.Factory;
 import com.opensymphony.xwork2.inject.Scope;
 import com.opensymphony.xwork2.mock.MockObjectTypeDeterminer;
 import com.opensymphony.xwork2.ognl.accessor.XWorkListPropertyAccessor;
+import com.opensymphony.xwork2.test.StubConfigurationProvider;
 import com.opensymphony.xwork2.util.Bar;
 import com.opensymphony.xwork2.util.Cat;
 import com.opensymphony.xwork2.util.Foo;
