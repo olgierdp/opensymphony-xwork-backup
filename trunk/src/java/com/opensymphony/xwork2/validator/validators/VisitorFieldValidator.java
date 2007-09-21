@@ -165,6 +165,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         Object o;
         String field;
         String message;
+        private ValidatorContext parent;
 
         public AppendingValidatorContext(ValidatorContext parent, Object object, String field, String message) {
             super(parent, makeTextProvider(object, parent), parent);
@@ -172,6 +173,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
             //            super(parent);
             this.field = field;
             this.message = message;
+            this.parent = parent;
         }
 
         /**
@@ -181,6 +183,9 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
          * @return field name in OGNL syntax
          */
         public String getFullFieldName(String fieldName) {
+            if (parent instanceof AppendingValidatorContext) {
+                return parent.getFullFieldName("") + field + "." + fieldName;
+            }
             return field + "." + fieldName;
         }
 
