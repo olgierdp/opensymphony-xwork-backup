@@ -619,12 +619,15 @@ public class LocalizedTextUtil {
 
     private static MessageFormat buildMessageFormat(String pattern, Locale locale) {
         MessageFormatKey key = new MessageFormatKey(pattern, locale);
-        MessageFormat format = (MessageFormat) messageFormats.get(key);
-        if (format == null) {
-            format = new MessageFormat(pattern);
-            format.setLocale(locale);
-            format.applyPattern(pattern);
-            messageFormats.put(key, format);
+        MessageFormat format = null;
+        synchronized(messageFormats) {
+            format = (MessageFormat) messageFormats.get(key);
+            if (format == null) {
+                format = new MessageFormat(pattern);
+                format.setLocale(locale);
+                format.applyPattern(pattern);
+                messageFormats.put(key, format);
+            }
         }
 
         return format;
