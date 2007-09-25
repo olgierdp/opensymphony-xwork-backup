@@ -15,6 +15,7 @@ import ognl.MethodAccessor;
 import ognl.OgnlRuntime;
 import ognl.PropertyAccessor;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.conversion.NullHandler;
 import com.opensymphony.xwork2.conversion.impl.InstantiatingNullHandler;
@@ -65,12 +66,14 @@ public class OgnlValueStackFactory implements ValueStackFactory {
     public ValueStack createValueStack() {
         ValueStack stack = new OgnlValueStack(xworkConverter, compoundRootAccessor, textProvider, allowStaticMethodAccess);
         container.inject(stack);
+        stack.getContext().put(ActionContext.CONTAINER, container);
         return stack;
     }
 
     public ValueStack createValueStack(ValueStack stack) {
         ValueStack result = new OgnlValueStack(stack, xworkConverter, compoundRootAccessor, allowStaticMethodAccess);
         container.inject(result);
+        stack.getContext().put(ActionContext.CONTAINER, container);
         return result;
     }
     
