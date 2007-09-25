@@ -19,7 +19,7 @@ public interface ValueStack {
     public static final String REPORT_ERRORS_ON_NO_PROP = "com.opensymphony.xwork2.util.ValueStack.ReportErrorsOnNoProp";
 
     /**
-     * Gets the context for this value stack. The context holds all the information in the value stack and it's surrondings.
+     * Gets the context for this value stack. The context holds all the information in the value stack and it's surroundings.
      *
      * @return  the context.
      */
@@ -33,7 +33,7 @@ public interface ValueStack {
     public abstract void setDefaultType(Class defaultType);
 
     /**
-     * Set a override map containing <code>key -> values</code> that takes precedens when doing find operations on the ValueStack.
+     * Set a override map containing <code>key -> values</code> that takes precedent when doing find operations on the ValueStack.
      * <p/>
      * See the unit test for ValueStackTest for examples.
      *
@@ -59,7 +59,7 @@ public interface ValueStack {
      * Attempts to set a property on a bean in the stack with the given expression using the default search order.
      *
      * @param expr  the expression defining the path to the property to be set.
-     * @param value the value to be set into the neamed property
+     * @param value the value to be set into the named property
      */
     public abstract void setValue(String expr, Object value);
 
@@ -67,7 +67,7 @@ public interface ValueStack {
      * Attempts to set a property on a bean in the stack with the given expression using the default search order.
      *
      * @param expr                    the expression defining the path to the property to be set.
-     * @param value                   the value to be set into the neamed property
+     * @param value                   the value to be set into the named property
      * @param throwExceptionOnFailure a flag to tell whether an exception should be thrown if there is no property with
      *                                the given name.
      */
