@@ -47,7 +47,7 @@ class InternalContext {
 
   Scope.Strategy getScopeStrategy() {
     if (scopeStrategy == null) {
-      scopeStrategy = container.localScopeStrategy.get();
+      scopeStrategy = (Scope.Strategy) container.localScopeStrategy.get();
 
       if (scopeStrategy == null) {
         throw new IllegalStateException("Scope strategy not set. "
