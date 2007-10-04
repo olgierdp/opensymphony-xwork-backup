@@ -56,6 +56,7 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected Iterator interceptors;
     protected ValueStack stack;
     protected Result result;
+    protected Result explicitResult;
     protected String resultCode;
     protected boolean executed = false;
     protected boolean pushAction = true;
@@ -176,8 +177,10 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     public Result createResult() throws Exception {
 
-    	if (result != null) {
-    		return result;
+    	if (explicitResult != null) {
+    	    Result ret = explicitResult;
+    	    explicitResult = null;;
+    		return ret;
     	}
         ActionConfig config = proxy.getConfig();
         Map results = config.getResults();
@@ -426,7 +429,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         	}
         	
             if (methodResult instanceof Result) {
-            	this.result = (Result) methodResult;
+            	this.explicitResult = (Result) methodResult;
             	return null;
             } else {
             	return (String) methodResult;

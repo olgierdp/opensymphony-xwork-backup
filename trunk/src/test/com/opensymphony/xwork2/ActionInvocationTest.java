@@ -57,6 +57,7 @@ public class ActionInvocationTest extends XWorkTestCase {
         ActionProxy baseActionProxy = actionProxyFactory.createActionProxy(
                 "baz", "resultAction", null);
         assertEquals(null, baseActionProxy.execute());
+        assertTrue(SimpleAction.resultCalled);
     }
 
     public void testSimple() {

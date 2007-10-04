@@ -39,9 +39,12 @@ public class SimpleAction extends ActionSupport {
 
     private String aliasSource;
     private String aliasDest;
+    
+    public static boolean resultCalled;
 
 
     public SimpleAction() {
+        resultCalled = false;
     }
 
 
@@ -171,7 +174,13 @@ public class SimpleAction extends ActionSupport {
     }
     
     public Result resultAction() throws Exception {
-    	return new VoidResult();
+    	return new Result() {
+
+            public void execute(ActionInvocation invocation) throws Exception {
+                resultCalled = true;
+            }
+    	    
+    	};
     }
 
     public String exceptionMethod() throws Exception {
