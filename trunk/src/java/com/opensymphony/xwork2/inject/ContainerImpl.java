@@ -523,8 +523,8 @@ class ContainerImpl implements Container {
     return factoryNamesByType.get(type);
   }
 
-  ThreadLocal<InternalContext[]> localContext =
-      new ThreadLocal<InternalContext[]>() {
+  ThreadLocal<Object[]> localContext =
+      new ThreadLocal<Object[]>() {
         protected InternalContext[] initialValue() {
           return new InternalContext[1];
         }
@@ -535,7 +535,7 @@ class ContainerImpl implements Container {
    * necessary.
    */
   <T> T callInContext(ContextualCallable<T> callable) {
-    InternalContext[] reference = localContext.get();
+    InternalContext[] reference = (InternalContext[])localContext.get();
     if (reference[0] == null) {
       reference[0] = new InternalContext(this);
       try {
@@ -562,8 +562,8 @@ class ContainerImpl implements Container {
     return constructors.get(implementation);
   }
 
-  final ThreadLocal<Scope.Strategy> localScopeStrategy =
-      new ThreadLocal<Scope.Strategy>();
+  final ThreadLocal<Object> localScopeStrategy =
+      new ThreadLocal<Object>();
 
   public void setScopeStrategy(Scope.Strategy scopeStrategy) {
     this.localScopeStrategy.set(scopeStrategy);
