@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -41,8 +42,8 @@ import java.util.Map;
 public class OgnlUtil {
 
     private static final Log log = LogFactory.getLog(OgnlUtil.class);
-    private HashMap expressions = new HashMap();
-    private HashMap beanInfoCache = new HashMap();
+    private ConcurrentHashMap<String,Object> expressions = new ConcurrentHashMap<String,Object>();
+    private ConcurrentHashMap<Class,BeanInfo> beanInfoCache = new ConcurrentHashMap<Class,BeanInfo>();
     
     private TypeConverter defaultConverter;
     
@@ -210,16 +211,12 @@ public class OgnlUtil {
 
 
     public Object compile(String expression) throws OgnlException {
-        synchronized (expressions) {
-            Object o = expressions.get(expression);
-
-            if (o == null) {
-                o = Ognl.parseExpression(expression);
-                expressions.put(expression, o);
-            }
-
-            return o;
+        Object o = expressions.get(expression);
+        if (o == null) {
+            o = Ognl.parseExpression(expression);
+            expressions.put(expression, o);
         }
+        return o;
     }
 
     /**
@@ -359,15 +356,13 @@ public class OgnlUtil {
      * @throws IntrospectionException is thrown if an exception occurs during introspection.
      */
     public BeanInfo getBeanInfo(Object from) throws IntrospectionException {
-        synchronized (beanInfoCache) {
-            BeanInfo beanInfo;
-            beanInfo = (BeanInfo) beanInfoCache.get(from.getClass());
-            if (beanInfo == null) {
-                beanInfo = Introspector.getBeanInfo(from.getClass(), Object.class);
-                beanInfoCache.put(from.getClass(), beanInfo);
-            }
-            return beanInfo;
+        BeanInfo beanInfo;
+        beanInfo = (BeanInfo) beanInfoCache.get(from.getClass());
+        if (beanInfo == null) {
+            beanInfo = Introspector.getBeanInfo(from.getClass(), Object.class);
+            beanInfoCache.putIfAbsent(from.getClass(), beanInfo);
         }
+        return beanInfo;
     }
 
     void internalSetProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
