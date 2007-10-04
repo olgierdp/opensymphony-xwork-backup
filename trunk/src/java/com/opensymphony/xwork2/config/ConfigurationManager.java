@@ -227,7 +227,7 @@ public class ConfigurationManager {
                 }
             }
             
-            if (packageProviders != null) {
+            if (packageProviders != null && reload) {
                 for (PackageProvider provider : packageProviders) {
                     if (provider.needsReload()) {
                         if (LOG.isInfoEnabled()) {

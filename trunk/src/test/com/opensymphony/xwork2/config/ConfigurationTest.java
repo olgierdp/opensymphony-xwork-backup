@@ -18,6 +18,7 @@ import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.inject.Scope;
 import com.opensymphony.xwork2.mock.MockInterceptor;
 import com.opensymphony.xwork2.test.StubConfigurationProvider;
+import com.opensymphony.xwork2.util.XWorkTestCaseHelper;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 
 import java.util.HashMap;
@@ -182,7 +183,8 @@ public class ConfigurationTest extends XWorkTestCase {
         assertNotNull(configuration.getActionConfig("", MockConfigurationProvider.FOO_ACTION_NAME));
     }
     
-    public void testMultipleContainerProviders() {
+    public void testMultipleContainerProviders() throws Exception {
+        System.out.println("-----");
         Mock mockContainerProvider = new Mock(ContainerProvider.class);
         mockContainerProvider.expect("init", C.ANY_ARGS);
         mockContainerProvider.expect("register", C.ANY_ARGS);
@@ -206,6 +208,7 @@ public class ConfigurationTest extends XWorkTestCase {
         // check that it has configuration from xml
         assertNotNull(configuration.getActionConfig("/foo/bar", "Bar"));
 
+        System.out.println("-----");
         mockContainerProvider.verify();
     }
     

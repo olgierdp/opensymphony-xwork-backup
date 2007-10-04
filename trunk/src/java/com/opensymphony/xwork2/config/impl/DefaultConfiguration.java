@@ -166,18 +166,6 @@ public class DefaultConfiguration implements Configuration {
         {
             containerProvider.init(this);
             containerProvider.register(builder, props);
-            if (containerProvider instanceof PackageProvider) {
-                builder.factory(PackageProvider.class, containerProvider.toString(), new Factory<PackageProvider>() {
-                    boolean injected = false;
-                    public PackageProvider create(Context context) throws Exception {
-                        if (!injected) {
-                            context.getContainer().inject(containerProvider);
-                            injected = true;
-                        }
-                        return (PackageProvider)containerProvider;
-                    }
-                });
-            }
         }
         props.setConstants(builder);
         
@@ -194,17 +182,26 @@ public class DefaultConfiguration implements Configuration {
             container = builder.create(false);
             setContext(container);
             objectFactory = container.getInstance(ObjectFactory.class);
-            
-            Set<String> packageProviderNames = container.getInstanceNames(PackageProvider.class);
-            for (String name : packageProviderNames) {
-                PackageProvider provider = container.getInstance(PackageProvider.class, name);
-                
-                // Ensure the init method is only called once in the case of ConfigurationProviders
-                if (!providers.contains(provider)) {
-                    provider.init(this);
+
+            // Process the configuration providers first
+            for (final ContainerProvider containerProvider : providers)
+            {
+                if (containerProvider instanceof PackageProvider) {
+                    container.inject(containerProvider);
+                    ((PackageProvider)containerProvider).loadPackages();
+                    packageProviders.add((PackageProvider)containerProvider);
                 }
-                provider.loadPackages();
-                packageProviders.add(provider);
+            }
+            
+            // Then process any package providers from the plugins
+            Set<String> packageProviderNames = container.getInstanceNames(PackageProvider.class);
+            if (packageProviderNames != null) {
+                for (String name : packageProviderNames) {
+                    PackageProvider provider = container.getInstance(PackageProvider.class, name);
+                    provider.init(this);
+                    provider.loadPackages();
+                    packageProviders.add(provider);
+                }
             }
     
             rebuildRuntimeConfiguration();

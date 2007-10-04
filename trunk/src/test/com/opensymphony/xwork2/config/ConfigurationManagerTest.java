@@ -162,6 +162,7 @@ public class ConfigurationManagerTest extends XWorkTestCase {
 
     protected void tearDown() throws Exception {
         configProviderMock.expect("destroy");
+        FileManager.setReloadingConfigs(true);
         super.tearDown();
     }
 }
