@@ -42,7 +42,7 @@ class ExternalContext<T> implements Context {
   }
 
   public Scope.Strategy getScopeStrategy() {
-    return container.localScopeStrategy.get();
+    return (Scope.Strategy) container.localScopeStrategy.get();
   }
 
   public Container getContainer() {
