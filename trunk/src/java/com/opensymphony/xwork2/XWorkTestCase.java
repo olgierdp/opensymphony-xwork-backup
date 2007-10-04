@@ -61,10 +61,14 @@ public abstract class XWorkTestCase extends TestCase {
     }
     
     protected void loadButAdd(final Class<?> type, final Object impl) {
+        loadButAdd(type, Container.DEFAULT_NAME, impl);
+    }
+    
+    protected void loadButAdd(final Class<?> type, final String name, final Object impl) {
         loadConfigurationProviders(new StubConfigurationProvider() {
             public void register(ContainerBuilder builder,
                     LocatableProperties props) throws ConfigurationException {
-                builder.factory(type, new Factory() {
+                builder.factory(type, name, new Factory() {
                     public Object create(Context context) throws Exception {
                         return impl;
                     }

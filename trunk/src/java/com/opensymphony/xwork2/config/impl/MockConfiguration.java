@@ -10,6 +10,8 @@ import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
+import com.opensymphony.xwork2.config.ContainerProvider;
+import com.opensymphony.xwork2.config.PackageProvider;
 import com.opensymphony.xwork2.config.RuntimeConfiguration;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.config.providers.XWorkConfigurationProvider;
@@ -93,5 +95,11 @@ public class MockConfiguration implements Configuration {
 
     public Set<String> getLoadedFileNames() {
         return loadedFiles;
+    }
+
+    public List<PackageProvider> reloadContainer(
+            List<ContainerProvider> containerProviders)
+            throws ConfigurationException {
+        throw new UnsupportedOperationException();
     }
 }

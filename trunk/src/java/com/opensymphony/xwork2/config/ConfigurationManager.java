@@ -11,6 +11,7 @@ import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
@@ -30,7 +31,8 @@ public class ConfigurationManager {
     protected static final Log LOG = LogFactory.getLog(ConfigurationManager.class);
     protected Configuration configuration;
     protected Lock providerLock = new ReentrantLock();
-    private List<ConfigurationProvider> configurationProviders = new CopyOnWriteArrayList<ConfigurationProvider>();
+    private List<ContainerProvider> containerProviders = new CopyOnWriteArrayList<ContainerProvider>();
+    private List<PackageProvider> packageProviders = new CopyOnWriteArrayList<PackageProvider>();
     protected String defaultFrameworkBeanName;
 
     public ConfigurationManager() {
@@ -50,7 +52,7 @@ public class ConfigurationManager {
         if (configuration == null) {
             setConfiguration(new DefaultConfiguration(defaultFrameworkBeanName));
             try {
-                configuration.reload(getConfigurationProviders());
+                configuration.reloadContainer(getContainerProviders());
             } catch (ConfigurationException e) {
                 setConfiguration(null);
                 throw new ConfigurationException("Unable to load configuration.", e);
@@ -65,6 +67,29 @@ public class ConfigurationManager {
     public synchronized void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
     }
+    
+    /**
+     * Get the current list of ConfigurationProviders. If no custom ConfigurationProviders have been added, this method
+     * will return a list containing only the default ConfigurationProvider, XMLConfigurationProvider.  if a custom
+     * ConfigurationProvider has been added, then the XmlConfigurationProvider must be added by hand.
+     * </p>
+     * <p/>
+     * WARNING: This returns only ContainerProviders that can be cast into ConfigurationProviders
+     *
+     * @return the list of registered ConfigurationProvider objects
+     * @see ConfigurationProvider
+     * @deprecated Since 2.1, use {@link #getContainerProviders()}
+     */
+    public List<ConfigurationProvider> getConfigurationProviders() {
+        List<ContainerProvider> contProviders = getContainerProviders();
+        List<ConfigurationProvider> providers = new ArrayList<ConfigurationProvider>();
+        for (ContainerProvider prov : contProviders) {
+            if (prov instanceof ConfigurationProvider) {
+                providers.add((ConfigurationProvider) prov);
+            }
+        }
+        return providers;
+    }
 
     /**
      * Get the current list of ConfigurationProviders. If no custom ConfigurationProviders have been added, this method
@@ -77,15 +102,15 @@ public class ConfigurationManager {
      * @return the list of registered ConfigurationProvider objects
      * @see ConfigurationProvider
      */
-    public List<ConfigurationProvider> getConfigurationProviders() {
+    public List<ContainerProvider> getContainerProviders() {
         providerLock.lock();
         try {
-            if (configurationProviders.size() == 0) {
-                configurationProviders.add(new XWorkConfigurationProvider());
-                configurationProviders.add(new XmlConfigurationProvider("xwork.xml", false));
+            if (containerProviders.size() == 0) {
+                containerProviders.add(new XWorkConfigurationProvider());
+                containerProviders.add(new XmlConfigurationProvider("xwork.xml", false));
             }
 
-            return configurationProviders;
+            return containerProviders;
         } finally {
             providerLock.unlock();
         }
@@ -95,11 +120,25 @@ public class ConfigurationManager {
      * Set the list of configuration providers
      *
      * @param configurationProviders
+     * @deprecated Since 2.1, use {@link #setContainerProvider()}
      */
     public void setConfigurationProviders(List<ConfigurationProvider> configurationProviders) {
+        // Silly copy necessary due to lack of ability to cast generic lists
+        List<ContainerProvider> contProviders = new ArrayList<ContainerProvider>();
+        contProviders.addAll(configurationProviders);
+        
+        setContainerProviders(contProviders);
+    }
+        
+    /**
+     * Set the list of configuration providers
+     *
+     * @param containerProviders
+     */
+    public void setContainerProviders(List<ContainerProvider> containerProviders) {
         providerLock.lock();
         try {
-            this.configurationProviders = new CopyOnWriteArrayList<ConfigurationProvider>(configurationProviders);
+            this.containerProviders = new CopyOnWriteArrayList<ContainerProvider>(containerProviders);
         } finally {
             providerLock.unlock();
         }
@@ -110,10 +149,21 @@ public class ConfigurationManager {
      * more than once
      *
      * @param provider the ConfigurationProvider to register
+     * @deprecated Since 2.1, use {@link #addContainerProvider()}
      */
     public void addConfigurationProvider(ConfigurationProvider provider) {
-        if (!configurationProviders.contains(provider)) {
-            configurationProviders.add(provider);
+        addContainerProvider(provider);
+    }
+        
+    /**
+     * adds a configuration provider to the List of ConfigurationProviders.  a given ConfigurationProvider may be added
+     * more than once
+     *
+     * @param provider the ConfigurationProvider to register
+     */
+    public void addContainerProvider(ContainerProvider provider) {
+        if (!containerProviders.contains(provider)) {
+            containerProviders.add(provider);
         }
     }
     
@@ -122,17 +172,22 @@ public class ConfigurationManager {
      * ConfigurationProviders
      *
      * @see com.opensymphony.xwork2.config.ConfigurationProvider#destroy
+     * @deprecated Since 2.1, use {@link #clearContainerProviders()}
      */
     public void clearConfigurationProviders() {
-        for (ConfigurationProvider configurationProvider : configurationProviders) {
-        	try {
-        		configurationProvider.destroy();
-        	}
-        	catch(Exception e) {
-        		LOG.warn("error while destroying configuration provider ["+configurationProvider+"]", e);
-        	}
+        clearContainerProviders();
+    }
+    
+    public void clearContainerProviders() {
+        for (ContainerProvider containerProvider : containerProviders) {
+            try {
+                containerProvider.destroy();
+            }
+            catch(Exception e) {
+                LOG.warn("error while destroying container provider ["+containerProvider+"]", e);
+            }
         }
-        configurationProviders.clear();
+        containerProviders.clear();
     }
 
     /**
@@ -140,7 +195,7 @@ public class ConfigurationManager {
      */
     public synchronized void destroyConfiguration() {
         clearConfigurationProviders(); // let's destroy the ConfigurationProvider first
-        setConfigurationProviders(new CopyOnWriteArrayList<ConfigurationProvider>());
+        containerProviders = new CopyOnWriteArrayList<ContainerProvider>();
         if (configuration != null)
             configuration.destroy(); // let's destroy it first, before nulling it.
         configuration = null;
@@ -160,33 +215,46 @@ public class ConfigurationManager {
 
             reload = false;
 
-            List<ConfigurationProvider> providers = getConfigurationProviders();
-            for (ConfigurationProvider provider : providers) {
+            List<ContainerProvider> providers = getContainerProviders();
+            for (ContainerProvider provider : providers) {
                 if (provider.needsReload()) {
                     if (LOG.isInfoEnabled()) {
-                        LOG.info("Detected configuration provider "+provider+" needs to be reloaded.  Reloading all providers.");
+                        LOG.info("Detected container provider "+provider+" needs to be reloaded.  Reloading all providers.");
                     }
                     reload = true;
 
                     break;
                 }
             }
+            
+            if (packageProviders != null) {
+                for (PackageProvider provider : packageProviders) {
+                    if (provider.needsReload()) {
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info("Detected package provider "+provider+" needs to be reloaded.  Reloading all providers.");
+                        }
+                        reload = true;
+    
+                        break;
+                    }
+                }
+            }
 
             if (reload) {
-            	for (ConfigurationProvider configurationProvider : configurationProviders) {
+            	for (ContainerProvider containerProvider : containerProviders) {
                 	try {
-                		configurationProvider.destroy();
+                		containerProvider.destroy();
                 	}
                 	catch(Exception e) {
-                		LOG.warn("error while destroying configuration provider ["+configurationProvider+"]", e);
+                		LOG.warn("error while destroying configuration provider ["+containerProvider+"]", e);
                 	}
                 }
-                configuration.reload(providers);
+                packageProviders = configuration.reloadContainer(providers);
             }
         }
     }
     
     public synchronized void reload() {
-        getConfiguration().reload(getConfigurationProviders());
+        packageProviders = getConfiguration().reloadContainer(getContainerProviders());
     }
 }

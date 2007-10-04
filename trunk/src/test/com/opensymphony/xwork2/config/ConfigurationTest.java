@@ -4,12 +4,21 @@
  */
 package com.opensymphony.xwork2.config;
 
+import com.mockobjects.dynamic.C;
+import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+import com.opensymphony.xwork2.inject.ContainerBuilder;
+import com.opensymphony.xwork2.inject.Context;
+import com.opensymphony.xwork2.inject.Factory;
+import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.inject.Scope;
 import com.opensymphony.xwork2.mock.MockInterceptor;
+import com.opensymphony.xwork2.test.StubConfigurationProvider;
+import com.opensymphony.xwork2.util.location.LocatableProperties;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -172,6 +181,64 @@ public class ConfigurationTest extends XWorkTestCase {
         // check that it has configuration from MockConfigurationProvider
         assertNotNull(configuration.getActionConfig("", MockConfigurationProvider.FOO_ACTION_NAME));
     }
+    
+    public void testMultipleContainerProviders() {
+        Mock mockContainerProvider = new Mock(ContainerProvider.class);
+        mockContainerProvider.expect("init", C.ANY_ARGS);
+        mockContainerProvider.expect("register", C.ANY_ARGS);
+        mockContainerProvider.matchAndReturn("equals", C.ANY_ARGS, false);
+        mockContainerProvider.matchAndReturn("toString", "foo");
+        mockContainerProvider.matchAndReturn("destroy", null);
+        mockContainerProvider.expectAndReturn("needsReload", true);
+        configurationManager.addContainerProvider((ContainerProvider) mockContainerProvider.proxy());
+
+        Configuration config = null;
+        try {
+            config = configurationManager.getConfiguration();
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
+            fail();
+        }
+        
+
+        RuntimeConfiguration configuration = config.getRuntimeConfiguration();
+
+        // check that it has configuration from xml
+        assertNotNull(configuration.getActionConfig("/foo/bar", "Bar"));
+
+        mockContainerProvider.verify();
+    }
+    
+    public void testInitForPackageProviders() {
+        
+        loadConfigurationProviders(new StubConfigurationProvider() {
+            public void register(ContainerBuilder builder,
+                    LocatableProperties props) throws ConfigurationException {
+                builder.factory(PackageProvider.class, "foo", MyPackageProvider.class);
+            }
+        });
+        
+        assertEquals(configuration, MyPackageProvider.getConfiguration());
+    }
+    
+    public void testInitOnceForConfigurationProviders() {
+        
+        loadConfigurationProviders(new StubConfigurationProvider() {
+            boolean called = false;
+            public void init(Configuration config) {
+                if (called) {
+                    fail("Called twice");
+                }
+                called = true;
+            }
+            
+            public void loadPackages() {
+                if (!called) {
+                    fail("Never called");
+                }
+            }
+        });
+    }
 
     public void testMultipleInheritance() {
         try {
@@ -206,5 +273,20 @@ public class ConfigurationTest extends XWorkTestCase {
 
         // ensure we're using the default configuration, not simple config
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-sample.xml"));
+    }
+    
+    public static class MyPackageProvider implements PackageProvider {
+        static Configuration config;
+        public void loadPackages() throws ConfigurationException {}
+        public boolean needsReload() { return config != null; }
+        
+        public static Configuration getConfiguration() {
+            return config;
+        }
+        public void init(Configuration configuration)
+                throws ConfigurationException {
+            config = configuration;
+        }
+        
     }
 }

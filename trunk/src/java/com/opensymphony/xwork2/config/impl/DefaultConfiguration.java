@@ -11,6 +11,8 @@ import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
+import com.opensymphony.xwork2.config.ContainerProvider;
+import com.opensymphony.xwork2.config.PackageProvider;
 import com.opensymphony.xwork2.config.RuntimeConfiguration;
 import com.opensymphony.xwork2.config.entities.*;
 import com.opensymphony.xwork2.config.providers.InterceptorBuilder;
@@ -54,7 +56,7 @@ public class DefaultConfiguration implements Configuration {
     protected static final Log LOG = LogFactory.getLog(DefaultConfiguration.class);
 
 
-    // Programmatic Action Conifigurations
+    // Programmatic Action Configurations
     protected Map<String, PackageConfig> packageContexts = new LinkedHashMap<String, PackageConfig>();
     protected RuntimeConfiguration runtimeConfiguration;
     protected Container container;
@@ -131,7 +133,7 @@ public class DefaultConfiguration implements Configuration {
     public void rebuildRuntimeConfiguration() {
         runtimeConfiguration = buildRuntimeConfiguration();
     }
-
+    
     /**
      * Calls the ConfigurationProviderFactory.getConfig() to tell it to reload the configuration and then calls
      * buildRuntimeConfiguration().
@@ -139,15 +141,43 @@ public class DefaultConfiguration implements Configuration {
      * @throws ConfigurationException
      */
     public synchronized void reload(List<ConfigurationProvider> providers) throws ConfigurationException {
+        
+        // Silly copy necessary due to lack of ability to cast generic lists
+        List<ContainerProvider> contProviders = new ArrayList<ContainerProvider>();
+        contProviders.addAll(providers);
+        
+        reloadContainer(contProviders);
+    }
+
+    /**
+     * Calls the ConfigurationProviderFactory.getConfig() to tell it to reload the configuration and then calls
+     * buildRuntimeConfiguration().
+     *
+     * @throws ConfigurationException
+     */
+    public synchronized List<PackageProvider> reloadContainer(List<ContainerProvider> providers) throws ConfigurationException {
         packageContexts.clear();
         loadedFileNames.clear();
+        List<PackageProvider> packageProviders = new ArrayList<PackageProvider>();
 
         ContainerProperties props = new ContainerProperties();
         ContainerBuilder builder = new ContainerBuilder();
-        for (ConfigurationProvider configurationProvider : providers)
+        for (final ContainerProvider containerProvider : providers)
         {
-            configurationProvider.init(this);
-            configurationProvider.register(builder, props);
+            containerProvider.init(this);
+            containerProvider.register(builder, props);
+            if (containerProvider instanceof PackageProvider) {
+                builder.factory(PackageProvider.class, containerProvider.toString(), new Factory<PackageProvider>() {
+                    boolean injected = false;
+                    public PackageProvider create(Context context) throws Exception {
+                        if (!injected) {
+                            context.getContainer().inject(containerProvider);
+                            injected = true;
+                        }
+                        return (PackageProvider)containerProvider;
+                    }
+                });
+            }
         }
         props.setConstants(builder);
         
@@ -165,16 +195,23 @@ public class DefaultConfiguration implements Configuration {
             setContext(container);
             objectFactory = container.getInstance(ObjectFactory.class);
             
-            for (ConfigurationProvider configurationProvider : providers)
-            {
-                container.inject(configurationProvider);
-                configurationProvider.loadPackages();
+            Set<String> packageProviderNames = container.getInstanceNames(PackageProvider.class);
+            for (String name : packageProviderNames) {
+                PackageProvider provider = container.getInstance(PackageProvider.class, name);
+                
+                // Ensure the init method is only called once in the case of ConfigurationProviders
+                if (!providers.contains(provider)) {
+                    provider.init(this);
+                }
+                provider.loadPackages();
+                packageProviders.add(provider);
             }
     
             rebuildRuntimeConfiguration();
         } finally {
             ActionContext.setContext(null);
         }
+        return packageProviders;
     }
     
     protected ActionContext setContext(Container cont) {

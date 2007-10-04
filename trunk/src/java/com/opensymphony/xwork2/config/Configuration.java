@@ -43,7 +43,19 @@ public interface Configuration extends Serializable {
      */
     void destroy();
 
+    /**
+     * @deprecated Since 2.1
+     * @param providers
+     * @throws ConfigurationException
+     */
     void reload(List<ConfigurationProvider> providers) throws ConfigurationException;
+    
+    /**
+     * @since 2.1
+     * @param containerProviders
+     * @throws ConfigurationException
+     */
+    List<PackageProvider> reloadContainer(List<ContainerProvider> containerProviders) throws ConfigurationException;
 
     void removePackageConfig(String name);
 
