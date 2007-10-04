@@ -20,6 +20,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collections;
 
 /**
  * Simple implementation of the ObjectFactory that makes use of Spring's application context if one has been configured,
@@ -35,7 +36,7 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
     protected ApplicationContext appContext;
     protected AutowireCapableBeanFactory autoWiringFactory;
     protected int autowireStrategy = AutowireCapableBeanFactory.AUTOWIRE_BY_NAME;
-    private Map classes = new HashMap();
+    private Map classes = Collections.synchronizedMap(new HashMap());
     private boolean useClassCache = true;
 
     @Inject(value="applicationContextPath",required=false)
