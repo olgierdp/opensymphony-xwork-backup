@@ -22,7 +22,7 @@ public class LoggerUtils {
      * </pre>
      * 
      * @param msg The message
-     * @param args A list of arguments
+     * @param args A list of arguments.  A maximum of 10 are supported.
      * @return The formatted string
      */
     public static String format(String msg, String... args) {
