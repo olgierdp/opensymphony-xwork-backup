@@ -275,7 +275,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
      * @param e    The thrown exception.
      */
     private void logLookupFailure(String expr, Exception e) {
-        String msg = LoggerUtils.format("Caught an exception while evaluating expression '#1' against value stack", expr);
+        String msg = LoggerUtils.format("Caught an exception while evaluating expression '#0' against value stack", expr);
         if (devMode && LOG.isWarnEnabled()) {
             LOG.warn(msg, e);
             LOG.warn("NOTE: Previous warning message was issued due to devMode set to true.");

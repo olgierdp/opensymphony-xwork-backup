@@ -35,8 +35,8 @@ public class LoggerUtils {
                     isArg = false;
                     if (Character.isDigit(c)) {
                         int val = Character.getNumericValue(c);
-                        if (val > 0 && val <= args.length) {
-                            sb.append(args[val-1]);
+                        if (val >= 0 && val < args.length) {
+                            sb.append(args[val]);
                             continue;
                         }
                     }
