@@ -4,17 +4,20 @@
  */
 package com.opensymphony.xwork2.conversion.impl;
 
+import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.conversion.NullHandler;
 import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.beans.PropertyDescriptor;
-import java.util.*;
 
 
 /**
@@ -61,7 +64,7 @@ public class InstantiatingNullHandler implements NullHandler {
      * @deprecated Use {@link ReflectionContextState#CREATE_NULL_OBJECTS} instead
      */
     public static final String CREATE_NULL_OBJECTS = ReflectionContextState.CREATE_NULL_OBJECTS;
-    private static final Log LOG = LogFactory.getLog(InstantiatingNullHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InstantiatingNullHandler.class);
     private ReflectionProvider reflectionProvider;
     private ObjectFactory objectFactory;
     

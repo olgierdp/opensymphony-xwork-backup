@@ -4,18 +4,21 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import com.opensymphony.xwork2.*;
-import com.opensymphony.xwork2.util.ValueStack;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.LocaleProvider;
+import com.opensymphony.xwork2.TextProvider;
+import com.opensymphony.xwork2.TextProviderFactory;
+import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -224,14 +227,14 @@ public class DelegatingValidatorContext implements ValidatorContext {
      */
     private static class LoggingValidationAware implements ValidationAware {
 
-        private Log log;
+        private Logger log;
 
         public LoggingValidationAware(Class clazz) {
-            log = LogFactory.getLog(clazz);
+            log = LoggerFactory.getLogger(clazz);
         }
 
         public LoggingValidationAware(Object obj) {
-            log = LogFactory.getLog(obj.getClass());
+            log = LoggerFactory.getLogger(obj.getClass());
         }
 
         public void setActionErrors(Collection errorMessages) {

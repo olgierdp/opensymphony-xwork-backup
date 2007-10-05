@@ -4,11 +4,9 @@
  */
 package com.opensymphony.xwork2.spring;
 
-import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.UnsatisfiedDependencyException;
@@ -18,8 +16,10 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
  * Simple implementation of the ObjectFactory that makes use of Spring's application context if one has been configured,
@@ -30,7 +30,7 @@ import java.util.Map;
  * @author Simon Stewart (sms@lateral.net)
  */
 public class SpringObjectFactory extends ObjectFactory implements ApplicationContextAware {
-    private static final Log log = LogFactory.getLog(SpringObjectFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SpringObjectFactory.class);
 
     protected ApplicationContext appContext;
     protected AutowireCapableBeanFactory autoWiringFactory;
@@ -64,19 +64,19 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
     public void setAutowireStrategy(int autowireStrategy) {
         switch (autowireStrategy) {
             case AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT:
-                log.info("Setting autowire strategy to autodetect");
+                LOG.info("Setting autowire strategy to autodetect");
                 this.autowireStrategy = autowireStrategy;
                 break;
             case AutowireCapableBeanFactory.AUTOWIRE_BY_NAME:
-                log.info("Setting autowire strategy to name");
+                LOG.info("Setting autowire strategy to name");
                 this.autowireStrategy = autowireStrategy;
                 break;
             case AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE:
-                log.info("Setting autowire strategy to type");
+                LOG.info("Setting autowire strategy to type");
                 this.autowireStrategy = autowireStrategy;
                 break;
             case AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR:
-                log.info("Setting autowire strategy to constructor");
+                LOG.info("Setting autowire strategy to constructor");
                 this.autowireStrategy = autowireStrategy;
                 break;
             default:

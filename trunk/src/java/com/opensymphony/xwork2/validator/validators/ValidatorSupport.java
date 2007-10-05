@@ -7,9 +7,13 @@ package com.opensymphony.xwork2.validator.validators;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.TextParseUtil;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.validator.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
+import com.opensymphony.xwork2.validator.ShortCircuitableValidator;
+import com.opensymphony.xwork2.validator.ValidationException;
+import com.opensymphony.xwork2.validator.Validator;
+import com.opensymphony.xwork2.validator.ValidatorContext;
 
 
 /**
@@ -19,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class ValidatorSupport implements Validator, ShortCircuitableValidator {
 
-    protected final Log log = LogFactory.getLog(this.getClass());
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
     protected String defaultMessage = "";
     protected String messageKey;
     private ValidatorContext validatorContext;

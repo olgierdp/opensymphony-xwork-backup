@@ -8,11 +8,10 @@ package com.opensymphony.xwork2.interceptor;
 import java.util.Collections;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.util.TextParseUtil;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -60,7 +59,7 @@ import com.opensymphony.xwork2.util.TextParseUtil;
  * @version $Date$ $Id$
  */
 public abstract class MethodFilterInterceptor extends AbstractInterceptor {
-    protected transient Log log = LogFactory.getLog(getClass());
+    protected transient Logger log = LoggerFactory.getLogger(getClass());
     
     protected Set excludeMethods = Collections.EMPTY_SET;
     protected Set includeMethods = Collections.EMPTY_SET;

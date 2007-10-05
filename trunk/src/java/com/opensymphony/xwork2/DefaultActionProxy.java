@@ -4,20 +4,19 @@
  */
 package com.opensymphony.xwork2;
 
-import com.opensymphony.xwork2.util.TextUtils;
+import java.io.Serializable;
+import java.util.Locale;
+import java.util.Map;
+
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
+import com.opensymphony.xwork2.util.TextUtils;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.profiling.UtilTimerStack;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.Serializable;
-import java.util.Locale;
-import java.util.Map;
 
 
 /**
@@ -34,7 +33,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
 	
 	private static final long serialVersionUID = 3293074152487468527L;
 
-	private static final Log LOG = LogFactory.getLog(DefaultActionProxy.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultActionProxy.class);
 
     protected Configuration configuration;
     protected ActionConfig config;

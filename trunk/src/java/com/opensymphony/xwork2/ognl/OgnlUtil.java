@@ -4,23 +4,6 @@
  */
 package com.opensymphony.xwork2.ognl;
 
-import ognl.Ognl;
-import ognl.OgnlContext;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
-import ognl.TypeConverter;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.XWorkException;
-import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
-import com.opensymphony.xwork2.inject.Container;
-import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.util.CompoundRoot;
-import com.opensymphony.xwork2.util.ValueStack;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -32,6 +15,19 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import ognl.Ognl;
+import ognl.OgnlContext;
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
+import ognl.TypeConverter;
+
+import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.util.CompoundRoot;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
 
 /**
  * Utility class that provides common access to the Ognl APIs for
@@ -41,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class OgnlUtil {
 
-    private static final Log log = LogFactory.getLog(OgnlUtil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OgnlUtil.class);
     private ConcurrentHashMap<String,Object> expressions = new ConcurrentHashMap<String,Object>();
     private ConcurrentHashMap<Class,BeanInfo> beanInfoCache = new ConcurrentHashMap<Class,BeanInfo>();
     
@@ -233,7 +229,7 @@ public class OgnlUtil {
      */
     public void copy(Object from, Object to, Map context, Collection exclusions, Collection inclusions) {
         if (from == null || to == null) {
-            log.warn("Attempting to copy from or to a null source. This is illegal and is bein skipped. This may be due to an error in an OGNL expression, action chaining, or some other event.");
+            LOG.warn("Attempting to copy from or to a null source. This is illegal and is bein skipped. This may be due to an error in an OGNL expression, action chaining, or some other event.");
 
             return;
         }
@@ -251,7 +247,7 @@ public class OgnlUtil {
             fromPds = getPropertyDescriptors(from);
             toPds = getPropertyDescriptors(to);
         } catch (IntrospectionException e) {
-            log.error("An error occured", e);
+            LOG.error("An error occured", e);
 
             return;
         }
@@ -376,7 +372,7 @@ public class OgnlUtil {
             if (throwPropertyExceptions) {
                 throw new XWorkException(msg, exception);
             } else {
-                log.warn(msg, exception);
+                LOG.warn(msg, exception);
             }
         }
     }

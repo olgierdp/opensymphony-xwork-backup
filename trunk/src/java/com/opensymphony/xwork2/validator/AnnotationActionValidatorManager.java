@@ -5,15 +5,21 @@
 package com.opensymphony.xwork2.validator;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.*;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
-import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.util.FileManager;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
  * AnnotationActionValidatorManager is the entry point into XWork's annotations-based validator framework.
@@ -31,7 +37,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
 
     private static final Map<String, List<ValidatorConfig>> validatorCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
     private static final Map<String, List<ValidatorConfig>> validatorFileCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
-    private static final Log LOG = LogFactory.getLog(AnnotationActionValidatorManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AnnotationActionValidatorManager.class);
 
     public synchronized List<Validator> getValidators(Class clazz, String context) {
         return getValidators(clazz, context, null);

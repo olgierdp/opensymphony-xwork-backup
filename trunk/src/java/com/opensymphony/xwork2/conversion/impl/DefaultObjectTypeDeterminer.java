@@ -4,26 +4,22 @@
  */
 package com.opensymphony.xwork2.conversion.impl;
 
-import java.util.Map;
+import java.beans.IntrospectionException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.lang.reflect.ParameterizedType;
-import java.beans.IntrospectionException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.lang.reflect.Type;
+import java.util.Map;
 
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.ognl.accessor.XWorkCollectionPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkListPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkMapPropertyAccessor;
 import com.opensymphony.xwork2.util.CreateIfNull;
 import com.opensymphony.xwork2.util.Element;
 import com.opensymphony.xwork2.util.Key;
 import com.opensymphony.xwork2.util.KeyProperty;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionException;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 
@@ -47,7 +43,7 @@ import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
     
 
-    protected static final Log LOG = LogFactory.getLog(DefaultObjectTypeDeterminer.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(DefaultObjectTypeDeterminer.class);
 
     public static final String KEY_PREFIX = "Key_";
     public static final String ELEMENT_PREFIX = "Element_";

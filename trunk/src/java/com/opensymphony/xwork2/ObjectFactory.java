@@ -4,8 +4,10 @@
  */
 package com.opensymphony.xwork2;
 
-import com.opensymphony.xwork2.util.ClassLoaderUtil;
-import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorConfig;
@@ -13,17 +15,11 @@ import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.interceptor.Interceptor;
+import com.opensymphony.xwork2.util.ClassLoaderUtil;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 import com.opensymphony.xwork2.validator.Validator;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -44,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Jason Carreira
  */
 public class ObjectFactory implements Serializable {
-    private static final Log LOG = LogFactory.getLog(ObjectFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ObjectFactory.class);
 
     private transient ClassLoader ccl;
     private Container container;

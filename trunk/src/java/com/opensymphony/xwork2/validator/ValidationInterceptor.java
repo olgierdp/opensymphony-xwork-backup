@@ -4,18 +4,15 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.Validateable;
-import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.interceptor.DefaultWorkflowInterceptor;
 import com.opensymphony.xwork2.interceptor.MethodFilterInterceptor;
 import com.opensymphony.xwork2.interceptor.PrefixMethodInvocationUtil;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
  * <!-- START SNIPPET: description -->
@@ -123,7 +120,7 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
     
     private ActionValidatorManager actionValidatorManager;
     
-    private static final Log _log = LogFactory.getLog(DefaultWorkflowInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultWorkflowInterceptor.class);
     
     private final static String VALIDATE_PREFIX = "validate";
     private final static String ALT_VALIDATE_PREFIX = "validateDo";
@@ -217,8 +214,8 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
             Exception exception = null; 
             
             Validateable validateable = (Validateable) action;
-            if (_log.isDebugEnabled()) {
-                _log.debug("Invoking validate() on action "+validateable);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Invoking validate() on action "+validateable);
             }
             
             try {
@@ -229,7 +226,7 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
             catch(Exception e) {
                 // If any exception occurred while doing reflection, we want 
                 // validate() to be executed
-                _log.warn("an exception occured while executing the prefix method", e);
+                LOG.warn("an exception occured while executing the prefix method", e);
                 exception = e;
             }
             

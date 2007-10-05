@@ -17,21 +17,20 @@
  */
 package com.opensymphony.xwork2.config.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import com.opensymphony.xwork2.util.WildcardHelper;
-import com.opensymphony.xwork2.config.entities.ActionConfig;
-import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
-import com.opensymphony.xwork2.config.entities.ResultConfig;
-
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.opensymphony.xwork2.config.entities.ActionConfig;
+import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
+import com.opensymphony.xwork2.config.entities.ResultConfig;
+import com.opensymphony.xwork2.util.WildcardHelper;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
  * <p> Matches paths against pre-compiled wildcard expressions pulled from
@@ -44,7 +43,7 @@ public class ActionConfigMatcher implements Serializable {
     /**
      * <p> The logging instance </p>
      */
-    private static final Log log = LogFactory.getLog(ActionConfigMatcher.class);
+    private static final Logger log = LoggerFactory.getLogger(ActionConfigMatcher.class);
 
     /**
      * <p> Handles all wildcard pattern matching. </p>

@@ -4,19 +4,19 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import com.opensymphony.xwork2.util.ClassLoaderUtil;
-import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.XWorkException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.InputStream;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URL;
-import java.net.URISyntaxException;
+
+import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.util.ClassLoaderUtil;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -231,7 +231,7 @@ import java.net.URISyntaxException;
 public class ValidatorFactory {
 
     private static Map<String, String> validators = new HashMap<String, String>();
-    private static Log LOG = LogFactory.getLog(ValidatorFactory.class);
+    private static Logger LOG = LoggerFactory.getLogger(ValidatorFactory.class);
 
     static {
         parseValidators();

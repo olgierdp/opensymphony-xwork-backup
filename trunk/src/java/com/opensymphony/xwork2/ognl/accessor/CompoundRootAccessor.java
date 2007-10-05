@@ -4,17 +4,30 @@
  */
 package com.opensymphony.xwork2.ognl.accessor;
 
-import ognl.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import ognl.ClassResolver;
+import ognl.MethodAccessor;
+import ognl.MethodFailedException;
+import ognl.Ognl;
+import ognl.OgnlContext;
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
+import ognl.PropertyAccessor;
 
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.ValueStack;
-
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.util.*;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -26,7 +39,7 @@ import java.util.*;
  */
 public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, ClassResolver {
 
-    private final static Log log = LogFactory.getLog(CompoundRootAccessor.class);
+    private final static Logger LOG = LoggerFactory.getLogger(CompoundRootAccessor.class);
     private static Map invalidMethods = new HashMap();
 
 
@@ -69,7 +82,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         if ((reportError != null) && (reportError.booleanValue())) {
             throw new XWorkException(msg);
         } else {
-            log.debug(msg);
+            LOG.debug(msg);
         }
     }
 

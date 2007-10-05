@@ -4,11 +4,10 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.Preparable;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -87,7 +86,7 @@ public class PrepareInterceptor extends MethodFilterInterceptor {
 	
 	private static final long serialVersionUID = -5216969014510719786L;
 
-	private static final Log _log = LogFactory.getLog(PrepareInterceptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PrepareInterceptor.class);
 	
 	private final static String PREPARE_PREFIX = "prepare";
 	private final static String ALT_PREPARE_PREFIX = "prepareDo";
@@ -116,7 +115,7 @@ public class PrepareInterceptor extends MethodFilterInterceptor {
             catch(Exception e) {
                 // just in case there's an exception while doing reflection,
                 // we still want prepare() to be able to get called.
-                _log.warn("an exception occured while trying to execute prefixed method", e);
+                LOG.warn("an exception occured while trying to execute prefixed method", e);
             }
             if (alwaysInvokePrepare) {
                 ((Preparable) action).prepare();

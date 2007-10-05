@@ -4,17 +4,16 @@
 */
 package com.opensymphony.xwork2;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
+
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.TextParseUtil;
 import com.opensymphony.xwork2.util.ValueStack;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.LinkedList;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -74,7 +73,7 @@ import java.util.LinkedList;
 */
 public class ActionChainResult implements Result {
 
-    private static final Log log = LogFactory.getLog(ActionChainResult.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ActionChainResult.class);
 
     /**
      * The result parameter name to set the name of the action to chain to.
@@ -218,8 +217,8 @@ public class ActionChainResult implements Result {
         extraContext.put(ActionContext.PARAMETERS, ActionContext.getContext().getParameters());
         extraContext.put(CHAIN_HISTORY, ActionChainResult.getChainHistory());
 
-        if (log.isDebugEnabled()) {
-            log.debug("Chaining to action " + finalActionName);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Chaining to action " + finalActionName);
         }
 
         proxy = actionProxyFactory.createActionProxy(finalNamespace, finalActionName, extraContext);

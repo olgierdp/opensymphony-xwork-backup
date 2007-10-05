@@ -4,12 +4,11 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
  * <!-- START SNIPPET: description -->
@@ -105,7 +104,7 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 	
 	private static final long serialVersionUID = 7563014655616490865L;
 
-	private static final Log _log = LogFactory.getLog(DefaultWorkflowInterceptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultWorkflowInterceptor.class);
 	
 	private String inputResultName = Action.INPUT;
 	
@@ -132,8 +131,8 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
             ValidationAware validationAwareAction = (ValidationAware) action;
 
             if (validationAwareAction.hasErrors()) {
-            	if (_log.isDebugEnabled()) {
-            		_log.debug("Errors on action "+validationAwareAction+", returning result name 'input'");
+            	if (LOG.isDebugEnabled()) {
+            		LOG.debug("Errors on action "+validationAwareAction+", returning result name 'input'");
             	}
             	return inputResultName;
             }

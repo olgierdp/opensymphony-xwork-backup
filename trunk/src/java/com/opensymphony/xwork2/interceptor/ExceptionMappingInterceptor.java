@@ -4,13 +4,13 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.util.Iterator;
 import java.util.List;
+
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
  * <!-- START SNIPPET: description -->
@@ -137,9 +137,9 @@ import java.util.List;
  */
 public class ExceptionMappingInterceptor extends AbstractInterceptor {
     
-    protected static final Log log = LogFactory.getLog(ExceptionMappingInterceptor.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(ExceptionMappingInterceptor.class);
 
-    protected Log categoryLogger;
+    protected Logger categoryLogger;
     protected boolean logEnabled = false;
     protected String logCategory;
     protected String logLevel;
@@ -200,11 +200,11 @@ public class ExceptionMappingInterceptor extends AbstractInterceptor {
     	if (logCategory != null) {
         	if (categoryLogger == null) {
         		// init category logger
-        		categoryLogger = LogFactory.getLog(logCategory);
+        		categoryLogger = LoggerFactory.getLogger(logCategory);
         	}
         	doLog(categoryLogger, e);
     	} else {
-    		doLog(log, e);
+    		doLog(LOG, e);
     	}
     }
     
@@ -214,7 +214,7 @@ public class ExceptionMappingInterceptor extends AbstractInterceptor {
      * @param logger  the provided logger to use.
      * @param e  the exception to log.
      */
-    protected void doLog(Log logger, Exception e) {
+    protected void doLog(Logger logger, Exception e) {
     	if (logLevel == null) {
     		logger.debug(e.getMessage(), e);
     		return;

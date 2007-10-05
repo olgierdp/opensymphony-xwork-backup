@@ -4,19 +4,18 @@
  */
 package com.opensymphony.xwork2.ognl.accessor;
 
+import java.beans.PropertyDescriptor;
+import java.util.Collection;
+import java.util.Map;
+
 import ognl.MethodFailedException;
 import ognl.ObjectMethodAccessor;
 import ognl.OgnlContext;
 import ognl.OgnlRuntime;
 import ognl.PropertyAccessor;
 
-import java.beans.PropertyDescriptor;
-import java.util.Collection;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 
 
@@ -29,7 +28,7 @@ import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
  */
 public class XWorkMethodAccessor extends ObjectMethodAccessor {
 	
-	private static final Log _log = LogFactory.getLog(XWorkMethodAccessor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XWorkMethodAccessor.class);
 
     /**
      * @deprecated Use {@link ReflectionContextState#DENY_METHOD_EXECUTION} instead
@@ -72,7 +71,7 @@ public class XWorkMethodAccessor extends ObjectMethodAccessor {
             }	catch (Exception oe) {
                 //this exception should theoretically never happen
                 //log it
-            	_log.error("An unexpected exception occurred", oe);
+            	LOG.error("An unexpected exception occurred", oe);
             }
 
         }

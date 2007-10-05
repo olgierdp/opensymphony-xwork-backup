@@ -5,8 +5,8 @@
 package com.opensymphony.xwork2.interceptor;
 
 import com.opensymphony.xwork2.ActionInvocation;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -46,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Jason Carreira
  */
 public class LoggingInterceptor extends AbstractInterceptor {
-    private static final Log log = LogFactory.getLog(LoggingInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LoggingInterceptor.class);
     private static final String FINISH_MESSAGE = "Finishing execution stack for action ";
     private static final String START_MESSAGE = "Starting execution stack for action ";
 
@@ -58,7 +58,7 @@ public class LoggingInterceptor extends AbstractInterceptor {
     }
 
     private void logMessage(ActionInvocation invocation, String baseMessage) {
-        if (log.isInfoEnabled()) {
+        if (LOG.isInfoEnabled()) {
             StringBuffer message = new StringBuffer(baseMessage);
             String namespace = invocation.getProxy().getNamespace();
 
@@ -67,7 +67,7 @@ public class LoggingInterceptor extends AbstractInterceptor {
             }
 
             message.append(invocation.getProxy().getActionName());
-            log.info(message.toString());
+            LOG.info(message.toString());
         }
     }
 

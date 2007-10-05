@@ -4,18 +4,18 @@
  */
 package com.opensymphony.xwork2.config;
 
-import com.opensymphony.xwork2.util.FileManager;
-import com.opensymphony.xwork2.config.impl.DefaultConfiguration;
-import com.opensymphony.xwork2.config.providers.XWorkConfigurationProvider;
-import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import com.opensymphony.xwork2.config.impl.DefaultConfiguration;
+import com.opensymphony.xwork2.config.providers.XWorkConfigurationProvider;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+import com.opensymphony.xwork2.util.FileManager;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ConfigurationManager {
 
-    protected static final Log LOG = LogFactory.getLog(ConfigurationManager.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(ConfigurationManager.class);
     protected Configuration configuration;
     protected Lock providerLock = new ReentrantLock();
     private List<ContainerProvider> containerProviders = new CopyOnWriteArrayList<ContainerProvider>();

@@ -4,16 +4,21 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import com.opensymphony.xwork2.util.FileManager;
-import com.opensymphony.xwork2.ObjectFactory;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
-import java.util.*;
+import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.util.FileManager;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -36,7 +41,7 @@ public class DefaultActionValidatorManager implements ActionValidatorManager {
 
     private static final Map<String, List<ValidatorConfig>> validatorCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
     private static final Map<String, List<ValidatorConfig>> validatorFileCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
-    private static final Log LOG = LogFactory.getLog(DefaultActionValidatorManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultActionValidatorManager.class);
     private ObjectFactory objectFactory;
     
     

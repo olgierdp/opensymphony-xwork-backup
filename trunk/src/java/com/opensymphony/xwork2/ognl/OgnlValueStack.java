@@ -13,9 +13,6 @@ import ognl.OgnlContext;
 import ognl.OgnlException;
 import ognl.PropertyAccessor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.XWorkException;
@@ -25,6 +22,9 @@ import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import com.opensymphony.xwork2.util.logging.LoggerUtils;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 
 /**
@@ -42,7 +42,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
 	
 	private static final long serialVersionUID = 370737852934925530L;
 	
-    private static Log LOG = LogFactory.getLog(OgnlValueStack.class);
+    private static Logger LOG = LoggerFactory.getLogger(OgnlValueStack.class);
     private boolean devMode;
 
     public static void link(Map context, Class clazz, String name) {
@@ -275,8 +275,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
      * @param e    The thrown exception.
      */
     private void logLookupFailure(String expr, Exception e) {
-        StringBuffer msg = new StringBuffer();
-        msg.append("Caught an exception while evaluating expression '").append(expr).append("' against value stack");
+        String msg = LoggerUtils.format("Caught an exception while evaluating expression '#1' against value stack", expr);
         if (devMode && LOG.isWarnEnabled()) {
             LOG.warn(msg, e);
             LOG.warn("NOTE: Previous warning message was issued due to devMode set to true.");

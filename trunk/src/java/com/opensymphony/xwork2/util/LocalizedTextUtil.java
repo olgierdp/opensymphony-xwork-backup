@@ -4,21 +4,30 @@
  */
 package com.opensymphony.xwork2.util;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.text.MessageFormat;
-import java.util.*;
 
 
 /**
@@ -68,10 +77,8 @@ import java.util.*;
  */
 public class LocalizedTextUtil {
 	
-	private static final Log _log = LogFactory.getLog(LocalizedTextUtil.class);
-
     private static List DEFAULT_RESOURCE_BUNDLES = null;
-    private static final Log LOG = LogFactory.getLog(LocalizedTextUtil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LocalizedTextUtil.class);
     private static boolean reloadBundles = false;
     private static final Map<String, String> misses = new HashMap<String, String>();
     private static final Map messageFormats = new HashMap();
@@ -452,7 +459,7 @@ public class LocalizedTextUtil {
                 	}
                 }
                 catch(Exception e) {
-                	_log.debug("unable to find property "+prop, e);
+                	LOG.debug("unable to find property "+prop, e);
                 }
             }
         }

@@ -4,6 +4,16 @@
  */
 package com.opensymphony.xwork2.config.impl;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
+import ognl.PropertyAccessor;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.DefaultTextProvider;
 import com.opensymphony.xwork2.ObjectFactory;
@@ -14,7 +24,12 @@ import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.ContainerProvider;
 import com.opensymphony.xwork2.config.PackageProvider;
 import com.opensymphony.xwork2.config.RuntimeConfiguration;
-import com.opensymphony.xwork2.config.entities.*;
+import com.opensymphony.xwork2.config.entities.ActionConfig;
+import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
+import com.opensymphony.xwork2.config.entities.InterceptorMapping;
+import com.opensymphony.xwork2.config.entities.PackageConfig;
+import com.opensymphony.xwork2.config.entities.ResultConfig;
+import com.opensymphony.xwork2.config.entities.ResultTypeConfig;
 import com.opensymphony.xwork2.config.providers.InterceptorBuilder;
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer;
@@ -33,16 +48,9 @@ import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
-import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
-
-import ognl.PropertyAccessor;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.*;
-import java.io.Serializable;
 
 
 /**
@@ -53,7 +61,7 @@ import java.io.Serializable;
  */
 public class DefaultConfiguration implements Configuration {
 
-    protected static final Log LOG = LogFactory.getLog(DefaultConfiguration.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(DefaultConfiguration.class);
 
 
     // Programmatic Action Configurations

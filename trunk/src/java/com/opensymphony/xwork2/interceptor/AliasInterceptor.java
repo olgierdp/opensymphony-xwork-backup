@@ -5,16 +5,15 @@
 
 package com.opensymphony.xwork2.interceptor;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.util.ValueStack;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.Iterator;
-import java.util.Map;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -72,7 +71,7 @@ import java.util.Map;
  */
 public class AliasInterceptor extends AbstractInterceptor {
 
-    private static final Log log = LogFactory.getLog(AliasInterceptor.class);
+    private static final Logger log = LoggerFactory.getLogger(AliasInterceptor.class);
 
     private static final String DEFAULT_ALIAS_KEY = "aliases";
     protected String aliasesKey = DEFAULT_ALIAS_KEY;

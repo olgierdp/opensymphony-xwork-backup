@@ -4,18 +4,17 @@
  */
 package com.opensymphony.xwork2.util;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.XWorkException;
-import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -27,7 +26,7 @@ import java.util.Map;
  * @author Patrick Lightbody
  */
 public class XWorkList extends ArrayList {
-    private static final Log LOG = LogFactory.getLog(XWorkConverter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XWorkConverter.class);
 
     private Class clazz;
     private XWorkConverter conv;

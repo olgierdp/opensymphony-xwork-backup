@@ -5,13 +5,13 @@
 
 package com.opensymphony.xwork2.interceptor;
 
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.util.LocalizedTextUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.util.Locale;
 import java.util.Map;
+
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.util.LocalizedTextUtil;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
  * <!-- START SNIPPET: description -->
@@ -70,7 +70,7 @@ import java.util.Map;
  * @author Aleksei Gopachenko
  */
 public class I18nInterceptor extends AbstractInterceptor {
-    protected static final Log log = LogFactory.getLog(I18nInterceptor.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(I18nInterceptor.class);
 
     public static final String DEFAULT_SESSION_ATTRIBUTE = "WW_TRANS_I18N_LOCALE";
     public static final String DEFAULT_PARAMETER = "request_locale";
@@ -79,8 +79,8 @@ public class I18nInterceptor extends AbstractInterceptor {
     protected String attributeName = DEFAULT_SESSION_ATTRIBUTE;
 
     public I18nInterceptor() {
-        if (log.isDebugEnabled()) {
-            log.debug("new I18nInterceptor()");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("new I18nInterceptor()");
         }
     }
 
@@ -93,8 +93,8 @@ public class I18nInterceptor extends AbstractInterceptor {
     }
 
     public String intercept(ActionInvocation invocation) throws Exception {
-        if (log.isDebugEnabled()) {
-            log.debug("intercept '"
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("intercept '"
                     + invocation.getProxy().getNamespace() + "/"
                     + invocation.getProxy().getActionName() + "' { ");
         }
@@ -106,8 +106,8 @@ public class I18nInterceptor extends AbstractInterceptor {
             requested_locale = ((Object[]) requested_locale)[0];
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("requested_locale=" + requested_locale);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("requested_locale=" + requested_locale);
         }
 
         //save it in session
@@ -116,8 +116,8 @@ public class I18nInterceptor extends AbstractInterceptor {
             if (requested_locale != null) {
                 Locale locale = (requested_locale instanceof Locale) ?
                         (Locale) requested_locale : LocalizedTextUtil.localeFromString(requested_locale.toString(), null);
-                if (log.isDebugEnabled()) {
-                    log.debug("store locale=" + locale);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("store locale=" + locale);
                 }
 
                 if (locale != null) {
@@ -128,25 +128,25 @@ public class I18nInterceptor extends AbstractInterceptor {
             //set locale for action
             Object locale = session.get(attributeName);
             if (locale != null && locale instanceof Locale) {
-                if (log.isDebugEnabled()) {
-                    log.debug("apply locale=" + locale);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("apply locale=" + locale);
                 }
 
                 saveLocale(invocation, (Locale)locale);
             }
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("before Locale=" + invocation.getStack().findValue("locale"));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("before Locale=" + invocation.getStack().findValue("locale"));
         }
 
         final String result = invocation.invoke();
-        if (log.isDebugEnabled()) {
-            log.debug("after Locale=" + invocation.getStack().findValue("locale"));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("after Locale=" + invocation.getStack().findValue("locale"));
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("intercept } ");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("intercept } ");
         }
 
         return result;

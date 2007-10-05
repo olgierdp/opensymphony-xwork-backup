@@ -26,8 +26,8 @@
  */
 package com.opensymphony.xwork2.util.profiling;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -289,7 +289,7 @@ public class UtilTimerStack
      */
     public static final String MIN_TIME = "xwork.profile.mintime";
     
-    private static final Log log = LogFactory.getLog(UtilTimerStack.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UtilTimerStack.class);
 
     /**
      * Create and start a performance profiling with the <code>name</code> given. Deal with 
@@ -353,7 +353,7 @@ public class UtilTimerStack
             {
                 printTimes(currentTimer);
                 current.set(null); //prevent printing multiple times
-                log.warn("Unmatched Timer.  Was expecting " + currentTimer.getResource() + ", instead got " + name);
+                LOG.warn("Unmatched Timer.  Was expecting " + currentTimer.getResource() + ", instead got " + name);
             }
         }
 
@@ -367,7 +367,7 @@ public class UtilTimerStack
      */
     private static void printTimes(ProfilingTimerBean currentTimer)
     {
-        log.info(currentTimer.getPrintable(getMinTime()));
+        LOG.info(currentTimer.getPrintable(getMinTime()));
     }
 
     /**

@@ -6,8 +6,8 @@ package com.opensymphony.xwork2.config.entities;
 
 import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.util.location.Located;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.*;
@@ -23,7 +23,7 @@ import java.util.*;
  */
 public class PackageConfig extends Located implements Comparable, Serializable {
 
-    private static final Log LOG = LogFactory.getLog(PackageConfig.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PackageConfig.class);
 
 
     private Map<String, ActionConfig> actionConfigs = new LinkedHashMap<String, ActionConfig>();

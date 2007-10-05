@@ -4,6 +4,12 @@
  */
 package com.opensymphony.xwork2.config.providers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.InterceptorConfig;
@@ -12,11 +18,8 @@ import com.opensymphony.xwork2.config.entities.InterceptorStackConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.interceptor.Interceptor;
 import com.opensymphony.xwork2.util.location.Location;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.*;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -29,7 +32,7 @@ import java.util.*;
  */
 public class InterceptorBuilder {
 
-    private static final Log LOG = LogFactory.getLog(InterceptorBuilder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InterceptorBuilder.class);
 
 
     /**

@@ -4,15 +4,6 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.ValidationAware;
-import com.opensymphony.xwork2.conversion.impl.InstantiatingNullHandler;
-import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
-import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.util.*;
-import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,8 +15,18 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.conversion.impl.InstantiatingNullHandler;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.util.LocalizedTextUtil;
+import com.opensymphony.xwork2.util.TextParseUtil;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 
 
 /**
@@ -113,7 +114,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ParametersInterceptor extends MethodFilterInterceptor {
 
-    private static final Log LOG = LogFactory.getLog(ParametersInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ParametersInterceptor.class);
 
     boolean ordered = false;
     Set<Pattern> excludeParams = Collections.EMPTY_SET;

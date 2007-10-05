@@ -5,27 +5,31 @@
 
 package com.opensymphony.xwork2.ognl.accessor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import ognl.ObjectPropertyAccessor;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 import ognl.SetPropertyAccessor;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
-
-import java.util.*;
 
 /**
  * @author Gabe
  */
 public class XWorkCollectionPropertyAccessor extends SetPropertyAccessor {
 
-    private static final Log LOG = LogFactory.getLog(XWorkCollectionPropertyAccessor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XWorkCollectionPropertyAccessor.class);
     private static final String CONTEXT_COLLECTION_MAP = "xworkCollectionPropertyAccessorContextSetMap";
 
     public static final String KEY_PROPERTY_FOR_CREATION = "makeNew";

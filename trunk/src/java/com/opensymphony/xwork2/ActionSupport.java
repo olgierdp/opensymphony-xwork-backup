@@ -4,13 +4,16 @@
  */
 package com.opensymphony.xwork2;
 
-import com.opensymphony.xwork2.util.ValueStack;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -19,7 +22,7 @@ import java.util.*;
  */
 public class ActionSupport implements Action, Validateable, ValidationAware, TextProvider, LocaleProvider, Serializable {
 
-    protected static Log LOG = LogFactory.getLog(ActionSupport.class);
+    protected static Logger LOG = LoggerFactory.getLogger(ActionSupport.class);
 
     private final transient TextProvider textProvider = new TextProviderFactory().createInstance(getClass(), this);
     private final ValidationAwareSupport validationAware = new ValidationAwareSupport();

@@ -4,18 +4,17 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.Parameterizable;
 import com.opensymphony.xwork2.util.TextParseUtil;
 import com.opensymphony.xwork2.util.ValueStack;
-
-import java.util.Iterator;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 
 /**
@@ -67,7 +66,7 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
 
     private boolean parse;
     
-    private static final Log LOG = LogFactory.getLog(StaticParametersInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StaticParametersInterceptor.class);
 
     public void setParse(String value) {
         this.parse = Boolean.valueOf(value).booleanValue();

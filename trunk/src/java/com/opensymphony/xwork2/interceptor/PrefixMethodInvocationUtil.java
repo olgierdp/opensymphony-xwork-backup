@@ -7,10 +7,9 @@ package com.opensymphony.xwork2.interceptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
  * A utility class for invoking prefixed methods in action class.
@@ -53,7 +52,7 @@ import com.opensymphony.xwork2.ActionInvocation;
  */
 public class PrefixMethodInvocationUtil {
 	
-	private static final Log _log = LogFactory.getLog(PrefixMethodInvocationUtil.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PrefixMethodInvocationUtil.class);
 
     private static final String DEFAULT_INVOCATION_METHODNAME = "execute";
 
@@ -135,8 +134,8 @@ public class PrefixMethodInvocationUtil {
 			}
 			catch(NoSuchMethodException e) {
 				// hmm -- OK, try next prefix
-				if (_log.isDebugEnabled()) {
-					_log.debug("cannot find method ["+prefixedMethodName+"] in action ["+action+"]");
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("cannot find method ["+prefixedMethodName+"] in action ["+action+"]");
 				}
 			}
 		}

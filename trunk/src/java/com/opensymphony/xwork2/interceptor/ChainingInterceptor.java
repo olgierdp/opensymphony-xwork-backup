@@ -4,17 +4,21 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.Unchainable;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
-
-import java.util.*;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -85,7 +89,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ChainingInterceptor extends AbstractInterceptor {
 	
-	private static final Log _log = LogFactory.getLog(ChainingInterceptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ChainingInterceptor.class);
 	
     protected Collection excludes;
     protected Collection includes;
@@ -118,7 +122,7 @@ public class ChainingInterceptor extends AbstractInterceptor {
                 	}
                 }
                 else {
-                	_log.warn("compound root element at index "+index+" is null");
+                	LOG.warn("compound root element at index "+index+" is null");
                 }
             }
         }

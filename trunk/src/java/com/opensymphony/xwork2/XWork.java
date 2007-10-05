@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationManager;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
  * Simple facade to make using XWork standalone easier
@@ -23,6 +24,10 @@ public class XWork {
     
     public XWork(ConfigurationManager mgr) {
         this.configurationManager = mgr;
+    }
+    
+    public void setLoggerFactory(LoggerFactory factory) {
+        LoggerFactory.setLoggerFactory(factory);
     }
     
     /**

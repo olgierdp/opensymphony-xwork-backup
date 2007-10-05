@@ -5,19 +5,18 @@
 
 package com.opensymphony.xwork2.ognl.accessor;
 
-import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
-import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
-import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
+import java.util.Map;
 
 import ognl.MapPropertyAccessor;
 import ognl.OgnlException;
 
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 
 /**
  * Implementation of PropertyAccessor that sets and gets properties by storing and looking
@@ -27,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
 
-    private static final Log _log = LogFactory.getLog(XWorkMapPropertyAccessor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XWorkMapPropertyAccessor.class);
 
     private static final String[] INDEX_ACCESS_PROPS = new String[]
             {"size", "isEmpty", "keys", "values"};
@@ -53,8 +52,8 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
 
     public Object getProperty(Map context, Object target, Object name) throws OgnlException {
 
-        if (_log.isDebugEnabled()) {
-            _log.debug("Entering getProperty ("+context+","+target+","+name+")");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Entering getProperty ("+context+","+target+","+name+")");
         }
 
         ReflectionContextState.updateCurrentPropertyPath(context, name);
@@ -123,8 +122,8 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
     }
 
     public void setProperty(Map context, Object target, Object name, Object value) throws OgnlException {
-        if (_log.isDebugEnabled()) {
-     		_log.debug("Entering setProperty("+context+","+target+","+name+","+value+")");
+        if (LOG.isDebugEnabled()) {
+     		LOG.debug("Entering setProperty("+context+","+target+","+name+","+value+")");
      	}
         
         Object key = getKey(context, name);

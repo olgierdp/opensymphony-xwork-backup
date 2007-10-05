@@ -518,6 +518,7 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.0.4</version>
+            <optional>true</optional>
         </dependency>
        <dependency>
             <groupId>opensymphony</groupId>

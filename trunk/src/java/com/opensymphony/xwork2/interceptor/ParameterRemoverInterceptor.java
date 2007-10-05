@@ -9,12 +9,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.util.TextParseUtil;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
  * <!-- START SNIPPET: description -->
@@ -70,7 +69,7 @@ import com.opensymphony.xwork2.util.TextParseUtil;
  */
 public class ParameterRemoverInterceptor extends AbstractInterceptor {
 
-	private static final Log LOG = LogFactory.getLog(ParameterRemoverInterceptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ParameterRemoverInterceptor.class);
 
 	private static final long serialVersionUID = 1;
 
