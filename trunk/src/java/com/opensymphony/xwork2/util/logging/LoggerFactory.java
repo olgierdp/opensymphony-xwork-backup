@@ -49,7 +49,7 @@ public abstract class LoggerFactory {
             if (factory == null) {
                 try {
                     Class.forName("org.apache.commons.logging.LogFactory");
-                    factory = new com.opensymphony.xwork2.util.logging.jcl.CommonsLoggerFactory();
+                    factory = new com.opensymphony.xwork2.util.logging.commons.CommonsLoggerFactory();
                 } catch (ClassNotFoundException ex) {
                     // commons logging not found, falling back to jdk logging
                     factory = new JdkLoggerFactory();

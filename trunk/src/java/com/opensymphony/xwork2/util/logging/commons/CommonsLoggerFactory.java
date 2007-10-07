@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.xwork2.util.logging.jcl;
+package com.opensymphony.xwork2.util.logging.commons;
 
 import org.apache.commons.logging.LogFactory;
 
