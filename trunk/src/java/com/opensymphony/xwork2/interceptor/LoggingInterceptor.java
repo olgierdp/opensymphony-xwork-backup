@@ -51,9 +51,9 @@ public class LoggingInterceptor extends AbstractInterceptor {
     private static final String START_MESSAGE = "Starting execution stack for action ";
 
     public String intercept(ActionInvocation invocation) throws Exception {
-        logMessage(invocation, FINISH_MESSAGE);
-        String result = invocation.invoke();
         logMessage(invocation, START_MESSAGE);
+        String result = invocation.invoke();
+        logMessage(invocation, FINISH_MESSAGE);
         return result;
     }
 

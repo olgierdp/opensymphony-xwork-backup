@@ -175,7 +175,7 @@ public class ExceptionMappingInterceptor extends AbstractInterceptor {
         try {
             result = invocation.invoke();
         } catch (Exception e) {
-            if (logEnabled) {
+            if (isLogEnabled()) {
                 handleLogging(e);
             }
             List exceptionMappings = invocation.getProxy().getConfig().getExceptionMappings();

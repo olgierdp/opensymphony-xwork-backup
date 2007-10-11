@@ -67,8 +67,9 @@ public class ModelDrivenInterceptor extends AbstractInterceptor {
         if (action instanceof ModelDriven) {
             ModelDriven modelDriven = (ModelDriven) action;
             ValueStack stack = invocation.getStack();
-            if (modelDriven.getModel() !=  null) {
-            	stack.push(modelDriven.getModel());
+            Object model = modelDriven.getModel();
+            if (model !=  null) {
+            	stack.push(model);
             }
         }
         return invocation.invoke();
