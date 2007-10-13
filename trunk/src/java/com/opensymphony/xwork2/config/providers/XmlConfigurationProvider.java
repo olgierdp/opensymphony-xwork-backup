@@ -210,6 +210,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                             if ("true".equals(onlyStatic)) {
                                 // Force loading of class to detect no class def found exceptions
                                 cimpl.getDeclaredClasses();
+                                System.out.println("founds fields:"+cimpl.getDeclaredFields()+" for class "+cimpl);
+                                
 
                                 containerBuilder.injectStatics(cimpl);
                             } else {

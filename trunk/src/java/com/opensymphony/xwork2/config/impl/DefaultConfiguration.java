@@ -45,8 +45,10 @@ import com.opensymphony.xwork2.ognl.OgnlUtil;
 import com.opensymphony.xwork2.ognl.OgnlValueStackFactory;
 import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
 import com.opensymphony.xwork2.util.CompoundRoot;
+import com.opensymphony.xwork2.util.PatternMatcher;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
+import com.opensymphony.xwork2.util.WildcardHelper;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
@@ -357,7 +359,8 @@ public class DefaultConfiguration implements Configuration {
             
             for (String ns : namespaceActionConfigs.keySet()) {
                 namespaceActionConfigMatchers.put(ns,
-                        new ActionConfigMatcher(namespaceActionConfigs.get(ns), true));
+                        new ActionConfigMatcher(container.getInstance(PatternMatcher.class),
+                                namespaceActionConfigs.get(ns), true));
             }
         }
 

@@ -26,7 +26,7 @@ import java.util.Map;
  * @version $Rev$ $Date: 2005-05-07 12:11:38 -0400 (Sat, 07 May 2005)
  *          $
  */
-public class WildcardHelper {
+public class WildcardHelper implements PatternMatcher<int[]> {
     /**
      * The int representing '*' in the pattern <code>int []</code>.
      */
