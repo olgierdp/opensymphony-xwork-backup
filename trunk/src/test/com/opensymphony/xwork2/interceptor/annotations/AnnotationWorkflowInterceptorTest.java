@@ -5,19 +5,13 @@
 package com.opensymphony.xwork2.interceptor.annotations;
 
 import java.util.Arrays;
-import java.util.Properties;
-
-import junit.framework.TestCase;
 
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.mock.MockResult;
-import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
-import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
@@ -32,7 +26,7 @@ import com.opensymphony.xwork2.config.entities.ResultConfig;
 public class AnnotationWorkflowInterceptorTest extends XWorkTestCase {
     private static final String ANNOTATED_ACTION = "annotatedAction";
     private static final String SHORTCIRCUITED_ACTION = "shortCircuitedAction";
-    private final AnnotationWorkflowInterceptor annotationInterceptor = new AnnotationWorkflowInterceptor();
+    private final AnnotationWorkflowInterceptor annotationWorkflow = new AnnotationWorkflowInterceptor();
 
     public void setUp() {
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-default.xml"), new MockConfigurationProvider());
@@ -80,11 +74,11 @@ public class AnnotationWorkflowInterceptorTest extends XWorkTestCase {
             config.addPackageConfig("default", packageConfig);
 
             ActionConfig actionConfig = new ActionConfig(null, AnnotatedAction.class, null, null,
-                    Arrays.asList(new InterceptorMapping[]{ new InterceptorMapping("annotationInterceptor", annotationInterceptor) }));
+                    Arrays.asList(new InterceptorMapping[]{ new InterceptorMapping("annotationWorkflow", annotationWorkflow) }));
             packageConfig.addActionConfig(ANNOTATED_ACTION, actionConfig);
             actionConfig.addResultConfig(new ResultConfig("success", MockResult.class.getName()));
             actionConfig = new ActionConfig(null, ShortcircuitedAction.class, null, null,
-                    Arrays.asList(new InterceptorMapping[]{ new InterceptorMapping("annotationInterceptor", annotationInterceptor) }));
+                    Arrays.asList(new InterceptorMapping[]{ new InterceptorMapping("annotationWorkflow", annotationWorkflow) }));
             packageConfig.addActionConfig(SHORTCIRCUITED_ACTION, actionConfig);
             actionConfig.addResultConfig(new ResultConfig("shortcircuit", MockResult.class.getName()));
             config.addPackageConfig("defaultPackage", packageConfig);
