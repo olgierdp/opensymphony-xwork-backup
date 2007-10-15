@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.opensymphony.xwork</groupId>
+    <groupId>com.opensymphony</groupId>
     <artifactId>xwork</artifactId>
     <version>2.1.0</version>
     <name>XWork</name>
@@ -187,19 +187,19 @@
     </distributionManagement>
     <mailingLists>
         <mailingList>
-            <name>WebWork users list</name>
-            <post>mailto:users@webwork.dev.java.net</post>
-            <subscribe>https://webwork.dev.java.net/servlets/ProjectMailingListList</subscribe>
-            <archive>https://webwork.dev.java.net/servlets/SummarizeList?listName=users</archive>
+            <name>XWork users list</name>
+            <post>mailto:users@xwork.dev.java.net</post>
+            <subscribe>https://xwork.dev.java.net/servlets/ProjectMailingListList</subscribe>
+            <archive>https://xwork.dev.java.net/servlets/SummarizeList?listName=users</archive>
             <otherArchives>
                 <otherArchive>http://forums.opensymphony.com/forum.jspa?forumID=1</otherArchive>
             </otherArchives>
         </mailingList>
         <mailingList>
-            <name>WebWork developers list</name>
-            <post>mailto:dev@webwork.dev.java.net</post>
-            <subscribe>https://webwork.dev.java.net/servlets/ProjectMailingListList</subscribe>
-            <archive>https://webwork.dev.java.net/servlets/SummarizeList?listName=dev</archive>
+            <name>XWork developers list</name>
+            <post>mailto:dev@xwork.dev.java.net</post>
+            <subscribe>https://xwork.dev.java.net/servlets/ProjectMailingListList</subscribe>
+            <archive>https://xwork.dev.java.net/servlets/SummarizeList?listName=dev</archive>
             <otherArchives>
                 <otherArchive>http://forums.opensymphony.com/forum.jspa?forumID=32</otherArchive>
             </otherArchives>
