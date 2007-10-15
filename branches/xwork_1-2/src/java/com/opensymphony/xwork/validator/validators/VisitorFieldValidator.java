@@ -131,7 +131,9 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         }
         for (int i = 0; i < array.length; i++) {
             Object o = array[i];
-            validateObject(fieldName + "[" + i + "]", o, visitorContext);
+            if ( o != null ) {
+                validateObject(fieldName + "[" + i + "]", o, visitorContext);
+            }
         }
     }
 
