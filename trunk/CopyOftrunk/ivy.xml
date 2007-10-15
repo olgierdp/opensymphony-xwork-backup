@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="http://www.jayasoft.fr/org/ivyrep/ivy-doc.xsl"?>
+<ivy-module version="1.0">
+    <info organisation="opensymphony" module="xwork"
+          revision="2.1.0"
+          status="release"
+          publication="20071015000000">
+        <license name="Apache" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+        <ivyauthor name="opensymphony" url="http://www.opensymphony.com/"/>
+
+        <description homepage="http://www.opensymphony.com/xwork/">
+            XWork is an command-pattern framework that is used to power WebWork as well as other applications. XWork
+            provides an Inversion of Control container, a powerful expression language, data type conversion,
+            validation, and pluggable configuration.
+            <br/>
+        </description>
+    </info>
+    <configurations>
+        <conf name="build" description="Build-time requirements only" visibility="private"/>
+        <conf name="default" description="The xwork jar file"/>
+        <conf name="source" description="The xwork source files packaged as a jar"/>
+        <conf name="spring" description="The xwork jar file with Spring integration"/>
+    </configurations>
+    <publications>
+        <artifact name="xwork" type="jar" conf="default"/>
+        <!--artifact name="xwork-src" type="jar" conf="source"/-->
+    </publications>
+    <dependencies>
+        <!-- build -->
+        <dependency org="mockobjects" name="mockobjects-core" rev="0.09" conf="build->*"/>
+        <dependency org="mockobjects" name="mockobjects-jdk1.3" rev="0.09" conf="build->*"/>
+        <dependency org="mockobjects" name="mockobjects-alt-jdk1.3" rev="0.09" conf="build->*"/>
+        <dependency org="org.easymock" name="easymock" rev="2.0" conf="build->*"/>
+        <dependency org="cglib" name="cglib" rev="2.1_3" conf="build->*"/>
+
+        <dependency org="clover" name="clover" rev="1.3.11" conf="build->*"/>
+        <dependency org="junit" name="junit" rev="3.8.2" conf="build->*"/>
+        <dependency org="org/testng" name="testng" rev="5.1" conf="build->*"/>
+        <dependency org="dom4j" name="dom4j" rev="1.6" conf="build->*"/>
+        <dependency org="log4j" name="log4j" rev="1.2.9" conf="build->*"/>
+
+        <!-- default -->
+        <dependency org="opensymphony" name="oscore" rev="2.2.4" conf="default->*"/>
+        <dependency org="opensymphony" name="ognl" rev="2.6.11" conf="default->*"/>
+        <dependency org="rife" name="rife-continuations" rev="0.0.2" conf="default->*"/>
+        <dependency org="apache" name="commons-logging" rev="1.0.4" conf="default->*"/>
+        <dependency org="sun" name="javamail" rev="1.3.3" conf="default->*"/>
+
+        <!-- spring -->
+        <dependency org="org.springframework" name="spring" rev="2.0.7" conf="default->*"/>
+        <dependency org="org.springframework" name="spring-mock" rev="2.0.7" conf="default->*"/>
+        <dependency org="org.springframework" name="spring-aop" rev="2.0.7" conf="default->*"/>
+        <dependency org="org.springframework" name="spring-beans" rev="2.0.7" conf="default->*"/>
+        <dependency org="org.springframework" name="spring-context" rev="2.0.7" conf="default->*"/>
+        <dependency org="org.springframework" name="spring-core" rev="2.0.7" conf="default->*"/>
+        <dependency org="org.springframework" name="spring-web" rev="2.0.7" conf="default->*"/>
+
+        <dependency org="asm" name="asm" rev="1.5.3" conf="default->*"/>
+    </dependencies>
+</ivy-module>
