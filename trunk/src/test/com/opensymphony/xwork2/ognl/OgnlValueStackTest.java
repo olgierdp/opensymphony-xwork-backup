@@ -36,42 +36,43 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     private OgnlUtil ognlUtil;
-    
+
     public void setUp() throws Exception {
         super.setUp();
         ognlUtil = container.getInstance(OgnlUtil.class);
     }
-    
+
     private OgnlValueStack createValueStack() {
         return createValueStack(true);
     }
+
     private OgnlValueStack createValueStack(boolean allowStaticMethodAccess) {
         OgnlValueStack stack = new OgnlValueStack(
                 container.getInstance(XWorkConverter.class),
-                (CompoundRootAccessor)container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName()),
+                (CompoundRootAccessor) container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName()),
                 container.getInstance(TextProvider.class, "system"), allowStaticMethodAccess);
         container.inject(stack);
         return stack;
     }
-    
+
     public void testExpOverridesCanStackExpUp() throws Exception {
-    	Map expr1 = new LinkedHashMap();
-    	expr1.put("expr1", "'expr1value'");
-    	
-    	OgnlValueStack vs = createValueStack();
-    	vs.setExprOverrides(expr1);
-    	
-    	assertEquals(vs.findValue("expr1"), "expr1value");
-    	
-    	Map expr2 = new LinkedHashMap();
-    	expr2.put("expr2", "'expr2value'");
-    	expr2.put("expr3", "'expr3value'");
-    	vs.setExprOverrides(expr2);
-    	
-    	assertEquals(vs.findValue("expr2"), "expr2value");
-    	assertEquals(vs.findValue("expr3"), "expr3value");
+        Map expr1 = new LinkedHashMap();
+        expr1.put("expr1", "'expr1value'");
+
+        OgnlValueStack vs = createValueStack();
+        vs.setExprOverrides(expr1);
+
+        assertEquals(vs.findValue("expr1"), "expr1value");
+
+        Map expr2 = new LinkedHashMap();
+        expr2.put("expr2", "'expr2value'");
+        expr2.put("expr3", "'expr3value'");
+        vs.setExprOverrides(expr2);
+
+        assertEquals(vs.findValue("expr2"), "expr2value");
+        assertEquals(vs.findValue("expr3"), "expr3value");
     }
-    
+
 
     public void testArrayAsString() {
         OgnlValueStack vs = createValueStack();
@@ -95,7 +96,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         vs.push(dog);
         assertEquals("Rover", vs.findValue("name", String.class));
     }
-    
+
     public void testStatic() {
         OgnlValueStack vs = createValueStack();
 
@@ -104,7 +105,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         vs.push(dog);
         assertEquals("fido", vs.findValue("@com.opensymphony.xwork2.util.Dog@getDeity()", String.class));
     }
-    
+
     public void testStaticMethodDisallow() {
         OgnlValueStack vs = createValueStack(false);
 
@@ -113,15 +114,15 @@ public class OgnlValueStackTest extends XWorkTestCase {
         vs.push(dog);
         assertNull(vs.findValue("@com.opensymphony.xwork2.util.Dog@getDeity()", String.class));
     }
-    
+
     public void testBasicSet() {
-    	OgnlValueStack vs = createValueStack();
-        
-    	Dog dog = new Dog();
+        OgnlValueStack vs = createValueStack();
+
+        Dog dog = new Dog();
         dog.setAge(12);
         dog.setName("Rover");
 
-        vs.set("dog",dog);
+        vs.set("dog", dog);
         assertEquals("Rover", vs.findValue("dog.name", String.class));
     }
 
@@ -140,8 +141,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         action.setThrowException(false);
         assertEquals("OK", stack.findValue("exceptionMethod()"));
     }
-    
-    
+
 
     public void testCallMethodWithNullArg() {
         SimpleAction action = new SimpleAction();
@@ -437,12 +437,12 @@ public class OgnlValueStackTest extends XWorkTestCase {
         stack.getContext().put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         stack.setDevMode("true");
         stack.push(action);
-        
+
         try {
             stack.setValue("bar", "3x");
             fail("Attempt to set 'bar' int property to '3x' should result in RuntimeException");
         }
-        catch(RuntimeException re) {
+        catch (RuntimeException re) {
             assertTrue(true);
         }
 
@@ -461,7 +461,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
         Map conversionErrors = (Map) stack.getContext().get(ActionContext.CONVERSION_ERRORS);
         assertTrue(conversionErrors.containsKey("bar"));
     }
-    
+
 
     public void testObjectSettingWithInvalidValueDoesNotCauseSetCalledWithNull() {
         SimpleAction action = new SimpleAction();
@@ -504,19 +504,19 @@ public class OgnlValueStackTest extends XWorkTestCase {
         OgnlValueStack newVs = (OgnlValueStack) ois.readObject();
         assertEquals("Rover", newVs.findValue("name", String.class));
     }
-    
+
     public void testSetAfterPush() {
-    	OgnlValueStack vs = createValueStack();
+        OgnlValueStack vs = createValueStack();
 
-    	Dog d=new Dog();
-    	d.setName("Rover");
-    	vs.push(d);
-    	
-    	vs.set("name","Bill");
+        Dog d = new Dog();
+        d.setName("Rover");
+        vs.push(d);
 
-    	assertEquals("Bill", vs.findValue("name"));
-    	
-    }    
+        vs.set("name", "Bill");
+
+        assertEquals("Bill", vs.findValue("name"));
+
+    }
 
     public void testSetBarAsString() {
         Foo foo = new Foo();
@@ -531,17 +531,17 @@ public class OgnlValueStackTest extends XWorkTestCase {
     }
 
     public void testSetBeforePush() {
-    	OgnlValueStack vs = createValueStack();
-    	
-    	vs.set("name","Bill");
-    	Dog d=new Dog();
-    	d.setName("Rover");
-    	vs.push(d);
-    	
-    	assertEquals("Rover", vs.findValue("name"));
-    	
+        OgnlValueStack vs = createValueStack();
+
+        vs.set("name", "Bill");
+        Dog d = new Dog();
+        d.setName("Rover");
+        vs.push(d);
+
+        assertEquals("Rover", vs.findValue("name"));
+
     }
-    
+
     public void testSetDeepBarAsString() {
         Foo foo = new Foo();
         Foo foo2 = new Foo();
@@ -576,17 +576,17 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertNotNull(((Cat) foo.getCats().get(0)).getFoo().getCats().get(1));
         assertEquals("Deep null cat", ((Cat) ((Cat) foo.getCats().get(0)).getFoo().getCats().get(1)).getName());
     }
-    
+
     public void testSetMultiple() {
-    	OgnlValueStack vs = createValueStack();
-    	int origSize=vs.getRoot().size();
-    	vs.set("something",new Object());
-    	vs.set("somethingElse",new Object());
-    	vs.set("yetSomethingElse",new Object());
-    	assertEquals(origSize+1,vs.getRoot().size());
-    	
+        OgnlValueStack vs = createValueStack();
+        int origSize = vs.getRoot().size();
+        vs.set("something", new Object());
+        vs.set("somethingElse", new Object());
+        vs.set("yetSomethingElse", new Object());
+        assertEquals(origSize + 1, vs.getRoot().size());
+
     }
-    
+
     public void testSetNullMap() {
         Foo foo = new Foo();
         OgnlValueStack vs = createValueStack();
@@ -717,23 +717,23 @@ public class OgnlValueStackTest extends XWorkTestCase {
     public void testConstructorWithAStack() {
         OgnlValueStack stack = createValueStack();
         stack.push("Hello World");
-        
+
         OgnlValueStack stack2 = new OgnlValueStack(stack,
                 container.getInstance(XWorkConverter.class),
-                (CompoundRootAccessor)container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName()), true);
+                (CompoundRootAccessor) container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName()), true);
         container.inject(stack2);
 
         assertEquals(stack.getRoot(), stack2.getRoot());
         assertEquals(stack.peek(), stack2.peek());
         assertEquals("Hello World", stack2.pop());
-        
+
     }
 
     public void testDefaultType() {
         OgnlValueStack stack = createValueStack();
         stack.setDefaultType(String.class);
         stack.push("Hello World");
-        
+
         assertEquals("Hello World", stack.findValue("top"));
         assertEquals(null, stack.findValue(null));
 
@@ -741,24 +741,24 @@ public class OgnlValueStackTest extends XWorkTestCase {
         stack.push(new Integer(123));
         assertEquals(new Integer(123), stack.findValue("top"));
     }
-    
+
     public void testFindString() {
         OgnlValueStack stack = createValueStack();
         stack.setDefaultType(Integer.class);
         stack.push("Hello World");
-    	
+
         assertEquals("Hello World", stack.findString("top"));
         assertEquals(null, stack.findString(null));
     }
 
     public void testExpOverrides() {
-    	Map overrides = new HashMap();
-    	overrides.put("claus", "top");
-    	
+        Map overrides = new HashMap();
+        overrides.put("claus", "top");
+
         OgnlValueStack stack = createValueStack();
         stack.setExprOverrides(overrides);
         stack.push("Hello World");
-        
+
         assertEquals("Hello World", stack.findValue("claus"));
         assertEquals("Hello World", stack.findString("claus"));
         assertEquals("Hello World", stack.findValue("top"));
@@ -766,10 +766,30 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
         assertEquals("Hello World", stack.findValue("claus", String.class));
         assertEquals("Hello World", stack.findValue("top", String.class));
-        
+
         stack.getContext().put("santa", "Hello Santa");
         assertEquals("Hello Santa", stack.findValue("santa", String.class));
         assertEquals(null, stack.findValue("unknown", String.class));
+    }
+
+    public void testWarnAboutInvalidProperties() {
+        OgnlValueStack stack = createValueStack();
+        MyAction action = new MyAction();
+        action.setName("Don");
+        stack.push(action);
+
+        // how to test the warning was logged?
+        assertEquals("Don", stack.findValue("name", String.class));
+        assertEquals(null, stack.findValue("address", String.class));
+        // should log warning
+        assertEquals(null, stack.findValue("address.invalidProperty", String.class));
+
+        // if country is null, OGNL throws an exception
+        /*action.setAddress(new Address());
+        stack.push(action);*/
+        // should log warning
+        assertEquals(null, stack.findValue("address.country.id", String.class));
+        assertEquals(null, stack.findValue("address.country.name", String.class));
     }
 
     class BadJavaBean {
@@ -790,6 +810,96 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
         public int getCount2() {
             return count2;
+        }
+    }
+
+    class MyAction {
+        private Long id;
+        private String name;
+        private Address address;
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Address getAddress() {
+            return address;
+        }
+
+        public void setAddress(Address address) {
+            this.address = address;
+        }
+    }
+
+    class Address {
+        private String address;
+        private Country country;
+        private String city;
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public void setCity(String city) {
+            this.city = city;
+        }
+
+        public Country getCountry() {
+            return country;
+        }
+
+        public void setCountry(Country country) {
+            this.country = country;
+        }
+    }
+
+    class Country {
+        private String iso;
+        private String name;
+        private String displayName;
+
+        public String getIso() {
+            return iso;
+        }
+
+        public void setIso(String iso) {
+            this.iso = iso;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public void setDisplayName(String displayName) {
+            this.displayName = displayName;
         }
     }
 }

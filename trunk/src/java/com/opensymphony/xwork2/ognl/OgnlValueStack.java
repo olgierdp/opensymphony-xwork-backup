@@ -7,6 +7,11 @@ package com.opensymphony.xwork2.ognl;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.LinkedHashSet;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 
 import ognl.Ognl;
 import ognl.OgnlContext;
@@ -16,6 +21,7 @@ import ognl.PropertyAccessor;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.Inject;
@@ -35,13 +41,12 @@ import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
  *
  * @author Patrick Lightbody
  * @author tm_jee
- * 
  * @version $Date$ $Id$
  */
 public class OgnlValueStack implements Serializable, ValueStack {
-	
-	private static final long serialVersionUID = 370737852934925530L;
-	
+
+    private static final long serialVersionUID = 370737852934925530L;
+
     private static Logger LOG = LoggerFactory.getLogger(OgnlValueStack.class);
     private boolean devMode;
 
@@ -55,7 +60,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
     Class defaultType;
     Map overrides;
     transient OgnlUtil ognlUtil;
-    
+
     protected OgnlValueStack(XWorkConverter xworkConverter, CompoundRootAccessor accessor, TextProvider prov, boolean allowStaticAccess) {
         setRoot(xworkConverter, accessor, new CompoundRoot(), allowStaticAccess);
         push(prov);
@@ -65,14 +70,14 @@ public class OgnlValueStack implements Serializable, ValueStack {
     protected OgnlValueStack(ValueStack vs, XWorkConverter xworkConverter, CompoundRootAccessor accessor, boolean allowStaticAccess) {
         setRoot(xworkConverter, accessor, new CompoundRoot(vs.getRoot()), allowStaticAccess);
     }
-    
+
     @Inject
     public void setOgnlUtil(OgnlUtil ognlUtil) {
         this.ognlUtil = ognlUtil;
     }
-    
+
     protected void setRoot(XWorkConverter xworkConverter,
-            CompoundRootAccessor accessor, CompoundRoot compoundRoot, boolean allowStaticMethodAccess) {
+                           CompoundRootAccessor accessor, CompoundRoot compoundRoot, boolean allowStaticMethodAccess) {
         this.root = compoundRoot;
         this.context = Ognl.createDefaultContext(this.root, accessor, new OgnlTypeConverterWrapper(xworkConverter),
                 new StaticMemberAccess(allowStaticMethodAccess));
@@ -81,7 +86,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
         ((OgnlContext) context).setTraceEvaluations(false);
         ((OgnlContext) context).setKeepLastEvaluation(false);
     }
-    
+
     @Inject("devMode")
     public void setDevMode(String mode) {
         devMode = "true".equalsIgnoreCase(mode);
@@ -105,19 +110,18 @@ public class OgnlValueStack implements Serializable, ValueStack {
      * @see com.opensymphony.xwork2.util.ValueStack#setExprOverrides(java.util.Map)
      */
     public void setExprOverrides(Map overrides) {
-    	if (this.overrides == null) {
-    		this.overrides = overrides;
-    	}
-    	else {
-    		this.overrides.putAll(overrides);
-    	}
+        if (this.overrides == null) {
+            this.overrides = overrides;
+        } else {
+            this.overrides.putAll(overrides);
+        }
     }
-    
+
     /* (non-Javadoc)
-     * @see com.opensymphony.xwork2.util.ValueStack#getExprOverrides()
-     */
+    * @see com.opensymphony.xwork2.util.ValueStack#getExprOverrides()
+    */
     public Map getExprOverrides() {
-    	return this.overrides;
+        return this.overrides;
     }
 
     /* (non-Javadoc)
@@ -147,7 +151,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
         } catch (OgnlException e) {
             if (throwExceptionOnFailure) {
                 e.printStackTrace(System.out);
-                System.out.println("expr: "+expr+" val: "+value+" context: "+context+" root:"+root+" value: "+value);
+                System.out.println("expr: " + expr + " val: " + value + " context: " + context + " root:" + root + " value: " + value);
                 String msg = "Error setting expression '" + expr + "' with value '" + value + "'";
                 throw new XWorkException(msg, e);
             } else {
@@ -221,9 +225,11 @@ public class OgnlValueStack implements Serializable, ValueStack {
             if (value != null) {
                 return value;
             } else {
+                checkForInvalidProperties(expr);
                 return findInContext(expr);
             }
         } catch (OgnlException e) {
+            checkForInvalidProperties(expr);
             return findInContext(expr);
         } catch (Exception e) {
             logLookupFailure(expr, e);
@@ -268,6 +274,70 @@ public class OgnlValueStack implements Serializable, ValueStack {
         return getContext().get(name);
     }
 
+
+     /**
+     * This method looks for matching methods/properties in an action to warn the user if
+     * they specified a property that doesn't exist.
+     * @param expr the property expression
+     */
+    private void checkForInvalidProperties(String expr) {
+        if (expr.contains("(") && expr.contains(")")) {
+            LOG.warn("Could not find method [" + expr + "]");
+        } else if (findInContext(expr) == null) {
+            // find objects with Action in them and inspect matching getters
+            Set availableProperties = new LinkedHashSet();
+            for (Object o : root) {
+                if (o instanceof ActionSupport || o.getClass().getSimpleName().endsWith("Action")) {
+                    try {
+                        findAvailableProperties(o.getClass(), expr, availableProperties, null);
+                    } catch (IntrospectionException ise) {
+                        // ignore
+                    }
+                }
+            }
+            if (!availableProperties.contains(expr)) {
+                LOG.warn("Could not find property [" + expr + "]");
+            }
+        }
+    }
+
+    /**
+     * Look for available properties on an existing class.
+     * @param c the class to search on
+     * @param expr the property expression
+     * @param availableProperties a set of properties found
+     * @param parent a parent property
+     * @throws IntrospectionException when Ognl can't get property descriptors
+     */
+    private void findAvailableProperties(Class c, String expr, Set availableProperties, String parent) throws IntrospectionException {
+        PropertyDescriptor[] descriptors = ognlUtil.getPropertyDescriptors(c);
+        for (PropertyDescriptor pd : descriptors) {
+            String name = pd.getDisplayName();
+            if (parent != null && expr.indexOf(".") > -1) {
+                name = expr.substring(0, expr.indexOf(".") + 1) + name;
+            }
+            if (expr.startsWith(name)) {
+               availableProperties.add((parent != null) ? parent + "." + name : name);
+                if (expr.equals(name)) break; // no need to go any further
+                if (expr.indexOf(".") > -1) {
+                    String property = expr.substring(expr.indexOf(".") + 1);
+                    // if there is a nested property (indicated by a dot), chop it off so we can look for method name
+                    String rawProperty = (property.indexOf(".") > -1) ? property.substring(0, property.indexOf(".")) : property;
+                    String methodToLookFor = "get" + rawProperty.substring(0, 1).toUpperCase() + rawProperty.substring(1);
+                    Method[] methods = pd.getPropertyType().getDeclaredMethods();
+                    for (Method method : methods) {
+                        if (method.getName().equals(methodToLookFor)) {
+                            availableProperties.add(name + "." + rawProperty);
+                            Class returnType = method.getReturnType();
+                            findAvailableProperties(returnType, property, availableProperties, name);
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
     /**
      * Log a failed lookup, being more verbose when devMode=true.
      *
@@ -304,48 +374,49 @@ public class OgnlValueStack implements Serializable, ValueStack {
     public void push(Object o) {
         root.push(o);
     }
+
     /* (non-Javadoc)
-     * @see com.opensymphony.xwork2.util.ValueStack#set(java.lang.String, java.lang.Object)
-     */
+    * @see com.opensymphony.xwork2.util.ValueStack#set(java.lang.String, java.lang.Object)
+    */
     public void set(String key, Object o) {
-    	//set basically is backed by a Map
-    	//pushed on the stack with a key 
-    	//being put on the map and the 
-    	//Object being the value
-    	
-    	Map setMap=null;
-    	
-    	//check if this is a Map 
-    	//put on the stack  for setting
-    	//if so just use the old map (reduces waste)
-    	Object topObj=peek();
-    	if (topObj instanceof Map 
-    			&&((Map)topObj).get(MAP_IDENTIFIER_KEY)!=null) {
-    		
-    		setMap=(Map)topObj;
-    	}	else {
-    		setMap=new HashMap();
-    		//the map identifier key ensures
-    		//that this map was put there
-    		//for set purposes and not by a user
-    		//whose data we don't want to touch
-    		setMap.put(MAP_IDENTIFIER_KEY,"");
-    		push(setMap);
-    	}
-    	setMap.put(key,o);
-    	
+        //set basically is backed by a Map
+        //pushed on the stack with a key
+        //being put on the map and the
+        //Object being the value
+
+        Map setMap = null;
+
+        //check if this is a Map
+        //put on the stack  for setting
+        //if so just use the old map (reduces waste)
+        Object topObj = peek();
+        if (topObj instanceof Map
+                && ((Map) topObj).get(MAP_IDENTIFIER_KEY) != null) {
+
+            setMap = (Map) topObj;
+        } else {
+            setMap = new HashMap();
+            //the map identifier key ensures
+            //that this map was put there
+            //for set purposes and not by a user
+            //whose data we don't want to touch
+            setMap.put(MAP_IDENTIFIER_KEY, "");
+            push(setMap);
+        }
+        setMap.put(key, o);
+
     }
-    
-    
-    private static final String MAP_IDENTIFIER_KEY="com.opensymphony.xwork2.util.OgnlValueStack.MAP_IDENTIFIER_KEY";
-    
+
+
+    private static final String MAP_IDENTIFIER_KEY = "com.opensymphony.xwork2.util.OgnlValueStack.MAP_IDENTIFIER_KEY";
+
     /* (non-Javadoc)
-     * @see com.opensymphony.xwork2.util.ValueStack#size()
-     */
+    * @see com.opensymphony.xwork2.util.ValueStack#size()
+    */
     public int size() {
         return root.size();
     }
-    
+
     private Object readResolve() {
         // TODO: this should be done better
         ActionContext ac = ActionContext.getContext();
@@ -361,5 +432,5 @@ public class OgnlValueStack implements Serializable, ValueStack {
         return aStack;
     }
 
- 
+
 }

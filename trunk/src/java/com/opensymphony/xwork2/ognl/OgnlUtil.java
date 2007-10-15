@@ -38,16 +38,16 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
 public class OgnlUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(OgnlUtil.class);
-    private ConcurrentHashMap<String,Object> expressions = new ConcurrentHashMap<String,Object>();
-    private ConcurrentHashMap<Class,BeanInfo> beanInfoCache = new ConcurrentHashMap<Class,BeanInfo>();
-    
+    private ConcurrentHashMap<String, Object> expressions = new ConcurrentHashMap<String, Object>();
+    private ConcurrentHashMap<Class, BeanInfo> beanInfoCache = new ConcurrentHashMap<Class, BeanInfo>();
+
     private TypeConverter defaultConverter;
-    
+
     @Inject
     public void setXWorkConverter(XWorkConverter conv) {
         this.defaultConverter = new OgnlTypeConverterWrapper(conv);
     }
-    
+
     /**
      * Sets the object's properties using the default type converter, defaulting to not throw
      * exceptions for problems setting the properties.
@@ -304,13 +304,26 @@ public class OgnlUtil {
 
     /**
      * Get's the java beans property descriptors for the given source.
-     * 
-     * @param source  the source object.
-     * @return  property descriptors.
+     *
+     * @param source the source object.
+     * @return property descriptors.
      * @throws IntrospectionException is thrown if an exception occurs during introspection.
      */
     public PropertyDescriptor[] getPropertyDescriptors(Object source) throws IntrospectionException {
         BeanInfo beanInfo = getBeanInfo(source);
+        return beanInfo.getPropertyDescriptors();
+    }
+
+
+    /**
+     * Get's the java beans property descriptors for the given class.
+     *
+     * @param clazz the source object.
+     * @return property descriptors.
+     * @throws IntrospectionException is thrown if an exception occurs during introspection.
+     */
+    public PropertyDescriptor[] getPropertyDescriptors(Class clazz) throws IntrospectionException {
+        BeanInfo beanInfo = getBeanInfo(clazz);
         return beanInfo.getPropertyDescriptors();
     }
 
@@ -319,11 +332,11 @@ public class OgnlUtil {
      * <p/>
      * If the source object does not have a read property (i.e. write-only) then
      * the property is added to the map with the value <code>here is no read method for property-name</code>.
-     * 
-     * @param source   the source object.
-     * @return  a Map with (key = read property name, value = value of read property).
+     *
+     * @param source the source object.
+     * @return a Map with (key = read property name, value = value of read property).
      * @throws IntrospectionException is thrown if an exception occurs during introspection.
-     * @throws OgnlException is thrown by OGNL if the property value could not be retrieved
+     * @throws OgnlException          is thrown by OGNL if the property value could not be retrieved
      */
     public Map getBeanMap(Object source) throws IntrospectionException, OgnlException {
         Map beanMap = new HashMap();
@@ -345,20 +358,34 @@ public class OgnlUtil {
     }
 
     /**
-     * Get's the java bean info for the given source.
-     * 
-     * @param from  the source object.
-     * @return  java bean info.
+     * Get's the java bean info for the given source object. Calls getBeanInfo(Class c).
+     *
+     * @param from the source object.
+     * @return java bean info.
      * @throws IntrospectionException is thrown if an exception occurs during introspection.
      */
     public BeanInfo getBeanInfo(Object from) throws IntrospectionException {
-        BeanInfo beanInfo;
-        beanInfo = (BeanInfo) beanInfoCache.get(from.getClass());
-        if (beanInfo == null) {
-            beanInfo = Introspector.getBeanInfo(from.getClass(), Object.class);
-            beanInfoCache.putIfAbsent(from.getClass(), beanInfo);
+        return getBeanInfo(from.getClass());
+    }
+
+
+    /**
+     * Get's the java bean info for the given source.
+     *
+     * @param clazz the source class.
+     * @return java bean info.
+     * @throws IntrospectionException is thrown if an exception occurs during introspection.
+     */
+    public BeanInfo getBeanInfo(Class clazz) throws IntrospectionException {
+        synchronized (beanInfoCache) {
+            BeanInfo beanInfo;
+            beanInfo = beanInfoCache.get(clazz);
+            if (beanInfo == null) {
+                beanInfo = Introspector.getBeanInfo(clazz, Object.class);
+                beanInfoCache.put(clazz, beanInfo);
+            }
+            return beanInfo;
         }
-        return beanInfo;
     }
 
     void internalSetProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
@@ -376,7 +403,7 @@ public class OgnlUtil {
             }
         }
     }
-    
+
     TypeConverter getTypeConverterFromContext(Map context) {
         /*ValueStack stack = (ValueStack) context.get(ActionContext.VALUE_STACK);
         Container cont = (Container)stack.getContext().get(ActionContext.CONTAINER);
