@@ -470,7 +470,7 @@ public class LocalizedTextUtil {
             result = getDefaultMessage(aTextName, locale, valueStack, args, defaultMessage);
         } else {
             result = getDefaultMessage(aTextName, locale, valueStack, args, null);
-            if (result.message != null) {
+            if (result != null && result.message != null) {
                 return result.message;
             }
             result = getDefaultMessage(indexedTextName, locale, valueStack, args, defaultMessage);
