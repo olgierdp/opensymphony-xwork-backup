@@ -96,7 +96,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         }
 
         if (toType == String.class) {
-            /* the code below has been disabled as it causes sideffects in Strtus2 (XW-512)
+            /* the code below has been disabled as it causes sideffects in Struts2 (XW-512)
             // if input (value) is a number then use special conversion method (XW-490)
             Class inputType = value.getClass();
             if (Number.class.isAssignableFrom(inputType)) {
@@ -128,7 +128,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = doConvertToCharacter(value);
         } else if (toType == char.class) {
             result = doConvertToCharacter(value);
-        } else if (Number.class.isAssignableFrom(toType)) {
+        } else if (Number.class.isAssignableFrom(toType) || toType.isPrimitive()) {
             result = doConvertToNumber(context, value, toType);
         } else if (toType == Class.class) {
             result = doConvertToClass(value);
@@ -392,6 +392,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 return new BigDecimal((String) value);
             } else if (toType == BigInteger.class) {
                 return new BigInteger((String) value);
+            } else if (toType.isPrimitive()) {
+                return super.convertValue(context, value, toType);
             } else {
                 String stringValue = (String) value;
                 if (!toType.isPrimitive() && (stringValue == null || stringValue.length() == 0)) {
