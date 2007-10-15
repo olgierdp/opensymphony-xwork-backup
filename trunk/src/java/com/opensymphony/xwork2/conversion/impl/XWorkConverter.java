@@ -336,7 +336,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      * @return a TypeConverter to handle the specified class or null if none can be found
      */
     public TypeConverter lookup(String className) {
-        if (unknownMappings.contains(className)) {
+        if (unknownMappings.contains(className) && !defaultMappings.containsKey(className)) {
             return null;
         }
 
@@ -432,6 +432,9 @@ public class XWorkConverter extends DefaultTypeConverter {
 
     public synchronized void registerConverter(String className, TypeConverter converter) {
         defaultMappings.put(className, converter);
+        if ( unknownMappings.contains(className)) {
+            unknownMappings.remove(className);
+        }
     }
 
     public synchronized void registerConverterNotFound(String className) {
