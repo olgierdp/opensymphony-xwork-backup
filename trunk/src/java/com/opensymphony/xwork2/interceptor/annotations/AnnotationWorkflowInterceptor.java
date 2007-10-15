@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.interceptor.annotations;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Comparator;
@@ -89,6 +90,7 @@ import com.opensymphony.xwork2.interceptor.PreResultListener;
  *
  * @author Zsolt Szasz, zsolt at lorecraft dot com
  * @author Rainer Hermanns
+ * @author Dan Oxlade, dan d0t oxlade at gmail d0t c0m
  */
 public class AnnotationWorkflowInterceptor implements Interceptor, PreResultListener {
 
@@ -100,8 +102,8 @@ public class AnnotationWorkflowInterceptor implements Interceptor, PreResultList
     public String intercept(ActionInvocation invocation) throws Exception {
         final Object action = invocation.getAction();
         invocation.addPreResultListener(this);
-        List<Method> methods = AnnotationUtils.findAnnotatedMethods(action.getClass(), Before.class);
-        if (methods != null && methods.size() > 0) {
+        List<Method> methods = new ArrayList<Method>(AnnotationUtils.getAnnotatedMethods(action.getClass(), Before.class));
+        if (methods.size() > 0) {
             Collections.sort(methods, new Comparator<Method>() {
                 public int compare(Method method1, Method method2) {
                     return method2.getAnnotation(Before.class).priority()
@@ -122,9 +124,9 @@ public class AnnotationWorkflowInterceptor implements Interceptor, PreResultList
         String invocationResult = invocation.invoke();
 
         // invoke any @After methods
-        methods = AnnotationUtils.findAnnotatedMethods(action.getClass(), After.class);
+        methods = new ArrayList<Method>(AnnotationUtils.getAnnotatedMethods(action.getClass(), After.class));
 
-        if (methods != null && methods.size() > 0) {
+        if (methods.size() > 0) {
             // action methods first then action superclass methods
             Collections.sort(methods, new Comparator<Method>() {
                 public int compare(Method method1, Method method2) {
@@ -153,9 +155,9 @@ public class AnnotationWorkflowInterceptor implements Interceptor, PreResultList
      */
     public void beforeResult(ActionInvocation invocation, String resultCode) {
         Object action = invocation.getAction();
-        List<Method> methods = AnnotationUtils.findAnnotatedMethods(action.getClass(), BeforeResult.class);
+        List<Method> methods = new ArrayList<Method>(AnnotationUtils.getAnnotatedMethods(action.getClass(), BeforeResult.class));
 
-        if (methods != null && methods.size() > 0) {
+        if (methods.size() > 0) {
             Collections.sort(methods, new Comparator<Method>() {
                 public int compare(Method method1, Method method2) {
                     return method2.getAnnotation(BeforeResult.class).priority()
