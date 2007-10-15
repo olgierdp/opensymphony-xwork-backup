@@ -60,7 +60,7 @@ public @interface CreateIfNull {
 
     /**
      * The CreateIfNull value.
-     * Defaults to <tt>false</tt>.
+     * Defaults to <tt>true</tt>.
      */
-    boolean value() default false;
+    boolean value() default true;
 }
