@@ -1,0 +1,66 @@
+<project name="xwork" default="jar" basedir=".">
+    <!-- overridden properties (must be before the import!) -->
+    <property name="src.test" value="src/test"/>
+
+    <import file="osbuild.xml"/>
+
+    <target name="init" depends="common.init" unless="skip.ivy">
+        <taskdef name="ivy-configure" classname="fr.jayasoft.ivy.ant.IvyConfigure" classpathref="cp"/>
+        <taskdef name="ivy-resolve" classname="fr.jayasoft.ivy.ant.IvyResolve" classpathref="cp"/>
+        <taskdef name="ivy-retrieve" classname="fr.jayasoft.ivy.ant.IvyRetrieve" classpathref="cp"/>
+        <taskdef name="ivy-publish" classname="fr.jayasoft.ivy.ant.IvyPublish" classpathref="cp"/>
+        <taskdef name="ivy-report" classname="fr.jayasoft.ivy.ant.IvyReport" classpathref="cp"/>
+        <taskdef name="ivy-deliver" classname="fr.jayasoft.ivy.ant.IvyDeliver" classpathref="cp"/>
+
+        <ivy-retrieve/>
+    </target>
+
+    <target name="ivyrep.copy-ivy" depends="init" unless="noivyxml">
+        <ivy-deliver deliverpattern="${ivyrep.path}/opensymphony/${name}/[artifact]-[revision].[ext]"
+                     pubrevision="${version}-${TIME}" pubdate="${TIME}"/>
+    </target>
+
+    <target name="compile" depends="common.compile">
+    </target>
+
+    <target name="dist" depends="common.dist">
+    </target>
+
+    <target name="predist" depends="common.predist">
+        <!-- grab the README.txt file -->
+        <copy file="${src}/etc/README.txt" todir="${dist}"/>
+        <copy file="${src}/etc/LICENSE.txt" todir="${dist}"/>
+    </target>
+
+    <target name="test" depends="junit-check, compile, test-compile" description="run tests"
+            unless="skip.tests">
+        <run-junit />
+    </target>
+
+    <target name="docs.impl" depends="common.docs.impl">
+        <copy todir="${dist.docs}">
+            <fileset dir="${src.java}" includes="*.dtd"/>
+        </copy>
+    </target>
+
+    <!--target name="ivyrep" depends="common.ivyrep">
+        <antcall target="ivyrep.impl" inheritrefs="no" inheritall="no">
+            <param name="name" value="${name}-tiger"/>
+            <param name="noivyxml" value="yes"/>
+        </antcall>
+    </target-->
+
+    <target name="mavenrep" depends="jar">
+        <!-- xwork -->
+        <copy file="pom.xml" tofile="/opt/repository/ibiblio.org/opensymphony/poms/${name}-${version}-SNAPSHOT.pom" overwrite="true"/>
+        <copy file="${build}/${name}-${version}.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT.jar" overwrite="true"/>
+        <copy file="${build}/${name}-${version}-sources.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT-sources.jar" overwrite="true"/>
+        <copy file="${build}/${name}-${version}-javadoc.jar" tofile="/opt/repository/ibiblio.org/opensymphony/jars/${name}-${version}-SNAPSHOT-javadoc.jar" overwrite="true"/>
+
+        <copy file="pom.xml" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/poms/${name}-${version}-SNAPSHOT.pom" overwrite="true"/>
+        <copy file="${build}/${name}-${version}.jar" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/jars/${name}-${version}-SNAPSHOT.jar" overwrite="true"/>
+        <copy file="${build}/${name}-${version}-sources.jar" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/jars/${name}-${version}-SNAPSHOT-sources.jar" overwrite="true"/>
+        <copy file="${build}/${name}-${version}-javadoc.jar" tofile="/var/www/domains/opensymphony.com/maven1/htdocs/opensymphony/jars/${name}-${version}-SNAPSHOT-javadoc.jar" overwrite="true"/>
+    </target>
+
+</project>

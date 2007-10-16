@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <title>XWork - 
+        XWork Architecture
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>XWork2 is designed around the concept of GOF's Command Design Pattern.</p>
+
+<h2><a name="XWorkArchitecture-CommandDesignPattern"></a>Command Design Pattern</h2>
+
+
+<h3><a name="XWorkArchitecture-General"></a>General</h3>
+
+<p>A Command design pattern, abstract the logic of a particular execution into an object, the command object. If an originator is to interact with a receiver using a command pattern, direct reference between them could be abstracted away. Originator would probably create a command object, that when executed will know how to get its receiver and perform the necessary logics. There could be a variety of command that being able to communicate with a variety  of receivers, most probably created through some sort of Factory pattern.</p>
+
+<h3><a name="XWorkArchitecture-RelationwithXWork2"></a>Relation with XWork2</h3>
+
+<p>Command in XWork2 sense would be XWork2 Action, while the originator would most possibly translate to the client that grab hold of a copy of XWork2 Action. A receiver will most likely be XWork2 Result. XWork2 enhance the concept a bit with the introduction of ActionProxy, a thin layer representing the action such that action could be loaded differently and ActionInvocation which details the actual execution of the action itself.</p>
+
+<h2><a name="XWorkArchitecture-Architecture"></a>Architecture</h2>
+<p><img src="XWork Architecture_attachments/xwork-flow.jpg" align="absmiddle" border="0" /></p>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
