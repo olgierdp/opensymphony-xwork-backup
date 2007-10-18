@@ -121,6 +121,38 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         proxy.execute();
         assertEquals("This is blah", ((SimpleAction) proxy.getAction()).getBlah());
     }
+    
+    public void testParametersNotAccessPrivateVariables() throws Exception {
+        Map params = new HashMap();
+        params.put("protectedMap.foo", "This is blah");
+        params.put("theProtectedMap.boo", "This is blah");
+
+        HashMap extraContext = new HashMap();
+        extraContext.put(ActionContext.PARAMETERS, params);
+
+        ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
+        proxy.execute();
+        SimpleAction action = (SimpleAction) proxy.getAction();
+        assertEquals(1, action.getTheProtectedMap().size());
+        assertNotNull(action.getTheProtectedMap().get("boo"));
+        assertNull(action.getTheProtectedMap().get("foo"));
+    }
+    
+    public void testParametersNotAccessProtectedMethods() throws Exception {
+        Map params = new HashMap();
+        params.put("theSemiProtectedMap.foo", "This is blah");
+        params.put("theProtectedMap.boo", "This is blah");
+
+        HashMap extraContext = new HashMap();
+        extraContext.put(ActionContext.PARAMETERS, params);
+
+        ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
+        proxy.execute();
+        SimpleAction action = (SimpleAction) proxy.getAction();
+        assertEquals(1, action.getTheProtectedMap().size());
+        assertNotNull(action.getTheProtectedMap().get("boo"));
+        assertNull(action.getTheProtectedMap().get("foo"));
+    }
 
     public void testNonexistentParametersGetLoggedInDevMode() throws Exception {
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), 

@@ -39,12 +39,21 @@ public class SimpleAction extends ActionSupport {
 
     private String aliasSource;
     private String aliasDest;
+    private Map<String,String> protectedMap = new HashMap<String,String>();
     
     public static boolean resultCalled;
 
 
     public SimpleAction() {
         resultCalled = false;
+    }
+    
+    public Map<String,String> getTheProtectedMap() {
+        return protectedMap;
+    }
+    
+    protected Map<String,String> getTheSemiProtectedMap() {
+        return protectedMap;
     }
 
 
