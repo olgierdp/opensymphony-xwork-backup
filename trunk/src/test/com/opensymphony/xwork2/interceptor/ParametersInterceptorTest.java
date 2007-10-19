@@ -154,6 +154,21 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         assertNull(action.getTheProtectedMap().get("foo"));
     }
 
+    public void testParametersOverwriteField() throws Exception {
+        Map params = new LinkedHashMap();
+        params.put("existingMap.boo", "This is blah");
+
+        HashMap extraContext = new HashMap();
+        extraContext.put(ActionContext.PARAMETERS, params);
+
+        ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
+        proxy.execute();
+        SimpleAction action = (SimpleAction) proxy.getAction();
+        assertEquals(1, action.getTheExistingMap().size());
+        assertNotNull(action.getTheExistingMap().get("boo"));
+        assertNull(action.getTheExistingMap().get("existingKey"));
+    }
+
     public void testNonexistentParametersGetLoggedInDevMode() throws Exception {
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), 
                 new MockConfigurationProvider(Collections.singletonMap("devMode", "true")));
