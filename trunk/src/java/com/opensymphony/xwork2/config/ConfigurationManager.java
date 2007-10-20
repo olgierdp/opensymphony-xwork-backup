@@ -223,7 +223,7 @@ public class ConfigurationManager {
                     }
                     reload = true;
 
-                    break;
+                    //break;
                 }
             }
             
@@ -235,7 +235,7 @@ public class ConfigurationManager {
                         }
                         reload = true;
     
-                        break;
+                        //break;
                     }
                 }
             }
