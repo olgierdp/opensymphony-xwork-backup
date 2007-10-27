@@ -6,19 +6,17 @@ package com.opensymphony.xwork2.config;
 
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
-import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionProxy;
+import com.opensymphony.xwork2.SimpleAction;
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
-import com.opensymphony.xwork2.inject.Context;
-import com.opensymphony.xwork2.inject.Factory;
-import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.inject.Scope;
 import com.opensymphony.xwork2.mock.MockInterceptor;
 import com.opensymphony.xwork2.test.StubConfigurationProvider;
-import com.opensymphony.xwork2.util.XWorkTestCaseHelper;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 
 import java.util.HashMap;
@@ -92,6 +90,20 @@ public class ConfigurationTest extends XWorkTestCase {
         Map<String, Object> p = config.getParams();
         assertTrue("Wrong parameter, "+p.get("foo"), "Simple".equals(p.get("foo")));
         assertTrue("Wrong parameter, "+p.get("bar"), "input".equals(p.get("bar")));
+    }
+
+    public void testWildcardNamespace() {
+        RuntimeConfiguration configuration = configurationManager.getConfiguration().getRuntimeConfiguration();
+
+        ActionConfig config = configuration.getActionConfig("/animals/dog", "commandTest");
+
+        assertNotNull(config);
+        assertTrue("Wrong class name, "+config.getClassName(),
+                "com.opensymphony.xwork2.SimpleAction".equals(config.getClassName()));
+
+        Map<String, Object> p = config.getParams();
+        assertTrue("Wrong parameter, "+p.get("0"), "/animals/dog".equals(p.get("0")));
+        assertTrue("Wrong parameter, "+p.get("1"), "dog".equals(p.get("1")));
     }
 
     public void testGlobalResults() {

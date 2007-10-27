@@ -66,6 +66,17 @@ public class ActionConfig extends Located implements InterceptorListHolder, Para
         this(methodName, className, packageName, parameters, results, interceptors, Collections.EMPTY_LIST);
     }
 
+    /**
+     * Clones an ActionConfig, copying data into new maps and lists
+     * @param orig The ActionConfig to clone
+     * @Since 2.1
+     */
+    public ActionConfig(ActionConfig orig) {
+        this(orig.getMethodName(), orig.getClassName(), orig.getPackageName(), new LinkedHashMap<String,Object>(orig.getParams()),
+                new LinkedHashMap<String,ResultConfig>(orig.getResults()),
+                new ArrayList<InterceptorMapping>(orig.getInterceptors()), new ArrayList<ExceptionMappingConfig>(orig.getExceptionMappings()));
+    }
+
     public ActionConfig(String methodName, String className, String packageName, Map<String, Object> parameters,
                         Map<String, ResultConfig> results, List<InterceptorMapping> interceptors, List<ExceptionMappingConfig> exceptionMappings) {
         this.methodName = methodName;

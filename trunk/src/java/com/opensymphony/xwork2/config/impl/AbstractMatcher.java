@@ -17,22 +17,12 @@
  */
 package com.opensymphony.xwork2.config.impl;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.opensymphony.xwork2.config.entities.ActionConfig;
-import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
-import com.opensymphony.xwork2.config.entities.ResultConfig;
-import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.PatternMatcher;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * <p> Matches patterns against pre-compiled wildcard expressions pulled from
@@ -52,12 +42,12 @@ public abstract class AbstractMatcher<E> implements Serializable {
     /**
      * <p> Handles all wildcard pattern matching. </p>
      */
-    private PatternMatcher<Object> wildcard;
+    PatternMatcher<Object> wildcard;
 
     /**
      * <p> The compiled patterns and their associated target objects </p>
      */
-    private List<Mapping<E>> compiledPatterns = new ArrayList<Mapping<E>>();;
+    List<Mapping<E>> compiledPatterns = new ArrayList<Mapping<E>>();;
     
     public AbstractMatcher(PatternMatcher<?> helper) {
         this.wildcard = (PatternMatcher<Object>) helper;
@@ -77,8 +67,8 @@ public abstract class AbstractMatcher<E> implements Serializable {
      * goal is to support the legacy "*!*" syntax, where the "!*" is optional.
      * </p>
      * 
-     * @param configs
-     *            An array of target objects to process
+     * @param name The pattern
+     * @param target The object to associate with the pattern
      * @param looseMatch
      *            To loosely match wildcards or not
      */
@@ -86,8 +76,8 @@ public abstract class AbstractMatcher<E> implements Serializable {
 
         Object pattern;
 
-        if ((name != null) && (name.indexOf('*') > -1)) {
-            if ((name.length() > 0) && (name.charAt(0) == '/')) {
+        if (!wildcard.isLiteral(name)) {
+            if (looseMatch && (name.length() > 0) && (name.charAt(0) == '/')) {
                 name = name.substring(1);
             }
 
@@ -97,12 +87,14 @@ public abstract class AbstractMatcher<E> implements Serializable {
 
             pattern = wildcard.compilePattern(name);
             compiledPatterns.add(new Mapping<E>(name, pattern, target));
-            
-            int lastStar = name.lastIndexOf('*');
-            if (lastStar > 1 && lastStar == name.length() - 1) {
-                if (name.charAt(lastStar - 1) != '*') {
-                    pattern = wildcard.compilePattern(name.substring(0, lastStar - 1));
-                    compiledPatterns.add(new Mapping<E>(name, pattern, target));
+
+            if (looseMatch) {
+                int lastStar = name.lastIndexOf('*');
+                if (lastStar > 1 && lastStar == name.length() - 1) {
+                    if (name.charAt(lastStar - 1) != '*') {
+                        pattern = wildcard.compilePattern(name.substring(0, lastStar - 1));
+                        compiledPatterns.add(new Mapping<E>(name, pattern, target));
+                    }
                 }
             }
         }

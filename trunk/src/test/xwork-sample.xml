@@ -175,6 +175,13 @@
         </action>
     </package>
 
+    <package name="wildcardNamespaces" extends="default" namespace="/animals/*">
+        <action name="commandTest" class="com.opensymphony.xwork2.SimpleAction">
+            <result name="success" type="mock" />
+            <interceptor-ref name="static-params"/>
+        </action>
+    </package>
+
     <package name="multipleInheritance" extends="default,abstractPackage,bar" namespace="multipleInheritance">
         <action name="testMultipleInheritance" class="com.opensymphony.xwork2.SimpleAction">
             <result name="success" type="chain">

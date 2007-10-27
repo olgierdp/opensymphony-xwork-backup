@@ -17,21 +17,17 @@
  */
 package com.opensymphony.xwork2.config.impl;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.util.PatternMatcher;
 import com.opensymphony.xwork2.util.WildcardHelper;
-import com.opensymphony.xwork2.util.logging.Logger;
-import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p> Matches paths against pre-compiled wildcard expressions pulled from
@@ -111,7 +107,7 @@ public class ActionConfigMatcher extends AbstractMatcher<ActionConfig> implement
      * @return A cloned ActionConfig with appropriate properties replaced with
      *         wildcard-matched values
      */
-    protected ActionConfig convert(String path, ActionConfig orig,
+    public ActionConfig convert(String path, ActionConfig orig,
         Map vars) {
         
         String className = convertParam(orig.getClassName(), vars);

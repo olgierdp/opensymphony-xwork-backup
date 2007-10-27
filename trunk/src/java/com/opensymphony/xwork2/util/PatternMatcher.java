@@ -27,6 +27,13 @@ import java.util.Map;
 public interface PatternMatcher<E extends Object> {
 
     /**
+     * Determines if the pattern is a simple literal string or contains wildcards that will need to be processed
+     * @param pattern The string pattern
+     * @return True if the pattern doesn't contain processing elements, false otherwise
+     */
+    boolean isLiteral(String pattern);
+
+    /**
      * <p> Translate the given <code>String</code> into an object
      * representing the pattern matchable by this class. 
      *
@@ -34,7 +41,7 @@ public interface PatternMatcher<E extends Object> {
      * @return The encoded string 
      * @throws NullPointerException If data is null.
      */
-    public abstract E compilePattern(String data);
+    E compilePattern(String data);
 
     /**
      * Match a pattern against a string 
@@ -45,6 +52,6 @@ public interface PatternMatcher<E extends Object> {
      * @return True if a match
      * @throws NullPointerException If any parameters are null
      */
-    public abstract boolean match(Map<String,String> map, String data, E expr);
+    boolean match(Map<String,String> map, String data, E expr);
     
 }

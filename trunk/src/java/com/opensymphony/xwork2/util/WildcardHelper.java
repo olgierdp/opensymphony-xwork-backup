@@ -53,6 +53,16 @@ public class WildcardHelper implements PatternMatcher<int[]> {
     protected static final int MATCH_END = -3;
 
     /**
+     * Determines if the pattern contains any * characters
+     *
+     * @param pattern The pattern
+     * @return True if no wildcards are found
+     */
+    public boolean isLiteral(String pattern) {
+        return (pattern == null || pattern.indexOf('*') == -1);
+    }
+
+    /**
      * <p> Translate the given <code>String</code> into a <code>int []</code>
      * representing the pattern matchable by this class. <br> This function
      * translates a <code>String</code> into an int array converting the

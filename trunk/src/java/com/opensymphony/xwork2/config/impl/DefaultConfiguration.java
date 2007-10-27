@@ -4,42 +4,18 @@
  */
 package com.opensymphony.xwork2.config.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import ognl.PropertyAccessor;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.DefaultTextProvider;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.TextProvider;
-import com.opensymphony.xwork2.config.Configuration;
-import com.opensymphony.xwork2.config.ConfigurationException;
-import com.opensymphony.xwork2.config.ConfigurationProvider;
-import com.opensymphony.xwork2.config.ContainerProvider;
-import com.opensymphony.xwork2.config.PackageProvider;
-import com.opensymphony.xwork2.config.RuntimeConfiguration;
-import com.opensymphony.xwork2.config.entities.ActionConfig;
-import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
-import com.opensymphony.xwork2.config.entities.InterceptorMapping;
-import com.opensymphony.xwork2.config.entities.PackageConfig;
-import com.opensymphony.xwork2.config.entities.ResultConfig;
-import com.opensymphony.xwork2.config.entities.ResultTypeConfig;
+import com.opensymphony.xwork2.config.*;
+import com.opensymphony.xwork2.config.entities.*;
 import com.opensymphony.xwork2.config.providers.InterceptorBuilder;
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.impl.XWorkBasicConverter;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
-import com.opensymphony.xwork2.inject.Container;
-import com.opensymphony.xwork2.inject.ContainerBuilder;
-import com.opensymphony.xwork2.inject.Context;
-import com.opensymphony.xwork2.inject.Factory;
-import com.opensymphony.xwork2.inject.Scope;
+import com.opensymphony.xwork2.inject.*;
 import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.ognl.OgnlUtil;
 import com.opensymphony.xwork2.ognl.OgnlValueStackFactory;
@@ -48,11 +24,13 @@ import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.PatternMatcher;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
-import com.opensymphony.xwork2.util.WildcardHelper;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
+import ognl.PropertyAccessor;
+
+import java.util.*;
 
 
 /**
@@ -349,17 +327,21 @@ public class DefaultConfiguration implements Configuration {
     private class RuntimeConfigurationImpl implements RuntimeConfiguration {
         private Map<String, Map<String, ActionConfig>> namespaceActionConfigs;
         private Map<String, ActionConfigMatcher> namespaceActionConfigMatchers;
+        private NamespaceMatcher namespaceMatcher;
         private Map<String, String> namespaceConfigs;
 
         public RuntimeConfigurationImpl(Map<String, Map<String, ActionConfig>> namespaceActionConfigs, Map<String, String> namespaceConfigs) {
             this.namespaceActionConfigs = namespaceActionConfigs;
             this.namespaceConfigs = namespaceConfigs;
+
+            PatternMatcher matcher = container.getInstance(PatternMatcher.class);
             
             this.namespaceActionConfigMatchers = new LinkedHashMap<String, ActionConfigMatcher>();
-            
+            this.namespaceMatcher = new NamespaceMatcher(matcher, namespaceActionConfigs.keySet());
+
             for (String ns : namespaceActionConfigs.keySet()) {
                 namespaceActionConfigMatchers.put(ns,
-                        new ActionConfigMatcher(container.getInstance(PatternMatcher.class),
+                        new ActionConfigMatcher(matcher,
                                 namespaceActionConfigs.get(ns), true));
             }
         }
@@ -374,8 +356,37 @@ public class DefaultConfiguration implements Configuration {
          * @return the configuration information for action requested
          */
         public synchronized ActionConfig getActionConfig(String namespace, String name) {
+            ActionConfig config = findActionConfigInNamespace(namespace, name);
+
+            // try wildcarded namespaces
+            if (config == null) {
+                NamespaceMatch match = namespaceMatcher.match(namespace);
+                if (match != null) {
+                    config = findActionConfigInNamespace(match.getPattern(), name);
+
+                    // If config found, place all the matches found in the namespace processing in the action's parameters
+                    if (config != null) {
+                        config = new ActionConfig(config);
+                        config.getParams().putAll(match.getVariables());
+                    }
+                }
+            }
+
+            // fail over to empty namespace
+            if ((config == null) && (namespace != null) && (!namespace.trim().equals(""))) {
+                config = findActionConfigInNamespace("", name);
+            }
+
+
+            return config;
+        }
+
+        ActionConfig findActionConfigInNamespace(String namespace, String name) {
             ActionConfig config = null;
-            Map<String, ActionConfig> actions = namespaceActionConfigs.get((namespace == null) ? "" : namespace);
+            if (namespace == null) {
+                namespace = "";
+            }
+            Map<String, ActionConfig> actions = namespaceActionConfigs.get(namespace);
             if (actions != null) {
                 config = actions.get(name);
                 // Check wildcards
@@ -383,38 +394,16 @@ public class DefaultConfiguration implements Configuration {
                     config = namespaceActionConfigMatchers.get(namespace).match(name);
                     // fail over to default action
                     if (config == null) {
-                        String defaultActionRef = namespaceConfigs.get((namespace == null) ? "" : namespace);
+                        String defaultActionRef = namespaceConfigs.get(namespace);
                         if (defaultActionRef != null) {
                             config = actions.get(defaultActionRef);
                         }
                     }
                 }
             }
-
-            // fail over to empty namespace
-            if ((config == null) && (namespace != null) && (!namespace.trim().equals(""))) {
-                actions = namespaceActionConfigs.get("");
-
-                if (actions != null) {
-                    config = actions.get(name);
-                    // Check wildcards
-                    if (config == null) {
-                        config = namespaceActionConfigMatchers.get("").match(name);
-                        // fail over to default action
-                        if (config == null) {
-                            String defaultActionRef = namespaceConfigs.get("");
-                            if (defaultActionRef != null) {
-                                config = actions.get(defaultActionRef);
-                            }
-                        }
-                    }
-                }
-            }
-
-
             return config;
         }
-        
+
         /**
          * Gets the configuration settings for every action.
          *
