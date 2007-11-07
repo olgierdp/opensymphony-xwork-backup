@@ -145,7 +145,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
         Object action = invocation.getAction();
         if (!(action instanceof NoParameters)) {
             ActionContext ac = invocation.getInvocationContext();
-            final Map parameters = ac.getParameters();
+            final Map parameters = retrieveParametersFromContext(ac);
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Setting params " + getParameterLogMap(parameters));
@@ -168,6 +168,15 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             }
         }
         return invocation.invoke();
+    }
+
+    /**
+     * Gets the parameter map to apply from the context
+     * @param ac The action context
+     * @return The parameter map to apply
+     */
+    protected Map retrieveParametersFromContext(ActionContext ac) {
+        return ac.getParameters();
     }
 
     protected void setParameters(Object action, ValueStack stack, final Map parameters) {
