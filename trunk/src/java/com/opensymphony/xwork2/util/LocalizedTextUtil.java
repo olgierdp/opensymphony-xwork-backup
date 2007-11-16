@@ -38,8 +38,8 @@ import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
  * <p/>
  * <ol>
  * <li>ActionClass.properties</li>
- * <li>BaseClass.properties (all the way to Object.properties)</li>
  * <li>Interface.properties (every interface and sub-interface)</li>
+ * <li>BaseClass.properties (all the way to Object.properties)</li>
  * <li>ModelDriven's model (if implements ModelDriven), for the model object repeat from 1</li>
  * <li>package.properties (of the directory where class is located and every parent directory all the way to the root directory)</li>
  * <li>search up the i18n message key hierarchy itself</li>
