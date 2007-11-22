@@ -21,8 +21,11 @@
             <!--url name="maven">
                 <artifact pattern="http://www.ibiblio.org/maven/[organisation]/jars/[module]-[revision].[type]"/>
             </url-->
+            <url name="maven2">
+                <artifact pattern="http://repo1.maven.org/maven2/[orgnaization]/[module]/[revision]/[module]-[revision].[type]" />
+            </url>
             <url name="opensymphony_maven2">
-                <artifact pattern="http://maven2.opensymphony.com/[module]/[module]/[revision]/[module]-[revision].[type]" />
+                <artifact pattern="http://maven2.opensymphony.com/[organization]/[module]/[revision]/[module]-[revision].[type]" />
             </url>
         </chain>
     </resolvers>
