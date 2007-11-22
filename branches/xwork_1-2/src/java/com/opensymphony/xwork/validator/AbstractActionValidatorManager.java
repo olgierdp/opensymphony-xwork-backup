@@ -5,6 +5,8 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
 
+import com.opensymphony.xwork.validator.validators.VisitorFieldValidator;
+
 /**
  * <p/>An abstract implementation of {@link ActionValidatorManager} interface that contains the logics of
  * validating action objects and utlity methods common to all subclass eg. method to build validator
@@ -75,7 +77,7 @@ public abstract class AbstractActionValidatorManager implements ActionValidatorM
 
                 if (validator instanceof FieldValidator) {
                     fValidator = (FieldValidator) validator;
-                    fullFieldName = fValidator.getValidatorContext().getFullFieldName(fValidator.getFieldName());
+                    fullFieldName = new InternalValidatorContextWrapper(fValidator.getValidatorContext()).getFullFieldName(fValidator.getFieldName());
 
                     if ((shortcircuitedFields != null) && shortcircuitedFields.contains(fullFieldName)) {
                         if (LOG.isDebugEnabled()) {
@@ -171,5 +173,24 @@ public abstract class AbstractActionValidatorManager implements ActionValidatorM
             validators.add(validator);
         }
         return validators;
+    }
+
+
+    protected class InternalValidatorContextWrapper {
+        private ValidatorContext validatorContext = null;
+
+        InternalValidatorContextWrapper(ValidatorContext validatorContext) {
+            this.validatorContext = validatorContext;
+        }
+
+        public String getFullFieldName(String field) {
+            if (validatorContext instanceof VisitorFieldValidator.AppendingValidatorContext) {
+                VisitorFieldValidator.AppendingValidatorContext appendingValidatorContext =
+                        (VisitorFieldValidator.AppendingValidatorContext) validatorContext;
+                return appendingValidatorContext.getFullFieldNameFromParent(field);
+            }
+            return validatorContext.getFullFieldName(field);
+        }
+
     }
 }

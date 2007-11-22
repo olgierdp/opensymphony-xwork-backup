@@ -145,9 +145,11 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
 
         if (appendPrefix) {
             validatorContext = new AppendingValidatorContext(getValidatorContext(), o, fieldName, getMessage(o));
+            setValidatorContext(validatorContext);
         } else {
             ValidatorContext parent = getValidatorContext();
             validatorContext = new DelegatingValidatorContext(parent, DelegatingValidatorContext.makeTextProvider(o, parent), parent);
+            setValidatorContext(validatorContext);
         }
 
         ActionValidatorManagerFactory.getInstance().validate(o, visitorContext, validatorContext);
@@ -155,17 +157,19 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
     }
 
 
-    private class AppendingValidatorContext extends DelegatingValidatorContext {
-        Object o;
-        String field;
-        String message;
+    public class AppendingValidatorContext extends DelegatingValidatorContext {
+        private Object o;
+        private String field;
+        private String message;
+        private ValidatorContext parentValidatorContext;
+
 
         public AppendingValidatorContext(ValidatorContext parent, Object object, String field, String message) {
             super(parent, makeTextProvider(object, parent), parent);
 
-            //            super(parent);
             this.field = field;
             this.message = message;
+            parentValidatorContext = parent;
         }
 
         /**
@@ -176,6 +180,10 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
          */
         public String getFullFieldName(String fieldName) {
             return field + "." + fieldName;
+        }
+
+        public String getFullFieldNameFromParent(String fieldName) {
+            return parentValidatorContext.getFullFieldName(field+"."+fieldName);
         }
 
         public void addActionError(String anErrorMessage) {
