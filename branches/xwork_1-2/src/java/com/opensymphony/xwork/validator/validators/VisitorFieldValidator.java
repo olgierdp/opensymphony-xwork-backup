@@ -145,11 +145,9 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
 
         if (appendPrefix) {
             validatorContext = new AppendingValidatorContext(getValidatorContext(), o, fieldName, getMessage(o));
-            setValidatorContext(validatorContext);
         } else {
             ValidatorContext parent = getValidatorContext();
             validatorContext = new DelegatingValidatorContext(parent, DelegatingValidatorContext.makeTextProvider(o, parent), parent);
-            setValidatorContext(validatorContext);
         }
 
         ActionValidatorManagerFactory.getInstance().validate(o, visitorContext, validatorContext);
