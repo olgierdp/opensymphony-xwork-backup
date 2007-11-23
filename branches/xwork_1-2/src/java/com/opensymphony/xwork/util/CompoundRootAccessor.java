@@ -60,7 +60,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                                 if (Map.class.isAssignableFrom(pd.getClass())) {
                                     return Map.class;
                                 }
-                                return pd.getClass();
+                                return pd.getPropertyType();
                             }
                         }
                     }
@@ -80,7 +80,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         CompoundRoot root = (CompoundRoot) target;
 
         if (name instanceof Integer) {
-            return ".cutStack("+name+")";    
+            return ".cutStack("+name+")";
         }
         else if (name instanceof String) {
             String beanName = ((String)name).replaceAll("\"", "");
@@ -103,7 +103,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     if (tmp != null) {
                         PropertyDescriptor pd = OgnlRuntime.getPropertyDescriptor(tmp.getClass(), beanName);
                         if (pd != null) {
-                            if (Map.class.isAssignableFrom(pd.getClass())) {
+                            if (Map.class.isAssignableFrom(tmp.getClass())) {
 
                                 ExpressionCompiler.addCastString(ognlcontext, "(("+Map.class.getName()+")");
 
@@ -113,8 +113,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                                 return ".get("+a+")).get(\""+beanName+"\")";
                             }
 
-                            Class type = OgnlRuntime.getCompiler().getInterfaceClass(pd.getClass());
-
+                            Class type = OgnlRuntime.getCompiler().getSuperOrInterfaceClass(pd.getReadMethod(), tmp.getClass());
                             ExpressionCompiler.addCastString(ognlcontext, "((" + type.getName() + ")");
 
                             ognlcontext.setCurrentType(type);
@@ -136,7 +135,6 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
     }
 
     public String getSourceSetter(OgnlContext ognlcontext, Object target, Object name) {
-
         CompoundRoot root = (CompoundRoot) target;
         if (name instanceof String) {
             String beanName = ((String)name).replaceAll("\"", "");
@@ -148,7 +146,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     if (tmp != null) {
                         PropertyDescriptor pd = OgnlRuntime.getPropertyDescriptor(tmp.getClass(), beanName);
                         if (pd != null) {
-                            if (Map.class.isAssignableFrom(pd.getClass())) {
+                            if (Map.class.isAssignableFrom(tmp.getClass())) {
 
                                 ExpressionCompiler.addCastString(ognlcontext, "(("+Map.class.getName()+")");
 
@@ -168,8 +166,8 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                             if (param.isPrimitive()) {
                                 Class wrapClass = OgnlRuntime.getPrimitiveWrapperClass(param);
                                 conversion = OgnlRuntime.getCompiler().createLocalReference(ognlcontext,
-                                                                            "((" + wrapClass.getName() + ")ognl.OgnlOps#convertValue($3," + wrapClass.getName()
-                                                                            + ".class, true))." + OgnlRuntime.getNumericValueGetter(wrapClass),
+                                                                            "((" + wrapClass.getName() + ")ognl.OgnlOps#convertValue($3,"
+                                                                            + wrapClass.getName()+ ".class, true))." + OgnlRuntime.getNumericValueGetter(wrapClass),
                                                                             param);
 
                             } else if (param.isArray()) {
@@ -186,7 +184,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                                                                             param);
                             }
 
-                            Class type = OgnlRuntime.getCompiler().getInterfaceClass(pd.getWriteMethod().getClass());
+                            Class type = OgnlRuntime.getCompiler().getSuperOrInterfaceClass(pd.getWriteMethod(), tmp.getClass());
 
                             ExpressionCompiler.addCastString(ognlcontext, "((" + type.getName() + ")");
 

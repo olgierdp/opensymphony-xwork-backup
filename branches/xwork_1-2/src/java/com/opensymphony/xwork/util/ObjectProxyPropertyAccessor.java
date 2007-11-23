@@ -59,7 +59,7 @@ public class ObjectProxyPropertyAccessor implements PropertyAccessor {
         if (tmp != null) {
             Method m = OgnlRuntime.getReadMethod(tmp.getClass(), beanName);
 
-            Class type = OgnlRuntime.getCompiler().getInterfaceClass(proxy.getValue().getClass());
+            Class type = OgnlRuntime.getCompiler().getSuperOrInterfaceClass(m, proxy.getValue().getClass());
 
             ExpressionCompiler.addCastString(ognlcontext, "((" + type.getName() + ")");
 
@@ -79,9 +79,9 @@ public class ObjectProxyPropertyAccessor implements PropertyAccessor {
         if (tmp != null) {
             Method m = OgnlRuntime.getWriteMethod(tmp.getClass(), beanName);
 
-            Class type = OgnlRuntime.getCompiler().getInterfaceClass(proxy.getValue().getClass());
+            Class type = OgnlRuntime.getCompiler().getSuperOrInterfaceClass(m, proxy.getValue().getClass());
 
-            if (m.getParameterTypes().length > 1) {
+            if (m.getParameterTypes().length != 1) {
                 throw new UnsupportedCompilationException("Object property accessors can only support single parameter setters.");
             }
 
