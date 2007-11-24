@@ -406,4 +406,52 @@ public class CompoundRootPropertyAccessorTest extends XWorkTestCase {
         }
     }
 
+
+    public void testSpecialExpression() throws Exception {
+        Person p1 = new Person();
+        p1.setName("tmjee");
+        p1.setAge(new Integer(28));
+
+        Address a1 = new Address();
+        a1.setStreet("High Street");
+        a1.setPobox("1111");
+
+        Person p2 = new Person();
+        p2.setName("phil");
+        p2.setAge(new Integer(40));
+
+        Address a2 = new Address();
+        a2.setStreet("Melbourne Street");
+        a2.setPobox("222");
+
+
+        CompoundRoot root = new CompoundRoot();
+        root.add(p1);
+        root.add(a1);
+        root.add(p2);
+        root.add(a2);
+
+        OgnlContext ognlContext = (OgnlContext) Ognl.createDefaultContext(root);
+
+        CompoundRootAccessor accessor = new CompoundRootAccessor();
+
+        OgnlRuntime.setPropertyAccessor(CompoundRoot.class, accessor);
+
+        {
+            Node node = Ognl.compileExpression(ognlContext, root, "top");
+            assertEquals(node.getAccessor().get(ognlContext, root), p1);
+        }
+
+        {
+            Node node = Ognl.compileExpression(ognlContext, root, "[1]");
+            assertEquals(node.getAccessor().get(ognlContext, root).getClass(), CompoundRoot.class);
+            assertEquals(((CompoundRoot)node.getAccessor().get(ognlContext, root)).size(), 3);
+            assertEquals(((CompoundRoot)node.getAccessor().get(ognlContext, root)).get(0), a1);
+            assertEquals(((CompoundRoot)node.getAccessor().get(ognlContext, root)).get(1), p2);
+            assertEquals(((CompoundRoot)node.getAccessor().get(ognlContext, root)).get(2), a2);
+        }
+
+
+    }
+
 }

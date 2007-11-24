@@ -29,6 +29,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
     private static Map invalidMethods = new HashMap();
 
     public Class getPropertyClass(OgnlContext ognlcontext, Object target, Object name) {
+        //System.out.println("getPropertyClass "+target+"\t"+name);
         CompoundRoot root = (CompoundRoot) target;
 
         if (name instanceof Integer) {
@@ -77,6 +78,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
     }
 
     public String getSourceAccessor(OgnlContext ognlcontext, Object target, Object name) {
+        //System.out.println("getSourceAccessor "+target+"\t"+name);
         CompoundRoot root = (CompoundRoot) target;
 
         if (name instanceof Integer) {
@@ -93,7 +95,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 // ignore, its not a number
             }
 
-            if ("top".equals(name)) {
+            if ("top".equals(beanName)) {
                 return ".get(0)";
             }
 
@@ -150,6 +152,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
     }
 
     public String getSourceSetter(OgnlContext ognlcontext, Object target, Object name) {
+        //System.out.println("getSourceSetter "+target+"\t"+name);
         CompoundRoot root = (CompoundRoot) target;
         if (name instanceof String) {
             String beanName = ((String)name).replaceAll("\"", "");
@@ -235,6 +238,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
      * @throws OgnlException
      */
     public void setProperty(Map context, Object target, Object name, Object value) throws OgnlException {
+        //System.out.println("setProperty "+name+"\t"+value);
         CompoundRoot root = (CompoundRoot) target;
         OgnlContext ognlContext = (OgnlContext) context;
 
@@ -281,6 +285,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
      * @throws OgnlException
      */
     public Object getProperty(Map context, Object target, Object name) throws OgnlException {
+        //System.out.println("getProperty "+name);
         CompoundRoot root = (CompoundRoot) target;
         OgnlContext ognlContext = (OgnlContext) context;
 
@@ -403,7 +408,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
             if ((argTypes == null) || !invalidMethods.containsKey(mc)) {
                 try {
-                    Object value = OgnlRuntime.callMethod((OgnlContext) context, o, name, objects);
+                    Object value = OgnlRuntime.callMethod((OgnlContext) context, o, name, name, objects);
 
                     if (value != null) {
                         return value;
