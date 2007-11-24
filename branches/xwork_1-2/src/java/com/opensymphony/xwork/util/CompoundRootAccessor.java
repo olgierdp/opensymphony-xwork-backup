@@ -89,7 +89,9 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 Integer.valueOf(beanName);
                 return ".cutStack("+name+")";
             }
-            catch(NumberFormatException e) { /* ignore, its not a number */ }
+            catch(NumberFormatException e) {
+                // ignore, its not a number
+            }
 
             if ("top".equals(name)) {
                 return ".get(0)";
@@ -114,6 +116,19 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                             }
 
                             Class type = OgnlRuntime.getCompiler().getSuperOrInterfaceClass(pd.getReadMethod(), tmp.getClass());
+
+
+                            if (pd.getPropertyType().isPrimitive()) {
+                                Class wrapClass = OgnlRuntime.getPrimitiveWrapperClass(pd.getPropertyType());
+
+                                ExpressionCompiler.addCastString(ognlcontext, "(ognl.OgnlOps.convertValue(((" + type.getName() + ")");
+                                                    
+                                ognlcontext.setCurrentType(type);
+                                ognlcontext.setCurrentAccessor(CompoundRoot.class);
+
+                                return ".get("+a+"))."+pd.getReadMethod().getName()+"(),"+wrapClass.getName()+".class, false))";
+                            }
+
                             ExpressionCompiler.addCastString(ognlcontext, "((" + type.getName() + ")");
 
                             ognlcontext.setCurrentType(type);
@@ -165,9 +180,11 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
                             if (param.isPrimitive()) {
                                 Class wrapClass = OgnlRuntime.getPrimitiveWrapperClass(param);
+                                /*System.out.println("***"+"((" + wrapClass.getName() + ")ognl.OgnlOps#convertValue($3,"
+                                                                            + wrapClass.getName()+ ".class, true))." + OgnlTools.getPrimitiveValueGetter(wrapClass));*/
                                 conversion = OgnlRuntime.getCompiler().createLocalReference(ognlcontext,
                                                                             "((" + wrapClass.getName() + ")ognl.OgnlOps#convertValue($3,"
-                                                                            + wrapClass.getName()+ ".class, true))." + OgnlRuntime.getNumericValueGetter(wrapClass),
+                                                                            + wrapClass.getName()+ ".class, true))." + OgnlTools.getPrimitiveValueGetter(wrapClass),
                                                                             param);
 
                             } else if (param.isArray()) {
@@ -177,6 +194,9 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                                                                             param);
 
                             } else {
+                                /*System.out.println("(" + param.getName()+ ")ognl.OgnlOps#convertValue($3,"
+                                                                            + param.getName()
+                                                                            + ".class)");*/
                                 conversion = OgnlRuntime.getCompiler().createLocalReference(ognlcontext,
                                                                             "(" + param.getName()+ ")ognl.OgnlOps#convertValue($3,"
                                                                             + param.getName()
@@ -383,7 +403,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
             if ((argTypes == null) || !invalidMethods.containsKey(mc)) {
                 try {
-                    Object value = OgnlRuntime.callMethod((OgnlContext) context, o, name, name, objects);
+                    Object value = OgnlRuntime.callMethod((OgnlContext) context, o, name, objects);
 
                     if (value != null) {
                         return value;
