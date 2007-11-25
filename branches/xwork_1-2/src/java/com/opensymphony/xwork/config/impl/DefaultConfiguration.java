@@ -20,7 +20,8 @@ import java.util.*;
  * DefaultConfiguration
  *
  * @author Jason Carreira
- *         Created Feb 24, 2003 7:38:06 AM
+ * @author tmjee
+ * @version $Date$ $Id$
  */
 public class DefaultConfiguration implements Configuration {
 
@@ -31,27 +32,93 @@ public class DefaultConfiguration implements Configuration {
     private Map packageContexts = new LinkedHashMap();
     protected RuntimeConfiguration runtimeConfiguration;
 
+    private Map parameters = new LinkedHashMap();
+
 
     public DefaultConfiguration() {
     }
 
 
+    /**
+     * Return the configuration parameters in xwork.xml
+     * <pre>
+     *    <xwork>
+     *      <parameters>
+     *         <parameter name="..." value="..." />
+     *         ....
+     *      </parameters>
+     *      ....
+     *    </xwork>
+     * </pre>
+     * @return Map
+     */
+    public Map getParameters() {
+        return parameters;    
+    }
+
+    /**
+     * Return the configuration parameter value for with parameter name as <code>name</code>.
+     * @param name parameter name
+     * @return String
+     */
+    public String getParameter(String name) {
+        return (String) parameters.get(name);
+    }
+
+    /**
+     * Set the configuration parameter.
+     * @param name parameter name
+     * @param value parameter value
+     */
+    public void setParameter(String name, String value) {
+        parameters.put(name, value);
+    }
+
+    /**
+     * Return the {@link com.opensymphony.xwork.config.entities.PackageConfig} (package configuration) for
+     * package with named as <code>name</code>
+     * @param name package name
+     * @return {@link com.opensymphony.xwork.config.entities.PackageConfig}
+     */
     public PackageConfig getPackageConfig(String name) {
         return (PackageConfig) packageContexts.get(name);
     }
 
+    /**
+     * Return the {@link com.opensymphony.xwork.config.entities.PackageConfig}s name as a {@link java.util.Set}.
+     * @return Set
+     */
     public Set getPackageConfigNames() {
         return packageContexts.keySet();
     }
 
+    /**
+     * Return the {@link com.opensymphony.xwork.config.entities.PackageConfig} as a {@link java.util.Map} with
+     * the key as the package name and its value as the corresponding
+     * {@link com.opensymphony.xwork.config.entities.PackageConfig}
+     * @return Map
+     */
     public Map getPackageConfigs() {
         return packageContexts;
     }
 
+    /**
+     * The current runtime configuration. Currently, if changes have been made to the Configuration since the last
+     * time buildRuntimeConfiguration() was called, you'll need to make sure to get it using this method.
+     *
+     * @return the current runtime configuration
+     */
     public RuntimeConfiguration getRuntimeConfiguration() {
         return runtimeConfiguration;
     }
 
+    /**
+     * Add a {@link com.opensymphony.xwork.config.entities.PackageConfig} with package name specified as
+     * <code>name</code>
+     *
+     * @param name
+     * @param packageConfig
+     */
     public void addPackageConfig(String name, PackageConfig packageContext) {
       PackageConfig check = (PackageConfig) packageContexts.get(name);
         if (check != null) {
@@ -67,13 +134,19 @@ public class DefaultConfiguration implements Configuration {
     public void destroy() {
     }
 
+    /**
+     * Reload xwork configuration, once this is done, we need to grab the
+     * {@link com.opensymphony.xwork.config.RuntimeConfiguration} using {@link #getRuntimeConfiguration()}
+     * @throws ConfigurationException
+     */
     public void rebuildRuntimeConfiguration() {
         runtimeConfiguration = buildRuntimeConfiguration();
     }
 
     /**
-     * Calls the ConfigurationProviderFactory.getConfig() to tell it to reload the configuration and then calls
-     * buildRuntimeConfiguration().
+     * Reload xwork configurations, by asking all of the {@link com.opensymphony.xwork.config.ConfigurationProvider}s
+     * to reinitialize this {@link com.opensymphony.xwork.config.impl.DefaultConfiguration} and then
+     * {@link #rebuildRuntimeConfiguration()}.
      *
      * @throws ConfigurationException
      */
@@ -89,6 +162,11 @@ public class DefaultConfiguration implements Configuration {
         rebuildRuntimeConfiguration();
     }
 
+    /**
+     * Remove the {@link com.opensymphony.xwork.config.entities.PackageConfig} for package with name as
+     * <code>name</code>.
+     * @param name package name to be removed
+     */
     public void removePackageConfig(String name) {
         PackageConfig toBeRemoved = (PackageConfig) packageContexts.get(name);
 
@@ -140,6 +218,11 @@ public class DefaultConfiguration implements Configuration {
         return new RuntimeConfigurationImpl(namespaceActionConfigs, namespaceConfigs);
     }
 
+    /**
+     * Set the default results for a particular   {@link com.opensymphony.xwork.config.entities.PackageConfig}
+     * @param results
+     * @param packageContext
+     */
     private void setDefaultResults(Map results, PackageConfig packageContext) {
         String defaultResult = packageContext.getFullDefaultResultType();
 
@@ -200,11 +283,19 @@ public class DefaultConfiguration implements Configuration {
         return config;
     }
 
-
+    /**
+     * Represents the current runtime configuration of xwork.
+     */
     private class RuntimeConfigurationImpl implements RuntimeConfiguration {
+
         private Map namespaceActionConfigs;
         private Map namespaceConfigs;
 
+        /**
+         * Create a new instance of {@link com.opensymphony.xwork.config.RuntimeConfiguration}.
+         * @param namespaceActionConfigs
+         * @param namespaceConfigs
+         */
         public RuntimeConfigurationImpl(Map namespaceActionConfigs, Map namespaceConfigs) {
             this.namespaceActionConfigs = namespaceActionConfigs;
             this.namespaceConfigs = namespaceConfigs;
@@ -264,6 +355,11 @@ public class DefaultConfiguration implements Configuration {
             return namespaceActionConfigs;
         }
 
+        /**
+         * String representation of this current {@link com.opensymphony.xwork.config.RuntimeConfiguration}
+         * listing all the namepsace and its {@link com.opensymphony.xwork.config.entities.ActionConfig}s.
+         * @return String
+         */
         public String toString() {
             StringBuffer buff = new StringBuffer("RuntimeConfiguration - actions are\n");
 

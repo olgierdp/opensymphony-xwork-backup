@@ -14,7 +14,7 @@ import com.opensymphony.xwork.mock.MockConfiguration;
  * ConfigurationTestBase
  *
  * @author Jason Carreira
- *         Created Jun 9, 2003 7:42:12 AM
+ * @version $Date$ $Id$
  */
 public abstract class ConfigurationTestBase extends XWorkTestCase {
 

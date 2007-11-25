@@ -187,6 +187,32 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         }    
     }
 
+    protected void addParameters(Element parametersElement) throws ConfigurationException {
+
+        NodeList parameterNodeList = parametersElement.getElementsByTagName("parameter");
+        for (int a=0; a<parameterNodeList.getLength(); a++) {
+            Element element = (Element) parameterNodeList.item(a);
+            String parameterName = element.getAttribute("name");
+            String parameterValue = element.getAttribute("value");
+
+            if (parameterName != null && parameterValue != null && (parameterName.trim().length() > 0) &&
+                    (parameterValue.trim().length() > 0)) {
+                if (configuration.getParameter(parameterName) != null) { // Opps.. parameter already exists
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn("parameter name ["+parameterName+"] with value ["+configuration.getParameter(parameterName)+"] exists overriding it with value ["+parameterValue+"]");
+                    }
+                }
+                configuration.setParameter(parameterName, parameterValue);
+            }
+            else { // bad... either parameter name or value or both is null or empty
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn("invalid parameter name value pair, either or both of them are null or empty, they will be ignored");
+                }
+            }
+        }
+    }
+
+
     /**
      * Create a PackageConfig from an XML element representing it.
      */
@@ -634,6 +660,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 in.setSystemId(ClassLoaderUtil.getResource(fileName, getClass()).toString());
                 
                 Map dtdMappings = new HashMap();
+                dtdMappings.put("-//OpenSymphony Group//XWork 1.1.2//EN", "xwork-1.1.2.dtd");
                 dtdMappings.put("-//OpenSymphony Group//XWork 1.1.1//EN", "xwork-1.1.1.dtd");
                 dtdMappings.put("-//OpenSymphony Group//XWork 1.1//EN", "xwork-1.1.dtd");
                 dtdMappings.put("-//OpenSymphony Group//XWork 1.0//EN", "xwork-1.0.dtd");
@@ -676,6 +703,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     } else if (nodeName.equals("include")) {
                         String includeFileName = child.getAttribute("file");
                         loadConfigurationFile(includeFileName, child);
+                    } else if ("parameters".equals(nodeName)) {
+                        addParameters(child);
                     }
                 }
             }

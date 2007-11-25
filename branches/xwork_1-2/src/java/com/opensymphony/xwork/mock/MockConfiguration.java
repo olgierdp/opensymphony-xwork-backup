@@ -9,7 +9,7 @@ import com.opensymphony.xwork.config.ConfigurationException;
 import com.opensymphony.xwork.config.RuntimeConfiguration;
 import com.opensymphony.xwork.config.entities.PackageConfig;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,11 +18,25 @@ import java.util.Set;
  * Mock for an {@link Configuration}.
  *
  * @author Mike
+ * @author tmjee
+ * @version $Date$ $Id$
  */
 public class MockConfiguration implements Configuration {
 
-    private Map packages = new HashMap();
+    private Map packages = new LinkedHashMap();
+    private Map parameters = new LinkedHashMap();
 
+    public Map getParameters() {
+        return parameters;
+    }
+
+    public String getParameter(String name) {
+        return (String) parameters.get(name);
+    }
+
+    public void setParameter(String name, String value) {
+        parameters.put(name, value);
+    }
 
     public PackageConfig getPackageConfig(String name) {
         return (PackageConfig) packages.get(name);
