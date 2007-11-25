@@ -331,6 +331,7 @@ public class OgnlUtil {
                                 catch(Exception e) {
                                     // let's try parsing ognl expression instead
                                     tryExpressionParsing = true;
+                                    log.warn("unable to get value using OGNL expression compilation mode, falling back to expression parsing", e);
                                 }
                             }
                             if (tryExpressionParsing) {
@@ -350,6 +351,7 @@ public class OgnlUtil {
                                 catch(Exception e) {
                                     // let's try parsing ognl expression instead
                                     tryExpressionParsing = true;
+                                    log.warn("unable to set value using OGNL expression compilation mode, falling back to expression parsing", e);
                                 }
                             }
                             if (tryExpressionParsing) {
@@ -426,6 +428,7 @@ public class OgnlUtil {
                     catch(Exception e) {
                         // let's try expression parsing
                         tryExpressionParsing = true;
+                        log.warn("unable to get value using OGNL expression compilation mode, falling back to expression parsing", e);
                     }
                 }
                 if (tryExpressionParsing) {
