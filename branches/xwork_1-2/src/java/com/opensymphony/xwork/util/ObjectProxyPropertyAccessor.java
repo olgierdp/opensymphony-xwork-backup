@@ -92,7 +92,7 @@ public class ObjectProxyPropertyAccessor implements PropertyAccessor {
                 Class wrapClass = OgnlRuntime.getPrimitiveWrapperClass(param);
                 conversion = OgnlRuntime.getCompiler().createLocalReference(ognlcontext,
                                       "((" + wrapClass.getName() + ")ognl.OgnlOps#convertValue($3," + wrapClass.getName()
-                                      + ".class, true))." + OgnlRuntime.getNumericValueGetter(wrapClass),
+                                      + ".class, true))." + OgnlTools.getPrimitiveValueGetter(wrapClass),
                                       param);
 
             } else if (param.isArray()) {

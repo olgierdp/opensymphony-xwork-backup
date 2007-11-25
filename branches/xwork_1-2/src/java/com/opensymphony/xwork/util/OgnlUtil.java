@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.util;
 
-import ognl.Ognl;
-import ognl.OgnlContext;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
+import com.opensymphony.xwork.XWorkConstants;
+import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.config.ConfigurationManager;
+import ognl.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.opensymphony.xwork.XworkException;
-
 
 /**
  * Utility class that provides common access to the <a href="www.ognl.org">Ognl</a> APIs for
@@ -35,8 +33,10 @@ import com.opensymphony.xwork.XworkException;
 public class OgnlUtil {
 
     private static final Log log = LogFactory.getLog(OgnlUtil.class);
-    private static HashMap expressions = new HashMap();
+    private static HashMap parsedExpressions = new HashMap();
     private static HashMap beanInfoCache = new HashMap();
+
+    private static Boolean useOgnlEnhancement = null;
 
 
     /**
@@ -181,29 +181,80 @@ public class OgnlUtil {
 
 
     /**
-     * Wrapper around Ognl.setValue() to handle type conversion for collection elements.
-     * Ideally, this should be handled by OGNL directly.
+     * Wrapper to use OGNL to set the property on target <code>root</code> based on
+     * OGNL expression <code>name</code> with the value as <code>value</code>, encapsulating if the
+     * expression were to be parsed or compiled depending on {@link #isUseOgnlEnhancement()}.
+     * 
+     * @param name
+     * @param context
+     * @param root
+     * @param value
      */
     public static void setValue(String name, Map context, Object root, Object value) throws OgnlException {
+        if (isUseOgnlEnhancement()) {
+            try {
+                Node node = Ognl.compileExpression((OgnlContext) context, root, name);
+                node.getAccessor().set((OgnlContext) context, root, value);
+                return;
+            }
+            catch(Exception e) {
+                log.warn("unable to set value using OGNL expression compilation mode, falling back to expression parsing", e);
+            }
+        }
         Ognl.setValue(compile(name), context, root, value);
     }
 
+    /**
+     * Wrapper to use OGNL to get the property on target <code>root</code> based on the OGNL expression
+     * <code>expression</code> encapsulating if the expression were to be parsed or compiled depending on
+     * {@link #isUseOgnlEnhancement()}. 
+     *
+     * @param name
+     * @param context
+     * @param root
+     * @return
+     * @throws OgnlException
+     */
     public static Object getValue(String name, Map context, Object root) throws OgnlException {
+        if (isUseOgnlEnhancement()) {
+            try {
+                Node node = Ognl.compileExpression((OgnlContext)context, root, name);
+                return node.getAccessor().get((OgnlContext)context, root);
+            }
+            catch(Exception e) {
+                log.warn("unable to get value using OGNL expression compilation mode, falling back to expression parsing", e); 
+            }
+        }
         return Ognl.getValue(compile(name), context, root);
     }
 
     public static Object getValue(String name, Map context, Object root, Class resultType) throws OgnlException {
+        if (isUseOgnlEnhancement()) {
+            try {
+                Node node = Ognl.compileExpression((OgnlContext)context, root, name);
+                return node.getAccessor().get((OgnlContext)context, root);
+            }
+            catch(Exception e) {
+                log.warn("unable to get value using OGNL expression compilation mode, falling back to expression parsing", e);
+            }
+        }
         return Ognl.getValue(compile(name), context, root, resultType);
     }
 
-
+    /**
+     * Parse an ognl expression specified as <code>expression</code>, cache the parsed result for
+     * better response next round.
+     * @param expression
+     * @return Object
+     * @throws OgnlException
+     */
     public static Object compile(String expression) throws OgnlException {
-        synchronized (expressions) {
-            Object o = expressions.get(expression);
+        synchronized (parsedExpressions) {
+            Object o = parsedExpressions.get(expression);
 
             if (o == null) {
                 o = Ognl.parseExpression(expression);
-                expressions.put(expression, o);
+                parsedExpressions.put(expression, o);
             }
 
             return o;
@@ -267,9 +318,44 @@ public class OgnlUtil {
                     PropertyDescriptor toPd = (PropertyDescriptor) toPdHash.get(fromPd.getName());
                     if ((toPd != null) && (toPd.getWriteMethod() != null)) {
                         try {
-                            Object expr = OgnlUtil.compile(fromPd.getName());
-                            Object value = Ognl.getValue(expr, contextFrom, from);
-                            Ognl.setValue(expr, contextTo, to, value);
+
+                            // === 1] get value
+                            Object value = null;
+                            boolean tryExpressionParsing = true;
+                            if (isUseOgnlEnhancement()) {
+                                try {
+                                    Node node = Ognl.compileExpression((OgnlContext)contextFrom, from, fromPd.getName());
+                                    value = node.getAccessor().get((OgnlContext)contextFrom, from);
+                                    tryExpressionParsing = false;
+                                }
+                                catch(Exception e) {
+                                    // let's try parsing ognl expression instead
+                                    tryExpressionParsing = true;
+                                }
+                            }
+                            if (tryExpressionParsing) {
+                                Object expr = OgnlUtil.compile(fromPd.getName());
+                                value = Ognl.getValue(expr, contextFrom, from);
+                            }
+
+
+                            // === 2] set value
+                            tryExpressionParsing = true;
+                            if (isUseOgnlEnhancement()) {
+                                try {
+                                    Node node = Ognl.compileExpression((OgnlContext)contextTo, to, fromPd.getName());
+                                    node.getAccessor().set((OgnlContext)contextTo, to, value);
+                                    tryExpressionParsing = false;
+                                }
+                                catch(Exception e) {
+                                    // let's try parsing ognl expression instead
+                                    tryExpressionParsing = true;
+                                }
+                            }
+                            if (tryExpressionParsing) {
+                                Object expr = OgnlUtil.compile(fromPd.getName());
+                                Ognl.setValue(expr, contextTo, to, value);
+                            }
                         } catch (OgnlException e) {
                             // ignore, this is OK
                         }
@@ -328,8 +414,24 @@ public class OgnlUtil {
             String propertyName = propertyDescriptor.getDisplayName();
             Method readMethod = propertyDescriptor.getReadMethod();
             if (readMethod != null) {
-                Object expr = OgnlUtil.compile(propertyName);
-                Object value = Ognl.getValue(expr, sourceMap, source);
+
+                Object value = null;
+                boolean tryExpressionParsing = true;
+                if (isUseOgnlEnhancement()) {
+                    try {
+                        Node node = Ognl.compileExpression((OgnlContext)sourceMap, source, propertyName);
+                        value = node.getAccessor().get((OgnlContext)sourceMap, source);
+                        tryExpressionParsing=false;
+                    }
+                    catch(Exception e) {
+                        // let's try expression parsing
+                        tryExpressionParsing = true;
+                    }
+                }
+                if (tryExpressionParsing) {
+                    Object expr = OgnlUtil.compile(propertyName);
+                    value = Ognl.getValue(expr, sourceMap, source);
+                }
                 beanMap.put(propertyName, value);
             } else {
                 beanMap.put(propertyName, "There is no read method for " + propertyName);
@@ -357,6 +459,19 @@ public class OgnlUtil {
         }
     }
 
+    /**
+     * An internal method to set the property whose name is <code>name</code>
+     * with value as <code>value</code> into target <code>o</code> with OGNL context
+     * map as <code>context</code>. If <code>throwPropertyExceptions</code> is true, we
+     * shall throws an exception if we failed to set the property esle we'll just log a
+     * warning.
+     * 
+     * @param name
+     * @param value
+     * @param o
+     * @param context
+     * @param throwPropertyExceptions
+     */
     static void internalSetProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
         try {
             setValue(name, context, o, value);
@@ -372,5 +487,23 @@ public class OgnlUtil {
                 log.warn(msg, exception);
             }
         }
+    }
+
+    /**
+     * Determine if we should use OGNL (2.7.x) ehhancement feature (compiled expression) instead of
+     * the default expression parsing.
+     * @return boolean true to use expression compilation false to use expression parsing.
+     */
+    static boolean isUseOgnlEnhancement() {
+        if (useOgnlEnhancement == null) {
+            String value = ConfigurationManager.getConfiguration().getParameter(XWorkConstants.XWORK_USE_OGNL_ENHANCEMENT);
+            if (value != null && "true".equalsIgnoreCase(value)) {
+                useOgnlEnhancement = Boolean.TRUE;
+            }
+            else {
+                useOgnlEnhancement = Boolean.FALSE; // by default, if not specified, its turn off
+            }
+        }
+        return useOgnlEnhancement.booleanValue();
     }
 }

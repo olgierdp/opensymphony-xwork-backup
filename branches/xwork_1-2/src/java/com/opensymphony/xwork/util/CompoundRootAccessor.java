@@ -82,21 +82,37 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         CompoundRoot root = (CompoundRoot) target;
 
         if (name instanceof Integer) {
-            return ".cutStack("+name+")";
+            ExpressionCompiler.addCastString(ognlcontext, "((" + CompoundRoot.class.getName() + ")");
+            ognlcontext.setCurrentType(CompoundRoot.class);
+            ognlcontext.setCurrentAccessor(CompoundRoot.class);
+            return ".cutStack("+name+"))";
         }
         else if (name instanceof String) {
             String beanName = ((String)name).replaceAll("\"", "");
 
             try {
                 Integer.valueOf(beanName);
-                return ".cutStack("+name+")";
+                ExpressionCompiler.addCastString(ognlcontext, "((" + CompoundRoot.class.getName() + ")");
+                ognlcontext.setCurrentType(CompoundRoot.class);
+                ognlcontext.setCurrentAccessor(CompoundRoot.class);
+                return ".cutStack("+name+"))";
             }
             catch(NumberFormatException e) {
                 // ignore, its not a number
             }
 
             if ("top".equals(beanName)) {
-                return ".get(0)";
+                Object topObj = root.get(0);
+                if (topObj != null) {
+                    ExpressionCompiler.addCastString(ognlcontext, "((" + topObj.getClass().getName() + ")");
+                    ognlcontext.setCurrentType(topObj.getClass());
+                }
+                else {
+                    ExpressionCompiler.addCastString(ognlcontext, "((" + Object.class.getName() + ")");
+                    ognlcontext.setCurrentType(Object.class);
+                }
+                ognlcontext.setCurrentAccessor(CompoundRoot.class);
+                return ".get(0))";
             }
 
 
@@ -105,18 +121,20 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 try {
                 Object tmp = i.next();
                     if (tmp != null) {
-                        PropertyDescriptor pd = OgnlRuntime.getPropertyDescriptor(tmp.getClass(), beanName);
-                        if (pd != null) {
-                            if (Map.class.isAssignableFrom(tmp.getClass())) {
+                        if (Map.class.isAssignableFrom(tmp.getClass())) {
+                            Map tmpMap = (Map) tmp;
+                            if (tmpMap.containsKey(beanName)) {
 
-                                ExpressionCompiler.addCastString(ognlcontext, "(("+Map.class.getName()+")");
+                                ExpressionCompiler.addCastString(ognlcontext, "(("+tmpMap.get(beanName).getClass().getName()+")(("+Map.class.getName()+")");
 
-                                ognlcontext.setCurrentType(Map.class);
+                                ognlcontext.setCurrentType(tmpMap.get(beanName).getClass());
                                 ognlcontext.setCurrentAccessor(CompoundRoot.class);
 
-                                return ".get("+a+")).get(\""+beanName+"\")";
+                                return ".get("+a+")).get(\""+beanName+"\"))";
                             }
-
+                        }
+                        PropertyDescriptor pd = OgnlRuntime.getPropertyDescriptor(tmp.getClass(), beanName);
+                        if (pd != null) {
                             Class type = OgnlRuntime.getCompiler().getSuperOrInterfaceClass(pd.getReadMethod(), tmp.getClass());
 
 
@@ -162,18 +180,19 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 try {
                 Object tmp = i.next();
                     if (tmp != null) {
+
+                        if (Map.class.isAssignableFrom(tmp.getClass())) {
+
+                            ExpressionCompiler.addCastString(ognlcontext, "(("+Map.class.getName()+")");
+
+                            ognlcontext.setCurrentType(Map.class);
+                            ognlcontext.setCurrentAccessor(CompoundRoot.class);
+
+                            return ".get("+a+")).put(\""+beanName+"\", $3)";
+                        }
+
                         PropertyDescriptor pd = OgnlRuntime.getPropertyDescriptor(tmp.getClass(), beanName);
                         if (pd != null) {
-                            if (Map.class.isAssignableFrom(tmp.getClass())) {
-
-                                ExpressionCompiler.addCastString(ognlcontext, "(("+Map.class.getName()+")");
-
-                                ognlcontext.setCurrentType(Map.class);
-                                ognlcontext.setCurrentAccessor(CompoundRoot.class);
-
-                                return ".get("+a+")).get(\""+beanName+"\")";
-                            }
-
                             if (pd.getWriteMethod().getParameterTypes().length > 1) {
                                  throw new UnsupportedCompilationException("Object property accessors can only support single parameter setters.");
                             }

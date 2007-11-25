@@ -4,6 +4,9 @@
  */
 package com.opensymphony.xwork.util;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author tmjee
  * @version $Date$ $Id$
@@ -28,6 +31,25 @@ public class MyPrimitiveArrayObject {
     private boolean[] myBoolean;
     private Boolean[] myBooleanObject;
 
+
+    private List myList;
+    private Map myMap;
+
+    public List getMyList() {
+        return myList;
+    }
+
+    public void setMyList(List myList) {
+        this.myList = myList;
+    }
+
+    public Map getMyMap() {
+        return myMap;
+    }
+
+    public void setMyMap(Map myMap) {
+        this.myMap = myMap;
+    }
 
     public boolean[] getMyBoolean() {
         return myBoolean;
