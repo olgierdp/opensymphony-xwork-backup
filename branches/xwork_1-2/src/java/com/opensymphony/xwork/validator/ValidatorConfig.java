@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2006 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.validator;
@@ -13,6 +13,8 @@ import com.opensymphony.xwork.util.location.Located;
  * 
  * @author James House
  * @author Rainer Hermanns
+ * @author tmjee
+ * @version $Date$ $Id$
  */
 public class ValidatorConfig extends Located {
 
@@ -21,6 +23,7 @@ public class ValidatorConfig extends Located {
     private String defaultMessage;
     private String messageKey;
     private boolean shortCircuit;
+    private String[] messageParams;
     
     public ValidatorConfig() {
     }
@@ -60,6 +63,21 @@ public class ValidatorConfig extends Located {
      */
     public void setMessageKey(String messageKey) {
         this.messageKey = messageKey;
+    }
+
+
+    /**
+     * @param messageParams The i18n message parameters/arguments to be used.
+     */
+    public void setMessageParams(String[] messageParams) {
+        this.messageParams = messageParams;
+    }
+
+    /**
+     * @return The i18n message parameters/arguments to be used.
+     */
+    public String[] getMessageParams() {
+        return messageParams;
     }
     
     /**

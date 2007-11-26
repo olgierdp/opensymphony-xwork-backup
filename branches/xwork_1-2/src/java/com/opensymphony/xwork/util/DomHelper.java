@@ -49,7 +49,10 @@ import javax.xml.transform.sax.TransformerHandler;
  * Helper class to create and retrieve information from location-enabled
  * DOM-trees.
  *
+ * @author Don Brown
+ * @author tmjee
  * @since 1.2
+ * @version $Date$ $Id$
  */
 public class DomHelper {
 
@@ -333,8 +336,12 @@ public class DomHelper {
         }
 
         public InputSource resolveEntity(String publicId, String systemId) {
-            if (dtdMappings != null && dtdMappings.containsKey(publicId)) {
+            boolean containsDtdMappings = dtdMappings.containsKey(publicId);
+            if (dtdMappings != null && containsDtdMappings) {
                 String val = dtdMappings.get(publicId).toString();
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("using local copy of dtd with Public ID ["+publicId+"] located in ["+val+"]");
+                }
                 return new InputSource(ClassLoaderUtil.getResourceAsStream(val, DomHelper.class));
             }
             return null;

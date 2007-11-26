@@ -16,8 +16,17 @@ import java.util.Map;
 
 
 /**
- * ValidatorFactory
- * 
+ * ValidatorFactory is responsible for
+ * <ul>
+ *  <li>reading in validators (eg. what validators are registired) from a
+ *      config file eg. default.xml that comes with XWork / validators.xml
+ *      / *-validators.xml that lies within the classpath</li>
+ *  <li>looking up a validator</li>
+ *  <li>registering a validator</li>
+ *  <li>obtaining a validator based on
+ *      {@link com.opensymphony.xwork.validator.ValidatorConfig}</li>
+ * </ul>
+ *
  * <p>
  * <!-- START SNIPPET: javadoc -->
  * Validation rules are handled by validators, which must be registered with 
@@ -208,9 +217,10 @@ import java.util.Map;
  * <!-- END SNIPPET: exValidationRules3 -->
  * </pre>
  * 
- * @version $Date$ $Id$
  * @author Jason Carreira
  * @author James House
+ * @author tmjee
+ * @version $Date$ $Id$
  */
 public class ValidatorFactory {
 
@@ -249,6 +259,7 @@ public class ValidatorFactory {
 
         // set other configured properties
         validator.setMessageKey(cfg.getMessageKey());
+        validator.setMessageParameters(cfg.getMessageParams());
         validator.setDefaultMessage(cfg.getDefaultMessage());
         if (validator instanceof ShortCircuitableValidator) {
             ((ShortCircuitableValidator) validator).setShortCircuit(cfg.isShortCircuit());

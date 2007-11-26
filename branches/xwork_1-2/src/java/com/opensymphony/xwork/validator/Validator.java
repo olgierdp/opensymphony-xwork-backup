@@ -393,6 +393,10 @@ public interface Validator {
 
     String getMessageKey();
 
+    void setMessageParameters(String[] messageParameters);
+
+    String[] getMessageParameters();
+
     /**
      * This method will be called before validate with a non-null ValidatorContext.
      *

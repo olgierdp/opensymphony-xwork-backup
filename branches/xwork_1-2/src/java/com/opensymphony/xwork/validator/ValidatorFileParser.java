@@ -5,16 +5,16 @@
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ObjectFactory;
-import com.opensymphony.xwork.util.DomHelper;
 import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.config.providers.XmlHelper;
+import com.opensymphony.xwork.util.DomHelper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -42,7 +42,24 @@ import java.util.Map;
  */
 public class ValidatorFileParser {
 
+    private static final Log LOG = LogFactory.getLog(ValidatorFileParser.class);
+
+
     static final String MULTI_TEXTVALUE_SEPARATOR = " ";
+
+    static final Map VALIDATOR_CONFIG_DTD_MAPPINGS = new HashMap() {
+        {
+            put("-//OpenSymphony Group//XWork Validator 1.0//EN", "xwork-validator-1.0.dtd");
+            put("-//OpenSymphony Group//XWork Validator 1.0.2//EN", "xwork-validator-1.0.2.dtd");
+            put("-//OpenSymphony Group//XWork Validator 1.0.3//EN", "xwork-validator-1.0.3.dtd");    
+        }
+    };
+
+    static final Map VALIDATOR_DEFINITION_DTD_MAPPINGS = new HashMap() {
+        {
+            put("-//OpenSymphony Group//XWork Validator Definition 1.0//EN", "xwork-validator-definition-1.0.dtd");    
+        }
+    };
 
     /**
      * Parse resource for a list of ValidatorConfig objects (configuring which validator(s) are
@@ -59,18 +76,15 @@ public class ValidatorFileParser {
         InputSource in = new InputSource(is);
         in.setSystemId(resourceName);
             
-        Map dtdMappings = new HashMap();
-        dtdMappings.put("-//OpenSymphony Group//XWork Validator 1.0//EN", "xwork-validator-1.0.dtd");
-        dtdMappings.put("-//OpenSymphony Group//XWork Validator 1.0.2//EN", "xwork-validator-1.0.2.dtd");
-        
-        doc = DomHelper.parse(in, dtdMappings);
+
+        doc = DomHelper.parse(in, VALIDATOR_CONFIG_DTD_MAPPINGS);
 
         if (doc != null) {
             NodeList fieldNodes = doc.getElementsByTagName("field");
 
             // BUG: xw-305: Let validator be parsed first and hence added to 
             // the beginning of list and therefore evaluated first, so short-circuting
-            // it will not cause field-leve validator to be kicked off.
+            // it will not cause field-level validator to be fired.
             {NodeList validatorNodes = doc.getElementsByTagName("validator");
             addValidatorConfigs(validatorNodes, new HashMap(), validatorCfgs);}
 
@@ -112,7 +126,7 @@ public class ValidatorFileParser {
         InputSource in = new InputSource(is);
         in.setSystemId(resourceName);
             
-        Document doc = DomHelper.parse(in);
+        Document doc = DomHelper.parse(in, VALIDATOR_DEFINITION_DTD_MAPPINGS);
         
         NodeList nodes = doc.getElementsByTagName("validator");
 
@@ -131,43 +145,13 @@ public class ValidatorFileParser {
         }
     }
 
-    /**
-     * Extract trimmed text value from the given DOM element, ignoring XML comments. Appends all CharacterData nodes
-     * and EntityReference nodes into a single String value, excluding Comment nodes.
-     * This method is based on a method originally found in DomUtils class of Springframework.
-     *
-     * @see org.w3c.dom.CharacterData
-     * @see org.w3c.dom.EntityReference
-     * @see org.w3c.dom.Comment
-     */
-    public static String getTextValue(Element valueEle) {
-        StringBuffer value = new StringBuffer();
-        NodeList nl = valueEle.getChildNodes();
-        boolean firstCDataFound = false;
-        for (int i = 0; i < nl.getLength(); i++) {
-            Node item = nl.item(i);
-            if ((item instanceof CharacterData && !(item instanceof Comment)) || item instanceof EntityReference) {
-                final String nodeValue = item.getNodeValue();
-                if (nodeValue != null) {
-                    value.append(nodeValue.trim());
-                }
-            }
-        }
-        return value.toString().trim();
-    }
-
     private static void addValidatorConfigs(NodeList validatorNodes, Map extraParams, List validatorCfgs) {
         for (int j = 0; j < validatorNodes.getLength(); j++) {
             Element validatorElement = (Element) validatorNodes.item(j);
             String validatorType = validatorElement.getAttribute("type");
             Map params = new HashMap(extraParams);
-            NodeList paramNodes = validatorElement.getElementsByTagName("param");
 
-            for (int k = 0; k < paramNodes.getLength(); k++) {
-                Element paramElement = (Element) paramNodes.item(k);
-                String paramName = paramElement.getAttribute("name");
-                params.put(paramName, getTextValue(paramElement));
-            }
+            params.putAll(XmlHelper.getParams(validatorElement));
 
             // ensure that the type is valid...
             ValidatorFactory.lookupRegisteredValidatorType(validatorType);
@@ -179,15 +163,54 @@ public class ValidatorFileParser {
 
             NodeList messageNodes = validatorElement.getElementsByTagName("message");
             Element messageElement = (Element) messageNodes.item(0);
-            String key = messageElement.getAttribute("key");
-
-            if ((key != null) && (key.trim().length() > 0)) {
-                vCfg.setMessageKey(key);
-            }
 
             final Node defaultMessageNode = messageElement.getFirstChild();
             String defaultMessage = (defaultMessageNode == null) ? "" : defaultMessageNode.getNodeValue();
             vCfg.setDefaultMessage(defaultMessage);
+
+            Map messageParams = XmlHelper.getParams(messageElement);
+            String key = messageElement.getAttribute("key");
+            if ((key != null) && (key.trim().length() > 0)) {
+                vCfg.setMessageKey(key);
+
+                // Get the default message when pattern 2 is used. We are only interested in the
+                // i18n message parameters when an i18n message key is specified.
+                // pattern 1:
+                // <message key="someKey">Default message</message>
+                // pattern 2:
+                // <message key="someKey">
+                //     <param name="1">'param1'</param>
+                //     <param name="2">'param2'</param>
+                //     <param name="defaultMessage>The Default Message</param>
+                // </message>
+
+                if (messageParams.containsKey("defaultMessage")) {
+                    vCfg.setDefaultMessage((String) messageParams.get("defaultMessage"));
+                }
+
+                // Sort the message param. those with keys as '1', '2', '3' etc. (numeric values)
+                // are i18n message parameter, others are excluded.
+                TreeMap sortedMessageParameters = new TreeMap();
+                for (Iterator i = messageParams.entrySet().iterator(); i.hasNext(); ) {
+                    Map.Entry messageParamEntry = (Map.Entry) i.next();
+                    try {
+                        int _order = Integer.parseInt((String) messageParamEntry.getKey());
+                        sortedMessageParameters.put(new Integer(_order), messageParamEntry.getValue());
+                    }
+                    catch(NumberFormatException e) {
+                        // ignore if its not numeric.
+                    }
+                }
+                vCfg.setMessageParams((String[]) sortedMessageParameters.values().toArray(new String[0]));
+            }
+            else {
+                if (messageParams != null && (messageParams.size() > 0)) {
+                    // we are i18n message parameters defined but no i18n message,
+                    // let's warn the user.
+                    LOG.warn("validator of type ["+validatorType+"] have i18n message parameters defined but no i18n message key, it's parameters will be ignored");
+                }
+            }
+
             validatorCfgs.add(vCfg);
         }
     }

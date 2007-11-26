@@ -1,18 +1,17 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.xwork.validator;
 
 import com.opensymphony.util.ClassLoaderUtil;
+import com.opensymphony.xwork.XworkException;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
 import junit.framework.TestCase;
-import com.opensymphony.xwork.XworkException;
 
 import java.io.InputStream;
 import java.util.List;
-
 
 /**
  * ValidatorFileParserTest
@@ -21,7 +20,8 @@ import java.util.List;
  *
  * @author Jason Carreira
  * @author James House
- * @author tm_jee ( tm_jee (at) yahoo.co.uk )
+ * @author tmjee
+ * @version $Date$ $Id$
  */
 public class ValidatorFileParserTest extends TestCase {
 
@@ -30,6 +30,7 @@ public class ValidatorFileParserTest extends TestCase {
     private static final String testFileName3 = "com/opensymphony/xwork/validator/validator-parser-test3.xml";
     private static final String testFileName4 = "com/opensymphony/xwork/validator/validator-parser-test4.xml";
     private static final String testFileName5 = "com/opensymphony/xwork/validator/validator-parser-test5.xml";
+    private static final String testFileName6 = "com/opensymphony/xwork/validator/validator-parser-test6.xml";
 
     public void testParserActionLevelValidatorsShouldBeBeforeFieldLevelValidators() throws Exception {
     	InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName2, this.getClass());
@@ -74,7 +75,7 @@ public class ValidatorFileParserTest extends TestCase {
         assertEquals("required", cfg.getType());
         assertEquals("foo", cfg.getParams().get("fieldName"));
         assertEquals("You must enter a value for foo.", cfg.getDefaultMessage());
-        assertEquals(4, cfg.getLocation().getLineNumber());
+        assertEquals(6, cfg.getLocation().getLineNumber());
         
         cfg = (ValidatorConfig) configs.get(3);
         assertEquals("required", cfg.getType());
@@ -97,7 +98,7 @@ public class ValidatorFileParserTest extends TestCase {
         try {
             ValidatorFileParser.parseActionValidatorConfigs(is, testFileName3);
         } catch (XworkException ex) {
-            assertTrue("Wrong line number", 3==ex.getLocation().getLineNumber());
+            assertTrue("Wrong line number", 5==ex.getLocation().getLineNumber());
             pass = true;
         } 
         assertTrue("Validation file should have thrown exception", pass);
@@ -110,7 +111,7 @@ public class ValidatorFileParserTest extends TestCase {
         try {
             ValidatorFileParser.parseActionValidatorConfigs(is, testFileName4);
         } catch (XworkException ex) {
-            assertTrue("Wrong line number: "+ex.getLocation(), 13==ex.getLocation().getLineNumber());
+            assertTrue("Wrong line number: "+ex.getLocation(), 15==ex.getLocation().getLineNumber());
             pass = true;
         } 
         assertTrue("Validation file should have thrown exception", pass);
@@ -123,10 +124,39 @@ public class ValidatorFileParserTest extends TestCase {
         try {
             ValidatorFileParser.parseValidatorDefinitions(is, testFileName5);
         } catch (XworkException ex) {
-            assertTrue("Wrong line number", 3==ex.getLocation().getLineNumber());
+            assertTrue("Wrong line number", 6==ex.getLocation().getLineNumber());
             pass = true;
         } 
         assertTrue("Validation file should have thrown exception", pass);
+    }
+
+    public void testValidatorWithI18nMessage() throws Exception {
+        InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName6, this.getClass());
+        List validatorConfigs = ValidatorFileParser.parseActionValidatorConfigs(is, "-//OpenSymphony Group//XWork Validator 1.0.3//EN");
+
+        assertEquals(validatorConfigs.size(), 2);
+
+        assertEquals(((ValidatorConfig)validatorConfigs.get(0)).getParams().get("fieldName"), "name");
+        assertEquals(((ValidatorConfig)validatorConfigs.get(0)).getMessageParams().length, 0);
+        assertEquals(((ValidatorConfig)validatorConfigs.get(0)).getMessageKey(), "error.name");
+        assertEquals(((ValidatorConfig)validatorConfigs.get(0)).getDefaultMessage(), "default message 1");
+        assertEquals(((ValidatorConfig)validatorConfigs.get(0)).getParams().size(), 1);
+        assertEquals(((ValidatorConfig)validatorConfigs.get(0)).getType(), "requiredstring");
+
+        assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getParams().get("fieldName"), "address");
+        assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageParams().length, 5);
+        assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[0], "'tmjee'");
+        assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[1], "'phil'");
+        assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[2], "'rainer'");
+        assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[3], "'hopkins'");
+        assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[4], "'jimmy'");
+        assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageKey(), "error.address");
+        assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getDefaultMessage(), "The Default Message");
+        assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getParams().size(), 3);
+        assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getParams().get("trim"), "true");
+        assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getParams().get("anotherParam"), "anotherValue");
+        assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getType(), "requiredstring");
+
     }
 
 
