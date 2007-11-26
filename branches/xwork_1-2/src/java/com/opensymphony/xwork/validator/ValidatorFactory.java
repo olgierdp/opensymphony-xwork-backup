@@ -11,8 +11,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collections;
+import java.net.URL;
 
 
 /**
@@ -300,6 +303,44 @@ public class ValidatorFactory {
 
         return className;
     }
+
+    /**
+     * Returns an array of {@link java.net.URL} corresponding to <code>resourceName</code>.
+     * Search for {@link java.net.URL}s using {@link ClassLoader} in the following precedence :-
+     * <ul>
+     *      <li>ThreadLocal's context class loader</li>
+     *      <li>ValidatorFactory's class loader</li>
+     *      <li><code>callingClass</code>'s class loader</li>
+     * </ul>
+     *
+     * @param resourceName
+     * @param callingClass
+     * @return URL[]
+     * @throws java.io.IOException
+     */
+     public static URL[] getResources(String resourceName, Class callingClass) throws IOException {
+        // use ThreadLocal's class loader
+        URL[] urls =  (URL[]) Collections.list(
+                Thread.currentThread().getContextClassLoader().getResources(resourceName)
+        ).toArray(new URL[0]);
+
+        // use ClassLoaderUtil's classloader
+        if (urls.length == 0) {
+            urls = (URL[]) Collections.list(
+                   ValidatorFactory.class.getClassLoader().getResources(resourceName)
+            ).toArray(new URL[0]);
+        }
+
+        // use callingClass's classloader
+        if (urls.length == 0) {
+            urls = (URL[]) Collections.list(
+                    callingClass.getClassLoader().getResources(resourceName)
+            ).toArray(new URL[0]);
+        }
+
+        return urls;
+     }
+
 
     private static void parseValidators() {
         if (LOG.isDebugEnabled()) {
