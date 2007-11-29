@@ -38,7 +38,20 @@ import java.util.Map;
  * Validation rules are handled by validators, which must be registered with 
  * the ValidatorFactory (using the registerValidator method). The simplest way to do so is to add a file name 
  * validators.xml in the root of the classpath (/WEB-INF/classes) that declares 
- * all the validators you intend to use. 
+ * all the validators you intend to use.
+ *
+ * As of XWork 1.2.4 / WebWork 2.2.7 and above, validator definition are loaded in the following order, where
+ * validators loaded latter could override those loaded previously if there have the same name :-
+ * <ul>
+ *  <li>default validators found in com/opensymphony/xwork/validator/validators/default.xml (always loaded)</li>
+ *  <li>all validators.xml that lies in the root of the classpath (user defined)</li>
+ *  <li>all *-validators.xml that lies in the root of the classpath (user defined)</li>
+ * </ul>
+ * Validators definition defined in *-validators.xml will override those defined in validators.xml if they
+ * have similar names. This pattern applies to default.xml as well.
+ *
+ * WebWork / XWork will always have the validator definition defined in
+ * com/opensymphony/xwork/validator/validators/default.xml (which comes with xwork jar file) loaded.
  * <!-- END SNIPPET: javadoc -->
  * </p>
  *
@@ -46,26 +59,17 @@ import java.util.Map;
  * <p>
  * <b>INFORMATION</b>
  * <!-- START SNIPPET: information -->
- * validators.xml if being defined should be available in the classpath. However 
- * this is not necessary, if no custom validator is needed. Webwork will automatically 
- * picked up a predefined sets of validators defined in 
- * com/opensymphony/xwork/validator/validators/default.xml packaged together 
- * in xwork jar file that comes with webwork distribution. See ValidatorFactory 
- * static block for details.
+ * Normally, to have custom validators, we could have them defined in validators.xml that resides in
+ * the classpath. However since, WebWork 2.2.7 / XWork 1.2.4 and above, we could have *-validators.xml
+ * that lies in the root of the classpath and WebWork / XWork will pick it up. This allows us to have
+ * various validator definition that lies in a jar file itself (at the root of course).
+ *
+ * To override a validator definition defined by XWork, we could just define a a custom validator mean
+ * to replace it with the same name and have them in either validators.xml or *-validators.xml that lies
+ * in the root of the classpath (could be in the root of a jar file as well).
+ *
+ * See ValidatorFactory static block for details.
  * <!-- END SNIPPET: information -->
- * </p>
- * 
- * <p>
- * <b>WARNING</b>
- * <!-- START SNIPPET: warning -->
- * If custom validator is being defined and a validators.xml is created and 
- * place in the classpath, do remember to copy all the other pre-defined validators 
- * that is needed into the validators.xml as if not they will not be registered. 
- * Once a validators.xml is detected in the classpath, the default one 
- * (com/opensymphony/xwork/validator/validators/default.xml) will not be loaded. 
- * It is only loaded when a custom validators.xml cannot be found in the classpath.
- *  Be careful.
- * <!-- END SNIPPET: warning -->
  * </p>
  * 
  * <p><b>Note:</b> 
