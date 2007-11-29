@@ -371,8 +371,37 @@ package com.opensymphony.xwork.validator;
  *      &lt;message key="email.invalid"&gt;Email needs with starts with Mark&lt;/message&gt;
  *   &lt;/validator&gt;
  * </pre>
- *
- *
+ * If we have an i18n message that looks something like
+ * <p>
+ *    Hi {0}, your name must have {1} and {2}. Please try again.
+ * </p>
+ * and our action have getter/setter for property 'username', we could parameterized the
+ * i18n message as follows :-
+ * <pre>
+ *   &lt;validator type="requiredstring"&gt;
+ *      &lt;message key="name.invalid"&gt;
+ *          &lt;param name="0"&gt;username&lt;/param&gt;
+ *          &lt;param name="1"&gt;'characters'&lt;/param&gt;
+ *          &lt;param name="2"&gt;'numbers'&lt;/param&gt;
+ *      &lt;/message&gt;
+ *   &lt;/validator&gt;
+ * </pre>
+ * Resulting in error message like 'Hi Toby, you must have characters and numbers. Please try again.', assuming
+ * that 'username' property is assinged with value 'Toby'. If we want to have a default message, we could do :-
+ * <pre>
+ *   &lt;validator type="requiredstring"&gt;
+ *      &lt;message key="name.invalid"&gt;
+ *          &lt;param name="0"&gt;username&lt;/param&gt;
+ *          &lt;param name="1"&gt;'characters'&lt;/param&gt;
+ *          &lt;param name="2"&gt;'numbers'&lt;/param&gt;
+ *          &lt;param name="defaultMessage"&gt;This is the default message.&lt;/param&gt;
+ *      &lt;/message&gt;
+ *   &lt;/validator&gt;
+ * </pre>
+ * <b>NOTE:</b><br/>
+ * The i18n parameters must be numeric, eg. 0, 1, 2, 3 and they will be used in that order as well. The i18n
+ * parameter value will be parsed as OGNL expression, hence it will be able to access our action's property as
+ * shown in the example above.
  * <!-- END SNIPPET: i18n -->
  *
  *
