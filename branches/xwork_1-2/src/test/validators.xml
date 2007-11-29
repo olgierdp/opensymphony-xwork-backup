@@ -16,5 +16,9 @@
     <validator name="conversion" class="com.opensymphony.xwork.validator.validators.ConversionErrorFieldValidator"/>
     <validator name="stringlength" class="com.opensymphony.xwork.validator.validators.StringLengthFieldValidator"/>
     <validator name="regex" class="com.opensymphony.xwork.validator.validators.RegexFieldValidator"/>
+
+    <validator name="foo" class="com.opensymphony.xwork.validator.validators.BarValidator" />
+    <validator name="bar" class="com.opensymphony.xwork.validator.validators.FooValidator" />
+    <validator name="baz" class="com.opensymphony.xwork.validator.validators.BazValidator" />
 </validators>
         

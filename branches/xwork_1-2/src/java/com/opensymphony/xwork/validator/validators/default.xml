@@ -20,4 +20,5 @@
     <validator name="regex" class="com.opensymphony.xwork.validator.validators.RegexFieldValidator"/>
     <validator name="collection" class="com.opensymphony.xwork.validator.validators.CollectionFieldValidator" />
 </validators>
+        
 <!--  END SNIPPET: validators-default -->

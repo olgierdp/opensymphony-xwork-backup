@@ -7,15 +7,18 @@ package com.opensymphony.xwork.validator;
 import com.opensymphony.util.ClassLoaderUtil;
 import com.opensymphony.xwork.ObjectFactory;
 import com.opensymphony.xwork.XworkException;
+import com.opensymphony.xwork.util.ResourceScanner;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.InputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Collections;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -231,13 +234,25 @@ public class ValidatorFactory {
     private static Log LOG = LogFactory.getLog(ValidatorFactory.class);
 
     static {
-        parseValidators();
+        try {
+            parseValidators();
+        }
+        catch(Exception e) {
+            throw new XworkException(e);
+        }
     }
 
 
     private ValidatorFactory() {
     }
 
+
+    /**
+     * Removed all registered validators.
+     */
+    public static void reset() {
+        validators.clear();
+    }
 
     /**
      * Get a Validator that matches the given configuration.
@@ -279,10 +294,16 @@ public class ValidatorFactory {
      * @param className   the FQ classname of the validator.
      */
     public static void registerValidator(String name, String className) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Registering validator of class " + className + " with name " + name);
+        if (validators.containsKey(name)) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Validator with name ["+name+"] with class ["+validators.get(name)+"], replacing it with ["+className+"]");
+            }
         }
-
+        else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Registering validator of class " + className + " with name " + name);
+            }
+        }
         validators.put(name, className);
     }
 
@@ -305,57 +326,66 @@ public class ValidatorFactory {
     }
 
     /**
-     * Returns an array of {@link java.net.URL} corresponding to <code>resourceName</code>.
-     * Search for {@link java.net.URL}s using {@link ClassLoader} in the following precedence :-
+     * Parse all the validators definition, using the following precedence:-
      * <ul>
-     *      <li>ThreadLocal's context class loader</li>
-     *      <li>ValidatorFactory's class loader</li>
-     *      <li><code>callingClass</code>'s class loader</li>
+     *  <li>Defaults from com/opensymphony/xwork/validator/validators/default.xml</li>
+     *  <li>validators.xml that lies in the root of the classpath</li>
+     *  <li>*-validators.xml that lies in the root of the classpath</li>
      * </ul>
-     *
-     * @param resourceName
-     * @param callingClass
-     * @return URL[]
-     * @throws java.io.IOException
      */
-     public static URL[] getResources(String resourceName, Class callingClass) throws IOException {
-        // use ThreadLocal's class loader
-        URL[] urls =  (URL[]) Collections.list(
-                Thread.currentThread().getContextClassLoader().getResources(resourceName)
-        ).toArray(new URL[0]);
-
-        // use ClassLoaderUtil's classloader
-        if (urls.length == 0) {
-            urls = (URL[]) Collections.list(
-                   ValidatorFactory.class.getClassLoader().getResources(resourceName)
-            ).toArray(new URL[0]);
-        }
-
-        // use callingClass's classloader
-        if (urls.length == 0) {
-            urls = (URL[]) Collections.list(
-                    callingClass.getClassLoader().getResources(resourceName)
-            ).toArray(new URL[0]);
-        }
-
-        return urls;
-     }
-
-
-    private static void parseValidators() {
+    public static void parseValidators() throws IOException, URISyntaxException {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Loading validator definitions.");
         }
 
-        String resourceName = "validators.xml";
-        InputStream is = ClassLoaderUtil.getResourceAsStream(resourceName, ValidatorFactory.class);
-        if (is == null) {
-            resourceName = "com/opensymphony/xwork/validator/validators/default.xml";
-            is = ClassLoaderUtil.getResourceAsStream(resourceName, ValidatorFactory.class);
+        // Try loading com/opensymphony/xwork/validator/validators/default.xml
+        {
+            String resourceName = "com/opensymphony/xwork/validator/validators/default.xml";
+            loadValidators(ClassLoaderUtil.getResourceAsStream(resourceName, ValidatorFactory.class), resourceName);
         }
 
-        if (is != null) {
-            ValidatorFileParser.parseValidatorDefinitions(is, resourceName);
+
+        // Try loading from validators.xml
+        {
+            String resourceName = "validators.xml";
+            loadValidators(ClassLoaderUtil.getResourceAsStream(resourceName, ValidatorFactory.class), resourceName);
         }
+
+
+        // Try loading from *-validators.xml
+        {
+            ResourceScanner resourceScanner = new ResourceScanner(
+                    new String[] { "" }, ValidatorFactory.class
+            );
+            List validatorDefs = resourceScanner.scanForResources(new ResourceScanner.Filter() {
+                public boolean accept(URL resource) {
+                    // eg. file:/C:/j2sdk1.5.12/jre/lib/javaws.jar!/COPYRIGHT
+                    if (resource.getFile().endsWith("-validators.xml")) {
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            for (Iterator i = validatorDefs.iterator(); i.hasNext(); ) {
+                URL validatorDefUrl = (URL) i.next();
+                loadValidators(validatorDefUrl.openStream(),
+                        validatorDefUrl.getFile().substring(validatorDefUrl.getFile().lastIndexOf("/")+1));
+            }
+        }
+    }
+
+
+    private static void loadValidators(InputStream is, String resourceName) {
+         if (is != null) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("loading validators definition from "+resourceName);
+            }
+            try {
+                ValidatorFileParser.parseValidatorDefinitions(is, resourceName);
+            }
+            finally {
+                try { is.close(); } catch(IOException e) { };
+            }
+         }
     }
 }
