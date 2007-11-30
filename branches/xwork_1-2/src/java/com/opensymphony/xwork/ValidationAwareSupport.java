@@ -63,7 +63,6 @@ public class ValidationAwareSupport implements ValidationAware, Serializable {
             errors.put(fieldName, thisFieldErrors);
         }
 
-        System.out.println("**** add "+fieldName+"->"+errorMessage);
         thisFieldErrors.add(errorMessage);
     }
 
