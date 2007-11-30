@@ -11,14 +11,14 @@ import junit.framework.TestCase;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Collection;
 
 
 /**
  * Unit test for {@link ChainingInterceptor}.
  *
  * @author Jason Carreira
+ * @author tmjee
+ * @version $Date$ $Id$
  */
 public class ChainingInterceptorTest extends TestCase {
 
@@ -68,14 +68,16 @@ public class ChainingInterceptorTest extends TestCase {
         stack.push(bean);
         stack.push(action);
 
-        Collection excludes = new ArrayList();
-        excludes.add("count");
+        // WW-1475
+        String excludes = "count";
         interceptor.setExcludes(excludes);
         interceptor.intercept(invocation);
         assertEquals(bean.getBirth(), action.getBirth());
         assertEquals(bean.getName(), action.getName());
         assertEquals(0, action.getCount());
-        assertEquals(excludes, interceptor.getExcludes());
+        assertEquals(1, interceptor.getExcludes().size());
+        assertTrue(interceptor.getExcludes().contains("count"));
+        assertFalse(interceptor.getExcludes().contains("xxxx"));
     }
 
     public void testTwoExcludesPropertiesChained() throws Exception {
@@ -88,15 +90,17 @@ public class ChainingInterceptorTest extends TestCase {
         stack.push(bean);
         stack.push(action);
 
-        Collection excludes = new ArrayList();
-        excludes.add("name");
-        excludes.add("count");
+        // WW-1475
+        String excludes = "name,count";
         interceptor.setExcludes(excludes);
         interceptor.intercept(invocation);
         assertEquals(bean.getBirth(), action.getBirth());
         assertEquals(null, action.getName());
         assertEquals(0, action.getCount());
-        assertEquals(excludes, interceptor.getExcludes());
+        assertEquals(2, interceptor.getExcludes().size());
+        assertTrue(interceptor.getExcludes().contains("name"));
+        assertTrue(interceptor.getExcludes().contains("count"));
+        assertFalse(interceptor.getExcludes().contains("xxxx"));
     }
 
     public void testNullCompoundRootElementAllowsProcessToContinue() throws Exception {

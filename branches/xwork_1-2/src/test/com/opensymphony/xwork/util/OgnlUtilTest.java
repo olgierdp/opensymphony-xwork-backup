@@ -18,6 +18,10 @@ import java.util.*;
 
 /**
  * Unit test of {@link OgnlUtil}.
+ *
+ * @author Jason Carreirra
+ * @author tmjee
+ * @version $Date$ $Id$
  */
 public class OgnlUtilTest extends XWorkTestCase {
 
@@ -415,8 +419,8 @@ public class OgnlUtilTest extends XWorkTestCase {
 
 
     public void testSetList() throws Exception {
-        ChainingInterceptor foo = new ChainingInterceptor();
-        ChainingInterceptor foo2 = new ChainingInterceptor();
+        MyListObject foo = new MyListObject();
+        MyListObject foo2 = new MyListObject();
 
         OgnlContext context = (OgnlContext) Ognl.createDefaultContext(null);
         SimpleNode expression = (SimpleNode) Ognl.parseExpression("{'a','ruby','b','tom'}");
@@ -427,7 +431,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         final OgnlValueStack stack = ActionContext.getContext().getValueStack();
 
         Object result = Ognl.getValue(OgnlUtil.compile("{\"foo\",'ruby','b','tom'}"), context, foo);
-        foo.setIncludes((Collection) result);
+        foo.setIncludes((List)result);
 
         assertEquals(4, foo.getIncludes().size());
         assertEquals("foo", foo.getIncludes().toArray()[0]);
@@ -445,8 +449,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         assertEquals("tom", foo.getIncludes().toArray()[3]);
 
         result = ActionContext.getContext().getValueStack().findValue("{\"foo\",'ruby','b','tom'}");
-
-        foo.setIncludes((Collection) result);
+        foo.setIncludes((List) result);
         assertEquals(ArrayList.class, result.getClass());
 
         assertEquals(4, foo.getIncludes().size());

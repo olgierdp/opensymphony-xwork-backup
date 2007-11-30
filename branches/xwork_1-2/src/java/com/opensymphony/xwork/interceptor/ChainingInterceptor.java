@@ -9,6 +9,7 @@ import com.opensymphony.xwork.Unchainable;
 import com.opensymphony.xwork.util.CompoundRoot;
 import com.opensymphony.xwork.util.OgnlUtil;
 import com.opensymphony.xwork.util.OgnlValueStack;
+import com.opensymphony.xwork.util.TextParseUtil;
 
 import java.util.*;
 
@@ -76,9 +77,9 @@ import org.apache.commons.logging.LogFactory;
  * <!-- END SNIPPET: example -->
  * </pre>
  *
- * @author $Author$
- * @author tm_jee ( tm_jee(at)yahoo.co.uk )
- * @version $Revision$
+ * @author Rainer
+ * @author tmjee
+ * @version $Date$ $Id$
  */
 public class ChainingInterceptor extends AroundInterceptor {
 	
@@ -87,9 +88,23 @@ public class ChainingInterceptor extends AroundInterceptor {
     Collection excludes;
     Collection includes;
 
+    /**
+     * No operation, does nothing
+     * 
+     * @param invocation
+     * @param result
+     * @throws Exception
+     */
     protected void after(ActionInvocation invocation, String result) throws Exception {
     }
 
+    /**
+     * Copy value of method invocation excluded and included by {@link #includes} {@link #excludes} separately
+     * into ValueStack's CompoundRoot.
+     * 
+     * @param invocation
+     * @throws Exception
+     */
     protected void before(ActionInvocation invocation) throws Exception {
         OgnlValueStack stack = invocation.getStack();
         CompoundRoot root = stack.getRoot();
@@ -121,15 +136,17 @@ public class ChainingInterceptor extends AroundInterceptor {
         return excludes;
     }
 
-    public void setExcludes(Collection excludes) {
-        this.excludes = excludes;
+    public void setExcludes(String excludes) {
+        // WW-1475
+        this.excludes = TextParseUtil.commaDelimitedStringToSet(excludes);
     }
 
     public Collection getIncludes() {
         return includes;
     }
 
-    public void setIncludes(Collection includes) {
-        this.includes = includes;
+    public void setIncludes(String includes) {
+        // WW-1475
+        this.includes = TextParseUtil.commaDelimitedStringToSet(includes);
     }
 }

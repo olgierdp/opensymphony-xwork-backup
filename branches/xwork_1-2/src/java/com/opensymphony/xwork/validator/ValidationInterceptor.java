@@ -85,10 +85,11 @@ import com.opensymphony.xwork.interceptor.MethodFilterInterceptor;
  * @author Jason Carreira
  * @author Rainer Hermanns
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
+ * @author tmjee
+ * @version $Date$ $Id$
+ * 
  * @see ActionValidatorManager
  * @see com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor
- * 
- * @version $Date$ $Id$
  */
 public class ValidationInterceptor extends MethodFilterInterceptor {
     /**

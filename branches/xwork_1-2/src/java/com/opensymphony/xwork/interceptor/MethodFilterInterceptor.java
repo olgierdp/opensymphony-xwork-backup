@@ -51,13 +51,13 @@ import com.opensymphony.xwork.util.TextParseUtil;
  * 
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  * @author Rainer Hermanns
+ * @author tmjee
+ * @version $Date$ $Id$
  * 
  * @see com.opensymphony.webwork.interceptor.TokenInterceptor
  * @see com.opensymphony.webwork.interceptor.TokenSessionStoreInterceptor
  * @see com.opensymphony.xwork.interceptor.DefaultWorkflowInterceptor
  * @see com.opensymphony.xwork.validator.ValidationInterceptor
- * 
- * @version $Date$ $Id$
  */
 public abstract class MethodFilterInterceptor implements Interceptor {
     protected transient Log log = LogFactory.getLog(getClass());
