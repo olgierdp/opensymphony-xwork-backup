@@ -26,6 +26,52 @@ import java.util.Map;
  * Utility class that provides common access to the <a href="www.ognl.org">Ognl</a> APIs for
  * setting and getting properties from objects (usually Actions).
  *
+ * <!-- START SNIPPET: javadoc1 -->
+ *
+ * Ognl by default uses expression parsing for expression evaluation. However starting from Ognl 2.7.1, Ognl is capable
+ * of doing expression compilation using <a href="http://www.csg.is.titech.ac.jp/~chiba/javassist">Javassist</a> for
+ * expression evaluation. WebWork 2.2.7 / XWork1.2.4 and above support this functionality, however it is turn off by default to
+ * preserved backwards compatibilities. To turn it on, we need to use the following Doctype :-
+ *
+ * <!-- END SNIPPET: javadoc1 -->
+ *
+ * <pre>
+ * <!-- START SNIPPET: dtd -->
+ *     &lt;!DOCTYPE xwork PUBLIC
+ *	                    "-//OpenSymphony Group//XWork 1.1.2//EN"
+ *	                    "http://www.opensymphony.com/xwork/xwork-1.1.2.dtd"&gt;
+ * <!-- END SNIPPET: dtd -->
+ * </pre>
+ *
+ * <!-- START SNIPPET: javadoc2 -->
+ *
+ * And also declare a parameter "useOgnlEnhancement" with value "true" in xwork.xml as follows.
+ *
+ * <!-- END SNIPPET: javadoc2 -->
+ *
+ * <pre>
+ * <!-- START SNIPPET: sample -->
+ * &lt;xwork&gt;
+ *    &lt;parameters&gt;
+ *      &lt;!-- enable OGNL expression compilation feature --&gt;
+ *      &lt;parameter name="useOgnlEnhancement" value="true" /&gt;
+ *      ...
+ *    &lt;/parameters&gt;
+ *    ...
+ *  &lt;/xwork&gt;
+ * <!-- END SNIPPET: sample -->
+ * </pre>
+ *
+ * <!-- START SNIPPET: javadoc3 -->
+ *
+ * NOTE: Do take note that parameters declared in xwork.xml or its included files will override where the latter takes
+ * precedence. For example if we have a parameter declared in xwork.xml and one in xwork-include1.xml which is included
+ * through xwork.xml, the parameter declared in xwork-include1.xml will override the one declared in xwork.xml. In
+ * other words the parameter declared in xwork-include1.xml takes precedence.
+ *
+ * <!-- END SNIPPET: javadoc3 -->
+ *
+ *
  * @author Jason Carreira
  * @author tmjee
  * @version $Date$ $Id$
