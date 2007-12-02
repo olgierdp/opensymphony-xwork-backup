@@ -2,7 +2,6 @@ package com.opensymphony.xwork.validator;
 
 import com.opensymphony.xwork.ActionSupport;
 import com.opensymphony.xwork.XWorkTestCase;
-import com.opensymphony.xwork.validator.validators.FieldExpressionValidator;
 import com.opensymphony.xwork.validator.validators.RequiredFieldValidator;
 import com.opensymphony.xwork.validator.validators.RequiredStringValidator;
 import com.opensymphony.xwork.validator.validators.VisitorFieldValidator;
@@ -149,19 +148,6 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
         assertEquals(1, ((List)action.getFieldErrors().get("customer.address.street")).size());
         assertTrue(action.getFieldErrors().containsKey("customer.address.pobox"));
         assertEquals(2, ((List)action.getFieldErrors().get("customer.address.pobox")).size());
-
-        for (Iterator i = action.getFieldErrors().keySet().iterator(); i.hasNext(); ) {
-            System.out.println(i.next());   
-        }
-
-
-        for (Iterator i = ((List)action.getFieldErrors().get("customer.address.street")).iterator(); i.hasNext();) {
-            System.out.println("**"+i.next());
-        }
-        for (Iterator i = ((List)action.getFieldErrors().get("customer.address.pobox")).iterator(); i.hasNext();) {
-            System.out.println("**"+i.next());    
-        }
-
     }
 
     private class MockAction extends ActionSupport {
