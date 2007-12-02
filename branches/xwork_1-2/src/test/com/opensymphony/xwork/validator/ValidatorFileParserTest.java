@@ -152,32 +152,45 @@ public class ValidatorFileParserTest extends TestCase {
              *   <validator name="stringlength" class="com.opensymphony.xwork.validator.validators.StringLengthFieldValidator"/>
              *   <validator name="regex" class="com.opensymphony.xwork.validator.validators.RegexFieldValidator"/>
              */
-            assertEquals(ValidatorFactory.lookupRegisteredValidatorType("required"),
-                    "com.opensymphony.xwork.validator.validators.RequiredFieldValidator");
-            assertEquals(ValidatorFactory.lookupRegisteredValidatorType("requiredstring"),
-                    "com.opensymphony.xwork.validator.validators.RequiredStringValidator");
-            assertEquals(ValidatorFactory.lookupRegisteredValidatorType("int"),
-                    "com.opensymphony.xwork.validator.validators.IntRangeFieldValidator");
-            assertEquals(ValidatorFactory.lookupRegisteredValidatorType("double"),
-                    "com.opensymphony.xwork.validator.validators.DoubleRangeFieldValidator");
-            assertEquals(ValidatorFactory.lookupRegisteredValidatorType("date"),
-                    "com.opensymphony.xwork.validator.validators.DateRangeFieldValidator");
-            assertEquals(ValidatorFactory.lookupRegisteredValidatorType("expression"),
-                    "com.opensymphony.xwork.validator.validators.ExpressionValidator");
-            assertEquals(ValidatorFactory.lookupRegisteredValidatorType("fieldexpression"),
-                    "com.opensymphony.xwork.validator.validators.FieldExpressionValidator");
-            assertEquals(ValidatorFactory.lookupRegisteredValidatorType("email"),
-                    "com.opensymphony.xwork.validator.validators.EmailValidator");
-            assertEquals(ValidatorFactory.lookupRegisteredValidatorType("url"),
-                    "com.opensymphony.xwork.validator.validators.URLValidator");
-            assertEquals(ValidatorFactory.lookupRegisteredValidatorType("visitor"),
-                    "com.opensymphony.xwork.validator.validators.VisitorFieldValidator");
-            assertEquals(ValidatorFactory.lookupRegisteredValidatorType("conversion"),
-                    "com.opensymphony.xwork.validator.validators.ConversionErrorFieldValidator");
-            assertEquals(ValidatorFactory.lookupRegisteredValidatorType("stringlength"),
-                    "com.opensymphony.xwork.validator.validators.StringLengthFieldValidator");
-            assertEquals(ValidatorFactory.lookupRegisteredValidatorType("regex"),
-                    "com.opensymphony.xwork.validator.validators.RegexFieldValidator");
+            assertEquals(
+                    "com.opensymphony.xwork.validator.validators.RequiredFieldValidator",
+                    ValidatorFactory.lookupRegisteredValidatorType("required"));
+            assertEquals(
+                    "com.opensymphony.xwork.validator.validators.RequiredStringValidator",
+                    ValidatorFactory.lookupRegisteredValidatorType("requiredstring"));
+            assertEquals(
+                    "com.opensymphony.xwork.validator.validators.IntRangeFieldValidator",
+                    ValidatorFactory.lookupRegisteredValidatorType("int"));
+            assertEquals(
+                    "com.opensymphony.xwork.validator.validators.DoubleRangeFieldValidator",
+                    ValidatorFactory.lookupRegisteredValidatorType("double"));
+            assertEquals(
+                    "com.opensymphony.xwork.validator.validators.DateRangeFieldValidator",
+                    ValidatorFactory.lookupRegisteredValidatorType("date"));
+            assertEquals(
+                    "com.opensymphony.xwork.validator.validators.ExpressionValidator",
+                    ValidatorFactory.lookupRegisteredValidatorType("expression"));
+            assertEquals(
+                    "com.opensymphony.xwork.validator.validators.FieldExpressionValidator",
+                    ValidatorFactory.lookupRegisteredValidatorType("fieldexpression"));
+            assertEquals(
+                    "com.opensymphony.xwork.validator.validators.EmailValidator",
+                    ValidatorFactory.lookupRegisteredValidatorType("email"));
+            assertEquals(
+                    "com.opensymphony.xwork.validator.validators.URLValidator",
+                    ValidatorFactory.lookupRegisteredValidatorType("url"));
+            assertEquals(
+                    "com.opensymphony.xwork.validator.validators.VisitorFieldValidator",
+                    ValidatorFactory.lookupRegisteredValidatorType("visitor"));
+            assertEquals(
+                    "com.opensymphony.xwork.validator.validators.ConversionErrorFieldValidator",
+                    ValidatorFactory.lookupRegisteredValidatorType("conversion"));
+            assertEquals(
+                    "com.opensymphony.xwork.validator.validators.StringLengthFieldValidator",
+                    ValidatorFactory.lookupRegisteredValidatorType("stringlength"));
+            assertEquals(
+                    "com.opensymphony.xwork.validator.validators.RegexFieldValidator",
+                    ValidatorFactory.lookupRegisteredValidatorType("regex"));
         }
         finally {
             if (is != null) {
@@ -190,30 +203,31 @@ public class ValidatorFileParserTest extends TestCase {
         InputStream is = null;
         try {
             is = ClassLoaderUtil.getResourceAsStream(testFileName6, this.getClass());
-            List validatorConfigs = ValidatorFileParser.parseActionValidatorConfigs(is, "-//OpenSymphony Group//XWork Validator 1.0.3//EN");
+            List validatorConfigs = ValidatorFileParser.parseActionValidatorConfigs(is,
+                    "-//OpenSymphony Group//XWork Validator 1.0.3//EN");
 
             assertEquals(validatorConfigs.size(), 2);
 
-            assertEquals(((ValidatorConfig)validatorConfigs.get(0)).getParams().get("fieldName"), "name");
-            assertEquals(((ValidatorConfig)validatorConfigs.get(0)).getMessageParams().length, 0);
-            assertEquals(((ValidatorConfig)validatorConfigs.get(0)).getMessageKey(), "error.name");
-            assertEquals(((ValidatorConfig)validatorConfigs.get(0)).getDefaultMessage(), "default message 1");
-            assertEquals(((ValidatorConfig)validatorConfigs.get(0)).getParams().size(), 1);
-            assertEquals(((ValidatorConfig)validatorConfigs.get(0)).getType(), "requiredstring");
+            assertEquals("name", ((ValidatorConfig)validatorConfigs.get(0)).getParams().get("fieldName"));
+            assertEquals(0, ((ValidatorConfig)validatorConfigs.get(0)).getMessageParams().length);
+            assertEquals("error.name", ((ValidatorConfig)validatorConfigs.get(0)).getMessageKey());
+            assertEquals("default message 1", ((ValidatorConfig)validatorConfigs.get(0)).getDefaultMessage());
+            assertEquals(1, ((ValidatorConfig)validatorConfigs.get(0)).getParams().size());
+            assertEquals("requiredstring", ((ValidatorConfig)validatorConfigs.get(0)).getType());
 
-            assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getParams().get("fieldName"), "address");
-            assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageParams().length, 5);
-            assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[0], "'tmjee'");
-            assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[1], "'phil'");
-            assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[2], "'rainer'");
-            assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[3], "'hopkins'");
-            assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[4], "'jimmy'");
-            assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getMessageKey(), "error.address");
-            assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getDefaultMessage(), "The Default Message");
-            assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getParams().size(), 3);
-            assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getParams().get("trim"), "true");
-            assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getParams().get("anotherParam"), "anotherValue");
-            assertEquals(((ValidatorConfig)validatorConfigs.get(1)).getType(), "requiredstring");
+            assertEquals("address", ((ValidatorConfig)validatorConfigs.get(1)).getParams().get("fieldName"));
+            assertEquals(5, ((ValidatorConfig)validatorConfigs.get(1)).getMessageParams().length);
+            assertEquals("'tmjee'", ((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[0]);
+            assertEquals("'phil'", ((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[1]);
+            assertEquals("'rainer'", ((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[2]);
+            assertEquals("'hopkins'", ((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[3]);
+            assertEquals("'jimmy'", ((ValidatorConfig)validatorConfigs.get(1)).getMessageParams()[4]);
+            assertEquals("error.address", ((ValidatorConfig)validatorConfigs.get(1)).getMessageKey());
+            assertEquals("The Default Message", ((ValidatorConfig)validatorConfigs.get(1)).getDefaultMessage());
+            assertEquals(3, ((ValidatorConfig)validatorConfigs.get(1)).getParams().size());
+            assertEquals("true", ((ValidatorConfig)validatorConfigs.get(1)).getParams().get("trim"));
+            assertEquals("anotherValue", ((ValidatorConfig)validatorConfigs.get(1)).getParams().get("anotherParam"));
+            assertEquals("requiredstring", ((ValidatorConfig)validatorConfigs.get(1)).getType());
         }
         finally {
             if (is != null) {

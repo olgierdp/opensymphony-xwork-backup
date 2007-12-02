@@ -17,61 +17,61 @@ public class ValidatorFactoryTest extends XWorkTestCase {
         ValidatorFactory.parseValidators();
 
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("requiredstring"),
-                "com.opensymphony.xwork.validator.validators.RequiredStringValidator");
+                "com.opensymphony.xwork.validator.validators.RequiredStringValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("requiredstring"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("required"),
-                "com.opensymphony.xwork.validator.validators.RequiredFieldValidator");
+                "com.opensymphony.xwork.validator.validators.RequiredFieldValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("required"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("int"), 
-                "com.opensymphony.xwork.validator.validators.IntRangeFieldValidator");
+                "com.opensymphony.xwork.validator.validators.IntRangeFieldValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("int"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("double"),
-                "com.opensymphony.xwork.validator.validators.DoubleRangeFieldValidator");
+                "com.opensymphony.xwork.validator.validators.DoubleRangeFieldValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("double"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("date"),
-                "com.opensymphony.xwork.validator.validators.DateRangeFieldValidator");
+                "com.opensymphony.xwork.validator.validators.DateRangeFieldValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("date"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("expression"),
-                "com.opensymphony.xwork.validator.validators.ExpressionValidator");
+                "com.opensymphony.xwork.validator.validators.ExpressionValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("expression"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("fieldexpression"),
-                "com.opensymphony.xwork.validator.validators.FieldExpressionValidator");
+                "com.opensymphony.xwork.validator.validators.FieldExpressionValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("fieldexpression"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("email"),
-                "com.opensymphony.xwork.validator.validators.EmailValidator");
+                "com.opensymphony.xwork.validator.validators.EmailValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("email"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("url"),
-                "com.opensymphony.xwork.validator.validators.URLValidator");
+                "com.opensymphony.xwork.validator.validators.URLValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("url"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("visitor"),
-                "com.opensymphony.xwork.validator.validators.VisitorFieldValidator");
+                "com.opensymphony.xwork.validator.validators.VisitorFieldValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("visitor"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("conversion"),
-                "com.opensymphony.xwork.validator.validators.ConversionErrorFieldValidator");
+                "com.opensymphony.xwork.validator.validators.ConversionErrorFieldValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("conversion"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("stringlength"),
-                "com.opensymphony.xwork.validator.validators.StringLengthFieldValidator");
+                "com.opensymphony.xwork.validator.validators.StringLengthFieldValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("stringlength"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("regex"),
-                "com.opensymphony.xwork.validator.validators.RegexFieldValidator");
+                "com.opensymphony.xwork.validator.validators.RegexFieldValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("regex"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("foo"),
-                "com.opensymphony.xwork.validator.validators.FooValidator");
+                "com.opensymphony.xwork.validator.validators.FooValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("foo"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("bar"),
-                "com.opensymphony.xwork.validator.validators.BarValidator");
+                "com.opensymphony.xwork.validator.validators.BarValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("bar"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("baz"),
-                "com.opensymphony.xwork.validator.validators.BazValidator");
+                "com.opensymphony.xwork.validator.validators.BazValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("baz"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("boo"),
-                "com.opensymphony.xwork.validator.validators.BooValidator");
+                "com.opensymphony.xwork.validator.validators.BooValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("boo"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("bing"),
-                "com.opensymphony.xwork.validator.validators.BingValidator");
+                "com.opensymphony.xwork.validator.validators.BingValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("bing"));
         assertEquals(
-                ValidatorFactory.lookupRegisteredValidatorType("bang"),
-                "com.opensymphony.xwork.validator.validators.BangValidator");
+                "com.opensymphony.xwork.validator.validators.BangValidator",
+                ValidatorFactory.lookupRegisteredValidatorType("bang"));
     }
 }
