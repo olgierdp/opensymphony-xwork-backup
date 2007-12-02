@@ -545,12 +545,18 @@ public class OgnlUtil {
      */
     static boolean isUseOgnlEnhancement() {
         if (useOgnlEnhancement == null) {
-            String value = ConfigurationManager.getConfiguration().getParameter(XWorkConstants.XWORK_USE_OGNL_ENHANCEMENT);
-            if (value != null && "true".equalsIgnoreCase(value)) {
-                useOgnlEnhancement = Boolean.TRUE;
+            try {
+                String value = ConfigurationManager.getConfiguration().getParameter(XWorkConstants.XWORK_USE_OGNL_ENHANCEMENT);
+                if (value != null && "true".equalsIgnoreCase(value)) {
+                    useOgnlEnhancement = Boolean.TRUE;
+                }
+                else {
+                    useOgnlEnhancement = Boolean.FALSE; // by default, if not specified, its turn off
+                }
             }
-            else {
-                useOgnlEnhancement = Boolean.FALSE; // by default, if not specified, its turn off
+            catch(Exception e) {
+                log.warn("Failed to get xwork parameter ["+ XWorkConstants.XWORK_USE_OGNL_ENHANCEMENT+"] assuming it's false", e);
+                useOgnlEnhancement = Boolean.FALSE;
             }
         }
         return useOgnlEnhancement.booleanValue();
