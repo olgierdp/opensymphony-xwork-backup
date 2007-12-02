@@ -138,17 +138,17 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
         assertFalse(action.hasActionMessages());
         assertTrue(action.hasFieldErrors());
         assertTrue(action.getFieldErrors().containsKey("referenceNumber"));
-        assertEquals(((List)action.getFieldErrors().get("referenceNumber")).size(), 1);
+        assertEquals(1, ((List)action.getFieldErrors().get("referenceNumber")).size());
         assertTrue(action.getFieldErrors().containsKey("order"));
-        assertEquals(((List)action.getFieldErrors().get("order")).size(), 1);
+        assertEquals(1, ((List)action.getFieldErrors().get("order")).size());
         assertTrue(action.getFieldErrors().containsKey("customer.name"));
-        assertEquals(((List)action.getFieldErrors().get("customer.name")).size(), 1);
+        assertEquals(1, ((List)action.getFieldErrors().get("customer.name")).size());
         assertTrue(action.getFieldErrors().containsKey("customer.age"));
-        assertEquals(((List)action.getFieldErrors().get("customer.age")).size(), 1);
+        assertEquals(1, ((List)action.getFieldErrors().get("customer.age")).size());
         assertTrue(action.getFieldErrors().containsKey("customer.address.street"));
-        assertEquals(((List)action.getFieldErrors().get("customer.address.street")).size(), 1);
+        assertEquals(1, ((List)action.getFieldErrors().get("customer.address.street")).size());
         assertTrue(action.getFieldErrors().containsKey("customer.address.pobox"));
-        //assertEquals(((List)action.getFieldErrors().get("customer.address.pobox")).size(), 2);
+        assertEquals(2, ((List)action.getFieldErrors().get("customer.address.pobox")).size());
 
         for (Iterator i = action.getFieldErrors().keySet().iterator(); i.hasNext(); ) {
             System.out.println(i.next());   
