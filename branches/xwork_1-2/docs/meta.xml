@@ -33,7 +33,11 @@
     </owners>
 
     <developers>
-        <person>
+       <person>
+            <name>Toby Jee</name>
+            <email>tmjee1@gmail.com</email>
+       </person> 
+       <person>
             <name>Cameron Braid</name>
             <email>cameron@braid.com.au</email>
         </person>
