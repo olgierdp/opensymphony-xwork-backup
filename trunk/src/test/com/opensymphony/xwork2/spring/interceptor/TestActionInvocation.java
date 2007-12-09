@@ -72,6 +72,6 @@ public class TestActionInvocation implements ActionInvocation {
     public void setActionEventListener(ActionEventListener listener) {
     }
 
-    public void init(ActionProxy proxy) throws Exception {
+    public void init(ActionProxy proxy)  {
     }
 }

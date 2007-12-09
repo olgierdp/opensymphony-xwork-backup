@@ -107,21 +107,21 @@ public class ActionNestingTest extends XWorkTestCase {
         
         public void loadPackages() {
             
-            PackageConfig packageContext = new PackageConfig("nestedActionTest");
-            ActionConfig config = new ActionConfig(null, SimpleAction.class, null, null, null);
-            config.addResultConfig(new ResultConfig(Action.SUCCESS, MockResult.class.getName()));
-            config.addResultConfig(new ResultConfig(Action.ERROR, MockResult.class.getName()));
-            config.setPackageName("nestedActionTest");
-            packageContext.addActionConfig(SIMPLE_ACTION_NAME, config);
-            config = new ActionConfig("noStack", com.opensymphony.xwork2.NestedAction.class, null, null, null);
-            config.addResultConfig(new ResultConfig(Action.SUCCESS, MockResult.class.getName()));
-            config.setPackageName("nestedActionTest");
-            packageContext.addActionConfig(NO_STACK_ACTION_NAME, config);
-            config = new ActionConfig("stack", com.opensymphony.xwork2.NestedAction.class, null, null, null);
-            config.addResultConfig(new ResultConfig(Action.SUCCESS, MockResult.class.getName()));
-            config.setPackageName("nestedActionTest");
-            packageContext.addActionConfig(STACK_ACTION_NAME, config);
-            packageContext.setNamespace(NAMESPACE);
+            PackageConfig packageContext = new PackageConfig.Builder("nestedActionTest")
+                .addActionConfig(SIMPLE_ACTION_NAME, new ActionConfig.Builder("nestedActionTest", SIMPLE_ACTION_NAME, SimpleAction.class.getName())
+                        .addResultConfig(new ResultConfig.Builder(Action.SUCCESS, MockResult.class.getName()).build())
+                        .addResultConfig(new ResultConfig.Builder(Action.ERROR, MockResult.class.getName()).build())
+                        .build())
+                .addActionConfig(NO_STACK_ACTION_NAME, new ActionConfig.Builder("nestedActionTest", NO_STACK_ACTION_NAME, NestedAction.class.getName())
+                        .addResultConfig(new ResultConfig.Builder(Action.SUCCESS, MockResult.class.getName()).build())
+                        .methodName("noStack")
+                        .build())
+                .addActionConfig(STACK_ACTION_NAME, new ActionConfig.Builder("nestedActionTest", STACK_ACTION_NAME, NestedAction.class.getName())
+                        .addResultConfig(new ResultConfig.Builder(Action.SUCCESS, MockResult.class.getName()).build())
+                        .methodName("stack")
+                        .build())
+                .namespace(NAMESPACE)
+                .build();
             configuration.addPackageConfig("nestedActionTest", packageContext);
         }
 

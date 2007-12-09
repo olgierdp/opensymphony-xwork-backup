@@ -5,10 +5,12 @@
 package com.opensymphony.xwork2.config.entities;
 
 import com.opensymphony.xwork2.util.location.Located;
+import com.opensymphony.xwork2.util.location.Location;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Collections;
 
 
 /**
@@ -18,59 +20,37 @@ import java.util.Map;
  *
  * @author Mike
  */
-public class ResultConfig extends Located implements Parameterizable, Serializable {
+public class ResultConfig extends Located implements Serializable {
 
-    private Map params;
+    private Map<String,String> params;
     private String className;
     private String name;
 
 
-    public ResultConfig() {
+    protected ResultConfig(String name, String className) {
+        this.name = name;
+        this.className = className;
         params = new LinkedHashMap();
     }
 
-    public ResultConfig(String name, String clazz) {
-        this(name, clazz, new LinkedHashMap());
-    }
-
-    public ResultConfig(String name, String className, Map params) {
-        this.name = name;
-        this.className = className;
-        this.params = params;
-    }
-
-
-    public void setClassName(String className) {
-        this.className = className;
+    protected ResultConfig(ResultConfig orig) {
+        this.params = orig.params;
+        this.name = orig.name;
+        this.className = orig.className;
     }
 
     public String getClassName() {
         return className;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setParams(Map params) {
-        this.params = params;
-    }
-
-    public Map getParams() {
-        if (params == null) {
-            params = new LinkedHashMap();
-        }
-
+    public Map<String,String> getParams() {
         return params;
     }
 
-    public void addParam(String name, Object value) {
-        getParams().put(name, value);
-    }
 
     public boolean equals(Object o) {
         if (this == o) {
@@ -105,5 +85,54 @@ public class ResultConfig extends Located implements Parameterizable, Serializab
         result = (29 * result) + ((params != null) ? params.hashCode() : 0);
 
         return result;
+    }
+
+    /**
+     * The builder for this object.  An instance of this object is the only way to construct a new instance.  The
+     * purpose is to enforce the immutability of the object.  The methods are structured in a way to support chaining.
+     * After setting any values you need, call the {@link #build()} method to create the object.
+     */
+    public static final class Builder {
+        private ResultConfig target;
+
+        public Builder(String name, String className) {
+            target = new ResultConfig(name, className);
+        }
+
+        public Builder(ResultConfig orig) {
+            target = new ResultConfig(orig);
+        }
+
+        public Builder name(String name) {
+            target.name = name;
+            return this;
+        }
+
+        public Builder className(String name) {
+            target.className = name;
+            return this;
+        }
+
+         public Builder addParam(String name, String value) {
+            target.params.put(name, value);
+            return this;
+        }
+
+        public Builder addParams(Map<String,String> params) {
+            target.params.putAll(params);
+            return this;
+        }
+
+        public Builder location(Location loc) {
+            target.location = loc;
+            return this;
+        }
+
+        public ResultConfig build() {
+            target.params = Collections.unmodifiableMap(target.params);
+            ResultConfig result = target;
+            target = new ResultConfig(target);
+            return result;
+        }
     }
 }

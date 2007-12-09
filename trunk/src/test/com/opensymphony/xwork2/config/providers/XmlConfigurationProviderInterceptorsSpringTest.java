@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class XmlConfigurationProviderInterceptorsSpringTest extends ConfigurationTestBase {
 
-    InterceptorConfig timerInterceptor = new InterceptorConfig("timer", TimerInterceptor.class, new HashMap());
+    InterceptorConfig timerInterceptor = new InterceptorConfig.Builder("timer", TimerInterceptor.class.getName()).build();
     ObjectFactory objectFactory;
     StaticApplicationContext sac;
 

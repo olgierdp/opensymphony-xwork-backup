@@ -76,42 +76,44 @@ public class MockConfigurationProvider implements ConfigurationProvider {
 
     public void loadPackages() {
         
-        PackageConfig defaultPackageContext = new PackageConfig("defaultPackage");
+        PackageConfig.Builder defaultPackageContext = new PackageConfig.Builder("defaultPackage");
         HashMap params = new HashMap();
         params.put("bar", "5");
 
         HashMap results = new HashMap();
         HashMap successParams = new HashMap();
         successParams.put("actionName", "bar");
-        results.put("success", new ResultConfig("success", ActionChainResult.class.getName(), successParams));
+        results.put("success", new ResultConfig.Builder("success", ActionChainResult.class.getName()).addParams(successParams).build());
 
-        ActionConfig fooActionConfig = new ActionConfig(null, SimpleAction.class, params, results, null);
-        fooActionConfig.addResultConfig(new ResultConfig(Action.ERROR, MockResult.class.getName()));
-        fooActionConfig.setPackageName("defaultPackage");
+        ActionConfig fooActionConfig = new ActionConfig.Builder("defaultPackage", FOO_ACTION_NAME, SimpleAction.class.getName())
+            .addResultConfig(new ResultConfig.Builder(Action.ERROR, MockResult.class.getName()).build())
+            .build();
         defaultPackageContext.addActionConfig(FOO_ACTION_NAME, fooActionConfig);
 
         results = new HashMap();
         successParams = new HashMap();
         successParams.put("actionName", "bar");
-        results.put("success", new ResultConfig("success", ActionChainResult.class.getName(), successParams));
+        results.put("success", new ResultConfig.Builder("success", ActionChainResult.class.getName()).addParams(successParams).build());
 
         List interceptors = new ArrayList();
         interceptors.add(new InterceptorMapping("params", new ParametersInterceptor()));
 
-        ActionConfig paramInterceptorActionConfig = new ActionConfig(null, SimpleAction.class, null, results, interceptors);
-        paramInterceptorActionConfig.addResultConfig(new ResultConfig(Action.ERROR, MockResult.class.getName()));
-        paramInterceptorActionConfig.setPackageName("defaultPackage");
+        ActionConfig paramInterceptorActionConfig = new ActionConfig.Builder("defaultPackage", PARAM_INTERCEPTOR_ACTION_NAME, SimpleAction.class.getName())
+            .addResultConfig(new ResultConfig.Builder(Action.ERROR, MockResult.class.getName()).build())
+            .addInterceptors(interceptors)
+            .build();
         defaultPackageContext.addActionConfig(PARAM_INTERCEPTOR_ACTION_NAME, paramInterceptorActionConfig);
 
         interceptors = new ArrayList();
         interceptors.add(new InterceptorMapping("model", 
-                objectFactory.buildInterceptor(new InterceptorConfig("model", ModelDrivenInterceptor.class.getName(), null), new HashMap())));
+                objectFactory.buildInterceptor(new InterceptorConfig.Builder("model", ModelDrivenInterceptor.class.getName()).build(), new HashMap())));
         interceptors.add(new InterceptorMapping("params",
-                objectFactory.buildInterceptor(new InterceptorConfig("model", ParametersInterceptor.class.getName(), null), new HashMap())));
+                objectFactory.buildInterceptor(new InterceptorConfig.Builder("model", ParametersInterceptor.class.getName()).build(), new HashMap())));
 
-        ActionConfig modelParamActionConfig = new ActionConfig(null, ModelDrivenAction.class, null, null, interceptors);
-        modelParamActionConfig.addResultConfig(new ResultConfig(Action.SUCCESS, MockResult.class.getName()));
-        modelParamActionConfig.setPackageName("defaultPackage");
+        ActionConfig modelParamActionConfig = new ActionConfig.Builder("defaultPackage", MODEL_DRIVEN_PARAM_TEST, ModelDrivenAction.class.getName())
+            .addInterceptors(interceptors)
+            .addResultConfig(new ResultConfig.Builder(Action.SUCCESS, MockResult.class.getName()).build())
+            .build();
         defaultPackageContext.addActionConfig(MODEL_DRIVEN_PARAM_TEST, modelParamActionConfig);
         
         //List paramFilterInterceptor=new ArrayList();
@@ -122,17 +124,18 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         results = new HashMap();
         successParams = new HashMap();
         successParams.put("actionName", "bar");
-        results.put("success", new ResultConfig("success", ActionChainResult.class.getName(), successParams));
+        results.put("success", new ResultConfig.Builder("success", ActionChainResult.class.getName()).addParams(successParams).build());
+        results.put(Action.ERROR, new ResultConfig.Builder(Action.ERROR, MockResult.class.getName()).build());
 
         interceptors = new ArrayList();
         interceptors.add(new InterceptorMapping("static-params", 
-                objectFactory.buildInterceptor(new InterceptorConfig("model", StaticParametersInterceptor.class.getName(), null), new HashMap())));
+                objectFactory.buildInterceptor(new InterceptorConfig.Builder("model", StaticParametersInterceptor.class.getName()).build(), new HashMap())));
         interceptors.add(new InterceptorMapping("model", 
-                objectFactory.buildInterceptor(new InterceptorConfig("model", ModelDrivenInterceptor.class.getName(), null), new HashMap())));
+                objectFactory.buildInterceptor(new InterceptorConfig.Builder("model", ModelDrivenInterceptor.class.getName()).build(), new HashMap())));
         interceptors.add(new InterceptorMapping("params", 
-                objectFactory.buildInterceptor(new InterceptorConfig("model", ParametersInterceptor.class.getName(), null), new HashMap())));
+                objectFactory.buildInterceptor(new InterceptorConfig.Builder("model", ParametersInterceptor.class.getName()).build(), new HashMap())));
         interceptors.add(new InterceptorMapping("validation", 
-                objectFactory.buildInterceptor(new InterceptorConfig("model", ValidationInterceptor.class.getName(), null), new HashMap())));
+                objectFactory.buildInterceptor(new InterceptorConfig.Builder("model", ValidationInterceptor.class.getName()).build(), new HashMap())));
 
         //Explicitly set an out-of-range date for DateRangeValidatorTest
         params = new HashMap();
@@ -141,27 +144,34 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         //Explicitly set an out-of-range double for DoubleRangeValidatorTest
         params.put("percentage", new Double(100.0123));
 
-        ActionConfig validationActionConfig = new ActionConfig(null, SimpleAction.class, params, results, interceptors);
-        validationActionConfig.addResultConfig(new ResultConfig(Action.ERROR, MockResult.class.getName()));
-        validationActionConfig.setPackageName("defaultPackage");
+        ActionConfig validationActionConfig = new ActionConfig.Builder("defaultPackage", VALIDATION_ACTION_NAME, SimpleAction.class.getName())
+            .addInterceptors(interceptors)
+            .addParams(params)
+            .addResultConfigs(results)
+            .build();
         defaultPackageContext.addActionConfig(VALIDATION_ACTION_NAME, validationActionConfig);
-        defaultPackageContext.addActionConfig(VALIDATION_ALIAS_NAME, validationActionConfig);
-        defaultPackageContext.addActionConfig(VALIDATION_SUBPROPERTY_NAME, validationActionConfig);
+        defaultPackageContext.addActionConfig(VALIDATION_ALIAS_NAME,
+                new ActionConfig.Builder(validationActionConfig).name(VALIDATION_ALIAS_NAME).build());
+        defaultPackageContext.addActionConfig(VALIDATION_SUBPROPERTY_NAME,
+                new ActionConfig.Builder(validationActionConfig).name(VALIDATION_SUBPROPERTY_NAME).build());
 
 
         params = new HashMap();
         params.put("percentage", new Double(1.234567));
-        ActionConfig percentageActionConfig = new ActionConfig(null, SimpleAction.class, params, results, interceptors);
-        percentageActionConfig.setPackageName("defaultPackage");
-        defaultPackageContext.addActionConfig("percentage", percentageActionConfig);
+        ActionConfig percentageActionConfig = new ActionConfig.Builder("defaultPackage", "percentage", SimpleAction.class.getName())
+                .addParams(params)
+                .addResultConfigs(results)
+                .addInterceptors(interceptors)
+                .build();
+        defaultPackageContext.addActionConfig(percentageActionConfig.getName(), percentageActionConfig);
 
         // We need this actionconfig to be the final destination for action chaining
-        ActionConfig barActionConfig = new ActionConfig(null, SimpleAction.class, null, null, null);
-        barActionConfig.addResultConfig(new ResultConfig(Action.ERROR, MockResult.class.getName()));
-        barActionConfig.setPackageName("defaultPackage");
-        defaultPackageContext.addActionConfig("bar", barActionConfig);
+        ActionConfig barActionConfig = new ActionConfig.Builder("defaultPackage", "bar", SimpleAction.class.getName())
+                .addResultConfig(new ResultConfig.Builder(Action.ERROR, MockResult.class.getName()).build())
+                .build();
+        defaultPackageContext.addActionConfig(barActionConfig.getName(), barActionConfig);
 
-        configuration.addPackageConfig("defaultPackage", defaultPackageContext);
+        configuration.addPackageConfig("defaultPackage", defaultPackageContext.build());
     }
 
     /**

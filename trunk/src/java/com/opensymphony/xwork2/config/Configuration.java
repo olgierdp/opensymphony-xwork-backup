@@ -57,8 +57,6 @@ public interface Configuration extends Serializable {
      */
     List<PackageProvider> reloadContainer(List<ContainerProvider> containerProviders) throws ConfigurationException;
 
-    void removePackageConfig(String name);
-
     /**
      * @return the container
      */

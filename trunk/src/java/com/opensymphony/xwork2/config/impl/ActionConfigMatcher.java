@@ -114,15 +114,15 @@ public class ActionConfigMatcher extends AbstractMatcher<ActionConfig> implement
         String methodName = convertParam(orig.getMethodName(), vars);
         String pkgName = convertParam(orig.getPackageName(), vars);
         
-        Map<String,Object> params = replaceParameters(orig.getParams(), vars);
+        Map<String,String> params = replaceParameters(orig.getParams(), vars);
         
         Map<String,ResultConfig> results = new LinkedHashMap<String,ResultConfig>();
         for (String name : orig.getResults().keySet()) {
             ResultConfig result = orig.getResults().get(name);
             name = convertParam(name, vars);
-            String resultClassName = convertParam(result.getClassName(), vars);
-            Map<String,Object> resultParams = replaceParameters(result.getParams(), vars);
-            ResultConfig r = new ResultConfig(name, resultClassName, resultParams);
+            ResultConfig r = new ResultConfig.Builder(name, convertParam(result.getClassName(), vars))
+                    .addParams(replaceParameters(result.getParams(), vars))
+                    .build();
             results.put(name, r);
         }
         
@@ -131,15 +131,20 @@ public class ActionConfigMatcher extends AbstractMatcher<ActionConfig> implement
             String name = convertParam(ex.getName(), vars);
             String exClassName = convertParam(ex.getExceptionClassName(), vars);
             String exResult = convertParam(ex.getResult(), vars);
-            Map<String,Object> exParams = replaceParameters(ex.getParams(), vars);
-            ExceptionMappingConfig e = new ExceptionMappingConfig(name, exClassName, exResult, exParams);
+            Map<String,String> exParams = replaceParameters(ex.getParams(), vars);
+            ExceptionMappingConfig e = new ExceptionMappingConfig.Builder(name, exClassName, exResult).addParams(exParams).build();
             exs.add(e);
         }
         
-        ActionConfig config = new ActionConfig(methodName, className, pkgName, 
-                params, results, orig.getInterceptors(), exs);
-        config.setLocation(orig.getLocation());
-        
+        ActionConfig config = new ActionConfig.Builder(pkgName, orig.getName(), className)
+                .methodName(methodName)
+                .addParams(params)
+                .addResultConfigs(results)
+                .addInterceptors(orig.getInterceptors())
+                .addExceptionMappings(exs)
+                .location(orig.getLocation())
+                .build();
+
         return config;
     }
 }

@@ -39,7 +39,6 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     protected ActionConfig config;
     protected ActionInvocation invocation;
     protected UnknownHandler unknownHandler;
-    protected Map extraContext;
     protected String actionName;
     protected String namespace;
     protected String method;
@@ -56,7 +55,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
      * The reason for the builder methods is so that you can use a subclass to create your own DefaultActionProxy instance
      * (like a RMIActionProxy).
      */
-    protected DefaultActionProxy(ActionInvocation inv, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+    protected DefaultActionProxy(ActionInvocation inv, String namespace, String actionName, String methodName, boolean executeResult, boolean cleanupContext) {
         
         this.invocation = inv;
 		this.cleanupContext = cleanupContext;
@@ -67,8 +66,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
 		this.actionName = actionName;
 		this.namespace = namespace;
 		this.executeResult = executeResult;
-		this.extraContext = extraContext;
-    	
+        this.method = methodName;
     }
     
     @Inject
@@ -145,11 +143,6 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
         return method;
     }
 
-    public void setMethod(String method) {
-        this.method = method;
-        resolveMethod();
-    }
-
     private void resolveMethod() {
         // if the method is set to null, use the one from the configuration
         // if the one from the configuration is also null, use "execute"
@@ -161,7 +154,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
         }
     }
 
-    public void prepare() throws Exception {
+    protected void prepare()  {
         String profileKey = "create DefaultActionProxy: ";
         try {
             UtilTimerStack.push(profileKey);
@@ -184,10 +177,15 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
                 }
                 throw new ConfigurationException(message);
             }
-            
-            
-            invocation.init(this);
+
             resolveMethod();
+            
+            if (!config.isAllowedMethod(method)) {
+                throw new ConfigurationException("Invalid method: "+method+" for action "+actionName);
+            }
+
+            invocation.init(this);
+
         } finally {
             UtilTimerStack.pop(profileKey);
         }

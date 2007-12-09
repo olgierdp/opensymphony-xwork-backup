@@ -150,6 +150,6 @@ public interface ActionInvocation extends Serializable {
      */
     void setActionEventListener(ActionEventListener listener);
 
-    void init(ActionProxy proxy) throws Exception;
+    void init(ActionProxy proxy) ;
 
 }

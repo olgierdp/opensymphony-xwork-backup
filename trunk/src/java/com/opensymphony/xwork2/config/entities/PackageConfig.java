@@ -6,6 +6,7 @@ package com.opensymphony.xwork2.config.entities;
 
 import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.util.location.Located;
+import com.opensymphony.xwork2.util.location.Location;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
@@ -21,17 +22,16 @@ import java.util.*;
  * @author Rainer Hermanns
  * @version $Revision$
  */
-public class PackageConfig extends Located implements Comparable, Serializable {
+public class PackageConfig extends Located implements Comparable, Serializable, InterceptorLocator {
 
     private static final Logger LOG = LoggerFactory.getLogger(PackageConfig.class);
 
-
-    private Map<String, ActionConfig> actionConfigs = new LinkedHashMap<String, ActionConfig>();
-    private Map<String, ResultConfig> globalResultConfigs = new LinkedHashMap<String, ResultConfig>();
-    private Map interceptorConfigs = new LinkedHashMap();
-    private Map<String, ResultTypeConfig> resultTypeConfigs = new LinkedHashMap<String, ResultTypeConfig>();
-    private List globalExceptionMappingConfigs = new ArrayList();
-    private List<PackageConfig> parents = new ArrayList<PackageConfig>();
+    private Map<String, ActionConfig> actionConfigs;
+    private Map<String, ResultConfig> globalResultConfigs;
+    private Map<String, Object> interceptorConfigs;
+    private Map<String, ResultTypeConfig> resultTypeConfigs;
+    private List<ExceptionMappingConfig> globalExceptionMappingConfigs;
+    private List<PackageConfig> parents;
     private String defaultInterceptorRef;
     private String defaultActionRef;
     private String defaultResultType;
@@ -42,33 +42,32 @@ public class PackageConfig extends Located implements Comparable, Serializable {
     private boolean needsRefresh;
 
 
-    public PackageConfig() {
-    }
-
-    public PackageConfig(String name) {
+    protected PackageConfig(String name) {
         this.name = name;
-    }
-
-    public PackageConfig(String name, String namespace, boolean isAbstract) {
-        this(name);
-        this.namespace = TextUtils.noNull(namespace);
-        this.isAbstract = isAbstract;
-    }
-
-    public PackageConfig(String name, String namespace, boolean isAbstract, List parents) {
-        this(name, namespace, isAbstract);
-
-        if (parents != null) {
-            for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parent = (PackageConfig) iterator.next();
-                addParent(parent);
-            }
-        }
+        actionConfigs = new LinkedHashMap<String, ActionConfig>();
+        globalResultConfigs = new LinkedHashMap<String, ResultConfig>();
+        interceptorConfigs = new LinkedHashMap<String, Object>();
+        resultTypeConfigs = new LinkedHashMap<String, ResultTypeConfig>();
+        globalExceptionMappingConfigs = new ArrayList<ExceptionMappingConfig>();
+        parents = new ArrayList<PackageConfig>();
     }
 
 
-    public void setAbstract(boolean isAbstract) {
-        this.isAbstract = isAbstract;
+    protected PackageConfig(PackageConfig orig) {
+        this.defaultInterceptorRef = orig.defaultInterceptorRef;
+        this.defaultActionRef = orig.defaultActionRef;
+        this.defaultResultType = orig.defaultResultType;
+        this.defaultClassRef = orig.defaultClassRef;
+        this.name = orig.name;
+        this.namespace = orig.namespace;
+        this.isAbstract = orig.isAbstract;
+        this.needsRefresh = orig.needsRefresh;
+        this.actionConfigs = new LinkedHashMap<String, ActionConfig>(orig.actionConfigs);
+        this.globalResultConfigs = new LinkedHashMap<String, ResultConfig>(orig.globalResultConfigs);
+        this.interceptorConfigs = new LinkedHashMap<String, Object>(orig.interceptorConfigs);
+        this.resultTypeConfigs = new LinkedHashMap<String, ResultTypeConfig>(orig.resultTypeConfigs);
+        this.globalExceptionMappingConfigs = new ArrayList<ExceptionMappingConfig>(orig.globalExceptionMappingConfigs);
+        this.parents = new ArrayList<PackageConfig>(orig.parents);
     }
 
     public boolean isAbstract() {
@@ -189,39 +188,18 @@ public class PackageConfig extends Located implements Comparable, Serializable {
     }
 
 
-    public void setDefaultInterceptorRef(String name) {
-        defaultInterceptorRef = name;
-    }
-
     public String getDefaultInterceptorRef() {
         return defaultInterceptorRef;
-    }
-
-    public void setDefaultActionRef(String name) {
-        defaultActionRef = name;
     }
 
     public String getDefaultActionRef() {
         return defaultActionRef;
     }
 
-    public void setDefaultClassRef( String defaultClassRef ) {
-       this.defaultClassRef = defaultClassRef;
-    }
-    
     public String getDefaultClassRef() {
        return defaultClassRef;
     }
     
-    /**
-     * sets the default Result type for this package
-     *
-     * @param defaultResultType
-     */
-    public void setDefaultResultType(String defaultResultType) {
-        this.defaultResultType = defaultResultType;
-    }
-
     /**
      * Returns the default result type for this package.
      */
@@ -308,20 +286,8 @@ public class PackageConfig extends Located implements Comparable, Serializable {
         return interceptorConfigs;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setNamespace(String namespace) {
-        if (namespace == null) {
-            this.namespace = "";
-        } else {
-            this.namespace = namespace;
-        }
     }
 
     public String getNamespace() {
@@ -347,10 +313,6 @@ public class PackageConfig extends Located implements Comparable, Serializable {
         return needsRefresh;
     }
 
-    public void setNeedsRefresh(boolean needsRefresh) {
-        this.needsRefresh = needsRefresh;
-    }
-
     /**
      * gets the ExceptionMappingConfigs local to this package
      *
@@ -359,52 +321,6 @@ public class PackageConfig extends Located implements Comparable, Serializable {
      */
     public List<ExceptionMappingConfig> getGlobalExceptionMappingConfigs() {
         return globalExceptionMappingConfigs;
-    }
-
-    public void addActionConfig(String name, ActionConfig action) {
-        actionConfigs.put(name, action);
-    }
-
-    public void addAllParents(List<PackageConfig> parents) {
-        for (PackageConfig config : parents) {
-            addParent(config);
-        }
-    }
-
-    public void addGlobalResultConfig(ResultConfig resultConfig) {
-        globalResultConfigs.put(resultConfig.getName(), resultConfig);
-    }
-
-    public void addGlobalResultConfigs(Map resultConfigs) {
-        globalResultConfigs.putAll(resultConfigs);
-    }
-
-    public void addExceptionMappingConfig(ExceptionMappingConfig exceptionMappingConfig) {
-        globalExceptionMappingConfigs.add(exceptionMappingConfig);
-    }
-
-    public void addGlobalExceptionMappingConfigs(List exceptionMappingConfigs) {
-        globalExceptionMappingConfigs.addAll(exceptionMappingConfigs);
-    }
-
-    public void addInterceptorConfig(InterceptorConfig config) {
-        interceptorConfigs.put(config.getName(), config);
-    }
-
-    public void addInterceptorStackConfig(InterceptorStackConfig config) {
-        interceptorConfigs.put(config.getName(), config);
-    }
-
-    public void addParent(PackageConfig parent) {
-        if (this.equals(parent)) {
-            LOG.error("A package cannot extend itself: " + name);
-        }
-
-        parents.add(0, parent);
-    }
-
-    public void addResultTypeConfig(ResultTypeConfig config) {
-        resultTypeConfigs.put(config.getName(), config);
     }
 
     public boolean equals(Object o) {
@@ -490,12 +406,8 @@ public class PackageConfig extends Located implements Comparable, Serializable {
         return result;
     }
 
-    public void removeParent(PackageConfig parent) {
-        parents.remove(parent);
-    }
-
     public String toString() {
-        return "{PackageConfig Name:" + name + " namespace:" + namespace + " abstract:" + isAbstract + " parents:" + parents + "}";
+        return "{PackageConfig Name:" + name + " namespace:" + namespace + " parents:" + parents + "}";
     }
 
     public int compareTo(Object o) {
@@ -505,6 +417,185 @@ public class PackageConfig extends Located implements Comparable, Serializable {
 
         // note, this isn't perfect (could come from different parents), but it is "good enough"
         return full.compareTo(otherFull);
+    }
+
+    public Object getInterceptorConfig(String name) {
+        return getInterceptorConfigs().get(name);
+    }
+
+    /**
+     * The builder for this object.  An instance of this object is the only way to construct a new instance.  The
+     * purpose is to enforce the immutability of the object.  The methods are structured in a way to support chaining.
+     * After setting any values you need, call the {@link #build()} method to create the object.
+     */
+    public static class Builder implements InterceptorLocator {
+
+        private PackageConfig target;
+
+        public Builder(String name) {
+            target = new PackageConfig(name);
+        }
+
+        public Builder(PackageConfig config) {
+            target = new PackageConfig(config);
+        }
+
+        public Builder name(String name) {
+            target.name = name;
+            return this;
+        }
+
+        public Builder isAbstract(boolean isAbstract) {
+            target.isAbstract = isAbstract;
+            return this;
+        }
+
+        public Builder defaultInterceptorRef(String name) {
+            target.defaultInterceptorRef = name;
+            return this;
+        }
+
+        public Builder defaultActionRef(String name) {
+            target.defaultActionRef = name;
+            return this;
+        }
+
+        public Builder defaultClassRef( String defaultClassRef ) {
+            target.defaultClassRef = defaultClassRef;
+            return this;
+        }
+
+        /**
+         * sets the default Result type for this package
+         *
+         * @param defaultResultType
+         */
+        public Builder defaultResultType(String defaultResultType) {
+            target.defaultResultType = defaultResultType;
+            return this;
+        }
+
+        public Builder namespace(String namespace) {
+            if (namespace == null) {
+                target.namespace = "";
+            } else {
+                target.namespace = namespace;
+            }
+            return this;
+        }
+
+        public Builder needsRefresh(boolean needsRefresh) {
+            target.needsRefresh = needsRefresh;
+            return this;
+        }
+
+        public Builder addActionConfig(String name, ActionConfig action) {
+            target.actionConfigs.put(name, action);
+            return this;
+        }
+
+        public Builder addParents(List<PackageConfig> parents) {
+            for (PackageConfig config : parents) {
+                addParent(config);
+            }
+            return this;
+        }
+
+        public Builder addGlobalResultConfig(ResultConfig resultConfig) {
+            target.globalResultConfigs.put(resultConfig.getName(), resultConfig);
+            return this;
+        }
+
+        public Builder addGlobalResultConfigs(Map resultConfigs) {
+            target.globalResultConfigs.putAll(resultConfigs);
+            return this;
+        }
+
+        public Builder addExceptionMappingConfig(ExceptionMappingConfig exceptionMappingConfig) {
+            target.globalExceptionMappingConfigs.add(exceptionMappingConfig);
+            return this;
+        }
+
+        public Builder addGlobalExceptionMappingConfigs(List exceptionMappingConfigs) {
+            target.globalExceptionMappingConfigs.addAll(exceptionMappingConfigs);
+            return this;
+        }
+
+        public Builder addInterceptorConfig(InterceptorConfig config) {
+            target.interceptorConfigs.put(config.getName(), config);
+            return this;
+        }
+
+        public Builder addInterceptorStackConfig(InterceptorStackConfig config) {
+            target.interceptorConfigs.put(config.getName(), config);
+            return this;
+        }
+
+        public Builder addParent(PackageConfig parent) {
+            if (this.equals(parent)) {
+                LOG.error("A package cannot extend itself: " + target.name);
+            }
+
+            target.parents.add(0, parent);
+            return this;
+        }
+
+        public Builder addResultTypeConfig(ResultTypeConfig config) {
+            target.resultTypeConfigs.put(config.getName(), config);
+            return this;
+        }
+
+        public Builder location(Location loc) {
+            target.location = loc;
+            return this;
+        }
+
+        public boolean isNeedsRefresh() {
+            return target.needsRefresh;
+        }
+
+        public String getDefaultClassRef() {
+            return target.defaultClassRef;
+        }
+
+        public String getName() {
+            return target.name;
+        }
+
+        public String getNamespace() {
+            return target.namespace;
+        }
+
+        public String getFullDefaultResultType() {
+            return target.getFullDefaultResultType();
+        }
+
+        public ResultTypeConfig getResultType(String type) {
+            return target.getAllResultTypeConfigs().get(type);
+        }
+
+
+
+        public Object getInterceptorConfig(String name) {
+            return target.getAllInterceptorConfigs().get(name);
+        }
+
+        public PackageConfig build() {
+            target.actionConfigs = Collections.unmodifiableMap(target.actionConfigs);
+            target.globalResultConfigs = Collections.unmodifiableMap(target.globalResultConfigs);
+            target.interceptorConfigs = Collections.unmodifiableMap(target.interceptorConfigs);
+            target.resultTypeConfigs = Collections.unmodifiableMap(target.resultTypeConfigs);
+            target.globalExceptionMappingConfigs = Collections.unmodifiableList(target.globalExceptionMappingConfigs);
+            target.parents = Collections.unmodifiableList(target.parents);
+
+            PackageConfig result = target;
+            target = new PackageConfig(result);
+            return result;
+        }
+
+        public String toString() {
+            return "[BUILDER] "+target.toString();
+        }
     }
 
 }

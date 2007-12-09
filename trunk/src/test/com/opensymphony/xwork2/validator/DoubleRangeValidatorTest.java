@@ -184,7 +184,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
     }
 
     protected void setUp() throws Exception {
-        loadConfigurationProviders(new XmlConfigurationProvider("xwork-default.xml"), new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
+        loadConfigurationProviders(new XmlConfigurationProvider("xwork-default.xml"),  new MockConfigurationProvider());
     }
 
     private class MyTestProduct {

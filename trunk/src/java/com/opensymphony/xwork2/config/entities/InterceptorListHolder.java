@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface InterceptorListHolder {
 
-    void addInterceptor(InterceptorMapping interceptor);
+    InterceptorListHolder addInterceptor(InterceptorMapping interceptor);
 
-    void addInterceptors(List<InterceptorMapping> interceptors);
+    InterceptorListHolder addInterceptors(List<InterceptorMapping> interceptors);
 }

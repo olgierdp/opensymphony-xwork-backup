@@ -18,24 +18,24 @@ public class ActionInvocationTest extends XWorkTestCase {
 
     public void testCommandInvocation() throws Exception {
         ActionProxy baseActionProxy = actionProxyFactory.createActionProxy(
-                "baz", "commandTest", null);
+                "baz", "commandTest", null, null);
         assertEquals("success", baseActionProxy.execute());
 
         ActionProxy commandActionProxy = actionProxyFactory.createActionProxy(
-                "baz", "myCommand", null);
+                "baz", "myCommand", null, null);
         assertEquals(SimpleAction.COMMAND_RETURN_CODE, commandActionProxy.execute());
     }
     
     public void testCommandInvocationDoMethod() throws Exception {
         ActionProxy baseActionProxy = actionProxyFactory.createActionProxy(
-                "baz", "doMethodTest", null);
+                "baz", "doMethodTest", null, null);
         assertEquals("input", baseActionProxy.execute());
     }
     
     public void testCommandInvocationUnknownHandler() throws Exception {
     	
         DefaultActionProxy baseActionProxy = (DefaultActionProxy) actionProxyFactory.createActionProxy(
-                "baz", "unknownMethodTest", null);
+                "baz", "unknownMethodTest", "unknownmethod", null);
         ((DefaultActionInvocation)baseActionProxy.getInvocation()).unknownHandler = new UnknownHandler() {
 			public ActionConfig handleUnknownAction(String namespace, String actionName) throws XWorkException { return null;}
 			public Result handleUnknownResult(ActionContext actionContext, String actionName, ActionConfig actionConfig, String resultCode) throws XWorkException {
@@ -49,13 +49,12 @@ public class ActionInvocationTest extends XWorkTestCase {
 				}
 			}
         };
-        baseActionProxy.setMethod("unknownmethod");
         assertEquals("found", baseActionProxy.execute());
     }
     
     public void testResultReturnInvocation() throws Exception {
         ActionProxy baseActionProxy = actionProxyFactory.createActionProxy(
-                "baz", "resultAction", null);
+                "baz", "resultAction", null, null);
         assertEquals(null, baseActionProxy.execute());
         assertTrue(SimpleAction.resultCalled);
     }
@@ -68,7 +67,7 @@ public class ActionInvocationTest extends XWorkTestCase {
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
-            ActionProxy proxy = actionProxyFactory.createActionProxy( "", "Foo", extraContext);
+            ActionProxy proxy = actionProxyFactory.createActionProxy( "", "Foo", null, extraContext);
             proxy.execute();
             assertEquals("this is blah", proxy.getInvocation().getStack().findValue("[1].blah"));
         } catch (Exception e) {

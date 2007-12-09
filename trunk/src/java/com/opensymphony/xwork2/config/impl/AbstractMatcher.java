@@ -120,7 +120,7 @@ public abstract class AbstractMatcher<E> implements Serializable {
                     + " available");
             }
 
-            HashMap<String,String> vars = new HashMap<String,String>();
+            Map<String,String> vars = new LinkedHashMap<String,String>();
             for (Mapping<E> m : compiledPatterns) {
                 if (wildcard.match(vars, potentialMatch, m.getPattern())) {
                     if (log.isDebugEnabled()) {
@@ -157,8 +157,8 @@ public abstract class AbstractMatcher<E> implements Serializable {
      * @param orig  The original parameters with placehold values
      * @param vars  A Map of wildcard-matched strings
      */
-    protected Map<String,Object> replaceParameters(Map<String, Object> orig, Map<String,String> vars) {
-        Map<String,Object> map = new LinkedHashMap<String,Object>();
+    protected Map<String,String> replaceParameters(Map<String, String> orig, Map<String,String> vars) {
+        Map<String,String> map = new LinkedHashMap<String,String>();
         for (String key : orig.keySet()) {
             map.put(key, convertParam(String.valueOf(orig.get(key)), vars));
         }

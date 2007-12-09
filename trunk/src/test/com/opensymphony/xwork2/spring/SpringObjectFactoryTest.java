@@ -65,7 +65,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
     }
 
     public void testFallsBackToDefaultObjectFactoryActionSearching() throws Exception {
-        ActionConfig actionConfig = new ActionConfig(null, ModelDrivenAction.class.getName(), new HashMap(), new HashMap(), null);
+        ActionConfig actionConfig = new ActionConfig.Builder("foo", "bar", ModelDrivenAction.class.getName()).build();
 
         Object action = objectFactory.buildBean(actionConfig.getClassName(), null);
 
@@ -73,7 +73,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
     }
 
     public void testFallsBackToDefaultObjectFactoryInterceptorBuilding() throws Exception {
-        InterceptorConfig iConfig = new InterceptorConfig("timer", ModelDrivenInterceptor.class.getName(), new HashMap());
+        InterceptorConfig iConfig = new InterceptorConfig.Builder("timer", ModelDrivenInterceptor.class.getName()).build();
 
         Interceptor interceptor = objectFactory.buildInterceptor(iConfig, new HashMap());
 
@@ -81,7 +81,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
     }
 
     public void testFallsBackToDefaultObjectFactoryResultBuilding() throws Exception {
-        ResultConfig rConfig = new ResultConfig(Action.SUCCESS, ActionChainResult.class.getName(), null);
+        ResultConfig rConfig = new ResultConfig.Builder(Action.SUCCESS, ActionChainResult.class.getName()).build();
         Result result = objectFactory.buildResult(rConfig, ActionContext.getContext().getContextMap());
 
         assertEquals(ActionChainResult.class, result.getClass());
@@ -96,7 +96,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
     public void testObtainActionBySpringName() throws Exception {
         sac.registerPrototype("simple-action", SimpleAction.class, new MutablePropertyValues());
 
-        ActionConfig actionConfig = new ActionConfig(null, "simple-action", new HashMap(), new HashMap(), null);
+        ActionConfig actionConfig = new ActionConfig.Builder("fs", "jim", "simple-action").build();
         Object action = objectFactory.buildBean(actionConfig.getClassName(), null);
 
         assertEquals(SimpleAction.class, action.getClass());
@@ -105,7 +105,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
     public void testObtainInterceptorBySpringName() throws Exception {
         sac.registerSingleton("timer-interceptor", TimerInterceptor.class, new MutablePropertyValues());
 
-        InterceptorConfig iConfig = new InterceptorConfig("timer", "timer-interceptor", new HashMap());
+        InterceptorConfig iConfig = new InterceptorConfig.Builder("timer", "timer-interceptor").build();
         Interceptor interceptor = objectFactory.buildInterceptor(iConfig, new HashMap());
 
         assertEquals(TimerInterceptor.class, interceptor.getClass());
@@ -115,7 +115,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         // TODO: Does this need to be a prototype?
         sac.registerPrototype("chaining-result", ActionChainResult.class, new MutablePropertyValues());
 
-        ResultConfig rConfig = new ResultConfig(Action.SUCCESS, "chaining-result", null);
+        ResultConfig rConfig = new ResultConfig.Builder(Action.SUCCESS, "chaining-result").build();
         Result result = objectFactory.buildResult(rConfig, ActionContext.getContext().getContextMap());
 
         assertEquals(ActionChainResult.class, result.getClass());
@@ -197,7 +197,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
 
         sac.registerPrototype("simple-action", SimpleAction.class, new MutablePropertyValues());
 
-        ActionConfig actionConfig = new ActionConfig(null, "simple-action", new HashMap(), new HashMap(), null);
+        ActionConfig actionConfig = new ActionConfig.Builder("jim", "bob", "simple-action").build();
         SimpleAction simpleAction = (SimpleAction) objectFactory.buildBean(actionConfig.getClassName(), null);
         objectFactory.autoWireBean(simpleAction);
         assertEquals(simpleAction.getBean(), bean);
@@ -226,8 +226,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
 
     public void testObjectFactoryUsesSpringObjectFactoryToCreateActions() throws Exception {
         sac.registerSingleton("actionBean", SimpleAction.class, new MutablePropertyValues());
-        ActionConfig actionConfig = new ActionConfig();
-        actionConfig.setClassName(ConstructorAction.class.getName());
+        ActionConfig actionConfig = new ActionConfig.Builder("as", "as", ConstructorAction.class.getName()).build();
 
         ConstructorAction action = (ConstructorAction) objectFactory.buildBean(actionConfig.getClassName(), null);
 
@@ -245,8 +244,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
 
         sac.refresh();
 
-        ActionConfig actionConfig = new ActionConfig();
-        actionConfig.setClassName(SimpleAction.class.getName());
+        ActionConfig actionConfig = new ActionConfig.Builder("", "", SimpleAction.class.getName()).build();
         Action action = (Action) objectFactory.buildBean(actionConfig.getClassName(), null);
 
         assertNotNull("Bean should not be null", action);

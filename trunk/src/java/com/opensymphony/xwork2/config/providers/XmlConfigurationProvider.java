@@ -332,7 +332,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         return false;
     }
 
-    protected void addAction(Element actionElement, PackageConfig packageContext) throws ConfigurationException {
+    protected void addAction(Element actionElement, PackageConfig.Builder packageContext) throws ConfigurationException {
         String name = actionElement.getAttribute("name");
         String className = actionElement.getAttribute("class");
         String methodName = actionElement.getAttribute("method");
@@ -359,10 +359,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             return;
         }
 
-        Map actionParams = XmlHelper.getParams(actionElement);
-
         Map results;
-
         try {
             results = buildResults(actionElement, packageContext);
         } catch (ConfigurationException e) {
@@ -373,9 +370,14 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         List exceptionMappings = buildExceptionMappings(actionElement, packageContext);
 
-        ActionConfig actionConfig = new ActionConfig(methodName, className, packageContext.getName(), actionParams, results, interceptorList,
-                exceptionMappings);
-        actionConfig.setLocation(location);
+        ActionConfig actionConfig = new ActionConfig.Builder(packageContext.getName(), name, className)
+                .methodName(methodName)
+                .addResultConfigs(results)
+                .addInterceptors(interceptorList)
+                .addExceptionMappings(exceptionMappings)
+                .addParams(XmlHelper.getParams(actionElement))
+                .location(location)
+                .build();
         packageContext.addActionConfig(name, actionConfig);
 
         if (LOG.isDebugEnabled()) {
@@ -422,10 +424,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
      * Create a PackageConfig from an XML element representing it.
      */
     protected PackageConfig addPackage(Element packageElement) throws ConfigurationException {
-        PackageConfig newPackage = buildPackageContext(packageElement);
+        PackageConfig.Builder newPackage = buildPackageContext(packageElement);
 
         if (newPackage.isNeedsRefresh()) {
-            return newPackage;
+            return newPackage.build();
         }
 
         if (LOG.isDebugEnabled()) {
@@ -461,11 +463,12 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         // load the default action reference for this package
         loadDefaultActionRef(newPackage, packageElement);
 
-        configuration.addPackageConfig(newPackage.getName(), newPackage);
-        return newPackage;
+        PackageConfig cfg = newPackage.build();
+        configuration.addPackageConfig(cfg.getName(), cfg);
+        return cfg;
     }
 
-    protected void addResultTypes(PackageConfig packageContext, Element element) {
+    protected void addResultTypes(PackageConfig.Builder packageContext, Element element) {
         NodeList resultTypeList = element.getElementsByTagName("result-type");
 
         for (int i = 0; i < resultTypeList.getLength(); i++) {
@@ -485,19 +488,19 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 catch (Throwable t) {
                     // if we get here, the result type doesn't have a default param defined.
                 }
-                ResultTypeConfig resultType = new ResultTypeConfig(name, className, paramName);
-                resultType.setLocation(DomHelper.getLocationObject(resultTypeElement));
+                ResultTypeConfig.Builder resultType = new ResultTypeConfig.Builder(name, className).defaultResultParam(paramName)
+                        .location(DomHelper.getLocationObject(resultTypeElement));
 
                 Map params = XmlHelper.getParams(resultTypeElement);
 
                 if (!params.isEmpty()) {
-                    resultType.setParams(params);
+                    resultType.addParams(params);
                 }
-                packageContext.addResultTypeConfig(resultType);
+                packageContext.addResultTypeConfig(resultType.build());
 
                 // set the default result type
                 if ("true".equals(def)) {
-                    packageContext.setDefaultResultType(name);
+                    packageContext.defaultResultType(name);
                 }
             }
         }
@@ -517,7 +520,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         return null;
     }
 
-    protected List buildInterceptorList(Element element, PackageConfig context) throws ConfigurationException {
+    protected List buildInterceptorList(Element element, PackageConfig.Builder context) throws ConfigurationException {
         List interceptorList = new ArrayList();
         NodeList interceptorRefList = element.getElementsByTagName("interceptor-ref");
 
@@ -538,7 +541,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
      * <p/>
      * If no parents are found, it will return a root package.
      */
-    protected PackageConfig buildPackageContext(Element packageElement) {
+    protected PackageConfig.Builder buildPackageContext(Element packageElement) {
         String parent = packageElement.getAttribute("extends");
         String abstractVal = packageElement.getAttribute("abstract");
         boolean isAbstract = Boolean.valueOf(abstractVal).booleanValue();
@@ -551,33 +554,30 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     "a custom ObjectFactory or Interceptor.", packageElement);
         }
 
-        PackageConfig cfg = null;
+        PackageConfig.Builder cfg = new PackageConfig.Builder(name)
+                .namespace(namespace)
+                .isAbstract(isAbstract)
+                .location(DomHelper.getLocationObject(packageElement));
 
-        if (!TextUtils.stringSet(TextUtils.noNull(parent))) { // no parents
 
-            cfg = new PackageConfig(name, namespace, isAbstract);
-        } else { // has parents, let's look it up
+        if (TextUtils.stringSet(TextUtils.noNull(parent))) { // has parents, let's look it up
 
             List parents = ConfigurationUtil.buildParentsFromString(configuration, parent);
 
             if (parents.size() <= 0) {
-                cfg = new PackageConfig(name, namespace, isAbstract);
-                cfg.setNeedsRefresh(true);
+                cfg.needsRefresh(true);
             } else {
-                cfg = new PackageConfig(name, namespace, isAbstract, parents);
+                cfg.addParents(parents);
             }
         }
 
-        if (cfg != null) {
-            cfg.setLocation(DomHelper.getLocationObject(packageElement));
-        }
         return cfg;
     }
 
     /**
      * Build a map of ResultConfig objects from below a given XML element.
      */
-    protected Map buildResults(Element element, PackageConfig packageContext) {
+    protected Map buildResults(Element element, PackageConfig.Builder packageContext) {
         NodeList resultEls = element.getElementsByTagName("result");
 
         Map results = new LinkedHashMap();
@@ -607,7 +607,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
 
 
-                ResultTypeConfig config = packageContext.getAllResultTypeConfigs().get(resultType);
+                ResultTypeConfig config = packageContext.getResultType(resultType);
 
                 if (config == null) {
                     throw new ConfigurationException("There is no result type defined for type '" + resultType + "' mapped with name '" + resultName + "'", resultElement);
@@ -657,8 +657,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
                 params.putAll(resultParams);
 
-                ResultConfig resultConfig = new ResultConfig(resultName, resultClass, params);
-                resultConfig.setLocation(DomHelper.getLocationObject(element));
+                ResultConfig resultConfig = new ResultConfig.Builder(resultName, resultClass)
+                    .addParams(params)
+                    .location(DomHelper.getLocationObject(element))
+                    .build();
                 results.put(resultConfig.getName(), resultConfig);
             }
         }
@@ -669,7 +671,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     /**
      * Build a map of ResultConfig objects from below a given XML element.
      */
-    protected List buildExceptionMappings(Element element, PackageConfig packageContext) {
+    protected List buildExceptionMappings(Element element, PackageConfig.Builder packageContext) {
         NodeList exceptionMappingEls = element.getElementsByTagName("exception-mapping");
 
         List exceptionMappings = new ArrayList();
@@ -688,8 +690,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     emName = exceptionResult;
                 }
 
-                ExceptionMappingConfig ehConfig = new ExceptionMappingConfig(emName, exceptionClassName, exceptionResult, params);
-                ehConfig.setLocation(DomHelper.getLocationObject(ehElement));
+                ExceptionMappingConfig ehConfig = new ExceptionMappingConfig.Builder(emName, exceptionClassName, exceptionResult)
+                    .addParams(params)
+                    .location(DomHelper.getLocationObject(ehElement))
+                    .build();
                 exceptionMappings.add(ehConfig);
             }
         }
@@ -698,28 +702,28 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     }
 
 
-    protected void loadDefaultInterceptorRef(PackageConfig packageContext, Element element) {
+    protected void loadDefaultInterceptorRef(PackageConfig.Builder packageContext, Element element) {
         NodeList resultTypeList = element.getElementsByTagName("default-interceptor-ref");
 
         if (resultTypeList.getLength() > 0) {
             Element defaultRefElement = (Element) resultTypeList.item(0);
-            packageContext.setDefaultInterceptorRef(defaultRefElement.getAttribute("name"));
+            packageContext.defaultInterceptorRef(defaultRefElement.getAttribute("name"));
         }
     }
 
-    protected void loadDefaultActionRef(PackageConfig packageContext, Element element) {
+    protected void loadDefaultActionRef(PackageConfig.Builder packageContext, Element element) {
         NodeList resultTypeList = element.getElementsByTagName("default-action-ref");
 
         if (resultTypeList.getLength() > 0) {
             Element defaultRefElement = (Element) resultTypeList.item(0);
-            packageContext.setDefaultActionRef(defaultRefElement.getAttribute("name"));
+            packageContext.defaultActionRef(defaultRefElement.getAttribute("name"));
         }
     }
 
     /**
      * Load all of the global results for this package from the XML element.
      */
-    protected void loadGlobalResults(PackageConfig packageContext, Element packageElement) {
+    protected void loadGlobalResults(PackageConfig.Builder packageContext, Element packageElement) {
         NodeList globalResultList = packageElement.getElementsByTagName("global-results");
 
         if (globalResultList.getLength() > 0) {
@@ -729,18 +733,18 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         }
     }
 
-    protected void loadDefaultClassRef(PackageConfig packageContext, Element element) {
+    protected void loadDefaultClassRef(PackageConfig.Builder packageContext, Element element) {
         NodeList defaultClassRefList = element.getElementsByTagName("default-class-ref");
         if (defaultClassRefList.getLength() > 0) {
             Element defaultClassRefElement = (Element) defaultClassRefList.item(0);
-            packageContext.setDefaultClassRef(defaultClassRefElement.getAttribute("class"));
+            packageContext.defaultClassRef(defaultClassRefElement.getAttribute("class"));
         }
     }
 
     /**
      * Load all of the global results for this package from the XML element.
      */
-    protected void loadGobalExceptionMappings(PackageConfig packageContext, Element packageElement) {
+    protected void loadGobalExceptionMappings(PackageConfig.Builder packageContext, Element packageElement) {
         NodeList globalExceptionMappingList = packageElement.getElementsByTagName("global-exception-mappings");
 
         if (globalExceptionMappingList.getLength() > 0) {
@@ -760,11 +764,11 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     //            loadConfigurationFile(fileName, db);
     //        }
     //    }
-    protected InterceptorStackConfig loadInterceptorStack(Element element, PackageConfig context) throws ConfigurationException {
+    protected InterceptorStackConfig loadInterceptorStack(Element element, PackageConfig.Builder context) throws ConfigurationException {
         String name = element.getAttribute("name");
 
-        InterceptorStackConfig config = new InterceptorStackConfig(name);
-        config.setLocation(DomHelper.getLocationObject(element));
+        InterceptorStackConfig.Builder config = new InterceptorStackConfig.Builder(name)
+                .location(DomHelper.getLocationObject(element));
         NodeList interceptorRefList = element.getElementsByTagName("interceptor-ref");
 
         for (int j = 0; j < interceptorRefList.getLength(); j++) {
@@ -773,10 +777,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             config.addInterceptors(interceptors);
         }
 
-        return config;
+        return config.build();
     }
 
-    protected void loadInterceptorStacks(Element element, PackageConfig context) throws ConfigurationException {
+    protected void loadInterceptorStacks(Element element, PackageConfig.Builder context) throws ConfigurationException {
         NodeList interceptorStackList = element.getElementsByTagName("interceptor-stack");
 
         for (int i = 0; i < interceptorStackList.getLength(); i++) {
@@ -788,7 +792,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         }
     }
 
-    protected void loadInterceptors(PackageConfig context, Element element) throws ConfigurationException {
+    protected void loadInterceptors(PackageConfig.Builder context, Element element) throws ConfigurationException {
         NodeList interceptorList = element.getElementsByTagName("interceptor");
 
         for (int i = 0; i < interceptorList.getLength(); i++) {
@@ -797,8 +801,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             String className = interceptorElement.getAttribute("class");
 
             Map params = XmlHelper.getParams(interceptorElement);
-            InterceptorConfig config = new InterceptorConfig(name, className, params);
-            config.setLocation(DomHelper.getLocationObject(interceptorElement));
+            InterceptorConfig config = new InterceptorConfig.Builder(name, className)
+                .addParams(params)
+                .location(DomHelper.getLocationObject(interceptorElement))
+                .build();
 
             context.addInterceptorConfig(config);
         }
@@ -1055,7 +1061,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
      * @param context               The PackageConfig to lookup the interceptor from
      * @return A list of Interceptor objects
      */
-    private List lookupInterceptorReference(PackageConfig context, Element interceptorRefElement) throws ConfigurationException {
+    private List lookupInterceptorReference(PackageConfig.Builder context, Element interceptorRefElement) throws ConfigurationException {
         String refName = interceptorRefElement.getAttribute("name");
         Map refParams = XmlHelper.getParams(interceptorRefElement);
 

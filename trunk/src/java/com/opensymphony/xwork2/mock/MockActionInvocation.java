@@ -113,7 +113,7 @@ public class MockActionInvocation implements ActionInvocation {
         return this.actionEventListener;
     }
 
-    public void init(ActionProxy proxy) throws Exception {
+    public void init(ActionProxy proxy) {
     }
 
 }

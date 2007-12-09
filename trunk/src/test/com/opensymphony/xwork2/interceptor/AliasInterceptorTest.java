@@ -51,10 +51,9 @@ public class AliasInterceptorTest extends XWorkTestCase {
 
         MockActionProxy map = new MockActionProxy();
 
-        ActionConfig cfg = new ActionConfig();
-        Map params = new HashMap();
-        params.put("aliases", "invalid alias expression");
-        cfg.setParams(params);
+        ActionConfig cfg = new ActionConfig.Builder("", "", "")
+                .addParam("aliases", "invalid alias expression")
+                .build();
         map.setConfig(cfg);
 
         mai.setProxy(map);
@@ -75,10 +74,9 @@ public class AliasInterceptorTest extends XWorkTestCase {
 
         MockActionProxy map = new MockActionProxy();
 
-        ActionConfig cfg = new ActionConfig();
-        Map params = new HashMap();
-        params.put("hello", "invalid alias expression");
-        cfg.setParams(params);
+        ActionConfig cfg = new ActionConfig.Builder("", "", "")
+                .addParam("hello", "invalid alias expression")
+                .build();
         map.setConfig(cfg);
 
         mai.setProxy(map);
@@ -100,10 +98,9 @@ public class AliasInterceptorTest extends XWorkTestCase {
 
         MockActionProxy map = new MockActionProxy();
 
-        ActionConfig cfg = new ActionConfig();
-        Map params = new HashMap();
-        params.put("hello", "invalid alias expression");
-        cfg.setParams(params);
+        ActionConfig cfg = new ActionConfig.Builder("", "", "")
+                .addParam("hello", "invalid alias expression")
+                .build();
         map.setConfig(cfg);
 
         mai.setProxy(map);

@@ -70,18 +70,18 @@ public class AnnotationWorkflowInterceptorTest extends XWorkTestCase {
         }
 
         public void loadPackages() throws ConfigurationException {
-            PackageConfig packageConfig = new PackageConfig();
-            config.addPackageConfig("default", packageConfig);
-
-            ActionConfig actionConfig = new ActionConfig(null, AnnotatedAction.class, null, null,
-                    Arrays.asList(new InterceptorMapping[]{ new InterceptorMapping("annotationWorkflow", annotationWorkflow) }));
-            packageConfig.addActionConfig(ANNOTATED_ACTION, actionConfig);
-            actionConfig.addResultConfig(new ResultConfig("success", MockResult.class.getName()));
-            actionConfig = new ActionConfig(null, ShortcircuitedAction.class, null, null,
-                    Arrays.asList(new InterceptorMapping[]{ new InterceptorMapping("annotationWorkflow", annotationWorkflow) }));
-            packageConfig.addActionConfig(SHORTCIRCUITED_ACTION, actionConfig);
-            actionConfig.addResultConfig(new ResultConfig("shortcircuit", MockResult.class.getName()));
+            PackageConfig packageConfig = new PackageConfig.Builder("default")
+                    .addActionConfig(ANNOTATED_ACTION, new ActionConfig.Builder("defaultPackage", ANNOTATED_ACTION, AnnotatedAction.class.getName())
+                            .addInterceptors(Arrays.asList(new InterceptorMapping[]{ new InterceptorMapping("annotationWorkflow", annotationWorkflow) }))
+                            .addResultConfig(new ResultConfig.Builder("success", MockResult.class.getName()).build())
+                            .build())
+                    .addActionConfig(SHORTCIRCUITED_ACTION, new ActionConfig.Builder("defaultPackage", SHORTCIRCUITED_ACTION, ShortcircuitedAction.class.getName())
+                            .addInterceptors(Arrays.asList(new InterceptorMapping[]{ new InterceptorMapping("annotationWorkflow", annotationWorkflow) }))
+                            .addResultConfig(new ResultConfig.Builder("shortcircuit", MockResult.class.getName()).build())
+                            .build())
+                    .build();
             config.addPackageConfig("defaultPackage", packageConfig);
+            config.addPackageConfig("default", new PackageConfig.Builder(packageConfig).name("default").build());
         }
     }
 }

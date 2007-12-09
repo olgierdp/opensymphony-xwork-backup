@@ -85,14 +85,42 @@ public class ChainResultTest extends XWorkTestCase {
             this.returnVal = returnVal;
         }
 
-        public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext) throws Exception {
+        public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext) {
             TestCase.assertEquals(expectedNamespace, namespace);
             TestCase.assertEquals(expectedActionName, actionName);
 
             return returnVal;
         }
 
-        public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+        public ActionProxy createActionProxy(String namespace, String actionName, String methodName, Map extraContext) {
+            TestCase.assertEquals(expectedNamespace, namespace);
+            TestCase.assertEquals(expectedActionName, actionName);
+
+            return returnVal;
+        }
+
+        public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) {
+            TestCase.assertEquals(expectedNamespace, namespace);
+            TestCase.assertEquals(expectedActionName, actionName);
+
+            return returnVal;
+        }
+
+        public ActionProxy createActionProxy(String namespace, String actionName, String methodName, Map extraContext, boolean executeResult, boolean cleanupContext) {
+             TestCase.assertEquals(expectedNamespace, namespace);
+            TestCase.assertEquals(expectedActionName, actionName);
+
+            return returnVal;
+        }
+
+        public ActionProxy createActionProxy(ActionInvocation actionInvocation, String namespace, String actionName, String methodName, boolean executeResult, boolean cleanupContext) {
+             TestCase.assertEquals(expectedNamespace, namespace);
+            TestCase.assertEquals(expectedActionName, actionName);
+
+            return returnVal;
+        }
+
+        public ActionProxy createActionProxy(String namespace, String actionName, String method, boolean executeResult, boolean cleanupContext) {
             TestCase.assertEquals(expectedNamespace, namespace);
             TestCase.assertEquals(expectedActionName, actionName);
 

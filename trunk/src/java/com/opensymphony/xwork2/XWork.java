@@ -55,8 +55,7 @@ public class XWork {
         Configuration config = configurationManager.getConfiguration();
         try {
             ActionProxy proxy = config.getContainer().getInstance(ActionProxyFactory.class).createActionProxy(
-                    namespace, name, extraContext, true, false);
-            proxy.setMethod(method);
+                    namespace, name, method, extraContext, true, false);
         
             proxy.execute();
         } catch (Exception e) {

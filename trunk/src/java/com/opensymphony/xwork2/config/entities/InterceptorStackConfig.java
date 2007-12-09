@@ -5,11 +5,13 @@
 package com.opensymphony.xwork2.config.entities;
 
 import com.opensymphony.xwork2.util.location.Located;
+import com.opensymphony.xwork2.util.location.Location;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Collections;
 
 
 /**
@@ -20,19 +22,19 @@ import java.util.List;
  * @author Mike
  * @author Rainer Hermanns
  */
-public class InterceptorStackConfig extends Located implements InterceptorListHolder, Serializable {
+public class InterceptorStackConfig extends Located implements Serializable {
 
     private List<InterceptorMapping> interceptors;
     private String name;
 
 
-    public InterceptorStackConfig() {
+    protected InterceptorStackConfig() {
         this.interceptors = new ArrayList<InterceptorMapping>();
     }
 
-    public InterceptorStackConfig(String name) {
-        this();
-        this.name = name;
+    protected InterceptorStackConfig(InterceptorStackConfig orig) {
+        this.name = orig.name;
+        this.interceptors = new ArrayList<InterceptorMapping>(orig.interceptors);
     }
 
 
@@ -40,20 +42,8 @@ public class InterceptorStackConfig extends Located implements InterceptorListHo
         return interceptors;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void addInterceptor(InterceptorMapping interceptor) {
-        this.interceptors.add(interceptor);
-    }
-
-    public void addInterceptors(List<InterceptorMapping> interceptors) {
-        this.interceptors.addAll(interceptors);
     }
 
     public boolean equals(Object o) {
@@ -85,5 +75,46 @@ public class InterceptorStackConfig extends Located implements InterceptorListHo
         result = (29 * result) + ((interceptors != null) ? interceptors.hashCode() : 0);
 
         return result;
+    }
+
+    /**
+     * The builder for this object.  An instance of this object is the only way to construct a new instance.  The
+     * purpose is to enforce the immutability of the object.  The methods are structured in a way to support chaining.
+     * After setting any values you need, call the {@link #build()} method to create the object.
+     */
+    public static class Builder implements InterceptorListHolder {
+        private InterceptorStackConfig target;
+
+        public Builder(String name) {
+            target = new InterceptorStackConfig();
+            target.name = name;
+        }
+
+        public Builder name(String name) {
+            target.name = name;
+            return this;
+        }
+
+        public Builder addInterceptor(InterceptorMapping interceptor) {
+            target.interceptors.add(interceptor);
+            return this;
+        }
+
+        public Builder addInterceptors(List<InterceptorMapping> interceptors) {
+            target.interceptors.addAll(interceptors);
+            return this;
+        }
+
+        public Builder location(Location loc) {
+            target.location = loc;
+            return this;
+        }
+
+        public InterceptorStackConfig build() {
+            target.interceptors = Collections.unmodifiableList(target.interceptors);
+            InterceptorStackConfig result = target;
+            target = new InterceptorStackConfig(target);
+            return result;
+        }
     }
 }

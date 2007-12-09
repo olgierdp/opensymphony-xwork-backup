@@ -221,10 +221,7 @@ public class ActionChainResult implements Result {
             LOG.debug("Chaining to action " + finalActionName);
         }
 
-        proxy = actionProxyFactory.createActionProxy(finalNamespace, finalActionName, extraContext);
-        if (null != finalMethodName) {
-            proxy.setMethod(finalMethodName);
-        }
+        proxy = actionProxyFactory.createActionProxy(finalNamespace, finalActionName, finalMethodName, extraContext);
         proxy.execute();
     }
 

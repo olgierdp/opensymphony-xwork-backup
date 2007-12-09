@@ -17,13 +17,6 @@ import com.opensymphony.xwork2.config.entities.ActionConfig;
 public interface ActionProxy {
 
     /**
-     * Called after all dependencies are set.
-     *
-     * @throws Exception can be thrown.
-     */
-    void prepare() throws Exception;
-    
-    /**
      * Gets the Action instance for this Proxy.
      *
      * @return the Action instance
@@ -81,14 +74,6 @@ public interface ActionProxy {
      * @see ActionInvocation
      */
     String execute() throws Exception;
-
-    /**
-     * Sets the method to execute for the action invocation. If no method is specified, the method provided by
-     * in the action's configuration will be used.
-     *
-     * @param method the string name of the method to invoke
-     */
-    void setMethod(String method);
 
     /**
      * Gets the method name to execute, or <tt>null</tt> if no method has been specified (meaning <code>execute</code> will be invoked).

@@ -30,10 +30,9 @@ public class StaticParametersInterceptorTest extends XWorkTestCase {
 
         MockActionInvocation mai = new MockActionInvocation();
         MockActionProxy map = new MockActionProxy();
-        ActionConfig ac = new ActionConfig();
+        ActionConfig ac = new ActionConfig.Builder("", "", "").build();
 
-        Map params = new HashMap();
-        ac.setParams(params);
+        Map params = ac.getParams();
 
         map.setConfig(ac);
         mai.setProxy(map);
@@ -44,30 +43,13 @@ public class StaticParametersInterceptorTest extends XWorkTestCase {
         mock.verify();
     }
 
-    public void testNoParameters() throws Exception {
-        MockActionInvocation mai = new MockActionInvocation();
-        MockActionProxy map = new MockActionProxy();
-        ActionConfig ac = new ActionConfig();
-
-        ac.setParams(null);
-        map.setConfig(ac);
-        mai.setProxy(map);
-        mai.setAction(new SimpleFooAction());
-
-        int before = ActionContext.getContext().getValueStack().size();
-        interceptor.intercept(mai);
-
-        assertEquals(before, ActionContext.getContext().getValueStack().size());
-    }
-
     public void testWithOneParameters() throws Exception {
         MockActionInvocation mai = new MockActionInvocation();
         MockActionProxy map = new MockActionProxy();
-        ActionConfig ac = new ActionConfig();
+        ActionConfig ac = new ActionConfig.Builder("", "", "")
+                .addParam("top.name", "Santa")
+                .build();
 
-        Map params = new HashMap();
-        params.put("top.name", "Santa");
-        ac.setParams(params);
         map.setConfig(ac);
         mai.setProxy(map);
         mai.setAction(new SimpleFooAction());
@@ -84,11 +66,9 @@ public class StaticParametersInterceptorTest extends XWorkTestCase {
     public void testWithOneParametersParse() throws Exception {
         MockActionInvocation mai = new MockActionInvocation();
         MockActionProxy map = new MockActionProxy();
-        ActionConfig ac = new ActionConfig();
-
-        Map params = new HashMap();
-        params.put("top.name", "${top.hero}");
-        ac.setParams(params);
+        ActionConfig ac = new ActionConfig.Builder("", "", "")
+                .addParam("top.name", "${top.hero}")
+                .build();
         map.setConfig(ac);
         mai.setProxy(map);
         mai.setAction(new SimpleFooAction());
@@ -106,11 +86,9 @@ public class StaticParametersInterceptorTest extends XWorkTestCase {
     public void testWithOneParametersNoParse() throws Exception {
         MockActionInvocation mai = new MockActionInvocation();
         MockActionProxy map = new MockActionProxy();
-        ActionConfig ac = new ActionConfig();
-
-        Map params = new HashMap();
-        params.put("top.name", "${top.hero}");
-        ac.setParams(params);
+        ActionConfig ac = new ActionConfig.Builder("", "", "")
+                .addParam("top.name", "${top.hero}")
+                .build();
         map.setConfig(ac);
         mai.setProxy(map);
         mai.setAction(new SimpleFooAction());

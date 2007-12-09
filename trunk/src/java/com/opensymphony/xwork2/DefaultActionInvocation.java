@@ -64,7 +64,7 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected Container container;
     protected UnknownHandler unknownHandler;
 
-    public DefaultActionInvocation(final Map extraContext, final boolean pushAction) throws Exception {
+    public DefaultActionInvocation(final Map extraContext, final boolean pushAction) {
         DefaultActionInvocation.this.extraContext = extraContext;
         DefaultActionInvocation.this.pushAction = pushAction;
     }
@@ -366,7 +366,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         }
     }
 
-    public void init(ActionProxy proxy) throws Exception {
+    public void init(ActionProxy proxy) {
         this.proxy = proxy;
         Map contextMap = createContextMap();
 

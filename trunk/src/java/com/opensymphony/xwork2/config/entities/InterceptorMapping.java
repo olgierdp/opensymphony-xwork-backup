@@ -20,9 +20,6 @@ public class InterceptorMapping implements Serializable {
     private String name;
     private Interceptor interceptor;
 
-    public InterceptorMapping() {
-    }
-
     public InterceptorMapping(String name, Interceptor interceptor) {
         this.name = name;
         this.interceptor = interceptor;
@@ -32,16 +29,8 @@ public class InterceptorMapping implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Interceptor getInterceptor() {
         return interceptor;
-    }
-
-    public void setInterceptor(Interceptor interceptor) {
-        this.interceptor = interceptor;
     }
 
     public boolean equals(Object o) {

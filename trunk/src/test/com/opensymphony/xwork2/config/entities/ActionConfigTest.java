@@ -13,21 +13,21 @@ import com.opensymphony.xwork2.XWorkTestCase;
 public class ActionConfigTest extends XWorkTestCase {
 
     public void testToString() {
-        ActionConfig cfg = new ActionConfig();
-        cfg.setClassName("foo.Bar");
-        cfg.setMethodName("execute");
-        cfg.setLocation(new LocationImpl(null, "foo/xwork.xml", 10, 12));
-        
+        ActionConfig cfg = new ActionConfig.Builder("", "bob", "foo.Bar")
+                .methodName("execute")
+                .location(new LocationImpl(null, "foo/xwork.xml", 10, 12))
+                .build();
+
         assertTrue("Wrong toString(): "+cfg.toString(), 
-            "{ActionConfig foo.Bar.execute() - foo/xwork.xml:10:12}".equals(cfg.toString()));
+            "{ActionConfig bob (foo.Bar.execute()) - foo/xwork.xml:10:12}".equals(cfg.toString()));
     }
     
     public void testToStringWithNoMethod() {
-        ActionConfig cfg = new ActionConfig();
-        cfg.setClassName("foo.Bar");
-        cfg.setLocation(new LocationImpl(null, "foo/xwork.xml", 10, 12));
+        ActionConfig cfg = new ActionConfig.Builder("", "bob", "foo.Bar")
+                .location(new LocationImpl(null, "foo/xwork.xml", 10, 12))
+                .build();
         
-        assertTrue("Wrong toString(): "+cfg.toString(), 
-            "{ActionConfig foo.Bar - foo/xwork.xml:10:12}".equals(cfg.toString()));
+        assertTrue("Wrong toString(): "+cfg.toString(),
+            "{ActionConfig bob (foo.Bar) - foo/xwork.xml:10:12}".equals(cfg.toString()));
     }
 }

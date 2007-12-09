@@ -54,7 +54,7 @@ public class ScopedModelDrivenInterceptorTest extends XWorkTestCase {
         ScopedModelDriven action = new MyUserScopedModelDrivenAction();
         MockActionInvocation mai = new MockActionInvocation();
         MockActionProxy map = new MockActionProxy();
-        ActionConfig ac = new ActionConfig();
+        ActionConfig ac = new ActionConfig.Builder("", "", "").build();
         map.setConfig(ac);
         mai.setAction(action);
         mai.setProxy(map);
@@ -79,7 +79,7 @@ public class ScopedModelDrivenInterceptorTest extends XWorkTestCase {
         ScopedModelDriven action = new MyEquidaeScopedModelDrivenAction();
         MockActionInvocation mai = new MockActionInvocation();
         MockActionProxy map = new MockActionProxy();
-        ActionConfig ac = new ActionConfig();
+        ActionConfig ac = new ActionConfig.Builder("", "", "").build();
         map.setConfig(ac);
         mai.setAction(action);
         mai.setProxy(map);
@@ -109,7 +109,7 @@ public class ScopedModelDrivenInterceptorTest extends XWorkTestCase {
         ScopedModelDriven action = new MyUserScopedModelDrivenAction();
         MockActionInvocation mai = new MockActionInvocation();
         MockActionProxy map = new MockActionProxy();
-        ActionConfig ac = new ActionConfig();
+        ActionConfig ac = new ActionConfig.Builder("", "", "").build();
         map.setConfig(ac);
         mai.setAction(action);
         mai.setProxy(map);
@@ -138,7 +138,7 @@ public class ScopedModelDrivenInterceptorTest extends XWorkTestCase {
         action.setModel(user);
         MockActionInvocation mai = new MockActionInvocation();
         MockActionProxy map = new MockActionProxy();
-        ActionConfig ac = new ActionConfig();
+        ActionConfig ac = new ActionConfig.Builder("", "", "").build();
         map.setConfig(ac);
         mai.setAction(action);
         mai.setProxy(map);
@@ -154,7 +154,7 @@ public class ScopedModelDrivenInterceptorTest extends XWorkTestCase {
         Action action = new SimpleAction();
         MockActionInvocation mai = new MockActionInvocation();
         MockActionProxy map = new MockActionProxy();
-        ActionConfig ac = new ActionConfig();
+        ActionConfig ac = new ActionConfig.Builder("", "", "").build();
         map.setConfig(ac);
         mai.setAction(action);
         mai.setProxy(map);

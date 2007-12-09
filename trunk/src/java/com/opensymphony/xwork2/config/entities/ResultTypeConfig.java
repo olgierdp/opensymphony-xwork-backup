@@ -6,9 +6,11 @@ package com.opensymphony.xwork2.config.entities;
 
 import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.Collections;
 import java.io.Serializable;
 
 import com.opensymphony.xwork2.util.location.Located;
+import com.opensymphony.xwork2.util.location.Location;
 
 
 /**
@@ -22,19 +24,23 @@ import com.opensymphony.xwork2.util.location.Located;
  */
 public class ResultTypeConfig extends Located implements Serializable {
 
-    private String clazz;
+    private String className;
     private String name;
     private String defaultResultParam;
 
-    private Map params;
+    private Map<String,String> params;
 
-    public ResultTypeConfig() {
+    protected ResultTypeConfig(String name, String className) {
+        this.name = name;
+        this.className = className;
+        params = new LinkedHashMap<String,String>();
     }
 
-    public ResultTypeConfig(String name, String clazz, String defaultResultParam) {
-        this.name = name;
-        this.clazz = clazz;
-        this.defaultResultParam = defaultResultParam;
+    protected ResultTypeConfig(ResultTypeConfig orig) {
+        this.name = orig.name;
+        this.className = orig.className;
+        this.defaultResultParam = orig.defaultResultParam;
+        this.params = orig.params;
     }
 
 
@@ -45,36 +51,24 @@ public class ResultTypeConfig extends Located implements Serializable {
     public String getDefaultResultParam() {
     	return this.defaultResultParam;
     }
-    
-    public void setClazz(String clazz) {
-        this.clazz = clazz;
-    }
 
+    /**
+     * @deprecated Since 2.1, use {@link #getClassName()} instead
+     */
     public String getClazz() {
-        return clazz;
+        return className;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getClassName() {
+        return className;
     }
 
     public String getName() {
         return name;
     }
 
-    public void addParam(String key, String value) {
-        if (params == null) {
-            params = new LinkedHashMap();
-        }
-        params.put(key, value);
-    }
-
-    public Map getParams() {
+    public Map<String,String> getParams() {
         return this.params;
-    }
-
-    public void setParams(Map params) {
-        this.params = params;
     }
 
     public boolean equals(Object o) {
@@ -83,7 +77,7 @@ public class ResultTypeConfig extends Located implements Serializable {
 
         final ResultTypeConfig that = (ResultTypeConfig) o;
 
-        if (clazz != null ? !clazz.equals(that.clazz) : that.clazz != null) return false;
+        if (className != null ? !className.equals(that.className) : that.className != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (params != null ? !params.equals(that.params) : that.params != null) return false;
 
@@ -92,9 +86,63 @@ public class ResultTypeConfig extends Located implements Serializable {
 
     public int hashCode() {
         int result;
-        result = (clazz != null ? clazz.hashCode() : 0);
+        result = (className != null ? className.hashCode() : 0);
         result = 29 * result + (name != null ? name.hashCode() : 0);
         result = 29 * result + (params != null ? params.hashCode() : 0);
         return result;
+    }
+
+    /**
+     * The builder for this object.  An instance of this object is the only way to construct a new instance.  The
+     * purpose is to enforce the immutability of the object.  The methods are structured in a way to support chaining.
+     * After setting any values you need, call the {@link #build()} method to create the object.
+     */
+    public static final class Builder {
+        private ResultTypeConfig target;
+
+        public Builder(String name, String className) {
+            target = new ResultTypeConfig(name, className);
+        }
+
+        public Builder(ResultTypeConfig orig) {
+            target = new ResultTypeConfig(orig);
+        }
+
+        public Builder name(String name) {
+            target.name = name;
+            return this;
+        }
+
+        public Builder className(String name) {
+            target.className = name;
+            return this;
+        }
+
+         public Builder addParam(String name, String value) {
+            target.params.put(name, value);
+            return this;
+        }
+
+        public Builder addParams(Map<String,String> params) {
+            target.params.putAll(params);
+            return this;
+        }
+
+        public Builder defaultResultParam(String defaultResultParam) {
+            target.defaultResultParam = defaultResultParam;
+            return this;
+        }
+
+        public Builder location(Location loc) {
+            target.location = loc;
+            return this;
+        }
+
+        public ResultTypeConfig build() {
+            target.params = Collections.unmodifiableMap(target.params);
+            ResultTypeConfig result = target;
+            target = new ResultTypeConfig(target);
+            return result;
+        }
     }
 }

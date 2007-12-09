@@ -107,7 +107,8 @@ public class ValidationInterceptorPrefixMethodInvocationTest extends XWorkTestCa
 	
 	protected ValidationInterceptor create() {
 	    ObjectFactory objectFactory = container.getInstance(ObjectFactory.class);
-	    return (ValidationInterceptor) objectFactory.buildInterceptor(new InterceptorConfig("model", ValidationInterceptor.class.getName(), null), new HashMap());
+	    return (ValidationInterceptor) objectFactory.buildInterceptor(
+                new InterceptorConfig.Builder("model", ValidationInterceptor.class.getName()).build(), new HashMap());
 	}
 	
 	private interface ValidateAction extends Action, Validateable, ValidationAware {

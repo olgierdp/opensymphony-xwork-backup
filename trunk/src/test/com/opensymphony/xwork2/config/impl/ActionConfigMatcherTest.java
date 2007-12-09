@@ -134,39 +134,30 @@ public class ActionConfigMatcherTest extends XWorkTestCase {
 
     private Map<String,ActionConfig> buildActionConfigMap() {
         Map<String, ActionConfig> map = new HashMap<String,ActionConfig>();
-        
-        ActionConfig config = new ActionConfig();
-        
-        config.setClassName("foo.bar.{1}Action");
-        config.setMethodName("do{2}");
-        config.setPackageName("package-{1}");
-        
-        HashMap<String, Object> params = new HashMap<String,Object>();
+
+        HashMap params = new HashMap();
         params.put("first", "{1}");
         params.put("second", "{2}");
-        config.setParams(params);
+
+        ActionConfig config = new ActionConfig.Builder("package-{1}", "foo/*/*", "foo.bar.{1}Action")
+                .methodName("do{2}")
+                .addParams(params)
+                .addExceptionMapping(new ExceptionMappingConfig.Builder("foo{1}", "java.lang.{2}Exception", "success{1}")
+                    .addParams(new HashMap(params))
+                    .build())
+                .addInterceptor(new InterceptorMapping(null, null))
+                .addResultConfig(new ResultConfig.Builder("success{1}", "foo.{2}").addParams(params).build())
+                .build();
         map.put("foo/*/*", config);
         
-        config.addExceptionMapping(new ExceptionMappingConfig(
-                "foo{1}", "java.lang.{2}Exception", "success{1}", new HashMap(params)));
-        
-        config.addInterceptor(new InterceptorMapping());
-        
-        config.addResultConfig(new ResultConfig("success{1}", "foo.{2}", new HashMap(params)));
-        
-        config = new ActionConfig();
-        
-        config.setClassName("bar");
-        config.setMethodName("do{1}_{1}");
-        config.setPackageName("package-{1}");
-        
-        params = new HashMap<String,Object>();
-        params.put("first", "{2}");
-        config.setParams(params);
+        config = new ActionConfig.Builder("package-{1}", "bar/*/**", "bar")
+                .methodName("do{1}_{1}")
+                .addParam("first", "{2}")
+                .build();
         
         map.put("bar/*/**", config);
         
-        map.put("noWildcard", new ActionConfig());
+        map.put("noWildcard", new ActionConfig.Builder("", "", "").build());
 
         return map;
     }

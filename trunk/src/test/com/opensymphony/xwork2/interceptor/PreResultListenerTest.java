@@ -66,10 +66,9 @@ public class PreResultListenerTest extends XWorkTestCase {
             }
 
             public void loadPackages() {
-                PackageConfig packageConfig = new PackageConfig("package");
-                ActionConfig actionConfig = new ActionConfig(null, SimpleFooAction.class, null, null, null);
-                actionConfig.setPackageName("package");
-                packageConfig.addActionConfig("action", actionConfig);
+                PackageConfig packageConfig = new PackageConfig.Builder("package")
+                        .addActionConfig("action", new ActionConfig.Builder("package", "action", SimpleFooAction.class.getName()).build())
+                        .build();
                 configuration.addPackageConfig("package", packageConfig);
             }
 

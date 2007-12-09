@@ -44,48 +44,64 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         params.put("testXW412Again", "something");
 
 
-        ActionConfig barAction = new ActionConfig(null, SimpleAction.class, params, new HashMap(), new ArrayList());
+        ActionConfig barAction = new ActionConfig.Builder("", "Bar", SimpleAction.class.getName())
+            .addParams(params).build();
 
         // foo action is a little more complex, two params, a result and an interceptor stack
         results = new HashMap();
         params = new HashMap();
         params.put("foo", "18");
         params.put("bar", "24");
-        results.put("success", new ResultConfig("success", MockResult.class.getName(), new HashMap()));
+        results.put("success", new ResultConfig.Builder("success", MockResult.class.getName()).build());
 
-        InterceptorConfig timerInterceptorConfig = new InterceptorConfig("timer", TimerInterceptor.class, new HashMap());
+        InterceptorConfig timerInterceptorConfig = new InterceptorConfig.Builder("timer", TimerInterceptor.class.getName()).build();
         interceptors.add(new InterceptorMapping("timer", objectFactory.buildInterceptor(timerInterceptorConfig, new HashMap())));
 
-        ActionConfig fooAction = new ActionConfig(null, SimpleAction.class, params, results, interceptors);
+        ActionConfig fooAction = new ActionConfig.Builder("", "Foo", SimpleAction.class.getName())
+            .addParams(params)
+            .addResultConfigs(results)
+            .addInterceptors(interceptors)
+            .build();
 
         // wildcard action is simple wildcard example
         results = new HashMap();
-        results.put("*", new ResultConfig("*", MockResult.class.getName(), new HashMap()));
+        results.put("*", new ResultConfig.Builder("*", MockResult.class.getName()).build());
 
-        ActionConfig wildcardAction = new ActionConfig(null, SimpleAction.class, new HashMap(), results, interceptors);
+        ActionConfig wildcardAction = new ActionConfig.Builder("", "WildCard", SimpleAction.class.getName())
+            .addResultConfigs(results)
+            .addInterceptors(interceptors)
+            .build();
 
         // fooBar action is a little more complex, two params, a result and an interceptor stack
         params = new HashMap();
         params.put("foo", "18");
         params.put("bar", "24");
         results = new HashMap();
-        results.put("success", new ResultConfig("success", MockResult.class.getName(), new HashMap()));
+        results.put("success", new ResultConfig.Builder("success", MockResult.class.getName()).build());
 
-        ExceptionMappingConfig exceptionConfig = new ExceptionMappingConfig("runtime", "java.lang.RuntimeException", "exception");
+        ExceptionMappingConfig exceptionConfig = new ExceptionMappingConfig.Builder("runtime", "java.lang.RuntimeException", "exception")
+                .build();
         exceptionMappings.add(exceptionConfig);
 
-        ActionConfig fooBarAction = new ActionConfig(null, SimpleAction.class, params, results, interceptors, exceptionMappings);
+        ActionConfig fooBarAction = new ActionConfig.Builder("", "FooBar", SimpleAction.class.getName())
+            .addParams(params)
+            .addResultConfigs(results)
+            .addInterceptors(interceptors)
+            .addExceptionMappings(exceptionMappings)
+            .build();
 
         // TestInterceptorParam action tests that an interceptor worked
         HashMap interceptorParams = new HashMap();
         interceptorParams.put("expectedFoo", "expectedFooValue");
         interceptorParams.put("foo", MockInterceptor.DEFAULT_FOO_VALUE);
 
-        InterceptorConfig mockInterceptorConfig = new InterceptorConfig("test", MockInterceptor.class, new HashMap());
+        InterceptorConfig mockInterceptorConfig = new InterceptorConfig.Builder("test", MockInterceptor.class.getName()).build();
         interceptors = new ArrayList();
         interceptors.add(new InterceptorMapping("test", objectFactory.buildInterceptor(mockInterceptorConfig, interceptorParams)));
 
-        ActionConfig intAction = new ActionConfig(null, SimpleAction.class, new HashMap(), new HashMap(), interceptors);
+        ActionConfig intAction = new ActionConfig.Builder("", "TestInterceptorParam", SimpleAction.class.getName())
+            .addInterceptors(interceptors)
+            .build();
 
         // TestInterceptorParamOverride action tests that an interceptor with a param override worked
         interceptorParams = new HashMap();
@@ -94,7 +110,9 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         interceptors = new ArrayList();
         interceptors.add(new InterceptorMapping("test", objectFactory.buildInterceptor(mockInterceptorConfig, interceptorParams)));
 
-        ActionConfig intOverAction = new ActionConfig(null, SimpleAction.class, new HashMap(), new HashMap(), interceptors);
+        ActionConfig intOverAction = new ActionConfig.Builder("", "TestInterceptorParamOverride", SimpleAction.class.getName())
+            .addInterceptors(interceptors)
+            .build();
 
         // execute the configuration
         provider.init(configuration);

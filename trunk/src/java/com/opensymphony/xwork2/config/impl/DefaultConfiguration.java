@@ -221,19 +221,15 @@ public class DefaultConfiguration implements Configuration {
         return builder.create(true);
     }
 
-    public void removePackageConfig(String name) {
-        PackageConfig toBeRemoved = packageContexts.get(name);
-
-        if (toBeRemoved != null) {
-            for (PackageConfig packageConfig : packageContexts.values()) {
-                packageConfig.removeParent(toBeRemoved);
-            }
-        }
-    }
-
     /**
-     * This methodName builds the internal runtime configuration used by Xwork for finding and configuring Actions from the
+     * This builds the internal runtime configuration used by Xwork for finding and configuring Actions from the
      * programmatic configuration data structures. All of the old runtime configuration will be discarded and rebuilt.
+     *
+     * <p>
+     * It basically flattens the data structures to make the information easier to access.  It will take
+     * an {@link ActionConfig} and combine its data with all inherited dast.  For example, if the {@link ActionConfig}
+     * is in a package that contains a global result and it also contains a result, the resulting {@link ActionConfig}
+     * will have two results.
      */
     protected synchronized RuntimeConfiguration buildRuntimeConfiguration() throws ConfigurationException {
         Map<String, Map<String, ActionConfig>> namespaceActionConfigs = new LinkedHashMap<String, Map<String, ActionConfig>>();
@@ -274,7 +270,7 @@ public class DefaultConfiguration implements Configuration {
 
             if (entry.getValue() == null) {
                 ResultTypeConfig resultTypeConfig = packageContext.getAllResultTypeConfigs().get(defaultResult);
-                entry.setValue(new ResultConfig(null, resultTypeConfig.getClazz()));
+                entry.setValue(new ResultConfig.Builder(null, resultTypeConfig.getClassName()).build());
             }
         }
     }
@@ -290,7 +286,7 @@ public class DefaultConfiguration implements Configuration {
      *
      */
     private ActionConfig buildFullActionConfig(PackageConfig packageContext, ActionConfig baseConfig) throws ConfigurationException {
-        Map<String, Object> params = new TreeMap<String, Object>(baseConfig.getParams());
+        Map<String, String> params = new TreeMap<String, String>(baseConfig.getParams());
         Map<String, ResultConfig> results = new TreeMap<String, ResultConfig>();
 
         if (!baseConfig.getPackageName().equals(packageContext.getName()) && packageContexts.containsKey(baseConfig.getPackageName())) {
@@ -309,17 +305,17 @@ public class DefaultConfiguration implements Configuration {
             String defaultInterceptorRefName = packageContext.getFullDefaultInterceptorRef();
 
             if (defaultInterceptorRefName != null) {
-                interceptors.addAll(InterceptorBuilder.constructInterceptorReference(packageContext, defaultInterceptorRefName, 
+                interceptors.addAll(InterceptorBuilder.constructInterceptorReference(new PackageConfig.Builder(packageContext), defaultInterceptorRefName,
                         new LinkedHashMap(), packageContext.getLocation(), objectFactory));
             }
         }
 
-        List<ExceptionMappingConfig> exceptionMappings = baseConfig.getExceptionMappings();
-        exceptionMappings.addAll(packageContext.getAllExceptionMappingConfigs());
-
-        ActionConfig config = new ActionConfig(baseConfig.getMethodName(), baseConfig.getClassName(), packageContext.getName(), params, results,
-                interceptors, exceptionMappings);
-        config.setLocation(baseConfig.getLocation());
+        ActionConfig config = new ActionConfig.Builder(baseConfig)
+            .addParams(params)
+            .addResultConfigs(results)
+            .interceptors(interceptors)
+            .addExceptionMappings(packageContext.getAllExceptionMappingConfigs())
+            .build();
         return config;
     }
 
@@ -366,8 +362,9 @@ public class DefaultConfiguration implements Configuration {
 
                     // If config found, place all the matches found in the namespace processing in the action's parameters
                     if (config != null) {
-                        config = new ActionConfig(config);
-                        config.getParams().putAll(match.getVariables());
+                        config = new ActionConfig.Builder(config)
+                                .addParams(match.getVariables())
+                                .build();
                     }
                 }
             }

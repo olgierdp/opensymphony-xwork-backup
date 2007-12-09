@@ -28,20 +28,33 @@ public class DefaultActionProxyFactory implements ActionProxyFactory {
         this.container = container;
     }
     
-    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext) throws Exception {
-        return createActionProxy(namespace, actionName, extraContext, true, true);
+    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext) {
+        return createActionProxy(namespace, actionName, null, extraContext, true, true);
     }
 
-    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+    public ActionProxy createActionProxy(String namespace, String actionName, String methodName, Map extraContext) {
+        return createActionProxy(namespace, actionName, methodName, extraContext, true, true);
+    }
+
+    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) {
+        return createActionProxy(namespace, actionName, null, extraContext, executeResult, cleanupContext);
+    }
+
+    public ActionProxy createActionProxy(String namespace, String actionName, String methodName, Map extraContext, boolean executeResult, boolean cleanupContext) {
         
         ActionInvocation inv = new DefaultActionInvocation(extraContext, true);
         container.inject(inv);
-        return createActionProxy(inv, namespace, actionName, extraContext, executeResult, cleanupContext);
+        return createActionProxy(inv, namespace, actionName, methodName, executeResult, cleanupContext);
     }
     
-    public ActionProxy createActionProxy(ActionInvocation inv, String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) throws Exception {
+    public ActionProxy createActionProxy(ActionInvocation inv, String namespace, String actionName, boolean executeResult, boolean cleanupContext) {
         
-        ActionProxy proxy = new DefaultActionProxy(inv, namespace, actionName, extraContext, executeResult, cleanupContext);
+        return createActionProxy(inv, namespace, actionName, null, executeResult, cleanupContext);
+    }
+
+    public ActionProxy createActionProxy(ActionInvocation inv, String namespace, String actionName, String methodName, boolean executeResult, boolean cleanupContext) {
+
+        DefaultActionProxy proxy = new DefaultActionProxy(inv, namespace, actionName, methodName, executeResult, cleanupContext);
         container.inject(proxy);
         proxy.prepare();
         return proxy;

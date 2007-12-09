@@ -35,23 +35,29 @@ public class XmlConfigurationProviderResultsTest extends ConfigurationTestBase {
         HashMap parameters = new HashMap();
         HashMap results = new HashMap();
 
-        results.put("chainDefaultTypedResult", new ResultConfig("chainDefaultTypedResult", ActionChainResult.class.getName(), new HashMap()));
+        results.put("chainDefaultTypedResult", new ResultConfig.Builder("chainDefaultTypedResult", ActionChainResult.class.getName()).build());
 
-        results.put("mockTypedResult", new ResultConfig("mockTypedResult", MockResult.class.getName(), new HashMap()));
+        results.put("mockTypedResult", new ResultConfig.Builder("mockTypedResult", MockResult.class.getName()).build());
 
         Map resultParams = new HashMap();
         resultParams.put("actionName", "bar.vm");
-        results.put("specificLocationResult", new ResultConfig("specificLocationResult", ActionChainResult.class.getName(), resultParams));
+        results.put("specificLocationResult", new ResultConfig.Builder("specificLocationResult", ActionChainResult.class.getName())
+                .addParams(resultParams).build());
 
         resultParams = new HashMap();
         resultParams.put("actionName", "foo.vm");
-        results.put("defaultLocationResult", new ResultConfig("defaultLocationResult", ActionChainResult.class.getName(), resultParams));
+        results.put("defaultLocationResult", new ResultConfig.Builder("defaultLocationResult", ActionChainResult.class.getName())
+                .addParams(resultParams).build());
 
         resultParams = new HashMap();
         resultParams.put("foo", "bar");
-        results.put("noDefaultLocationResult", new ResultConfig("noDefaultLocationResult", ActionChainResult.class.getName(), resultParams));
+        results.put("noDefaultLocationResult", new ResultConfig.Builder("noDefaultLocationResult", ActionChainResult.class.getName())
+                .addParams(resultParams).build());
 
-        ActionConfig expectedAction = new ActionConfig(null, SimpleAction.class, parameters, results, new ArrayList());
+        ActionConfig expectedAction = new ActionConfig.Builder("default", "Bar", SimpleAction.class.getName())
+            .addParams(parameters)
+            .addResultConfigs(results)
+            .build();
 
         // execute the configuration
         provider.init(configuration);
@@ -86,8 +92,8 @@ public class XmlConfigurationProviderResultsTest extends ConfigurationTestBase {
         ConfigurationProvider provider = buildConfigurationProvider(filename);
 
         // setup expectations
-        ResultTypeConfig chainResult = new ResultTypeConfig("chain", ActionChainResult.class.getName(), null);
-        ResultTypeConfig mockResult = new ResultTypeConfig("mock", MockResult.class.getName(), null);
+        ResultTypeConfig chainResult = new ResultTypeConfig.Builder("chain", ActionChainResult.class.getName()).build();
+        ResultTypeConfig mockResult = new ResultTypeConfig.Builder("mock", MockResult.class.getName()).build();
 
         // execute the configuration
         provider.init(configuration);
