@@ -94,6 +94,7 @@ public class DefaultValidatorFactory implements ValidatorFactory {
         URL u = ClassLoaderUtil.getResource("", DefaultValidatorFactory.class);
         File[] files = null;
         try {
+            System.out.println("looing at :"+u);
             File f = new File(u.toURI());
             FilenameFilter filter = new FilenameFilter() {
                 public boolean accept(File file, String fileName) {
@@ -101,6 +102,9 @@ public class DefaultValidatorFactory implements ValidatorFactory {
                 }
             };
             files = f.listFiles(filter);
+            System.out.println("main url:"+u);
+            System.out.println("files:"+files);
+            System.out.println("full file list: "+new File(u.toURI()).list());
         } catch (URISyntaxException e) {
             e.printStackTrace();
             // swallow
