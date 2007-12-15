@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
 
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
@@ -103,8 +104,8 @@ public class DefaultValidatorFactory implements ValidatorFactory {
             };
             files = f.listFiles(filter);
             System.out.println("main url:"+u);
-            System.out.println("files:"+files);
-            System.out.println("full file list: "+new File(u.toURI()).list());
+            System.out.println("files:"+ Arrays.asList(files));
+            System.out.println("full file list: "+Arrays.asList(new File(u.toURI()).list()));
         } catch (URISyntaxException e) {
             e.printStackTrace();
             // swallow
