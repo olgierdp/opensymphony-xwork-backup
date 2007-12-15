@@ -102,6 +102,7 @@ public class DefaultValidatorFactory implements ValidatorFactory {
             };
             files = f.listFiles(filter);
         } catch (URISyntaxException e) {
+            e.printStackTrace();
             // swallow
         }
 
