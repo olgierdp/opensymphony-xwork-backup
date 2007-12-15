@@ -1,23 +1,6 @@
-/*
- * Copyright (c) 2002-2006 by OpenSymphony
- * All rights reserved.
- */
 package com.opensymphony.xwork2.validator;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.XWorkException;
-import com.opensymphony.xwork2.util.ClassLoaderUtil;
-import com.opensymphony.xwork2.util.logging.Logger;
-import com.opensymphony.xwork2.util.logging.LoggerFactory;
-
+import com.opensymphony.xwork2.inject.Inject;
 
 /**
  * ValidatorFactory
@@ -175,7 +158,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  * <p>Each Validator or Field-Validator element must define one message element inside
  * the validator element body. The message element has 1 attributes, key which is not
  * required. The body of the message tag is taken as the default message which should
- * be added to the Action if the validator fails. Key gives a message key to look up 
+ * be added to the Action if the validator fails. Key gives a message key to look up
  * in the Action's ResourceBundles using getText() from LocaleAware if the Action
  * implements that interface (as ActionSupport does). This provides for Localized
  * messages based on the Locale of the user making the request (or whatever Locale
@@ -210,7 +193,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  *    bar must be between ${min} and ${max}, current value is ${bar}.
  * <!-- END SNIPPET: exValidationRules3 -->
  * </pre>
- * 
+ *
  * <!-- START SNIPPET: validationRules4 -->
  * <p>Another notable fact is that the provided message value is capable of containing OGNL expressions.
  * Keeping this in mind, it is possible to construct quite sophisticated messages.</p>
@@ -228,27 +211,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  * @author Jason Carreira
  * @author James House
  */
-public class ValidatorFactory {
-
-    private static Map<String, String> validators = new HashMap<String, String>();
-    private static Logger LOG = LoggerFactory.getLogger(ValidatorFactory.class);
-
-    static {
-        parseValidators();
-    }
-
-    private ValidatorFactory() {
-    }
-    /**
-     * Get a Validator that matches the given configuration.
-     *
-     * @deprecated
-     * @param cfg  the configurator.
-     * @return  the validator.
-     */
-    public static Validator getValidator(ValidatorConfig cfg) {
-        return getValidator(cfg, ObjectFactory.getObjectFactory());
-    }
+public interface ValidatorFactory {
 
     /**
      * Get a Validator that matches the given configuration.
@@ -256,30 +219,7 @@ public class ValidatorFactory {
      * @param cfg  the configurator.
      * @return  the validator.
      */
-    public static Validator getValidator(ValidatorConfig cfg, ObjectFactory objectFactory) {
-
-        String className = lookupRegisteredValidatorType(cfg.getType());
-
-        Validator validator;
-
-        try {
-            // instantiate the validator, and set configured parameters
-            //todo - can this use the ThreadLocal?
-            validator = objectFactory.buildValidator(className, cfg.getParams(), null); // ActionContext.getContext().getContextMap());
-        } catch (Exception e) {
-            final String msg = "There was a problem creating a Validator of type " + className + " : caused by " + e.getMessage();
-            throw new XWorkException(msg, e, cfg);
-        }
-
-        // set other configured properties
-        validator.setMessageKey(cfg.getMessageKey());
-        validator.setDefaultMessage(cfg.getDefaultMessage());
-        if (validator instanceof ShortCircuitableValidator) {
-            ((ShortCircuitableValidator) validator).setShortCircuit(cfg.isShortCircuit());
-        }
-
-        return validator;
-    }
+    Validator getValidator(ValidatorConfig cfg);
 
     /**
      * Registers the given validator to the existing map of validators.
@@ -288,13 +228,7 @@ public class ValidatorFactory {
      * @param name    name of validator to add.
      * @param className   the FQ classname of the validator.
      */
-    public static void registerValidator(String name, String className) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Registering validator of class " + className + " with name " + name);
-        }
-
-        validators.put(name, className);
-    }
+    void registerValidator(String name, String className);
 
     /**
      * Lookup to get the FQ classname of the given validator name.
@@ -303,57 +237,5 @@ public class ValidatorFactory {
      * @return  the found FQ classname
      * @throws IllegalArgumentException is thrown if the name is not found.
      */
-    public static String lookupRegisteredValidatorType(String name) {
-        // lookup the validator class mapped to the type name
-        String className = validators.get(name);
-
-        if (className == null) {
-            throw new IllegalArgumentException("There is no validator class mapped to the name " + name);
-        }
-
-        return className;
-    }
-
-    private static void parseValidators() {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Loading validator definitions.");
-        }
-
-        // Get custom validator configurations via the classpath
-        URL u = ClassLoaderUtil.getResource("", ValidatorFactory.class);
-        File[] files = null;
-        try {
-            File f = new File(u.toURI());
-            FilenameFilter filter = new FilenameFilter() {
-                public boolean accept(File file, String fileName) {
-                    return fileName.contains("-validators.xml");
-                }
-            };
-            files = f.listFiles(filter);
-        } catch (URISyntaxException e) {
-            // swallow
-        }
-
-        // Parse default validator configurations
-        String resourceName = "com/opensymphony/xwork2/validator/validators/default.xml";
-        retrieveValidatorConfiguration(resourceName);
-
-        // Overwrite and extend defaults with application specific validator configurations
-        resourceName = "validators.xml";
-        retrieveValidatorConfiguration(resourceName);
-
-        // Add custom (plugin) specific validator configurations
-        if ( files != null && files.length > 0 ) {
-            for (File file : files) {
-                retrieveValidatorConfiguration(file.getName());
-            }
-        }
-    }
-
-    private static void retrieveValidatorConfiguration(String resourceName) {
-        InputStream is = ClassLoaderUtil.getResourceAsStream(resourceName, ValidatorFactory.class);
-        if (is != null) {
-            ValidatorFileParser.parseValidatorDefinitions(is, resourceName);
-        }
-    }
+    String lookupRegisteredValidatorType(String name);
 }

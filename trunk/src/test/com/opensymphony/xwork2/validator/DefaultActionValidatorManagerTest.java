@@ -4,20 +4,20 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import com.opensymphony.xwork2.SimpleAction;
-import com.opensymphony.xwork2.TestBean;
-import com.opensymphony.xwork2.ValidationOrderAction;
-import com.opensymphony.xwork2.XWorkTestCase;
-import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.test.DataAware2;
 import com.opensymphony.xwork2.test.SimpleAction2;
 import com.opensymphony.xwork2.test.SimpleAction3;
 import com.opensymphony.xwork2.test.User;
 import com.opensymphony.xwork2.validator.validators.*;
+import com.mockobjects.dynamic.Mock;
+import com.mockobjects.dynamic.C;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import junit.framework.TestCase;
 
 
 /**
@@ -27,20 +27,35 @@ import java.util.Map;
  * @author tm_jee 
  * @version $Date$ $Id$
  */
-public class DefaultActionValidatorManagerTest extends XWorkTestCase {
+public class DefaultActionValidatorManagerTest extends TestCase {
 
     protected final String alias = "validationAlias";
 
-    ActionValidatorManager actionValidatorManager;
+    DefaultActionValidatorManager actionValidatorManager;
+    Mock mockValidatorFileParser;
+    Mock mockValidatorFactory;
+    ValueStack stubValueStack;
 
     protected void setUp() throws Exception {
         actionValidatorManager = new DefaultActionValidatorManager();
         super.setUp();
+        mockValidatorFileParser = new Mock(ValidatorFileParser.class);
+        actionValidatorManager.setValidatorFileParser((ValidatorFileParser)mockValidatorFileParser.proxy());
+
+        mockValidatorFactory = new Mock(ValidatorFactory.class);
+        actionValidatorManager.setValidatorFactory((ValidatorFactory)mockValidatorFactory.proxy());
+
+        stubValueStack = new StubValueStack();
+        ActionContext.setContext(new ActionContext(new HashMap()));
+        ActionContext.getContext().setValueStack(stubValueStack);
+
     }
 
     protected void tearDown() throws Exception {
         actionValidatorManager = null;
         super.tearDown();
+        mockValidatorFactory = null;
+        mockValidatorFileParser = null;
     }
 
 
@@ -50,159 +65,85 @@ public class DefaultActionValidatorManagerTest extends XWorkTestCase {
     }
 
     public void testBuildsValidatorsForAlias() {
-        List validatorList = actionValidatorManager.getValidators(SimpleAction.class, alias);
-
-        // 6 in the class level + 2 in the alias
-        assertEquals(11, validatorList.size());
+        mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/SimpleAction-validation.xml")),
+                new ArrayList());
+        mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/SimpleAction-validationAlias-validation.xml")),
+                new ArrayList());
+         actionValidatorManager.getValidators(SimpleAction.class, alias);
+        mockValidatorFileParser.verify();
     }
 
     public void testBuildsValidatorsForAliasError() {
         boolean pass = false;
         try {
+            mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/TestBean-validation.xml")),
+                new ArrayList());
+            mockValidatorFileParser.expectAndThrow("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/TestBean-badtest-validation.xml")),
+                new ConfigurationException());
             List validatorList = actionValidatorManager.getValidators(TestBean.class, "badtest");
         } catch (XWorkException ex) {
             pass = true;
         }
+        mockValidatorFileParser.verify();
         assertTrue("Didn't throw exception on load failure", pass);
     }
 
 
-    public void testDefaultMessageInterpolation() {
-        // get validators
-        List validatorList = actionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
-        assertEquals(3, validatorList.size());
-
-        try {
-            TestBean bean = new TestBean();
-            bean.setName("foo");
-            bean.setCount(99);
-
-            ValidatorContext context = new GenericValidatorContext(bean);
-            actionValidatorManager.validate(bean, "beanMessageBundle", context);
-            assertTrue(context.hasErrors());
-            assertTrue(context.hasFieldErrors());
-
-            List l = (List) context.getFieldErrors().get("count");
-            assertNotNull(l);
-            assertEquals(1, l.size());
-            assertEquals("Smaller Invalid Count: 99", l.get(0));
-        } catch (ValidationException ex) {
-            ex.printStackTrace();
-            fail("Validation error: " + ex.getMessage());
-        }
-    }
-
     public void testGetValidatorsForInterface() {
-        List validatorList = actionValidatorManager.getValidators(DataAware2.class, alias);
-
-        // 3 in interface hierarchy, 2 from parent interface (1 default + 1 context)
-        assertEquals(3, validatorList.size());
-
-        final FieldValidator dataValidator1 = (FieldValidator) validatorList.get(0);
-        assertEquals("data", dataValidator1.getFieldName());
-        assertTrue(dataValidator1 instanceof RequiredFieldValidator);
-
-        final FieldValidator dataValidator2 = (FieldValidator) validatorList.get(1);
-        assertEquals("data", dataValidator2.getFieldName());
-        assertTrue(dataValidator2 instanceof RequiredStringValidator);
-
-        final FieldValidator blingValidator = (FieldValidator) validatorList.get(2);
-        assertEquals("bling", blingValidator.getFieldName());
-        assertTrue(blingValidator instanceof RequiredStringValidator);
+        mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/test/DataAware-validation.xml")),
+                new ArrayList());
+        mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/test/DataAware-validationAlias-validation.xml")),
+                new ArrayList());
+        mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/test/DataAware2-validation.xml")),
+                new ArrayList());
+        actionValidatorManager.getValidators(DataAware2.class, alias);
+        mockValidatorFileParser.verify();
     }
 
     public void testGetValidatorsFromInterface() {
-        List validatorList = actionValidatorManager.getValidators(SimpleAction3.class, alias);
-
-       
-        
-        
-        // 9 in the class hierarchy + 1 in the interface + 1 in interface alias
-        assertEquals(13, validatorList.size());
-
-        // action-level validator comes first
-        final Validator expressionValidator = (Validator) validatorList.get(0);
-        assertTrue(expressionValidator instanceof ExpressionValidator);
-        
-        final FieldValidator barValidator1 = (FieldValidator) validatorList.get(1);
-        assertEquals("bar", barValidator1.getFieldName());
-        assertTrue(barValidator1 instanceof RequiredFieldValidator);
-
-        final FieldValidator barValidator2 = (FieldValidator) validatorList.get(2);
-        assertEquals("bar", barValidator2.getFieldName());
-        assertTrue(barValidator2 instanceof IntRangeFieldValidator);
-
-        final FieldValidator doubleValidator = (FieldValidator) validatorList.get(3);
-        assertEquals("percentage", doubleValidator.getFieldName());
-        assertTrue(doubleValidator instanceof DoubleRangeFieldValidator);
-
-        final FieldValidator dateValidator = (FieldValidator) validatorList.get(4);
-        assertEquals("date", dateValidator.getFieldName());
-        assertTrue(dateValidator instanceof DateRangeFieldValidator);
-
-        final FieldValidator fooValidator = (FieldValidator) validatorList.get(5);
-        assertEquals("foo", fooValidator.getFieldName());
-        assertTrue(fooValidator instanceof IntRangeFieldValidator);
-
-        final FieldValidator bazValidator = (FieldValidator) validatorList.get(6);
-        assertEquals("baz", bazValidator.getFieldName());
-        assertTrue(bazValidator instanceof IntRangeFieldValidator);
-        
-        final FieldValidator longValidator = (FieldValidator) validatorList.get(7);
-        assertEquals("longFoo", longValidator.getFieldName());
-        assertTrue(longValidator instanceof LongRangeFieldValidator);
-        
-        final FieldValidator shortValidator = (FieldValidator) validatorList.get(8);
-        assertEquals("shortFoo", shortValidator.getFieldName());
-        assertTrue(shortValidator instanceof ShortRangeFieldValidator);
-
-        final FieldValidator bazValidator1 = (FieldValidator) validatorList.get(9);
-        assertEquals("baz", bazValidator1.getFieldName());
-        assertTrue(bazValidator1 instanceof RequiredFieldValidator);
-
-        final FieldValidator bazValidator2 = (FieldValidator) validatorList.get(10);
-        assertEquals("baz", bazValidator2.getFieldName());
-        assertTrue(bazValidator2 instanceof IntRangeFieldValidator);
-
-        final FieldValidator dataValidator1 = (FieldValidator) validatorList.get(11);
-        assertEquals("data", dataValidator1.getFieldName());
-        assertTrue(dataValidator1 instanceof RequiredFieldValidator);
-
-        final FieldValidator dataValidator2 = (FieldValidator) validatorList.get(12);
-        assertEquals("data", dataValidator2.getFieldName());
-        assertTrue(dataValidator2 instanceof RequiredStringValidator);
-    }
-
-    public void testMessageInterpolation() {
-        // get validators
-        List validatorList = actionValidatorManager.getValidators(TestBean.class, "beanMessageBundle");
-        assertEquals(3, validatorList.size());
-
-        try {
-            TestBean bean = new TestBean();
-            bean.setName("foo");
-            bean.setCount(150);
-
-            ValidatorContext context = new GenericValidatorContext(bean);
-            actionValidatorManager.validate(bean, "beanMessageBundle", context);
-            assertTrue(context.hasErrors());
-            assertTrue(context.hasFieldErrors());
-
-            List l = (List) context.getFieldErrors().get("count");
-            assertNotNull(l);
-            assertEquals(1, l.size());
-            assertEquals("Count must be between 1 and 100, current value is 150.", l.get(0));
-        } catch (ValidationException ex) {
-            ex.printStackTrace();
-            fail("Validation error: " + ex.getMessage());
-        }
+        mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/SimpleAction-validation.xml")),
+                new ArrayList());
+        mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/SimpleAction-validationAlias-validation.xml")),
+                new ArrayList());
+        mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/test/DataAware-validation.xml")),
+                new ArrayList());
+        mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/test/DataAware-validationAlias-validation.xml")),
+                new ArrayList());
+        actionValidatorManager.getValidators(SimpleAction3.class, alias);
+        mockValidatorFileParser.verify();
     }
 
     public void testSameAliasWithDifferentClass() {
-        List validatorList = actionValidatorManager.getValidators(SimpleAction.class, alias);
-        List validatorList2 = actionValidatorManager.getValidators(SimpleAction2.class, alias);
-        assertFalse(validatorList.size() == validatorList2.size());
+        mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/SimpleAction-validation.xml")),
+                new ArrayList());
+        mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/SimpleAction-validationAlias-validation.xml")),
+                new ArrayList());
+        mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/test/SimpleAction2-validation.xml")),
+                new ArrayList());
+        mockValidatorFileParser.expectAndReturn("parseActionValidatorConfigs",
+                C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/test/SimpleAction2-validationAlias-validation.xml")),
+                new ArrayList());
+        actionValidatorManager.getValidators(SimpleAction.class, alias);
+        actionValidatorManager.getValidators(SimpleAction2.class, alias);
+        mockValidatorFileParser.verify();
     }
+
+    /*
+    // TODO: this all need to be converted to real unit tests
 
     public void testSkipUserMarkerActionLevelShortCircuit() {
         // get validators
@@ -392,4 +333,5 @@ public class DefaultActionValidatorManagerTest extends XWorkTestCase {
     	assertEquals(((List)e.getValue()).get(0), "password hint is required");
     	
     }
+    */
 }

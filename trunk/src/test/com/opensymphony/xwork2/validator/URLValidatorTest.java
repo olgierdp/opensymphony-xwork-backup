@@ -29,7 +29,8 @@ public class URLValidatorTest extends XWorkTestCase {
 		URLValidator validator = new URLValidator();
 		validator.setValidatorContext(new GenericValidatorContext(new Object()));
 		validator.setFieldName("testingUrl1");
-		validator.validate(new MyObject());
+        validator.setValueStack(ActionContext.getContext().getValueStack());
+        validator.validate(new MyObject());
 		
 		assertFalse(validator.getValidatorContext().hasErrors());
 		assertFalse(validator.getValidatorContext().hasActionErrors());
@@ -42,7 +43,8 @@ public class URLValidatorTest extends XWorkTestCase {
 		URLValidator validator = new URLValidator();
 		validator.setValidatorContext(new GenericValidatorContext(new Object()));
 		validator.setFieldName("testingUrl2");
-		validator.validate(new MyObject());
+        validator.setValueStack(ActionContext.getContext().getValueStack());
+        validator.validate(new MyObject());
 		
 		assertFalse(validator.getValidatorContext().hasErrors());
 		assertFalse(validator.getValidatorContext().hasActionErrors());
@@ -55,7 +57,8 @@ public class URLValidatorTest extends XWorkTestCase {
 		URLValidator validator = new URLValidator();
 		validator.setValidatorContext(new GenericValidatorContext(new Object()));
 		validator.setFieldName("testingUrl3");
-		validator.validate(new MyObject());
+        validator.setValueStack(ActionContext.getContext().getValueStack());
+        validator.validate(new MyObject());
 		
 		assertTrue(validator.getValidatorContext().hasErrors());
 		assertFalse(validator.getValidatorContext().hasActionErrors());
@@ -69,7 +72,8 @@ public class URLValidatorTest extends XWorkTestCase {
 		URLValidator validator = new URLValidator();
 		validator.setValidatorContext(new GenericValidatorContext(new Object()));
 		validator.setFieldName("testingUrl4");
-		validator.validate(new MyObject());
+        validator.setValueStack(ActionContext.getContext().getValueStack());
+        validator.validate(new MyObject());
 		
 		assertFalse(validator.getValidatorContext().hasErrors());
 		assertFalse(validator.getValidatorContext().hasActionErrors());
@@ -82,7 +86,8 @@ public class URLValidatorTest extends XWorkTestCase {
 		URLValidator validator = new URLValidator();
 		validator.setValidatorContext(new GenericValidatorContext(new Object()));
 		validator.setFieldName("testingUrl5");
-		validator.validate(new MyObject());
+        validator.setValueStack(ActionContext.getContext().getValueStack());
+        validator.validate(new MyObject());
 		
 		assertFalse(validator.getValidatorContext().hasErrors());
 		assertFalse(validator.getValidatorContext().hasActionErrors());

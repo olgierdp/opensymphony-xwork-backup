@@ -102,7 +102,7 @@ public class DomHelper {
 
         factory.setValidating((dtdMappings != null));
         factory.setNamespaceAware(true);
-        
+
         SAXParser parser = null;
         try {
             parser = factory.newSAXParser();
@@ -112,7 +112,7 @@ public class DomHelper {
         
         
         DOMBuilder builder = new DOMBuilder();
-        
+
         // Enhance the sax stream with location information
         ContentHandler locationHandler = new LocationAttributes.Pipe(builder);
         

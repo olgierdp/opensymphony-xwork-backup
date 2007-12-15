@@ -16,7 +16,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.FileManager;
+import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
@@ -39,12 +42,21 @@ public class DefaultActionValidatorManager implements ActionValidatorManager {
     /** The file suffix for any validation file. */
     protected static final String VALIDATION_CONFIG_SUFFIX = "-validation.xml";
 
-    private static final Map<String, List<ValidatorConfig>> validatorCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
-    private static final Map<String, List<ValidatorConfig>> validatorFileCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultActionValidatorManager.class);
-    private ObjectFactory objectFactory;
+    private final Map<String, List<ValidatorConfig>> validatorCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
+    private final Map<String, List<ValidatorConfig>> validatorFileCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
+    private final Logger LOG = LoggerFactory.getLogger(DefaultActionValidatorManager.class);
+    private ValidatorFactory validatorFactory;
+    private ValidatorFileParser validatorFileParser;
+
+    @Inject
+    public void setValidatorFileParser(ValidatorFileParser parser) {
+        this.validatorFileParser = parser;
+    }
     
-    
+    @Inject
+    public void setValidatorFactory(ValidatorFactory fac) {
+        this.validatorFactory = fac;
+    }
 
     public synchronized List<Validator> getValidators(Class clazz, String context) {
         return getValidators(clazz, context, null);
@@ -60,6 +72,7 @@ public class DefaultActionValidatorManager implements ActionValidatorManager {
         } else {
             validatorCache.put(validatorKey, buildValidatorConfigs(clazz, context, false, null));
         }
+        ValueStack stack = ActionContext.getContext().getValueStack();
 
         // get the set of validator configs
         List<ValidatorConfig> cfgs = validatorCache.get(validatorKey);
@@ -68,8 +81,9 @@ public class DefaultActionValidatorManager implements ActionValidatorManager {
         ArrayList<Validator> validators = new ArrayList<Validator>(cfgs.size());
         for (ValidatorConfig cfg : cfgs) {
             if (method == null || method.equals(cfg.getParams().get("methodName"))) {
-                Validator validator = ValidatorFactory.getValidator(cfg, ObjectFactory.getObjectFactory());
+                Validator validator = validatorFactory.getValidator(cfg);
                 validator.setValidatorType(cfg.getType());
+                validator.setValueStack(stack);
                 validators.add(validator);
             }
         }
@@ -300,7 +314,7 @@ public class DefaultActionValidatorManager implements ActionValidatorManager {
                 is = FileManager.loadFile(fileName, clazz);
 
                 if (is != null) {
-                    retList = new ArrayList<ValidatorConfig>(ValidatorFileParser.parseActionValidatorConfigs(is, fileName));
+                    retList = new ArrayList<ValidatorConfig>(validatorFileParser.parseActionValidatorConfigs(validatorFactory, is, fileName));
                 }
             } finally {
                 if (is != null) {

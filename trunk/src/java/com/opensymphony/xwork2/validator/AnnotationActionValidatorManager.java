@@ -17,7 +17,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.FileManager;
+import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
@@ -35,9 +38,22 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
      */
     protected static final String VALIDATION_CONFIG_SUFFIX = "-validation.xml";
 
-    private static final Map<String, List<ValidatorConfig>> validatorCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
-    private static final Map<String, List<ValidatorConfig>> validatorFileCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
+    private final Map<String, List<ValidatorConfig>> validatorCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
+    private final Map<String, List<ValidatorConfig>> validatorFileCache = Collections.synchronizedMap(new HashMap<String, List<ValidatorConfig>>());
     private static final Logger LOG = LoggerFactory.getLogger(AnnotationActionValidatorManager.class);
+
+    private ValidatorFactory validatorFactory;
+    private ValidatorFileParser validatorFileParser;
+
+    @Inject
+    public void setValidatorFactory(ValidatorFactory fac) {
+        this.validatorFactory = fac;
+    }
+
+    @Inject
+    public void setValidatorFileParser(ValidatorFileParser parser) {
+        this.validatorFileParser = parser;
+    }
 
     public synchronized List<Validator> getValidators(Class clazz, String context) {
         return getValidators(clazz, context, null);
@@ -57,13 +73,18 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
         // get the set of validator configs
         List<ValidatorConfig> cfgs = validatorCache.get(validatorKey);
 
+        ValueStack stack = ActionContext.getContext().getValueStack();
+
         // create clean instances of the validators for the caller's use
         ArrayList<Validator> validators = new ArrayList<Validator>(cfgs.size());
         for (ValidatorConfig cfg : cfgs) {
             if (method == null || method.equals(cfg.getParams().get("methodName"))) {
-                cfg.getParams().remove("methodName");
-                Validator validator = ValidatorFactory.getValidator(cfg, ObjectFactory.getObjectFactory());
+                Validator validator = validatorFactory.getValidator(
+                        new ValidatorConfig.Builder(cfg)
+                            .removeParam("methodName")
+                            .build());
                 validator.setValidatorType(cfg.getType());
+                validator.setValueStack(stack);
                 validators.add(validator);
             }
         }
@@ -201,7 +222,9 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
 
         List<ValidatorConfig> result = new ArrayList<ValidatorConfig>(loadFile(fileName, aClass, checkFile));
 
-        List<ValidatorConfig> annotationResult = new ArrayList<ValidatorConfig>(AnnotationValidationConfigurationBuilder.buildAnnotationClassValidatorConfigs(aClass));
+        AnnotationValidationConfigurationBuilder builder = new AnnotationValidationConfigurationBuilder(validatorFactory);
+
+        List<ValidatorConfig> annotationResult = new ArrayList<ValidatorConfig>(builder.buildAnnotationClassValidatorConfigs(aClass));
 
         result.addAll(annotationResult);
 
@@ -310,7 +333,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
                 is = FileManager.loadFile(fileName, clazz);
 
                 if (is != null) {
-                    retList = new ArrayList<ValidatorConfig>(ValidatorFileParser.parseActionValidatorConfigs(is, fileName));
+                    retList = new ArrayList<ValidatorConfig>(validatorFileParser.parseActionValidatorConfigs(validatorFactory, is, fileName));
                 }
             } catch (Exception e) {
                 LOG.error("Caught exception while loading file " + fileName, e);

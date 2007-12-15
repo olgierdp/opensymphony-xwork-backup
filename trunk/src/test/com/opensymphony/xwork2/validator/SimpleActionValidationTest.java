@@ -137,6 +137,7 @@ public class SimpleActionValidationTest extends XWorkTestCase {
                 addActionError(object);
             }
         };
+        validator.setValueStack(ActionContext.getContext().getValueStack());
 
         String messageKey = "does.not.exist";
         validator.setMessageKey(messageKey);

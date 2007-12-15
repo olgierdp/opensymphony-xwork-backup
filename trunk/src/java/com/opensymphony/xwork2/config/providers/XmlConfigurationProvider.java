@@ -865,9 +865,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     doc = DomHelper.parse(in, dtdMappings);
                 } catch (XWorkException e) {
                     if (includeElement != null) {
-                        throw new ConfigurationException(e, includeElement);
+                        throw new ConfigurationException("Unable to load "+url, e, includeElement);
                     } else {
-                        throw new ConfigurationException(e);
+                        throw new ConfigurationException("Unable to load "+url, e);
                     }
                 } catch (Exception e) {
                     final String s = "Caught exception while loading file " + fileName;

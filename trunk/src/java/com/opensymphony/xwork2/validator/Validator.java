@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork2.validator;
 
+import com.opensymphony.xwork2.util.ValueStack;
+
 
 /**
  * <!-- START SNIPPET: validatorFlavours -->
@@ -399,5 +401,13 @@ public interface Validator {
      * @return  the type used
      */
     String getValidatorType();
+
+    /**
+     * Sets the value stack to use to resolve values and parameters
+     *
+     * @param stack The value stack for the request
+     * @since 2.1.1
+     */
+    void setValueStack(ValueStack stack);
 
 }

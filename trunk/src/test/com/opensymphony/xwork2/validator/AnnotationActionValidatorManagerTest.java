@@ -31,8 +31,8 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
     AnnotationActionValidatorManager annotationActionValidatorManager;
 
     protected void setUp() throws Exception {
-        annotationActionValidatorManager = new AnnotationActionValidatorManager();
         super.setUp();
+        annotationActionValidatorManager = (AnnotationActionValidatorManager) container.getInstance(ActionValidatorManager.class);
     }
 
     protected void tearDown() throws Exception {

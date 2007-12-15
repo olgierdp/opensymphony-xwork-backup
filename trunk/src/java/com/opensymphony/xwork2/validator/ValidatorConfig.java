@@ -5,7 +5,11 @@
 package com.opensymphony.xwork2.validator;
 
 import java.util.Map;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+
 import com.opensymphony.xwork2.util.location.Located;
+import com.opensymphony.xwork2.util.location.Location;
 
 /**
  * Holds the necessary information for configuring an instance of a Validator.
@@ -22,16 +26,20 @@ public class ValidatorConfig extends Located {
     private String messageKey;
     private boolean shortCircuit;
     
-    public ValidatorConfig() {
-    }
-    
     /**
      * @param validatorType
-     * @param params
      */
-    public ValidatorConfig(String validatorType, Map params) {
+    protected ValidatorConfig(String validatorType) {
         this.type = validatorType;
-        this.params = params;
+        params = new LinkedHashMap();
+    }
+
+    protected ValidatorConfig(ValidatorConfig orig) {
+        this.type = orig.type;
+        this.params = new LinkedHashMap<String,String>(orig.params);
+        this.defaultMessage = orig.defaultMessage;
+        this.messageKey = orig.messageKey;
+        this.shortCircuit = orig.shortCircuit;
     }
     
     /**
@@ -42,24 +50,10 @@ public class ValidatorConfig extends Located {
     }
     
     /**
-     * @param defaultMessage The defaultMessage to set on the validator.
-     */
-    public void setDefaultMessage(String defaultMessage) {
-        this.defaultMessage = defaultMessage;
-    }
-    
-    /**
      * @return Returns the messageKey for the validator.
      */
     public String getMessageKey() {
         return messageKey;
-    }
-    
-    /**
-     * @param messageKey The messageKey to set on the validator.
-     */
-    public void setMessageKey(String messageKey) {
-        this.messageKey = messageKey;
     }
     
     /**
@@ -71,25 +65,10 @@ public class ValidatorConfig extends Located {
     }
     
     /**
-     * @param shortCircuit Whether the validator's shortCircuit flag should 
-     * be set.
-     */
-    public void setShortCircuit(boolean shortCircuit) {
-        this.shortCircuit = shortCircuit;
-    }
-
-    /**
      * @return Returns the configured params to set on the validator. 
      */
     public Map getParams() {
         return params;
-    }
-    
-    /**
-     * @param params The configured params to set on the validator.
-     */
-    public void setParams(Map params) {
-        this.params = params;
     }
     
     /**
@@ -98,11 +77,65 @@ public class ValidatorConfig extends Located {
     public String getType() {
         return type;
     }
-    
+
     /**
-     * @param validatorType The type of validator to configure.
+     * Builds a ValidatorConfig
      */
-    public void setType(String validatorType) {
-        this.type = validatorType;
+    public static final class Builder {
+        private ValidatorConfig target;
+
+        public Builder(String validatorType) {
+            target = new ValidatorConfig(validatorType);
+        }
+
+        public Builder(ValidatorConfig config) {
+            target = new ValidatorConfig(config);
+        }
+
+        public Builder shortCircuit(boolean shortCircuit) {
+            target.shortCircuit = shortCircuit;
+            return this;
+        }
+
+        public Builder defaultMessage(String msg) {
+            target.defaultMessage = msg;
+            return this;
+        }
+
+        public Builder messageKey(String key) {
+            if ((key != null) && (key.trim().length() > 0)) {
+                target.messageKey = key;
+            }
+            return this;
+        }
+
+        public Builder addParam(String name, String value) {
+            if (value != null && name != null) {
+                target.params.put(name, value);
+            }
+            return this;
+        }
+
+        public Builder addParams(Map<String,String> params) {
+            target.params.putAll(params);
+            return this;
+        }
+
+        public Builder location(Location loc) {
+            target.location = loc;
+            return this;
+        }
+
+        public ValidatorConfig build() {
+            target.params = Collections.unmodifiableMap(target.params);
+            ValidatorConfig result = target;
+            target = new ValidatorConfig(target);
+            return result;
+        }
+
+        public Builder removeParam(String key) {
+            target.params.remove(key);
+            return this;
+        }
     }
 }

@@ -6,10 +6,7 @@ package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.config.Configuration;
-import com.opensymphony.xwork2.config.ConfigurationException;
-import com.opensymphony.xwork2.config.ConfigurationManager;
-import com.opensymphony.xwork2.config.ConfigurationProvider;
+import com.opensymphony.xwork2.config.*;
 import com.opensymphony.xwork2.config.providers.XWorkConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
@@ -26,7 +23,7 @@ public class XWorkTestCaseHelper {
 
     public static ConfigurationManager setUp() throws Exception {
         ConfigurationManager configurationManager = new ConfigurationManager();
-        configurationManager.addConfigurationProvider(new XWorkConfigurationProvider());
+        configurationManager.addContainerProvider(new XWorkConfigurationProvider());
         Configuration config = configurationManager.getConfiguration();
         Container container = config.getContainer();
         
@@ -51,10 +48,9 @@ public class XWorkTestCaseHelper {
             throw new RuntimeException("Cannot clean old configuration", e);
         }
         configurationManager = new ConfigurationManager();
-        configurationManager.addConfigurationProvider(new ConfigurationProvider() {
+        configurationManager.addContainerProvider(new ContainerProvider() {
             public void destroy() {}
             public void init(Configuration configuration) throws ConfigurationException {}
-            public void loadPackages() throws ConfigurationException {}
             public boolean needsReload() { return false; }
 
             public void register(ContainerBuilder builder,
@@ -63,7 +59,7 @@ public class XWorkTestCaseHelper {
             }
             
         });
-        configurationManager.addConfigurationProvider(new XWorkConfigurationProvider());
+        configurationManager.addContainerProvider(new XWorkConfigurationProvider());
         for (ConfigurationProvider prov : providers) {
             if (prov instanceof XmlConfigurationProvider) {
                 ((XmlConfigurationProvider)prov).setThrowExceptionOnDuplicateBeans(false);

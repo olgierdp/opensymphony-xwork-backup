@@ -21,6 +21,7 @@ import java.util.Locale;
  * @version $Id$
  */
 public class DoubleRangeValidatorTest extends XWorkTestCase {
+    private DoubleRangeFieldValidator val;
 
     public void testRangeValidationWithError() throws Exception {
         // must set a locale to US as error message contains a locale dependent number (see XW-490)
@@ -58,7 +59,6 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
     }
 
     public void testRangeNoExclusiveAndNoValueInStack() throws Exception {
-        DoubleRangeFieldValidator val = new DoubleRangeFieldValidator();
         val.setFieldName("hello");
         val.validate("world");
     }
@@ -72,7 +72,6 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
-        DoubleRangeFieldValidator val = new DoubleRangeFieldValidator();
         val.setMinInclusive("0");
         val.setMaxInclusive("10");
         val.setFieldName("price");
@@ -89,7 +88,6 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
-        DoubleRangeFieldValidator val = new DoubleRangeFieldValidator();
         val.setMinInclusive("0");
         val.setMaxInclusive("30");
         val.setFieldName("volume");
@@ -104,7 +102,6 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
-        DoubleRangeFieldValidator val = new DoubleRangeFieldValidator();
         val.setMinInclusive("0");
         val.setMaxInclusive("10");
         val.setFieldName("name");
@@ -127,7 +124,6 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
-        DoubleRangeFieldValidator val = new DoubleRangeFieldValidator();
         val.setFieldName("price");
 
         DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
@@ -153,7 +149,6 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         stack.push(prod);
         ActionContext.getContext().setValueStack(stack);
 
-        DoubleRangeFieldValidator val = new DoubleRangeFieldValidator();
         val.setFieldName("price");
 
         DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
@@ -172,7 +167,6 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         ValueStack stack = ActionContext.getContext().getValueStack();
         ActionContext.getContext().setValueStack(stack);
 
-        DoubleRangeFieldValidator val = new DoubleRangeFieldValidator();
         val.setFieldName("price");
 
         DelegatingValidatorContext context = new DelegatingValidatorContext(new ValidationAwareSupport());
@@ -185,6 +179,14 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
 
     protected void setUp() throws Exception {
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-default.xml"),  new MockConfigurationProvider());
+        val = new DoubleRangeFieldValidator();
+        val.setValueStack(ActionContext.getContext().getValueStack());
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        val = null;
     }
 
     private class MyTestProduct {

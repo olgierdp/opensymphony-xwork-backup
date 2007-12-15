@@ -35,9 +35,7 @@ import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.PatternMatcher;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.WildcardHelper;
-import com.opensymphony.xwork2.validator.ActionValidatorManager;
-import com.opensymphony.xwork2.validator.AnnotationActionValidatorManager;
-import com.opensymphony.xwork2.validator.DefaultActionValidatorManager;
+import com.opensymphony.xwork2.validator.*;
 import com.opensymphony.xwork2.ognl.ObjectProxy;
 import com.opensymphony.xwork2.ognl.OgnlReflectionContextFactory;
 import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
@@ -76,6 +74,8 @@ public class XWorkConfigurationProvider implements ConfigurationProvider {
                .factory(ObjectTypeDeterminer.class, DefaultObjectTypeDeterminer.class, Scope.SINGLETON)
                .factory(XWorkConverter.class, Scope.SINGLETON)
                .factory(ValueStackFactory.class, OgnlValueStackFactory.class, Scope.SINGLETON)
+               .factory(ValidatorFactory.class, DefaultValidatorFactory.class, Scope.SINGLETON)
+               .factory(ValidatorFileParser.class, DefaultValidatorFileParser.class, Scope.SINGLETON)
                .factory(PatternMatcher.class, WildcardHelper.class, Scope.SINGLETON)
                .factory(ReflectionProvider.class, OgnlReflectionProvider.class, Scope.SINGLETON)
                .factory(ReflectionContextFactory.class, OgnlReflectionContextFactory.class, Scope.SINGLETON)

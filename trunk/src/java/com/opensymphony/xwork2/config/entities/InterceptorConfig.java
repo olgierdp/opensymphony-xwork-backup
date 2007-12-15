@@ -114,7 +114,7 @@ public class InterceptorConfig extends Located implements Serializable {
             return this;
         }
 
-         public Builder addParam(String name, String value) {
+        public Builder addParam(String name, String value) {
             target.params.put(name, value);
             return this;
         }

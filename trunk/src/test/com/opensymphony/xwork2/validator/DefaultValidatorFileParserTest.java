@@ -5,17 +5,25 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.util.ClassLoaderUtil;
-import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.validator.validators.ExpressionValidator;
+import com.opensymphony.xwork2.validator.validators.RequiredFieldValidator;
+import com.opensymphony.xwork2.validator.validators.IntRangeFieldValidator;
+import com.opensymphony.xwork2.validator.validators.RegexFieldValidator;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
+import com.mockobjects.dynamic.Mock;
+import com.mockobjects.dynamic.C;
 
 import java.io.InputStream;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 
 /**
- * ValidatorFileParserTest
+ * DefaultValidatorFileParserTest
  * <p/>
  * Created : Jan 20, 2003 3:41:26 PM
  *
@@ -23,7 +31,7 @@ import java.util.List;
  * @author James House
  * @author tm_jee ( tm_jee (at) yahoo.co.uk )
  */
-public class ValidatorFileParserTest extends XWorkTestCase {
+public class DefaultValidatorFileParserTest extends TestCase {
 
     private static final String testFileName = "com/opensymphony/xwork2/validator/validator-parser-test.xml";
     private static final String testFileName2 = "com/opensymphony/xwork2/validator/validator-parser-test2.xml";
@@ -31,11 +39,16 @@ public class ValidatorFileParserTest extends XWorkTestCase {
     private static final String testFileName4 = "com/opensymphony/xwork2/validator/validator-parser-test4.xml";
     private static final String testFileName5 = "com/opensymphony/xwork2/validator/validator-parser-test5.xml";
     private static final String testFileName6 = "com/opensymphony/xwork2/validator/validators-fail.xml";
+    private Mock mockValidatorFactory;
+    private ValidatorFileParser parser;
 
     public void testParserActionLevelValidatorsShouldBeBeforeFieldLevelValidators() throws Exception {
         InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName2, this.getClass());
 
-        List configs = ValidatorFileParser.parseActionValidatorConfigs(is, testFileName2);
+        mockValidatorFactory.expectAndReturn("lookupRegisteredValidatorType", C.args(C.eq("expression")), ExpressionValidator.class.getName());
+        mockValidatorFactory.expectAndReturn("lookupRegisteredValidatorType", C.args(C.eq("required")), RequiredFieldValidator.class.getName());
+        List configs = parser.parseActionValidatorConfigs((ValidatorFactory) mockValidatorFactory.proxy(), is, testFileName2);
+        mockValidatorFactory.verify();
 
         ValidatorConfig valCfg0 = (ValidatorConfig) configs.get(0);
         ValidatorConfig valCfg1 = (ValidatorConfig) configs.get(1);
@@ -57,7 +70,15 @@ public class ValidatorFileParserTest extends XWorkTestCase {
     public void testParser() {
         InputStream is = ClassLoaderUtil.getResourceAsStream(testFileName, this.getClass());
 
-        List configs = ValidatorFileParser.parseActionValidatorConfigs(is, testFileName);
+        mockValidatorFactory.expectAndReturn("lookupRegisteredValidatorType", C.args(C.eq("expression")), ExpressionValidator.class.getName());
+        mockValidatorFactory.expectAndReturn("lookupRegisteredValidatorType", C.args(C.eq("expression")), ExpressionValidator.class.getName());
+        mockValidatorFactory.expectAndReturn("lookupRegisteredValidatorType", C.args(C.eq("required")), RequiredFieldValidator.class.getName());
+        mockValidatorFactory.expectAndReturn("lookupRegisteredValidatorType", C.args(C.eq("required")), RequiredFieldValidator.class.getName());
+        mockValidatorFactory.expectAndReturn("lookupRegisteredValidatorType", C.args(C.eq("int")), IntRangeFieldValidator.class.getName());
+        mockValidatorFactory.expectAndReturn("lookupRegisteredValidatorType", C.args(C.eq("regex")), RegexFieldValidator.class.getName());
+        List configs = parser.parseActionValidatorConfigs((ValidatorFactory) mockValidatorFactory.proxy(), is, testFileName);
+        mockValidatorFactory.verify();
+
 
         assertNotNull(configs);
         assertEquals(6, configs.size());
@@ -96,7 +117,7 @@ public class ValidatorFileParserTest extends XWorkTestCase {
 
         boolean pass = false;
         try {
-            ValidatorFileParser.parseActionValidatorConfigs(is, testFileName3);
+            parser.parseActionValidatorConfigs((ValidatorFactory) mockValidatorFactory.proxy(), is, testFileName3);
         } catch (XWorkException ex) {
             assertTrue("Wrong line number", 3 == ex.getLocation().getLineNumber());
             pass = true;
@@ -109,7 +130,7 @@ public class ValidatorFileParserTest extends XWorkTestCase {
 
         boolean pass = false;
         try {
-            ValidatorFileParser.parseActionValidatorConfigs(is, testFileName4);
+            parser.parseActionValidatorConfigs((ValidatorFactory) mockValidatorFactory.proxy(), is, testFileName4);
         } catch (XWorkException ex) {
             assertTrue("Wrong line number: " + ex.getLocation(), 13 == ex.getLocation().getLineNumber());
             pass = true;
@@ -122,7 +143,7 @@ public class ValidatorFileParserTest extends XWorkTestCase {
 
         boolean pass = false;
         try {
-            ValidatorFileParser.parseValidatorDefinitions(is, testFileName6);
+            parser.parseActionValidatorConfigs((ValidatorFactory) mockValidatorFactory.proxy(), is, testFileName6);
         } catch (XWorkException ex) {
             assertTrue("Wrong line number: " + ex.getLocation(), 8 == ex.getLocation().getLineNumber());
             pass = true;
@@ -135,7 +156,7 @@ public class ValidatorFileParserTest extends XWorkTestCase {
 
         boolean pass = false;
         try {
-            ValidatorFileParser.parseValidatorDefinitions(is, testFileName5);
+            parser.parseActionValidatorConfigs((ValidatorFactory) mockValidatorFactory.proxy(), is, testFileName5);
         } catch (XWorkException ex) {
             assertTrue("Wrong line number", 3 == ex.getLocation().getLineNumber());
             pass = true;
@@ -144,8 +165,16 @@ public class ValidatorFileParserTest extends XWorkTestCase {
     }
 
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        loadConfigurationProviders(new MockConfigurationProvider());
+        mockValidatorFactory = new Mock(ValidatorFactory.class);
+        parser = new DefaultValidatorFileParser();
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        mockValidatorFactory = null;
+        parser = null;
     }
 }

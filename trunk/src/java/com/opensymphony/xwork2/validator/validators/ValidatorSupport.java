@@ -30,7 +30,12 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
     private boolean shortCircuit;
     private boolean parse;
     private String type;
+    private ValueStack stack;
 
+
+    public void setValueStack(ValueStack stack) {
+        this.stack = stack;
+    }
 
     public void setDefaultMessage(String message) {
         this.defaultMessage = message;
@@ -50,7 +55,6 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
     
     public String getMessage(Object object) {
         String message;
-        ValueStack stack = ActionContext.getContext().getValueStack();
         boolean pop = false;
 
         if (!stack.getRoot().contains(object)) {
@@ -124,7 +128,6 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
      */
     protected Object conditionalParse(String expression) {
         if (parse) {
-            ValueStack stack = ActionContext.getContext().getValueStack();
             return TextParseUtil.translateVariables('$', expression, stack);
         }
         return expression;
@@ -140,7 +143,6 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
      * @throws ValidationException
      */
     protected Object getFieldValue(String name, Object object) throws ValidationException {
-        ValueStack stack = ActionContext.getContext().getValueStack();
 
         boolean pop = false;
 
@@ -165,4 +167,5 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
     protected void addFieldError(String propertyName, Object object) {
         validatorContext.addFieldError(propertyName, getMessage(object));
     }
+
 }

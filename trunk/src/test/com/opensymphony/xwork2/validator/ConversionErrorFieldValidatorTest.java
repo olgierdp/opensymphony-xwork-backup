@@ -48,6 +48,7 @@ public class ConversionErrorFieldValidatorTest extends XWorkTestCase {
         stack.push(validatorContext);
         validator.setValidatorContext(validatorContext);
         validator.setFieldName("foo");
+        validator.setValueStack(ActionContext.getContext().getValueStack());
         assertEquals(0, validationAware.getFieldErrors().size());
     }
 
@@ -55,6 +56,7 @@ public class ConversionErrorFieldValidatorTest extends XWorkTestCase {
         String message = "default message";
         validator.setDefaultMessage(message);
         validator.validate(validationAware);
+
 
         Map fieldErrors = validationAware.getFieldErrors();
         assertTrue(fieldErrors.containsKey("foo"));
