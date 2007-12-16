@@ -104,14 +104,14 @@ public class AnnotationWorkflowInterceptor implements Interceptor, PreResultList
         invocation.addPreResultListener(this);
         List<Method> methods = new ArrayList<Method>(AnnotationUtils.getAnnotatedMethods(action.getClass(), Before.class));
         if (methods.size() > 0) {
+            // methods are only sorted by priority
             Collections.sort(methods, new Comparator<Method>() {
                 public int compare(Method method1, Method method2) {
-                    return method2.getAnnotation(Before.class).priority()
-                            - method1.getAnnotation(Before.class).priority();
+                    return comparePriorities(method1.getAnnotation(Before.class).priority(),
+                                method2.getAnnotation(Before.class).priority());
                 }
             });
             for (Method m : methods) {
-                // action superclass methods first then action methods
                 final String resultCode = (String) m
                         .invoke(action, (Object[]) null);
                 if (resultCode != null) {
@@ -127,11 +127,11 @@ public class AnnotationWorkflowInterceptor implements Interceptor, PreResultList
         methods = new ArrayList<Method>(AnnotationUtils.getAnnotatedMethods(action.getClass(), After.class));
 
         if (methods.size() > 0) {
-            // action methods first then action superclass methods
+            // methods are only sorted by priority
             Collections.sort(methods, new Comparator<Method>() {
                 public int compare(Method method1, Method method2) {
-                    return method2.getAnnotation(After.class).priority()
-                            - method1.getAnnotation(After.class).priority();
+                    return comparePriorities(method1.getAnnotation(After.class).priority(),
+                                method2.getAnnotation(After.class).priority());
                 }
             });
             for (Method m : methods) {
@@ -148,6 +148,16 @@ public class AnnotationWorkflowInterceptor implements Interceptor, PreResultList
     public void init() {
     }
 
+    protected static int comparePriorities(int val1, int val2) {
+        if (val2 < val1) {
+            return -1;
+        } else if (val2 > val1) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
     /**
      * Invokes any &#64;BeforeResult annotated methods
      *
@@ -158,10 +168,11 @@ public class AnnotationWorkflowInterceptor implements Interceptor, PreResultList
         List<Method> methods = new ArrayList<Method>(AnnotationUtils.getAnnotatedMethods(action.getClass(), BeforeResult.class));
 
         if (methods.size() > 0) {
+            // methods are only sorted by priority
             Collections.sort(methods, new Comparator<Method>() {
                 public int compare(Method method1, Method method2) {
-                    return method2.getAnnotation(BeforeResult.class).priority()
-                            - method1.getAnnotation(BeforeResult.class).priority();
+                    return comparePriorities(method1.getAnnotation(BeforeResult.class).priority(),
+                                method2.getAnnotation(BeforeResult.class).priority());
                 }
             });
             for (Method m : methods) {

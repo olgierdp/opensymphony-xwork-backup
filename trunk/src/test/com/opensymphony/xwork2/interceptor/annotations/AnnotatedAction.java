@@ -12,7 +12,7 @@ import com.opensymphony.xwork2.Action;
  */
 public class AnnotatedAction extends BaseAnnotatedAction {
 
-    @Before
+    @Before(priority=5)
 	public String before() {
 		log = log + "before";
 		return null;
@@ -28,7 +28,7 @@ public class AnnotatedAction extends BaseAnnotatedAction {
 		log = log +"-beforeResult";
 	}
 	
-	@After
+	@After(priority=5)
 	public void after() {
 		log = log + "-after";
 	}

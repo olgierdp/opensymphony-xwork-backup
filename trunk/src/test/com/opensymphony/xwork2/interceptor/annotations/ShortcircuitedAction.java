@@ -11,7 +11,7 @@ import com.opensymphony.xwork2.Action;
  * @author Rainer Hermanns
  */
 public class ShortcircuitedAction extends BaseAnnotatedAction {	
-	@Before
+	@Before(priority=5)
 	public String before() {
 		log = log + "before";
 		return "shortcircuit";
