@@ -248,12 +248,12 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>retrotranslator-maven-plugin</artifactId>
-                        <version>1.0-SNAPSHOT</version>
+                        <version>1.0-alpha-3</version>
                         <executions>
                             <execution>
-                                <phase>process-classes</phase>
+                                <phase>package</phase>
                                 <goals>
-                                    <goal>translate</goal>
+                                    <goal>translate-project</goal>
                                 </goals>
                                 <configuration>
                                     <verify>false</verify>
@@ -262,49 +262,19 @@
                                     <advanced>true</advanced>
                                     <verbose>false</verbose>
                                     <destdir>${project.build.directory}/classes-retro</destdir>
-                                    <includes>
-                                        <include>
-                                            <directory>${project.build.directory}/classes</directory>
-                                        </include>
-                                    </includes>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                                <phase>package</phase>
-                                <configuration>
-                                    <classesDirectory>${project.build.directory}/classes-retro</classesDirectory>
-                                    <classifier>j4</classifier>
-                                    <archive>
-                                        <manifestEntries>
-                                            <Extension-Name>${project.artifactId}-j4</Extension-Name>
-                                            <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                                            <Implementation-Title>${project.description}</Implementation-Title>
-                                            <Implementation-Version>${project.version}</Implementation-Version>
-                                            <Revision>${scm.revision}</Revision>
-                                        </manifestEntries>
-                                    </archive>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
                 </plugins>
             </build>
+            <!--
             <dependencies>
                 <dependency>
                     <groupId>sun.jdk</groupId>
                     <artifactId>rt</artifactId>
                     <version>1.4.0</version>
                     <scope>system</scope>
-                    <!-- path to rt.jar (on OSX, it's classes.jar) -->
                     <systemPath>${java14.jar}</systemPath>
                 </dependency>
                 <dependency>
@@ -318,6 +288,7 @@
                     <version>1.2.1</version>
                 </dependency>
             </dependencies>
+            -->
         </profile>
     </profiles>
 
