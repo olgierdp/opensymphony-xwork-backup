@@ -5,14 +5,20 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.util.ClassLoaderUtil;
+import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.net.URL;
@@ -308,20 +314,26 @@ public class ValidatorFactory {
         }
 
         // Get custom validator configurations via the classpath
-        URL u = ClassLoaderUtil.getResource("", ValidatorFactory.class);
-        File[] files = null;
+        List<File> files = new ArrayList<File>();
         try {
-            File f = new File(u.toURI());
-            FilenameFilter filter = new FilenameFilter() {
-                public boolean accept(File file, String fileName) {
-                    return fileName.contains("-validators.xml");
-                }
-            };
-            files = f.listFiles(filter);
+            Iterator<URL> urls = ClassLoaderUtil.getResources("", ValidatorFactory.class, false);
+            while (urls.hasNext()) {
+                URL u = urls.next();
+
+                File f = new File(u.toURI());
+                FilenameFilter filter = new FilenameFilter() {
+                    public boolean accept(File file, String fileName) {
+                        return fileName.contains("-validators.xml");
+                    }
+                };
+                files.addAll(Arrays.asList(f.listFiles(filter)));
+            }    
         } catch (URISyntaxException e) {
             // swallow
-        }
-
+        } catch (IOException e) {
+            throw new ConfigurationException("Unable to load validator files", e);
+        }    
+    
         // Parse default validator configurations
         String resourceName = "com/opensymphony/xwork2/validator/validators/default.xml";
         retrieveValidatorConfiguration(resourceName);
@@ -331,10 +343,8 @@ public class ValidatorFactory {
         retrieveValidatorConfiguration(resourceName);
 
         // Add custom (plugin) specific validator configurations
-        if ( files != null && files.length > 0 ) {
-            for (File file : files) {
-                retrieveValidatorConfiguration(file.getName());
-            }
+        for (File file : files) {
+            retrieveValidatorConfiguration(file.getName());
         }
     }
 
