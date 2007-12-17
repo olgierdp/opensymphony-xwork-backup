@@ -292,7 +292,6 @@
         </profile>
     </profiles>
 
-
     <build>
         <sourceDirectory>src/java</sourceDirectory>
         <testSourceDirectory>src/test</testSourceDirectory>
