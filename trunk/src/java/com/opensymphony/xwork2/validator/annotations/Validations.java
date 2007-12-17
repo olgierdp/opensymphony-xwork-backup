@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 
 /**
  * <!-- START SNIPPET: description -->
- * <p>If you want to use several annotations of the same type, these annotation must be nested within the @Validations() annotation.</p>
+ * <p>If you want to use several annotations of the same type, these annotations must be nested within the @Validations() annotation.</p>
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Annotation usage:</u>
