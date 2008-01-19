@@ -1,0 +1,9 @@
+<!DOCTYPE validators PUBLIC
+  		"-//OpenSymphony Group//XWork Validator Definition 1.0//EN"
+  		"http://www.opensymphony.com/xwork/xwork-validator-definition-1.0.dtd">
+
+<validators>
+    <validator name="foo" class="com.opensymphony.xwork.validator.validators.FooValidator" />
+    <validator name="bar" class="com.opensymphony.xwork.validator.validators.BarValidator" />
+    <validator name="boo" class="com.opensymphony.xwork.validator.validators.BooValidator" />
+</validators>

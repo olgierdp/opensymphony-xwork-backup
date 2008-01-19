@@ -1,0 +1,13 @@
+<!DOCTYPE xwork PUBLIC
+    "-//OpenSymphony Group//XWork 1.1.2//EN"
+    "http://www.opensymphony.com/xwork/xwork-1.1.2.dtd"
+ >
+
+<xwork>
+
+    <parameters>
+        <parameter name="param3" value="overridenValue3" />
+        <parameter name="param4" value="overridenValue4" />
+    </parameters>
+
+</xwork>
