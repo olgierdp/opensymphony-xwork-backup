@@ -73,6 +73,17 @@
     </developers>
 
     <releases>
+       <release>
+          <version>1.2.4</version>
+          <date>10/01/2008</date>
+          <jiraId>21713</jiraId>
+          <downloads>
+              <download>
+                 <url>http://release.opensymphony.com/xwork-1.2.4.zip</url>
+                 <name>Full</name>
+              </download>
+          </downloads>
+        </release>
         <release>
             <version>1.2.3</version>
             <date>07/18/2007</date>
