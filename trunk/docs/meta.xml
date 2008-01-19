@@ -74,6 +74,10 @@
             <name>James Holmes</name>
             <email>james (AT) jamesholmes (DOT) com</email>
         </person>
+        <person>
+            <name>Toby Jee</name>
+            <email>tmjee1 (AT) gmail (DOT) com</email>
+        </person>
     </developers>
 
     <releases>
@@ -214,6 +218,17 @@
                     <name>Lib: Jars and Libs only</name>
                 </download>
             </downloads>
+        </release>
+        <release>   
+          <version>1.2.4</version>
+          <date>10/01/2008</date>
+          <jiraId>21713</jiraId>
+          <downloads>
+             <download>
+               <url>http://release.opensymphony.com/xwork-1.2.4.zip</url>
+               <name>Full</name>
+             </download>
+          </downloads>
         </release>
         <release>
             <version>1.2.3</version>
