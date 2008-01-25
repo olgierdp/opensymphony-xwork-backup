@@ -192,7 +192,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         }
 
         public void addActionError(String anErrorMessage) {
-            super.addFieldError(field, message + anErrorMessage);
+            super.addFieldError(getFullFieldName(field), message + anErrorMessage);
         }
 
         public void addFieldError(String fieldName, String errorMessage) {
