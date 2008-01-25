@@ -11,6 +11,7 @@ import com.opensymphony.xwork2.test.AnnotationDataAware2;
 import com.opensymphony.xwork2.test.SimpleAnnotationAction2;
 import com.opensymphony.xwork2.test.SimpleAnnotationAction3;
 import com.opensymphony.xwork2.test.AnnotationUser;
+import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.validator.validators.*;
 
 import java.util.List;
@@ -53,6 +54,21 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
         assertEquals(17, validatorList.size());
     }
 
+    public void testGetValidatorsForGivenMethodNameWithoutReloading() throws ValidationException {
+        List validatorList = annotationActionValidatorManager.getValidators(SimpleAnnotationAction.class, alias, "execute");
+
+        //disable configuration reload/devmode
+        FileManager.setReloadingConfigs(false);
+
+        //17 in the class level + 0 in the alias
+        assertEquals(12, validatorList.size());
+        
+        validatorList = annotationActionValidatorManager.getValidators(SimpleAnnotationAction.class, alias, "execute");
+
+        //expect same number of validators
+        assertEquals(12, validatorList.size());
+    }
+    
     public void testDefaultMessageInterpolation() {
         // get validators
         List validatorList = annotationActionValidatorManager.getValidators(AnnotatedTestBean.class, "beanMessageBundle");
