@@ -45,7 +45,7 @@ import com.opensymphony.xwork2.validator.ValidationException;
  *                &lt;param name="maxLength&gt;10&lt;/param&gt;
  *                &lt;param name="trim"&gt;true&lt;/param&gt;
  *                &lt;message&gt;Your purchase code needs to be 10 characters long&lt;/message&gt;
- *            &lt;/field-name&gt;
+ *            &lt;/field&gt;
  *      &lt;/validators&gt;
  * <!-- END SNIPPET: example -->
  * </pre>
