@@ -17,12 +17,13 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
 /**
  * <!-- START SNIPPET: javadoc -->
  * 
- * An abstract <code>Interceptor</code> that is applied to filter method names according
- * to specified included/excluded method lists.
+ * MethodFilterInterceptor is an abstract <code>Interceptor</code> used as
+ * a base class for interceptors that will filter execution based on method 
+ * names according to specified included/excluded method lists.
  * 
  * <p/>
  * 
- * Setable parameters are as follows:
+ * Settable parameters are as follows:
  * 
  * <ul>
  * 		<li>excludeMethods - methods name to be excluded</li>
@@ -32,12 +33,12 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  * <p/>
  * 
  * <b>NOTE:</b> If method name are available in both includeMethods and 
- * excludeMethods, it will still be considered as an included method. In short
+ * excludeMethods, it will still be considered as an included method: 
  * includeMethods takes precedence over excludeMethods.
  * 
  * <p/>
  * 
- * Interceptors that extends this capability would be :-
+ * Interceptors that extends this capability include:
  * 
  * <ul>
  *    <li>TokenInterceptor</li>
