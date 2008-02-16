@@ -26,14 +26,14 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  * Settable parameters are as follows:
  * 
  * <ul>
- * 		<li>excludeMethods - methods name to be excluded</li>
- * 		<li>includeMethods - methods name to be included</li>
+ * 		<li>excludeMethods - method names to be excluded from interceptor processing</li>
+ * 		<li>includeMethods - method names to be included in interceptor processing</li>
  * </ul>
  * 
  * <p/>
  * 
  * <b>NOTE:</b> If method name are available in both includeMethods and 
- * excludeMethods, it will still be considered as an included method: 
+ * excludeMethods, it will be considered as an included method: 
  * includeMethods takes precedence over excludeMethods.
  * 
  * <p/>
