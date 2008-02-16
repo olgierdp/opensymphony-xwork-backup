@@ -44,23 +44,23 @@ import java.io.Serializable;
  * <b>Method 1:</b>
  * <pre>
  * &lt;action name="myAction" class="myActionClass"&gt;
- *   &lt;interceptor-ref name="exception"/&gt;
+ *     &lt;interceptor-ref name="exception"/&gt;
  *     &lt;interceptor-ref name="alias"/&gt;
  *     &lt;interceptor-ref name="params"/&gt;
- *     &lt;interceptor-ref name="servlet-config"/&gt;
+ *     &lt;interceptor-ref name="servletConfig"/&gt;
  *     &lt;interceptor-ref name="prepare"/&gt;
  *     &lt;interceptor-ref name="i18n"/&gt;
  *     &lt;interceptor-ref name="chain"/&gt;
- *     &lt;interceptor-ref name="model-driven"/&gt;
+ *     &lt;interceptor-ref name="modelDriven"/&gt;
  *     &lt;interceptor-ref name="fileUpload"/&gt;
- *     &lt;interceptor-ref name="static-params"/&gt;
+ *     &lt;interceptor-ref name="staticParams"/&gt;
  *     &lt;interceptor-ref name="params"/&gt;
  *     &lt;interceptor-ref name="conversionError"/&gt;
  *     &lt;interceptor-ref name="validation"&gt;
- *       &lt;param name="excludeMethods"&gt;myValidationExcudeMethod&lt;/param&gt;
+ *     &lt;param name="excludeMethods"&gt;myValidationExcudeMethod&lt;/param&gt;
  *     &lt;/interceptor-ref&gt;
  *     &lt;interceptor-ref name="workflow"&gt;
- *       &lt;param name="excludeMethods"&gt;myWorkflowExcludeMethod&lt;/param&gt;
+ *     &lt;param name="excludeMethods"&gt;myWorkflowExcludeMethod&lt;/param&gt;
  *     &lt;/interceptor-ref&gt;
  * &lt;/action&gt;
  * </pre>
