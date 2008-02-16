@@ -195,9 +195,10 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  * Warning:<p/>
  * <!-- START SNIPPET: activationThroughParameterWarning -->
  * 
- * Profiling activation through parameter will need the followings:-
+ * Profiling activation through a parameter requires the following:
+ *
  * <ul>
- *  <li>Profiling interceptor</li>
+ *  <li>Profiling interceptor in interceptor stack</li>
  *  <li>dev mode on (struts.devMode=true in struts.properties)
  * </ul>
  * 
@@ -224,7 +225,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  * 
  * <!-- START SNIPPET: methodDescription -->
  * 
- * One could extends the profiling feature provided by Struts2 in their web application as well. 
+ * One could extend the profiling feature provided by Struts2 in their web application as well. 
  * 
  * <!-- END SNIPPET: methodDescription -->
  * 
@@ -234,10 +235,10 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  *    String logMessage = "Log message";
  *    UtilTimerStack.push(logMessage);
  *    try {
- *      // do some code
+ *        // do some code
  *    }
  *    finally {
- *      UtilTimerStack.pop(logMessage); //this needs to be the same text as above
+ *        UtilTimerStack.pop(logMessage); // this needs to be the same text as above
  *    }
  *    
  * <!-- END SNIPPET: method1 -->   
