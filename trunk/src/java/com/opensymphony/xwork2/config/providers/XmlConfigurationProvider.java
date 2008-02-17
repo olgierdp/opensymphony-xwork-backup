@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,6 +49,7 @@ import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.inject.Scope;
 import com.opensymphony.xwork2.util.ClassLoaderUtil;
+import com.opensymphony.xwork2.util.ClassPathFinder;
 import com.opensymphony.xwork2.util.DomHelper;
 import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.util.TextUtils;
@@ -897,9 +899,16 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                         if (nodeName.equals("include")) {
                             String includeFileName = child.getAttribute("file");
                             if(includeFileName.indexOf('*') != -1 ) {
-                                handleWildCardIncludes(includeFileName, docs, child);
-                        }
+                                // handleWildCardIncludes(includeFileName, docs, child);
+                            	ClassPathFinder wildcardFinder = new ClassPathFinder();
+                            	wildcardFinder.setPattern(includeFileName);
+                            	Vector<String> wildcardMatches = wildcardFinder.findMatches();
+                            	for (String match : wildcardMatches) {
+                            		docs.addAll(loadConfigurationFiles(match, child));
+                            	}
+                            }
                             else {
+                            	
                                 docs.addAll(loadConfigurationFiles(includeFileName, child));    
                             }    
                     }
