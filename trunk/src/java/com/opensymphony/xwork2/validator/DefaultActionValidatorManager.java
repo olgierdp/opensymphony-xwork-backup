@@ -17,6 +17,7 @@ import java.util.TreeSet;
 
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.validator.validators.VisitorFieldValidator;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.util.ValueStack;
@@ -121,6 +122,13 @@ public class DefaultActionValidatorManager implements ActionValidatorManager {
                 if (validator instanceof FieldValidator) {
                     fValidator = (FieldValidator) validator;
                     fullFieldName = fValidator.getValidatorContext().getFullFieldName(fValidator.getFieldName());
+
+                    // This is pretty crap, but needed to support short-circuited validations on nested visited objects
+                    if (validatorContext instanceof VisitorFieldValidator.AppendingValidatorContext) {
+                        VisitorFieldValidator.AppendingValidatorContext appendingValidatorContext =
+                                (VisitorFieldValidator.AppendingValidatorContext) validatorContext;
+                        fullFieldName = appendingValidatorContext.getFullFieldNameFromParent(fValidator.getFieldName());
+                    }
 
                     if ((shortcircuitedFields != null) && shortcircuitedFields.contains(fullFieldName)) {
                         if (LOG.isDebugEnabled()) {

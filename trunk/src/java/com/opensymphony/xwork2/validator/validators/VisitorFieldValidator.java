@@ -163,10 +163,9 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
     }
 
 
-    private class AppendingValidatorContext extends DelegatingValidatorContext {
-        Object o;
-        String field;
-        String message;
+    public static class AppendingValidatorContext extends DelegatingValidatorContext {
+        private String field;
+        private String message;
         private ValidatorContext parent;
 
         public AppendingValidatorContext(ValidatorContext parent, Object object, String field, String message) {
@@ -185,10 +184,14 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
          * @return field name in OGNL syntax
          */
         public String getFullFieldName(String fieldName) {
-            if (parent instanceof AppendingValidatorContext) {
-                return parent.getFullFieldName("") + field + "." + fieldName;
-            }
+//            if (parent instanceof AppendingValidatorContext) {
+//                return parent.getFullFieldName("") + field + "." + fieldName;
+//            }
             return field + "." + fieldName;
+        }
+
+        public String getFullFieldNameFromParent(String fieldName) {
+            return parent.getFullFieldName(field+"."+fieldName);
         }
 
         public void addActionError(String anErrorMessage) {
