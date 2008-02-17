@@ -93,7 +93,6 @@ public interface ReflectionProvider {
      * @param source   the source object.
      * @return  a Map with (key = read property name, value = value of read property).
      * @throws IntrospectionException is thrown if an exception occurs during introspection.
-     * @throws OgnlException is thrown by OGNL if the property value could not be retrieved
      */
     Map getBeanMap(Object source) throws IntrospectionException, ReflectionException;
     
@@ -101,16 +100,10 @@ public interface ReflectionProvider {
      * Evaluates the given OGNL expression to extract a value from the given root
      * object in a given context
      *
-     * @see #parseExpression(String)
-     * @see #getValue(Object,Object)
      * @param expression the OGNL expression to be parsed
      * @param context the naming context for the evaluation
      * @param root the root object for the OGNL expression
      * @return the result of evaluating the expression
-     * @throws MethodFailedException if the expression called a method which failed
-     * @throws NoSuchPropertyException if the expression referred to a nonexistent property
-     * @throws InappropriateExpressionException if the expression can't be used in this context
-     * @throws OgnlException if there is a pathological environmental problem
      */
     Object getValue( String expression, Map context, Object root ) throws ReflectionException;
     
@@ -122,10 +115,6 @@ public interface ReflectionProvider {
      * @param root the root object for the OGNL expression
      * @param context the naming context for the evaluation
      * @param value the value to insert into the object graph
-     * @throws MethodFailedException if the expression called a method which failed
-     * @throws NoSuchPropertyException if the expression referred to a nonexistent property
-     * @throws InappropriateExpressionException if the expression can't be used in this context
-     * @throws OgnlException if there is a pathological environmental problem
      */
     void setValue( String expression, Map context, Object root, Object value ) throws ReflectionException;
     

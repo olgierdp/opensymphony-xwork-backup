@@ -29,13 +29,6 @@ import com.opensymphony.xwork2.validator.Validator;
  * This default implementation uses the {@link #buildBean(Class,java.util.Map) buildBean} 
  * method to create all classes (interceptors, actions, results, etc).
  * <p/>
- * To add lifecycle hook into an <code>ObjectFactory</code>, either or both of the following interfaces
- * could be implemented by the <code>ObjectFactory</code> itself.
- * <ul>
- * 		<li>{@link org.apache.struts2.util.ObjectFactoryInitializable}</li>
- *      <li>{@link org.apache.struts2.util.ObjectFactoryDestroyable}</li>
- * </ul>
- * Both will be invoked during the startup and showdown of {@link org.apache.struts2.dispatcher.FilterDispatcher} through {@link org.apache.struts2.dispatcher.Dispatcher}.
  *
  * @author Jason Carreira
  */
