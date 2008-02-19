@@ -29,6 +29,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ByteArrayInputStream;
 
 
 /**
@@ -359,6 +363,37 @@ public class XWorkConverterTest extends XWorkTestCase {
         // because the Foo-conversion.properties file is only used when converting a property of Foo
         converter.registerConverter(Bar.class.getName(), new FooBarConverter());
 
+        Bar bar = (Bar) converter.convertValue(null, null, null, null, "blah:123", Bar.class);
+        assertNotNull("conversion failed", bar);
+        assertEquals(123, bar.getSomethingElse());
+        assertEquals("blah", bar.getTitle());
+    }
+
+    public void testStringToCustomTypeUsingCustomConverterFromProperties() throws Exception {
+
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(new ClassLoader(cl) {
+                public InputStream getResourceAsStream(String name) {
+                    if ("xwork-conversion.properties".equals(name)) {
+                        Properties props = new Properties();
+                        props.setProperty(Bar.class.getName(), FooBarConverter.class.getName());
+                        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                        try {
+                            props.store(bout, "");
+                        } catch (IOException e) {
+                            // ignore
+                        }
+                        return new ByteArrayInputStream(bout.toByteArray());
+                    } else {
+                        return super.getResourceAsStream(name);
+                    }
+                }
+            });
+            setUp();
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
+        }
         Bar bar = (Bar) converter.convertValue(null, null, null, null, "blah:123", Bar.class);
         assertNotNull("conversion failed", bar);
         assertEquals(123, bar.getSomethingElse());

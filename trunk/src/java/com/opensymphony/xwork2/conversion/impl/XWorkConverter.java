@@ -174,6 +174,11 @@ public class XWorkConverter extends DefaultTypeConverter {
 
 
     protected XWorkConverter() {
+    }
+
+    @Inject
+    public void setObjectFactory(ObjectFactory factory) {
+        this.objectFactory = factory;
         try {
             // note: this file is deprecated
             loadConversionProperties("xwork-default-conversion.properties");
@@ -184,6 +189,11 @@ public class XWorkConverter extends DefaultTypeConverter {
             loadConversionProperties("xwork-conversion.properties");
         } catch (Exception e) {
         }
+    }
+
+    @Inject
+    public void setDefaultTypeConverter(XWorkBasicConverter conv) {
+        this.defaultTypeConverter = conv;
     }
 
     public static String getConversionErrorMessage(String propertyName, ValueStack stack) {
@@ -203,16 +213,6 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
 
-    @Inject
-    public void setObjectFactory(ObjectFactory factory) {
-        this.objectFactory = factory;
-    }
-    
-    @Inject
-    public void setDefaultTypeConverter(XWorkBasicConverter conv) {
-        this.defaultTypeConverter = conv;
-    }
-    
     public static String buildConverterFilename(Class clazz) {
         String className = clazz.getName();
         String resource = className.replace('.', '/') + "-conversion.properties";
