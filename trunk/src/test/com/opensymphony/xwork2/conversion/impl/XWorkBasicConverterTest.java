@@ -44,6 +44,22 @@ public class XWorkBasicConverterTest extends TestCase {
         }
     }
 
+    public void testEmptyArrayConversion() throws Exception {
+        XWorkBasicConverter basicConverter = new XWorkBasicConverter();
+        Object convertedObject = basicConverter.convertValue(new HashMap(), null, null, null, new Object[]{}, Object[].class);
+        // we must not get XWorkException as that will caused a conversion error
+        assertEquals(Object[].class, convertedObject.getClass());
+        Object[] obj = (Object[]) convertedObject;
+        assertEquals(0, obj.length);
+    }
+
+    public void testNullArrayConversion() throws Exception {
+        XWorkBasicConverter basicConverter = new XWorkBasicConverter();
+        Object convertedObject = basicConverter.convertValue(new HashMap(), null, null, null, null, Object[].class);
+        // we must not get XWorkException as that will caused a conversion error
+        assertNull(convertedObject);
+    }
+
     /* the code below has been disabled as it causes sideffects in Strtus2 (XW-512)
     public void testXW490ConvertStringToDobule() throws Exception {
         Locale locale = new Locale("DA"); // let's use a not common locale such as Denmark
