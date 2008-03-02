@@ -182,6 +182,15 @@ public class AnnotationValidationConfigurationBuilder {
                     }
 
                 }
+                // Process ConditionalVisitorFieldValidator
+                else if ( a instanceof ConditionalVisitorFieldValidator) {
+                    ConditionalVisitorFieldValidator v = (ConditionalVisitorFieldValidator) a;
+                    ValidatorConfig temp = processConditionalVisitorFieldValidatorAnnotation(v, fieldName, methodName);
+                    if ( temp != null) {
+                        result.add(temp);
+                    }
+
+                }
                 // Process VisitorFieldValidator
                 else if ( a instanceof VisitorFieldValidator) {
                     VisitorFieldValidator v = (VisitorFieldValidator) a;
@@ -315,6 +324,15 @@ public class AnnotationValidationConfigurationBuilder {
                 }
             }
         }
+        ConditionalVisitorFieldValidator[] cvfv = validations.conditionalVisitorFields();
+        if ( cvfv != null ) {
+            for (ConditionalVisitorFieldValidator v : cvfv) {
+                ValidatorConfig temp = processConditionalVisitorFieldValidatorAnnotation(v, fieldName, methodName);
+                if (temp != null) {
+                    result.add(temp);
+                }
+            }
+        }
         VisitorFieldValidator[] vfv = validations.visitorFields();
         if ( vfv != null ) {
             for (VisitorFieldValidator v : vfv) {
@@ -410,6 +428,33 @@ public class AnnotationValidationConfigurationBuilder {
             .messageKey(v.key())
             .build();
     }
+
+    private ValidatorConfig processConditionalVisitorFieldValidatorAnnotation(ConditionalVisitorFieldValidator v, String fieldName, String methodName) {
+        String validatorType = "conditionalvisitor";
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        if (fieldName != null) {
+            params.put("fieldName", fieldName);
+        } else if (v.fieldName() != null && v.fieldName().length() > 0 ) {
+            params.put("fieldName", v.fieldName());
+        }
+
+        params.put("expression", v.expression());
+        params.put("context", v.context());
+        params.put("appendPrefix", String.valueOf(v.appendPrefix()));
+
+        validatorFactory.lookupRegisteredValidatorType(validatorType);
+        return new ValidatorConfig.Builder(validatorType)
+            .addParams(params)
+            .addParam("methodName", methodName)
+            .shortCircuit(v.shortCircuit())
+            .defaultMessage(v.message())
+            .messageKey(v.key())
+            .build();
+    }
+
+
 
     private ValidatorConfig processVisitorFieldValidatorAnnotation(VisitorFieldValidator v, String fieldName, String methodName) {
 

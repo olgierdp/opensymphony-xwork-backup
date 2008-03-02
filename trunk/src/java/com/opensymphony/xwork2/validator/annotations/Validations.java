@@ -167,6 +167,8 @@ public @interface Validations {
 
     public UrlValidator[] urls() default {};
     
+    public ConditionalVisitorFieldValidator[] conditionalVisitorFields() default {};
+
     public VisitorFieldValidator[] visitorFields() default {};
 
     public RegexFieldValidator[] regexFields() default {};
