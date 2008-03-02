@@ -66,7 +66,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  * &lt;xwork&gt;
  *     &lt;package name="default" extends="xwork-default"&gt;
  *         &lt;global-results&gt;
- *             &lt;result name="success" type="freemarker"&gt;error.ftl&lt;/result&gt;
+ *             &lt;result name="error" type="freemarker"&gt;error.ftl&lt;/result&gt;
  *         &lt;/global-results&gt;
  *
  *         &lt;global-exception-mappings&gt;
