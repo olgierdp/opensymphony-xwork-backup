@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URI;
 import java.util.*;
 
 import com.opensymphony.xwork2.ObjectFactory;
@@ -97,7 +98,7 @@ public class DefaultValidatorFactory implements ValidatorFactory {
             Iterator<URL> urls = ClassLoaderUtil.getResources("", DefaultValidatorFactory.class, false);
             while (urls.hasNext()) {
                 URL u = urls.next();
-                File f = new File(u.toURI());
+                File f = new File(new URI(u.toExternalForm().replaceAll(" ", "%20"))); 
                 FilenameFilter filter = new FilenameFilter() {
                     public boolean accept(File file, String fileName) {
                         return fileName.contains("-validators.xml");
