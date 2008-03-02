@@ -197,7 +197,16 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
     }
 
     public String getDefaultClassRef() {
-       return defaultClassRef;
+    	if((defaultClassRef == null) && !parents.isEmpty()) {
+    		for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
+                PackageConfig parent = iterator.next();
+                String parentDefault = parent.getDefaultClassRef();
+                if (parentDefault != null) {
+                    return parentDefault;
+                }
+    		}
+    	}
+    	return defaultClassRef;
     }
     
     /**

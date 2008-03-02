@@ -350,16 +350,19 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         // use the default-class-ref from the <package/>
         if (!TextUtils.stringSet(className)) {
             // if there is a package default-class-ref use that, otherwise use action support
-            if (TextUtils.stringSet(packageContext.getDefaultClassRef())) {
+           /* if (TextUtils.stringSet(packageContext.getDefaultClassRef())) {
                 className = packageContext.getDefaultClassRef();
             } else {
                 className = ActionSupport.class.getName();
+            }*/
+        
+        } else {
+        	if (!verifyAction(className, name, location)) {
+                return;
             }
         }
 
-        if (!verifyAction(className, name, location)) {
-            return;
-        }
+        
 
         Map results;
         try {

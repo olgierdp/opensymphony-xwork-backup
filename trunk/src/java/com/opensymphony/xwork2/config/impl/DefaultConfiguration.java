@@ -252,7 +252,9 @@ public class DefaultConfiguration implements Configuration {
                     ActionConfig baseConfig = (ActionConfig) actionConfigs.get(actionName);
                     configs.put(actionName, buildFullActionConfig(packageConfig, baseConfig));
                 }
-
+                
+                
+                
                 namespaceActionConfigs.put(namespace, configs);
                 if (packageConfig.getFullDefaultActionRef() != null) {
                     namespaceConfigs.put(namespace, packageConfig.getFullDefaultActionRef());
@@ -310,12 +312,16 @@ public class DefaultConfiguration implements Configuration {
             }
         }
 
+        
+        
         ActionConfig config = new ActionConfig.Builder(baseConfig)
             .addParams(params)
             .addResultConfigs(results)
+            .defaultClassName(packageContext.getDefaultClassRef())  // fill in default if non class has been provided
             .interceptors(interceptors)
             .addExceptionMappings(packageContext.getAllExceptionMappingConfigs())
             .build();
+        
         return config;
     }
 

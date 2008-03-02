@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork2.config.entities;
 
+import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.util.location.Located;
 import com.opensymphony.xwork2.util.location.Location;
 
@@ -226,6 +227,13 @@ public class ActionConfig extends Located implements Serializable {
             return this;
         }
 
+        public Builder defaultClassName(String name) {
+        	if (!TextUtils.stringSet(target.className)) {
+        	  	target.className = name;
+        	}
+            return this;
+        }
+        
         public Builder methodName(String method) {
             target.methodName = method;
             return this;
