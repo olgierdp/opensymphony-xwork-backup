@@ -370,6 +370,10 @@ public class DefaultActionInvocation implements ActionInvocation {
         this.proxy = proxy;
         Map contextMap = createContextMap();
 
+        // Setting this so that other classes, like object factories, can use the ActionProxy and other
+        // contextual information to operate
+        ActionContext.getContext().setActionInvocation(this);
+        
         createAction(contextMap);
 
         if (pushAction) {
