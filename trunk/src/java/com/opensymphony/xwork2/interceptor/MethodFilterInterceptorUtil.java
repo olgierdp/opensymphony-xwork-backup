@@ -4,9 +4,12 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.opensymphony.xwork2.util.TextParseUtil;
+import com.opensymphony.xwork2.util.WildcardHelper;
 
 /**
  * Utility class contains common methods used by 
@@ -23,10 +26,10 @@ public class MethodFilterInterceptorUtil {
      *
      * <ul>
      * <li>
-     * 	<code>excludeMethods</code> takes precedence over <code>includeMethods</code>
+     * 	<code>includeMethods</code> takes precedence over <code>excludeMethods</code>
      * </li>
      * </ul>
-     * <b>Note:</b> Asterict '*' could be used to indicate all methods.
+     * <b>Note:</b> Supports wildcard listings in includeMethods/excludeMethods
      *
      * @param excludeMethods  list of methods to exclude.
      * @param includeMethods  list of methods to include.
@@ -34,11 +37,86 @@ public class MethodFilterInterceptorUtil {
      * @return <tt>true</tt> if the method should be applied.
      */
     public static boolean applyMethod(Set excludeMethods, Set includeMethods, String method) {
-    	if (((excludeMethods.contains("*") && !includeMethods.contains("*"))
-                || excludeMethods.contains(method))
-                && !includeMethods.contains(method)) {
+        
+        // quick check to see if any actual pattern matching is needed
+        boolean needsPatternMatch = false;
+        Iterator quickIter = includeMethods.iterator();
+        while (quickIter.hasNext()) {
+            String incMeth = (String) quickIter.next();
+            if (! incMeth.equals("*") && incMeth.contains("*")) {
+                needsPatternMatch = true;
+            }
+        }
+        
+        quickIter = excludeMethods.iterator();
+        while (quickIter.hasNext()) {
+            String incMeth = (String) quickIter.next();
+            if (! incMeth.equals("*") && incMeth.contains("*")) {
+                needsPatternMatch = true;
+            }
+        }
+        
+        // this section will try to honor the original logic, while 
+        // still allowing for wildcards later
+        if (!needsPatternMatch && (includeMethods.contains("*") || includeMethods.size() == 0) ) {
+            if (excludeMethods != null 
+                    && excludeMethods.contains(method) 
+                    && !includeMethods.contains(method) ) {
+                return false;
+            }
+        }
+        
+        // test the methods using pattern matching
+        WildcardHelper wildcard = new WildcardHelper();
+        Iterator iter = includeMethods.iterator();
+        String methodCopy ;
+        if (method == null ) { // no method specified
+            methodCopy = "";
+        }
+        else {
+            methodCopy = new String(method);
+        }
+        while(iter.hasNext()) {
+            String pattern = (String) iter.next();
+            if (pattern.contains("*")) {
+                int[] compiledPattern = wildcard.compilePattern(pattern);
+                HashMap<String,String> matchedPatterns = new HashMap<String, String>();
+                boolean matches = wildcard.match(matchedPatterns, methodCopy, compiledPattern);
+                if (matches) {
+                    return true; // run it, includeMethods takes precedence
+                }
+            }
+            else {
+                if (pattern.equals(methodCopy)) {
+                    return true; // run it, includeMethods takes precedence
+                }
+            }
+        }
+        if (excludeMethods.contains("*") ) {
             return false;
         }
+
+        while(iter.hasNext()) {
+            String pattern = (String) iter.next();
+            if (pattern.contains("*")) {
+                int[] compiledPattern = wildcard.compilePattern(pattern);
+                HashMap<String,String> matchedPatterns = new HashMap<String, String>();
+                boolean matches = wildcard.match(matchedPatterns, methodCopy, compiledPattern);
+                if (matches) {
+                    // if found, and wasn't included earlier, don't run it
+                    return false; 
+                }
+            }
+            else {
+                if (pattern.equals(methodCopy)) {
+                    // if found, and wasn't included earlier, don't run it
+                    return false; 
+                }
+            }
+        }
+    
+
+        // default fall-back from before changes
         return includeMethods.size() == 0 || includeMethods.contains(method) || includeMethods.contains("*");
     }
     
