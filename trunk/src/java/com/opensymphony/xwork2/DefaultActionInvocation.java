@@ -372,7 +372,11 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         // Setting this so that other classes, like object factories, can use the ActionProxy and other
         // contextual information to operate
-        ActionContext.getContext().setActionInvocation(this);
+        ActionContext actionContext = ActionContext.getContext();
+
+        if(actionContext != null) {
+            actionContext.setActionInvocation(this);
+        }
         
         createAction(contextMap);
 
