@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,6 +27,7 @@ import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.ognl.XWorkTypeConverterWrapper;
 import com.opensymphony.xwork2.util.AnnotationUtils;
+import com.opensymphony.xwork2.util.ClassLoaderUtil;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
@@ -739,16 +741,17 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     public void loadConversionProperties(String propsName) throws IOException {
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(propsName);
+        Iterator<URL> resources = ClassLoaderUtil.getResources(propsName, getClass(), true);
+        while (resources.hasNext()) {
+            URL url = resources.next();
         Properties props = new Properties();
-        props.load(is);
+            props.load(url.openStream());
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("processing conversion file ["+propsName+"]");
         }
         
-        for (Iterator iterator = props.entrySet().iterator();
-             iterator.hasNext();) {
+            for (Iterator iterator = props.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String key = (String) entry.getKey();
 
@@ -762,6 +765,7 @@ public class XWorkConverter extends DefaultTypeConverter {
                 LOG.error("Conversion registration error", e);
             }
         }
+    }
     }
 
     /**

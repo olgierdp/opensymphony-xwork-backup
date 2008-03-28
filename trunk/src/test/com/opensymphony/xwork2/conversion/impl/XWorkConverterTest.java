@@ -4,10 +4,32 @@
  */
 package com.opensymphony.xwork2.conversion.impl;
 
-import com.opensymphony.xwork2.*;
-import com.opensymphony.xwork2.config.ConfigurationManager;
-import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
-import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ModelDrivenAction;
+import com.opensymphony.xwork2.SimpleAction;
+import com.opensymphony.xwork2.TestBean;
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.ognl.OgnlValueStack;
 import com.opensymphony.xwork2.test.ModelDrivenAction2;
 import com.opensymphony.xwork2.test.User;
@@ -15,24 +37,9 @@ import com.opensymphony.xwork2.util.Bar;
 import com.opensymphony.xwork2.util.Cat;
 import com.opensymphony.xwork2.util.Foo;
 import com.opensymphony.xwork2.util.FurColor;
-import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
-
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.io.InputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
 
 
 /**
@@ -374,19 +381,34 @@ public class XWorkConverterTest extends XWorkTestCase {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(new ClassLoader(cl) {
-                public InputStream getResourceAsStream(String name) {
+                public Enumeration<URL> getResources(String name) throws IOException {
                     if ("xwork-conversion.properties".equals(name)) {
-                        Properties props = new Properties();
-                        props.setProperty(Bar.class.getName(), FooBarConverter.class.getName());
-                        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                        return new Enumeration<URL>() {
+                            boolean done = false;
+                            public boolean hasMoreElements() {
+                                return !done;
+                            }
+
+                            public URL nextElement() {
+                                if (done) {
+                                    throw new RuntimeException("Conversion configuration loading " +
+                                        "failed because it asked the enumeration for the next URL " +
+                                        "too many times");
+                                }
+
                         try {
-                            props.store(bout, "");
-                        } catch (IOException e) {
-                            // ignore
+                                    done = true;
+                                    return new File(
+                                        "src/test/com/opensymphony/xwork2/conversion/impl/test-xwork-conversion.properties").
+                                        toURI().toURL();
+                                } catch (MalformedURLException e) {
+                                    // Eeck
+                                    throw new RuntimeException(e);
                         }
-                        return new ByteArrayInputStream(bout.toByteArray());
+                            }
+                        };
                     } else {
-                        return super.getResourceAsStream(name);
+                        return super.getResources(name);
                     }
                 }
             });
