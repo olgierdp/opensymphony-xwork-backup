@@ -334,7 +334,7 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
                 Type resultType = type.getActualTypeArguments()[index];
 
                 if ( resultType instanceof ParameterizedType) {
-                    return resultType.getClass();
+                    return (Class) ((ParameterizedType) resultType).getRawType();
                 }
                 return (Class) resultType;
 
