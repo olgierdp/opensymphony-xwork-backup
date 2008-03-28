@@ -56,7 +56,7 @@ import com.opensymphony.xwork2.inject.Inject;
  * <!-- START SNIPPET: example -->
  * 
  * &lt;-- Basic usage --&gt;
- * &lt;interceptor name="scoped-model-driven" class="com.opensymphony.interceptor.ScopedModelDrivenInterceptor" /&gt;
+ * &lt;interceptor name="scopedModelDriven" class="com.opensymphony.interceptor.ScopedModelDrivenInterceptor" /&gt;
  * 
  * &lt;-- Using all available parameters --&gt;
  * &lt;interceptor name="gangsterForm" class="com.opensymphony.interceptor.ScopedModelDrivenInterceptor"&gt;

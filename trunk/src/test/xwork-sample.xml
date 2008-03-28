@@ -150,7 +150,7 @@
                 <param name="actionName">bar</param>
             </result>
             <result name="success" type="mock" />
-            <interceptor-ref name="static-params"/>
+            <interceptor-ref name="staticParams"/>
         </action>
         <action name="myCommand" class="com.opensymphony.xwork2.SimpleAction" method="commandMethod">
             <param name="bar">456</param>
@@ -178,7 +178,7 @@
     <package name="wildcardNamespaces" extends="default" namespace="/animals/*">
         <action name="commandTest" class="com.opensymphony.xwork2.SimpleAction">
             <result name="success" type="mock" />
-            <interceptor-ref name="static-params"/>
+            <interceptor-ref name="staticParams"/>
         </action>
     </package>
 

@@ -52,7 +52,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  * <pre>
  * <!-- START SNIPPET: example -->
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
- *     &lt;interceptor-ref name="static-params"&gt;
+ *     &lt;interceptor-ref name="staticParams"&gt;
  *          &lt;param name="parse"&gt;true&lt;/param&gt;
  *     &lt;/interceptor-ref&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;

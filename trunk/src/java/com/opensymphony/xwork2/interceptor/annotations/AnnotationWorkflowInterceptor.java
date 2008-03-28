@@ -80,7 +80,7 @@ import com.opensymphony.xwork2.interceptor.PreResultListener;
  * <pre>
  * <!-- START SNIPPET: stack -->
  * &lt;interceptor-stack name="annotatedStack"&gt;
- * 	&lt;interceptor-ref name="static-params"/&gt;
+ * 	&lt;interceptor-ref name="staticParams"/&gt;
  * 	&lt;interceptor-ref name="params"/&gt;
  * 	&lt;interceptor-ref name="conversionError"/&gt;
  * 	&lt;interceptor-ref name="annotationWorkflow"/&gt;

@@ -94,14 +94,14 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  * &lt;xwork&gt;
  *   &lt;package name="something" extends="xwork-default"&gt;
  *      &lt;interceptors&gt;
- *          &lt;interceptor-stack name="exceptionmapping-stack"&gt;
+ *          &lt;interceptor-stack name="exceptionmappingStack"&gt;
  *              &lt;interceptor-ref name="exception"&gt;
  *                  &lt;param name="logEnabled"&gt;true&lt;/param&gt;
  *                  &lt;param name="logCategory"&gt;com.mycompany.app.unhandled&lt;/param&gt;
  *                  &lt;param name="logLevel"&gt;WARN&lt;/param&gt;	        		
  *              &lt;/interceptor-ref&gt;	
  *              &lt;interceptor-ref name="i18n"/&gt;
- *              &lt;interceptor-ref name="static-params"/&gt;
+ *              &lt;interceptor-ref name="staticParams"/&gt;
  *              &lt;interceptor-ref name="params"/&gt;
  *              &lt;interceptor-ref name="validation"&gt;
  *                  &lt;param name="excludeMethods"&gt;input,back,cancel,browse&lt;/param&gt;
@@ -109,7 +109,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  *          &lt;/interceptor-stack&gt;
  *      &lt;/interceptors&gt;
  *
- *      &lt;default-interceptor-ref name="exceptionmapping-stack"/&gt;
+ *      &lt;default-interceptor-ref name="exceptionmappingStack"/&gt;
  *    
  *      &lt;global-results&gt;
  *           &lt;result name="unhandledException"&gt;/unhandled-exception.jsp&lt;/result&gt;

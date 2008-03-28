@@ -17,8 +17,8 @@
             <interceptor name="logger" class="com.opensymphony.xwork2.interceptor.LoggingInterceptor"/>
             <interceptor name="chain" class="com.opensymphony.xwork2.interceptor.ChainingInterceptor"/>
             <interceptor name="params" class="com.opensymphony.xwork2.interceptor.ParametersInterceptor"/>
-            <interceptor name="static-params" class="com.opensymphony.xwork2.interceptor.StaticParametersInterceptor"/>
-            <interceptor name="model-driven" class="com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor"/>
+            <interceptor name="staticParams" class="com.opensymphony.xwork2.interceptor.StaticParametersInterceptor"/>
+            <interceptor name="modelDriven" class="com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor"/>
             <interceptor name="validation" class="com.opensymphony.xwork2.validator.ValidationInterceptor">
                 <param name="validateAnnotatedMethodOnly">true</param>
             </interceptor>
@@ -28,8 +28,8 @@
             </interceptor>
 
             <interceptor-stack name="defaultStack">
-                <interceptor-ref name="static-params"/>
-                <interceptor-ref name="model-driven"/>
+                <interceptor-ref name="staticParams"/>
+                <interceptor-ref name="modelDriven"/>
                 <interceptor-ref name="params"/>
             </interceptor-stack>
 
@@ -39,8 +39,8 @@
             </interceptor-stack>
 
             <interceptor-stack name="validationStack">
-                <interceptor-ref name="static-params"/>
-                <interceptor-ref name="model-driven"/>
+                <interceptor-ref name="staticParams"/>
+                <interceptor-ref name="modelDriven"/>
                 <interceptor-ref name="params"/>
                 <interceptor-ref name="validation"/>
             </interceptor-stack>

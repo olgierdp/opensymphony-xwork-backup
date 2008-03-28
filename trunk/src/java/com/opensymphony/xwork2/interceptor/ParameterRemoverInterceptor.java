@@ -57,7 +57,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  *   		&lt;param name="paramNames"&gt;aParam,anotherParam&lt;/param&gt;
  *   		&lt;param name="paramValues"&gt;--,-1&lt;/param&gt;
  * 	&lt;/interceptor-ref&gt;
- * 	&lt;interceptor-ref name="default-stack" /&gt;
+ * 	&lt;interceptor-ref name="defaultStack" /&gt;
  * 	...
  * &lt;/action&gt;
  *  

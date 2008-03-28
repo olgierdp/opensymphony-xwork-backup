@@ -128,7 +128,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         results.put(Action.ERROR, new ResultConfig.Builder(Action.ERROR, MockResult.class.getName()).build());
 
         interceptors = new ArrayList();
-        interceptors.add(new InterceptorMapping("static-params", 
+        interceptors.add(new InterceptorMapping("staticParams", 
                 objectFactory.buildInterceptor(new InterceptorConfig.Builder("model", StaticParametersInterceptor.class.getName()).build(), new HashMap())));
         interceptors.add(new InterceptorMapping("model", 
                 objectFactory.buildInterceptor(new InterceptorConfig.Builder("model", ModelDrivenInterceptor.class.getName()).build(), new HashMap())));

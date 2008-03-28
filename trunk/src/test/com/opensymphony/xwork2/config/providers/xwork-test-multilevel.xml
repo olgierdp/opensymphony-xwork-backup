@@ -16,7 +16,7 @@
 
     <package name="namespace1" extends="default" namespace="/namespace1">
         <interceptors>
-            <interceptor name="static-params" class="com.opensymphony.xwork2.interceptor.StaticParametersInterceptor"/>
+            <interceptor name="staticParams" class="com.opensymphony.xwork2.interceptor.StaticParametersInterceptor"/>
         </interceptors>
 
         <action name="action1" class="com.opensymphony.xwork2.SimpleAction">
@@ -37,7 +37,7 @@
         <action name="action3" class="com.opensymphony.xwork2.SimpleAction">
             <result name="success" type="chain"/>
             <interceptor-ref name="params"/>
-            <interceptor-ref name="static-params"/>
+            <interceptor-ref name="staticParams"/>
         </action>
     </package>
 
