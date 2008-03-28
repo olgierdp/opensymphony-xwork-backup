@@ -61,7 +61,7 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected ObjectFactory objectFactory;
     protected ActionEventListener actionEventListener;
     protected ValueStackFactory valueStackFactory;
-    protected Container container;
+    protected Container container;                             
     protected UnknownHandler unknownHandler;
 
     public DefaultActionInvocation(final Map extraContext, final boolean pushAction) {
