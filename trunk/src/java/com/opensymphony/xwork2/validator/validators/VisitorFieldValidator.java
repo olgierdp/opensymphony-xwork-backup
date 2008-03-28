@@ -25,9 +25,9 @@ import java.util.Collection;
  *
  * <!-- START SNIPPET: parameters -->
  * <ul>
- *    <li>fieldName - field name if plain-validator syntax is used, not needed if field-validator syntax is used</li>
- *    <li>context - the context of which validation should take place. Optional</li>
- *    <li>appendPrefix - the prefix to be added to field. Optional </li>
+ * <li>fieldName - field name if plain-validator syntax is used, not needed if field-validator syntax is used</li>
+ * <li>context - the context of which validation should take place. Optional</li>
+ * <li>appendPrefix - the prefix to be added to field. Optional </li>
  * </ul>
  * <!-- END SNIPPET: parameters -->
  *
@@ -40,7 +40,7 @@ import java.util.Collection;
  *            &lt;param name="context"&gt;myContext&lt;/param&gt;
  *            &lt;param name="appendPrefix"&gt;true&lt;/param&gt;
  *        &lt;/validator&gt;
- *        
+ *
  *        &lt;!-- Field Validator Syntax --&gt;
  *        &lt;field name="user"&gt;
  *           &lt;field-validator type="visitor"&gt;
@@ -51,15 +51,13 @@ import java.util.Collection;
  *    &lt;/validators&gt;
  * <!-- END SNIPPET: example -->
  * </pre>
- * 
+ *
  * <!-- START SNIPPET: explanation -->
  * <p>In the example above, if the acion's getUser() method return User object, XWork
  * will look for User-myContext-validation.xml for the validators. Since appednPrefix is true,
- * every field name will be prefixed with 'user' such that if the actual field name for 'name' is  
+ * every field name will be prefixed with 'user' such that if the actual field name for 'name' is
  * 'user.name' </p>
  * <!-- END SNIPPET: explanation -->
- * 
- * 
  *
  * @author Jason Carreira
  * @author Rainer Hermanns
@@ -71,7 +69,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
     private boolean appendPrefix = true;
     private ActionValidatorManager actionValidatorManager;
 
-    
+
     @Inject
     public void setActionValidatorManager(ActionValidatorManager mgr) {
         this.actionValidatorManager = mgr;
@@ -107,7 +105,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         String fieldName = getFieldName();
         Object value = this.getFieldValue(fieldName, object);
         if (value == null) {
-        	log.warn("The visited object is null, VisitorValidator will not be able to handle validation properly. Please make sure the visited object is not null for VisitorValidator to function properly");
+            log.warn("The visited object is null, VisitorValidator will not be able to handle validation properly. Please make sure the visited object is not null for VisitorValidator to function properly");
             return;
         }
         ValueStack stack = ActionContext.getContext().getValueStack();
@@ -133,13 +131,13 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
     }
 
     private void validateArrayElements(Object[] array, String fieldName, String visitorContext) throws ValidationException {
-        if ( array == null) {
+        if (array == null) {
             return;
         }
-        
+
         for (int i = 0; i < array.length; i++) {
             Object o = array[i];
-            if ( o != null ) {
+            if (o != null) {
                 validateObject(fieldName + "[" + i + "]", o, visitorContext);
             }
         }
@@ -171,7 +169,6 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         public AppendingValidatorContext(ValidatorContext parent, Object object, String field, String message) {
             super(parent, makeTextProvider(object, parent), parent);
 
-            //            super(parent);
             this.field = field;
             this.message = message;
             this.parent = parent;
@@ -180,18 +177,15 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
         /**
          * Translates a simple field name into a full field name in Ognl syntax
          *
-         * @param fieldName
+         * @param fieldName field name in OGNL syntax
          * @return field name in OGNL syntax
          */
         public String getFullFieldName(String fieldName) {
-//            if (parent instanceof AppendingValidatorContext) {
-//                return parent.getFullFieldName("") + field + "." + fieldName;
-//            }
             return field + "." + fieldName;
         }
 
         public String getFullFieldNameFromParent(String fieldName) {
-            return parent.getFullFieldName(field+"."+fieldName);
+            return parent.getFullFieldName(field + "." + fieldName);
         }
 
         public void addActionError(String anErrorMessage) {

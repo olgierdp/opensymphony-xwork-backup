@@ -4,24 +4,24 @@
  */
 package com.opensymphony.xwork2;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 /**
  * TestBean
- *
- * @author Jason Carreira
- *         Created Aug 4, 2003 12:39:53 AM
  */
-public class TestBean {
+public class TestChildBean {
 
     private Date birth;
     private String name;
     private int count;
-    
-    private TestChildBean child = new TestChildBean();
 
-    public TestBean() {
+
+    public TestChildBean() {
+        Calendar cal = new GregorianCalendar(1900, 01, 01);
+        setBirth(cal.getTime());
     }
 
 
@@ -47,15 +47,5 @@ public class TestBean {
 
     public String getName() {
         return name;
-    }
-
-
-    public TestChildBean getChild() {
-        return child;
-    }
-
-
-    public void setChild(TestChildBean child) {
-        this.child = child;
     }
 }
