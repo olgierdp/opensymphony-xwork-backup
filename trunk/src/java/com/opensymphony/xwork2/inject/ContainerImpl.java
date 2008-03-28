@@ -313,20 +313,36 @@ class ContainerImpl implements Container {
       constructor = findConstructorIn(implementation);
       constructor.setAccessible(true);
 
+      MissingDependencyException exception = null;
+      Inject inject = null;
+      ParameterInjector<?>[] parameters = null;
+        
       try {
-        Inject inject = constructor.getAnnotation(Inject.class);
-        parameterInjectors = inject == null
-            ? null // default constructor.
-            : container.getParametersInjectors(
-                constructor,
-                constructor.getParameterAnnotations(),
-                constructor.getParameterTypes(),
-                inject.value()
-              );
+        inject = constructor.getAnnotation(Inject.class);
+        parameters = constructParameterInjector(inject, container, constructor);
       } catch (MissingDependencyException e) {
-        throw new DependencyException(e);
+        exception = e;
+      }
+      parameterInjectors = parameters;
+
+      if ( exception != null) {
+        if ( inject != null && inject.required()) {
+          throw new DependencyException(exception);
+        }
       }
       injectors = container.injectors.get(implementation);
+    }
+
+    ParameterInjector<?>[] constructParameterInjector(
+    Inject inject, ContainerImpl container, Constructor<T> constructor) throws MissingDependencyException{
+    return constructor.getParameterTypes().length == 0
+      ? null // default constructor.
+      : container.getParametersInjectors(
+        constructor,
+        constructor.getParameterAnnotations(),
+        constructor.getParameterTypes(),
+        inject.value()
+      );
     }
 
     @SuppressWarnings("unchecked")
