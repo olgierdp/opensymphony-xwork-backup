@@ -61,7 +61,7 @@ public class XWorkBasicConverterTest extends TestCase {
     }
 
     /* the code below has been disabled as it causes sideffects in Strtus2 (XW-512)
-    public void testXW490ConvertStringToDobule() throws Exception {
+    public void testXW490ConvertStringToDouble() throws Exception {
         Locale locale = new Locale("DA"); // let's use a not common locale such as Denmark
 
         Map ctx = new HashMap();
@@ -76,7 +76,7 @@ public class XWorkBasicConverterTest extends TestCase {
         assertEquals(123.99d, value.doubleValue(), 0.001d);
     }
 
-    public void testXW49ConvertDobuleToString() throws Exception {
+    public void testXW49ConvertDoubleToString() throws Exception {
         Locale locale = new Locale("DA"); // let's use a not common locale such as Denmark
 
         Map ctx = new HashMap();
@@ -89,6 +89,6 @@ public class XWorkBasicConverterTest extends TestCase {
 
         // output should be formatted according to Danish locale using , as decimal seperator
         assertEquals("123,99", value);
-    }
+    }    
     */
 }
