@@ -11,9 +11,19 @@
 	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
 		    <tr>
 			    <td valign="top" class="pagebody">
-				    <p>The objective of this simple 'Hello World' tutorial is to be a gentle introduction of the components in xwork2. It shows how to execute a command (an action) that simply prints out 'Hello World' the XWork 2 way.</p>
+				    <p>The objective of this simple 'Hello World' tutorial is to be a gentle introduction of the components in xwork2. <br/>
+It shows the required libraries and how to execute a command (an action) that simply prints out 'Hello World' the XWork 2 way.</p>
 
-<h2><a name="XWork2HelloWorldTutorial-Step1%3AWriteupxwork.xml"></a>Step 1: Write up xwork.xml</h2>
+<h2><a name="XWork2HelloWorldTutorial-Step1%3APrepareProjectLibraries"></a>Step 1: Prepare Project Libraries</h2>
+
+<p>&nbsp;You need the following two libraries:</p>
+<ul>
+	<li>ognl-2.6.11.jar (or ognl.jar)</li>
+	<li>xwork-2.1.0.jar (or xwork.jar)</li>
+</ul>
+
+
+<h2><a name="XWork2HelloWorldTutorial-Step2%3AWriteupxwork.xml"></a>Step 2: Write up xwork.xml</h2>
 
 <p>The <tt>xwork.xml</tt> configuration file, in this case named <tt>xwork-hello-world.xml</tt>, defines a simple package that contains one action and a simple result that prints the data to the console.</p>
 <div class="code"><div class="codeContent">
@@ -39,7 +49,7 @@
 <span class="code-tag">&lt;/xwork&gt;</span></pre>
 </div></div>
 
-<h2><a name="XWork2HelloWorldTutorial-Step2%3ACodeitup"></a>Step 2: Code it up</h2>
+<h2><a name="XWork2HelloWorldTutorial-Step3%3ACodeitup"></a>Step 3: Code it up</h2>
 
 <p>Next, we need to write the Java code that will initialize XWork and execute our action.  The entry point into our application will be a class titled <tt>com.opensymphony.xwork2.showcase.helloworld.HelloWorldTutorial</tt>.</p>
 <div class="code"><div class="codeContent">
@@ -83,6 +93,97 @@
 38. }</pre>
 </div></div>
 <p>Lines 24-28 show the XWork framework being initialized with our configuration file.  Lines 30-33 show how we obtain an <tt>ActionProxy</tt> object that handles the Action, Interceptors, and Result execution.  Finally, in line 36, we execute XWork.</p>
+
+<p><font color="#ff0000">NOTE: Between line 24 and 25 should come the following :</font> <font color="#ff0000"><b>confManager.addConfigurationProvider(new XWorkConfigurationProvider());</b></font></p>
+
+<h2><a name="XWork2HelloWorldTutorial-Step4%3ACreatetheResultandAction"></a>Step 4: Create the Result and Action</h2>
+
+
+<p>The action:</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">01. /*
+02.  * Copyright (c) 2002-2006 by OpenSymphony
+03.  * All rights reserved.
+04.  */
+05. <span class="code-keyword">package</span> com.opensymphony.xwork2.showcase.helloworld;
+06. 
+07. <span class="code-keyword">import</span> org.apache.commons.logging.Log;
+08. <span class="code-keyword">import</span> org.apache.commons.logging.LogFactory;
+09. 
+10. <span class="code-keyword">import</span> com.opensymphony.xwork2.ActionSupport;
+11. 
+12. /**
+13.  * 
+14.  * @author tm_jee
+15.  * @version $Date$ $Id$
+16.  */
+17. <span class="code-keyword">public</span> class HelloWorldAction <span class="code-keyword">extends</span> ActionSupport {
+18. 
+19. 	<span class="code-keyword">private</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> <span class="code-object">long</span> serialVersionUID = 6874543345469426109L;
+20. 	
+21. 	<span class="code-keyword">private</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> Log _log = LogFactory.getLog(HelloWorldAction.class);
+22. 	
+23. 	<span class="code-keyword">private</span> <span class="code-object">String</span> message;
+24. 	
+25. 	<span class="code-keyword">public</span> <span class="code-object">String</span> getMessage() { <span class="code-keyword">return</span> message; }
+26. 	<span class="code-keyword">public</span> void setMessage(<span class="code-object">String</span> message) { <span class="code-keyword">this</span>.message = message; }
+27. 	
+28. 	@Override
+29. 	<span class="code-keyword">public</span> <span class="code-object">String</span> execute() <span class="code-keyword">throws</span> Exception {
+30. 		
+31. 		_log.debug(<span class="code-quote">"execute ..."</span>);
+32. 		
+33. 		message = <span class="code-quote">"Hello World"</span>;
+34. 		
+35. 		<span class="code-keyword">return</span> SUCCESS;
+36. 	}
+37. }</pre>
+</div></div>
+
+<p>The result:</p>
+
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">01. /*
+02.  * Copyright (c) 2002-2006 by OpenSymphony
+03.  * All rights reserved.
+04.  */
+05. <span class="code-keyword">package</span> com.opensymphony.xwork2.showcase;
+06. 
+07. <span class="code-keyword">import</span> org.apache.commons.logging.Log;
+08. <span class="code-keyword">import</span> org.apache.commons.logging.LogFactory;
+09. 
+10. <span class="code-keyword">import</span> com.opensymphony.xwork2.ActionInvocation;
+11. <span class="code-keyword">import</span> com.opensymphony.xwork2.Result;
+12. <span class="code-keyword">import</span> com.opensymphony.xwork2.util.TextParseUtil;
+13. 
+14. 
+15. /**
+16.  * 
+17.  * @author tm_jee
+18.  * @version $Date$ $Id$
+19.  */
+20. <span class="code-keyword">public</span> class PrintToConsoleResult <span class="code-keyword">implements</span> Result {
+21. 
+22. 	<span class="code-keyword">private</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> Log _log = LogFactory.getLog(PrintToConsoleResult.class);
+23. 	
+24. 	<span class="code-keyword">private</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> <span class="code-object">long</span> serialVersionUID = -6173326554804520601L;
+25. 	
+26. 	<span class="code-keyword">private</span> <span class="code-object">String</span> param = <span class="code-quote">"whatsoever"</span>;
+27. 	
+28. 	<span class="code-keyword">public</span> void setParam(<span class="code-object">String</span> param) { <span class="code-keyword">this</span>.param = param; }
+29. 	<span class="code-keyword">public</span> <span class="code-object">String</span> getParam() { <span class="code-keyword">return</span> <span class="code-keyword">this</span>.param; }
+30. 	
+31. 	<span class="code-keyword">public</span> void execute(ActionInvocation invocation) <span class="code-keyword">throws</span> Exception {
+32. 		
+33. 		_log.debug(<span class="code-quote">"execute ..."</span>);
+34. 		
+35. 		<span class="code-object">String</span> result = TextParseUtil.translateVariables(param, invocation.getStack());
+36. 		
+37. 		<span class="code-object">System</span>.out.println(result);
+38. 	}
+39. }</pre>
+</div></div>
 
                     			    </td>
 		    </tr>

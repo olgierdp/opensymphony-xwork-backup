@@ -33,31 +33,31 @@ After.</p></p>
 <div class="code"><div class="codeContent">
 <pre class="code-java"><span class="code-keyword">public</span> class BaseAnnotatedAction {
  	<span class="code-keyword">protected</span> <span class="code-object">String</span> log = "";
-
+&lt;p/&gt;
  	@Before
  	<span class="code-keyword">public</span> <span class="code-object">String</span> baseBefore() {
  		log = log + <span class="code-quote">"baseBefore-"</span>;
  		<span class="code-keyword">return</span> <span class="code-keyword">null</span>;
  	}
  }
-
+&lt;p/&gt;
  <span class="code-keyword">public</span> class AnnotatedAction <span class="code-keyword">extends</span> BaseAnnotatedAction {
  	@Before
  	<span class="code-keyword">public</span> <span class="code-object">String</span> before() {
  		log = log + <span class="code-quote">"before"</span>;
  		<span class="code-keyword">return</span> <span class="code-keyword">null</span>;
  	}
-
+&lt;p/&gt;
  	<span class="code-keyword">public</span> <span class="code-object">String</span> execute() {
  		log = log + <span class="code-quote">"-execute"</span>;
  		<span class="code-keyword">return</span> Action.SUCCESS;
  	}
-
+&lt;p/&gt;
  	@BeforeResult
  	<span class="code-keyword">public</span> void beforeResult() <span class="code-keyword">throws</span> Exception {
  		log = log +<span class="code-quote">"-beforeResult"</span>;
  	}
-
+&lt;p/&gt;
  	@After
  	<span class="code-keyword">public</span> void after() {
  		log = log + <span class="code-quote">"-after"</span>;
@@ -67,16 +67,16 @@ After.</p></p>
 <p>Configure a stack in xwork.xml that replaces the PrepareInterceptor with the AnnotationWorkflowInterceptor:</p>
 <div class="code"><div class="codeContent">
 <pre class="code-xml"><span class="code-tag">&lt;interceptor-stack name=<span class="code-quote">"annotatedStack"</span>&gt;</span>
-<span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"staticParams"</span>/&gt;</span>
-<span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"params"</span>/&gt;</span>
-<span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"conversionError"</span>/&gt;</span>
-<span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"annotationWorkflow"</span>/&gt;</span>
+	<span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"staticParams"</span>/&gt;</span>
+	<span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"params"</span>/&gt;</span>
+	<span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"conversionError"</span>/&gt;</span>
+	<span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"annotationWorkflow"</span>/&gt;</span>
 <span class="code-tag">&lt;/interceptor-stack&gt;</span></pre>
 </div></div>
 <p>Given an Action, AnnotatedAction, add a reference to the AnnotationWorkflowInterceptor interceptor.</p>
 <div class="code"><div class="codeContent">
 <pre class="code-xml"><span class="code-tag">&lt;action name=<span class="code-quote">"AnnotatedAction"</span> class=<span class="code-quote">"com.examples.AnnotatedAction"</span>&gt;</span>
-   <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"annotationWorkflow"</span>/&gt;</span>
+   <span class="code-tag">&lt;interceptor-ref name=<span class="code-quote">"annotationInterceptor"</span>/&gt;</span>
    <span class="code-tag">&lt;result name=<span class="code-quote">"success"</span> type=<span class="code-quote">"freemarker"</span>&gt;</span>good_result.ftl<span class="code-tag">&lt;/result&gt;</span>
 <span class="code-tag">&lt;/action&gt;</span></pre>
 </div></div>

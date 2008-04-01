@@ -85,17 +85,17 @@ it will be assumed to be 0, hence all profile information will be logged.</p>
 
 <h2><a name="XWorkProfiling-Writeprofilingcode"></a>Write profiling code</h2>
 
-<p>One could extends the profiling feature provided by Struts2 in their web application as well. </p>
+<p>One could extend the profiling feature provided by Struts2 in their web application as well. </p>
 
 <h3><a name="XWorkProfiling-UsingUtilTimerStack%27spushandpop"></a>Using UtilTimerStack's push and pop</h3>
 <div class="code"><div class="codeContent">
 <pre class="code-xml">String logMessage = <span class="code-quote">"Log message"</span>;
    UtilTimerStack.push(logMessage);
    try {
-     // do some code
+       // do some code
    }
    finally {
-     UtilTimerStack.pop(logMessage); //this needs to be the same text as above
+       UtilTimerStack.pop(logMessage); // this needs to be the same text as above
    }</pre>
 </div></div>
 <h3><a name="XWorkProfiling-UsingaUtilTimerStack%27sProfileBlocktemplate"></a>Using a UtilTimerStack's ProfileBlock template</h3>
