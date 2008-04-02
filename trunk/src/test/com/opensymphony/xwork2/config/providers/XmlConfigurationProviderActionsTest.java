@@ -45,7 +45,7 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
 
 
         ActionConfig barAction = new ActionConfig.Builder("", "Bar", SimpleAction.class.getName())
-            .addParams(params).build();
+                .addParams(params).build();
 
         // foo action is a little more complex, two params, a result and an interceptor stack
         results = new HashMap();
@@ -58,19 +58,19 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         interceptors.add(new InterceptorMapping("timer", objectFactory.buildInterceptor(timerInterceptorConfig, new HashMap())));
 
         ActionConfig fooAction = new ActionConfig.Builder("", "Foo", SimpleAction.class.getName())
-            .addParams(params)
-            .addResultConfigs(results)
-            .addInterceptors(interceptors)
-            .build();
+                .addParams(params)
+                .addResultConfigs(results)
+                .addInterceptors(interceptors)
+                .build();
 
         // wildcard action is simple wildcard example
         results = new HashMap();
         results.put("*", new ResultConfig.Builder("*", MockResult.class.getName()).build());
 
         ActionConfig wildcardAction = new ActionConfig.Builder("", "WildCard", SimpleAction.class.getName())
-            .addResultConfigs(results)
-            .addInterceptors(interceptors)
-            .build();
+                .addResultConfigs(results)
+                .addInterceptors(interceptors)
+                .build();
 
         // fooBar action is a little more complex, two params, a result and an interceptor stack
         params = new HashMap();
@@ -84,11 +84,11 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         exceptionMappings.add(exceptionConfig);
 
         ActionConfig fooBarAction = new ActionConfig.Builder("", "FooBar", SimpleAction.class.getName())
-            .addParams(params)
-            .addResultConfigs(results)
-            .addInterceptors(interceptors)
-            .addExceptionMappings(exceptionMappings)
-            .build();
+                .addParams(params)
+                .addResultConfigs(results)
+                .addInterceptors(interceptors)
+                .addExceptionMappings(exceptionMappings)
+                .build();
 
         // TestInterceptorParam action tests that an interceptor worked
         HashMap interceptorParams = new HashMap();
@@ -100,8 +100,8 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         interceptors.add(new InterceptorMapping("test", objectFactory.buildInterceptor(mockInterceptorConfig, interceptorParams)));
 
         ActionConfig intAction = new ActionConfig.Builder("", "TestInterceptorParam", SimpleAction.class.getName())
-            .addInterceptors(interceptors)
-            .build();
+                .addInterceptors(interceptors)
+                .build();
 
         // TestInterceptorParamOverride action tests that an interceptor with a param override worked
         interceptorParams = new HashMap();
@@ -111,8 +111,8 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         interceptors.add(new InterceptorMapping("test", objectFactory.buildInterceptor(mockInterceptorConfig, interceptorParams)));
 
         ActionConfig intOverAction = new ActionConfig.Builder("", "TestInterceptorParamOverride", SimpleAction.class.getName())
-            .addInterceptors(interceptors)
-            .build();
+                .addInterceptors(interceptors)
+                .build();
 
         // execute the configuration
         provider.init(configuration);
@@ -122,7 +122,7 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
         Map actionConfigs = pkg.getActionConfigs();
 
         // assertions
-        assertEquals(6, actionConfigs.size());
+        assertEquals(7, actionConfigs.size());
         assertEquals(barAction, actionConfigs.get("Bar"));
         assertEquals(fooAction, actionConfigs.get("Foo"));
         assertEquals(wildcardAction, actionConfigs.get("WildCard"));
@@ -141,6 +141,58 @@ public class XmlConfigurationProviderActionsTest extends ConfigurationTestBase {
             // it worked correctly
         }
     }
+
+    public void testPackageDefaultClassRef() throws Exception {
+        final String filename = "com/opensymphony/xwork2/config/providers/xwork-test-actions-packagedefaultclassref.xml";
+        final String testDefaultClassName = "com.opensymphony.xwork2.UserSpecifiedDefaultAction";
+
+        ConfigurationProvider provider = buildConfigurationProvider(filename);
+
+        // setup expectations
+        params.put("foo", "17");
+        params.put("bar", "23");
+
+        ActionConfig barWithPackageDefaultClassRefConfig =
+                new ActionConfig.Builder("", "Bar", "").addParams(params).build();
+
+        // execute the configuration
+        provider.init(configuration);
+
+        PackageConfig pkg = configuration.getPackageConfig("default");
+        Map actionConfigs = pkg.getActionConfigs();
+
+        // assertions
+        assertEquals(1, actionConfigs.size());
+        assertEquals(barWithPackageDefaultClassRefConfig, actionConfigs.get("Bar"));
+
+
+    }
+
+    public void testDefaultActionClass() throws Exception {
+        final String filename = "com/opensymphony/xwork2/config/providers/xwork-test-actions.xml";
+        final String testDefaultClassName = "com.opensymphony.xwork2.ActionSupport";
+
+        ConfigurationProvider provider = buildConfigurationProvider(filename);
+
+        // setup expectations
+        params.put("foo", "17");
+        params.put("bar", "23");
+
+        ActionConfig barWithoutClassNameConfig =
+                new ActionConfig.Builder("", "BarWithoutClassName", "").addParams(params).build();
+
+        // execute the configuration
+        provider.init(configuration);
+
+        PackageConfig pkg = configuration.getPackageConfig("default");
+        Map actionConfigs = pkg.getActionConfigs();
+
+        // assertions
+        assertEquals(7, actionConfigs.size());
+        assertEquals(barWithoutClassNameConfig, actionConfigs.get("BarWithoutClassName"));
+
+    }
+
 
     protected void setUp() throws Exception {
         super.setUp();

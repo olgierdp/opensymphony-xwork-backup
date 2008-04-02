@@ -72,5 +72,10 @@
             </interceptor-ref>
         </action>
 
+        <action name="BarWithoutClassName">
+            <param name="foo">17</param>
+            <param name="bar">23</param>
+        </action>
+
     </package>
 </xwork>

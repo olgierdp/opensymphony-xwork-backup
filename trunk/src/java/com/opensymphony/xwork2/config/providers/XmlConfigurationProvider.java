@@ -83,7 +83,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     private Map<String, String> dtdMappings;
     private Configuration configuration;
     private boolean throwExceptionOnDuplicateBeans = true;
-    
+
     public XmlConfigurationProvider() {
         this("xwork.xml", true);
     }
@@ -103,7 +103,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         mappings.put("-//OpenSymphony Group//XWork 1.0//EN", "xwork-1.0.dtd");
         setDtdMappings(mappings);
     }
-    
+
     public void setThrowExceptionOnDuplicateBeans(boolean val) {
         this.throwExceptionOnDuplicateBeans = val;
     }
@@ -222,7 +222,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                                     if (throwExceptionOnDuplicateBeans) {
                                         throw new ConfigurationException("Bean type " + ctype + " with the name " +
                                                 name + " has already been loaded by " + loc, child);
-                                    } 
+                                    }
                                 }
 
                                 // Force loading of class to detect no class def found exceptions
@@ -355,14 +355,14 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             } else {
                 className = ActionSupport.class.getName();
             }*/
-        
+
         } else {
-        	if (!verifyAction(className, name, location)) {
+            if (!verifyAction(className, name, location)) {
                 return;
             }
         }
 
-        
+
 
         Map results;
         try {
@@ -663,9 +663,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 params.putAll(resultParams);
 
                 ResultConfig resultConfig = new ResultConfig.Builder(resultName, resultClass)
-                    .addParams(params)
-                    .location(DomHelper.getLocationObject(element))
-                    .build();
+                        .addParams(params)
+                        .location(DomHelper.getLocationObject(element))
+                        .build();
                 results.put(resultConfig.getName(), resultConfig);
             }
         }
@@ -696,9 +696,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
 
                 ExceptionMappingConfig ehConfig = new ExceptionMappingConfig.Builder(emName, exceptionClassName, exceptionResult)
-                    .addParams(params)
-                    .location(DomHelper.getLocationObject(ehElement))
-                    .build();
+                        .addParams(params)
+                        .location(DomHelper.getLocationObject(ehElement))
+                        .build();
                 exceptionMappings.add(ehConfig);
             }
         }
@@ -807,9 +807,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
             Map params = XmlHelper.getParams(interceptorElement);
             InterceptorConfig config = new InterceptorConfig.Builder(name, className)
-                .addParams(params)
-                .location(DomHelper.getLocationObject(interceptorElement))
-                .build();
+                    .addParams(params)
+                    .location(DomHelper.getLocationObject(interceptorElement))
+                    .build();
 
             context.addInterceptorConfig(config);
         }
@@ -870,9 +870,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                     doc = DomHelper.parse(in, dtdMappings);
                 } catch (XWorkException e) {
                     if (includeElement != null) {
-                        throw new ConfigurationException("Unable to load "+url, e, includeElement);
+                        throw new ConfigurationException("Unable to load " + url, e, includeElement);
                     } else {
-                        throw new ConfigurationException("Unable to load "+url, e);
+                        throw new ConfigurationException("Unable to load " + url, e);
                     }
                 } catch (Exception e) {
                     final String s = "Caught exception while loading file " + fileName;
@@ -901,21 +901,20 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
                         if (nodeName.equals("include")) {
                             String includeFileName = child.getAttribute("file");
-                            if(includeFileName.indexOf('*') != -1 ) {
+                            if (includeFileName.indexOf('*') != -1) {
                                 // handleWildCardIncludes(includeFileName, docs, child);
-                            	ClassPathFinder wildcardFinder = new ClassPathFinder();
-                            	wildcardFinder.setPattern(includeFileName);
-                            	Vector<String> wildcardMatches = wildcardFinder.findMatches();
-                            	for (String match : wildcardMatches) {
-                            		docs.addAll(loadConfigurationFiles(match, child));
-                            	}
+                                ClassPathFinder wildcardFinder = new ClassPathFinder();
+                                wildcardFinder.setPattern(includeFileName);
+                                Vector<String> wildcardMatches = wildcardFinder.findMatches();
+                                for (String match : wildcardMatches) {
+                                    docs.addAll(loadConfigurationFiles(match, child));
+                                }
+                            } else {
+
+                                docs.addAll(loadConfigurationFiles(includeFileName, child));
                             }
-                            else {
-                            	
-                                docs.addAll(loadConfigurationFiles(includeFileName, child));    
-                            }    
+                        }
                     }
-                }
                 }
                 docs.add(doc);
                 loadedFileUrls.add(url.toString());
@@ -930,118 +929,115 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
     private void handleWildCardIncludes(String includeFileName, List<Document> docs, Element child) {
         // check for star*, pedantic
-        if( includeFileName.indexOf('*') == -1 ) {
+        if (includeFileName.indexOf('*') == -1) {
             throw new XWorkException("handleWildCardIncludes called with name not containing wildcard");
         }
         LOG.info("encountered wildcard include, checking for - " + includeFileName);
-        URL [] curDirUrls ;
+        URL[] curDirUrls;
 
-           // curDirUrls = ClassLoaderUtil.getResources("/", this.getClass(), true);
-           ClassLoader cl = XmlConfigurationProvider.class.getClassLoader();
-           URLClassLoader ucl ;
-           if (cl instanceof URLClassLoader) {
-               ucl = (URLClassLoader) cl;
-           }
-           else {
-               throw new XWorkException("cannot create an URLClassLoader from current classloader");
-           }
-           curDirUrls = ucl.getURLs();
+        // curDirUrls = ClassLoaderUtil.getResources("/", this.getClass(), true);
+        ClassLoader cl = XmlConfigurationProvider.class.getClassLoader();
+        URLClassLoader ucl;
+        if (cl instanceof URLClassLoader) {
+            ucl = (URLClassLoader) cl;
+        } else {
+            throw new XWorkException("cannot create an URLClassLoader from current classloader");
+        }
+        curDirUrls = ucl.getURLs();
 
         String fileNamePrefix = null;
-        if (! includeFileName.startsWith("*")) {
-            fileNamePrefix = includeFileName.substring(0, includeFileName.indexOf('*'));    
+        if (!includeFileName.startsWith("*")) {
+            fileNamePrefix = includeFileName.substring(0, includeFileName.indexOf('*'));
         }
-        
+
         String fileNameSuffix = null;
-        if( ! includeFileName.endsWith("*")) {
-            fileNameSuffix = includeFileName.substring(includeFileName.lastIndexOf('*') +1 );
+        if (!includeFileName.endsWith("*")) {
+            fileNameSuffix = includeFileName.substring(includeFileName.lastIndexOf('*') + 1);
         }
-        
+
         String relativeDir = null;
-        
-        if(includeFileName.indexOf("/") != -1) {
-            if(LOG.isDebugEnabled() ) {
+
+        if (includeFileName.indexOf("/") != -1) {
+            if (LOG.isDebugEnabled()) {
                 LOG.debug("includeFileName contains a /");
             }
-            if(includeFileName.lastIndexOf('/') > includeFileName.indexOf('*')) {
+            if (includeFileName.lastIndexOf('/') > includeFileName.indexOf('*')) {
                 throw new XWorkException("wildcard includes does not support wildcard directories");
             }
-            fileNamePrefix = includeFileName.substring(includeFileName.lastIndexOf('/') +1, includeFileName.indexOf('*'));
-            relativeDir = includeFileName.substring(0,includeFileName.lastIndexOf('/'));
-            if(LOG.isDebugEnabled() ) {
+            fileNamePrefix = includeFileName.substring(includeFileName.lastIndexOf('/') + 1, includeFileName.indexOf('*'));
+            relativeDir = includeFileName.substring(0, includeFileName.lastIndexOf('/'));
+            if (LOG.isDebugEnabled()) {
                 LOG.debug("relativeDir = " + relativeDir + ", fileNameMask = " + fileNamePrefix);
             }
         }
-        
-        for(URL baseSearchURL : curDirUrls ) {
-            if (! baseSearchURL.getProtocol().equals("file")) {
+
+        for (URL baseSearchURL : curDirUrls) {
+            if (!baseSearchURL.getProtocol().equals("file")) {
                 continue;
             }
-            
-            File searchDir ;
-            
-            if (relativeDir != null ) {
+
+            File searchDir;
+
+            if (relativeDir != null) {
                 if (relativeDir.startsWith("/")) {
                     relativeDir = relativeDir.substring(relativeDir.indexOf('/') + 1);
                 }
-                File parent ;
+                File parent;
                 try {
                     parent = new File(baseSearchURL.toURI());
                 } catch (URISyntaxException e) {
                     throw new XWorkException("bad URI for searchDir - " + baseSearchURL.toString());
                 }
-                if( ! parent.isDirectory()) {
+                if (!parent.isDirectory()) {
                     continue;
                 }
                 searchDir = new File(parent, relativeDir);
-            }
-            else {
+            } else {
                 try {
                     searchDir = new File(baseSearchURL.toURI());
                 } catch (URISyntaxException e) {
                     throw new XWorkException("bad URI for searchDir - " + baseSearchURL.toString());
                 }
             }
-            if(LOG.isDebugEnabled() ) {
+            if (LOG.isDebugEnabled()) {
                 LOG.debug("using - " + searchDir.toURI().toString() + ", as searchDir");
             }
-            if( searchDir != null && searchDir.isDirectory() ) {
-                if(LOG.isDebugEnabled() ) {
+            if (searchDir != null && searchDir.isDirectory()) {
+                if (LOG.isDebugEnabled()) {
                     LOG.debug("getting searchDir file list");
                 }
-                String [] filesInDir = searchDir.list();
-                if (filesInDir == null ) {
+                String[] filesInDir = searchDir.list();
+                if (filesInDir == null) {
                     throw new XWorkException("unable to find any files in include directory");
                 }
-                for (String fileInDir: filesInDir) {
-                    if(LOG.isDebugEnabled() ) {
+                for (String fileInDir : filesInDir) {
+                    if (LOG.isDebugEnabled()) {
                         LOG.debug("checking - " + fileInDir);
                     }
-                    boolean fileMatches = false ;
+                    boolean fileMatches = false;
                     if (fileNameSuffix != null || fileNamePrefix != null) {
-                        fileMatches = ( fileNameSuffix != null && fileNamePrefix != null &&
-                                        fileNameSuffix.length() + fileNamePrefix.length() < fileInDir.length() && 
-                                        fileInDir.startsWith(fileNamePrefix) && fileInDir.endsWith(fileNameSuffix ) ) ;
-                        fileMatches = fileMatches || 
-                                    ( fileNamePrefix == null &&
-                                      fileInDir.endsWith(fileNameSuffix) );
-                        fileMatches = fileMatches || 
-                                    ( fileNameSuffix == null &&
-                                      fileInDir.startsWith(fileNamePrefix) );
+                        fileMatches = (fileNameSuffix != null && fileNamePrefix != null &&
+                                fileNameSuffix.length() + fileNamePrefix.length() < fileInDir.length() &&
+                                fileInDir.startsWith(fileNamePrefix) && fileInDir.endsWith(fileNameSuffix));
+                        fileMatches = fileMatches ||
+                                (fileNamePrefix == null &&
+                                        fileInDir.endsWith(fileNameSuffix));
+                        fileMatches = fileMatches ||
+                                (fileNameSuffix == null &&
+                                        fileInDir.startsWith(fileNamePrefix));
                     }
-                    
-                    if( fileMatches ) {
-                        if (relativeDir != null ) {
+
+                    if (fileMatches) {
+                        if (relativeDir != null) {
                             if (!relativeDir.endsWith("/")) {
                                 relativeDir = relativeDir.concat("/");
                             }
-                            if(LOG.isDebugEnabled() ) {
+                            if (LOG.isDebugEnabled()) {
                                 LOG.debug("calling load on - " + relativeDir + fileInDir);
                             }
                             docs.addAll(loadConfigurationFiles(relativeDir + fileInDir, child));
-                        }
-                        else {
-                            if(LOG.isDebugEnabled() ) {
+                        } else {
+                            if (LOG.isDebugEnabled()) {
                                 LOG.debug("calling load on - " + fileInDir);
                             }
                             docs.addAll(loadConfigurationFiles(fileInDir, child));
@@ -1051,7 +1047,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             }
         }
     }
-    
+
     protected Iterator<URL> getConfigurationUrls(String fileName) throws IOException {
         return ClassLoaderUtil.getResources(fileName, XmlConfigurationProvider.class, false);
     }
