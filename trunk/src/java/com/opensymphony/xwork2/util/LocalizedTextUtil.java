@@ -93,10 +93,16 @@ public class LocalizedTextUtil {
      */
     public static void clearDefaultResourceBundles() {
     	if (DEFAULT_RESOURCE_BUNDLES != null) {
-    		DEFAULT_RESOURCE_BUNDLES.clear();
+    	    synchronized (DEFAULT_RESOURCE_BUNDLES) {
+    	        DEFAULT_RESOURCE_BUNDLES.clear();
+    	        DEFAULT_RESOURCE_BUNDLES.add("com/opensymphony/xwork2/xwork-messages");
+            }
+    	} else {
+    	    DEFAULT_RESOURCE_BUNDLES = Collections.synchronizedList(new ArrayList());
+    	    synchronized (DEFAULT_RESOURCE_BUNDLES) {
+    	        DEFAULT_RESOURCE_BUNDLES.add("com/opensymphony/xwork2/xwork-messages");
+            }
     	}
-        DEFAULT_RESOURCE_BUNDLES = Collections.synchronizedList(new ArrayList());
-        DEFAULT_RESOURCE_BUNDLES.add("com/opensymphony/xwork2/xwork-messages");
     }
 
     /**
@@ -116,8 +122,10 @@ public class LocalizedTextUtil {
      */
     public static void addDefaultResourceBundle(String resourceBundleName) {
         //make sure this doesn't get added more than once
-        DEFAULT_RESOURCE_BUNDLES.remove(resourceBundleName);
-        DEFAULT_RESOURCE_BUNDLES.add(0, resourceBundleName);
+        synchronized (DEFAULT_RESOURCE_BUNDLES) {
+            DEFAULT_RESOURCE_BUNDLES.remove(resourceBundleName);
+            DEFAULT_RESOURCE_BUNDLES.add(0, resourceBundleName);
+        }
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("Added default resource bundle '" + resourceBundleName + "' to default resource bundles = " + DEFAULT_RESOURCE_BUNDLES);
@@ -175,18 +183,20 @@ public class LocalizedTextUtil {
      * @return a localized message based on the specified key, or null if no localized message can be found for it
      */
     public static String findDefaultText(String aTextName, Locale locale) {
-        List localList = DEFAULT_RESOURCE_BUNDLES; // it isn't sync'd, but this is so rare, let's do it anyway
+        synchronized (DEFAULT_RESOURCE_BUNDLES) {
+            List localList = DEFAULT_RESOURCE_BUNDLES; 
 
-        for (Iterator iterator = localList.iterator(); iterator.hasNext();) {
-            String bundleName = (String) iterator.next();
+            for (Iterator iterator = localList.iterator(); iterator.hasNext();) {
+                String bundleName = (String) iterator.next();
 
-            ResourceBundle bundle = findResourceBundle(bundleName, locale);
-            if (bundle != null) {
-                reloadBundles();
-                try {
-                    return bundle.getString(aTextName);
-                } catch (MissingResourceException e) {
-                    // ignore and try others
+                ResourceBundle bundle = findResourceBundle(bundleName, locale);
+                if (bundle != null) {
+                    reloadBundles();
+                    try {
+                        return bundle.getString(aTextName);
+                    } catch (MissingResourceException e) {
+                        // ignore and try others
+                    }
                 }
             }
         }
