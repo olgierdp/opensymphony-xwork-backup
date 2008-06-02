@@ -157,10 +157,10 @@
     <distributionManagement>
 	    <!--
 		For this to work, you need to:
-		
+
 		1) Get the private key from someone that trusts you :)
 		2) Add the following to ~/.m2/settings.xml
-		
+
 		<settings>
 			...
 			<servers>
@@ -374,6 +374,7 @@
                     </excludes>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -456,9 +457,53 @@
                   </goals>
                 </execution>
               </executions>
-            </plugin>            
+            </plugin>
 
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                  <execution>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                      <shadedArtifactId>xwork</shadedArtifactId>
+                      <artifactSet>
+                        <excludes>
+                          <exclude>junit:junit</exclude>
+                          <exclude>commons-logging:commons-logging</exclude>
+                          <exclude>opensymphony:ognl</exclude>
+                          <exclude>org.springframework:spring-core</exclude>
+                          <exclude>org.springframework:spring-aop</exclude>
+                          <exclude>org.springframework:spring-beans</exclude>
+                          <exclude>org.springframework:spring-context</exclude>
+                          <exclude>org.springframework:spring-web</exclude>
+                          <exclude>org.springframework:spring-mock</exclude>
+                          <exclude>mockobjects:mockobjects-core</exclude>
+                          <exclude>org.easymock:easymock</exclude>
+                          <exclude>aopalliance:aopalliance</exclude>
+                          <exclude>aspectwerkz:aspectwerkz-core</exclude>
+                          <exclude>cglib:cglib</exclude>
+                          <exclude>asm:asm-util</exclude>
+                          <exclude>org.testng:testng:jdk15</exclude>
+                        </excludes>
+                      </artifactSet>
+                      <relocations>
+                        <relocation>
+                          <pattern>org.objectweb.asm</pattern>
+                          <shadedPattern>org.objectweb.asm.xwork</shadedPattern>
+                        </relocation>
+                      </relocations>
+                      <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"/>
+                      </transformers>
+                    </configuration>
+                  </execution>
+                </executions>
+              </plugin>
         </plugins>
         <defaultGoal>install</defaultGoal>
     </build>
@@ -524,6 +569,16 @@
             <version>2.6.11</version>
         </dependency>
         <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm-commons</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>2.0.7</version>
@@ -571,7 +626,7 @@
             <version>3.8.2</version>
             <optional>true</optional>
         </dependency>
-        
+
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -579,7 +634,7 @@
             <optional>true</optional>
             <classifier>jdk15</classifier>
         </dependency>
-        
+
         <dependency>
             <groupId>mockobjects</groupId>
             <artifactId>mockobjects-core</artifactId>
