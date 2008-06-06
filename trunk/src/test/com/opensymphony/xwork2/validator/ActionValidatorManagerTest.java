@@ -1,4 +1,4 @@
-package com.opensymphony.xwork.validator;
+package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.XWorkTestCase;
