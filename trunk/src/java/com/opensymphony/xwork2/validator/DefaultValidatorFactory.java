@@ -24,7 +24,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
  * Default validator factory
- * 
+ *
  * @version $Date$ $Id$
  * @author Jason Carreira
  * @author James House
@@ -98,13 +98,16 @@ public class DefaultValidatorFactory implements ValidatorFactory {
             Iterator<URL> urls = ClassLoaderUtil.getResources("", DefaultValidatorFactory.class, false);
             while (urls.hasNext()) {
                 URL u = urls.next();
-                File f = new File(new URI(u.toExternalForm().replaceAll(" ", "%20"))); 
-                FilenameFilter filter = new FilenameFilter() {
-                    public boolean accept(File file, String fileName) {
-                        return fileName.contains("-validators.xml");
-                    }
-                };
-                files.addAll(Arrays.asList(f.listFiles(filter)));
+                URI uri = new URI(u.toExternalForm().replaceAll(" ", "%20"));
+                if ("file".equalsIgnoreCase(uri.getScheme())) {
+                    File f = new File(uri);
+                    FilenameFilter filter = new FilenameFilter() {
+                        public boolean accept(File file, String fileName) {
+                            return fileName.contains("-validators.xml");
+                        }
+                    };
+                    files.addAll(Arrays.asList(f.listFiles(filter)));
+                }
             }
         } catch (URISyntaxException e) {
             e.printStackTrace();
