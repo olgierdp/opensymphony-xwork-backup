@@ -98,20 +98,21 @@ public class DefaultValidatorFactory implements ValidatorFactory {
             Iterator<URL> urls = ClassLoaderUtil.getResources("", DefaultValidatorFactory.class, false);
             while (urls.hasNext()) {
                 URL u = urls.next();
-                URI uri = new URI(u.toExternalForm().replaceAll(" ", "%20"));
-                if ("file".equalsIgnoreCase(uri.getScheme())) {
-                    File f = new File(uri);
-                    FilenameFilter filter = new FilenameFilter() {
-                        public boolean accept(File file, String fileName) {
-                            return fileName.contains("-validators.xml");
-                        }
-                    };
-                    files.addAll(Arrays.asList(f.listFiles(filter)));
+                try {
+                    URI uri = new URI(u.toExternalForm().replaceAll(" ", "%20"));
+                    if ("file".equalsIgnoreCase(uri.getScheme())) {
+                        File f = new File(uri);
+                        FilenameFilter filter = new FilenameFilter() {
+                            public boolean accept(File file, String fileName) {
+                                return fileName.contains("-validators.xml");
+                            }
+                        };
+                        files.addAll(Arrays.asList(f.listFiles(filter)));
+                    }
+                } catch (Exception ex) {
+                    LOG.error("Unable to load #0", ex, u.toString());
                 }
             }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            // swallow
         } catch (IOException e) {
             throw new ConfigurationException("Unable to parse validators", e);
         }
