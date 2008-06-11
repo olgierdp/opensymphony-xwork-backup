@@ -40,7 +40,7 @@ import com.opensymphony.xwork2.util.ValueStack;
  *
  * <p><b>NOTE:</b>Note that you do not declare what "flavor" of validator you are 
  * using in your -validation.xml file, you just declare the name of the validator 
- * to use and WebWork will know whether it's a "plain Validator" or a "FieldValidator" 
+ * to use and Struts will know whether it's a "plain Validator" or a "FieldValidator"  
  * by looking at the validation class that the validator's programmer chose 
  * to implement.</p>
  * <!-- END SNIPPET: validatorFlavours -->
@@ -90,7 +90,7 @@ import com.opensymphony.xwork2.util.ValueStack;
  * </p>
  * 
  * <p><b>NOTE:</b>Child's *-validation.xml will add on to parent's *-validation.xml 
- * according to the class hierarchi defined above. With this feature, one could have
+ * according to the class hierarchy defined above. With this feature, one could have
  * more generic validation rule at the parent and more specific validation rule at
  * the child.</p>
  * 
@@ -202,11 +202,10 @@ import com.opensymphony.xwork2.util.ValueStack;
  *
  *
  * <!-- START SNIPPET: shortCircuitingValidators1 -->
- * <p>Beginning with XWork 1.0.1 (bundled with WebWork 2.1), it is possible 
- * to short-circuit a stack of validators. Here is another sample config file 
- * containing validation rules from the Xwork test cases: Notice that some of the 
- * &lt;field-validator&gt; and &lt;validator&gt; elements have the short-circuit 
- * attribute set to true.</p>
+ * <p>It is possible to short-circuit a stack of validators. 
+ * Here is another sample config file containing validation rules from the
+ * Xwork test cases: Notice that some of the &lt;field-validator&gt; and
+ * &lt;validator&gt; elements have the short-circuit attribute set to true.</p>
  * <!-- END SNIPPET : shortCircuitingValidators1 -->
  *
  *<pre>
@@ -265,21 +264,21 @@ import com.opensymphony.xwork2.util.ValueStack;
  *  <li> Field Validators for email2 field</li>
  * </ol>
  *
- * <p>Since Field Validator 2 is short-circuited, if its validation failed, 
+ * <p>Since Plain Validator 2 is short-circuited, if its validation failed, 
  * it will causes Field validators for email field and Field validators for email2 
  * field to not be validated as well.</p>
  * 
  * <p><b>Usefull Information:</b>
- * More complecated validation should probably be done in the validate() 
+ * More complicated validation should probably be done in the validate() 
  * method on the action itself (assuming the action implements Validatable 
  * interface which ActionSupport already does).</p>
  * 
  * <p>
  * A plain Validator (non FieldValidator) that gets short-circuited will
- * completely break out of the validation stack no other validators will be 
- * evaluated and plain validator takes precedence over field validator meaning 
- * that they get evaluated in the order they are defined before field validator 
- * gets a chance to be evaludated again according to their order defined.
+ * completely break out of the validation stack. No other validators will be 
+ * evaluated and plain validators takes precedence over field validators meaning
+ * that they get evaluated in the order they are defined before field validators
+ * get a chance to be evaluated.
  * </p>
  * <!-- END SNIPPET: shortCircuitingValidators2 -->
  * 
