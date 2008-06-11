@@ -59,7 +59,7 @@ import com.opensymphony.xwork2.inject.Inject;
  * A validator, in contrast, is more generic and can do validations in the full action context,
  * involving more than one field (or even no field at all) in validation rule.
  * Most validations can be defined on per field basis. This should be preferred over
- * non-field validation whereever possible, as field validator messages are bound to the
+ * non-field validation wherever possible, as field validator messages are bound to the
  * related field and will be presented next to the corresponding input element in the
  * respecting view.
  * <!-- END SNIPPET: fieldValidators -->
@@ -114,7 +114,7 @@ import com.opensymphony.xwork2.inject.Inject;
  *   &lt;/field&gt;
  *   &lt;field name="bar2"&gt;
  *       &lt;field-validator type="regex"&gt;
- *           &lt;param name="regex"&gt;[0-9],[0-9]&lt;/param&gt;
+ *           &lt;param name="expression"&gt;[0-9],[0-9]&lt;/param&gt;
  *           &lt;message&gt;The value of bar2 must be in the format "x, y", where x and y are between 0 and 9&lt;/message&gt;
  *      &lt;/field-validator&gt;
  *   &lt;/field&gt;
@@ -179,9 +179,9 @@ import com.opensymphony.xwork2.inject.Inject;
  *
  * <p><b>NOTE:</b> Since validation rules are in an XML file, you must make sure
  * you escape special characters. For example, notice that in the expression
- * validator rule above we use "&gt;" instead of ">". Consult a resource on XML
+ * validator rule above we use "&amp;gt;" instead of "&gt;". Consult a resource on XML
  * for the full list of characters that must be escaped. The most commonly used
- * characters that must be escaped are: & (use &amp;), > (user &gt;), and < (use &lt;).</p>
+ * characters that must be escaped are: &amp; (use &amp;amp;), &gt; (user &amp;gt;), and &lt; (use &amp;lt;).</p>
  *
  * <p>Here is an example of a parameterized message:</p>
  * <p>This will pull the min and max parameters from the IntRangeFieldValidator and
