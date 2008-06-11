@@ -459,7 +459,7 @@
                 </executions>
             </plugin>
 
-            <!--plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>1.1</version>
@@ -509,7 +509,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin-->
+            </plugin>
         </plugins>
         <defaultGoal>install</defaultGoal>
     </build>
@@ -574,7 +574,7 @@
             <artifactId>ognl</artifactId>
             <version>2.6.11</version>
         </dependency>
-        <!--dependency>
+        <dependency>
             <groupId>asm</groupId>
             <artifactId>asm</artifactId>
             <version>3.1</version>
@@ -583,7 +583,7 @@
             <groupId>asm</groupId>
             <artifactId>asm-commons</artifactId>
             <version>3.1</version>
-        </dependency-->
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -634,7 +634,7 @@
 
         <dependency>
             <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
+            <artifactId>cglib-nodep</artifactId>
             <version>2.1_3</version>
             <optional>true</optional>
         </dependency>

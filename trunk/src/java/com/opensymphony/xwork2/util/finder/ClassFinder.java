@@ -40,11 +40,11 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-//import org.objectweb.asm.AnnotationVisitor;
-//import org.objectweb.asm.ClassReader;
-//import org.objectweb.asm.FieldVisitor;
-//import org.objectweb.asm.MethodVisitor;
-//import org.objectweb.asm.commons.EmptyVisitor;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.commons.EmptyVisitor;
 
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
@@ -737,105 +737,105 @@ public class ClassFinder {
         if (!className.endsWith(".class")) {
             className = className.replace('.', '/') + ".class";
         }
-//        try {
-//            URL resource = classLoader.getResource(className);
-//            if (resource != null) {
-//                InputStream in = resource.openStream();
-//                try {
-//                    ClassReader classReader = new ClassReader(in);
-//                    classReader.accept(new InfoBuildingVisitor(), ClassReader.SKIP_DEBUG);
-//                } finally {
-//                    in.close();
-//                }
-//            } else {
-//                new Exception("Could not load " + className).printStackTrace();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            URL resource = classLoader.getResource(className);
+            if (resource != null) {
+                InputStream in = resource.openStream();
+                try {
+                    ClassReader classReader = new ClassReader(in);
+                    classReader.accept(new InfoBuildingVisitor(), ClassReader.SKIP_DEBUG);
+                } finally {
+                    in.close();
+                }
+            } else {
+                new Exception("Could not load " + className).printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
-//    public class InfoBuildingVisitor extends EmptyVisitor {
-//        private Info info;
-//
-//        public InfoBuildingVisitor() {
-//        }
-//
-//        public InfoBuildingVisitor(Info info) {
-//            this.info = info;
-//        }
-//
-//        public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-//            if (name.endsWith("package-info")) {
-//                info = new PackageInfo(javaName(name));
-//            } else {
-//                ClassInfo classInfo = new ClassInfo(javaName(name), javaName(superName));
-//
-//                for (String interfce : interfaces) {
-//                    classInfo.getInterfaces().add(javaName(interfce));
-//                }
-//                info = classInfo;
-//                classInfos.put(classInfo.getName(), classInfo);
-//
-//                if (extractBaseInterfaces)
-//                    extractSuperInterfaces(classInfo);
-//            }
-//        }
-//
-//        private void extractSuperInterfaces(ClassInfo classInfo) {
-//            String superType = classInfo.getSuperType();
-//
-//            if (superType != null) {
-//                ClassInfo base = classInfos.get(superType);
-//
-//                if (base == null) {
-//                    //try to load base
-//                    String resource = superType.replace('.', '/') + ".class";
-//                    readClassDef(resource);
-//                    base = classInfos.get(superType);
-//                }
-//
-//                if (base != null) {
-//                    List<String> interfaces = classInfo.getSuperInterfaces();
-//                    interfaces.addAll(base.getSuperInterfaces());
-//                    interfaces.addAll(base.getInterfaces());
-//                }
-//            }
-//        }
-//
-//        private String javaName(String name) {
-//            return (name == null)? null:name.replace('/', '.');
-//        }
-//
-//        public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-//            AnnotationInfo annotationInfo = new AnnotationInfo(desc);
-//            info.getAnnotations().add(annotationInfo);
-//            getAnnotationInfos(annotationInfo.getName()).add(info);
-//            return new InfoBuildingVisitor(annotationInfo);
-//        }
-//
-//        public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-//            ClassInfo classInfo = ((ClassInfo) info);
-//            FieldInfo fieldInfo = new FieldInfo(classInfo, name, desc);
-//            classInfo.getFields().add(fieldInfo);
-//            return new InfoBuildingVisitor(fieldInfo);
-//        }
-//
-//        public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-//            ClassInfo classInfo = ((ClassInfo) info);
-//            MethodInfo methodInfo = new MethodInfo(classInfo, name, desc);
-//            classInfo.getMethods().add(methodInfo);
-//            return new InfoBuildingVisitor(methodInfo);
-//        }
-//
-//        public AnnotationVisitor visitParameterAnnotation(int param, String desc, boolean visible) {
-//            MethodInfo methodInfo = ((MethodInfo) info);
-//            List<AnnotationInfo> annotationInfos = methodInfo.getParameterAnnotations(param);
-//            AnnotationInfo annotationInfo = new AnnotationInfo(desc);
-//            annotationInfos.add(annotationInfo);
-//            return new InfoBuildingVisitor(annotationInfo);
-//        }
-//    }
+    public class InfoBuildingVisitor extends EmptyVisitor {
+        private Info info;
+
+        public InfoBuildingVisitor() {
+        }
+
+        public InfoBuildingVisitor(Info info) {
+            this.info = info;
+        }
+
+        public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+            if (name.endsWith("package-info")) {
+                info = new PackageInfo(javaName(name));
+            } else {
+                ClassInfo classInfo = new ClassInfo(javaName(name), javaName(superName));
+
+                for (String interfce : interfaces) {
+                    classInfo.getInterfaces().add(javaName(interfce));
+                }
+                info = classInfo;
+                classInfos.put(classInfo.getName(), classInfo);
+
+                if (extractBaseInterfaces)
+                    extractSuperInterfaces(classInfo);
+            }
+        }
+
+        private void extractSuperInterfaces(ClassInfo classInfo) {
+            String superType = classInfo.getSuperType();
+
+            if (superType != null) {
+                ClassInfo base = classInfos.get(superType);
+
+                if (base == null) {
+                    //try to load base
+                    String resource = superType.replace('.', '/') + ".class";
+                    readClassDef(resource);
+                    base = classInfos.get(superType);
+                }
+
+                if (base != null) {
+                    List<String> interfaces = classInfo.getSuperInterfaces();
+                    interfaces.addAll(base.getSuperInterfaces());
+                    interfaces.addAll(base.getInterfaces());
+                }
+            }
+        }
+
+        private String javaName(String name) {
+            return (name == null)? null:name.replace('/', '.');
+        }
+
+        public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+            AnnotationInfo annotationInfo = new AnnotationInfo(desc);
+            info.getAnnotations().add(annotationInfo);
+            getAnnotationInfos(annotationInfo.getName()).add(info);
+            return new InfoBuildingVisitor(annotationInfo);
+        }
+
+        public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+            ClassInfo classInfo = ((ClassInfo) info);
+            FieldInfo fieldInfo = new FieldInfo(classInfo, name, desc);
+            classInfo.getFields().add(fieldInfo);
+            return new InfoBuildingVisitor(fieldInfo);
+        }
+
+        public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+            ClassInfo classInfo = ((ClassInfo) info);
+            MethodInfo methodInfo = new MethodInfo(classInfo, name, desc);
+            classInfo.getMethods().add(methodInfo);
+            return new InfoBuildingVisitor(methodInfo);
+        }
+
+        public AnnotationVisitor visitParameterAnnotation(int param, String desc, boolean visible) {
+            MethodInfo methodInfo = ((MethodInfo) info);
+            List<AnnotationInfo> annotationInfos = methodInfo.getParameterAnnotations(param);
+            AnnotationInfo annotationInfo = new AnnotationInfo(desc);
+            annotationInfos.add(annotationInfo);
+            return new InfoBuildingVisitor(annotationInfo);
+        }
+    }
 }
 
