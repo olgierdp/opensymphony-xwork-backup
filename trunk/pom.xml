@@ -155,35 +155,35 @@
         <url>http://jira.opensymphony.com/browse/XW</url>
     </issueManagement>
     <distributionManagement>
-	    <!--
-		For this to work, you need to:
+        <!--
+          For this to work, you need to:
 
-		1) Get the private key from someone that trusts you :)
-		2) Add the following to ~/.m2/settings.xml
+          1) Get the private key from someone that trusts you :)
+          2) Add the following to ~/.m2/settings.xml
 
-		<settings>
-			...
-			<servers>
-		    	<server>
-		      		<id>opensymphony</id>
-		      		<username>maven</username>
-		      		<privateKey>/path/to/private/maven_opensymphony_key</privateKey>
-		    	</server>
-			</servers>
-			...
-		</settings>
-		-->
+          <settings>
+              ...
+              <servers>
+                  <server>
+                        <id>opensymphony</id>
+                        <username>maven</username>
+                        <privateKey>/path/to/private/maven_opensymphony_key</privateKey>
+                  </server>
+              </servers>
+              ...
+          </settings>
+          -->
         <repository>
             <id>opensymphony</id>
             <name>OpenSymphony Maven Repository</name>
             <url>scp://maven2.opensymphony.com/opt/repository/maven2</url>
         </repository>
-      <snapshotRepository>
-         <uniqueVersion>true</uniqueVersion>
-         <id>apache.snapshots</id>
-         <name>Apache Development Snapshot Repository</name>
-         <url>scp://people.apache.org/www/people.apache.org/repo/m2-snapshot-repository</url>
-      </snapshotRepository>
+        <snapshotRepository>
+            <uniqueVersion>true</uniqueVersion>
+            <id>apache.snapshots</id>
+            <name>Apache Development Snapshot Repository</name>
+            <url>scp://people.apache.org/www/people.apache.org/repo/m2-snapshot-repository</url>
+        </snapshotRepository>
     </distributionManagement>
     <mailingLists>
         <mailingList>
@@ -438,72 +438,78 @@
                 </executions>
             </plugin>
             <plugin>
-              <artifactId>maven-jar-plugin</artifactId>
-              <configuration>
-                <archive>
-                  <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                </archive>
-              </configuration>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
             </plugin>
             <plugin>
-              <groupId>org.apache.felix</groupId>
-              <artifactId>maven-bundle-plugin</artifactId>
-              <executions>
-                <execution>
-                  <id>bundle-manifest</id>
-                  <phase>process-classes</phase>
-                  <goals>
-                    <goal>manifest</goal>
-                  </goals>
-                </execution>
-              </executions>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
-            <plugin>
+            <!--plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>1.1</version>
                 <executions>
-                  <execution>
-                    <phase>package</phase>
-                    <goals>
-                      <goal>shade</goal>
-                    </goals>
-                    <configuration>
-                      <shadedArtifactId>xwork</shadedArtifactId>
-                      <artifactSet>
-                        <excludes>
-                          <exclude>junit:junit</exclude>
-                          <exclude>commons-logging:commons-logging</exclude>
-                          <exclude>opensymphony:ognl</exclude>
-                          <exclude>org.springframework:spring-core</exclude>
-                          <exclude>org.springframework:spring-aop</exclude>
-                          <exclude>org.springframework:spring-beans</exclude>
-                          <exclude>org.springframework:spring-context</exclude>
-                          <exclude>org.springframework:spring-web</exclude>
-                          <exclude>org.springframework:spring-mock</exclude>
-                          <exclude>mockobjects:mockobjects-core</exclude>
-                          <exclude>org.easymock:easymock</exclude>
-                          <exclude>aopalliance:aopalliance</exclude>
-                          <exclude>aspectwerkz:aspectwerkz-core</exclude>
-                          <exclude>cglib:cglib</exclude>
-                          <exclude>asm:asm-util</exclude>
-                          <exclude>org.testng:testng:jdk15</exclude>
-                        </excludes>
-                      </artifactSet>
-                      <relocations>
-                        <relocation>
-                          <pattern>org.objectweb.asm</pattern>
-                          <shadedPattern>org.objectweb.asm.xwork</shadedPattern>
-                        </relocation>
-                      </relocations>
-                      <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"/>
-                      </transformers>
-                    </configuration>
-                  </execution>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactId>xwork</shadedArtifactId>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>junit:junit</exclude>
+                                    <exclude>commons-logging:commons-logging</exclude>
+                                    <exclude>opensymphony:ognl</exclude>
+                                    <exclude>org.springframework:spring-core</exclude>
+                                    <exclude>org.springframework:spring-aop</exclude>
+                                    <exclude>org.springframework:spring-aspects</exclude>
+                                    <exclude>org.springframework:spring-beans</exclude>
+                                    <exclude>org.springframework:spring-context</exclude>
+                                    <exclude>org.springframework:spring-context-support</exclude>
+                                    <exclude>org.springframework:spring-web</exclude>
+                                    <exclude>org.springframework:spring-test</exclude>
+                                    <exclude>mockobjects:mockobjects-core</exclude>
+                                    <exclude>org.easymock:easymock</exclude>
+                                    <exclude>aopalliance:aopalliance</exclude>
+                                    <exclude>aspectwerkz:aspectwerkz-core</exclude>
+                                    <exclude>aspectj:aspectjrt</exclude>
+                                    <exclude>aspectj:aspectjweaver</exclude>
+                                    <exclude>cglib:cglib</exclude>
+                                    <exclude>cglib:cglib-nodep</exclude>
+                                    <exclude>asm:asm-util</exclude>
+                                    <exclude>org.testng:testng:jdk15</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.objectweb.asm</pattern>
+                                    <shadedPattern>org.objectweb.asm.xwork</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"/>
+                            </transformers>
+                        </configuration>
+                    </execution>
                 </executions>
-              </plugin>
+            </plugin-->
         </plugins>
         <defaultGoal>install</defaultGoal>
     </build>
@@ -563,12 +569,12 @@
             <version>1.0.4</version>
             <optional>true</optional>
         </dependency>
-       <dependency>
+        <dependency>
             <groupId>opensymphony</groupId>
             <artifactId>ognl</artifactId>
             <version>2.6.11</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>asm</groupId>
             <artifactId>asm</artifactId>
             <version>3.1</version>
@@ -577,47 +583,59 @@
             <groupId>asm</groupId>
             <artifactId>asm-commons</artifactId>
             <version>3.1</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>2.0.7</version>
+            <version>2.5.4</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>2.0.7</version>
+            <version>2.5.4</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>2.5.4</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>2.0.7</version>
+            <version>2.5.4</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>2.0.7</version>
+            <version>2.5.4</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>2.5.4</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>2.0.7</version>
+            <version>2.5.4</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-mock</artifactId>
-            <version>2.0.7</version>
-            <scope>test</scope>
+            <artifactId>spring-test</artifactId>
+            <version>2.5.4</version>
         </dependency>
+
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
-            <version>2.1</version>
+            <version>2.1_3</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -662,23 +680,23 @@
             </releases>
         </pluginRepository>
     </pluginRepositories>
-	<repositories>
-		<repository>
-	      <releases>
-	        <enabled>false</enabled>
-	        <updatePolicy>always</updatePolicy>
-	        <checksumPolicy>warn</checksumPolicy>
-	      </releases>
-	      <snapshots>
-	        <enabled>true</enabled>
-	        <updatePolicy>always</updatePolicy>
-	        <checksumPolicy>fail</checksumPolicy>
-	      </snapshots>
-	      <id>apacheSnapshots</id>
-	      <name>Apache Snapshots</name>
-	      <url>http://people.apache.org/repo/m2-snapshot-repository/</url>
-	      <layout>default</layout>
-	    </repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+            <id>apacheSnapshots</id>
+            <name>Apache Snapshots</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository/</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
 
 </project>
