@@ -18,12 +18,12 @@ import java.util.Map;
  *
  * @author plightbo
  * @author tm_jee
- * 
+ *
  * @version $Date$ $Id$
  */
 public class TextParseUtilTest extends XWorkTestCase {
-	
-	
+
+
 	public void testTranslateVariablesWithEvaluator() throws Exception {
 		ValueStack stack = ActionContext.getContext().getValueStack();
 		stack.push(new Object() {
@@ -31,15 +31,15 @@ public class TextParseUtilTest extends XWorkTestCase {
 				return "My Variable ";
 			}
 		});
-		
+
 		TextParseUtil.ParsedValueEvaluator evaluator = new TextParseUtil.ParsedValueEvaluator() {
 			public Object evaluate(Object parsedValue) {
 				return parsedValue.toString()+"Something";
 			}
 		};
-		
+
 		String result = TextParseUtil.translateVariables("Hello ${myVariable}", stack, evaluator);
-		
+
 		assertEquals(result, "Hello My Variable Something");
 	}
 
@@ -49,7 +49,16 @@ public class TextParseUtilTest extends XWorkTestCase {
         Object s = TextParseUtil.translateVariables("foo: ${{1, 2, 3}}, bar: ${1}", stack);
         assertEquals("foo: [1, 2, 3], bar: 1", s);
 
+        s = TextParseUtil.translateVariables("foo: %{{1, 2, 3}}, bar: %{1}", stack);
+        assertEquals("foo: [1, 2, 3], bar: 1", s);
+
+        s = TextParseUtil.translateVariables("foo: %{{1, 2, 3}}, bar: %{1}", stack);
+        assertEquals("foo: [1, 2, 3], bar: 1", s);
+
         s = TextParseUtil.translateVariables("foo: ${#{1 : 2, 3 : 4}}, bar: ${1}", stack);
+        assertEquals("foo: {1=2, 3=4}, bar: 1", s);
+
+        s = TextParseUtil.translateVariables("foo: %{#{1 : 2, 3 : 4}}, bar: %{1}", stack);
         assertEquals("foo: {1=2, 3=4}, bar: 1", s);
 
         s = TextParseUtil.translateVariables("foo: 1}", stack);
@@ -61,11 +70,14 @@ public class TextParseUtilTest extends XWorkTestCase {
         s = TextParseUtil.translateVariables("foo: ${1", stack);
         assertEquals("foo: ${1", s);
 
+        s = TextParseUtil.translateVariables("foo: %{1", stack);
+        assertEquals("foo: %{1", s);
+
         s =  TextParseUtil.translateVariables('$', "${{1, 2, 3}}", stack, Object.class);
         assertNotNull(s);
         assertTrue("List not returned when parsing a 'pure' list", s instanceof List);
         assertEquals(((List)s).size(), 3);
-        
+
         s = TextParseUtil.translateVariables('$', "${#{'key1':'value1','key2':'value2','key3':'value3'}}", stack, Object.class);
         assertNotNull(s);
         assertTrue("Map not returned when parsing a 'pure' map", s instanceof Map);
@@ -102,7 +114,7 @@ public class TextParseUtilTest extends XWorkTestCase {
         Object s = TextParseUtil.translateVariables('$', "foo: ${}", stack);
         assertEquals("foo: ", s);
     }
-    
+
     public void testTranslateVariablesNoRecursive() {
         ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(new HashMap() {{ put("foo", "${1+1}"); }});
@@ -110,7 +122,7 @@ public class TextParseUtilTest extends XWorkTestCase {
         Object s = TextParseUtil.translateVariables('$', "foo: ${foo}", stack, String.class, null, 1);
         assertEquals("foo: ${1+1}", s);
     }
-    
+
     public void testTranslateVariablesRecursive() {
         ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(new HashMap() {{ put("foo", "${1+1}"); }});
