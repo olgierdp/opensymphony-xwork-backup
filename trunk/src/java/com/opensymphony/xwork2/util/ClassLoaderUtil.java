@@ -59,7 +59,7 @@ public class ClassLoaderUtil {
              }
          }
 
-         if (!iterator.hasNext() && (resourceName != null) && (resourceName.charAt(0) != '/')) {
+         if (!iterator.hasNext() && (resourceName != null) && ((resourceName.length() == 0) || (resourceName.charAt(0) != '/'))) { 
              return getResources('/' + resourceName, callingClass, aggregate);
          }
 
@@ -94,7 +94,7 @@ public class ClassLoaderUtil {
             }
         }
 
-        if ((url == null) && (resourceName != null) && (resourceName.charAt(0) != '/')) {
+        if ((url == null) && (resourceName != null) && ((resourceName.length() == 0) || (resourceName.charAt(0) != '/'))) { 
             return getResource('/' + resourceName, callingClass);
         }
 
