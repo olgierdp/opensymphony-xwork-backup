@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URI;
 import java.util.*;
@@ -61,6 +60,7 @@ public class DefaultValidatorFactory implements ValidatorFactory {
         // set other configured properties
         validator.setMessageKey(cfg.getMessageKey());
         validator.setDefaultMessage(cfg.getDefaultMessage());
+        validator.setMessageParameters(cfg.getMessageParams());
         if (validator instanceof ShortCircuitableValidator) {
             ((ShortCircuitableValidator) validator).setShortCircuit(cfg.isShortCircuit());
         }

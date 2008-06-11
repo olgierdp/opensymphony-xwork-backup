@@ -17,6 +17,8 @@ import com.opensymphony.xwork2.util.location.Location;
  * 
  * @author James House
  * @author Rainer Hermanns
+ * @author tm_jee
+ * @author Martin Gilday 
  */
 public class ValidatorConfig extends Located {
 
@@ -25,6 +27,7 @@ public class ValidatorConfig extends Located {
     private String defaultMessage;
     private String messageKey;
     private boolean shortCircuit;
+    private String[] messageParams;
     
     /**
      * @param validatorType
@@ -79,6 +82,13 @@ public class ValidatorConfig extends Located {
     }
 
     /**
+     * @return The i18n message parameters/arguments to be used.
+     */
+    public String[] getMessageParams() {
+        return messageParams;
+    }
+
+    /**
      * Builds a ValidatorConfig
      */
     public static final class Builder {
@@ -99,6 +109,11 @@ public class ValidatorConfig extends Located {
 
         public Builder defaultMessage(String msg) {
             target.defaultMessage = msg;
+            return this;
+        }
+
+        public Builder messageParams(String[] msgParams) {
+            target.messageParams = msgParams;
             return this;
         }
 
