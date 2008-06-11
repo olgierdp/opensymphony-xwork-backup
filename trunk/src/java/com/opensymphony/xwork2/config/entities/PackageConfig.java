@@ -429,7 +429,7 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
     }
 
     public Object getInterceptorConfig(String name) {
-        return getInterceptorConfigs().get(name);
+        return getAllInterceptorConfigs().get(name);
     }
 
     /**
