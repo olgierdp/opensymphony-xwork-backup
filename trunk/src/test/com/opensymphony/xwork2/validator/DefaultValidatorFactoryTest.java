@@ -26,9 +26,9 @@ public class DefaultValidatorFactoryTest extends TestCase {
     public void testParseValidators() {
         Mock mockValidatorFileParser = new Mock(ValidatorFileParser.class);
         mockValidatorFileParser.expect("parseValidatorDefinitions", C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("com/opensymphony/xwork2/validator/validators/default.xml")));
-        mockValidatorFileParser.expect("parseValidatorDefinitions", C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("my-validators.xml")));
-        mockValidatorFileParser.expect("parseValidatorDefinitions", C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("myOther-validators.xml")));
         mockValidatorFileParser.expect("parseValidatorDefinitions", C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("validators.xml")));
+        mockValidatorFileParser.expect("parseValidatorDefinitions", C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("myOther-validators.xml")));
+        mockValidatorFileParser.expect("parseValidatorDefinitions", C.args(C.IS_NOT_NULL, C.IS_NOT_NULL, C.eq("my-validators.xml")));
         DefaultValidatorFactory factory = new DefaultValidatorFactory(null, (ValidatorFileParser) mockValidatorFileParser.proxy());
 
         mockValidatorFileParser.verify();
