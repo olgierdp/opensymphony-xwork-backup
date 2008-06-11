@@ -19,7 +19,7 @@ import com.opensymphony.xwork2.validator.ValidationException;
  * 
  * <!-- START SNIPPET: parameters -->
  * <ul>
- * 	  <li>fieldName - The field name this validator is validating. Required if using Plain-Validator Syntax otherwise not required</li>
+ *    <li>fieldName - The field name this validator is validating. Required if using Plain-Validator Syntax otherwise not required</li>
  *    <li>maxLength - The max length of the field value. Default ignore.</li>
  *    <li>minLength - The min length of the field value. Default ignore.</li>
  *    <li>trim - Trim the field value before evaluating its min/max length. Default true</li>
@@ -41,10 +41,12 @@ import com.opensymphony.xwork2.validator.ValidationException;
  * 
  *            &lt;!-- Field Validator Syntax --&gt;
  *            &lt;field name="myPurchaseCode"&gt;
- *                &lt;param name="minLength"&gt;10&lt;/param&gt;
- *                &lt;param name="maxLength&gt;10&lt;/param&gt;
- *                &lt;param name="trim"&gt;true&lt;/param&gt;
- *                &lt;message&gt;Your purchase code needs to be 10 characters long&lt;/message&gt;
+ *                &lt;field-validator type="stringlength"&gt;
+ *                     &lt;param name="minLength"&gt;10&lt;/param&gt;
+ *                     &lt;param name="maxLength"&gt;10&lt;/param&gt;
+ *                     &lt;param name="trim"&gt;true&lt;/param&gt;
+ *                     &lt;message&gt;Your purchase code needs to be 10 characters long&lt;/message&gt;
+ *                &lt;/field-validator&gt;
  *            &lt;/field&gt;
  *      &lt;/validators&gt;
  * <!-- END SNIPPET: example -->
