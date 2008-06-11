@@ -155,8 +155,8 @@ public class OgnlValueStack implements Serializable, ValueStack {
                 String msg = "Error setting expression '" + expr + "' with value '" + value + "'";
                 throw new XWorkException(msg, e);
             } else {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Error setting value", e);
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn("Error setting value", e);
                 }
             }
         } catch (RuntimeException re) { //XW-281
@@ -186,8 +186,8 @@ public class OgnlValueStack implements Serializable, ValueStack {
 
                 throw new XWorkException(msg.toString(), re);
             } else {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Error setting value", re);
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn("Error setting value", re);
                 }
             }
         } finally {
@@ -275,14 +275,17 @@ public class OgnlValueStack implements Serializable, ValueStack {
     }
 
 
-     /**
+    /**
      * This method looks for matching methods/properties in an action to warn the user if
      * they specified a property that doesn't exist.
+     *
      * @param expr the property expression
      */
     private void checkForInvalidProperties(String expr) {
         if (expr.contains("(") && expr.contains(")")) {
-            LOG.warn("Could not find method [" + expr + "]");
+            if (devMode) {
+                LOG.warn("Could not find method [" + expr + "]");
+            }
         } else if (findInContext(expr) == null) {
             // find objects with Action in them and inspect matching getters
             Set availableProperties = new LinkedHashSet();
@@ -296,17 +299,20 @@ public class OgnlValueStack implements Serializable, ValueStack {
                 }
             }
             if (!availableProperties.contains(expr)) {
-                LOG.warn("Could not find property [" + expr + "]");
+                if (devMode) {
+                    LOG.warn("Could not find property [" + expr + "]");
+                }
             }
         }
     }
 
     /**
      * Look for available properties on an existing class.
-     * @param c the class to search on
-     * @param expr the property expression
+     *
+     * @param c                   the class to search on
+     * @param expr                the property expression
      * @param availableProperties a set of properties found
-     * @param parent a parent property
+     * @param parent              a parent property
      * @throws IntrospectionException when Ognl can't get property descriptors
      */
     private void findAvailableProperties(Class c, String expr, Set availableProperties, String parent) throws IntrospectionException {
@@ -317,7 +323,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
                 name = expr.substring(0, expr.indexOf(".") + 1) + name;
             }
             if (expr.startsWith(name)) {
-               availableProperties.add((parent != null) ? parent + "." + name : name);
+                availableProperties.add((parent != null) ? parent + "." + name : name);
                 if (expr.equals(name)) break; // no need to go any further
                 if (expr.indexOf(".") > -1) {
                     String property = expr.substring(expr.indexOf(".") + 1);
