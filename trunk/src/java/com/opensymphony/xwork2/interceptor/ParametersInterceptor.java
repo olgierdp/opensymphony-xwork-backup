@@ -246,7 +246,6 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
                 logEntry.append("[ ");
                 for (int indexA = 0; indexA < (valueArray.length - 1); indexA++) {
                     Object valueAtIndex = valueArray[indexA];
-                    logEntry.append(valueAtIndex);
                     logEntry.append(String.valueOf(valueAtIndex));
                     logEntry.append(", ");
                 }
