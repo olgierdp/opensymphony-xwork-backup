@@ -454,7 +454,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      * @param mapping an existing map to add new converter mappings to
      * @param clazz   class to look for converter mappings for
      */
-    void addConverterMapping(Map<String, Object> mapping, Class clazz) {
+    protected void addConverterMapping(Map<String, Object> mapping, Class clazz) {
         try {
             String converterFilename = buildConverterFilename(clazz);
             InputStream is = FileManager.loadFile(converterFilename, clazz);
@@ -685,7 +685,7 @@ public class XWorkConverter extends DefaultTypeConverter {
      * @param clazz the class to look for converter mappings for
      * @return the converter mappings
      */
-    private Map<String, Object> buildConverterMapping(Class clazz) throws Exception {
+    protected Map<String, Object> buildConverterMapping(Class clazz) throws Exception {
         Map<String, Object> mapping = new HashMap<String, Object>();
 
         // check for conversion mapping associated with super classes and any implemented interfaces
