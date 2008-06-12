@@ -262,8 +262,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
 
     protected boolean acceptableName(String name) {
-        if (name.indexOf('=') != -1 || name.indexOf(',') != -1 || name.indexOf('#') != -1
-                || name.indexOf(':') != -1 || isExcluded(name)) {
+        if (name.indexOf('=') != -1 || name.indexOf(',') != -1 || name.indexOf('#') != -1 || name.indexOf(':') != -1 || name.indexOf("\\u0023") != -1 || isExcluded(name)) {
             return false;
         } else {
             return true;

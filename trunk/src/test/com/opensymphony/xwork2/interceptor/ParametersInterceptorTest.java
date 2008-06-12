@@ -97,6 +97,10 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         Map params = new HashMap();
         params.put("blah", "This is blah");
         params.put("#session.foo", "Foo");
+        params.put("\u0023session[\'user\']", "0wn3d");
+        params.put("\u0023session.user2", "0wn3d");
+        params.put("('\u0023'%20%2b%20'session[\'user3\']')(unused)", "0wn3d");
+        params.put("('\\u0023' + 'session[\\'user4\\']')(unused)", "0wn3d");
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
@@ -108,6 +112,10 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         proxy.execute();
         assertEquals("This is blah", ((SimpleAction) proxy.getAction()).getBlah());
         assertNull(session.get("foo"));
+        assertNull(session.get("user"));
+        assertNull(session.get("user2"));
+        assertNull(session.get("user3"));
+        assertNull(session.get("user4"));
     }
 
     public void testParameters() throws Exception {
