@@ -170,20 +170,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
         assertTrue(action.getFieldErrors().containsKey("customer.address.street"));
         assertEquals(((List)action.getFieldErrors().get("customer.address.street")).size(), 1);
         assertTrue(action.getFieldErrors().containsKey("customer.address.pobox"));
-        //assertEquals(((List)action.getFieldErrors().get("customer.address.pobox")).size(), 2);
-
-        for (Iterator i = action.getFieldErrors().keySet().iterator(); i.hasNext(); ) {
-            System.out.println(i.next());
-        }
-
-
-        for (Iterator i = ((List)action.getFieldErrors().get("customer.address.street")).iterator(); i.hasNext();) {
-            System.out.println("**"+i.next());
-        }
-        for (Iterator i = ((List)action.getFieldErrors().get("customer.address.pobox")).iterator(); i.hasNext();) {
-            System.out.println("**"+i.next());
-        }
-
+        assertEquals(((List)action.getFieldErrors().get("customer.address.pobox")).size(), 2);
     }
 
     private class MockAction extends ActionSupport {
