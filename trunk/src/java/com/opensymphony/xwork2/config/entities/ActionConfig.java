@@ -32,7 +32,7 @@ public class ActionConfig extends Located implements Serializable {
 
     public static final String WILDCARD = "*";
 
-    protected List<InterceptorMapping> interceptors;
+    protected List<InterceptorMapping> interceptors; // a list of interceptorMapping Objects eg. List<InterceptorMapping>
     protected Map<String, String> params;
     protected Map<String, ResultConfig> results;
     protected List<ExceptionMappingConfig> exceptionMappings;
