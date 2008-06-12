@@ -362,7 +362,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
      * An {@link com.opensymphony.xwork2.validator.ValidatorContext} wrapper that
      * returns the full field name
      * {@link com.opensymphony.xwork2.validator.AbstractActionValidatorManager.InternalValidatorContextWrapper#getFullFieldName(String)}
-     * by consulting it's parent if its an {@link com.opensymphony.xwork.2validator.validators.VisitorFieldValidator.AppendingValidatorContext}.
+     * by consulting it's parent if its an {@link com.opensymphony.xwork2.validator.validators.VisitorFieldValidator.AppendingValidatorContext}.
      * <p/>
      * Eg. if we have nested Visitor
      * AddressVisitor nested inside PersonVisitor, when using the normal #getFullFieldName, we will get
