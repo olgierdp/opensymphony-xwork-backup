@@ -11,11 +11,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.LocaleProvider;
-import com.opensymphony.xwork2.TextProvider;
-import com.opensymphony.xwork2.TextProviderFactory;
-import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
@@ -38,8 +34,7 @@ public class DelegatingValidatorContext implements ValidatorContext {
      * are used internally to set errors and get and set error text.
      */
     public DelegatingValidatorContext(ValidationAware validationAware, TextProvider textProvider,
-            LocaleProvider localeProvider)
-    {
+                                      LocaleProvider localeProvider) {
         this.textProvider = textProvider;
         this.validationAware = validationAware;
         this.localeProvider = localeProvider;
@@ -101,6 +96,10 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return localeProvider.getLocale();
     }
 
+    public boolean hasKey(String key) {
+    	return textProvider.hasKey(key);
+    }
+    
     public String getText(String aTextName) {
         return textProvider.getText(aTextName);
     }
@@ -134,11 +133,11 @@ public class DelegatingValidatorContext implements ValidatorContext {
     }
 
     public String getText(String key, String defaultValue, List args, ValueStack stack) {
-        return textProvider.getText(key,defaultValue,args,stack);
+        return textProvider.getText(key, defaultValue, args, stack);
     }
 
     public String getText(String key, String defaultValue, String[] args, ValueStack stack) {
-        return textProvider.getText(key,defaultValue,args,stack);
+        return textProvider.getText(key, defaultValue, args, stack);
     }
 
     public ResourceBundle getTexts() {
@@ -174,8 +173,13 @@ public class DelegatingValidatorContext implements ValidatorContext {
     }
 
     public static TextProvider makeTextProvider(Object object, LocaleProvider localeProvider) {
-        if (object instanceof TextProvider) {
-            return (TextProvider) object;
+        // the object argument passed through here will most probably be an ActionSupport decendant which does
+        // implements TextProvider.
+        if ((object != null) && (object instanceof TextProvider)) {
+            return new CompositeTextProvider(new TextProvider[]{
+                    ((TextProvider) object),
+                    new TextProviderSupport(object.getClass(), localeProvider)
+            });
         } else {
             return new TextProviderFactory().createInstance(object.getClass(), localeProvider);
         }
@@ -223,7 +227,7 @@ public class DelegatingValidatorContext implements ValidatorContext {
     }
 
     /**
-     * An implementation of ValidationAware which logs errors and messages. 
+     * An implementation of ValidationAware which logs errors and messages.
      */
     private static class LoggingValidationAware implements ValidationAware {
 

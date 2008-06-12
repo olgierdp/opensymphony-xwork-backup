@@ -76,6 +76,10 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
         }
     }
 
+    public boolean hasKey(String key) {
+        return textProvider.hasKey(key);
+    }
+
     public String getText(String aTextName) {
         return textProvider.getText(aTextName);
     }
@@ -135,7 +139,7 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
     public String input() throws Exception {
         return INPUT;
     }
-    
+
     public String doDefault() throws Exception {
         return SUCCESS;
     }
@@ -148,7 +152,7 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
      * See also {@link com.opensymphony.xwork2.Action#execute()}.
      *
      * @return returns {@link #SUCCESS}
-     * @throws Exception  can be thrown by subclasses.
+     * @throws Exception can be thrown by subclasses.
      */
     public String execute() throws Exception {
         return SUCCESS;
@@ -226,11 +230,11 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
      * Stops the action invocation immediately (by throwing a PauseException) and causes the action invocation to return
      * the specified result, such as {@link #SUCCESS}, {@link #INPUT}, etc.
      * <p/>
-     *
+     * <p/>
      * The next time this action is invoked (and using the same continuation ID), the method will resume immediately
      * after where this method was called, with the entire call stack in the execute method restored.
      * <p/>
-     *
+     * <p/>
      * Note: this method can <b>only</b> be called within the {@link #execute()} method.
      * <!-- END SNIPPET: pause-method -->
      *

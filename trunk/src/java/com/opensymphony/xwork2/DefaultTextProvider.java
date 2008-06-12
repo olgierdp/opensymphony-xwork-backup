@@ -30,6 +30,10 @@ public class DefaultTextProvider implements TextProvider, Serializable, Unchaina
     public DefaultTextProvider() {
     }
 
+    public boolean hasKey(String key) {
+        return getText(key) != null;
+    }
+
     public String getText(String key) {
         return LocalizedTextUtil.findDefaultText(key, ActionContext.getContext().getLocale());
     }

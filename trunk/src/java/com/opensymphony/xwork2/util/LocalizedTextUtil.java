@@ -619,7 +619,7 @@ public class LocalizedTextUtil {
         if (unableToFindTextForKey(result)) {
             LOG.warn("Unable to find text for key '" + aTextName + "' in ResourceBundles for locale '" + locale + "'");
         }
-        return result.message;
+        return result != null ? result.message : null;
     }
 
     /**

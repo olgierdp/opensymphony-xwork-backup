@@ -72,6 +72,25 @@ public class TextProviderSupport implements ResourceBundleTextProvider {
         this.localeProvider = localeProvider;
     }
 
+
+    /**
+     * Checks if a key is available in the resource bundles associated with this action.
+     * The resource bundles are searched, starting with the one associated
+     * with this particular action, and testing all its superclasses' bundles.
+     * It will stop once a bundle is found that contains the given text. This gives
+     * a cascading style that allow global texts to be defined for an application base
+     * class.
+     */
+    public boolean hasKey(String key) {
+    	String message = null;
+    	if (clazz != null) {
+            message =  LocalizedTextUtil.findText(clazz, key, getLocale(), null, new Object[0] );
+        } else {
+            message = LocalizedTextUtil.findText(bundle, key, getLocale(), null, new Object[0]);
+        }
+    	return message != null;
+    }
+
     /**
      * Get a text from the resource bundles associated with this action.
      * The resource bundles are searched, starting with the one associated
