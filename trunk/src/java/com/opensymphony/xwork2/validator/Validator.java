@@ -321,6 +321,25 @@ import com.opensymphony.xwork2.util.ValueStack;
  * the Action. If you are using the short-circuit attribute and relying on
  * default validators higher up in the inheritance tree, make sure you don't
  * accidentally short-circuit things higher in the tree that you really want!</p>
+ * <p>
+ * The effect of having common validators on both
+ * </p>
+ * <ul>
+ * 	<li>&lt;actionClass&gt;-validation.xml</li>
+ *     <li>&lt;actionClass&gt;-&lt;actionAlias&gt;-validation.xml</li>
+ * </ul>
+ * <p>
+ * It should be noted that the nett effect will be validation on both the validators available
+ * in both validation configuration file. For example if we have 'requiredstring' validators defined
+ * in both validation xml file for field named 'address', we will see 2 validation error indicating that
+ * the the address cannot be empty (assuming validation failed). This is due to WebWork
+ * will merge validators found in both validation configuration files.
+ * </p>
+ * <p>
+ * The logic behind this design decision is such that we could have common validators in
+ * &lt;actionClass&gt;-validation.xml and more context specific validators to be located
+ * in &lt;actionClass&gt;-&lt;actionAlias&gt;-validation.xml
+ * </p>
  * <!-- END SNIPPET: howXworkFindsValidatorForAction -->
  *
  * @author Jason Carreira
