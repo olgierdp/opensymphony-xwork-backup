@@ -541,8 +541,8 @@ class ContainerImpl implements Container {
 
   ThreadLocal<Object[]> localContext =
       new ThreadLocal<Object[]>() {
-        protected InternalContext[] initialValue() {
-          return new InternalContext[1];
+        protected Object[] initialValue() {
+          return new Object[1];
         }
       };
 
@@ -551,18 +551,18 @@ class ContainerImpl implements Container {
    * necessary.
    */
   <T> T callInContext(ContextualCallable<T> callable) {
-    InternalContext[] reference = (InternalContext[])localContext.get();
+    Object[] reference = localContext.get();
     if (reference[0] == null) {
       reference[0] = new InternalContext(this);
       try {
-        return callable.call(reference[0]);
+        return callable.call((InternalContext)reference[0]);
       } finally {
         // Only remove the context if this call created it.
         reference[0] = null;
       }
     } else {
       // Someone else will clean up this context.
-      return callable.call(reference[0]);
+      return callable.call((InternalContext)reference[0]);
     }
   }
 
