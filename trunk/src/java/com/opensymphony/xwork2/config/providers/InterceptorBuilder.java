@@ -29,12 +29,12 @@ public class InterceptorBuilder {
 
 
     /**
-     * Builds a list of interceptors referenced by the refName in the supplied PackageConfig.
+     * Builds a list of interceptors referenced by the refName in the supplied PackageConfig (InterceptorMapping object).
      *
      * @param interceptorLocator
      * @param refName
      * @param refParams
-     * @return list of interceptors referenced by the refName in the supplied PackageConfig.
+     * @return list of interceptors referenced by the refName in the supplied PackageConfig (InterceptorMapping object).
      * @throws ConfigurationException
      */
     public static List<InterceptorMapping> constructInterceptorReference(InterceptorLocator interceptorLocator ,
@@ -88,9 +88,30 @@ public class InterceptorBuilder {
     private static List<InterceptorMapping> constructParameterizedInterceptorReferences(
             InterceptorLocator interceptorLocator, InterceptorStackConfig stackConfig, Map refParams,
             ObjectFactory objectFactory) {
-        List<InterceptorMapping> result;
+        Set<InterceptorMapping> result;
         Map<String, Map<Object, String>> params = new LinkedHashMap<String, Map<Object, String>>();
 
+        /*
+         * We strip
+         *
+         * <interceptor-ref name="someStack">
+         *    <param name="interceptor1.param1">someValue</param>
+         *    <param name="interceptor1.param2">anotherValue</param>
+         * </interceptor-ref>
+         *
+         * down to map
+         *  interceptor1 -> [param1 -> someValue, param2 -> anotherValue]
+         *
+         * or
+         * <interceptor-ref name="someStack">
+         *    <param name="interceptorStack1.interceptor1.param1">someValue</param>
+         *    <param name="interceptorStack1.interceptor1.param2">anotherValue</param>
+         * </interceptor-ref>
+         *
+         * down to map
+         *  interceptorStack1 -> [interceptor1.param1 -> someValue, interceptor1.param2 -> anotherValue]
+         *
+         */
         for (Iterator iter = refParams.keySet().iterator(); iter.hasNext();) {
             String key = (String) iter.next();
             String value = (String) refParams.get(key);
@@ -114,24 +135,71 @@ public class InterceptorBuilder {
             }
         }
 
-        result = new ArrayList<InterceptorMapping>(stackConfig.getInterceptors());
+        result = new LinkedHashSet<InterceptorMapping>(stackConfig.getInterceptors());
 
         for (String key : params.keySet()) {
 
             Map<Object, String> map = params.get(key);
 
-            InterceptorConfig cfg = (InterceptorConfig) interceptorLocator.getInterceptorConfig(key);
-            Interceptor interceptor = objectFactory.buildInterceptor(cfg, map);
 
-            InterceptorMapping mapping = new InterceptorMapping(key, interceptor);
-            if (result != null && result.contains(mapping)) {
-                int index = result.indexOf(mapping);
-                result.set(index, mapping);
-            } else {
+            Object interceptorCfgObj = interceptorLocator.getInterceptorConfig(key);
+
+            /*
+             * Now we attempt to separate out param that refers to Interceptor
+             * and Interceptor stack, eg.
+             *
+             * <interceptor-ref name="someStack">
+             *    <param name="interceptor1.param1">someValue</param>
+             *    ...
+             * </interceptor-ref>
+             *
+             *  vs
+             *
+             *  <interceptor-ref name="someStack">
+             *    <param name="interceptorStack1.interceptor1.param1">someValue</param>
+             *    ...
+             *  </interceptor-ref>
+             */
+            if(interceptorCfgObj instanceof InterceptorConfig) {  //  interceptor-ref param refer to an interceptor
+            	InterceptorConfig cfg = (InterceptorConfig) interceptorCfgObj;
+            	Interceptor interceptor = objectFactory.buildInterceptor(cfg, map);
+            
+
+//            InterceptorConfig cfg = (InterceptorConfig) interceptorLocator.getInterceptorConfig(key);
+//            Interceptor interceptor = objectFactory.buildInterceptor(cfg, map);
+//
+//            InterceptorMapping mapping = new InterceptorMapping(key, interceptor);
+//            if (result != null && result.contains(mapping)) {
+//                int index = result.indexOf(mapping);
+//                result.set(index, mapping);
+//            } else {
+            	InterceptorMapping mapping = new InterceptorMapping(key, interceptor);
+            	if ( result != null && result.contains(mapping)) {
+            		// if an existing interceptor mapping exists,
+            		// we remove from the result Set, just to make sure
+            		// there's always one unique mapping.
+            		result.remove(mapping);
+            	}
                 result.add(mapping);
+            }
+            else if (interceptorCfgObj instanceof InterceptorStackConfig){  // interceptor-ref param refer to an interceptor stack
+
+            	// If its an interceptor-stack, we call this method recursively untill,
+            	// all the params (eg. interceptorStack1.interceptor1.param etc.)
+            	// are resolved down to a specific interceptor.
+
+            	InterceptorStackConfig stackCfg = (InterceptorStackConfig) interceptorCfgObj;
+            	List tmpResult = constructParameterizedInterceptorReferences(interceptorLocator, stackCfg, map, objectFactory);
+            	for (Iterator i = tmpResult.iterator(); i.hasNext(); ) {
+            		InterceptorMapping tmpInterceptorMapping = (InterceptorMapping) i.next();
+            		if (result.contains(tmpInterceptorMapping)) {
+            			result.remove(tmpInterceptorMapping);
+            		}
+            		result.add(tmpInterceptorMapping);
+            	}
             }
         }
 
-        return result;
+        return new ArrayList<InterceptorMapping>(result);
     }
 }

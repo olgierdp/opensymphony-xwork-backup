@@ -398,7 +398,6 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
     }
 
     public int hashCode() {
-        // System.out.println("hashCode() + {Name:"+name+" abstract:"+isAbstract+" namespace:"+namespace+" parents: "+parents+"}");
         int result;
         result = ((name != null) ? name.hashCode() : 0);
         result = (29 * result) + ((parents != null) ? parents.hashCode() : 0);

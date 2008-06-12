@@ -24,28 +24,59 @@ import java.util.Collections;
  */
 public class InterceptorStackConfig extends Located implements Serializable {
 
+    private static final long serialVersionUID = 2897260918170270343L;
+
+    /**
+     * A list of InterceptorMapping object
+     */
     private List<InterceptorMapping> interceptors;
     private String name;
 
 
+    /**
+     * Creates an InterceptorStackConfig object.
+     */
     protected InterceptorStackConfig() {
         this.interceptors = new ArrayList<InterceptorMapping>();
     }
 
+    /**
+     * Creates an InterceptorStackConfig object with a particular <code>name</code>.
+     *
+     * @param name
+     */
     protected InterceptorStackConfig(InterceptorStackConfig orig) {
         this.name = orig.name;
         this.interceptors = new ArrayList<InterceptorMapping>(orig.interceptors);
     }
 
 
+    /**
+     * Returns a <code>Collection</code> of InterceptorMapping objects.
+     *
+     * @return
+     */
     public Collection<InterceptorMapping> getInterceptors() {
         return interceptors;
     }
 
+    /**
+     * Get the name of this interceptor stack configuration.
+     *
+     * @return String
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * An InterceptorStackConfig object is equals with <code>o</code> only if
+     * <ul>
+     * <li>o is an InterceptorStackConfig object</li>
+     * <li>both names are equals</li>
+     * <li>all of their <code>InterceptorMapping</code>s are equals</li>
+     * </ul>
+     */
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -57,8 +88,7 @@ public class InterceptorStackConfig extends Located implements Serializable {
 
         final InterceptorStackConfig interceptorStackConfig = (InterceptorStackConfig) o;
 
-        if ((interceptors != null) ? (!interceptors.equals(interceptorStackConfig.interceptors)) : (interceptorStackConfig.interceptors != null))
-        {
+        if ((interceptors != null) ? (!interceptors.equals(interceptorStackConfig.interceptors)) : (interceptorStackConfig.interceptors != null)) {
             return false;
         }
 
@@ -69,6 +99,10 @@ public class InterceptorStackConfig extends Located implements Serializable {
         return true;
     }
 
+    /**
+     * Generate hashcode based on <code>InterceptorStackConfig</code>'s name and its
+     * <code>InterceptorMapping</code>s.
+     */
     public int hashCode() {
         int result;
         result = ((name != null) ? name.hashCode() : 0);
@@ -95,11 +129,17 @@ public class InterceptorStackConfig extends Located implements Serializable {
             return this;
         }
 
+        /**
+         * Add an <code>InterceptorMapping</code> object.
+         */
         public Builder addInterceptor(InterceptorMapping interceptor) {
             target.interceptors.add(interceptor);
             return this;
         }
 
+        /**
+         * Add a List of <code>InterceptorMapping</code> objects.
+         */
         public Builder addInterceptors(List<InterceptorMapping> interceptors) {
             target.interceptors.addAll(interceptors);
             return this;

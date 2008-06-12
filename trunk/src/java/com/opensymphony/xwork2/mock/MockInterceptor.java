@@ -16,6 +16,8 @@ import junit.framework.Assert;
  */
 public class MockInterceptor implements Interceptor {
 
+    private static final long serialVersionUID = 2692551676567227756L;
+    
     public static final String DEFAULT_FOO_VALUE = "fooDefault";
 
 
