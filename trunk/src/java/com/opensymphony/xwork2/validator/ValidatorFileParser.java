@@ -5,8 +5,17 @@ import java.util.Map;
 import java.io.InputStream;
 
 /**
- * Parse the validation file. (eg. MyAction-validation.xml, MyAction-actionAlias-validation.xml)
- * to return a List of ValidatorConfig encapsulating the validator information.
+ * This class serves 2 purpose :
+ * <ul>
+ * <li>
+ * Parse the validation config file. (eg. MyAction-validation.xml, MyAction-actionAlias-validation.xml)
+  * to return a List of ValidatorConfig encapsulating the validator information.
+ * </li>
+ * <li>
+ * Parse the validator definition file, (eg. validators.xml) that defines the {@link Validator}s
+ * registered with XWork.
+ * </li>
+ * </ul>
  *
  * @author Jason Carreira
  * @author James House
@@ -18,7 +27,8 @@ import java.io.InputStream;
  */
 public interface ValidatorFileParser {
     /**
-     * Parse resource for a list of ValidatorConfig objects.
+     * Parse resource for a list of ValidatorConfig objects (configuring which validator(s) are
+     * being applied to a particular field etc.)
      *
      * @param is input stream to the resource
      * @param resourceName file name of the resource
@@ -27,7 +37,7 @@ public interface ValidatorFileParser {
     List<ValidatorConfig> parseActionValidatorConfigs(ValidatorFactory validatorFactory, InputStream is, String resourceName);
 
     /**
-     * Parses validator definitions
+     * Parses validator definitions (register various validators with XWork).
      *
      * @param is The input stream
      * @param resourceName The location of the input stream
