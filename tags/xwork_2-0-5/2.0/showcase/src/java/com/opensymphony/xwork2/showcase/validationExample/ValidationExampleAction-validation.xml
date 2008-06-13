@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE validators PUBLIC 
+	"-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+	"http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+
+<!-- START SNIPPET: xwork-validation -->
+<validators>
+	<validator type="expression">
+		<param name="expression"><![CDATA[name != null && age != null]]></param>
+		<message>Both fields are required</message>
+	</validator>
+	<field name="name">
+		<field-validator type="requiredstring">
+			<message>Name is mandatory</message>
+		</field-validator>
+	</field>
+	<field name="age">
+		<field-validator type="requiredstring">
+			<message>Age is mandatory</message>
+		</field-validator>
+		<field-validator type="int">
+			<param name="min">20</param>
+			<param name="max">50</param>
+			<message>Age must be between 20 and 50</message>
+		</field-validator>
+	</field>
+</validators>
+<!-- END SNIPPET: xwork-validation -->
+

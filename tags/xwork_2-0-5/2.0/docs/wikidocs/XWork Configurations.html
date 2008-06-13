@@ -1,0 +1,94 @@
+<html>
+    <head>
+        <title>XWork - 
+        XWork Configurations
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>Configuring XWork2 centers around the following classes:&#45;</p>
+<ul>
+	<li>ConfigurationManager</li>
+	<li>ConfigurationProvider</li>
+	<li>Configuration</li>
+</ul>
+
+
+<p>where by both ConfigurationProvider and Configuration are java interface.</p>
+
+<h2><a name="XWorkConfigurations-ConfigurationManager"></a>ConfigurationManager</h2>
+
+<p>This is the center for configuring XWork2. It allows ConfigurationProvider to be pluged in and setting a custom Configuration to be used. Typically one would like to just create one instance of ConfigurationManager for a XWork2 usage.</p>
+
+<h3><a name="XWorkConfigurations-Code"></a>Code</h3>
+
+<p>To create a ConfigurationManager :&#45;</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">ConfigurationManager confManager = <span class="code-keyword">new</span> ConfigurationManager();</pre>
+</div></div>
+
+<h2><a name="XWorkConfigurations-ConfigurationProvider"></a>ConfigurationProvider</h2>
+
+<p>ConfigurationProvider helps configuring a Configuration, populating it with information regarding what actions it has, how does the results get mapped and what interceptors are there and how they are related to each action etc. A default ConfigurationProvider that comes with XWork2 would be XmlConfigurationProvider and as the name suggest populate information into a Configuration object according the the xml provided.</p>
+
+<h3><a name="XWorkConfigurations-Code"></a>Code</h3>
+
+<p>To create a plug in a custom configuration provider</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">ConfigurationManager confManager = <span class="code-keyword">new</span> ConfigurationManager();
+  confManager.addConfigurationProvider(
+    <span class="code-keyword">new</span> MyCustomConfigurationProvider(....));</pre>
+</div></div>
+<p>To create an XmlConfigurationProvider that points to a particular xml file in the classpath:&#45;</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">ConfigurationManager confManager = <span class="code-keyword">new</span> ConfigurationManager();
+  confManager.addConfigurationProvider(
+    <span class="code-keyword">new</span> XmlConfigurationProvider(<span class="code-quote">"foo/bar/myConf.xml"</span>));</pre>
+</div></div>
+
+<h2><a name="XWorkConfigurations-Configuration"></a>Configuration</h2>
+
+<p>Configuration is a typical value object that contains configuration information. There's only one instance of it for each ConfigurationManager, where it is passed to different ConfigurationProvider in order for information to get stoted in it. The default implementation would be DefaultConfiguration.</p>
+
+<h3><a name="XWorkConfigurations-Code"></a>Code</h3>
+
+<p>To plug in a custom Configuration</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">ConfigurationManager confManager = <span class="code-keyword">new</span> ConfigurationManager();
+  confManager.setConfiguration(<span class="code-keyword">new</span> MyCustomConfiguration(...));</pre>
+</div></div>
+<p>The following illustrates typically how XWork2 is configured in the <tt>xwork.xml</tt> configuration file:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;?xml version=<span class="code-quote">"1.0"</span> encoding=<span class="code-quote">"UTF-8"</span>?&gt;</span>
+&lt;!DOCTYPE xwork PUBLIC 
+	<span class="code-quote">"-//OpenSymphony Group//XWork 1.1.1//EN"</span>
+	<span class="code-quote">"http://www.opensymphony.com/xwork/xwork-1.1.1.dtd"</span>&gt;
+
+
+<span class="code-tag">&lt;xwork&gt;</span>
+	<span class="code-tag">&lt;include file=<span class="code-quote">"xwork-default.xml"</span> /&gt;</span>
+	<span class="code-tag">&lt;package name=<span class="code-quote">"default-hello-world"</span> extends=<span class="code-quote">"xwork-default"</span> namespace=<span class="code-quote">"/helloWorld"</span>&gt;</span>
+		<span class="code-tag">&lt;result-types&gt;</span>
+			<span class="code-tag">&lt;result-type name=<span class="code-quote">"printToConsole"</span> class=<span class="code-quote">"com.opensymphony.xwork2.showcase.PrintToConsoleResult"</span> /&gt;</span>
+		<span class="code-tag">&lt;/result-types&gt;</span>
+		
+		<span class="code-tag">&lt;action name=<span class="code-quote">"helloWorld"</span> class=<span class="code-quote">"com.opensymphony.xwork2.showcase.helloworld.HelloWorldAction"</span>&gt;</span>
+			<span class="code-tag">&lt;result type=<span class="code-quote">"printToConsole"</span>&gt;</span>
+				<span class="code-tag">&lt;param name=<span class="code-quote">"param"</span>&gt;</span>${message}<span class="code-tag">&lt;/param&gt;</span>
+			<span class="code-tag">&lt;/result&gt;</span>
+		<span class="code-tag">&lt;/action&gt;</span>
+	<span class="code-tag">&lt;/package&gt;</span>
+<span class="code-tag">&lt;/xwork&gt;</span></pre>
+</div></div>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

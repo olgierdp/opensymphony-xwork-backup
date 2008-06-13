@@ -1,0 +1,266 @@
+<html>
+    <head>
+        <title>XWork - 
+        XWork Validation
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>XWork2 have build-in validation. They are done through the following major classes:&#45;</p>
+<ul>
+	<li>ActionVaidatorManagerFactory</li>
+	<li>ActionValidatorManager</li>
+	<li>Validator</li>
+</ul>
+
+
+<h2><a name="XWorkValidation-ActionValidatorManagerFactory"></a>ActionValidatorManagerFactory</h2>
+
+<p>ActionValidatorManagerFactory serves as a static factory for ActionValidatorManager.</p>
+
+<h2><a name="XWorkValidation-ActionValidatorManager"></a>ActionValidatorManager</h2>
+
+<p>This class is the main entry point to trigger XWork2 validation. Its default implementation (DefaultActionValidatorManager also takes care of loading the validators defined through xml file (default.xml) located in XWOrk2 jar file)</p>
+
+<p>To trigger validation through code use:&#45;</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">ActionValidatorManager actionValidatorManager = ....
+  actionValidatorManager.validate(myAction, <span class="code-quote">"actionAlias"</span>);</pre>
+</div></div>
+
+<h2><a name="XWorkValidation-Validator"></a>Validator</h2>
+
+<p>A validator needs to implement the Validator interface. XWork2 provides supporting base class that makes creating a custom validator easier. Typically one would like to extends from either :&#45;</p>
+<ul>
+	<li>ValidatorSupport</li>
+	<li>FieldValidatorSupport</li>
+</ul>
+
+
+<p>Extending ValidatorSupport is ideal for if its a global level validator while extending from FieldValidatorSupport is for validator that are meant to validate at a field level.</p>
+
+<h3><a name="XWorkValidation-HowtoWriteaCustomValidator"></a>How to Write a Custom Validator</h3>
+
+
+<h4><a name="XWorkValidation-Globalvalidator"></a>Global validator</h4>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">public</span> class ExpressionValidator <span class="code-keyword">extends</span> ValidatorSupport {
+
+    <span class="code-keyword">private</span> <span class="code-object">String</span> expression;
+
+
+    <span class="code-keyword">public</span> void setExpression(<span class="code-object">String</span> expression) {
+        <span class="code-keyword">this</span>.expression = expression;
+    }
+
+    <span class="code-keyword">public</span> <span class="code-object">String</span> getExpression() {
+        <span class="code-keyword">return</span> expression;
+    }
+
+    <span class="code-keyword">public</span> void validate(<span class="code-object">Object</span> object) <span class="code-keyword">throws</span> ValidationException {
+        <span class="code-object">Boolean</span> answer = <span class="code-object">Boolean</span>.FALSE;
+        <span class="code-object">Object</span> obj = <span class="code-keyword">null</span>;
+
+        <span class="code-keyword">try</span> {
+            obj = getFieldValue(expression, object);
+        } <span class="code-keyword">catch</span> (ValidationException e) {
+            <span class="code-keyword">throw</span> e;
+        } <span class="code-keyword">catch</span> (Exception e) {
+            <span class="code-comment">// let <span class="code-keyword">this</span> pass, but it will be logged right below
+</span>        }
+
+        <span class="code-keyword">if</span> ((obj != <span class="code-keyword">null</span>) &amp;&amp; (obj <span class="code-keyword">instanceof</span> <span class="code-object">Boolean</span>)) {
+            answer = (<span class="code-object">Boolean</span>) obj;
+        } <span class="code-keyword">else</span> {
+            log.warn(<span class="code-quote">"Got result of "</span> + obj + <span class="code-quote">" when trying to get <span class="code-object">Boolean</span>."</span>);
+        }
+
+        <span class="code-keyword">if</span> (!answer.booleanValue()) {
+            <span class="code-keyword">if</span> (log.isDebugEnabled()) log.debug(<span class="code-quote">"Validation failed on expression "</span> + expression + <span class="code-quote">" with validated object "</span>+ object);
+            addActionError(object);
+        }
+    }
+}</pre>
+</div></div>
+
+<h4><a name="XWorkValidation-Fieldvalidator"></a>Field validator</h4>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">public</span> class DoubleRangeFieldValidator <span class="code-keyword">extends</span> FieldValidatorSupport {
+    
+    <span class="code-object">String</span> maxInclusive = <span class="code-keyword">null</span>;
+    <span class="code-object">String</span> minInclusive = <span class="code-keyword">null</span>;
+    <span class="code-object">String</span> minExclusive = <span class="code-keyword">null</span>;
+    <span class="code-object">String</span> maxExclusive = <span class="code-keyword">null</span>;
+
+    <span class="code-object">Double</span> maxInclusiveValue = <span class="code-keyword">null</span>;
+    <span class="code-object">Double</span> minInclusiveValue = <span class="code-keyword">null</span>;
+    <span class="code-object">Double</span> minExclusiveValue = <span class="code-keyword">null</span>;
+    <span class="code-object">Double</span> maxExclusiveValue = <span class="code-keyword">null</span>;
+
+    <span class="code-keyword">public</span> void validate(<span class="code-object">Object</span> object) <span class="code-keyword">throws</span> ValidationException {
+        <span class="code-object">String</span> fieldName = getFieldName();
+        <span class="code-object">Double</span> value;
+        <span class="code-keyword">try</span> {
+            <span class="code-object">Object</span> obj = <span class="code-keyword">this</span>.getFieldValue(fieldName, object);
+            <span class="code-keyword">if</span> (obj == <span class="code-keyword">null</span>) {
+                <span class="code-keyword">return</span>;
+            }
+            value = <span class="code-object">Double</span>.valueOf(obj.toString());
+        } <span class="code-keyword">catch</span> (NumberFormatException e) {
+            <span class="code-keyword">return</span>;
+        }
+
+        parseParameterValues();
+        <span class="code-keyword">if</span> ((maxInclusiveValue != <span class="code-keyword">null</span> &amp;&amp; value.compareTo(maxInclusiveValue) &gt; 0) ||
+                (minInclusiveValue != <span class="code-keyword">null</span> &amp;&amp; value.compareTo(minInclusiveValue) &lt; 0) ||
+                (maxExclusiveValue != <span class="code-keyword">null</span> &amp;&amp; value.compareTo(maxExclusiveValue) &gt;= 0) ||
+                (minExclusiveValue != <span class="code-keyword">null</span> &amp;&amp; value.compareTo(minExclusiveValue) &lt;= 0)) {
+            addFieldError(fieldName, object);
+        }
+    }
+
+    <span class="code-keyword">private</span> void parseParameterValues() {
+        <span class="code-keyword">this</span>.minInclusiveValue = parseDouble(minInclusive);
+        <span class="code-keyword">this</span>.maxInclusiveValue = parseDouble(maxInclusive);
+        <span class="code-keyword">this</span>.minExclusiveValue = parseDouble(minExclusive);
+        <span class="code-keyword">this</span>.maxExclusiveValue = parseDouble(maxExclusive);
+    }
+
+    <span class="code-keyword">private</span> <span class="code-object">Double</span> parseDouble (<span class="code-object">String</span> value) {
+        <span class="code-keyword">if</span> (value != <span class="code-keyword">null</span>) {
+            <span class="code-keyword">try</span> {
+                <span class="code-keyword">return</span> <span class="code-object">Double</span>.valueOf(value);
+            } <span class="code-keyword">catch</span> (NumberFormatException e) {
+                <span class="code-keyword">if</span> (log.isWarnEnabled()) {
+                    log.warn(<span class="code-quote">"DoubleRangeFieldValidator - [parseDouble]: Unable to parse given <span class="code-object">double</span> parameter "</span> + value);
+                }
+            }
+        }
+        <span class="code-keyword">return</span> <span class="code-keyword">null</span>;
+    }
+
+    <span class="code-keyword">public</span> void setMaxInclusive(<span class="code-object">String</span> maxInclusive) {
+        <span class="code-keyword">this</span>.maxInclusive = maxInclusive;
+    }
+
+    <span class="code-keyword">public</span> <span class="code-object">String</span> getMaxInclusive() {
+        <span class="code-keyword">return</span> maxInclusive;
+    }
+
+    <span class="code-keyword">public</span> void setMinInclusive(<span class="code-object">String</span> minInclusive) {
+        <span class="code-keyword">this</span>.minInclusive = minInclusive;
+    }
+
+    <span class="code-keyword">public</span> <span class="code-object">String</span> getMinInclusive() {
+        <span class="code-keyword">return</span> minInclusive;
+    }
+
+    <span class="code-keyword">public</span> <span class="code-object">String</span> getMinExclusive() {
+        <span class="code-keyword">return</span> minExclusive;
+    }
+
+    <span class="code-keyword">public</span> void setMinExclusive(<span class="code-object">String</span> minExclusive) {
+        <span class="code-keyword">this</span>.minExclusive = minExclusive;
+    }
+
+    <span class="code-keyword">public</span> <span class="code-object">String</span> getMaxExclusive() {
+        <span class="code-keyword">return</span> maxExclusive;
+    }
+
+    <span class="code-keyword">public</span> void setMaxExclusive(<span class="code-object">String</span> maxExclusive) {
+        <span class="code-keyword">this</span>.maxExclusive = maxExclusive;
+    }
+}</pre>
+</div></div>
+
+<h3><a name="XWorkValidation-DefaultValidators"></a>Default Validators</h3>
+
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;validators&gt;</span>
+    <span class="code-tag">&lt;validator name=<span class="code-quote">"required"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.RequiredFieldValidator"</span>/&gt;</span>
+    <span class="code-tag">&lt;validator name=<span class="code-quote">"requiredstring"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.RequiredStringValidator"</span>/&gt;</span>
+    <span class="code-tag">&lt;validator name=<span class="code-quote">"int"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.IntRangeFieldValidator"</span>/&gt;</span>
+    <span class="code-tag">&lt;validator name=<span class="code-quote">"double"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.DoubleRangeFieldValidator"</span>/&gt;</span>
+    <span class="code-tag">&lt;validator name=<span class="code-quote">"date"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.DateRangeFieldValidator"</span>/&gt;</span>
+    <span class="code-tag">&lt;validator name=<span class="code-quote">"expression"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.ExpressionValidator"</span>/&gt;</span>
+    <span class="code-tag">&lt;validator name=<span class="code-quote">"fieldexpression"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.FieldExpressionValidator"</span>/&gt;</span>
+    <span class="code-tag">&lt;validator name=<span class="code-quote">"email"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.EmailValidator"</span>/&gt;</span>
+    <span class="code-tag">&lt;validator name=<span class="code-quote">"url"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.URLValidator"</span>/&gt;</span>
+    <span class="code-tag">&lt;validator name=<span class="code-quote">"visitor"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.VisitorFieldValidator"</span>/&gt;</span>
+    <span class="code-tag">&lt;validator name=<span class="code-quote">"conversion"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.ConversionErrorFieldValidator"</span>/&gt;</span>
+    <span class="code-tag">&lt;validator name=<span class="code-quote">"stringlength"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.StringLengthFieldValidator"</span>/&gt;</span>
+    <span class="code-tag">&lt;validator name=<span class="code-quote">"regex"</span> class=<span class="code-quote">"com.opensymphony.xwork2.validator.validators.RegexFieldValidator"</span>/&gt;</span>
+<span class="code-tag">&lt;/validators&gt;</span></pre>
+</div></div>
+
+<h2><a name="XWorkValidation-IntegratevalidationintoAction"></a>Integrate validation into Action</h2>
+
+
+<h3><a name="XWorkValidation-Actionlevelvalidation"></a>Action-level validation</h3>
+
+<p>To create an action level validation, create a file 'ActionClass-validation.xml' at the same location where the Action class itself lies. Example, if the action class is MyAction, the xml file would be named 'MyAction-validation.xml'</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;action name=<span class="code-quote">"myAlias"</span> class=<span class="code-quote">"foo.bar.MyAction"</span>&gt;
+     ....
+   &lt;/action&gt;
+   &lt;action name=<span class="code-quote">"myAnotherAlias"</span> class=<span class="code-quote">"foo.bar.MyAction"</span> method=<span class="code-quote">"create"</span>&gt;
+    .....
+   &lt;/action&gt;</pre>
+</div></div>
+<p>An action-level validation allows the validation to be applied to all 'MyAction' action class. In the example above, both action 'myAlias' and 'myAnotherAlias' will have the validation applied.</p>
+
+<h3><a name="XWorkValidation-ActionAliaslevelvalidation"></a>Action Alias-level validation</h3>
+
+<p>To create an action alias level validation, create a file 'ActionClass-actionAlias-validation.xml' at the same location where the Action class itself lies. Example if the action class is MyAction with an alias 'myAlias', the xml file would be named 'MyAction-myAlias-validation.xml'.</p>
+<div class="code"><div class="codeContent">
+<pre class="code-java">&lt;action name=<span class="code-quote">"myAlias"</span> class=<span class="code-quote">"foo.bar.MyAction"</span>&gt;
+    ...
+  &lt;/action&gt;
+  &lt;action name=<span class="code-quote">"myAnotherAlias"</span> class=<span class="code-quote">"foo.bar.MyAction"</span> method=<span class="code-quote">"create"</span>&gt;
+    .....
+   &lt;/action&gt;</pre>
+</div></div>
+<p>An action-alias-level validation allows the validation to be applied to all 'MyAction' action class with alias 'myAlias' only, hence limiting the scope where the validation is applied compared to global-level validation.</p>
+
+<p>In the example above, action 'myAlias' will have the validation applied whereas action 'myAnotherAlias' will not.</p>
+
+<h3><a name="XWorkValidation-Validationconfiguration"></a>Validation configuration</h3>
+
+<p>Following is an example how a validation xml configuration file looks like</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;validators&gt;</span>
+	<span class="code-tag">&lt;validator type=<span class="code-quote">"expression"</span>&gt;</span>
+		<span class="code-tag">&lt;param name=<span class="code-quote">"expression"</span>&gt;</span><span class="code-tag">&lt;![CDATA[name != null &amp;&amp; age != null]]&gt;</span><span class="code-tag">&lt;/param&gt;</span>
+		<span class="code-tag">&lt;message&gt;</span>Both fields are required<span class="code-tag">&lt;/message&gt;</span>
+	<span class="code-tag">&lt;/validator&gt;</span>
+	<span class="code-tag">&lt;field name=<span class="code-quote">"name"</span>&gt;</span>
+		<span class="code-tag">&lt;field-validator type=<span class="code-quote">"requiredstring"</span>&gt;</span>
+			<span class="code-tag">&lt;message&gt;</span>Name is mandatory<span class="code-tag">&lt;/message&gt;</span>
+		<span class="code-tag">&lt;/field-validator&gt;</span>
+	<span class="code-tag">&lt;/field&gt;</span>
+	<span class="code-tag">&lt;field name=<span class="code-quote">"age"</span>&gt;</span>
+		<span class="code-tag">&lt;field-validator type=<span class="code-quote">"requiredstring"</span>&gt;</span>
+			<span class="code-tag">&lt;message&gt;</span>Age is mandatory<span class="code-tag">&lt;/message&gt;</span>
+		<span class="code-tag">&lt;/field-validator&gt;</span>
+		<span class="code-tag">&lt;field-validator type=<span class="code-quote">"int"</span>&gt;</span>
+			<span class="code-tag">&lt;param name=<span class="code-quote">"min"</span>&gt;</span>20<span class="code-tag">&lt;/param&gt;</span>
+			<span class="code-tag">&lt;param name=<span class="code-quote">"max"</span>&gt;</span>50<span class="code-tag">&lt;/param&gt;</span>
+			<span class="code-tag">&lt;message&gt;</span>Age must be between 20 and 50<span class="code-tag">&lt;/message&gt;</span>
+		<span class="code-tag">&lt;/field-validator&gt;</span>
+	<span class="code-tag">&lt;/field&gt;</span>
+<span class="code-tag">&lt;/validators&gt;</span></pre>
+</div></div>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
