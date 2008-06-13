@@ -3,7 +3,7 @@
 <ivy-module version="1.0">
     <info organisation="opensymphony" module="xwork"
           revision="2.0.5"
-          status="integration"
+          status="release"
           publication="20070719000000">
         <license name="Apache" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
         <ivyauthor name="opensymphony" url="http://www.opensymphony.com/"/>
