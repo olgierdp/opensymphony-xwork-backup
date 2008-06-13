@@ -118,11 +118,27 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
     boolean ordered = false;
     Set<Pattern> excludeParams = Collections.EMPTY_SET;
+    Set<Pattern> acceptedParams = Collections.EMPTY_SET;
     static boolean devMode = false;
-    
+
+    private String acceptedParamNames = "[\\p{Graph}&&[^,#:=]]*";
+    private Pattern acceptedPattern = Pattern.compile(acceptedParamNames);
+
+    final Object LOCK = new Object();
+
     @Inject("devMode")
     public static void setDevMode(String mode) {
         devMode = "true".equals(mode);
+    }
+
+    public void setAcceptedParamNames(String commaDelim) {
+        Collection<String> acceptPatterns = asCollection(commaDelim);
+        if (acceptPatterns != null) {
+            acceptedParams = new HashSet<Pattern>();
+            for (String pattern : acceptPatterns) {
+                acceptedParams.add(Pattern.compile(pattern));
+            }
+        }
     }
     
     /** Compares based on number of '.' characters (fewer is higher) */
@@ -259,15 +275,25 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
         return logEntry.toString();
     }
 
-
     protected boolean acceptableName(String name) {
-        if (name.indexOf('=') != -1 || name.indexOf(',') != -1 || name.indexOf('#') != -1 || name.indexOf(':') != -1 || name.indexOf("\\u0023") != -1 || isExcluded(name)) {
-            return false;
-        } else {
+        if ( isAccepted(name) && !isExcluded(name)) {
             return true;
         }
+        return false;
     }
     
+    protected boolean isAccepted(String paramName) {
+        if (!this.acceptedParams.isEmpty()) {
+            for (Pattern pattern : acceptedParams) {
+                Matcher matcher = pattern.matcher(paramName);
+                if (!matcher.matches()) {
+                    return false;
+                }
+            }
+        }
+        return acceptedPattern.matcher(paramName).matches();
+    }
+
     protected boolean isExcluded(String paramName) {
         if (!this.excludeParams.isEmpty()) {
             for (Pattern pattern : excludeParams) {
