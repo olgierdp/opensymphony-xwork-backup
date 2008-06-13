@@ -33,70 +33,70 @@ import org.apache.commons.logging.LogFactory;
  * calling {@link ValueStack#setValue(String, Object)}, typically resulting in the values submitted in a form
  * request being applied to an action in the value stack. Note that the parameter map must contain a String key and
  * often containers a String[] for the value.
- * 
+ * <p/>
  * <p/> The interceptor takes one parameter named 'ordered'. When set to true action properties are guaranteed to be
  * set top-down which means that top action's properties are set first. Then it's subcomponents properties are set.
- * The reason for this order is to enable a 'factory' pattern. For example, let's assume that one has an action 
+ * The reason for this order is to enable a 'factory' pattern. For example, let's assume that one has an action
  * that contains a property named 'modelClass' that allows to choose what is the underlying implementation of model.
  * By assuring that modelClass property is set before any model properties are set, it's possible to choose model
- * implementation during action.setModelClass() call. Similiarily it's possible to use action.setPrimaryKey() 
- * property set call to actually load the model class from persistent storage. Without any assumption on parameter 
+ * implementation during action.setModelClass() call. Similiarily it's possible to use action.setPrimaryKey()
+ * property set call to actually load the model class from persistent storage. Without any assumption on parameter
  * order you have to use patterns like 'Preparable'.
- *  
+ * <p/>
  * <p/> Because parameter names are effectively OGNL statements, it is important that security be taken in to account.
  * This interceptor will not apply any values in the parameters map if the expression contains an assignment (=),
  * multiple expressions (,), or references any objects in the context (#). This is all done in the {@link
  * #acceptableName(String)} method. In addition to this method, if the action being invoked implements the {@link
  * ParameterNameAware} interface, the action will be consulted to determine if the parameter should be set.
- *
+ * <p/>
  * <p/> In addition to these restrictions, a flag ({@link XWorkMethodAccessor#DENY_METHOD_EXECUTION}) is set such that
  * no methods are allowed to be invoked. That means that any expression such as <i>person.doSomething()</i> or
  * <i>person.getName()</i> will be explicitely forbidden. This is needed to make sure that your application is not
  * exposed to attacks by malicious users.
- *
+ * <p/>
  * <p/> While this interceptor is being invoked, a flag ({@link InstantiatingNullHandler#CREATE_NULL_OBJECTS}) is turned
  * on to ensure that any null reference is automatically created - if possible. See the type conversion documentation
  * and the {@link InstantiatingNullHandler} javadocs for more information.
- *
+ * <p/>
  * <p/> Finally, a third flag ({@link XWorkConverter#REPORT_CONVERSION_ERRORS}) is set that indicates any errors when
  * converting the the values to their final data type (String[] -&gt; int) an unrecoverable error occured. With this
  * flag set, the type conversion errors will be reported in the action context. See the type conversion documentation
  * and the {@link XWorkConverter} javadocs for more information.
- *
+ * <p/>
  * <p/> If you are looking for detailed logging information about your parameters, turn on DEBUG level logging for this
  * interceptor. A detailed log of all the parameter keys and values will be reported.
- *
+ * <p/>
  * <p/>
  * <b>Note:</b> Since XWork 2.0.2, this interceptor extends {@link MethodFilterInterceptor}, therefore being
  * able to deal with excludeMethods / includeMethods parameters. See [Workflow Interceptor]
  * (class {@link DefaultWorkflowInterceptor}) for documentation and examples on how to use this feature.
- *
+ * <p/>
  * <!-- END SNIPPET: description -->
- *
+ * <p/>
  * <p/> <u>Interceptor parameters:</u>
- *
+ * <p/>
  * <!-- START SNIPPET: parameters -->
- *
+ * <p/>
  * <ul>
- *
+ * <p/>
  * <li>ordered - set to true if you want the top-down property setter behaviour</li>
- *
+ * <p/>
  * </ul>
- *
+ * <p/>
  * <!-- END SNIPPET: parameters -->
- *
+ * <p/>
  * <p/> <u>Extending the interceptor:</u>
- *
+ * <p/>
  * <!-- START SNIPPET: extending -->
- *
+ * <p/>
  * <p/> The best way to add behavior to this interceptor is to utilize the {@link ParameterNameAware} interface in your
  * actions. However, if you wish to apply a global rule that isn't implemented in your action, then you could extend
  * this interceptor and override the {@link #acceptableName(String)} method.
- *
+ * <p/>
  * <!-- END SNIPPET: extending -->
- *
+ * <p/>
  * <p/> <u>Example code:</u>
- *
+ * <p/>
  * <pre>
  * <!-- START SNIPPET: example -->
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
@@ -115,29 +115,48 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
     boolean ordered = false;
     Set<Pattern> excludeParams = Collections.EMPTY_SET;
+    Set<Pattern> acceptedParams = Collections.EMPTY_SET;
+
+    private String acceptedParamNames = "[\\p{Graph}&&[^,#:=]]*";
+    private Pattern acceptedPattern = Pattern.compile(acceptedParamNames);
+
     static boolean devMode = false;
-    
+
     @Inject(value = "devMode", required = false)
     public static void setDevMode(String mode) {
         devMode = "true".equals(mode);
     }
-    
-    /** Compares based on number of '.' characters (fewer is higher) */
+
+    public void setAcceptedParamNames(String commaDelim) {
+        Collection<String> acceptPatterns = asCollection(commaDelim);
+        if (acceptPatterns != null) {
+            acceptedParams = new HashSet<Pattern>();
+            for (String pattern : acceptPatterns) {
+                acceptedParams.add(Pattern.compile(pattern));
+            }
+        }
+    }
+
+    /**
+     * Compares based on number of '.' characters (fewer is higher)
+     */
     static final Comparator rbCollator = new Comparator() {
         public int compare(Object arg0, Object arg1) {
             String s1 = (String) arg0;
             String s2 = (String) arg1;
-            int l1=0, l2=0;
-            for( int i=s1.length()-1; i>=0; i--) {
-                if( s1.charAt(i) == '.') l1++;
+            int l1 = 0, l2 = 0;
+            for (int i = s1.length() - 1; i >= 0; i--) {
+                if (s1.charAt(i) == '.') l1++;
             }
-            for( int i=s2.length()-1; i>=0; i--) {
-                if( s2.charAt(i) == '.') l2++;
+            for (int i = s2.length() - 1; i >= 0; i--) {
+                if (s2.charAt(i) == '.') l2++;
             }
-            return l1 < l2 ? -1 : ( l2 < l1 ? 1 : s1.compareTo(s2));
-        };
+            return l1 < l2 ? -1 : (l2 < l1 ? 1 : s1.compareTo(s2));
+        }
+
+        ;
     };
-    
+
     public String doIntercept(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
         if (!(action instanceof NoParameters)) {
@@ -149,18 +168,18 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             }
 
             if (parameters != null) {
-            	Map contextMap = ac.getContextMap();
+                Map contextMap = ac.getContextMap();
                 try {
-                	OgnlContextState.setCreatingNullObjects(contextMap, true);
-                	OgnlContextState.setDenyMethodExecution(contextMap, true);
-                	OgnlContextState.setReportingConversionErrors(contextMap, true);
+                    OgnlContextState.setCreatingNullObjects(contextMap, true);
+                    OgnlContextState.setDenyMethodExecution(contextMap, true);
+                    OgnlContextState.setReportingConversionErrors(contextMap, true);
 
                     ValueStack stack = ac.getValueStack();
                     setParameters(action, stack, parameters);
                 } finally {
-                	OgnlContextState.setCreatingNullObjects(contextMap, false);
-                	OgnlContextState.setDenyMethodExecution(contextMap, false);
-                	OgnlContextState.setReportingConversionErrors(contextMap, false);
+                    OgnlContextState.setCreatingNullObjects(contextMap, false);
+                    OgnlContextState.setDenyMethodExecution(contextMap, false);
+                    OgnlContextState.setReportingConversionErrors(contextMap, false);
                 }
             }
         }
@@ -172,13 +191,13 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
                 ? (ParameterNameAware) action : null;
 
         Map params = null;
-        if( ordered ) {
+        if (ordered) {
             params = new TreeMap(getOrderedComparator());
             params.putAll(parameters);
         } else {
-            params = new TreeMap(parameters); 
+            params = new TreeMap(parameters);
         }
-        
+
         for (Iterator iterator = params.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String name = entry.getKey().toString();
@@ -201,7 +220,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
                             ((ValidationAware) action).addActionMessage(developerNotification);
                         }
                     } else {
-                        LOG.error("ParametersInterceptor - [setParameters]: Unexpected Exception caught setting '"+name+"' on '"+action.getClass()+": " + e.getMessage());
+                        LOG.error("ParametersInterceptor - [setParameters]: Unexpected Exception caught setting '" + name + "' on '" + action.getClass() + ": " + e.getMessage());
                     }
                 }
             }
@@ -210,9 +229,9 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
     /**
      * Gets an instance of the comparator to use for the ordered sorting.  Override this
-     * method to customize the ordering of the parameters as they are set to the 
+     * method to customize the ordering of the parameters as they are set to the
      * action.
-     * 
+     *
      * @return A comparator to sort the parameters
      */
     protected Comparator getOrderedComparator() {
@@ -250,13 +269,24 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
 
     protected boolean acceptableName(String name) {
-        if (name.indexOf('=') != -1 || name.indexOf(',') != -1 || name.indexOf('#') != -1 || name.indexOf(':') != -1 || name.indexOf("\\u0023") != -1 || isExcluded(name)) {
-            return false;
-        } else {
+        if (isAccepted(name) && !isExcluded(name)) {
             return true;
         }
+        return false;
     }
-    
+
+    protected boolean isAccepted(String paramName) {
+        if (!this.acceptedParams.isEmpty()) {
+            for (Pattern pattern : acceptedParams) {
+                Matcher matcher = pattern.matcher(paramName);
+                if (!matcher.matches()) {
+                    return false;
+                }
+            }
+        }
+        return acceptedPattern.matcher(paramName).matches();
+    }
+
     protected boolean isExcluded(String paramName) {
         if (!this.excludeParams.isEmpty()) {
             for (Pattern pattern : excludeParams) {
@@ -271,7 +301,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
     /**
      * Whether to order the parameters or not
-     * 
+     *
      * @return True to order
      */
     public boolean isOrdered() {
@@ -280,17 +310,17 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
     /**
      * Set whether to order the parameters by object depth or not
-     * 
+     *
      * @param ordered True to order them
      */
     public void setOrdered(boolean ordered) {
         this.ordered = ordered;
     }
-    
+
     /**
      * Gets a set of regular expressions of parameters to remove
      * from the parameter map
-     * 
+     *
      * @return A set of compiled regular expression patterns
      */
     protected Set getExcludeParamsSet() {
@@ -298,9 +328,9 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     }
 
     /**
-     * Sets a comma-delimited list of regular expressions to match 
+     * Sets a comma-delimited list of regular expressions to match
      * parameters that should be removed from the parameter map.
-     * 
+     *
      * @param commaDelim A comma-delimited list of regular expressions
      */
     public void setExcludeParams(String commaDelim) {
