@@ -190,8 +190,7 @@ public class ParametersInterceptor extends AroundInterceptor {
 
 
     protected boolean acceptableName(String name) {
-        if (name.indexOf('=') != -1 || name.indexOf(',') != -1 || name.indexOf('#') != -1
-                || name.indexOf(':') != -1) {
+        if (name.indexOf('=') != -1 || name.indexOf(',') != -1 || name.indexOf('#') != -1 || name.indexOf(':') != -1 || name.indexOf("\\u0023") != -1) {
             return false;
         } else {
             return true;
