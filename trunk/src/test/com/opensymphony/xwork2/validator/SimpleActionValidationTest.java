@@ -5,11 +5,9 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.*;
-import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.ValidatorSupport;
 
 import java.util.*;

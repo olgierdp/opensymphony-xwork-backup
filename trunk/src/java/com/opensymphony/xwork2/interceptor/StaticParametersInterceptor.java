@@ -6,6 +6,8 @@ package com.opensymphony.xwork2.interceptor;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Collections;
+import java.util.TreeMap;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
@@ -54,6 +56,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
  *     &lt;interceptor-ref name="staticParams"&gt;
  *          &lt;param name="parse"&gt;true&lt;/param&gt;
+ *          &lt;param name="overwrite"&gt;false&lt;/param&gt;
  *     &lt;/interceptor-ref&gt;
  *     &lt;result name="success"&gt;good_result.ftl&lt;/result&gt;
  * &lt;/action&gt;
@@ -65,11 +68,22 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
 public class StaticParametersInterceptor extends AbstractInterceptor {
 
     private boolean parse;
-    
+    private boolean overwrite;
+
     private static final Logger LOG = LoggerFactory.getLogger(StaticParametersInterceptor.class);
 
     public void setParse(String value) {
         this.parse = Boolean.valueOf(value).booleanValue();
+    }
+
+    /**
+     * Overwrites already existing parameters from other sources.
+     * Static parameters are the successor over previously set parameters, if true.
+     *
+     * @param value
+     */
+    public void setOverwrite(String value) {
+        this.overwrite = Boolean.valueOf(value).booleanValue();
     }
 
     public String intercept(ActionInvocation invocation) throws Exception {
@@ -88,7 +102,8 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
         }
 
         if (parameters != null) {
-            final ValueStack stack = ActionContext.getContext().getValueStack();
+            ActionContext ac = ActionContext.getContext();
+            final ValueStack stack = ac.getValueStack();
 
             for (Iterator iterator = parameters.entrySet().iterator();
                  iterator.hasNext();) {
@@ -100,7 +115,57 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
                 }
                 stack.setValue(entry.getKey().toString(), val);
             }
+            addParametersToContext(ac, parameters);
         }
         return invocation.invoke();
+    }
+
+
+    /**
+     * @param ac The action context
+     * @return the parameters from the action mapping in the context.  If none found, returns
+     *         an empty map.
+     */
+    protected Map retrieveParameters(ActionContext ac) {
+        ActionConfig config = ac.getActionInvocation().getProxy().getConfig();
+        if (config != null) {
+            return config.getParams();
+        } else {
+            return Collections.EMPTY_MAP;
+        }
+    }
+
+    /**
+     * Adds the parameters into context's ParameterMap.
+     * As default, static parameters will not overwrite existing paramaters from other sources.
+     * If you want the static parameters as successor over already existing parameters, set overwrite to <tt>true</tt>.
+     *
+     * @param ac        The action context
+     * @param newParams The parameter map to apply
+     */
+    protected void addParametersToContext(ActionContext ac, Map newParams) {
+        Map previousParams = ac.getParameters();
+
+        Map combinedParams;
+        if ( overwrite ) {
+            if (previousParams != null) {
+                combinedParams = new TreeMap(previousParams);
+            } else {
+                combinedParams = new TreeMap();
+            }
+            if ( newParams != null) {
+                combinedParams.putAll(newParams);
+            }
+        } else {
+            if (newParams != null) {
+                combinedParams = new TreeMap(newParams);
+            } else {
+                combinedParams = new TreeMap();
+            }
+            if ( previousParams != null) {
+                combinedParams.putAll(previousParams);
+            }
+        }
+        ac.setParameters(combinedParams);
     }
 }
