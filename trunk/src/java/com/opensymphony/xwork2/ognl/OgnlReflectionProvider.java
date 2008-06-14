@@ -51,7 +51,7 @@ public class OgnlReflectionProvider implements ReflectionProvider {
     }
 
     public void setProperties(Map props, Object o, Map context,
-            boolean throwPropertyExceptions) {
+            boolean throwPropertyExceptions) throws ReflectionException{
         ognlUtil.setProperties(props, o, context, throwPropertyExceptions);
         
     }

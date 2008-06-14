@@ -25,6 +25,7 @@ import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.CompoundRoot;
+import com.opensymphony.xwork2.util.reflection.ReflectionException;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
@@ -69,7 +70,7 @@ public class OgnlUtil {
      * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for
      *                                problems setting the properties
      */
-    public void setProperties(Map props, Object o, Map context, boolean throwPropertyExceptions) {
+    public void setProperties(Map props, Object o, Map context, boolean throwPropertyExceptions) throws ReflectionException{
         if (props == null) {
             return;
         }
@@ -179,7 +180,7 @@ public class OgnlUtil {
                     }
                 }
             } catch (IntrospectionException ex) {
-                throw new OgnlException("Cannot figure out real target class", ex);
+                throw new ReflectionException("Cannot figure out real target class", ex);
             }
 
             return null;
@@ -388,7 +389,7 @@ public class OgnlUtil {
         }
     }
 
-    void internalSetProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) {
+    void internalSetProperty(String name, Object value, Object o, Map context, boolean throwPropertyExceptions) throws ReflectionException{
         try {
             setValue(name, context, o, value);
         } catch (OgnlException e) {
@@ -397,7 +398,7 @@ public class OgnlUtil {
             Throwable exception = (reason == null) ? e : reason;
 
             if (throwPropertyExceptions) {
-                throw new XWorkException(msg, exception);
+                throw new ReflectionException(msg, exception);
             } else {
                 LOG.warn(msg, exception);
             }

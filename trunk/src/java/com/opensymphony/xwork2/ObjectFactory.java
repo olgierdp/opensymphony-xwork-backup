@@ -19,6 +19,8 @@ import com.opensymphony.xwork2.util.ClassLoaderUtil;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
+import com.opensymphony.xwork2.util.reflection.ReflectionExceptionHandler;
+import com.opensymphony.xwork2.util.reflection.ReflectionException;
 import com.opensymphony.xwork2.validator.Validator;
 
 
@@ -212,7 +214,13 @@ public class ObjectFactory implements Serializable {
 
         if (resultClassName != null) {
             result = (Result) buildBean(resultClassName, extraContext);
-        	reflectionProvider.setProperties(resultConfig.getParams(), result, extraContext, true);
+            try {
+                reflectionProvider.setProperties(resultConfig.getParams(), result, extraContext, true);
+            } catch (ReflectionException ex) {
+                if (result instanceof ReflectionExceptionHandler) {
+                    ((ReflectionExceptionHandler)result).handle(ex);
+                }
+            }
         }
 
         return result;
