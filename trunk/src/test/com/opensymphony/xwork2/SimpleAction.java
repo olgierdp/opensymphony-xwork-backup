@@ -4,6 +4,9 @@
  */
 package com.opensymphony.xwork2;
 
+import com.opensymphony.xwork2.config.Configuration;
+import com.opensymphony.xwork2.inject.Inject;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -194,9 +197,15 @@ public class SimpleAction extends ActionSupport {
     
     public Result resultAction() throws Exception {
     	return new Result() {
+            public Configuration configuration;
 
+            @Inject
+            public void setConfiguration(Configuration config) {
+                this.configuration = config;
+            }
             public void execute(ActionInvocation invocation) throws Exception {
-                resultCalled = true;
+                if (configuration != null)
+                    resultCalled = true;
             }
     	    
     	};

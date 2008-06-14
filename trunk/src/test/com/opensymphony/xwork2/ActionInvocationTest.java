@@ -52,7 +52,7 @@ public class ActionInvocationTest extends XWorkTestCase {
         assertEquals("found", baseActionProxy.execute());
     }
     
-    public void testResultReturnInvocation() throws Exception {
+    public void testResultReturnInvocationAndWired() throws Exception {
         ActionProxy baseActionProxy = actionProxyFactory.createActionProxy(
                 "baz", "resultAction", null, null);
         assertEquals(null, baseActionProxy.execute());
