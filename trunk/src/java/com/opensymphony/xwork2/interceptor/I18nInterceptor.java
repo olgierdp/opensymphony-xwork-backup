@@ -112,27 +112,31 @@ public class I18nInterceptor extends AbstractInterceptor {
 
         //save it in session
         Map session = invocation.getInvocationContext().getSession();
+
+
         if (session != null) {
-            if (requested_locale != null) {
-                Locale locale = (requested_locale instanceof Locale) ?
-                        (Locale) requested_locale : LocalizedTextUtil.localeFromString(requested_locale.toString(), null);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("store locale=" + locale);
+            synchronized (session) {
+                if (requested_locale != null) {
+                    Locale locale = (requested_locale instanceof Locale) ?
+                            (Locale) requested_locale : LocalizedTextUtil.localeFromString(requested_locale.toString(), null);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("store locale=" + locale);
+                    }
+
+                    if (locale != null) {
+                        session.put(attributeName, locale);
+                    }
                 }
 
-                if (locale != null) {
-                    session.put(attributeName, locale);
-                }
-            }
+                //set locale for action
+                Object locale = session.get(attributeName);
+                if (locale != null && locale instanceof Locale) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("apply locale=" + locale);
+                    }
 
-            //set locale for action
-            Object locale = session.get(attributeName);
-            if (locale != null && locale instanceof Locale) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("apply locale=" + locale);
+                    saveLocale(invocation, (Locale)locale);
                 }
-
-                saveLocale(invocation, (Locale)locale);
             }
         }
 
