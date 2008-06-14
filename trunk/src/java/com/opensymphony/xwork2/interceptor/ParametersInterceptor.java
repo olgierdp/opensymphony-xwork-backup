@@ -124,8 +124,6 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     private String acceptedParamNames = "[\\p{Graph}&&[^,#:=]]*";
     private Pattern acceptedPattern = Pattern.compile(acceptedParamNames);
 
-    final Object LOCK = new Object();
-
     @Inject("devMode")
     public static void setDevMode(String mode) {
         devMode = "true".equals(mode);
