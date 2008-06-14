@@ -290,16 +290,16 @@ public class OgnlUtilTest extends XWorkTestCase {
         Map context = Ognl.createDefaultContext(foo);
 
         Map props = new HashMap();
-        props.put("useful", "true");
-        OgnlUtil.setProperties(props, foo, context);
-
-        assertEquals(true, foo.isUseful());
-
-        props = new HashMap();
         props.put("useful", "false");
         OgnlUtil.setProperties(props, foo, context);
 
         assertEquals(false, foo.isUseful());
+
+        props = new HashMap();
+        props.put("useful", "true");
+        OgnlUtil.setProperties(props, foo, context);
+
+        assertEquals(true, foo.isUseful());
     }
 
     public void testSetPropertiesDate() {
@@ -450,7 +450,7 @@ public class OgnlUtilTest extends XWorkTestCase {
 
         result = ActionContext.getContext().getValueStack().findValue("{\"foo\",'ruby','b','tom'}");
         foo.setIncludes((List) result);
-        assertEquals(ArrayList.class, result.getClass());
+        assertTrue(result instanceof List);
 
         assertEquals(4, foo.getIncludes().size());
         assertEquals("foo", foo.getIncludes().toArray()[0]);
@@ -608,7 +608,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         }
     }
 
-    static class TestObject {
+    public static class TestObject {
         private Integer myIntegerProperty;
         private Long myLongProperty;
         private String myStrProperty;
@@ -638,7 +638,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         }
     }
 
-    class EmailAction {
+    public class EmailAction {
         public List email = new OgnlList(Email.class);
 
         public List getEmail() {
@@ -646,7 +646,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         }
     }
 
-    class OgnlList extends ArrayList {
+    public class OgnlList extends ArrayList {
         private Class clazz;
 
         public OgnlList(Class clazz) {
@@ -666,7 +666,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         }
     }
     
-    private class MyWriteBar {
+    public class MyWriteBar {
     	private int id;
     	
     	public int getId() {

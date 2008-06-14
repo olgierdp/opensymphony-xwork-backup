@@ -136,7 +136,7 @@ public class StaticParametersInterceptorTest extends XWorkTestCase {
         interceptor.destroy();
     }
 
-    private class User {
+    public static class User {
         private String name;
 
         public String getName() {

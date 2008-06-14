@@ -8,6 +8,7 @@ import com.opensymphony.xwork.XWorkConstants;
 import com.opensymphony.xwork.XworkException;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import ognl.*;
+import ognl.enhance.ExpressionAccessor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -265,7 +266,17 @@ public class OgnlUtil {
         if (isUseOgnlEnhancement()) {
             try {
                 Node node = Ognl.compileExpression((OgnlContext)context, root, name);
-                return node.getAccessor().get((OgnlContext)context, root);
+                Object result = node.getAccessor().get((OgnlContext)context, root);
+
+                // If we can't get the value with Ognl Enhancement, let's fall back to the default
+                // Ognl without-Enhancement, cause
+                //       node.getAccessor().get(...)
+                // only applies to expression that follow JavaBeans spec. that's how it works, so
+                // expression like 'getText(...)' will return null in this case as it's not following
+                // JavaBeans spec.
+                if (result != null) {
+                    return result;
+                }                 
             }
             catch(Exception e) {
                 log.warn("unable to get value using OGNL expression compilation mode, falling back to expression parsing", e); 
