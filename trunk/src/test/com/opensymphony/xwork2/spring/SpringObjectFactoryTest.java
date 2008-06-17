@@ -29,6 +29,7 @@ import org.springframework.aop.interceptor.DebugInterceptor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.StaticApplicationContext;
@@ -62,6 +63,13 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
 
         objectFactory = (SpringObjectFactory) container.getInstance(ObjectFactory.class);
         objectFactory.setApplicationContext(sac);
+        objectFactory.setAlwaysRespectAutowireStrategy(false);
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        sac = null;
+        objectFactory = null;
     }
 
     public void testFallsBackToDefaultObjectFactoryActionSearching() throws Exception {
@@ -205,6 +213,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
 
     public void testShouldUseConstructorBasedInjectionWhenCreatingABeanFromAClassName() throws Exception {
         SpringObjectFactory factory = (SpringObjectFactory) objectFactory;
+        objectFactory.setAlwaysRespectAutowireStrategy(false);
         sac.registerSingleton("actionBean", SimpleAction.class, new MutablePropertyValues());
 
         ConstructorBean bean = (ConstructorBean) factory.buildBean(ConstructorBean.class, null);
@@ -213,12 +222,47 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         assertNotNull("Action should have been added via DI", bean.getAction());
     }
 
+    public void testShouldUseAutowireStrategyWhenCreatingABeanFromAClassName_constructor() throws Exception {
+        objectFactory.setAlwaysRespectAutowireStrategy(true);
+        objectFactory.setAutowireStrategy(AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
+        sac.registerSingleton("actionBean", SimpleAction.class, new MutablePropertyValues());
+
+        ConstructorBean bean = (ConstructorBean) objectFactory.buildBean(ConstructorBean.class, null);
+
+        assertNotNull("Bean should not be null", bean);
+        assertNotNull("Action should have been added via DI", bean.getAction());
+    }
+
+    public void testShouldUseAutowireStrategyWhenCreatingABeanFromAClassName_setterByType() throws Exception {
+        objectFactory.setAlwaysRespectAutowireStrategy(true);
+
+        objectFactory.setAutowireStrategy(AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE);
+        sac.registerSingleton("actionBean", SimpleAction.class, new MutablePropertyValues());
+
+        SetterByTypeBean bean = (SetterByTypeBean) objectFactory.buildBean(SetterByTypeBean.class, null);
+
+        assertNotNull("Bean should not be null", bean);
+        assertNotNull("Action should have been added via DI", bean.getAction());
+    }
+
+    public void testShouldUseAutowireStrategyWhenCreatingABeanFromAClassName_setterByName() throws Exception {
+        objectFactory.setAlwaysRespectAutowireStrategy(true);
+
+        objectFactory.setAutowireStrategy(AutowireCapableBeanFactory.AUTOWIRE_BY_NAME);
+        sac.registerSingleton("actionBean", SimpleAction.class, new MutablePropertyValues());
+
+        SetterByNameBean bean = (SetterByNameBean) objectFactory.buildBean(SetterByNameBean.class, null);
+
+        assertNotNull("Bean should not be null", bean);
+        assertNotNull("Action should have been added via DI", bean.getActionBean());
+    }
+
     public void testFallBackToDefaultObjectFactoryWhenTheCConstructorDIIsAmbiguous() throws Exception {
-        SpringObjectFactory factory = (SpringObjectFactory) objectFactory;
+        objectFactory.setAlwaysRespectAutowireStrategy(true);
         sac.registerSingleton("firstActionBean", SimpleAction.class, new MutablePropertyValues());
         sac.registerSingleton("secondActionBean", SimpleAction.class, new MutablePropertyValues());
 
-        ConstructorBean bean = (ConstructorBean) factory.buildBean(ConstructorBean.class, null);
+        ConstructorBean bean = (ConstructorBean) objectFactory.buildBean(ConstructorBean.class, null);
 
         assertNotNull("Bean should have been created using default constructor", bean);
         assertNull("Not expecting this to have been set", bean.getAction());
@@ -265,6 +309,38 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
 
         public SimpleAction getAction() {
             return action;
+        }
+    }
+
+    public static class SetterByNameBean {
+        private SimpleAction action;
+
+        public SetterByNameBean() {
+            // Empty constructor
+        }
+
+        public SimpleAction getActionBean() {
+            return action;
+        }
+
+        public void setActionBean(SimpleAction action) {
+            this.action = action;
+        }
+    }
+
+    public static class SetterByTypeBean {
+        private SimpleAction action;
+
+        public SetterByTypeBean() {
+            // Empty constructor
+        }
+
+        public SimpleAction getAction() {
+            return action;
+        }
+
+        public void setAction(SimpleAction action) {
+            this.action = action;
         }
     }
 

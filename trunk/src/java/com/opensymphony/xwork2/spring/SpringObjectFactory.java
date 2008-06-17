@@ -37,6 +37,7 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
     protected int autowireStrategy = AutowireCapableBeanFactory.AUTOWIRE_BY_NAME;
     private Map classes = new HashMap();
     private boolean useClassCache = true;
+    private boolean alwaysRespectAutowireStrategy = false;
 
     @Inject(value="applicationContextPath",required=false)
     public void setApplicationContextPath(String ctx) {
@@ -142,16 +143,23 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
         Object bean;
 
         try {
-            bean = autoWiringFactory.autowire(clazz, AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR, false);
+            // Decide to follow autowire strategy or use the legacy approach which mixes injection strategies
+            if (alwaysRespectAutowireStrategy) {
+                // Leave the creation up to Spring
+                bean = autoWiringFactory.createBean(clazz, autowireStrategy, false);
+                injectApplicationContext(bean);
+                return injectInternalBeans(bean);
+            } else {
+                bean = autoWiringFactory.autowire(clazz, AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR, false);
+                bean = autoWiringFactory.applyBeanPostProcessorsBeforeInitialization(bean, bean.getClass().getName());
+                // We don't need to call the init-method since one won't be registered.
+                bean = autoWiringFactory.applyBeanPostProcessorsAfterInitialization(bean, bean.getClass().getName());
+                return autoWireBean(bean, autoWiringFactory);
+            }
         } catch (UnsatisfiedDependencyException e) {
             // Fall back
-            bean = super.buildBean(clazz, extraContext);
+            return autoWireBean(super.buildBean(clazz, extraContext), autoWiringFactory);
         }
-
-        bean = autoWiringFactory.applyBeanPostProcessorsBeforeInitialization(bean, bean.getClass().getName());
-        // We don't need to call the init-method since one won't be registered.
-        bean = autoWiringFactory.applyBeanPostProcessorsAfterInitialization(bean, bean.getClass().getName());
-        return autoWireBean(bean, autoWiringFactory);
     }
 
     public Object autoWireBean(Object bean) {
@@ -167,13 +175,17 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
             autoWiringFactory.autowireBeanProperties(bean,
                     autowireStrategy, false);
         }
-        if (bean instanceof ApplicationContextAware) {
-            ((ApplicationContextAware) bean).setApplicationContext(appContext);
-        }
-        
+        injectApplicationContext(bean);
+
         injectInternalBeans(bean);
 
         return bean;
+    }
+
+    private void injectApplicationContext(Object bean) {
+        if (bean instanceof ApplicationContextAware) {
+            ((ApplicationContextAware) bean).setApplicationContext(appContext);
+        }
     }
 
     public Class getClassInstance(String className) throws ClassNotFoundException {
@@ -230,5 +242,14 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
      */
     public void setUseClassCache(boolean useClassCache) {
         this.useClassCache = useClassCache;
+    }
+
+    /**
+     * Determines if the autowire strategy is always followed when creating beans
+     *
+     * @param alwaysRespectAutowireStrategy True if the strategy is always used
+     */
+    public void setAlwaysRespectAutowireStrategy(boolean alwaysRespectAutowireStrategy) {
+        this.alwaysRespectAutowireStrategy = alwaysRespectAutowireStrategy;
     }
 }
