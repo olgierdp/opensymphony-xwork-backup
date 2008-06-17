@@ -9,7 +9,8 @@ import java.lang.annotation.*;
 
 /**
  * <!-- START SNIPPET: description -->
- * If you want to use annotation based validation, you have to annotate the class or interface with Validation Annotation.
+ * This annotation has been deprecated as its previous purpose, to define classes that support annotation validations,
+ * is no longer necessary.
  * <!-- END SNIPPET: description -->
  *
  * <p/> <u>Annotation usage:</u>
@@ -108,6 +109,7 @@ import java.lang.annotation.*;
  * </pre>
  *
  * @author Rainer Hermanns
+ * @deprecated Since Struts 2.1 because it isn't necessary anymore
  * @version $Id$
  */
 @Target({ElementType.TYPE})
