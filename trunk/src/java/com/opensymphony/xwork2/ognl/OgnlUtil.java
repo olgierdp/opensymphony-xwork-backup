@@ -36,12 +36,18 @@ public class OgnlUtil {
     private final ConcurrentHashMap<Class, BeanInfo> beanInfoCache = new ConcurrentHashMap<Class, BeanInfo>();
 
     private TypeConverter defaultConverter;
+    static boolean devMode = false;
 
     @Inject
     public void setXWorkConverter(XWorkConverter conv) {
         this.defaultConverter = new OgnlTypeConverterWrapper(conv);
     }
 
+    @Inject("devMode")
+    public static void setDevMode(String mode) {
+        devMode = "true".equals(mode);
+    }
+    
     /**
      * Sets the object's properties using the default type converter, defaulting to not throw
      * exceptions for problems setting the properties.
@@ -385,7 +391,9 @@ public class OgnlUtil {
             if (throwPropertyExceptions) {
                 throw new ReflectionException(msg, exception);
             } else {
-                LOG.warn(msg, exception);
+                if (devMode) {
+                    LOG.warn(msg, exception);
+                }
             }
         }
     }
