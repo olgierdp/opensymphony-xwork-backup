@@ -82,10 +82,10 @@ import java.io.Serializable;
  * <p/>
  * <p/>
  * <p/>
- * In the second method, the <interceptor-ref .../> refer to an existing
+ * In the second method, the 'interceptor-ref' refer to an existing
  * interceptor-stack, namely defaultStack in this example, and override the validator
  * and workflow interceptor excludeMethods typically in this case. Note that in the
- * <param ... /> tag, the name attribute contains a dot (.) the word before the dot(.)
+ * 'param' tag, the name attribute contains a dot (.) the word before the dot(.)
  * specifies the interceptor name whose parameter is to be overridden and the word after
  * the dot (.) specifies the parameter itself. Essetially it is as follows :-
  * <p/>
@@ -93,7 +93,7 @@ import java.io.Serializable;
  *    &lt;interceptor-name&gt;.&lt;parameter-name&gt;
  * </pre>
  * <p/>
- * <b>Note</b> also that in this case the <interceptor-ref ... > name attribute
+ * <b>Note</b> also that in this case the 'interceptor-ref' name attribute
  * is used to indicate an interceptor stack which makes sense as if it is referring
  * to the interceptor itself it would be just using Method 1 describe above.
  * <p/>
