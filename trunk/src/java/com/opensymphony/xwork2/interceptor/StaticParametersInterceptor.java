@@ -6,10 +6,13 @@ package com.opensymphony.xwork2.interceptor;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.Parameterizable;
 import com.opensymphony.xwork2.util.TextParseUtil;
 import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.LocalizedTextUtil;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
@@ -69,7 +72,14 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
     private boolean parse;
     private boolean overwrite;
 
+    static boolean devMode = false;
+
     private static final Logger LOG = LoggerFactory.getLogger(StaticParametersInterceptor.class);
+
+    @Inject("devMode")
+    public static void setDevMode(String mode) {
+        devMode = "true".equals(mode);
+    }    
 
     public void setParse(String value) {
         this.parse = Boolean.valueOf(value).booleanValue();
@@ -111,7 +121,20 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
                 if (parse && val instanceof String) {
                     val = TextParseUtil.translateVariables(val.toString(), stack);
                 }
-                stack.setValue(entry.getKey(), val);
+                try {
+                    stack.setValue(entry.getKey(), val);
+                } catch (RuntimeException e) {
+                    if (devMode) {
+                        String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification:\n{0}", new Object[]{
+                                e.getMessage()
+                        });
+                        LOG.error(developerNotification);
+                        if (action instanceof ValidationAware) {
+                            ((ValidationAware) action).addActionMessage(developerNotification);
+                        }
+                        LOG.warn("StaticParametersInterceptor - [setParameters]: Unexpected Exception caught setting '" + entry.getKey() + "' on '" + action.getClass() + ": " + e.getMessage());
+                    }
+                }
             }
             addParametersToContext(ac, parameters);
         }

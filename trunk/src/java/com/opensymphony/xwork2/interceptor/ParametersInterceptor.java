@@ -243,8 +243,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
                     if (action instanceof ValidationAware) {
                         ((ValidationAware) action).addActionMessage(developerNotification);
                     }
-                } else {
-                    LOG.error("ParametersInterceptor - [setParameters]: Unexpected Exception caught setting '" + name + "' on '" + action.getClass() + ": " + e.getMessage());
+                    LOG.warn("ParametersInterceptor - [setParameters]: Unexpected Exception caught setting '" + name + "' on '" + action.getClass() + ": " + e.getMessage());
                 }
             }
         }
