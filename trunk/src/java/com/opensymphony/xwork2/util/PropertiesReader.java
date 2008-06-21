@@ -16,11 +16,7 @@
  */
 package com.opensymphony.xwork2.util;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +32,7 @@ import java.util.List;
 public class PropertiesReader extends LineNumberReader
 {
     /** Stores the comment lines for the currently processed property.*/
-    private List commentLines;
+    private List<String> commentLines;
 
     /** Stores the name of the last read property.*/
     private String propertyName;
@@ -83,7 +79,7 @@ public class PropertiesReader extends LineNumberReader
     public PropertiesReader(Reader reader, char listDelimiter)
     {
         super(reader);
-        commentLines = new ArrayList();
+        commentLines = new ArrayList<String>();
         delimiter = listDelimiter;
     }
     
@@ -116,7 +112,7 @@ public class PropertiesReader extends LineNumberReader
     public String readProperty() throws IOException
     {
         commentLines.clear();
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         while (true)
         {
@@ -183,7 +179,7 @@ public class PropertiesReader extends LineNumberReader
      * <code>readProperty()</code>
      * @since 1.3
      */
-    public List getCommentLines()
+    public List<String> getCommentLines()
     {
         return commentLines;
     }
@@ -245,8 +241,8 @@ public class PropertiesReader extends LineNumberReader
         // possible with a regexp when the Java 1.3 requirement is dropped
 
         String[] result = new String[2];
-        StringBuffer key = new StringBuffer();
-        StringBuffer value = new StringBuffer();
+        StringBuilder key = new StringBuilder();
+        StringBuilder value = new StringBuilder();
 
         // state of the automaton:
         // 0: key parsing
@@ -353,7 +349,7 @@ public class PropertiesReader extends LineNumberReader
             return null;
         }
         int sz = str.length();
-        StringBuffer out = new StringBuffer(sz);
+        StringBuilder out = new StringBuilder(sz);
         StringBuffer unicode = new StringBuffer(UNICODE_LEN);
         boolean hadSlash = false;
         boolean inUnicode = false;
@@ -470,8 +466,8 @@ public class PropertiesReader extends LineNumberReader
         if (array == null) {
             return false;
         }
-        for (int i = 0; i < array.length; i++) {
-            if (objectToFind == array[i]) {
+        for (char anArray : array) {
+            if (objectToFind == anArray) {
                 return true;
             }
         }

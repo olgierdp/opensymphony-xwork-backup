@@ -17,14 +17,14 @@
  */
 package com.opensymphony.xwork2.config.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ActionConfigMatcherTest extends XWorkTestCase {
 
@@ -33,13 +33,13 @@ public class ActionConfigMatcherTest extends XWorkTestCase {
     private ActionConfigMatcher matcher;
     
     // ----------------------------------------------------- Setup and Teardown
-    public void setUp() throws Exception {
+    @Override public void setUp() throws Exception {
         super.setUp();
         configMap = buildActionConfigMap();
         matcher = new ActionConfigMatcher(configMap);
     }
 
-    public void tearDown() throws Exception {
+    @Override public void tearDown() throws Exception {
         super.tearDown();
     }
 

@@ -6,15 +6,15 @@ package com.opensymphony.xwork2.config;
 
 //import org.easymock.MockControl;
 
-import java.util.Properties;
-
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.providers.XWorkConfigurationProvider;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
-import com.opensymphony.xwork2.XWorkTestCase;
+
+import java.util.Properties;
 
 
 /**
@@ -140,6 +140,7 @@ public class ConfigurationManagerTest extends XWorkTestCase {
         configProviderMock.verify();
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         configurationManager.destroyConfiguration();
@@ -160,6 +161,7 @@ public class ConfigurationManagerTest extends XWorkTestCase {
         configurationManager.getConfiguration();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         configProviderMock.expect("destroy");
         FileManager.setReloadingConfigs(true);

@@ -9,9 +9,7 @@ import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.ValidationAwareSupport;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.ConversionErrorFieldValidator;
-import junit.framework.TestCase;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,12 +31,13 @@ public class ConversionErrorFieldValidatorTest extends XWorkTestCase {
     private ValidationAware validationAware;
 
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ValueStack stack = ActionContext.getContext().getValueStack();
         ActionContext context = new ActionContext(stack.getContext());
 
-        Map conversionErrors = new HashMap();
+        Map<String, Object> conversionErrors = new HashMap<String, Object>();
         conversionErrors.put("foo", "bar");
         context.setConversionErrors(conversionErrors);
         validator = new ConversionErrorFieldValidator();

@@ -11,15 +11,10 @@ import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.mock.MockResult;
-import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
-import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
 
 /**
@@ -47,7 +42,7 @@ public class ActionNestingTest extends XWorkTestCase {
         return VALUE;
     }
 
-    public void setUp() throws Exception {
+    @Override public void setUp() throws Exception {
         super.setUp();
         loadConfigurationProviders(new NestedTestConfigurationProvider());
 
@@ -55,7 +50,7 @@ public class ActionNestingTest extends XWorkTestCase {
         context.getValueStack().push(this);
     }
 
-    protected void tearDown() throws Exception {
+    @Override protected void tearDown() throws Exception {
         super.tearDown();
     }
 
@@ -81,7 +76,7 @@ public class ActionNestingTest extends XWorkTestCase {
         ValueStack stack = ActionContext.getContext().getValueStack();
         assertEquals(VALUE, stack.findValue(KEY));
 
-        HashMap extraContext = new HashMap();
+        HashMap<String, Object> extraContext = new HashMap<String, Object>();
         extraContext.put(ActionContext.VALUE_STACK, stack);
 
         ActionProxy proxy = actionProxyFactory.createActionProxy(NAMESPACE, STACK_ACTION_NAME, extraContext);

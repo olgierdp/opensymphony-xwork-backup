@@ -5,17 +5,11 @@
 package com.opensymphony.xwork2.conversion.impl;
 
 import com.opensymphony.xwork2.*;
-import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
-import com.opensymphony.xwork2.test.ModelDrivenAnnotationAction2;
 import com.opensymphony.xwork2.test.AnnotationUser;
+import com.opensymphony.xwork2.test.ModelDrivenAnnotationAction2;
 import com.opensymphony.xwork2.util.Bar;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
-import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
-import com.opensymphony.xwork2.config.ConfigurationManager;
-import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
-
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 
@@ -35,7 +29,7 @@ import java.util.*;
 public class AnnotationXWorkConverterTest extends XWorkTestCase {
 
     ActionContext ac;
-    Map context;
+    Map<String, Object> context;
     XWorkConverter converter;
 
 //    public void testConversionToSetKeepsOriginalSetAndReplacesContents() {
@@ -96,7 +90,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
         ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(action);
 
-        Map ognlStackContext = stack.getContext();
+        Map<String, Object> ognlStackContext = stack.getContext();
         ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         ognlStackContext.put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, "bean.birth");
 
@@ -117,7 +111,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
         ValueStack stack = ActionContext.getContext().getValueStack();
         stack.push(action);
 
-        Map ognlStackContext = stack.getContext();
+        Map<String, Object> ognlStackContext = stack.getContext();
         ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         String[] value = new String[]{"invalid date"};
@@ -137,7 +131,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
         stack.push(action);
         stack.push(action.getModel());
 
-        Map ognlStackContext = stack.getContext();
+        Map<String, Object> ognlStackContext = stack.getContext();
         ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         String[] value = new String[]{"invalid date"};
@@ -173,7 +167,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
         stack.push(action);
         stack.push(action.getModel());
 
-        Map ognlStackContext = stack.getContext();
+        Map<String, Object> ognlStackContext = stack.getContext();
         ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         String value = "asdf:123";
@@ -195,7 +189,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
     }
 
     public void testStringArrayToCollection() {
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         list.add("foo");
         list.add("bar");
         list.add("baz");
@@ -205,7 +199,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
     }
 
     public void testStringArrayToList() {
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         list.add("foo");
         list.add("bar");
         list.add("baz");
@@ -281,7 +275,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
     }
 
     public void testStringArrayToSet() {
-        Set list = new HashSet();
+        Set<String> list = new HashSet<String>();
         list.add("foo");
         list.add("bar");
         list.add("baz");
@@ -293,7 +287,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
     // TODO: Fixme... This test does not work with GenericsObjectDeterminer!
     public void testStringToCollectionConversion() {
         ValueStack stack = ActionContext.getContext().getValueStack();
-        Map stackContext = stack.getContext();
+        Map<String, Object> stackContext = stack.getContext();
         stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
         stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
         stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
@@ -449,6 +443,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
     public static class Bar1Impl implements Bar1 {
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         converter = container.getInstance(XWorkConverter.class);
@@ -458,6 +453,7 @@ public class AnnotationXWorkConverterTest extends XWorkTestCase {
         context = ac.getContextMap();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         ActionContext.setContext(null);
     }

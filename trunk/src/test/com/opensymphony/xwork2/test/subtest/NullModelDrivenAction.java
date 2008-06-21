@@ -12,6 +12,7 @@ public class NullModelDrivenAction extends ModelDrivenAction {
     /**
      * @return the model to be pushed onto the ValueStack instead of the Action itself
      */
+    @Override
     public Object getModel() {
         return null;
     }

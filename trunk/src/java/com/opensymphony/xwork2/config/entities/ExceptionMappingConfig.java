@@ -5,11 +5,13 @@
 
 package com.opensymphony.xwork2.config.entities;
 
-import java.util.*;
-import java.io.Serializable;
-
 import com.opensymphony.xwork2.util.location.Located;
 import com.opensymphony.xwork2.util.location.Location;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Configuration for exception mapping.
@@ -56,6 +58,7 @@ public class ExceptionMappingConfig extends Located implements Serializable {
     }
 
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -89,6 +92,7 @@ public class ExceptionMappingConfig extends Located implements Serializable {
         return true;
     }
 
+    @Override
     public int hashCode() {
         int hashCode;
         hashCode = ((name != null) ? name.hashCode() : 0);

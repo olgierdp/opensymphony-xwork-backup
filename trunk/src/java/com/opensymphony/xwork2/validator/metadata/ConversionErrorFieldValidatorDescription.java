@@ -34,6 +34,7 @@ public class ConversionErrorFieldValidatorDescription extends AbstractFieldValid
      *
      * @return the field validator XML definition.
      */
+    @Override
     public String asFieldXml() {
         StringWriter sw = new StringWriter();
         PrintWriter writer = null;
@@ -70,6 +71,7 @@ public class ConversionErrorFieldValidatorDescription extends AbstractFieldValid
      *
      * @return the validator XML definition.
      */
+    @Override
     public String asSimpleXml() {
         StringWriter sw = new StringWriter();
         PrintWriter writer = null;

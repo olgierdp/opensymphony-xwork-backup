@@ -4,16 +4,9 @@
  */
 package com.opensymphony.xwork2;
 
-import java.util.HashMap;
-import java.util.ResourceBundle;
-import java.util.List;
-import java.util.Locale;
-import java.util.ArrayList;
-
-import junit.framework.TestCase;
-
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
+
+import java.util.*;
 
 /**
  * Unit test for {@link ActionSupport}.
@@ -24,12 +17,12 @@ public class ActionSupportTest extends XWorkTestCase {
 
     private ActionSupport as;
 
-    protected void setUp() throws Exception {
+    @Override protected void setUp() throws Exception {
         super.setUp();
         as = new ActionSupport();
     }
 
-    protected void tearDown() throws Exception {
+    @Override protected void tearDown() throws Exception {
         super.tearDown();
         as = null;
     }
@@ -120,7 +113,7 @@ public class ActionSupportTest extends XWorkTestCase {
         assertEquals(false, as.hasFieldErrors());
         assertEquals(0, as.getFieldErrors().size());
         as.addFieldError("username", "Admin is not allowed as username");
-        List errors = (List) as.getFieldErrors().get("username");
+        List<String> errors = as.getFieldErrors().get("username");
         assertEquals(1, errors.size());
         assertEquals("Admin is not allowed as username", errors.get(0));
 
@@ -151,7 +144,7 @@ public class ActionSupportTest extends XWorkTestCase {
         ActionContext.getContext().setLocale(Locale.ITALY);
         assertEquals(Locale.ITALY, as.getLocale());
 
-        ActionContext.setContext(new ActionContext(new HashMap()));
+        ActionContext.setContext(new ActionContext(new HashMap<String, Object>()));
         assertEquals(defLocale, as.getLocale()); // ActionContext will create a new context, when it was set to null before
     }
 
@@ -200,7 +193,7 @@ public class ActionSupportTest extends XWorkTestCase {
         ActionContext.getContext().setLocale(new Locale("da"));
         MyActionSupport mas = new MyActionSupport();
 
-        List args = new ArrayList();
+        List<Object> args = new ArrayList<Object>();
         args.add("Santa");
         args.add("loud");
         assertEquals("Hello World", mas.getText("hello", "this is default", args)); // no args in bundle
@@ -250,7 +243,7 @@ public class ActionSupportTest extends XWorkTestCase {
 
         ValueStack stack = ActionContext.getContext().getValueStack();
 
-        List args = new ArrayList();
+        List<Object> args = new ArrayList<Object>();
         args.add("Santa");
         args.add("loud");
         assertEquals("Hello World", mas.getText("hello", "this is default", args, stack)); // no args in bundle
@@ -288,11 +281,11 @@ public class ActionSupportTest extends XWorkTestCase {
 
     private class MyActionSupport extends ActionSupport {
 
-        public String doDefault() throws Exception {
+        @Override public String doDefault() throws Exception {
             return "santa";
         }
 
-        public void validate() {
+        @Override public void validate() {
             super.validate(); // to have code coverage
             addActionMessage("validation was called");
         }

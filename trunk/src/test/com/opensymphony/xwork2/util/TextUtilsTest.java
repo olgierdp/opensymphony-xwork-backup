@@ -7,7 +7,6 @@ package com.opensymphony.xwork2.util;
 import com.opensymphony.xwork2.XWorkTestCase;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Unit test for {@link com.opensymphony.xwork2.util.TextUtils}.

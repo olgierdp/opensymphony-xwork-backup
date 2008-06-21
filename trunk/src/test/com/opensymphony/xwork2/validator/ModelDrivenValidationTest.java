@@ -21,10 +21,10 @@ import java.util.Map;
 public class ModelDrivenValidationTest extends XWorkTestCase {
 
     public void testModelDrivenValidation() throws Exception {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("count", new String[]{"11"});
 
-        Map context = new HashMap();
+        Map<String, Object> context = new HashMap<String, Object>();
         context.put(ActionContext.PARAMETERS, params);
 
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-sample.xml"));

@@ -4,8 +4,8 @@
  */
 package com.opensymphony.xwork2.validator.metadata;
 
-import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * <code>ExpressionValidatorDescription</code>

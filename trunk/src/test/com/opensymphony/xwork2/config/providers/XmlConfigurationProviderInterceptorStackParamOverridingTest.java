@@ -1,15 +1,14 @@
 package com.opensymphony.xwork2.config.providers;
 
 import com.opensymphony.xwork2.XWorkTestCase;
-import com.opensymphony.xwork2.config.entities.InterceptorMapping;
-import com.opensymphony.xwork2.config.entities.ActionConfig;
-import com.opensymphony.xwork2.config.RuntimeConfiguration;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
+import com.opensymphony.xwork2.config.RuntimeConfiguration;
+import com.opensymphony.xwork2.config.entities.ActionConfig;
+import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.config.impl.DefaultConfiguration;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <code>XmlConfigurationProviderInterceptorStackParamOverridingTest</code>
@@ -77,6 +76,7 @@ public class XmlConfigurationProviderInterceptorStackParamOverridingTest extends
 
     }
 
+    @Override
     protected void tearDown() throws Exception {
     	configurationManager.clearContainerProviders();
     }

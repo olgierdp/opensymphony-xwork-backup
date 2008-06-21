@@ -4,13 +4,12 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import java.util.Iterator;
-import java.util.List;
-
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.util.List;
 
 /**
  * <!-- START SNIPPET: description -->
@@ -169,6 +168,7 @@ public class ExceptionMappingInterceptor extends AbstractInterceptor {
 		this.logLevel = logLevel;
 	}
 
+    @Override
     public String intercept(ActionInvocation invocation) throws Exception {
         String result;
 
@@ -178,7 +178,7 @@ public class ExceptionMappingInterceptor extends AbstractInterceptor {
             if (isLogEnabled()) {
                 handleLogging(e);
             }
-            List exceptionMappings = invocation.getProxy().getConfig().getExceptionMappings();
+            List<ExceptionMappingConfig> exceptionMappings = invocation.getProxy().getConfig().getExceptionMappings();
             String mappedResult = this.findResultFromExceptions(exceptionMappings, e);
             if (mappedResult != null) {
                 result = mappedResult;
@@ -237,14 +237,14 @@ public class ExceptionMappingInterceptor extends AbstractInterceptor {
     	}
     }
 
-    private String findResultFromExceptions(List exceptionMappings, Throwable t) {
+    private String findResultFromExceptions(List<ExceptionMappingConfig> exceptionMappings, Throwable t) {
         String result = null;
 
         // Check for specific exception mappings.
         if (exceptionMappings != null) {
             int deepest = Integer.MAX_VALUE;
-            for (Iterator iter = exceptionMappings.iterator(); iter.hasNext();) {
-                ExceptionMappingConfig exceptionMappingConfig = (ExceptionMappingConfig) iter.next();
+            for (Object exceptionMapping : exceptionMappings) {
+                ExceptionMappingConfig exceptionMappingConfig = (ExceptionMappingConfig) exceptionMapping;
                 int depth = getDepth(exceptionMappingConfig.getExceptionClassName(), t);
                 if (depth >= 0 && depth < deepest) {
                     deepest = depth;
@@ -269,7 +269,7 @@ public class ExceptionMappingInterceptor extends AbstractInterceptor {
     }
 
     private int getDepth(String exceptionMapping, Class exceptionClass, int depth) {
-        if (exceptionClass.getName().indexOf(exceptionMapping) != -1) {
+        if (exceptionClass.getName().contains(exceptionMapping)) {
             // Found it!
             return depth;
         }

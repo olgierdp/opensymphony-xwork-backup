@@ -53,14 +53,15 @@ public class ConversionErrorFieldValidator extends RepopulateConversionErrorFiel
      * @param object
      * @throws ValidationException
      */
+    @Override
     public void doValidate(Object object) throws ValidationException {
         String fieldName = getFieldName();
         String fullFieldName = getValidatorContext().getFullFieldName(fieldName);
         ActionContext context = ActionContext.getContext();
-        Map conversionErrors = context.getConversionErrors();
+        Map<String, Object> conversionErrors = context.getConversionErrors();
         
         if (conversionErrors.containsKey(fullFieldName)) {
-            if ((defaultMessage == null) || (defaultMessage.trim().equals(""))) {
+            if ((defaultMessage == null) || ("".equals(defaultMessage.trim()))) {
                 defaultMessage = XWorkConverter.getConversionErrorMessage(fullFieldName, context.getValueStack());
             }
             

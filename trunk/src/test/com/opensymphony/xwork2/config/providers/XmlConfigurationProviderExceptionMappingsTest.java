@@ -26,16 +26,16 @@ public class XmlConfigurationProviderExceptionMappingsTest extends Configuration
         final String filename = "com/opensymphony/xwork2/config/providers/xwork-test-exception-mappings.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
 
-        List exceptionMappings = new ArrayList();
-        HashMap parameters = new HashMap();
-        HashMap results = new HashMap();
+        List<ExceptionMappingConfig> exceptionMappings = new ArrayList<ExceptionMappingConfig>();
+        HashMap<String, String> parameters = new HashMap<String, String>();
+        HashMap<String, ResultConfig> results = new HashMap<String, ResultConfig>();
 
         exceptionMappings.add(
                 new ExceptionMappingConfig.Builder("spooky-result", "com.opensymphony.xwork2.SpookyException", "spooky-result")
                     .build());
         results.put("spooky-result", new ResultConfig.Builder("spooky-result", MockResult.class.getName()).build());
 
-        Map resultParams = new HashMap();
+        Map<String, String> resultParams = new HashMap<String, String>();
         resultParams.put("actionName", "bar.vm");
         results.put("specificLocationResult",
                 new ResultConfig.Builder("specificLocationResult", ActionChainResult.class.getName())

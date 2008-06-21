@@ -25,7 +25,8 @@ public class NamespaceMatcher extends AbstractMatcher<NamespaceMatch> {
         }
     }
 
-    protected NamespaceMatch convert(String path, NamespaceMatch orig, Map vars) {
+    @Override
+    protected NamespaceMatch convert(String path, NamespaceMatch orig, Map<String, String> vars) {
         /*Map<String,String> origVars = (Map<String,String>)vars;
         Map<String,String> map = new HashMap<String,String>();
         for (Map.Entry<String,String> entry : origVars.entrySet()) {

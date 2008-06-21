@@ -17,9 +17,9 @@
  */
 package com.opensymphony.xwork2.util;
 
-import java.util.Vector;
-
 import com.opensymphony.xwork2.XWorkTestCase;
+
+import java.util.Vector;
 
 public class ClassPathFinderTest extends XWorkTestCase {
 	

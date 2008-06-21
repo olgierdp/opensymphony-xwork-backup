@@ -4,14 +4,6 @@
  */
 package com.opensymphony.xwork2.conversion.impl;
 
-import java.beans.IntrospectionException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Map;
-
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.CreateIfNull;
@@ -22,6 +14,14 @@ import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionException;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
+
+import java.beans.IntrospectionException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Map;
 
 /**
  * <!-- START SNIPPET: javadoc -->
@@ -179,10 +179,10 @@ public class DefaultObjectTypeDeterminer implements ObjectTypeDeterminer {
         String configValue = (String) xworkConverter.getConverter(parentClass, CREATE_IF_NULL_PREFIX + property);
         //check if a value is in the config
         if (configValue!=null) {
-            if (configValue.equals("true")) {
+            if ("true".equalsIgnoreCase(configValue)) {
                 return true;
             }
-            if (configValue.equals("false")) {
+            if ("false".equalsIgnoreCase(configValue)) {
                 return false;
             }
         }

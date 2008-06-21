@@ -15,7 +15,17 @@
  */
 package com.opensymphony.xwork2.util;
 
-import java.util.Map;
+import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.util.location.Location;
+import com.opensymphony.xwork2.util.location.LocationAttributes;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.*;
+import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -23,24 +33,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
-
-import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.XWorkException;
-import com.opensymphony.xwork2.util.location.Location;
-import com.opensymphony.xwork2.util.location.LocationAttributes;
-import com.opensymphony.xwork2.util.logging.Logger;
-import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import java.util.Map;
 
 /**
  * Helper class to create and retrieve information from location-enabled
@@ -79,7 +72,7 @@ public class DomHelper {
      * @param inputSource the inputSource to read the document from
      * @param dtdMappings a map of DTD names and public ids
      */
-    public static Document parse(InputSource inputSource, Map dtdMappings) {
+    public static Document parse(InputSource inputSource, Map<String, String> dtdMappings) {
                 
         SAXParserFactory factory = null;
         String parserProp = System.getProperty("xwork.saxParserFactory");
@@ -276,61 +269,73 @@ public class DomHelper {
     public static class StartHandler extends DefaultHandler {
         
         private ContentHandler nextHandler;
-        private Map dtdMappings;
+        private Map<String, String> dtdMappings;
         
         /**
          * Create a filter that is chained to another handler.
          * @param next the next handler in the chain.
          */
-        public StartHandler(ContentHandler next, Map dtdMappings) {
+        public StartHandler(ContentHandler next, Map<String, String> dtdMappings) {
             nextHandler = next;
             this.dtdMappings = dtdMappings;
         }
 
+        @Override
         public void setDocumentLocator(Locator locator) {
             nextHandler.setDocumentLocator(locator);
         }
         
+        @Override
         public void startDocument() throws SAXException {
             nextHandler.startDocument();
         }
         
+        @Override
         public void endDocument() throws SAXException {
             nextHandler.endDocument();
         }
 
+        @Override
         public void startElement(String uri, String loc, String raw, Attributes attrs) throws SAXException {
             nextHandler.startElement(uri, loc, raw, attrs);
         }
 
+        @Override
         public void endElement(String arg0, String arg1, String arg2) throws SAXException {
             nextHandler.endElement(arg0, arg1, arg2);
         }
 
+        @Override
         public void startPrefixMapping(String arg0, String arg1) throws SAXException {
             nextHandler.startPrefixMapping(arg0, arg1);
         }
 
+        @Override
         public void endPrefixMapping(String arg0) throws SAXException {
             nextHandler.endPrefixMapping(arg0);
         }
 
+        @Override
         public void characters(char[] arg0, int arg1, int arg2) throws SAXException {
             nextHandler.characters(arg0, arg1, arg2);
         }
 
+        @Override
         public void ignorableWhitespace(char[] arg0, int arg1, int arg2) throws SAXException {
             nextHandler.ignorableWhitespace(arg0, arg1, arg2);
         }
 
+        @Override
         public void processingInstruction(String arg0, String arg1) throws SAXException {
             nextHandler.processingInstruction(arg0, arg1);
         }
 
+        @Override
         public void skippedEntity(String arg0) throws SAXException {
             nextHandler.skippedEntity(arg0);
         }
         
+        @Override
         public InputSource resolveEntity(String publicId, String systemId) {
             if (dtdMappings != null && dtdMappings.containsKey(publicId)) {
                 String val = dtdMappings.get(publicId).toString();
@@ -339,15 +344,18 @@ public class DomHelper {
             return null;
         }
         
+        @Override
         public void warning(SAXParseException exception) {
         }
 
+        @Override
         public void error(SAXParseException exception) throws SAXException {
             LOG.error(exception.getMessage() + " at (" + exception.getPublicId() + ":" + 
                 exception.getLineNumber() + ":" + exception.getColumnNumber() + ")", exception);
             throw exception;
         }
 
+        @Override
         public void fatalError(SAXParseException exception) throws SAXException {
             LOG.fatal(exception.getMessage() + " at (" + exception.getPublicId() + ":" + 
                 exception.getLineNumber() + ":" + exception.getColumnNumber() + ")", exception);

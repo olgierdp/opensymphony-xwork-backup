@@ -4,29 +4,6 @@
  */
 package com.opensymphony.xwork2.conversion.impl;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Member;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.DateFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
@@ -35,6 +12,14 @@ import com.opensymphony.xwork2.conversion.TypeConverter;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.util.XWorkList;
+
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.*;
+import java.util.*;
 
 
 /**
@@ -87,7 +72,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         this.objectFactory = fac;
     }
 
-    public Object convertValue(Map context, Object o, Member member, String s, Object value, Class toType) {
+    @Override
+    public Object convertValue(Map<String, Object> context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;
 
         if (value == null || toType.isAssignableFrom(value.getClass())) {
@@ -156,7 +142,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return result;
     }
 
-    private Locale getLocale(Map context) {
+    private Locale getLocale(Map<String, Object> context) {
         if (context == null) {
             return Locale.getDefault();
         }
@@ -213,7 +199,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return result;
     }
 
-    private Object doConvertToArray(Map context, Object o, Member member, String s, Object value, Class toType) {
+    private Object doConvertToArray(Map<String, Object> context, Object o, Member member, String s, Object value, Class toType) {
         Object result = null;
         Class componentType = toType.getComponentType();
 
@@ -271,7 +257,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return clazz;
     }
 
-    private Collection doConvertToCollection(Map context, Object o, Member member, String prop, Object value, Class toType) {
+    private Collection doConvertToCollection(Map<String, Object> context, Object o, Member member, String prop, Object value, Class toType) {
         Collection result;
         Class memberType = String.class;
 
@@ -292,16 +278,16 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             TypeConverter converter = getTypeConverter(context);
             result = createCollection(o, prop, toType, memberType, objArray.length);
 
-            for (int i = 0; i < objArray.length; i++) {
-                result.add(converter.convertValue(context, o, member, prop, objArray[i], memberType));
+            for (Object anObjArray : objArray) {
+                result.add(converter.convertValue(context, o, member, prop, anObjArray, memberType));
             }
         } else if (Collection.class.isAssignableFrom(value.getClass())) {
             Collection col = (Collection) value;
             TypeConverter converter = getTypeConverter(context);
             result = createCollection(o, prop, toType, memberType, col.size());
 
-            for (Iterator it = col.iterator(); it.hasNext();) {
-                result.add(converter.convertValue(context, o, member, prop, it.next(), memberType));
+            for (Object aCol : col) {
+                result.add(converter.convertValue(context, o, member, prop, aCol, memberType));
             }
         } else {
             result = createCollection(o, prop, toType, memberType, -1);
@@ -311,7 +297,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return result;
     }
 
-    private Object doConvertToDate(Map context, Object value, Class toType) {
+    private Object doConvertToDate(Map<String, Object> context, Object value, Class toType) {
         Date result = null;
 
         if (value instanceof String && value != null && ((String) value).length() > 0) {
@@ -333,10 +319,10 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                         locale);
 
                 SimpleDateFormat[] fmts = {fullfmt, dtfmt, dfmt};
-                for (int i = 0; i < fmts.length; i++) {
+                for (SimpleDateFormat fmt : fmts) {
                     try {
-                        check = fmts[i].parse(sa);
-                        df = fmts[i];
+                        check = fmt.parse(sa);
+                        df = fmt;
                         if (check != null) {
                             break;
                         }
@@ -350,10 +336,10 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 SimpleDateFormat d3 = (SimpleDateFormat) DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
                 SimpleDateFormat rfc3399 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 SimpleDateFormat[] dfs = {d1, d2, d3, rfc3399}; //added RFC 3339 date format (XW-473)
-                for (int i = 0; i < dfs.length; i++) {
+                for (SimpleDateFormat df1 : dfs) {
                     try {
-                        check = dfs[i].parse(sa);
-                        df = dfs[i];
+                        check = df1.parse(sa);
+                        df = df1;
                         if (check != null) {
                             break;
                         }
@@ -372,7 +358,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 if (!(Date.class == toType)) {
                     try {
                         Constructor constructor = toType.getConstructor(new Class[]{long.class});
-                        return constructor.newInstance(new Object[]{new Long(result.getTime())});
+                        return constructor.newInstance(new Object[]{Long.valueOf(result.getTime())});
                     } catch (Exception e) {
                         throw new XWorkException("Couldn't create class " + toType + " using default (long) constructor", e);
                     }
@@ -386,7 +372,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         return result;
     }
 
-    private Object doConvertToNumber(Map context, Object value, Class toType) {
+    private Object doConvertToNumber(Map<String, Object> context, Object value, Class toType) {
         if (value instanceof String) {
             if (toType == BigDecimal.class) {
                 return new BigDecimal((String) value);
@@ -438,7 +424,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     /**
      * Converts the input as a number using java's number formatter to a string output.
      */
-    private String doConvertFromNumberToString(Map context, Object value, Class toType) {
+    private String doConvertFromNumberToString(Map<String, Object> context, Object value, Class toType) {
         // XW-409: If the input is a Number we should format it to a string using the choosen locale and use java's numberformatter
         if (Number.class.isAssignableFrom(toType)) {
             NumberFormat numFormat = NumberFormat.getInstance(getLocale(context));
@@ -458,45 +444,45 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
     }
 
 
-    private String doConvertToString(Map context, Object value) {
+    private String doConvertToString(Map<String, Object> context, Object value) {
         String result = null;
 
         if (value instanceof int[]) {
             int[] x = (int[]) value;
-            List intArray = new ArrayList(x.length);
+            List<Integer> intArray = new ArrayList<Integer>(x.length);
 
-            for (int i = 0; i < x.length; i++) {
-                intArray.add(new Integer(x[i]));
+            for (int aX : x) {
+                intArray.add(Integer.valueOf(aX));
             }
 
             result = TextUtils.join(", ", intArray);
         } else if (value instanceof long[]) {
             long[] x = (long[]) value;
-            List intArray = new ArrayList(x.length);
+            List<Long> longArray = new ArrayList<Long>(x.length);
 
-            for (int i = 0; i < x.length; i++) {
-                intArray.add(new Long(x[i]));
+            for (long aX : x) {
+                longArray.add(Long.valueOf(aX));
             }
 
-            result = TextUtils.join(", ", intArray);
+            result = TextUtils.join(", ", longArray);
         } else if (value instanceof double[]) {
             double[] x = (double[]) value;
-            List intArray = new ArrayList(x.length);
+            List<Double> doubleArray = new ArrayList<Double>(x.length);
 
-            for (int i = 0; i < x.length; i++) {
-                intArray.add(new Double(x[i]));
+            for (double aX : x) {
+                doubleArray.add(new Double(aX));
             }
 
-            result = TextUtils.join(", ", intArray);
+            result = TextUtils.join(", ", doubleArray);
         } else if (value instanceof boolean[]) {
             boolean[] x = (boolean[]) value;
-            List intArray = new ArrayList(x.length);
+            List<Boolean> booleanArray = new ArrayList<Boolean>(x.length);
 
-            for (int i = 0; i < x.length; i++) {
-                intArray.add(new Boolean(x[i]));
+            for (boolean aX : x) {
+                booleanArray.add(new Boolean(aX));
             }
 
-            result = TextUtils.join(", ", intArray);
+            result = TextUtils.join(", ", booleanArray);
         } else if (value instanceof Date) {
             DateFormat df = null;
             if (value instanceof java.sql.Time) {

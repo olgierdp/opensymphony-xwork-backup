@@ -8,8 +8,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
@@ -40,8 +40,8 @@ public class XmlHelper {
      * @param paramsElement
      * @return
      */
-    public static Map getParams(Element paramsElement) {
-        LinkedHashMap params = new LinkedHashMap();
+    public static Map<String, String> getParams(Element paramsElement) {
+        LinkedHashMap<String, String> params = new LinkedHashMap<String, String>();
 
         if (paramsElement == null) {
             return params;
@@ -80,7 +80,7 @@ public class XmlHelper {
      * @return
      */
     public static String getContent(Element element) {
-        StringBuffer paramValue = new StringBuffer();
+        StringBuilder paramValue = new StringBuilder();
         NodeList childNodes = element.getChildNodes();
         for (int j = 0; j < childNodes.getLength(); j++) {
             Node currentNode = childNodes.item(j);
@@ -92,8 +92,7 @@ public class XmlHelper {
                 }
             }
         }
-        String val = paramValue.toString().trim();
-        return val;
+        return paramValue.toString().trim();
     }
 
 }

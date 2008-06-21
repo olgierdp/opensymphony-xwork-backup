@@ -1,14 +1,13 @@
 package com.opensymphony.xwork2.interceptor.annotations;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import junit.framework.TestCase;
-
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
+import junit.framework.TestCase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author martin.gilday

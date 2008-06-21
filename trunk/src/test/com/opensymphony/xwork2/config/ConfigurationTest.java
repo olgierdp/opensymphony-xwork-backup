@@ -51,10 +51,10 @@ public class ConfigurationTest extends XWorkTestCase {
     }
 
     public void testDefaultNamespace() {
-        HashMap params = new HashMap();
+        HashMap<String, String> params = new HashMap<String, String>();
         params.put("blah", "this is blah");
 
-        HashMap extraContext = new HashMap();
+        HashMap<String, Object> extraContext = new HashMap<String, Object>();
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
@@ -227,6 +227,7 @@ public class ConfigurationTest extends XWorkTestCase {
     public void testInitForPackageProviders() {
         
         loadConfigurationProviders(new StubConfigurationProvider() {
+            @Override
             public void register(ContainerBuilder builder,
                     LocatableProperties props) throws ConfigurationException {
                 builder.factory(PackageProvider.class, "foo", MyPackageProvider.class);
@@ -240,6 +241,7 @@ public class ConfigurationTest extends XWorkTestCase {
         
         loadConfigurationProviders(new StubConfigurationProvider() {
             boolean called = false;
+            @Override
             public void init(Configuration config) {
                 if (called) {
                     fail("Called twice");
@@ -247,6 +249,7 @@ public class ConfigurationTest extends XWorkTestCase {
                 called = true;
             }
             
+            @Override
             public void loadPackages() {
                 if (!called) {
                     fail("Never called");
@@ -283,6 +286,7 @@ public class ConfigurationTest extends XWorkTestCase {
     }
     
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 

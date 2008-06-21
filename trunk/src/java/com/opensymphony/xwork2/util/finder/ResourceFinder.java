@@ -20,21 +20,8 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.JarURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Vector;
+import java.net.*;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -80,7 +67,7 @@ public class ResourceFinder {
 
         for (int i = 0; urls != null && i < urls.length; i++) {
             URL url = urls[i];
-            if (url == null || isDirectory(url) || url.getProtocol().equals("jar")) {
+            if (url == null || isDirectory(url) || "jar".equals(url.getProtocol())) {
                 continue;
             }
             try {
@@ -134,7 +121,7 @@ public class ResourceFinder {
         String fullUri = path + uri;
 
         Enumeration<URL> resources = getResources(fullUri);
-        List<URL> list = new ArrayList();
+        List<URL> list = new ArrayList<URL>();
         while (resources.hasMoreElements()) {
             URL url = resources.nextElement();
             list.add(url);
@@ -244,10 +231,9 @@ public class ResourceFinder {
     public Map<String, String> mapAllStrings(String uri) throws IOException {
         Map<String, String> strings = new HashMap<String, String>();
         Map<String, URL> resourcesMap = getResourcesMap(uri);
-        for (Iterator iterator = resourcesMap.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String name = (String) entry.getKey();
-            URL url = (URL) entry.getValue();
+        for (Map.Entry<String, URL> entry : resourcesMap.entrySet()) {
+            String name = entry.getKey();
+            URL url = entry.getValue();
             String value = readContents(url);
             strings.put(name, value);
         }
@@ -283,10 +269,9 @@ public class ResourceFinder {
         resourcesNotLoaded.clear();
         Map<String, String> strings = new HashMap<String, String>();
         Map<String, URL> resourcesMap = getResourcesMap(uri);
-        for (Iterator iterator = resourcesMap.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String name = (String) entry.getKey();
-            URL url = (URL) entry.getValue();
+        for (Map.Entry<String, URL> entry  : resourcesMap.entrySet()) {
+            String name = entry.getKey();
+            URL url = entry.getValue();
             try {
                 String value = readContents(url);
                 strings.put(name, value);
@@ -390,10 +375,9 @@ public class ResourceFinder {
     public Map<String, Class> mapAllClasses(String uri) throws IOException, ClassNotFoundException {
         Map<String, Class> classes = new HashMap<String, Class>();
         Map<String, String> map = mapAllStrings(uri);
-        for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String string = (String) entry.getKey();
-            String className = (String) entry.getValue();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            String string = entry.getKey();
+            String className = entry.getValue();
             Class clazz = classLoader.loadClass(className);
             classes.put(string, clazz);
         }
@@ -427,10 +411,9 @@ public class ResourceFinder {
         resourcesNotLoaded.clear();
         Map<String, Class> classes = new HashMap<String, Class>();
         Map<String, String> map = mapAvailableStrings(uri);
-        for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String string = (String) entry.getKey();
-            String className = (String) entry.getValue();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            String string = entry.getKey();
+            String className = entry.getValue();
             try {
                 Class clazz = classLoader.loadClass(className);
                 classes.put(string, clazz);
@@ -585,10 +568,9 @@ public class ResourceFinder {
     public Map<String, Class> mapAllImplementations(Class interfase) throws IOException, ClassNotFoundException {
         Map<String, Class> implementations = new HashMap<String, Class>();
         Map<String, String> map = mapAllStrings(interfase.getName());
-        for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String string = (String) entry.getKey();
-            String className = (String) entry.getValue();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            String string = entry.getKey();
+            String className = entry.getValue();
             Class impl = classLoader.loadClass(className);
             if (!interfase.isAssignableFrom(impl)) {
                 throw new ClassCastException("Class not of type: " + interfase.getName());
@@ -625,10 +607,9 @@ public class ResourceFinder {
         resourcesNotLoaded.clear();
         Map<String, Class> implementations = new HashMap<String, Class>();
         Map<String, String> map = mapAvailableStrings(interfase.getName());
-        for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String string = (String) entry.getKey();
-            String className = (String) entry.getValue();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            String string = entry.getKey();
+            String className = entry.getValue();
             try {
                 Class impl = classLoader.loadClass(className);
                 if (interfase.isAssignableFrom(impl)) {
@@ -768,10 +749,9 @@ public class ResourceFinder {
     public Map<String, Properties> mapAllProperties(String uri) throws IOException {
         Map<String, Properties> propertiesMap = new HashMap<String, Properties>();
         Map<String, URL> map = getResourcesMap(uri);
-        for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String string = (String) entry.getKey();
-            URL url = (URL) entry.getValue();
+        for (Map.Entry<String, URL> entry : map.entrySet()) {
+            String string = entry.getKey();
+            URL url = entry.getValue();
             Properties properties = loadProperties(url);
             propertiesMap.put(string, properties);
         }
@@ -804,10 +784,9 @@ public class ResourceFinder {
         resourcesNotLoaded.clear();
         Map<String, Properties> propertiesMap = new HashMap<String, Properties>();
         Map<String, URL> map = getResourcesMap(uri);
-        for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String string = (String) entry.getKey();
-            URL url = (URL) entry.getValue();
+        for (Map.Entry<String, URL> entry : map.entrySet()) {
+            String string = entry.getKey();
+            URL url = entry.getValue();
             try {
                 Properties properties = loadProperties(url);
                 propertiesMap.put(string, properties);
@@ -837,11 +816,11 @@ public class ResourceFinder {
             URL location = urls.nextElement();
 
             try {
-                if (location.getProtocol().equals("jar")) {
+                if ("jar".equals(location.getProtocol())) {
 
                     readJarEntries(location, basePath, resources);
 
-                } else if (location.getProtocol().equals("file")) {
+                } else if ("file".equals(location.getProtocol())) {
 
                     readDirectoryEntries(location, resources);
 
@@ -914,7 +893,7 @@ public class ResourceFinder {
     private String readContents(URL resource) throws IOException {
         InputStream in = resource.openStream();
         BufferedInputStream reader = null;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         try {
             reader = new BufferedInputStream(in);
@@ -965,7 +944,7 @@ public class ResourceFinder {
             JarFile jarFile = null;
             try {
                 String protocol = currentUrl.getProtocol();
-                if (protocol.equals("jar")) {
+                if ("jar".equals(protocol)) {
                     /*
                     * If the connection for currentUrl or resURL is
                     * used, getJarFile() will throw an exception if the
@@ -993,25 +972,25 @@ public class ResourceFinder {
                             continue;
                         }
                         sepIdx += 2;
-                        StringBuffer sb = new StringBuffer(file.length() - sepIdx + resourceName.length());
+                        StringBuilder sb = new StringBuilder(file.length() - sepIdx + resourceName.length());
                         sb.append(file.substring(sepIdx));
                         sb.append(resourceName);
                         entryName = sb.toString();
                     }
-                    if (entryName.equals("META-INF/") && jarFile.getEntry("META-INF/MANIFEST.MF") != null){
+                    if ("META-INF/".equals(entryName) && jarFile.getEntry("META-INF/MANIFEST.MF") != null){
                         return targetURL(currentUrl, "META-INF/MANIFEST.MF");
                     }
                     if (jarFile.getEntry(entryName) != null) {
                         return targetURL(currentUrl, resourceName);
                     }
-                } else if (protocol.equals("file")) {
+                } else if ("file".equals(protocol)) {
                     String baseFile = currentUrl.getFile();
                     String host = currentUrl.getHost();
                     int hostLength = 0;
                     if (host != null) {
                         hostLength = host.length();
                     }
-                    StringBuffer buf = new StringBuffer(2 + hostLength + baseFile.length() + resourceName.length());
+                    StringBuilder buf = new StringBuilder(2 + hostLength + baseFile.length() + resourceName.length());
 
                     if (hostLength > 0) {
                         buf.append("//").append(host);
@@ -1042,7 +1021,7 @@ public class ResourceFinder {
                     }
                     // HTTP can return a stream on a non-existent file
                     // So check for the return code;
-                    if (!resourceURL.getProtocol().equals("http")) {
+                    if (!"http".equals(resourceURL.getProtocol())) {
                         return resourceURL;
                     }
 
@@ -1061,7 +1040,7 @@ public class ResourceFinder {
     }
 
     private URL targetURL(URL base, String name) throws MalformedURLException {
-        StringBuffer sb = new StringBuffer(base.getFile().length() + name.length());
+        StringBuilder sb = new StringBuilder(base.getFile().length() + name.length());
         sb.append(base.getFile());
         sb.append(name);
         String file = sb.toString();

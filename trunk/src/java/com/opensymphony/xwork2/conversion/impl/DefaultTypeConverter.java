@@ -30,6 +30,9 @@
 //--------------------------------------------------------------------------
 package com.opensymphony.xwork2.conversion.impl;
 
+import com.opensymphony.xwork2.conversion.TypeConverter;
+import com.opensymphony.xwork2.ognl.XWorkTypeConverterWrapper;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Member;
 import java.math.BigDecimal;
@@ -37,9 +40,6 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.opensymphony.xwork2.conversion.TypeConverter;
-import com.opensymphony.xwork2.ognl.XWorkTypeConverterWrapper;
 
 /**
  * Default type conversion. Converts among numeric types and also strings.  Contains the basic 
@@ -56,11 +56,11 @@ public class DefaultTypeConverter implements TypeConverter {
     public DefaultTypeConverter() {
         Map<Class, Object> map = new HashMap<Class, Object>();
         map.put(Boolean.TYPE, Boolean.FALSE);
-        map.put(Byte.TYPE, new Byte((byte) 0));
-        map.put(Short.TYPE, new Short((short) 0));
+        map.put(Byte.TYPE, Byte.valueOf((byte) 0));
+        map.put(Short.TYPE, Short.valueOf((short) 0));
         map.put(Character.TYPE, new Character((char) 0));
-        map.put(Integer.TYPE, new Integer(0));
-        map.put(Long.TYPE, new Long(0L));
+        map.put(Integer.TYPE, Integer.valueOf(0));
+        map.put(Long.TYPE, Long.valueOf(0L));
         map.put(Float.TYPE, new Float(0.0f));
         map.put(Double.TYPE, new Double(0.0));
         map.put(BigInteger.class, new BigInteger("0"));
@@ -68,16 +68,16 @@ public class DefaultTypeConverter implements TypeConverter {
         primitiveDefaults = Collections.unmodifiableMap(map);
     }
 
-    public Object convertValue(Map context, Object value, Class toType) {
+    public Object convertValue(Map<String, Object> context, Object value, Class toType) {
         return convertValue(value, toType);
     }
 
-    public Object convertValue(Map context, Object target, Member member,
+    public Object convertValue(Map<String, Object> context, Object target, Member member,
             String propertyName, Object value, Class toType) {
         return convertValue(context, value, toType);
     }
     
-    public TypeConverter getTypeConverter( Map context )
+    public TypeConverter getTypeConverter( Map<String, Object> context )
     {
         Object obj = context.get(TypeConverter.TYPE_CONVERTER_CONTEXT_KEY);
         if (obj instanceof TypeConverter) {
@@ -119,19 +119,19 @@ public class DefaultTypeConverter implements TypeConverter {
                 }
             } else {
                 if ((toType == Integer.class) || (toType == Integer.TYPE))
-                    result = new Integer((int) longValue(value));
+                    result = Integer.valueOf((int) longValue(value));
                 if ((toType == Double.class) || (toType == Double.TYPE))
                     result = new Double(doubleValue(value));
                 if ((toType == Boolean.class) || (toType == Boolean.TYPE))
                     result = booleanValue(value) ? Boolean.TRUE : Boolean.FALSE;
                 if ((toType == Byte.class) || (toType == Byte.TYPE))
-                    result = new Byte((byte) longValue(value));
+                    result = Byte.valueOf((byte) longValue(value));
                 if ((toType == Character.class) || (toType == Character.TYPE))
                     result = new Character((char) longValue(value));
                 if ((toType == Short.class) || (toType == Short.TYPE))
-                    result = new Short((short) longValue(value));
+                    result = Short.valueOf((short) longValue(value));
                 if ((toType == Long.class) || (toType == Long.TYPE))
-                    result = new Long(longValue(value));
+                    result = Long.valueOf(longValue(value));
                 if ((toType == Float.class) || (toType == Float.TYPE))
                     result = new Float(doubleValue(value));
                 if (toType == BigInteger.class)

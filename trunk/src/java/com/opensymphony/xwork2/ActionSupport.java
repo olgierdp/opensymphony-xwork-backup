@@ -4,16 +4,12 @@
  */
 package com.opensymphony.xwork2;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.*;
 
 
 /**
@@ -28,41 +24,41 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
     private final ValidationAwareSupport validationAware = new ValidationAwareSupport();
 
 
-    public void setActionErrors(Collection errorMessages) {
+    public void setActionErrors(Collection<String> errorMessages) {
         validationAware.setActionErrors(errorMessages);
     }
 
-    public Collection getActionErrors() {
+    public Collection<String> getActionErrors() {
         return validationAware.getActionErrors();
     }
 
-    public void setActionMessages(Collection messages) {
+    public void setActionMessages(Collection<String> messages) {
         validationAware.setActionMessages(messages);
     }
 
-    public Collection getActionMessages() {
+    public Collection<String> getActionMessages() {
         return validationAware.getActionMessages();
     }
 
     /**
      * @deprecated Use {@link #getActionErrors()}.
      */
-    public Collection getErrorMessages() {
+    @Deprecated public Collection<String> getErrorMessages() {
         return getActionErrors();
     }
 
     /**
      * @deprecated Use {@link #getFieldErrors()}.
      */
-    public Map getErrors() {
+    @Deprecated public Map<String, List<String>> getErrors() {
         return getFieldErrors();
     }
 
-    public void setFieldErrors(Map errorMap) {
+    public void setFieldErrors(Map<String, List<String>> errorMap) {
         validationAware.setFieldErrors(errorMap);
     }
 
-    public Map getFieldErrors() {
+    public Map<String, List<String>> getFieldErrors() {
         return validationAware.getFieldErrors();
     }
 
@@ -92,7 +88,7 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
         return textProvider.getText(aTextName, defaultValue, obj);
     }
 
-    public String getText(String aTextName, List args) {
+    public String getText(String aTextName, List<Object> args) {
         return textProvider.getText(aTextName, args);
     }
 
@@ -100,7 +96,7 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
         return textProvider.getText(key, args);
     }
 
-    public String getText(String aTextName, String defaultValue, List args) {
+    public String getText(String aTextName, String defaultValue, List<Object> args) {
         return textProvider.getText(aTextName, defaultValue, args);
     }
 
@@ -108,7 +104,7 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
         return textProvider.getText(key, defaultValue, args);
     }
 
-    public String getText(String key, String defaultValue, List args, ValueStack stack) {
+    public String getText(String key, String defaultValue, List<Object> args, ValueStack stack) {
         return textProvider.getText(key, defaultValue, args, stack);
     }
 
@@ -221,7 +217,7 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
     public void validate() {
     }
 
-    public Object clone() throws CloneNotSupportedException {
+    @Override public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 

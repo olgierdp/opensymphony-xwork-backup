@@ -1,16 +1,16 @@
 package com.opensymphony.xwork2.config.providers;
 
-import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.interceptor.Interceptor;
-import com.opensymphony.xwork2.config.entities.InterceptorStackConfig;
-import com.opensymphony.xwork2.config.entities.InterceptorMapping;
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.entities.InterceptorConfig;
+import com.opensymphony.xwork2.config.entities.InterceptorMapping;
+import com.opensymphony.xwork2.config.entities.InterceptorStackConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
+import com.opensymphony.xwork2.interceptor.Interceptor;
 
-import java.util.List;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * <code>InterceptorBuilderTest</code>
@@ -22,6 +22,7 @@ public class InterceptorBuilderTest extends XWorkTestCase {
 
     ObjectFactory objectFactory;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         objectFactory = container.getInstance(ObjectFactory.class);
@@ -51,7 +52,7 @@ public class InterceptorBuilderTest extends XWorkTestCase {
         List
                 interceptorMappings =
                 InterceptorBuilder.constructInterceptorReference(packageConfig, "interceptorStack1",
-                        new LinkedHashMap() {
+                        new LinkedHashMap<String, String>() {
                             private static final long serialVersionUID = -1358620486812957895L;
 
                             {
@@ -108,7 +109,7 @@ public class InterceptorBuilderTest extends XWorkTestCase {
                 addInterceptorStackConfig(interceptorStackConfig3).build();
 
         List interceptorMappings = InterceptorBuilder.constructInterceptorReference(packageConfig, "interceptorStack1",
-                new LinkedHashMap() {
+                new LinkedHashMap<String, String>() {
                     private static final long serialVersionUID = -5819935102242042570L;
 
                     {
@@ -179,7 +180,7 @@ public class InterceptorBuilderTest extends XWorkTestCase {
 
         List interceptorMappings = InterceptorBuilder.constructInterceptorReference(
                 packageConfig, "interceptorStack1",
-                new LinkedHashMap() {
+                new LinkedHashMap<String, String>() {
                     private static final long serialVersionUID = 4675809753780875525L;
 
                     {

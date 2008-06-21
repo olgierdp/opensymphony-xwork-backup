@@ -4,9 +4,10 @@
  */
 package com.opensymphony.xwork2.spring;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.UnsatisfiedDependencyException;
@@ -16,10 +17,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.util.logging.Logger;
-import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Simple implementation of the ObjectFactory that makes use of Spring's application context if one has been configured,
@@ -35,7 +34,7 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
     protected ApplicationContext appContext;
     protected AutowireCapableBeanFactory autoWiringFactory;
     protected int autowireStrategy = AutowireCapableBeanFactory.AUTOWIRE_BY_NAME;
-    private Map classes = new HashMap();
+    private final Map<String, Object> classes = new HashMap<String, Object>();
     private boolean useClassCache = true;
     private boolean alwaysRespectAutowireStrategy = false;
 
@@ -45,7 +44,7 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
             setApplicationContext(new ClassPathXmlApplicationContext(ctx));
         }
     }
-    
+
     /**
      * Set the Spring ApplicationContext that should be used to look beans up with.
      *
@@ -120,7 +119,8 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
      *         method.
      * @throws Exception
      */
-    public Object buildBean(String beanName, Map extraContext, boolean injectInternal) throws Exception {
+    @Override
+    public Object buildBean(String beanName, Map<String, Object> extraContext, boolean injectInternal) throws Exception {
         Object o = null;
         try {
             o = appContext.getBean(beanName);
@@ -139,7 +139,8 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
      * @param extraContext
      * @throws Exception
      */
-    public Object buildBean(Class clazz, Map extraContext) throws Exception {
+    @Override
+    public Object buildBean(Class clazz, Map<String, Object> extraContext) throws Exception {
         Object bean;
 
         try {
@@ -193,7 +194,7 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
         if (useClassCache) {
             synchronized(classes) {
                 // this cache of classes is needed because Spring sucks at dealing with situations where the
-                // class instance changes 
+                // class instance changes
                 clazz = (Class) classes.get(className);
             }
         }
@@ -221,7 +222,7 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
      * org.apache.struts2.spring.lifecycle.SpringObjectFactoryListener)
      * @deprecated Since 2.1 as it isn't necessary
      */
-    public void initObjectFactory() {
+    @Deprecated public void initObjectFactory() {
         // not necessary anymore
     }
 
@@ -231,13 +232,14 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
      *
      * @return false
      */
+    @Override
     public boolean isNoArgConstructorRequired() {
         return false;
     }
 
     /**
      *  Enable / disable caching of classes loaded by Spring.
-     *  
+     *
      * @param useClassCache
      */
     public void setUseClassCache(boolean useClassCache) {

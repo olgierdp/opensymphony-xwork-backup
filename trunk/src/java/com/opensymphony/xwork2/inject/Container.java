@@ -16,8 +16,8 @@
 
 package com.opensymphony.xwork2.inject;
 
-import java.util.Set;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * Injects dependencies into constructors, methods and fields annotated with

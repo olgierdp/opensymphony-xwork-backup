@@ -4,29 +4,30 @@
  */
 package com.opensymphony.xwork2;
 
-import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.CompoundRoot;
+import com.opensymphony.xwork2.util.ValueStack;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Stub value stack for testing
  */
 public class StubValueStack implements ValueStack {
-    Map ctx = new HashMap();
+    Map<String, Object> ctx = new HashMap<String, Object>();
     CompoundRoot root = new CompoundRoot();
-    public Map getContext() {
+    
+    public Map<String, Object> getContext() {
         return ctx;
     }
 
     public void setDefaultType(Class defaultType) {
     }
 
-    public void setExprOverrides(Map overrides) {
+    public void setExprOverrides(Map<Object, Object> overrides) {
     }
 
-    public Map getExprOverrides() {
+    public Map<Object, Object> getExprOverrides() {
         return null;
     }
 

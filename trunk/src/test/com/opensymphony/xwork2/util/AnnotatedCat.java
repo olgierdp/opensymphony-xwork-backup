@@ -4,8 +4,8 @@
  */
 package com.opensymphony.xwork2.util;
 
-import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
 import com.opensymphony.xwork2.conversion.annotations.Conversion;
+import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
 
 import java.util.List;
 

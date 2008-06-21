@@ -1,12 +1,12 @@
 package com.opensymphony.xwork2.test.annotations;
 
-import java.util.Map;
-
-import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
-import com.opensymphony.xwork2.util.*;
-import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
+
+import java.util.Map;
 
 
 public class PersonActionTest extends XWorkTestCase {
@@ -14,7 +14,7 @@ public class PersonActionTest extends XWorkTestCase {
 	public void testAddPerson() {
         ValueStack stack = ActionContext.getContext().getValueStack();
 
-        Map stackContext = stack.getContext();
+        Map<String, Object> stackContext = stack.getContext();
         stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
         stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
         stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
@@ -37,7 +37,7 @@ public class PersonActionTest extends XWorkTestCase {
 	
 	public void testAddAddress() {
         ValueStack stack = ActionContext.getContext().getValueStack();
-		Map stackContext = stack.getContext();
+		Map<String, Object> stackContext = stack.getContext();
 		stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
 		stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
 		stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
@@ -62,7 +62,7 @@ public class PersonActionTest extends XWorkTestCase {
 	
 	public void testAddAddressesNoGenericElementAnnotation() {
         ValueStack stack = ActionContext.getContext().getValueStack();
-		Map stackContext = stack.getContext();
+		Map<String, Object> stackContext = stack.getContext();
 		stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
 		stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
 		stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);

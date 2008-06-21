@@ -11,7 +11,6 @@ import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.util.ValueStack;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 
@@ -77,18 +76,17 @@ public class ConversionErrorInterceptor extends AbstractInterceptor {
         return "'" + value + "'";
     }
 
+    @Override
     public String intercept(ActionInvocation invocation) throws Exception {
 
         ActionContext invocationContext = invocation.getInvocationContext();
-        Map conversionErrors = invocationContext.getConversionErrors();
+        Map<String, Object> conversionErrors = invocationContext.getConversionErrors();
         ValueStack stack = invocationContext.getValueStack();
 
-        HashMap fakie = null;
+        HashMap<Object, Object> fakie = null;
 
-        for (Iterator iterator = conversionErrors.entrySet().iterator();
-             iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String propertyName = (String) entry.getKey();
+        for (Map.Entry<String, Object> entry : conversionErrors.entrySet()) {
+            String propertyName = entry.getKey();
             Object value = entry.getValue();
 
             if (shouldAddError(propertyName, value)) {
@@ -101,7 +99,7 @@ public class ConversionErrorInterceptor extends AbstractInterceptor {
                 }
 
                 if (fakie == null) {
-                    fakie = new HashMap();
+                    fakie = new HashMap<Object, Object>();
                 }
 
                 fakie.put(propertyName, getOverrideExpr(invocation, value));
@@ -113,7 +111,7 @@ public class ConversionErrorInterceptor extends AbstractInterceptor {
             stack.getContext().put(ORIGINAL_PROPERTY_OVERRIDE, fakie);
             invocation.addPreResultListener(new PreResultListener() {
                 public void beforeResult(ActionInvocation invocation, String resultCode) {
-                    Map fakie = (Map) invocation.getInvocationContext().get(ORIGINAL_PROPERTY_OVERRIDE);
+                    Map<Object, Object> fakie = (Map<Object, Object>) invocation.getInvocationContext().get(ORIGINAL_PROPERTY_OVERRIDE);
 
                     if (fakie != null) {
                         invocation.getStack().setExprOverrides(fakie);

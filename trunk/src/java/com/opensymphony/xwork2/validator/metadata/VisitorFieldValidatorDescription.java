@@ -43,6 +43,7 @@ public class VisitorFieldValidatorDescription extends AbstractFieldValidatorDesc
      *
      * @return the validator XML definition.
      */
+    @Override
     public String asFieldXml() {
         StringWriter sw = new StringWriter();
         PrintWriter writer = null;
@@ -86,6 +87,7 @@ public class VisitorFieldValidatorDescription extends AbstractFieldValidatorDesc
      *
      * @return the validator XML definition.
      */
+    @Override
     public String asSimpleXml() {
         throw new UnsupportedOperationException(getClass().getName() + " cannot be used for simple validators...");
     }

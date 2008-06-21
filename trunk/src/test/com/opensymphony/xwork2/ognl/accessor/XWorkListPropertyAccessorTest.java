@@ -7,10 +7,9 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.util.ListHolder;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * XWorkListPropertyAccessorTest

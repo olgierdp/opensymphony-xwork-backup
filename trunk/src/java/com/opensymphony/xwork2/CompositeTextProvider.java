@@ -1,12 +1,10 @@
-package com.opensymphony.xwork2.validator;
+package com.opensymphony.xwork2;
 
+import com.opensymphony.xwork2.util.ValueStack;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
-
-import com.opensymphony.xwork2.TextProvider;
-import com.opensymphony.xwork2.util.ValueStack;
 
 
 /**
@@ -21,26 +19,20 @@ public class CompositeTextProvider implements TextProvider {
 
     private static final Log LOG = LogFactory.getLog(CompositeTextProvider.class);
 
-    private List textProviders = new ArrayList();
+    private List<TextProvider> textProviders = new ArrayList<TextProvider>();
 
     /**
      * Instantiates a {@link CompositeTextProvider} with some predefined <code>textProviders</code>.
+     *
      * @param textProviders
      */
-    public CompositeTextProvider(List textProviders) {
-        for (Iterator i = textProviders.iterator(); i.hasNext(); ) {
-            Object obj = i.next();
-            if (obj instanceof TextProvider) {
-                this.textProviders.add(obj);
-            }
-            else {
-                LOG.warn("object ["+obj+"] provided in list ["+textProviders+"] is not a TextProvider instance, ignoring it");
-            }
-        }
+    public CompositeTextProvider(List<TextProvider> textProviders) {
+        this.textProviders.addAll(textProviders);
     }
 
     /**
      * Instantiates a {@link CompositeTextProvider} with some predefined <code>textProviders</code>.
+     *
      * @param textProviders
      */
     public CompositeTextProvider(TextProvider[] textProviders) {
@@ -48,18 +40,16 @@ public class CompositeTextProvider implements TextProvider {
     }
 
     /**
+     * @param key The key to lookup in ressource bundles.
+     * @return <tt>true</tt>, if the requested key is found in one of the ressource bundles.
      * @see {@link com.opensymphony.xwork2.TextProvider#hasKey(String)}
-     * It will consult each individual {@link TextProvider}s and return true if either one of the
-     * {@link TextProvider} has such a <code>key></code> else false.
-     *
-     * @param key
-     * @return
+     *      It will consult each individual {@link TextProvider}s and return true if either one of the
+     *      {@link TextProvider} has such a <code>key></code> else false.
      */
     public boolean hasKey(String key) {
         // if there's a key in either text providers we are ok, else try the next text provider
-        for (Iterator i = textProviders.iterator(); i.hasNext(); ) {
-            TextProvider _textProvider = (TextProvider) i.next();
-            if (_textProvider.hasKey(key)) {
+        for (TextProvider tp : textProviders) {
+            if (tp.hasKey(key)) {
                 return true;
             }
         }
@@ -69,63 +59,70 @@ public class CompositeTextProvider implements TextProvider {
     /**
      * It will consult each {@link TextProvider}s and return the first valid message for this
      * <code>key</code>
-     * @see {@link com.opensymphony.xwork.TextProvider#getText(String)}
-     * @param key
-     * @return
+     *
+     * @param key The key to lookup in ressource bundles.
+     * @return The i18n text for the requested key.
+     * @see {@link com.opensymphony.xwork2.TextProvider#getText(String)}
      */
     public String getText(String key) {
-        return getText(key, key, Collections.EMPTY_LIST);
+        return getText(key, key, Collections.emptyList());
     }
 
     /**
      * It will consult each {@link TextProvider}s and return the first valid message for this
      * <code>key</code> before returning <code>defaultValue</code> if every else fails.
-     * @see {@link com.opensymphony.xwork.TextProvider#getText(String, String)}
+     *
      * @param key
      * @param defaultValue
      * @return
+     * @see {@link com.opensymphony.xwork2.TextProvider#getText(String, String)}
      */
     public String getText(String key, String defaultValue) {
-        return getText(key, defaultValue, Collections.EMPTY_LIST);
+        return getText(key, defaultValue, Collections.emptyList());
     }
 
     /**
      * It will consult each {@link TextProvider}s and return the first valid message for this
      * <code>key</code>, before returining <code>defaultValue</code>
      * if every else fails.
-     * @see {@link com.opensymphony.xwork.TextProvider#getText(String, String, String)}
+     *
      * @param key
      * @param defaultValue
      * @param obj
      * @return
+     * @see {@link com.opensymphony.xwork2.TextProvider#getText(String, String, String)}
      */
     public String getText(String key, String defaultValue, final String obj) {
-        return getText(key, defaultValue, new ArrayList() {
+        return getText(key, defaultValue, new ArrayList<Object>() {
             {
                 add(obj);
             }
+
+
         });
     }
 
     /**
      * It will consult each {@link TextProvider}s and return the first valid message for this
      * <code>key</code>.
-     * @see {@link com.opensymphony.xwork.TextProvider#getText(String, java.util.List)}
+     *
      * @param key
      * @param args
      * @return
+     * @see {@link com.opensymphony.xwork2.TextProvider#getText(String, java.util.List)}
      */
-    public String getText(String key, List args) {
+    public String getText(String key, List<Object> args) {
         return getText(key, key, args);
     }
 
     /**
      * It will consult each {@link TextProvider}s and return the first valid message for this
      * <code>key</code>.
-     * @see {@link com.opensymphony.xwork.TextProvider#getText(String, String[])}
+     *
      * @param key
      * @param args
      * @return
+     * @see {@link com.opensymphony.xwork2.TextProvider#getText(String, String[])}
      */
     public String getText(String key, String[] args) {
         return getText(key, key, args);
@@ -135,19 +132,19 @@ public class CompositeTextProvider implements TextProvider {
     /**
      * It will consult each {@link TextProvider}s and return the first valid message for this
      * <code>key</code>, before returining <code>defaultValue</code>
-     * @see {@link com.opensymphony.xwork.TextProvider#getText#getText(String, String, java.util.List)}
+     *
      * @param key
      * @param defaultValue
      * @param args
      * @return
+     * @see {@link com.opensymphony.xwork2.TextProvider#getText#getText(String, String, java.util.List)}
      */
-    public String getText(String key, String defaultValue, List args) {
+    public String getText(String key, String defaultValue, List<Object> args) {
         // if there's one text provider that gives us a msg not the same as defaultValue
         // for this key, we are ok, else try the next
         // text provider
-        for (Iterator i = textProviders.iterator(); i.hasNext(); ) {
-            TextProvider _textProvider = (TextProvider) i.next();
-            String msg = _textProvider.getText(key, defaultValue, args);
+        for (TextProvider textProvider : textProviders) {
+            String msg = textProvider.getText(key, defaultValue, args);
             if (msg != null && (!msg.equals(defaultValue))) {
                 return msg;
             }
@@ -159,19 +156,19 @@ public class CompositeTextProvider implements TextProvider {
     /**
      * It will consult each {@link TextProvider}s and return the first valid message for this
      * <code>key</code>, before returining <code>defaultValue</code>.
-     * @see {@link com.opensymphony.xwork.TextProvider#getText(String, String, String[])}
+     *
      * @param key
      * @param defaultValue
      * @param args
      * @return
+     * @see {@link com.opensymphony.xwork2.TextProvider#getText(String, String, String[])}
      */
     public String getText(String key, String defaultValue, String[] args) {
         // if there's one text provider that gives us a msg not the same as defaultValue
         // for this key, we are ok, else try the next
         // text provider
-        for (Iterator i = textProviders.iterator(); i.hasNext(); ) {
-            TextProvider _textProvider = (TextProvider) i.next();
-            String msg = _textProvider.getText(key, defaultValue, args);
+        for (TextProvider textProvider : textProviders) {
+            String msg = textProvider.getText(key, defaultValue, args);
             if (msg != null && (!msg.equals(defaultValue))) {
                 return msg;
             }
@@ -184,20 +181,19 @@ public class CompositeTextProvider implements TextProvider {
      * It will consult each {@link TextProvider}s and return the first valid message for this
      * <code>key</code>, before returining <code>defaultValue</code>
      *
-     * @see {@link com.opensymphony.xwork.TextProvider#getText(String, String, java.util.List, com.opensymphony.xwork.util.OgnlValueStack)}
      * @param key
      * @param defaultValue
      * @param args
      * @param stack
      * @return
+     * @see {@link com.opensymphony.xwork2.TextProvider#getText(String, String, java.util.List, com.opensymphony.xwork2.util.OgnlValueStack)}
      */
-    public String getText(String key, String defaultValue, List args, ValueStack stack) {
+    public String getText(String key, String defaultValue, List<Object> args, ValueStack stack) {
         // if there's one text provider that gives us a msg not the same as defaultValue
         // for this key, we are ok, else try the next
         // text provider
-        for (Iterator i = textProviders.iterator(); i.hasNext(); ) {
-            TextProvider _textProvider = (TextProvider) i.next();
-            String msg = _textProvider.getText(key, defaultValue, args, stack);
+        for (TextProvider textProvider : textProviders) {
+            String msg = textProvider.getText(key, defaultValue, args, stack);
             if (msg != null && (!msg.equals(defaultValue))) {
                 return msg;
             }
@@ -208,20 +204,20 @@ public class CompositeTextProvider implements TextProvider {
     /**
      * It will consult each {@link TextProvider}s and return the first valid message for this
      * <code>key</code>, before returining <code>defaultValue</code>
-     * @see {@link com.opensymphony.xwork.TextProvider#getText(String, String, String[], com.opensymphony.xwork2.util.ValueStack)}
+     *
      * @param key
      * @param defaultValue
      * @param args
      * @param stack
      * @return
+     * @see {@link com.opensymphony.xwork2.TextProvider#getText(String, String, String[], com.opensymphony.xwork2.util.ValueStack)}
      */
     public String getText(String key, String defaultValue, String[] args, ValueStack stack) {
         // if there's one text provider that gives us a msg not the same as defaultValue
         // for this key, we are ok, else try the next
         // text provider
-        for (Iterator i = textProviders.iterator(); i.hasNext(); ) {
-            TextProvider _textProvider = (TextProvider) i.next();
-            String msg = _textProvider.getText(key, defaultValue, args, stack);
+        for (TextProvider textProvider : textProviders) {
+            String msg = textProvider.getText(key, defaultValue, args, stack);
             if (msg != null && (!msg.equals(defaultValue))) {
                 return msg;
             }
@@ -232,16 +228,16 @@ public class CompositeTextProvider implements TextProvider {
 
     /**
      * It will consult each {@link TextProvider}s and return the first non-null {@link ResourceBundle}.
-     * @see {@link TextProvider#getTexts(String)}
+     *
      * @param bundleName
      * @return
+     * @see {@link TextProvider#getTexts(String)}
      */
     public ResourceBundle getTexts(String bundleName) {
         // if there's one text provider that gives us a non-null resource bunlde for this bundleName, we are ok, else try the next
         // text provider
-        for (Iterator i = textProviders.iterator(); i.hasNext(); ) {
-            TextProvider _textProvider = (TextProvider) i.next();
-            ResourceBundle bundle  = _textProvider.getTexts(bundleName);
+        for (TextProvider textProvider : textProviders) {
+            ResourceBundle bundle = textProvider.getTexts(bundleName);
             if (bundle != null) {
                 return bundle;
             }
@@ -250,16 +246,16 @@ public class CompositeTextProvider implements TextProvider {
     }
 
     /**
-     * It will consult each {@link com.opensymphony.xwork.TextProvider}s and return the first non-null {@link ResourceBundle}.
-     * @see {@link TextProvider#getTexts()}
+     * It will consult each {@link com.opensymphony.xwork2.TextProvider}s and return the first non-null {@link ResourceBundle}.
+     *
      * @return
+     * @see {@link TextProvider#getTexts()}
      */
     public ResourceBundle getTexts() {
         // if there's one text provider that gives us a non-null resource bundle, we are ok, else try the next
         // text provider
-        for (Iterator i = textProviders.iterator(); i.hasNext(); ) {
-            TextProvider _textProvider = (TextProvider) i.next();
-            ResourceBundle bundle = _textProvider.getTexts();
+        for (TextProvider textProvider : textProviders) {
+            ResourceBundle bundle = textProvider.getTexts();
             if (bundle != null) {
                 return bundle;
             }
@@ -267,4 +263,5 @@ public class CompositeTextProvider implements TextProvider {
         return null;
     }
 }
+
 

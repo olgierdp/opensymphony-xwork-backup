@@ -4,8 +4,8 @@
  */
 package com.opensymphony.xwork2.config.entities;
 
-import com.opensymphony.xwork2.util.location.LocationImpl;
 import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.util.location.LocationImpl;
 
 /**
  * ActionConfigTest

@@ -5,7 +5,6 @@ package com.opensymphony.xwork2.spring;
 
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
-
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -16,7 +15,7 @@ import org.springframework.context.ApplicationContext;
 public class ActionsFromSpringTest extends XWorkTestCase {
     private ApplicationContext appContext;
 
-    public void setUp() throws Exception {
+    @Override public void setUp() throws Exception {
         super.setUp();
 
         // Set up XWork

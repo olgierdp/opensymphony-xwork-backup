@@ -26,7 +26,8 @@
  */
 package com.opensymphony.xwork2.util.profiling;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Bean to contain information about the pages profiled
@@ -100,15 +101,13 @@ public class ProfilingTimerBean implements java.io.Serializable {
         //only print the value if we are larger or equal to the min time.
         if (totalTime >= minTime)
         {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             buffer.append(indent);
             buffer.append("[" + totalTime + "ms] - " + resource);
             buffer.append("\n");
 
-            Iterator childrenIt = children.iterator();
-            while (childrenIt.hasNext())
-            {
-                buffer.append(((ProfilingTimerBean) childrenIt.next()).getPrintable(indent + "  ", minTime));
+            for (ProfilingTimerBean aChildren : children) {
+                buffer.append((aChildren).getPrintable(indent + "  ", minTime));
             }
 
             return buffer.toString();

@@ -4,20 +4,20 @@
  */
 package com.opensymphony.xwork2.interceptor.annotations;
 
-import java.util.Arrays;
-
 import com.opensymphony.xwork2.*;
-import com.opensymphony.xwork2.mock.MockResult;
-import com.opensymphony.xwork2.util.location.LocatableProperties;
-import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
-import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
-import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
+import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+import com.opensymphony.xwork2.inject.ContainerBuilder;
+import com.opensymphony.xwork2.mock.MockResult;
+import com.opensymphony.xwork2.util.location.LocatableProperties;
+
+import java.util.Arrays;
 
 /**
  * @author Zsolt Szasz, zsolt at lorecraft dot com
@@ -28,6 +28,7 @@ public class AnnotationWorkflowInterceptorTest extends XWorkTestCase {
     private static final String SHORTCIRCUITED_ACTION = "shortCircuitedAction";
     private final AnnotationWorkflowInterceptor annotationWorkflow = new AnnotationWorkflowInterceptor();
 
+    @Override
     public void setUp() {
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-default.xml"), new MockConfigurationProvider());
     }

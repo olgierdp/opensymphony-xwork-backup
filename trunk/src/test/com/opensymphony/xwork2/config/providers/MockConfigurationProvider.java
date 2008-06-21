@@ -4,35 +4,24 @@
  */
 package com.opensymphony.xwork2.config.providers;
 
-import com.opensymphony.xwork2.Action;
-import com.opensymphony.xwork2.ActionChainResult;
-import com.opensymphony.xwork2.ModelDrivenAction;
-import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.SimpleAction;
+import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
-import com.opensymphony.xwork2.config.entities.ActionConfig;
-import com.opensymphony.xwork2.config.entities.InterceptorConfig;
-import com.opensymphony.xwork2.config.entities.PackageConfig;
-import com.opensymphony.xwork2.config.entities.ResultConfig;
-import com.opensymphony.xwork2.config.entities.InterceptorMapping;
+import com.opensymphony.xwork2.config.entities.*;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor;
 import com.opensymphony.xwork2.interceptor.ParametersInterceptor;
 import com.opensymphony.xwork2.interceptor.StaticParametersInterceptor;
 import com.opensymphony.xwork2.mock.MockResult;
-import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
-import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 import com.opensymphony.xwork2.validator.ValidationInterceptor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 
 /**
@@ -95,7 +84,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         successParams.put("actionName", "bar");
         results.put("success", new ResultConfig.Builder("success", ActionChainResult.class.getName()).addParams(successParams).build());
 
-        List interceptors = new ArrayList();
+        List<InterceptorMapping> interceptors = new ArrayList<InterceptorMapping>();
         interceptors.add(new InterceptorMapping("params", new ParametersInterceptor()));
 
         ActionConfig paramInterceptorActionConfig = new ActionConfig.Builder("defaultPackage", PARAM_INTERCEPTOR_ACTION_NAME, SimpleAction.class.getName())
@@ -104,7 +93,7 @@ public class MockConfigurationProvider implements ConfigurationProvider {
             .build();
         defaultPackageContext.addActionConfig(PARAM_INTERCEPTOR_ACTION_NAME, paramInterceptorActionConfig);
 
-        interceptors = new ArrayList();
+        interceptors = new ArrayList<InterceptorMapping>();
         interceptors.add(new InterceptorMapping("model", 
                 objectFactory.buildInterceptor(new InterceptorConfig.Builder("model", ModelDrivenInterceptor.class.getName()).build(), new HashMap())));
         interceptors.add(new InterceptorMapping("params",
@@ -121,13 +110,13 @@ public class MockConfigurationProvider implements ConfigurationProvider {
         //ActionConfig modelParamFilterActionConfig = new ActionConfig(null, ModelDrivenAction.class, null, null, interceptors);
         
 
-        results = new HashMap();
+        results = new HashMap<String, ResultConfig>();
         successParams = new HashMap();
         successParams.put("actionName", "bar");
         results.put("success", new ResultConfig.Builder("success", ActionChainResult.class.getName()).addParams(successParams).build());
         results.put(Action.ERROR, new ResultConfig.Builder(Action.ERROR, MockResult.class.getName()).build());
 
-        interceptors = new ArrayList();
+        interceptors = new ArrayList<InterceptorMapping>();
         interceptors.add(new InterceptorMapping("staticParams", 
                 objectFactory.buildInterceptor(new InterceptorConfig.Builder("model", StaticParametersInterceptor.class.getName()).build(), new HashMap())));
         interceptors.add(new InterceptorMapping("model", 

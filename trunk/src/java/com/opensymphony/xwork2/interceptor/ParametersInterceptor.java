@@ -4,17 +4,6 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
@@ -27,6 +16,10 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -117,8 +110,8 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     private static final Logger LOG = LoggerFactory.getLogger(ParametersInterceptor.class);
 
     boolean ordered = false;
-    Set<Pattern> excludeParams = Collections.EMPTY_SET;
-    Set<Pattern> acceptedParams = Collections.EMPTY_SET;
+    Set<Pattern> excludeParams = Collections.emptySet();
+    Set<Pattern> acceptedParams = Collections.emptySet();
     static boolean devMode = false;
 
     private String acceptedParamNames = "[\\p{Graph}&&[^,#:=]]*";
@@ -142,10 +135,8 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     /**
      * Compares based on number of '.' characters (fewer is higher)
      */
-    static final Comparator rbCollator = new Comparator() {
-        public int compare(Object arg0, Object arg1) {
-            String s1 = (String) arg0;
-            String s2 = (String) arg1;
+    static final Comparator<String> rbCollator = new Comparator<String>() {
+        public int compare(String s1, String s2) {
             int l1 = 0, l2 = 0;
             for (int i = s1.length() - 1; i >= 0; i--) {
                 if (s1.charAt(i) == '.') l1++;
@@ -155,20 +146,22 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             }
             return l1 < l2 ? -1 : (l2 < l1 ? 1 : s1.compareTo(s2));
         }
+
     };
 
+    @Override
     public String doIntercept(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
         if (!(action instanceof NoParameters)) {
             ActionContext ac = invocation.getInvocationContext();
-            final Map parameters = retrieveParameters(ac);
+            final Map<String, Object> parameters = retrieveParameters(ac);
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Setting params " + getParameterLogMap(parameters));
             }
 
             if (parameters != null) {
-                Map contextMap = ac.getContextMap();
+                Map<String, Object> contextMap = ac.getContextMap();
                 try {
                     ReflectionContextState.setCreatingNullObjects(contextMap, true);
                     ReflectionContextState.setDenyMethodExecution(contextMap, true);
@@ -192,7 +185,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
      * @param ac The action context
      * @return The parameter map to apply
      */
-    protected Map retrieveParameters(ActionContext ac) {
+    protected Map<String, Object> retrieveParameters(ActionContext ac) {
         return ac.getParameters();
     }
 
@@ -206,27 +199,26 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
      *                  In this class this is a no-op, since the parameters were fetched from the same location.
      *                  In subclasses both retrieveParameters() and addParametersToContext() should be overridden.
      */
-    protected void addParametersToContext(ActionContext ac, Map newParams) {
+    protected void addParametersToContext(ActionContext ac, Map<String, Object> newParams) {
     }
 
-    protected void setParameters(Object action, ValueStack stack, final Map parameters) {
+    protected void setParameters(Object action, ValueStack stack, final Map<String, Object> parameters) {
         ParameterNameAware parameterNameAware = (action instanceof ParameterNameAware)
                 ? (ParameterNameAware) action : null;
 
-        Map params = null;
-        Map acceptableParameters = null;
+        Map<String, Object> params;
+        Map<String, Object> acceptableParameters;
         if (ordered) {
-            params = new TreeMap(getOrderedComparator());
-            acceptableParameters = new TreeMap(getOrderedComparator());
+            params = new TreeMap<String, Object>(getOrderedComparator());
+            acceptableParameters = new TreeMap<String, Object>(getOrderedComparator());
             params.putAll(parameters);
         } else {
-            params = new TreeMap(parameters);
-            acceptableParameters = new TreeMap();
+            params = new TreeMap<String, Object>(parameters);
+            acceptableParameters = new TreeMap<String, Object>();
         }
 
-        for (Iterator iterator = params.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String name = entry.getKey().toString();
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            String name = entry.getKey();
 
             boolean acceptableName = acceptableName(name)
                     && (parameterNameAware == null
@@ -237,9 +229,8 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             }
         }
 
-        for (Iterator iterator = acceptableParameters.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String name = entry.getKey().toString();
+        for (Map.Entry<String, Object> entry : acceptableParameters.entrySet()) {
+            String name = entry.getKey();
             Object value = entry.getValue();
             try {
                 stack.setValue(name, value);
@@ -267,18 +258,17 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
      *
      * @return A comparator to sort the parameters
      */
-    protected Comparator getOrderedComparator() {
+    protected Comparator<String> getOrderedComparator() {
         return rbCollator;
     }
 
-    private String getParameterLogMap(Map parameters) {
+    private String getParameterLogMap(Map<String, Object> parameters) {
         if (parameters == null) {
             return "NONE";
         }
 
-        StringBuffer logEntry = new StringBuffer();
-        for (Iterator paramIter = parameters.entrySet().iterator(); paramIter.hasNext();) {
-            Map.Entry entry = (Map.Entry) paramIter.next();
+        StringBuilder logEntry = new StringBuilder();
+        for (Map.Entry entry : parameters.entrySet()) {
             logEntry.append(String.valueOf(entry.getKey()));
             logEntry.append(" => ");
             if (entry.getValue() instanceof Object[]) {
@@ -380,7 +370,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
      * @param commaDelim the comma delimited String.
      * @return A collection from the comma delimited String. Returns <tt>null</tt> if the string is empty.
      */
-    private Collection asCollection(String commaDelim) {
+    private Collection<String> asCollection(String commaDelim) {
         if (commaDelim == null || commaDelim.trim().length() == 0) {
             return null;
         }

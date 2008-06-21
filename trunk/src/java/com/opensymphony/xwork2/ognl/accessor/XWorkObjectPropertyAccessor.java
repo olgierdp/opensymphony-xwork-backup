@@ -4,18 +4,18 @@
  */
 package com.opensymphony.xwork2.ognl.accessor;
 
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import ognl.ObjectPropertyAccessor;
 import ognl.OgnlException;
 
 import java.util.Map;
 
-import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
-import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
-
 /**
  * @author Gabe
  */
 public class XWorkObjectPropertyAccessor extends ObjectPropertyAccessor {
+    @Override
     public Object getProperty(Map context, Object target, Object oname)
             throws OgnlException {
         //set the last set objects in the context

@@ -4,17 +4,17 @@
  */
 package com.opensymphony.xwork2.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -58,6 +58,7 @@ public class XWorkList extends ArrayList {
      * @param index   index at which the specified element is to be inserted.
      * @param element element to be inserted.
      */
+    @Override
     public void add(int index, Object element) {
         if (index >= this.size()) {
             get(index);
@@ -76,6 +77,7 @@ public class XWorkList extends ArrayList {
      * @param element element to be appended to this list.
      * @return <tt>true</tt> (as per the general contract of Collection.add).
      */
+    @Override
     public boolean add(Object element) {
         element = convert(element);
 
@@ -95,15 +97,14 @@ public class XWorkList extends ArrayList {
      * @return <tt>true</tt> if this list changed as a result of the call.
      * @throws NullPointerException if the specified collection is null.
      */
+    @Override
     public boolean addAll(Collection c) {
         if (c == null) {
             throw new NullPointerException("Collection to add is null");
         }
 
-        Iterator it = c.iterator();
-
-        while (it.hasNext()) {
-            add(it.next());
+        for (Object aC : c) {
+            add(aC);
         }
 
         return true;
@@ -123,6 +124,7 @@ public class XWorkList extends ArrayList {
      * @param c     elements to be inserted into this list.
      * @return <tt>true</tt> if this list changed as a result of the call.
      */
+    @Override
     public boolean addAll(int index, Collection c) {
         if (c == null) {
             throw new NullPointerException("Collection to add is null");
@@ -154,6 +156,7 @@ public class XWorkList extends ArrayList {
      * @param index index of element to return.
      * @return the element at the specified position in this list.
      */
+    @Override
     public synchronized Object get(int index) {
         while (index >= this.size()) {
             try {
@@ -178,6 +181,7 @@ public class XWorkList extends ArrayList {
      * @param element element to be stored at the specified position.
      * @return the element previously at the specified position.
      */
+    @Override
     public Object set(int index, Object element) {
         if (index >= this.size()) {
             get(index);
@@ -195,13 +199,14 @@ public class XWorkList extends ArrayList {
                 LOG.debug("Converting from " + element.getClass().getName() + " to " + clazz.getName());
             }
 
-            Map context = ActionContext.getContext().getContextMap();
+            Map<String, Object> context = ActionContext.getContext().getContextMap();
             element = conv.convertValue(context, null, null, null, element, clazz);
         }
 
         return element;
     }
 
+    @Override
     public boolean contains(Object element) {
         element = convert(element);
 

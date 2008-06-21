@@ -6,13 +6,13 @@ package com.opensymphony.xwork2.interceptor;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.mock.MockActionInvocation;
 import com.opensymphony.xwork2.SimpleFooAction;
+import com.opensymphony.xwork2.mock.MockActionInvocation;
 import junit.framework.TestCase;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Unit test for I18nInterceptor.
@@ -127,6 +127,7 @@ public class I18nInterceptorTest extends TestCase {
         assertEquals(Locale.CHINA, session.get("hello"));
     }
 
+    @Override
     protected void setUp() throws Exception {
         interceptor = new I18nInterceptor();
         interceptor.init();
@@ -144,6 +145,7 @@ public class I18nInterceptorTest extends TestCase {
         mai.setInvocationContext(ac);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         interceptor.destroy();
         interceptor = null;

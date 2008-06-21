@@ -4,13 +4,12 @@
  */
 package com.opensymphony.xwork2.util;
 
-import java.net.URL;
-import java.util.Set;
-
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.spring.SpringObjectFactory;
-
 import junit.framework.TestCase;
+
+import java.net.URL;
+import java.util.Set;
 
 public class ResolverUtilTest extends TestCase {
 

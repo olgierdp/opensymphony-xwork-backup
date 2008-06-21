@@ -118,6 +118,7 @@ public class TimerInterceptorTest extends XWorkTestCase {
         assertEquals("com.mycompany.myapp.actiontiming", interceptor.getLogCategory());
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         interceptor = new MyTimerInterceptor();
@@ -132,6 +133,7 @@ public class TimerInterceptorTest extends XWorkTestCase {
         mai.setProxy(ap);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         interceptor.destroy();
@@ -144,6 +146,7 @@ public class TimerInterceptorTest extends XWorkTestCase {
         private Logger logger;
         private String message;
 
+        @Override
         protected void doLog(Logger logger, String message) {
             super.doLog(logger, message);
 

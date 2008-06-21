@@ -1,15 +1,5 @@
 package com.opensymphony.xwork2.config.providers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.opensymphony.xwork2.ActionProxyFactory;
 import com.opensymphony.xwork2.DefaultActionProxyFactory;
 import com.opensymphony.xwork2.DefaultTextProvider;
@@ -25,31 +15,20 @@ import com.opensymphony.xwork2.conversion.impl.XWorkBasicConverter;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Scope;
-import com.opensymphony.xwork2.util.location.LocatableProperties;
-import com.opensymphony.xwork2.util.reflection.ReflectionContextFactory;
-import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
-
-import ognl.MethodAccessor;
-import ognl.PropertyAccessor;
+import com.opensymphony.xwork2.ognl.*;
+import com.opensymphony.xwork2.ognl.accessor.*;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.PatternMatcher;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.WildcardHelper;
+import com.opensymphony.xwork2.util.location.LocatableProperties;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextFactory;
+import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 import com.opensymphony.xwork2.validator.*;
-import com.opensymphony.xwork2.ognl.ObjectProxy;
-import com.opensymphony.xwork2.ognl.OgnlReflectionContextFactory;
-import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
-import com.opensymphony.xwork2.ognl.OgnlUtil;
-import com.opensymphony.xwork2.ognl.OgnlValueStackFactory;
-import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
-import com.opensymphony.xwork2.ognl.accessor.ObjectAccessor;
-import com.opensymphony.xwork2.ognl.accessor.ObjectProxyPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkCollectionPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkEnumerationAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkIteratorPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkListPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkMapPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkMethodAccessor;
+import ognl.MethodAccessor;
+import ognl.PropertyAccessor;
+
+import java.util.*;
 
 public class XWorkConfigurationProvider implements ConfigurationProvider {
 

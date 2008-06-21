@@ -8,9 +8,9 @@ import com.opensymphony.xwork2.util.location.Located;
 import com.opensymphony.xwork2.util.location.Location;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Collections;
 
 
 /**
@@ -30,7 +30,7 @@ public class ResultConfig extends Located implements Serializable {
     protected ResultConfig(String name, String className) {
         this.name = name;
         this.className = className;
-        params = new LinkedHashMap();
+        params = new LinkedHashMap<String, String>();
     }
 
     protected ResultConfig(ResultConfig orig) {
@@ -52,6 +52,7 @@ public class ResultConfig extends Located implements Serializable {
     }
 
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -78,6 +79,7 @@ public class ResultConfig extends Located implements Serializable {
         return true;
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = ((name != null) ? name.hashCode() : 0);

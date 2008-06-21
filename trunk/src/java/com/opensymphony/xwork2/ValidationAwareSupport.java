@@ -17,33 +17,33 @@ import java.util.*;
  */
 public class ValidationAwareSupport implements ValidationAware, Serializable {
 
-    private Collection actionErrors;
-    private Collection actionMessages;
-    private Map fieldErrors;
+    private Collection<String> actionErrors;
+    private Collection<String> actionMessages;
+    private Map<String, List<String>> fieldErrors;
 
 
-    public synchronized void setActionErrors(Collection errorMessages) {
+    public synchronized void setActionErrors(Collection<String> errorMessages) {
         this.actionErrors = errorMessages;
     }
 
-    public synchronized Collection getActionErrors() {
-        return new ArrayList(internalGetActionErrors());
+    public synchronized Collection<String> getActionErrors() {
+        return new ArrayList<String>(internalGetActionErrors());
     }
 
-    public synchronized void setActionMessages(Collection messages) {
+    public synchronized void setActionMessages(Collection<String> messages) {
         this.actionMessages = messages;
     }
 
-    public synchronized Collection getActionMessages() {
-        return new ArrayList(internalGetActionMessages());
+    public synchronized Collection<String> getActionMessages() {
+        return new ArrayList<String>(internalGetActionMessages());
     }
 
-    public synchronized void setFieldErrors(Map errorMap) {
+    public synchronized void setFieldErrors(Map<String, List<String>> errorMap) {
         this.fieldErrors = errorMap;
     }
 
-    public synchronized Map getFieldErrors() {
-        return new LinkedHashMap(internalGetFieldErrors());
+    public synchronized Map<String, List<String>> getFieldErrors() {
+        return new LinkedHashMap<String, List<String>>(internalGetFieldErrors());
     }
 
     public synchronized void addActionError(String anErrorMessage) {
@@ -55,11 +55,11 @@ public class ValidationAwareSupport implements ValidationAware, Serializable {
     }
 
     public synchronized void addFieldError(String fieldName, String errorMessage) {
-        final Map errors = internalGetFieldErrors();
-        List thisFieldErrors = (List) errors.get(fieldName);
+        final Map<String, List<String>> errors = internalGetFieldErrors();
+        List<String> thisFieldErrors = errors.get(fieldName);
 
         if (thisFieldErrors == null) {
-            thisFieldErrors = new ArrayList();
+            thisFieldErrors = new ArrayList<String>();
             errors.put(fieldName, thisFieldErrors);
         }
 
@@ -82,25 +82,25 @@ public class ValidationAwareSupport implements ValidationAware, Serializable {
         return (fieldErrors != null) && !fieldErrors.isEmpty();
     }
 
-    private Collection internalGetActionErrors() {
+    private Collection<String> internalGetActionErrors() {
         if (actionErrors == null) {
-            actionErrors = new ArrayList();
+            actionErrors = new ArrayList<String>();
         }
 
         return actionErrors;
     }
 
-    private Collection internalGetActionMessages() {
+    private Collection<String> internalGetActionMessages() {
         if (actionMessages == null) {
-            actionMessages = new ArrayList();
+            actionMessages = new ArrayList<String>();
         }
 
         return actionMessages;
     }
 
-    private Map internalGetFieldErrors() {
+    private Map<String, List<String>> internalGetFieldErrors() {
         if (fieldErrors == null) {
-            fieldErrors = new LinkedHashMap();
+            fieldErrors = new LinkedHashMap<String, List<String>>();
         }
 
         return fieldErrors;

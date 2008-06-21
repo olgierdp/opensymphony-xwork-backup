@@ -8,7 +8,6 @@ import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.impl.MockConfiguration;
-import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 
 
 /**

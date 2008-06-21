@@ -4,11 +4,11 @@
  */
 package com.opensymphony.xwork2.util;
 
-import java.util.ArrayList;
-
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+
+import java.util.ArrayList;
 
 
 /**

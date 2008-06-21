@@ -65,5 +65,5 @@ public interface Location {
      * @param padding The amount of lines before and after the error to include
      * @return A list of source lines
      */
-    List getSnippet(int padding);
+    List<String> getSnippet(int padding);
 }

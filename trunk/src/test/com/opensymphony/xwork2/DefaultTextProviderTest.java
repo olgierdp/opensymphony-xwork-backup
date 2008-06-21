@@ -4,17 +4,10 @@
  */
 package com.opensymphony.xwork2;
 
+import com.opensymphony.xwork2.util.LocalizedTextUtil;
 import junit.framework.TestCase;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
-
-import com.opensymphony.xwork2.util.LocalizedTextUtil;
-import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
+import java.util.*;
 
 /**
  * Unit test for {@link DefaultTextProvider}.
@@ -32,7 +25,7 @@ public class DefaultTextProviderTest extends TestCase {
         assertEquals("Hello World", tp.getText("hello", "this is default"));
         assertEquals("this is default", tp.getText("not.in.bundle", "this is default"));
 
-        List nullList = null;
+        List<Object> nullList = null;
         assertEquals("Hello World", tp.getText("hello", nullList));
 
         String[] nullStrings = null;
@@ -49,7 +42,7 @@ public class DefaultTextProviderTest extends TestCase {
     }
 
     public void testGetTextsWithListArgs() throws Exception {
-        List args = new ArrayList();
+        List<Object> args = new ArrayList<Object>();
         args.add("Santa");
         args.add("loud");
         assertEquals("Hello World", tp.getText("hello", "this is default", args)); // no args in bundle
@@ -91,7 +84,7 @@ public class DefaultTextProviderTest extends TestCase {
     }
 
     public void testGetTextsWithListAndStack() throws Exception {
-        List args = new ArrayList();
+        List<Object> args = new ArrayList<Object>();
         args.add("Santa");
         args.add("loud");
         assertEquals("Hello World", tp.getText("hello", "this is default", args, null)); // no args in bundle
@@ -121,8 +114,9 @@ public class DefaultTextProviderTest extends TestCase {
         assertEquals(rb, tp.getTexts(TextProviderSupportTest.class.getName()));
     }
 
+    @Override
     protected void setUp() throws Exception {
-        ActionContext ctx = new ActionContext(new HashMap());
+        ActionContext ctx = new ActionContext(new HashMap<String, Object>());
         ActionContext.setContext(ctx);
         ctx.setLocale(Locale.CANADA);
 
@@ -132,6 +126,7 @@ public class DefaultTextProviderTest extends TestCase {
         tp = new DefaultTextProvider();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         ActionContext.setContext(null);
         tp = null;

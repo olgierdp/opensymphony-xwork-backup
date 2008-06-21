@@ -5,10 +5,10 @@
 
 package com.opensymphony.xwork2.mock;
 
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
-import com.opensymphony.xwork2.ActionProxy;
-import com.opensymphony.xwork2.ActionInvocation;
 
 /**
  * Mock for an {@link ActionProxy}.

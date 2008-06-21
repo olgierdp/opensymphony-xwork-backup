@@ -5,15 +5,14 @@
 
 package com.opensymphony.xwork2.interceptor;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.util.Map;
 
 
 /**
@@ -87,33 +86,32 @@ public class AliasInterceptor extends AbstractInterceptor {
         this.aliasesKey = aliasesKey;
     }
 
-    public String intercept(ActionInvocation invocation) throws Exception {
+    @Override public String intercept(ActionInvocation invocation) throws Exception {
 
         ActionConfig config = invocation.getProxy().getConfig();
         ActionContext ac = invocation.getInvocationContext();
 
         // get the action's parameters
-        final Map parameters = config.getParams();
+        final Map<String, String> parameters = config.getParams();
 
         if (parameters.containsKey(aliasesKey)) {
 
-            String aliasExpression = (String) parameters.get(aliasesKey);
+            String aliasExpression = parameters.get(aliasesKey);
             ValueStack stack = ac.getValueStack();
             Object obj = stack.findValue(aliasExpression);
 
             if (obj != null && obj instanceof Map) {
                 // override
                 Map aliases = (Map) obj;
-                Iterator itr = aliases.entrySet().iterator();
-                while (itr.hasNext()) {
-                    Map.Entry entry = (Map.Entry) itr.next();
+                for (Object o : aliases.entrySet()) {
+                    Map.Entry entry = (Map.Entry) o;
                     String name = entry.getKey().toString();
                     String alias = (String) entry.getValue();
                     Object value = stack.findValue(name);
                     if (null == value) {
                         // workaround
-                        Map contextParameters = (Map) stack.getContext().get("parameters");
-                        
+                        Map<String, String> contextParameters = (Map<String, String>) stack.getContext().get("parameters");
+
                         if (null != contextParameters) {
                             value = contextParameters.get(name);
                         }

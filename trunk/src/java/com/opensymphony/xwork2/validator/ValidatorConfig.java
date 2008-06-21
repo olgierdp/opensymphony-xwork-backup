@@ -4,12 +4,12 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import java.util.Map;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-
 import com.opensymphony.xwork2.util.location.Located;
 import com.opensymphony.xwork2.util.location.Location;
+
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Holds the necessary information for configuring an instance of a Validator.
@@ -23,7 +23,7 @@ import com.opensymphony.xwork2.util.location.Location;
 public class ValidatorConfig extends Located {
 
     private String type;
-    private Map params;
+    private Map<String,String> params;
     private String defaultMessage;
     private String messageKey;
     private boolean shortCircuit;
@@ -34,7 +34,7 @@ public class ValidatorConfig extends Located {
      */
     protected ValidatorConfig(String validatorType) {
         this.type = validatorType;
-        params = new LinkedHashMap();
+        params = new LinkedHashMap<String, String>();
     }
 
     protected ValidatorConfig(ValidatorConfig orig) {
@@ -70,7 +70,7 @@ public class ValidatorConfig extends Located {
     /**
      * @return Returns the configured params to set on the validator. 
      */
-    public Map getParams() {
+    public Map<String, String> getParams() {
         return params;
     }
     

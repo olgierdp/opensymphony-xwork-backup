@@ -4,7 +4,6 @@
  */
 package com.opensymphony.xwork2.config.entities;
 
-import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.util.location.Located;
 import com.opensymphony.xwork2.util.location.Location;
 import com.opensymphony.xwork2.util.logging.Logger;
@@ -128,12 +127,11 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
      * @see InterceptorConfig
      * @see InterceptorStackConfig
      */
-    public Map getAllInterceptorConfigs() {
-        Map retMap = new LinkedHashMap();
+    public Map<String, Object> getAllInterceptorConfigs() {
+        Map<String, Object> retMap = new LinkedHashMap<String, Object>();
 
         if (!parents.isEmpty()) {
-            for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parentContext = iterator.next();
+            for (PackageConfig parentContext : parents) {
                 retMap.putAll(parentContext.getAllInterceptorConfigs());
             }
         }
@@ -154,8 +152,7 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
         Map<String, ResultTypeConfig> retMap = new LinkedHashMap<String, ResultTypeConfig>();
 
         if (!parents.isEmpty()) {
-            for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parentContext = iterator.next();
+            for (PackageConfig parentContext : parents) {
                 retMap.putAll(parentContext.getAllResultTypeConfigs());
             }
         }
@@ -176,8 +173,7 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
         List<ExceptionMappingConfig> allExceptionMappings = new ArrayList<ExceptionMappingConfig>();
 
         if (!parents.isEmpty()) {
-            for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parentContext = iterator.next();
+            for (PackageConfig parentContext : parents) {
                 allExceptionMappings.addAll(parentContext.getAllExceptionMappingConfigs());
             }
         }
@@ -198,13 +194,12 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
 
     public String getDefaultClassRef() {
     	if((defaultClassRef == null) && !parents.isEmpty()) {
-    		for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parent = iterator.next();
+            for (PackageConfig parent : parents) {
                 String parentDefault = parent.getDefaultClassRef();
                 if (parentDefault != null) {
                     return parentDefault;
                 }
-    		}
+            }
     	}
     	return defaultClassRef;
     }
@@ -222,8 +217,7 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
      */
     public String getFullDefaultInterceptorRef() {
         if ((defaultInterceptorRef == null) && !parents.isEmpty()) {
-            for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parent = iterator.next();
+            for (PackageConfig parent : parents) {
                 String parentDefault = parent.getFullDefaultInterceptorRef();
 
                 if (parentDefault != null) {
@@ -241,8 +235,7 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
      */
     public String getFullDefaultActionRef() {
         if ((defaultActionRef == null) && !parents.isEmpty()) {
-            for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parent = iterator.next();
+            for (PackageConfig parent : parents) {
                 String parentDefault = parent.getFullDefaultActionRef();
 
                 if (parentDefault != null) {
@@ -261,8 +254,7 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
      */
     public String getFullDefaultResultType() {
         if ((defaultResultType == null) && !parents.isEmpty()) {
-            for (Iterator<PackageConfig> iterator = parents.iterator(); iterator.hasNext();) {
-                PackageConfig parent = iterator.next();
+            for (PackageConfig parent : parents) {
                 String parentDefault = parent.getFullDefaultResultType();
 
                 if (parentDefault != null) {
@@ -291,7 +283,7 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
      * @see InterceptorConfig
      * @see InterceptorStackConfig
      */
-    public Map getInterceptorConfigs() {
+    public Map<String, Object> getInterceptorConfigs() {
         return interceptorConfigs;
     }
 
@@ -332,6 +324,7 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
         return globalExceptionMappingConfigs;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -397,6 +390,7 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
         return true;
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = ((name != null) ? name.hashCode() : 0);
@@ -414,6 +408,7 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
         return result;
     }
 
+    @Override
     public String toString() {
         return "{PackageConfig Name:" + name + " namespace:" + namespace + " parents:" + parents + "}";
     }
@@ -514,7 +509,7 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
             return this;
         }
 
-        public Builder addGlobalResultConfigs(Map resultConfigs) {
+        public Builder addGlobalResultConfigs(Map<String, ResultConfig> resultConfigs) {
             target.globalResultConfigs.putAll(resultConfigs);
             return this;
         }
@@ -524,7 +519,7 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
             return this;
         }
 
-        public Builder addGlobalExceptionMappingConfigs(List exceptionMappingConfigs) {
+        public Builder addGlobalExceptionMappingConfigs(List<ExceptionMappingConfig> exceptionMappingConfigs) {
             target.globalExceptionMappingConfigs.addAll(exceptionMappingConfigs);
             return this;
         }
@@ -601,6 +596,7 @@ public class PackageConfig extends Located implements Comparable, Serializable, 
             return result;
         }
 
+        @Override
         public String toString() {
             return "[BUILDER] "+target.toString();
         }

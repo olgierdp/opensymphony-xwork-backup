@@ -4,6 +4,14 @@
  */
 package com.opensymphony.xwork2.util;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -12,14 +20,6 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.ModelDriven;
-import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
-import com.opensymphony.xwork2.util.logging.Logger;
-import com.opensymphony.xwork2.util.logging.LoggerFactory;
-import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
 
 
 /**
@@ -68,12 +68,12 @@ import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
  */
 public class LocalizedTextUtil {
 
-    private static List DEFAULT_RESOURCE_BUNDLES = null;
+    private static final List<String> DEFAULT_RESOURCE_BUNDLES = Collections.synchronizedList(new ArrayList<String>());
     private static final Logger LOG = LoggerFactory.getLogger(LocalizedTextUtil.class);
     private static boolean reloadBundles = false;
     private static final ResourceBundle EMPTY_BUNDLE = new EmptyResourceBundle();
     private static final ConcurrentMap<String, ResourceBundle> bundlesMap = new ConcurrentHashMap<String, ResourceBundle>();
-    private static final Map messageFormats = new HashMap();
+    private static final Map<MessageFormatKey, MessageFormat> messageFormats = new HashMap<MessageFormatKey, MessageFormat>();
 
     static {
         clearDefaultResourceBundles();
@@ -90,7 +90,6 @@ public class LocalizedTextUtil {
                 DEFAULT_RESOURCE_BUNDLES.add("com/opensymphony/xwork2/xwork-messages");
             }
         } else {
-            DEFAULT_RESOURCE_BUNDLES = Collections.synchronizedList(new ArrayList());
             synchronized (DEFAULT_RESOURCE_BUNDLES) {
                 DEFAULT_RESOURCE_BUNDLES.add("com/opensymphony/xwork2/xwork-messages");
             }
@@ -135,7 +134,7 @@ public class LocalizedTextUtil {
      * @return requested Locale
      */
     public static Locale localeFromString(String localeStr, Locale defaultLocale) {
-        if ((localeStr == null) || (localeStr.trim().length() == 0) || (localeStr.equals("_"))) {
+        if ((localeStr == null) || (localeStr.trim().length() == 0) || ("_".equals(localeStr))) {
             if (defaultLocale != null) {
                 return defaultLocale;
             }
@@ -177,11 +176,9 @@ public class LocalizedTextUtil {
      */
     public static String findDefaultText(String aTextName, Locale locale) {
         synchronized (DEFAULT_RESOURCE_BUNDLES) {
-            List localList = DEFAULT_RESOURCE_BUNDLES;
+            List<String> localList = DEFAULT_RESOURCE_BUNDLES;
 
-            for (Iterator iterator = localList.iterator(); iterator.hasNext();) {
-                String bundleName = (String) iterator.next();
-
+            for (String bundleName : localList) {
                 ResourceBundle bundle = findResourceBundle(bundleName, locale);
                 if (bundle != null) {
                     reloadBundles();
@@ -378,7 +375,7 @@ public class LocalizedTextUtil {
             aTextName = "";
         }
         // calculate indexedTextName (collection[*]) if applicable
-        if (aTextName.indexOf("[") != -1) {
+        if (aTextName.contains("[")) {
             int i = -1;
 
             indexedTextName = aTextName;
@@ -707,11 +704,11 @@ public class LocalizedTextUtil {
                     clazz, String
                     key, String
                     indexedKey, Locale
-                    locale, Object[] args, Set
+                    locale, Object[] args, Set<String>
                     checked, ValueStack
                     valueStack) {
         if (checked == null) {
-            checked = new TreeSet();
+            checked = new TreeSet<String>();
         } else if (checked.contains(clazz.getName())) {
             return null;
         }
@@ -734,15 +731,15 @@ public class LocalizedTextUtil {
         // look in properties of implemented interfaces
         Class[] interfaces = clazz.getInterfaces();
 
-        for (int x = 0; x < interfaces.length; x++) {
-            msg = getMessage(interfaces[x].getName(), locale, key, valueStack, args);
+        for (Class anInterface : interfaces) {
+            msg = getMessage(anInterface.getName(), locale, key, valueStack, args);
 
             if (msg != null) {
                 return msg;
             }
 
             if (indexedKey != null) {
-                msg = getMessage(interfaces[x].getName(), locale, indexedKey, valueStack, args);
+                msg = getMessage(anInterface.getName(), locale, indexedKey, valueStack, args);
 
                 if (msg != null) {
                     return msg;
@@ -754,8 +751,8 @@ public class LocalizedTextUtil {
         if (clazz.isInterface()) {
             interfaces = clazz.getInterfaces();
 
-            for (int x = 0; x < interfaces.length; x++) {
-                msg = findMessage(interfaces[x], key, indexedKey, locale, args, checked, valueStack);
+            for (Class anInterface : interfaces) {
+                msg = findMessage(anInterface, key, indexedKey, locale, args, checked, valueStack);
 
                 if (msg != null) {
                     return msg;
@@ -770,8 +767,7 @@ public class LocalizedTextUtil {
         return null;
     }
 
-    private static void reloadBundles
-            () {
+    private static void reloadBundles() {
         if (reloadBundles) {
             try {
                 clearMap(ResourceBundle.class, null, "cacheList");
@@ -787,8 +783,7 @@ public class LocalizedTextUtil {
     }
 
 
-    private static void clearTomcatCache
-            () {
+    private static void clearTomcatCache() {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         // no need for compilation here.
         Class cl = loader.getClass();
@@ -851,6 +846,7 @@ public class LocalizedTextUtil {
             this.locale = locale;
         }
 
+        @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (!(o instanceof MessageFormatKey)) return false;
@@ -865,6 +861,7 @@ public class LocalizedTextUtil {
             return true;
         }
 
+        @Override
         public int hashCode() {
             int result;
             result = (pattern != null ? pattern.hashCode() : 0);

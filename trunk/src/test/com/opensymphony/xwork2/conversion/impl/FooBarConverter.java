@@ -4,13 +4,12 @@
  */
 package com.opensymphony.xwork2.conversion.impl;
 
-import java.lang.reflect.Member;
-import java.util.Map;
-
-import com.opensymphony.xwork2.conversion.impl.DefaultTypeConverter;
 import com.opensymphony.xwork2.util.AnnotatedCat;
 import com.opensymphony.xwork2.util.Bar;
 import com.opensymphony.xwork2.util.Cat;
+
+import java.lang.reflect.Member;
+import java.util.Map;
 
 
 /**
@@ -20,7 +19,8 @@ import com.opensymphony.xwork2.util.Cat;
  */
 public class FooBarConverter extends DefaultTypeConverter {
 
-    public Object convertValue(Map context, Object value, Class toType) {
+    @Override
+    public Object convertValue(Map<String, Object> context, Object value, Class toType) {
         if (toType == String.class) {
             Bar bar = (Bar) value;
 
@@ -54,7 +54,8 @@ public class FooBarConverter extends DefaultTypeConverter {
         return null;
     }
 
-    public Object convertValue(Map context, Object source, Member member, String property, Object value, Class toClass) {
+    @Override
+    public Object convertValue(Map<String, Object> context, Object source, Member member, String property, Object value, Class toClass) {
         return convertValue(context, value, toClass);
     }
 }

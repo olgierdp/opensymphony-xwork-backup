@@ -7,8 +7,6 @@ package com.opensymphony.xwork2;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 
-import junit.framework.TestCase;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,17 +25,17 @@ public class ActionContextTest extends XWorkTestCase {
 
     private ActionContext context;
 
-    public void setUp() throws Exception {
+    @Override public void setUp() throws Exception {
         super.setUp();
         ValueStack valueStack = container.getInstance(ValueStackFactory.class).createValueStack();
-        Map extraContext = valueStack.getContext();
-        Map application = new HashMap();
+        Map<String, Object> extraContext = valueStack.getContext();
+        Map<String, Object> application = new HashMap<String, Object>();
         application.put(APPLICATION_KEY, APPLICATION_KEY);
 
-        Map session = new HashMap();
+        Map<String, Object> session = new HashMap<String, Object>();
         session.put(SESSION_KEY, SESSION_KEY);
 
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put(PARAMETERS_KEY, PARAMETERS_KEY);
         extraContext.put(ActionContext.APPLICATION, application);
         extraContext.put(ActionContext.SESSION, session);
@@ -67,29 +65,29 @@ public class ActionContextTest extends XWorkTestCase {
     }
 
     public void testApplication() {
-        Map app = new HashMap();
+        Map<String, Object> app = new HashMap<String, Object>();
         context.setApplication(app);
         assertEquals(app, context.getApplication());
     }
 
     public void testContextMap() {
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<String, Object>();
         context.setContextMap(map);
         assertEquals(map, context.getContextMap());
     }
 
     public void testParameters() {
-        Map param = new HashMap();
+        Map<String, Object> param = new HashMap<String, Object>();
         context.setParameters(param);
         assertEquals(param, context.getParameters());
     }
 
     public void testConversionErrors() {
-        Map errors = context.getConversionErrors();
+        Map<String, Object> errors = context.getConversionErrors();
         assertNotNull(errors);
         assertEquals(0, errors.size());
 
-        Map errors2 = new HashMap();
+        Map<String, Object> errors2 = new HashMap<String, Object>();
         context.setConversionErrors(errors);
         assertEquals(errors2, context.getConversionErrors());
     }

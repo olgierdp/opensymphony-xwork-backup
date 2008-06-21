@@ -4,17 +4,12 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.util.*;
 
 
 /**
@@ -64,27 +59,27 @@ public class DelegatingValidatorContext implements ValidatorContext {
         validationAware = new LoggingValidationAware(clazz);
     }
 
-    public void setActionErrors(Collection errorMessages) {
+    public void setActionErrors(Collection<String> errorMessages) {
         validationAware.setActionErrors(errorMessages);
     }
 
-    public Collection getActionErrors() {
+    public Collection<String> getActionErrors() {
         return validationAware.getActionErrors();
     }
 
-    public void setActionMessages(Collection messages) {
+    public void setActionMessages(Collection<String> messages) {
         validationAware.setActionMessages(messages);
     }
 
-    public Collection getActionMessages() {
+    public Collection<String> getActionMessages() {
         return validationAware.getActionMessages();
     }
 
-    public void setFieldErrors(Map errorMap) {
+    public void setFieldErrors(Map<String, List<String>> errorMap) {
         validationAware.setFieldErrors(errorMap);
     }
 
-    public Map getFieldErrors() {
+    public Map<String, List<String>> getFieldErrors() {
         return validationAware.getFieldErrors();
     }
 
@@ -112,7 +107,7 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return textProvider.getText(aTextName, defaultValue, obj);
     }
 
-    public String getText(String aTextName, List args) {
+    public String getText(String aTextName, List<Object> args) {
         return textProvider.getText(aTextName, args);
     }
 
@@ -120,7 +115,7 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return textProvider.getText(key, args);
     }
 
-    public String getText(String aTextName, String defaultValue, List args) {
+    public String getText(String aTextName, String defaultValue, List<Object> args) {
         return textProvider.getText(aTextName, defaultValue, args);
     }
 
@@ -132,7 +127,7 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return textProvider.getTexts(aBundleName);
     }
 
-    public String getText(String key, String defaultValue, List args, ValueStack stack) {
+    public String getText(String key, String defaultValue, List<Object> args, ValueStack stack) {
         return textProvider.getText(key, defaultValue, args, stack);
     }
 
@@ -241,36 +236,35 @@ public class DelegatingValidatorContext implements ValidatorContext {
             log = LoggerFactory.getLogger(obj.getClass());
         }
 
-        public void setActionErrors(Collection errorMessages) {
-            for (Iterator iterator = errorMessages.iterator(); iterator.hasNext();) {
-                String s = (String) iterator.next();
+        public void setActionErrors(Collection<String> errorMessages) {
+            for (Object errorMessage : errorMessages) {
+                String s = (String) errorMessage;
                 addActionError(s);
             }
         }
 
-        public Collection getActionErrors() {
+        public Collection<String> getActionErrors() {
             return null;
         }
 
-        public void setActionMessages(Collection messages) {
-            for (Iterator iterator = messages.iterator(); iterator.hasNext();) {
-                String s = (String) iterator.next();
+        public void setActionMessages(Collection<String> messages) {
+            for (Object message : messages) {
+                String s = (String) message;
                 addActionMessage(s);
             }
         }
 
-        public Collection getActionMessages() {
+        public Collection<String> getActionMessages() {
             return null;
         }
 
-        public void setFieldErrors(Map errorMap) {
-            for (Iterator iterator = errorMap.entrySet().iterator(); iterator.hasNext();) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                addFieldError((String) entry.getKey(), (String) entry.getValue());
+        public void setFieldErrors(Map<String, List<String>> errorMap) {
+            for (Map.Entry<String, List<String>> entry : errorMap.entrySet()) {
+                addFieldError(entry.getKey(), entry.getValue().toString());
             }
         }
 
-        public Map getFieldErrors() {
+        public Map<String, List<String>> getFieldErrors() {
             return null;
         }
 

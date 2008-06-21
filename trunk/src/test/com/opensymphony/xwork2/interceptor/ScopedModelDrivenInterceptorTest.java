@@ -4,15 +4,15 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.opensymphony.xwork2.*;
-import com.opensymphony.xwork2.test.User;
-import com.opensymphony.xwork2.test.Equidae;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
 import com.opensymphony.xwork2.mock.MockActionProxy;
+import com.opensymphony.xwork2.test.Equidae;
+import com.opensymphony.xwork2.test.User;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ScopedModelDrivenInterceptorTest extends XWorkTestCase {
 
@@ -21,6 +21,7 @@ public class ScopedModelDrivenInterceptorTest extends XWorkTestCase {
     /**
      * Set up instance variables required by this test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         inter = new ScopedModelDrivenInterceptor();

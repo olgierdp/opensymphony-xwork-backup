@@ -4,20 +4,19 @@
  */
 package com.opensymphony.xwork2.validator;
 
+import com.mockobjects.dynamic.C;
+import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
-import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.test.DataAware2;
 import com.opensymphony.xwork2.test.SimpleAction2;
 import com.opensymphony.xwork2.test.SimpleAction3;
-import com.opensymphony.xwork2.test.User;
-import com.opensymphony.xwork2.validator.validators.*;
-import com.mockobjects.dynamic.Mock;
-import com.mockobjects.dynamic.C;
-
-import java.util.*;
-
+import com.opensymphony.xwork2.util.ValueStack;
 import junit.framework.TestCase;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -36,6 +35,7 @@ public class DefaultActionValidatorManagerTest extends TestCase {
     Mock mockValidatorFactory;
     ValueStack stubValueStack;
 
+    @Override
     protected void setUp() throws Exception {
         actionValidatorManager = new DefaultActionValidatorManager();
         super.setUp();
@@ -46,11 +46,12 @@ public class DefaultActionValidatorManagerTest extends TestCase {
         actionValidatorManager.setValidatorFactory((ValidatorFactory)mockValidatorFactory.proxy());
 
         stubValueStack = new StubValueStack();
-        ActionContext.setContext(new ActionContext(new HashMap()));
+        ActionContext.setContext(new ActionContext(new HashMap<String, Object>()));
         ActionContext.getContext().setValueStack(stubValueStack);
 
     }
 
+    @Override
     protected void tearDown() throws Exception {
         actionValidatorManager = null;
         super.tearDown();

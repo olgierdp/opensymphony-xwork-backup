@@ -106,6 +106,7 @@ public class PrepareInterceptor extends MethodFilterInterceptor {
         this.alwaysInvokePrepare = Boolean.parseBoolean(alwaysInvokePrepare);
     }
 
+    @Override
     public String doIntercept(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
 

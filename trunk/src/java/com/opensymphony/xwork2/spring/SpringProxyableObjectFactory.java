@@ -4,17 +4,16 @@
  */
 package com.opensymphony.xwork2.spring;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContext;
 
-import com.opensymphony.xwork2.util.logging.Logger;
-import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * SpringProxyableObjectFactory.
@@ -25,9 +24,10 @@ public class SpringProxyableObjectFactory extends SpringObjectFactory {
     
     private static final Logger LOG = LoggerFactory.getLogger(SpringProxyableObjectFactory.class);
 
-    private List skipBeanNames = new ArrayList();
+    private List<String> skipBeanNames = new ArrayList<String>();
 
-    public Object buildBean(String beanName, Map extraContext) throws Exception {
+    @Override
+    public Object buildBean(String beanName, Map<String, Object> extraContext) throws Exception {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Building bean for name " + beanName);
         }
@@ -78,7 +78,7 @@ public class SpringProxyableObjectFactory extends SpringObjectFactory {
      *
      * @param context  provided context.
      */
-    protected ApplicationContext getApplicationContext(Map context) {
+    protected ApplicationContext getApplicationContext(Map<String, Object> context) {
         return appContext;
     }
 }

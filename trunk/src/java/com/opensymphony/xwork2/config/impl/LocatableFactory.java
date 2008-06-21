@@ -1,10 +1,10 @@
 package com.opensymphony.xwork2.config.impl;
 
-import com.opensymphony.xwork2.util.location.Located;
-import com.opensymphony.xwork2.util.location.LocationUtils;
+import com.opensymphony.xwork2.inject.Context;
 import com.opensymphony.xwork2.inject.Factory;
 import com.opensymphony.xwork2.inject.Scope;
-import com.opensymphony.xwork2.inject.Context;
+import com.opensymphony.xwork2.util.location.Located;
+import com.opensymphony.xwork2.util.location.LocationUtils;
 
 import java.util.LinkedHashMap;
 
@@ -33,6 +33,7 @@ public class LocatableFactory<T> extends Located implements Factory<T> {
         return (T) obj;
     }
 
+    @Override
     public String toString() {
         String fields = new LinkedHashMap<String, Object>() {
             {

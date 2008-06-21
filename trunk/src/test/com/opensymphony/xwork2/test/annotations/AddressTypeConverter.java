@@ -1,11 +1,11 @@
 package com.opensymphony.xwork2.test.annotations;
 
-import java.util.Map;
-
 import com.opensymphony.xwork2.conversion.impl.DefaultTypeConverter;
 
+import java.util.Map;
+
 public class AddressTypeConverter extends DefaultTypeConverter {
-	public Object convertValue(Map context, Object value, Class toType) {
+	@Override public Object convertValue(Map<String, Object> context, Object value, Class toType) {
 		if(value instanceof String) {
 			return decodeAddress((String)value);
 		} else if(value instanceof String && value.getClass().isArray()) {

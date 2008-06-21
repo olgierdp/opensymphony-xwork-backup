@@ -1,8 +1,8 @@
 package com.opensymphony.xwork2.ognl;
 
-import java.util.Map;
-
 import com.opensymphony.xwork2.conversion.NullHandler;
+
+import java.util.Map;
 
 public class OgnlNullHandlerWrapper implements ognl.NullHandler {
 

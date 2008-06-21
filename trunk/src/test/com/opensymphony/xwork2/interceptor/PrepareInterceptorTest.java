@@ -4,17 +4,12 @@
 */
 package com.opensymphony.xwork2.interceptor;
 
-import org.easymock.MockControl;
-
 import com.mockobjects.dynamic.Mock;
+import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
 import com.opensymphony.xwork2.mock.MockActionProxy;
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.ActionProxy;
-import com.opensymphony.xwork2.Preparable;
-import com.opensymphony.xwork2.Action;
-import com.opensymphony.xwork2.SimpleFooAction;
 import junit.framework.TestCase;
+import org.easymock.MockControl;
 
 /**
  * Unit test for PrepareInterceptor.
@@ -145,11 +140,13 @@ public class PrepareInterceptorTest extends TestCase {
     }
     
 
+    @Override
     protected void setUp() throws Exception {
         mock = new Mock(Preparable.class);
         interceptor = new PrepareInterceptor();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         mock.verify();
     }

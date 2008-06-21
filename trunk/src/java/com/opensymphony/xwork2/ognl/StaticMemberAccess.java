@@ -4,12 +4,12 @@
  */
 package com.opensymphony.xwork2.ognl;
 
+import ognl.DefaultMemberAccess;
+
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
-
-import ognl.DefaultMemberAccess;
 
 /**
  * Allows access decisions to be made on the basis of whether a member is static or not

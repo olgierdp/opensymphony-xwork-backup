@@ -4,18 +4,18 @@
  */
 package com.opensymphony.xwork2.config;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import com.opensymphony.xwork2.config.impl.DefaultConfiguration;
 import com.opensymphony.xwork2.config.providers.XWorkConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -80,7 +80,7 @@ public class ConfigurationManager {
      * @see ConfigurationProvider
      * @deprecated Since 2.1, use {@link #getContainerProviders()}
      */
-    public List<ConfigurationProvider> getConfigurationProviders() {
+    @Deprecated public List<ConfigurationProvider> getConfigurationProviders() {
         List<ContainerProvider> contProviders = getContainerProviders();
         List<ConfigurationProvider> providers = new ArrayList<ConfigurationProvider>();
         for (ContainerProvider prov : contProviders) {
@@ -122,7 +122,7 @@ public class ConfigurationManager {
      * @param configurationProviders
      * @deprecated Since 2.1, use {@link #setContainerProvider()}
      */
-    public void setConfigurationProviders(List<ConfigurationProvider> configurationProviders) {
+    @Deprecated public void setConfigurationProviders(List<ConfigurationProvider> configurationProviders) {
         // Silly copy necessary due to lack of ability to cast generic lists
         List<ContainerProvider> contProviders = new ArrayList<ContainerProvider>();
         contProviders.addAll(configurationProviders);
@@ -151,7 +151,7 @@ public class ConfigurationManager {
      * @param provider the ConfigurationProvider to register
      * @deprecated Since 2.1, use {@link #addContainerProvider()}
      */
-    public void addConfigurationProvider(ConfigurationProvider provider) {
+    @Deprecated public void addConfigurationProvider(ConfigurationProvider provider) {
         addContainerProvider(provider);
     }
         
@@ -174,7 +174,7 @@ public class ConfigurationManager {
      * @see com.opensymphony.xwork2.config.ConfigurationProvider#destroy
      * @deprecated Since 2.1, use {@link #clearContainerProviders()}
      */
-    public void clearConfigurationProviders() {
+    @Deprecated public void clearConfigurationProviders() {
         clearContainerProviders();
     }
     

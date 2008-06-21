@@ -4,8 +4,10 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import com.opensymphony.xwork2.*;
-import com.opensymphony.xwork2.config.ConfigurationManager;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionProxy;
+import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 
@@ -22,10 +24,10 @@ import java.util.Map;
 public class LongRangeValidatorTest extends XWorkTestCase {
 
     public void testRangeValidation() {
-        HashMap params = new HashMap();
+        HashMap<String, String> params = new HashMap<String, String>();
         params.put("longFoo", "200");
 
-        HashMap extraContext = new HashMap();
+        HashMap<String, Object> extraContext = new HashMap<String, Object>();
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
@@ -45,6 +47,7 @@ public class LongRangeValidatorTest extends XWorkTestCase {
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-test-beans.xml"), new MockConfigurationProvider());
     }

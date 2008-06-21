@@ -4,30 +4,16 @@
  */
 package com.opensymphony.xwork2.ognl.accessor;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import ognl.ClassResolver;
-import ognl.MethodAccessor;
-import ognl.MethodFailedException;
-import ognl.Ognl;
-import ognl.OgnlContext;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
-import ognl.PropertyAccessor;
-
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import ognl.*;
+
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.util.*;
 
 
 /**
@@ -47,9 +33,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         CompoundRoot root = (CompoundRoot) target;
         OgnlContext ognlContext = (OgnlContext) context;
 
-        for (Iterator iterator = root.iterator(); iterator.hasNext();) {
-            Object o = iterator.next();
-
+        for (Object o : root) {
             if (o == null) {
                 continue;
             }
@@ -60,7 +44,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
                     return;
                 } else if (o instanceof Map) {
-                    Map map = (Map) o;
+                    Map<Object, Object> map = (Map) o;
                     map.put(name, value);
                     return;
                 }
@@ -103,16 +87,13 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 }
             }
 
-            for (Iterator iterator = root.iterator(); iterator.hasNext();) {
-                Object o = iterator.next();
-
+            for (Object o : root) {
                 if (o == null) {
                     continue;
                 }
 
                 try {
-                    if ((OgnlRuntime.hasGetProperty(ognlContext, o, name)) || ((o instanceof Map) && ((Map) o).containsKey(name)))
-                    {
+                    if ((OgnlRuntime.hasGetProperty(ognlContext, o, name)) || ((o instanceof Map) && ((Map) o).containsKey(name))) {
                         return OgnlRuntime.getProperty(ognlContext, o, name);
                     }
                 } catch (OgnlException e) {
@@ -148,20 +129,18 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
             }
 
             try {
-                Map descriptors = OgnlRuntime.getPropertyDescriptors(v.getClass());
+                Map<String, PropertyDescriptor> descriptors = OgnlRuntime.getPropertyDescriptors(v.getClass());
 
                 int maxSize = 0;
-                for (Iterator iterator = descriptors.keySet().iterator(); iterator.hasNext();) {
-                    String pdName = (String) iterator.next();
+                for (String pdName : descriptors.keySet()) {
                     if (pdName.length() > maxSize) {
                         maxSize = pdName.length();
                     }
                 }
 
-                SortedSet set = new TreeSet();
+                SortedSet<String> set = new TreeSet<String>();
                 StringBuffer sb = new StringBuffer();
-                for (Iterator iterator = descriptors.values().iterator(); iterator.hasNext();) {
-                    PropertyDescriptor pd = (PropertyDescriptor) iterator.next();
+                for (PropertyDescriptor pd : descriptors.values()) {
 
                     sb.append(pd.getName()).append(": ");
                     int padding = maxSize - pd.getName().length();
@@ -175,8 +154,8 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 }
 
                 sb = new StringBuffer();
-                for (Iterator iterator = set.iterator(); iterator.hasNext();) {
-                    String s = (String) iterator.next();
+                for (Object aSet : set) {
+                    String s = (String) aSet;
                     sb.append(s).append("\n");
                 }
                 
@@ -190,9 +169,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
             return null;
         }
 
-        for (Iterator iterator = root.iterator(); iterator.hasNext();) {
-            Object o = iterator.next();
-
+        for (Object o : root) {
             if (o == null) {
                 continue;
             }
@@ -200,10 +177,10 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
             Class clazz = o.getClass();
             Class[] argTypes = getArgTypes(objects);
 
-            CompoundRootAccessor.MethodCall mc = null;
+            MethodCall mc = null;
 
             if (argTypes != null) {
-                mc = new CompoundRootAccessor.MethodCall(clazz, name, argTypes);
+                mc = new MethodCall(clazz, name, argTypes);
             }
 
             if ((argTypes == null) || !invalidMethods.containsKey(mc)) {
@@ -241,7 +218,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 if (className.startsWith("vs")) {
                     CompoundRoot compoundRoot = (CompoundRoot) root;
 
-                    if (className.equals("vs")) {
+                    if ("vs".equals(className)) {
                         return compoundRoot.peek().getClass();
                     }
 
@@ -285,18 +262,19 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
             this.args = args;
             this.hash = clazz.hashCode() + name.hashCode();
 
-            for (int i = 0; i < args.length; i++) {
-                Class arg = args[i];
+            for (Class arg : args) {
                 hash += arg.hashCode();
             }
         }
 
+        @Override
         public boolean equals(Object obj) {
             MethodCall mc = (CompoundRootAccessor.MethodCall) obj;
 
             return (mc.clazz.equals(clazz) && mc.name.equals(name) && Arrays.equals(mc.args, args));
         }
 
+        @Override
         public int hashCode() {
             return hash;
         }

@@ -17,12 +17,7 @@
 package com.opensymphony.xwork2.inject;
 
 import java.lang.reflect.Member;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -138,6 +133,7 @@ public final class ContainerBuilder {
         }
       }
 
+      @Override
       public String toString() {
         return new LinkedHashMap<String, Object>() {{
           put("type", type);
@@ -211,6 +207,7 @@ public final class ContainerBuilder {
         return (T) constructor.construct(context, type);
       }
 
+      @Override
       public String toString() {
         return new LinkedHashMap<String, Object>() {{
           put("type", type);
@@ -426,6 +423,7 @@ public final class ContainerBuilder {
         return value;
       }
 
+      @Override
       public String toString() {
         return new LinkedHashMap<String, Object>() {
           {

@@ -1,13 +1,8 @@
-package com.opensymphony.xwork2.validator;
-
-import com.opensymphony.xwork2.TextProvider;
-import com.opensymphony.xwork2.TextProviderSupport;
-import com.opensymphony.xwork2.LocaleProvider;
-import com.opensymphony.xwork2.XWorkTestCase;
+package com.opensymphony.xwork2;
 
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * <code>CompositeTextProviderTest</code>
@@ -47,9 +42,9 @@ public class CompositeTextProviderTest extends XWorkTestCase {
     public void testGetTextWithDefaultValuesAndArgs() throws Exception {
         assertEquals(textProvider.getText("goodnight", "say good night", "Adam"), "1 good night Adam");
         assertEquals(textProvider.getText("goodnight", "say good night", new String[] { "Adam" }), "1 good night Adam");
-        assertEquals(textProvider.getText("goodnight", "say good night", new ArrayList() { {add("Adam");} }), "1 good night Adam");
+        assertEquals(textProvider.getText("goodnight", "say good night", new ArrayList<Object>() { {add("Adam");} }), "1 good night Adam");
         assertEquals(textProvider.getText("goodmorning", "say good morning", new String[] { "Jack", "Jim" }), "1 good morning Jack and Jim");
-        assertEquals(textProvider.getText("goodmorning", "say good morning", new ArrayList() { { add("Jack"); add("Jim"); }}), "1 good morning Jack and Jim");
+        assertEquals(textProvider.getText("goodmorning", "say good morning", new ArrayList<Object>() { { add("Jack"); add("Jim"); }}), "1 good morning Jack and Jim");
     }
 
     public void testHasKey() throws Exception {
@@ -78,6 +73,7 @@ public class CompositeTextProviderTest extends XWorkTestCase {
     }
 
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         textProvider = new CompositeTextProvider(new TextProvider[] {
@@ -98,6 +94,7 @@ public class CompositeTextProviderTest extends XWorkTestCase {
     }
 
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         textProvider = null;

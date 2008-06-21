@@ -23,7 +23,7 @@ public interface ValueStack {
      *
      * @return  the context.
      */
-    public abstract Map getContext();
+    public abstract Map<String, Object> getContext();
 
     /**
      * Sets the default type to convert to if no type is provided when getting a value.
@@ -39,14 +39,14 @@ public interface ValueStack {
      *
      * @param overrides  overrides map.
      */
-    public abstract void setExprOverrides(Map overrides);
+    public abstract void setExprOverrides(Map<Object, Object> overrides);
 
     /**
      * Gets the override map if anyone exists.
      *
      * @return the override map, <tt>null</tt> if not set.
      */
-    public abstract Map getExprOverrides();
+    public abstract Map<Object, Object> getExprOverrides();
 
     /**
      * Get the CompoundRoot which holds the objects pushed onto the stack

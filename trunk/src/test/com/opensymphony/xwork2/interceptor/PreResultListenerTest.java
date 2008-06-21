@@ -12,12 +12,10 @@ import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
-import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 
 import java.util.HashMap;
-import java.util.Properties;
 
 
 /**
@@ -54,6 +52,7 @@ public class PreResultListenerTest extends XWorkTestCase {
         assertEquals(listener1.getMyOrder().intValue() + 1, listener2.getMyOrder().intValue());
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         loadConfigurationProviders(new ConfigurationProvider() {
@@ -89,6 +88,7 @@ public class PreResultListenerTest extends XWorkTestCase {
         });
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

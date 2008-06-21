@@ -4,17 +4,17 @@
  */
 package com.opensymphony.xwork2.interceptor.annotations;
 
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.interceptor.Interceptor;
+import com.opensymphony.xwork2.interceptor.PreResultListener;
+import com.opensymphony.xwork2.util.AnnotationUtils;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Comparator;
-
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.XWorkException;
-import com.opensymphony.xwork2.util.AnnotationUtils;
-import com.opensymphony.xwork2.interceptor.Interceptor;
-import com.opensymphony.xwork2.interceptor.PreResultListener;
+import java.util.List;
 
 /**
  * <!-- START SNIPPET: javadoc -->

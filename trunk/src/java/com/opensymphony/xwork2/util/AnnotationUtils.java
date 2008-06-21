@@ -10,11 +10,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -88,7 +84,7 @@ public class AnnotationUtils {
      * @param clazz
      * @param allInterfaces
      */
-    public static void addAllInterfaces(Class clazz, List allInterfaces) {
+    public static void addAllInterfaces(Class clazz, List<Class> allInterfaces) {
         if (clazz == null) {
             return;
         }
@@ -209,9 +205,9 @@ public class AnnotationUtils {
 
         if (directory.exists()) {
             final String[] files = directory.list();
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].endsWith(".class")) {
-                    classes.add(pckgname + "." + files[i].substring(0, files[i].length() - 6));
+            for (String file : files) {
+                if (file.endsWith(".class")) {
+                    classes.add(pckgname + "." + file.substring(0, file.length() - 6));
                 }
             }
         }

@@ -11,7 +11,6 @@ import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.ognl.OgnlUtil;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
-
 import ognl.ListPropertyAccessor;
 import ognl.OgnlException;
 import ognl.PropertyAccessor;
@@ -61,6 +60,7 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
         this.ognlUtil = util;
     }
 
+    @Override
     public Object getProperty(Map context, Object target, Object name)
             throws OgnlException {
 
@@ -115,6 +115,7 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
         return super.getProperty(context, target, name);
     }
 
+    @Override
     public void setProperty(Map context, Object target, Object name, Object value)
             throws OgnlException {
 
@@ -129,8 +130,7 @@ public class XWorkListPropertyAccessor extends ListPropertyAccessor {
 
             Collection c = (Collection) target;
             Object[] values = (Object[]) value;
-            for (int i = 0; i < values.length; i++) {
-                Object v = values[i];
+            for (Object v : values) {
                 try {
                     Object o = objectFactory.buildBean(convertToClass, context);
                     ognlUtil.setValue((String) name, context, o, v);

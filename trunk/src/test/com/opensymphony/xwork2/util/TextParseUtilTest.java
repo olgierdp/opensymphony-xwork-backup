@@ -7,11 +7,7 @@ package com.opensymphony.xwork2.util;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkTestCase;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Unit test of {@link TextParseUtil}.
@@ -92,7 +88,7 @@ public class TextParseUtilTest extends XWorkTestCase {
 
     public void testCommaDelimitedStringToSet() {
         assertEquals(0, TextParseUtil.commaDelimitedStringToSet("").size());
-        assertEquals(new HashSet(Arrays.asList(new String[] { "foo", "bar", "tee" })),
+        assertEquals(new HashSet<String>(Arrays.asList("foo", "bar", "tee")),
                 TextParseUtil.commaDelimitedStringToSet(" foo, bar,tee"));
     }
 
@@ -117,7 +113,7 @@ public class TextParseUtilTest extends XWorkTestCase {
 
     public void testTranslateVariablesNoRecursive() {
         ValueStack stack = ActionContext.getContext().getValueStack();
-        stack.push(new HashMap() {{ put("foo", "${1+1}"); }});
+        stack.push(new HashMap<String, Object>() {{ put("foo", "${1+1}"); }});
 
         Object s = TextParseUtil.translateVariables('$', "foo: ${foo}", stack, String.class, null, 1);
         assertEquals("foo: ${1+1}", s);
@@ -125,7 +121,7 @@ public class TextParseUtilTest extends XWorkTestCase {
 
     public void testTranslateVariablesRecursive() {
         ValueStack stack = ActionContext.getContext().getValueStack();
-        stack.push(new HashMap() {{ put("foo", "${1+1}"); }});
+        stack.push(new HashMap<String, Object>() {{ put("foo", "${1+1}"); }});
 
         Object s = TextParseUtil.translateVariables('$', "foo: ${foo}", stack, String.class, null, 2);
         assertEquals("foo: 2", s);

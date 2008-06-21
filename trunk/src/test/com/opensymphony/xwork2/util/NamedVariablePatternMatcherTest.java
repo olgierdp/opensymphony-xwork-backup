@@ -4,14 +4,13 @@
  */
 package com.opensymphony.xwork2.util;
 
+import com.opensymphony.xwork2.util.NamedVariablePatternMatcher.CompiledPattern;
 import junit.framework.TestCase;
 
-import java.util.regex.Pattern;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.HashMap;
-
-import com.opensymphony.xwork2.util.NamedVariablePatternMatcher.CompiledPattern;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 public class NamedVariablePatternMatcherTest extends TestCase {
 

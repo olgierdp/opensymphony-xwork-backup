@@ -17,6 +17,8 @@
  */
 package com.opensymphony.xwork2.util;
 
+import com.opensymphony.xwork2.XWorkException;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,8 +26,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Vector;
-
-import com.opensymphony.xwork2.XWorkException;
 
 /**
  * This class is an utility class that will search through the classpath
@@ -47,7 +47,7 @@ public class ClassPathFinder {
 	/**
      * The PatternMatcher implementation to use
      */
-	private PatternMatcher patternMatcher = new WildcardHelper();
+	private PatternMatcher<int[]> patternMatcher = new WildcardHelper();
 	
 	private Vector<String> compared = new Vector<String>();
 	
@@ -82,7 +82,7 @@ public class ClassPathFinder {
 		URL[] parentUrls = cl.getURLs();
 		compiledPattern = (int[]) patternMatcher.compilePattern(pattern);
 		for (URL url : parentUrls) {
-			if (! url.getProtocol().equals("file")) {
+			if (!"file".equals(url.getProtocol())) {
 				continue ;
 			}
 			URI entryURI ;
@@ -109,15 +109,15 @@ public class ClassPathFinder {
 		Vector<String> matches = new Vector<String>();
 		for (String listEntry : entries) {
 			File tempFile ;
-			if (! prefix.equals("") ) {
+			if (!"".equals(prefix) ) {
 				tempFile = new File(parent, prefix + "/" + listEntry);
 			}
 			else {
 				tempFile = new File(parent, listEntry);
 			}
 			if (tempFile.isDirectory() && 
-					!(listEntry.equals(".") || listEntry.equals("..")) ) {
-				if	(! prefix.equals("") ) {
+					!(".".equals(listEntry) || "..".equals(listEntry)) ) {
+				if	(!"".equals(prefix) ) {
 					matches.addAll(checkEntries(tempFile.list(), parent, prefix + "/" + listEntry));
 				}
 				else {
@@ -127,7 +127,7 @@ public class ClassPathFinder {
 			else {
 				
 				String entryToCheck ;
-				if (prefix.equals("")) {
+				if ("".equals(prefix)) {
 					entryToCheck = listEntry ;
 				}
 				else {
@@ -154,7 +154,7 @@ public class ClassPathFinder {
 	 * sets the PatternMatcher implementation to use when comparing filenames
 	 * @param patternMatcher
 	 */
-	public void setPatternMatcher(PatternMatcher patternMatcher) {
+	public void setPatternMatcher(PatternMatcher<int[]> patternMatcher) {
 		this.patternMatcher = patternMatcher;
 	}
 

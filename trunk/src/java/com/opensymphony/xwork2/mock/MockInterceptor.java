@@ -4,8 +4,8 @@
  */
 package com.opensymphony.xwork2.mock;
 
-import com.opensymphony.xwork2.interceptor.Interceptor;
 import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.interceptor.Interceptor;
 import junit.framework.Assert;
 
 
@@ -52,6 +52,7 @@ public class MockInterceptor implements Interceptor {
     public void destroy() {
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -79,6 +80,7 @@ public class MockInterceptor implements Interceptor {
         return true;
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = ((expectedFoo != null) ? expectedFoo.hashCode() : 0);

@@ -5,13 +5,12 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.util.DomHelper;
-import com.opensymphony.xwork2.util.logging.Logger;
-import com.opensymphony.xwork2.util.logging.LoggerFactory;
-import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.providers.XmlHelper;
 import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.util.DomHelper;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
@@ -45,18 +44,17 @@ public class DefaultValidatorFileParser implements ValidatorFileParser {
     }
 
     public List<ValidatorConfig> parseActionValidatorConfigs(ValidatorFactory validatorFactory, InputStream is, final String resourceName) {
-        List validatorCfgs = new ArrayList();
-        Document doc = null;
+        List<ValidatorConfig> validatorCfgs = new ArrayList<ValidatorConfig>();
 
         InputSource in = new InputSource(is);
         in.setSystemId(resourceName);
 
-        Map dtdMappings = new HashMap();
+        Map<String, String> dtdMappings = new HashMap<String, String>();
         dtdMappings.put("-//OpenSymphony Group//XWork Validator 1.0//EN", "xwork-validator-1.0.dtd");
         dtdMappings.put("-//OpenSymphony Group//XWork Validator 1.0.2//EN", "xwork-validator-1.0.2.dtd");
         dtdMappings.put("-//OpenSymphony Group//XWork Validator 1.0.3//EN", "xwork-validator-1.0.3.dtd");
 
-        doc = DomHelper.parse(in, dtdMappings);
+        Document doc = DomHelper.parse(in, dtdMappings);
 
         if (doc != null) {
             NodeList fieldNodes = doc.getElementsByTagName("field");
@@ -66,13 +64,13 @@ public class DefaultValidatorFileParser implements ValidatorFileParser {
             // it will not cause field-level validator to be kicked off.
             {
                 NodeList validatorNodes = doc.getElementsByTagName("validator");
-                addValidatorConfigs(validatorFactory, validatorNodes, new HashMap(), validatorCfgs);
+                addValidatorConfigs(validatorFactory, validatorNodes, new HashMap<String, String>(), validatorCfgs);
             }
 
             for (int i = 0; i < fieldNodes.getLength(); i++) {
                 Element fieldElement = (Element) fieldNodes.item(i);
                 String fieldName = fieldElement.getAttribute("name");
-                Map extraParams = new HashMap();
+                Map<String, String> extraParams = new HashMap<String, String>();
                 extraParams.put("fieldName", fieldName);
 
                 NodeList validatorNodes = fieldElement.getElementsByTagName("field-validator");
@@ -89,7 +87,7 @@ public class DefaultValidatorFileParser implements ValidatorFileParser {
         InputSource in = new InputSource(is);
         in.setSystemId(resourceName);
 
-        Map dtdMappings = new HashMap();
+        Map<String, String> dtdMappings = new HashMap<String, String>();
         dtdMappings.put("-//OpenSymphony Group//XWork Validator Config 1.0//EN", "xwork-validator-config-1.0.dtd");
 
         Document doc = DomHelper.parse(in, dtdMappings);
@@ -104,7 +102,7 @@ public class DefaultValidatorFileParser implements ValidatorFileParser {
 
                 try {
                     // catch any problems here
-                    objectFactory.buildValidator(className, new HashMap(), null);
+                    objectFactory.buildValidator(className, new HashMap<String, String>(), null);
                     validators.put(name, className);
                 } catch (Exception e) {
                     throw new ConfigurationException("Unable to load validator class " + className, e, validatorElement);
@@ -123,7 +121,7 @@ public class DefaultValidatorFileParser implements ValidatorFileParser {
      * @see org.w3c.dom.Comment
      */
     public static String getTextValue(Element valueEle) {
-        StringBuffer value = new StringBuffer();
+        StringBuilder value = new StringBuilder();
         NodeList nl = valueEle.getChildNodes();
         boolean firstCDataFound = false;
         for (int i = 0; i < nl.getLength(); i++) {
@@ -143,11 +141,11 @@ public class DefaultValidatorFileParser implements ValidatorFileParser {
         return value.toString().trim();
     }
 
-    private void addValidatorConfigs(ValidatorFactory factory, NodeList validatorNodes, Map extraParams, List validatorCfgs) {
+    private void addValidatorConfigs(ValidatorFactory factory, NodeList validatorNodes, Map<String, String> extraParams, List<ValidatorConfig> validatorCfgs) {
         for (int j = 0; j < validatorNodes.getLength(); j++) {
             Element validatorElement = (Element) validatorNodes.item(j);
             String validatorType = validatorElement.getAttribute("type");
-            Map params = new HashMap(extraParams);
+            Map<String, String> params = new HashMap<String, String>(extraParams);
 
             params.putAll(XmlHelper.getParams(validatorElement));
 
@@ -170,7 +168,7 @@ public class DefaultValidatorFileParser implements ValidatorFileParser {
             String defaultMessage = (defaultMessageNode == null) ? "" : defaultMessageNode.getNodeValue();
             vCfg.defaultMessage(defaultMessage);
 
-            Map messageParams = XmlHelper.getParams(messageElement);
+            Map<String, String> messageParams = XmlHelper.getParams(messageElement);
             String key = messageElement.getAttribute("key");
 
 
@@ -189,23 +187,23 @@ public class DefaultValidatorFileParser implements ValidatorFileParser {
                 // </message>
 
                 if (messageParams.containsKey("defaultMessage")) {
-                    vCfg.defaultMessage((String) messageParams.get("defaultMessage"));
+                    vCfg.defaultMessage(messageParams.get("defaultMessage").toString());
                 }
 
                 // Sort the message param. those with keys as '1', '2', '3' etc. (numeric values)
                 // are i18n message parameter, others are excluded.
-                TreeMap sortedMessageParameters = new TreeMap();
-                for (Iterator i = messageParams.entrySet().iterator(); i.hasNext();) {
-                    Map.Entry messageParamEntry = (Map.Entry) i.next();
+                TreeMap<Integer, String> sortedMessageParameters = new TreeMap<Integer, String>();
+                for (Map.Entry<String, String> messageParamEntry : messageParams.entrySet()) {
+
                     try {
-                        int _order = Integer.parseInt((String) messageParamEntry.getKey());
-                        sortedMessageParameters.put(new Integer(_order), messageParamEntry.getValue());
+                        int _order = Integer.parseInt(messageParamEntry.getKey());
+                        sortedMessageParameters.put(Integer.valueOf(_order), messageParamEntry.getValue().toString());
                     }
                     catch (NumberFormatException e) {
                         // ignore if its not numeric.
                     }
                 }
-                vCfg.messageParams((String[]) sortedMessageParameters.values().toArray(new String[0]));
+                vCfg.messageParams(sortedMessageParameters.values().toArray(new String[sortedMessageParameters.values().size()]));
             } else {
                 if (messageParams != null && (messageParams.size() > 0)) {
                     // we are i18n message parameters defined but no i18n message,

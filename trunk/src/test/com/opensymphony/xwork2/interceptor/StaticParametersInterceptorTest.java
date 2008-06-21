@@ -4,17 +4,16 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import com.opensymphony.xwork2.XWorkTestCase;
-import com.opensymphony.xwork2.SimpleFooAction;
+import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.config.entities.Parameterizable;
+import com.opensymphony.xwork2.SimpleFooAction;
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
+import com.opensymphony.xwork2.config.entities.Parameterizable;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
 import com.opensymphony.xwork2.mock.MockActionProxy;
-import com.mockobjects.dynamic.Mock;
 
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Unit test of {@link StaticParametersInterceptor}.
@@ -103,12 +102,14 @@ public class StaticParametersInterceptorTest extends XWorkTestCase {
         assertEquals("${top.hero}", user.getName());
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         interceptor = new StaticParametersInterceptor();
         interceptor.init();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         interceptor.destroy();

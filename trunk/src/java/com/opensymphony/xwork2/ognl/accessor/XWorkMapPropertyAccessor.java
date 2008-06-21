@@ -5,11 +5,6 @@
 
 package com.opensymphony.xwork2.ognl.accessor;
 
-import java.util.Map;
-
-import ognl.MapPropertyAccessor;
-import ognl.OgnlException;
-
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
@@ -17,6 +12,10 @@ import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
+import ognl.MapPropertyAccessor;
+import ognl.OgnlException;
+
+import java.util.Map;
 
 /**
  * Implementation of PropertyAccessor that sets and gets properties by storing and looking
@@ -50,6 +49,7 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
         this.objectTypeDeterminer = ot;
     }
 
+    @Override
     public Object getProperty(Map context, Object target, Object name) throws OgnlException {
 
         if (LOG.isDebugEnabled()) {
@@ -112,8 +112,8 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
      * @param name
      */
     private boolean contains(String[] array, String name) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i].equals(name)) {
+        for (String anArray : array) {
+            if (anArray.equals(name)) {
                 return true;
             }
         }
@@ -121,6 +121,7 @@ public class XWorkMapPropertyAccessor extends MapPropertyAccessor {
         return false;
     }
 
+    @Override
     public void setProperty(Map context, Object target, Object name, Object value) throws OgnlException {
         if (LOG.isDebugEnabled()) {
      		LOG.debug("Entering setProperty("+context+","+target+","+name+","+value+")");

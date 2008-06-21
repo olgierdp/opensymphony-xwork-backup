@@ -6,24 +6,18 @@ package com.opensymphony.xwork2.ognl;
 
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
-import com.opensymphony.xwork2.ognl.OgnlUtil;
-import com.opensymphony.xwork2.ognl.OgnlValueStack;
 import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
 import com.opensymphony.xwork2.test.TestBean2;
-import com.opensymphony.xwork2.util.Bar;
-import com.opensymphony.xwork2.util.Cat;
-import com.opensymphony.xwork2.util.CompoundRoot;
-import com.opensymphony.xwork2.util.Dog;
+import com.opensymphony.xwork2.util.*;
 import com.opensymphony.xwork2.util.Foo;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
+import ognl.PropertyAccessor;
 
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import ognl.PropertyAccessor;
 
 
 /**
@@ -37,6 +31,7 @@ public class OgnlValueStackTest extends XWorkTestCase {
 
     private OgnlUtil ognlUtil;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ognlUtil = container.getInstance(OgnlUtil.class);

@@ -7,9 +7,7 @@ package com.opensymphony.xwork2.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.net.URL;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +24,7 @@ import java.util.Map;
 public class FileManager {
     //~ Static fields/initializers /////////////////////////////////////////////
 
-    private static Map files = Collections.synchronizedMap(new HashMap());
+    private static Map<String, FileRevision> files = Collections.synchronizedMap(new HashMap<String, FileRevision>());
     protected static boolean reloadingConfigs = true;
 
     //~ Constructors ///////////////////////////////////////////////////////////

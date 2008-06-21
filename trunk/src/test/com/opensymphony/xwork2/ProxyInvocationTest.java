@@ -1,12 +1,9 @@
 package com.opensymphony.xwork2;
 
+import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.opensymphony.xwork2.config.ConfigurationException;
-import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
-import com.opensymphony.xwork2.inject.ContainerBuilder;
-import com.opensymphony.xwork2.util.location.LocatableProperties;
 
 /**
  * Contribed by: Ruben Inoto
@@ -34,14 +31,15 @@ public class ProxyInvocationTest extends XWorkTestCase {
     /** 
      * Needed for the creation of the action proxy
      */
-    private Map createDummyContext() {
-        Map params = new HashMap();
+    private Map<String, Object> createDummyContext() {
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("blah", "this is blah");
-        Map extraContext = new HashMap();
+        Map<String, Object> extraContext = new HashMap<String, Object>();
         extraContext.put(ActionContext.PARAMETERS, params);
         return extraContext;
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 

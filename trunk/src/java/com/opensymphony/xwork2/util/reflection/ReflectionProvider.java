@@ -23,7 +23,7 @@ public interface ReflectionProvider {
      * @param o       the object
      * @param context the action context
      */
-    void setProperties(Map props, Object o, Map context);
+    void setProperties(Map<String, String> props, Object o, Map<String, Object> context);
 
     /**
      * Sets the object's properties using the default type converter.
@@ -34,7 +34,7 @@ public interface ReflectionProvider {
      * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for
      *                                problems setting the properties
      */
-    void setProperties(Map props, Object o, Map context, boolean throwPropertyExceptions) throws ReflectionException;
+    void setProperties(Map<String, String> props, Object o, Map<String, Object> context, boolean throwPropertyExceptions) throws ReflectionException;
     
     /**
      * Sets the properties on the object using the default context, defaulting to not throwing
@@ -43,7 +43,7 @@ public interface ReflectionProvider {
      * @param properties
      * @param o
      */
-    void setProperties(Map properties, Object o);
+    void setProperties(Map<String, String> properties, Object o);
     
     /**
      *  This method returns a PropertyDescriptor for the given class and property name using
@@ -63,7 +63,7 @@ public interface ReflectionProvider {
      * @param inclusions collection of method names to included copying  (can be null)
      *                   note if exclusions AND inclusions are supplied and not null nothing will get copied.
      */
-    void copy(Object from, Object to, Map context, Collection exclusions, Collection inclusions);
+    void copy(Object from, Object to, Map<String, Object> context, Collection<String> exclusions, Collection<String> inclusions);
     
     /**
      * Looks for the real target with the specified property given a root Object which may be a
@@ -71,7 +71,7 @@ public interface ReflectionProvider {
      *
      * @return the real target or null if no object can be found with the specified property
      */
-    Object getRealTarget(String property, Map context, Object root) throws ReflectionException;
+    Object getRealTarget(String property, Map<String, Object> context, Object root) throws ReflectionException;
     
     /**
      * Sets the named property to the supplied value on the Object, defaults to not throwing
@@ -82,7 +82,7 @@ public interface ReflectionProvider {
      * @param o       the object upon which to set the property
      * @param context the context which may include the TypeConverter
      */
-    void setProperty(String name, Object value, Object o, Map context);
+    void setProperty(String name, Object value, Object o, Map<String, Object> context);
     
     /**
      * Creates a Map with read properties for the given source object.
@@ -94,7 +94,7 @@ public interface ReflectionProvider {
      * @return  a Map with (key = read property name, value = value of read property).
      * @throws IntrospectionException is thrown if an exception occurs during introspection.
      */
-    Map getBeanMap(Object source) throws IntrospectionException, ReflectionException;
+    Map<String, Object> getBeanMap(Object source) throws IntrospectionException, ReflectionException;
     
     /**
      * Evaluates the given OGNL expression to extract a value from the given root
@@ -105,7 +105,7 @@ public interface ReflectionProvider {
      * @param root the root object for the OGNL expression
      * @return the result of evaluating the expression
      */
-    Object getValue( String expression, Map context, Object root ) throws ReflectionException;
+    Object getValue( String expression, Map<String, Object> context, Object root ) throws ReflectionException;
     
     /**
      * Evaluates the given OGNL expression to insert a value into the object graph
@@ -116,7 +116,7 @@ public interface ReflectionProvider {
      * @param context the naming context for the evaluation
      * @param value the value to insert into the object graph
      */
-    void setValue( String expression, Map context, Object root, Object value ) throws ReflectionException;
+    void setValue( String expression, Map<String, Object> context, Object root, Object value ) throws ReflectionException;
     
     /**
      * Get's the java beans property descriptors for the given source.

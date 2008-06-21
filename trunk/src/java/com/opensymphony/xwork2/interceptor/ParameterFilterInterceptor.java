@@ -4,16 +4,15 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.util.TextParseUtil;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * <!-- START SNIPPET: description -->
@@ -87,32 +86,32 @@ public class ParameterFilterInterceptor extends AbstractInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(ParameterFilterInterceptor.class);
 
-    private Collection allowed;
-    private Collection blocked;
-    private Map includesExcludesMap;
+    private Collection<String> allowed;
+    private Collection<String> blocked;
+    private Map<String, Boolean> includesExcludesMap;
     private boolean defaultBlock = false;
 
+    @Override
     public String intercept(ActionInvocation invocation) throws Exception {
 
-        Map parameters = invocation.getInvocationContext().getParameters();
-        HashSet paramsToRemove = new HashSet();
+        Map<String, Object> parameters = invocation.getInvocationContext().getParameters();
+        HashSet<String> paramsToRemove = new HashSet<String>();
 
-        Map includesExcludesMap = getIncludesExcludesMap();
+        Map<String, Boolean> includesExcludesMap = getIncludesExcludesMap();
 
-        for (Iterator i = parameters.keySet().iterator(); i.hasNext();) {
-
-            String param = (String) i.next();
+        for (Object o : parameters.keySet()) {
+            String param = o.toString();
 
             boolean currentAllowed = !isDefaultBlock();
 
             boolean foundApplicableRule = false;
-            for (Iterator j = includesExcludesMap.keySet().iterator(); j.hasNext();) {
-                String currRule = (String) j.next();
+            for (Object o1 : includesExcludesMap.keySet()) {
+                String currRule = (String) o1;
 
                 if (param.startsWith(currRule)
                         && (param.length() == currRule.length()
                         || isPropSeperator(param.charAt(currRule.length())))) {
-                    currentAllowed = ((Boolean) includesExcludesMap.get(currRule)).booleanValue();
+                    currentAllowed = includesExcludesMap.get(currRule).booleanValue();
                 } else {
                     if (foundApplicableRule) {
                         foundApplicableRule = false;
@@ -129,8 +128,8 @@ public class ParameterFilterInterceptor extends AbstractInterceptor {
             LOG.debug("Params to remove: " + paramsToRemove);
         }
 
-        for (Iterator i = paramsToRemove.iterator(); i.hasNext();) {
-            parameters.remove(i.next());
+        for (Object aParamsToRemove : paramsToRemove) {
+            parameters.remove(aParamsToRemove);
         }
 
         return invocation.invoke();
@@ -146,18 +145,18 @@ public class ParameterFilterInterceptor extends AbstractInterceptor {
         return c == '.' || c == '(' || c == '[';
     }
 
-    private Map getIncludesExcludesMap() {
+    private Map<String, Boolean> getIncludesExcludesMap() {
         if (this.includesExcludesMap == null) {
-            this.includesExcludesMap = new TreeMap();
+            this.includesExcludesMap = new TreeMap<String, Boolean>();
 
             if (getAllowedCollection() != null) {
-                for (Iterator i = getAllowedCollection().iterator(); i.hasNext();) {
-                    this.includesExcludesMap.put(i.next(), Boolean.TRUE);
+                for (String e : getAllowedCollection()) {
+                    this.includesExcludesMap.put(e, Boolean.TRUE);
                 }
             }
             if (getBlockedCollection() != null) {
-                for (Iterator i = getBlockedCollection().iterator(); i.hasNext();) {
-                    this.includesExcludesMap.put(i.next(), Boolean.FALSE);
+                for (String b : getBlockedCollection()) {
+                    this.includesExcludesMap.put(b, Boolean.FALSE);
                 }
             }
         }
@@ -182,14 +181,14 @@ public class ParameterFilterInterceptor extends AbstractInterceptor {
     /**
      * @return Returns the blocked.
      */
-    public Collection getBlockedCollection() {
+    public Collection<String> getBlockedCollection() {
         return blocked;
     }
 
     /**
      * @param blocked The blocked to set.
      */
-    public void setBlockedCollection(Collection blocked) {
+    public void setBlockedCollection(Collection<String> blocked) {
         this.blocked = blocked;
     }
 
@@ -203,14 +202,14 @@ public class ParameterFilterInterceptor extends AbstractInterceptor {
     /**
      * @return Returns the allowed.
      */
-    public Collection getAllowedCollection() {
+    public Collection<String> getAllowedCollection() {
         return allowed;
     }
 
     /**
      * @param allowed The allowed to set.
      */
-    public void setAllowedCollection(Collection allowed) {
+    public void setAllowedCollection(Collection<String> allowed) {
         this.allowed = allowed;
     }
 
@@ -227,7 +226,7 @@ public class ParameterFilterInterceptor extends AbstractInterceptor {
      * @param commaDelim the comma delimited String.
      * @return A collection from the comma delimited String. Returns <tt>null</tt> if the string is empty.
      */
-    private Collection asCollection(String commaDelim) {
+    private Collection<String> asCollection(String commaDelim) {
         if (commaDelim == null || commaDelim.trim().length() == 0) {
             return null;
         }

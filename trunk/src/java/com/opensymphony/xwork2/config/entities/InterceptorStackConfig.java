@@ -10,8 +10,8 @@ import com.opensymphony.xwork2.util.location.Location;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -77,6 +77,7 @@ public class InterceptorStackConfig extends Located implements Serializable {
      * <li>all of their <code>InterceptorMapping</code>s are equals</li>
      * </ul>
      */
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -103,6 +104,7 @@ public class InterceptorStackConfig extends Located implements Serializable {
      * Generate hashcode based on <code>InterceptorStackConfig</code>'s name and its
      * <code>InterceptorMapping</code>s.
      */
+    @Override
     public int hashCode() {
         int result;
         result = ((name != null) ? name.hashCode() : 0);

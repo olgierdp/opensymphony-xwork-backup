@@ -1,11 +1,11 @@
 package com.opensymphony.xwork2.util;
 
+import junit.framework.TestCase;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Collection;
-
-import junit.framework.TestCase;
 
 /**
  * @author Dan Oxlade, dan d0t oxlade at gmail d0t c0m

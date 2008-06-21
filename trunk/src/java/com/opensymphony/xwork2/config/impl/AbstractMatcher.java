@@ -148,7 +148,7 @@ public abstract class AbstractMatcher<E> implements Serializable {
      * @return A cloned object with appropriate properties replaced with
      *         wildcard-matched values
      */
-    protected abstract E convert(String path, E orig, Map vars);
+    protected abstract E convert(String path, E orig, Map<String, String> vars);
 
     /**
      * <p> Replaces parameter values
@@ -160,7 +160,7 @@ public abstract class AbstractMatcher<E> implements Serializable {
     protected Map<String,String> replaceParameters(Map<String, String> orig, Map<String,String> vars) {
         Map<String,String> map = new LinkedHashMap<String,String>();
         for (String key : orig.keySet()) {
-            map.put(key, convertParam(String.valueOf(orig.get(key)), vars));
+            map.put(key, convertParam(orig.get(key), vars));
         }
         return map;
     }
@@ -175,7 +175,7 @@ public abstract class AbstractMatcher<E> implements Serializable {
      * @param vars A Map of wildcard-matched strings
      * @return The new value
      */
-    protected String convertParam(String val, Map<String,String> vars) {
+    protected String convertParam(String val, Map<String, String> vars) {
         if (val == null) {
             return null;
         } 

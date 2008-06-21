@@ -4,16 +4,16 @@
  */
 package com.opensymphony.xwork2.validator;
 
+import com.opensymphony.xwork2.validator.annotations.*;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.text.ParseException;
-
-import com.opensymphony.xwork2.validator.annotations.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <code>AnnotationValidationConfigurationBuilder</code>
@@ -538,10 +538,10 @@ public class AnnotationValidationConfigurationBuilder {
         SimpleDateFormat d3 = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault());
         SimpleDateFormat[] dfs = {d1, d2, d3};
         DateFormat df = null;
-        for (int i = 0; i < dfs.length; i++) {
+        for (SimpleDateFormat df1 : dfs) {
             try {
-                Date check = dfs[i].parse(value);
-                df = dfs[i];
+                Date check = df1.parse(value);
+                df = df1;
                 if (check != null) {
                     return check;
                 }

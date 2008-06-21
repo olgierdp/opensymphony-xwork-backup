@@ -6,14 +6,12 @@
  */
 package com.opensymphony.xwork2.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkTestCase;
 
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * @author Gabe

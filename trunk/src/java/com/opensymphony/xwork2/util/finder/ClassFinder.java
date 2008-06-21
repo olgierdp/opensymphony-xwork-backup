@@ -16,7 +16,14 @@
  */
 package com.opensymphony.xwork2.util.finder;
 
-import java.beans.Introspector;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.commons.EmptyVisitor;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,26 +35,9 @@ import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
-
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.commons.EmptyVisitor;
-
-import com.opensymphony.xwork2.util.logging.Logger;
-import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 /**
  * ClassFinder searches the classpath of the specified classloader for
@@ -136,9 +126,9 @@ public class ClassFinder {
         List<String> classNames = new ArrayList<String>();
         for (URL location : urls) {
             try {
-                if (location.getProtocol().equals("jar")) {
+                if ("jar".equals(location.getProtocol())) {
                     classNames.addAll(jar(location));
-                } else if (location.getProtocol().equals("file")) {
+                } else if ("file".equals(location.getProtocol())) {
                     try {
                         // See if it's actually a jar
                         URL jarUrl = new URL("jar", "", location.toExternalForm() + "!/");
@@ -268,7 +258,7 @@ public class ClassFinder {
         List<Method> methods = new ArrayList<Method>();
         List<Info> infos = getAnnotationInfos(annotation.getName());
         for (Info info : infos) {
-            if (info instanceof MethodInfo && !info.getName().equals("<init>")) {
+            if (info instanceof MethodInfo && !"<init>".equals(info.getName())) {
                 MethodInfo methodInfo = (MethodInfo) info;
                 ClassInfo classInfo = methodInfo.getDeclaringClass();
 
@@ -297,7 +287,7 @@ public class ClassFinder {
         List<Constructor> constructors = new ArrayList<Constructor>();
         List<Info> infos = getAnnotationInfos(annotation.getName());
         for (Info info : infos) {
-            if (info instanceof MethodInfo && info.getName().equals("<init>")) {
+            if (info instanceof MethodInfo && "<init>".equals(info.getName())) {
                 MethodInfo methodInfo = (MethodInfo) info;
                 ClassInfo classInfo = methodInfo.getDeclaringClass();
 
@@ -427,7 +417,7 @@ public class ClassFinder {
     private List<String> file(URL location) {
         List<String> classNames = new ArrayList<String>();
         File dir = new File(URLDecoder.decode(location.getPath()));
-        if (dir.getName().equals("META-INF")) {
+        if ("META-INF".equals(dir.getName())) {
             dir = dir.getParentFile(); // Scrape "META-INF" off
         }
         if (dir.isDirectory()) {
@@ -451,7 +441,7 @@ public class ClassFinder {
 
     private List<String> jar(URL location) throws IOException {
         String jarPath = location.getFile();
-        if (jarPath.indexOf("!") > -1){
+        if (jarPath.contains("!")){
             jarPath = jarPath.substring(0, jarPath.indexOf("!"));
         }
         URL url = new URL(jarPath);
@@ -601,6 +591,7 @@ public class ClassFinder {
             }
         }
 
+        @Override
         public String toString() {
             return name;
         }
@@ -658,6 +649,7 @@ public class ClassFinder {
             return returnType;
         }
 
+        @Override
         public String toString() {
             return declaringClass + "@" + name;
         }
@@ -693,6 +685,7 @@ public class ClassFinder {
             return type;
         }
 
+        @Override
         public String toString() {
             return declaringClass + "#" + name;
         }
@@ -719,6 +712,7 @@ public class ClassFinder {
             return name;
         }
 
+        @Override
         public String toString() {
             return name;
         }
@@ -766,6 +760,7 @@ public class ClassFinder {
             this.info = info;
         }
 
+        @Override
         public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
             if (name.endsWith("package-info")) {
                 info = new PackageInfo(javaName(name));
@@ -808,6 +803,7 @@ public class ClassFinder {
             return (name == null)? null:name.replace('/', '.');
         }
 
+        @Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
             AnnotationInfo annotationInfo = new AnnotationInfo(desc);
             info.getAnnotations().add(annotationInfo);
@@ -815,6 +811,7 @@ public class ClassFinder {
             return new InfoBuildingVisitor(annotationInfo);
         }
 
+        @Override
         public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
             ClassInfo classInfo = ((ClassInfo) info);
             FieldInfo fieldInfo = new FieldInfo(classInfo, name, desc);
@@ -822,6 +819,7 @@ public class ClassFinder {
             return new InfoBuildingVisitor(fieldInfo);
         }
 
+        @Override
         public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
             ClassInfo classInfo = ((ClassInfo) info);
             MethodInfo methodInfo = new MethodInfo(classInfo, name, desc);
@@ -829,6 +827,7 @@ public class ClassFinder {
             return new InfoBuildingVisitor(methodInfo);
         }
 
+        @Override
         public AnnotationVisitor visitParameterAnnotation(int param, String desc, boolean visible) {
             MethodInfo methodInfo = ((MethodInfo) info);
             List<AnnotationInfo> annotationInfos = methodInfo.getParameterAnnotations(param);

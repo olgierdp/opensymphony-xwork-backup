@@ -5,7 +5,6 @@ package com.opensymphony.xwork2.spring.interceptor;
 
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.StaticWebApplicationContext;
@@ -61,10 +60,10 @@ public class ActionAutowiringInterceptorTest extends XWorkTestCase {
     }
 
     protected void loadSpringApplicationContextIntoApplication(ApplicationContext appContext) {
-        Map application = new HashMap();
+        Map<Object, Object> application = new HashMap<Object, Object>();
         application.put(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, appContext);
 
-        Map context = new HashMap();
+        Map<String, Object> context = new HashMap<String, Object>();
         context.put(ActionContext.APPLICATION, application);
         ActionContext actionContext = new ActionContext(context);
         ActionContext.setContext(actionContext);
@@ -89,7 +88,7 @@ public class ActionAutowiringInterceptorTest extends XWorkTestCase {
     }
 
     public void testIfApplicationContextIsNullThenBeanWillNotBeWiredUp() throws Exception {
-        Map context = new HashMap();
+        Map<String, Object> context = new HashMap<String, Object>();
         context.put(ActionContext.APPLICATION, new HashMap());
         ActionContext actionContext = new ActionContext(context);
         ActionContext.setContext(actionContext);

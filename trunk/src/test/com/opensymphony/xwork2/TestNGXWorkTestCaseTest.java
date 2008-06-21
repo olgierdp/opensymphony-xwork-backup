@@ -4,14 +4,11 @@
  */
 package com.opensymphony.xwork2;
 
+import com.opensymphony.xwork2.config.ConfigurationManager;
+import junit.framework.TestCase;
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
 import org.testng.annotations.Test;
-
-import com.opensymphony.xwork2.TestNGXWorkTestCase;
-import com.opensymphony.xwork2.config.ConfigurationManager;
-
-import junit.framework.TestCase;
 
 public class TestNGXWorkTestCaseTest extends TestCase {
 

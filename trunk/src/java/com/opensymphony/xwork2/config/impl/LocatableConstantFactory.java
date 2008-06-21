@@ -22,6 +22,7 @@ public class LocatableConstantFactory<T> extends Located implements Factory {
         return constant;
     }
     
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString());

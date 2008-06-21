@@ -47,7 +47,7 @@ public class ActionConfigMatcher extends AbstractMatcher<ActionConfig> implement
      * @param configs An array of ActionConfig's to process
      * @deprecated Since 2.1, use {@link #ActionConfigMatcher(PatternMatcher, Map, boolean)} instead
      */
-    public ActionConfigMatcher(Map<String, ActionConfig> configs) {
+    @Deprecated public ActionConfigMatcher(Map<String, ActionConfig> configs) {
         this(configs, false);
     }
     
@@ -67,7 +67,7 @@ public class ActionConfigMatcher extends AbstractMatcher<ActionConfig> implement
      * @param looseMatch To loosely match wildcards or not
      * @deprecated Since 2.1, use {@link #ActionConfigMatcher(PatternMatcher, Map, boolean)} instead
      */
-    public ActionConfigMatcher(Map<String, ActionConfig> configs,
+    @Deprecated public ActionConfigMatcher(Map<String, ActionConfig> configs,
             boolean looseMatch) {
 
         this(new WildcardHelper(), configs, looseMatch);
@@ -107,8 +107,8 @@ public class ActionConfigMatcher extends AbstractMatcher<ActionConfig> implement
      * @return A cloned ActionConfig with appropriate properties replaced with
      *         wildcard-matched values
      */
-    public ActionConfig convert(String path, ActionConfig orig,
-        Map vars) {
+    @Override public ActionConfig convert(String path, ActionConfig orig,
+        Map<String, String> vars) {
         
         String className = convertParam(orig.getClassName(), vars);
         String methodName = convertParam(orig.getMethodName(), vars);
@@ -136,7 +136,7 @@ public class ActionConfigMatcher extends AbstractMatcher<ActionConfig> implement
             exs.add(e);
         }
         
-        ActionConfig config = new ActionConfig.Builder(pkgName, orig.getName(), className)
+        return new ActionConfig.Builder(pkgName, orig.getName(), className)
                 .methodName(methodName)
                 .addParams(params)
                 .addResultConfigs(results)
@@ -144,7 +144,5 @@ public class ActionConfigMatcher extends AbstractMatcher<ActionConfig> implement
                 .addExceptionMappings(exs)
                 .location(orig.getLocation())
                 .build();
-
-        return config;
     }
 }

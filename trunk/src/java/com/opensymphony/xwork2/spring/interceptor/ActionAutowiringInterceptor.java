@@ -5,17 +5,16 @@
 
 package com.opensymphony.xwork2.spring.interceptor;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.web.context.WebApplicationContext;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.opensymphony.xwork2.spring.SpringObjectFactory;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  * <!-- START SNIPPET: description -->
@@ -81,7 +80,7 @@ public class ActionAutowiringInterceptor extends AbstractInterceptor implements 
      * @param invocation
      * @throws Exception
      */
-    public String intercept(ActionInvocation invocation) throws Exception {
+    @Override public String intercept(ActionInvocation invocation) throws Exception {
         if (!initialized) {
             ApplicationContext applicationContext = (ApplicationContext) ActionContext.getContext().getApplication().get(
                     WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);

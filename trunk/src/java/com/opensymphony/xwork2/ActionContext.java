@@ -6,7 +6,6 @@ package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -88,9 +87,9 @@ public class ActionContext implements Serializable {
     /**
      * Constant for the container
      */
-    public static final String CONTAINER = "com.opensymphony.xwork.ActionContext.container";
+    public static final String CONTAINER = "com.opensymphony.xwork2.ActionContext.container";
     
-    Map context;
+    Map<String, Object> context;
 
 
     /**
@@ -98,7 +97,7 @@ public class ActionContext implements Serializable {
      *
      * @param context a context map.
      */
-    public ActionContext(Map context) {
+    public ActionContext(Map<String, Object> context) {
         this.context = context;
     }
 
@@ -126,7 +125,7 @@ public class ActionContext implements Serializable {
      *
      * @param application the action's application context.
      */
-    public void setApplication(Map application) {
+    public void setApplication(Map<String, Object> application) {
         put(APPLICATION, application);
     }
 
@@ -135,8 +134,8 @@ public class ActionContext implements Serializable {
      *
      * @return a Map of ServletContext or generic application level Map
      */
-    public Map getApplication() {
-        return (Map) get(APPLICATION);
+    public Map<String, Object> getApplication() {
+        return (Map<String, Object>) get(APPLICATION);
     }
 
     /**
@@ -154,7 +153,7 @@ public class ActionContext implements Serializable {
      * @return the ActionContext for the current thread, is never <tt>null</tt>.
      */
     public static ActionContext getContext() {
-        ActionContext context = (ActionContext) actionContext.get();
+        return (ActionContext) actionContext.get();
 
         // Don't do lazy context creation, as it requires container; the creation of which may 
         // precede the context creation
@@ -164,7 +163,6 @@ public class ActionContext implements Serializable {
         //    setContext(context);
         //}
 
-        return context;
     }
 
     /**
@@ -172,7 +170,7 @@ public class ActionContext implements Serializable {
      *
      * @param contextMap the context map.
      */
-    public void setContextMap(Map contextMap) {
+    public void setContextMap(Map<String, Object> contextMap) {
         getContext().context = contextMap;
     }
 
@@ -181,7 +179,7 @@ public class ActionContext implements Serializable {
      *
      * @return the context map.
      */
-    public Map getContextMap() {
+    public Map<String, Object> getContextMap() {
         return context;
     }
 
@@ -190,7 +188,7 @@ public class ActionContext implements Serializable {
      *
      * @param conversionErrors a Map of errors which occurred when executing the action.
      */
-    public void setConversionErrors(Map conversionErrors) {
+    public void setConversionErrors(Map<String, Object> conversionErrors) {
         put(CONVERSION_ERRORS, conversionErrors);
     }
 
@@ -200,11 +198,11 @@ public class ActionContext implements Serializable {
      * @return the map of conversion errors which occurred when executing the action or an empty map if
      *         there were no errors.
      */
-    public Map getConversionErrors() {
-        Map errors = (Map) get(CONVERSION_ERRORS);
+    public Map<String, Object> getConversionErrors() {
+        Map<String, Object> errors = (Map) get(CONVERSION_ERRORS);
 
         if (errors == null) {
-            errors = new HashMap();
+            errors = new HashMap<String, Object>();
             setConversionErrors(errors);
         }
 
@@ -260,7 +258,7 @@ public class ActionContext implements Serializable {
      *
      * @param parameters the parameters for the current action.
      */
-    public void setParameters(Map parameters) {
+    public void setParameters(Map<String, Object> parameters) {
         put(PARAMETERS, parameters);
     }
 
@@ -271,8 +269,8 @@ public class ActionContext implements Serializable {
      * @return a Map of HttpServletRequest parameters or a multipart map when in a servlet environment, or a
      *         generic Map of parameters otherwise.
      */
-    public Map getParameters() {
-        return (Map) get(PARAMETERS);
+    public Map<String, Object> getParameters() {
+        return (Map<String, Object>) get(PARAMETERS);
     }
 
     /**
@@ -280,7 +278,7 @@ public class ActionContext implements Serializable {
      *
      * @param session  the session values.
      */
-    public void setSession(Map session) {
+    public void setSession(Map<String, Object> session) {
         put(SESSION, session);
     }
 
@@ -289,8 +287,8 @@ public class ActionContext implements Serializable {
      *
      * @return the Map of HttpSession values when in a servlet environment or a generic session map otherwise.
      */
-    public Map getSession() {
-        return (Map) get(SESSION);
+    public Map<String, Object> getSession() {
+        return (Map<String, Object>) get(SESSION);
     }
 
     /**
@@ -344,7 +342,7 @@ public class ActionContext implements Serializable {
      * @param key the key used to find the value.
      * @return the value that was found using the key or <tt>null</tt> if the key was not found.
      */
-    public Object get(Object key) {
+    public Object get(String key) {
         return context.get(key);
     }
 
@@ -354,7 +352,7 @@ public class ActionContext implements Serializable {
      * @param key   the key of the value.
      * @param value the value to be stored.
      */
-    public void put(Object key, Object value) {
+    public void put(String key, Object value) {
         context.put(key, value);
     }
 }

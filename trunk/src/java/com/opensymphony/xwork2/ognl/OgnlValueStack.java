@@ -4,24 +4,10 @@
  */
 package com.opensymphony.xwork2.ognl;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.LinkedHashSet;
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-
-import ognl.Ognl;
-import ognl.OgnlContext;
-import ognl.OgnlException;
-import ognl.PropertyAccessor;
-
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.XWorkException;
-import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.Inject;
@@ -32,6 +18,19 @@ import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.logging.LoggerUtils;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
+import ognl.Ognl;
+import ognl.OgnlContext;
+import ognl.OgnlException;
+import ognl.PropertyAccessor;
+
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Ognl implementation of a value stack that allows for dynamic Ognl expressions to be evaluated against it. When
@@ -50,15 +49,15 @@ public class OgnlValueStack implements Serializable, ValueStack {
     private static Logger LOG = LoggerFactory.getLogger(OgnlValueStack.class);
     private boolean devMode;
 
-    public static void link(Map context, Class clazz, String name) {
+    public static void link(Map<String, Object> context, Class clazz, String name) {
         context.put("__link", new Object[]{clazz, name});
     }
 
 
     CompoundRoot root;
-    transient Map context;
+    transient Map<String, Object> context;
     Class defaultType;
-    Map overrides;
+    Map<Object, Object> overrides;
     transient OgnlUtil ognlUtil;
 
     protected OgnlValueStack(XWorkConverter xworkConverter, CompoundRootAccessor accessor, TextProvider prov, boolean allowStaticAccess) {
@@ -95,7 +94,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
     /* (non-Javadoc)
      * @see com.opensymphony.xwork2.util.ValueStack#getContext()
      */
-    public Map getContext() {
+    public Map<String, Object> getContext() {
         return context;
     }
 
@@ -109,7 +108,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
     /* (non-Javadoc)
      * @see com.opensymphony.xwork2.util.ValueStack#setExprOverrides(java.util.Map)
      */
-    public void setExprOverrides(Map overrides) {
+    public void setExprOverrides(Map<Object, Object> overrides) {
         if (this.overrides == null) {
             this.overrides = overrides;
         } else {
@@ -120,7 +119,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
     /* (non-Javadoc)
     * @see com.opensymphony.xwork2.util.ValueStack#getExprOverrides()
     */
-    public Map getExprOverrides() {
+    public Map<Object, Object> getExprOverrides() {
         return this.overrides;
     }
 
@@ -142,7 +141,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
      * @see com.opensymphony.xwork2.util.ValueStack#setValue(java.lang.String, java.lang.Object, boolean)
      */
     public void setValue(String expr, Object value, boolean throwExceptionOnFailure) {
-        Map context = getContext();
+        Map<String, Object> context = getContext();
 
         try {
             context.put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, expr);
@@ -161,7 +160,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
             }
         } catch (RuntimeException re) { //XW-281
             if (throwExceptionOnFailure) {
-                StringBuffer msg = new StringBuffer();
+                StringBuilder msg = new StringBuilder();
                 msg.append("Error setting expression '");
                 msg.append(expr);
                 msg.append("' with value ");
@@ -288,7 +287,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
             }
         } else if (findInContext(expr) == null) {
             // find objects with Action in them and inspect matching getters
-            Set availableProperties = new LinkedHashSet();
+            Set<String> availableProperties = new LinkedHashSet<String>();
             for (Object o : root) {
                 if (o instanceof ActionSupport || o.getClass().getSimpleName().endsWith("Action")) {
                     try {
@@ -315,20 +314,20 @@ public class OgnlValueStack implements Serializable, ValueStack {
      * @param parent              a parent property
      * @throws IntrospectionException when Ognl can't get property descriptors
      */
-    private void findAvailableProperties(Class c, String expr, Set availableProperties, String parent) throws IntrospectionException {
+    private void findAvailableProperties(Class c, String expr, Set<String> availableProperties, String parent) throws IntrospectionException {
         PropertyDescriptor[] descriptors = ognlUtil.getPropertyDescriptors(c);
         for (PropertyDescriptor pd : descriptors) {
             String name = pd.getDisplayName();
-            if (parent != null && expr.indexOf(".") > -1) {
+            if (parent != null && expr.contains(".")) {
                 name = expr.substring(0, expr.indexOf(".") + 1) + name;
             }
             if (expr.startsWith(name)) {
                 availableProperties.add((parent != null) ? parent + "." + name : name);
                 if (expr.equals(name)) break; // no need to go any further
-                if (expr.indexOf(".") > -1) {
+                if (expr.contains(".")) {
                     String property = expr.substring(expr.indexOf(".") + 1);
                     // if there is a nested property (indicated by a dot), chop it off so we can look for method name
-                    String rawProperty = (property.indexOf(".") > -1) ? property.substring(0, property.indexOf(".")) : property;
+                    String rawProperty = (property.contains(".")) ? property.substring(0, property.indexOf(".")) : property;
                     String methodToLookFor = "get" + rawProperty.substring(0, 1).toUpperCase() + rawProperty.substring(1);
                     Method[] methods = pd.getPropertyType().getDeclaredMethods();
                     for (Method method : methods) {

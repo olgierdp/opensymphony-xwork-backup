@@ -1,10 +1,9 @@
 package com.opensymphony.xwork2.ognl;
 
-import java.util.Map;
-
+import com.opensymphony.xwork2.util.reflection.ReflectionContextFactory;
 import ognl.Ognl;
 
-import com.opensymphony.xwork2.util.reflection.ReflectionContextFactory;
+import java.util.Map;
 
 public class OgnlReflectionContextFactory implements ReflectionContextFactory {
 

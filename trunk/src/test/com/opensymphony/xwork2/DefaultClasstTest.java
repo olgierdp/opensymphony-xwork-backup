@@ -15,6 +15,7 @@ import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
  */
 public class DefaultClasstTest extends XWorkTestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 

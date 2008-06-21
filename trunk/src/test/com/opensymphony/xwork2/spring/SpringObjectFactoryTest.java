@@ -17,7 +17,6 @@ import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.interceptor.Interceptor;
 import com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor;
 import com.opensymphony.xwork2.interceptor.TimerInterceptor;
-import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.test.StubConfigurationProvider;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.validator.Validator;
@@ -47,6 +46,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
     SpringObjectFactory objectFactory;
 
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
 
@@ -83,7 +83,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
     public void testFallsBackToDefaultObjectFactoryInterceptorBuilding() throws Exception {
         InterceptorConfig iConfig = new InterceptorConfig.Builder("timer", ModelDrivenInterceptor.class.getName()).build();
 
-        Interceptor interceptor = objectFactory.buildInterceptor(iConfig, new HashMap());
+        Interceptor interceptor = objectFactory.buildInterceptor(iConfig, new HashMap<String, String>());
 
         assertEquals(ModelDrivenInterceptor.class, interceptor.getClass());
     }
@@ -96,7 +96,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
     }
 
     public void testFallsBackToDefaultObjectFactoryValidatorBuilding() throws Exception {
-        Validator validator = objectFactory.buildValidator(RequiredStringValidator.class.getName(), new HashMap(), null);
+        Validator validator = objectFactory.buildValidator(RequiredStringValidator.class.getName(), new HashMap<String, String>(), null);
 
         assertEquals(RequiredStringValidator.class, validator.getClass());
     }
@@ -114,7 +114,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
         sac.registerSingleton("timer-interceptor", TimerInterceptor.class, new MutablePropertyValues());
 
         InterceptorConfig iConfig = new InterceptorConfig.Builder("timer", "timer-interceptor").build();
-        Interceptor interceptor = objectFactory.buildInterceptor(iConfig, new HashMap());
+        Interceptor interceptor = objectFactory.buildInterceptor(iConfig, new HashMap<String, String>());
 
         assertEquals(TimerInterceptor.class, interceptor.getClass());
     }
@@ -132,7 +132,7 @@ public class SpringObjectFactoryTest extends XWorkTestCase {
     public void testObtainValidatorBySpringName() throws Exception {
         sac.registerPrototype("expression-validator", ExpressionValidator.class, new MutablePropertyValues());
 
-        Validator validator = objectFactory.buildValidator("expression-validator", new HashMap(), null);
+        Validator validator = objectFactory.buildValidator("expression-validator", new HashMap<String, String>(), null);
 
         assertEquals(ExpressionValidator.class, validator.getClass());
     }

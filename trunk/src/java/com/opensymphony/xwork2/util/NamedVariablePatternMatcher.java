@@ -4,11 +4,11 @@
  */
 package com.opensymphony.xwork2.util;
 
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * An implementation of a pattern matcher that uses simple named wildcards.  The named wildcards are defined using the

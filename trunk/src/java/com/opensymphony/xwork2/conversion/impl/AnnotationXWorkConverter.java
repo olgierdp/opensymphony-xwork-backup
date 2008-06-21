@@ -4,8 +4,6 @@
  */
 package com.opensymphony.xwork2.conversion.impl;
 
-import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
-
 /**
  * <!-- START SNIPPET: javadoc -->
  * <p/>
@@ -78,5 +76,5 @@ import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
  * @see com.opensymphony.xwork2.conversion.impl.XWorkConverter
  * @deprecated Since XWork 2.0.4, the implementation of XWorkConverter handles the processing of annotations.
  */
-public class AnnotationXWorkConverter extends XWorkConverter {
+@Deprecated public class AnnotationXWorkConverter extends XWorkConverter {
 }

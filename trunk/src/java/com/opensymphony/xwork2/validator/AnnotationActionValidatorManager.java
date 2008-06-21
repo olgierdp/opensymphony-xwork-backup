@@ -5,25 +5,17 @@
 package com.opensymphony.xwork2.validator;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.validator.validators.VisitorFieldValidator;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import com.opensymphony.xwork2.validator.validators.VisitorFieldValidator;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * AnnotationActionValidatorManager is the entry point into XWork's annotations-based validator framework.
@@ -141,7 +133,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
 
                     if (fValidator != null) {
                         if (validatorContext.hasFieldErrors()) {
-                            Collection<String> fieldErrors = (Collection<String>) validatorContext.getFieldErrors().get(fullFieldName);
+                            Collection<String> fieldErrors = validatorContext.getFieldErrors().get(fullFieldName);
 
                             if (fieldErrors != null) {
                                 errs = new ArrayList<String>(fieldErrors);
@@ -159,7 +151,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
 
                     if (fValidator != null) {
                         if (validatorContext.hasFieldErrors()) {
-                            Collection<String> errCol = (Collection<String>) validatorContext.getFieldErrors().get(fullFieldName);
+                            Collection<String> errCol = validatorContext.getFieldErrors().get(fullFieldName);
 
                             if ((errCol != null) && !errCol.equals(errs)) {
                                 if (LOG.isDebugEnabled()) {
@@ -204,7 +196,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
      * @return a validator key which is the class name plus context.
      */
     protected static String buildValidatorKey(Class clazz, String context) {
-        StringBuffer sb = new StringBuffer(clazz.getName());
+        StringBuilder sb = new StringBuilder(clazz.getName());
         sb.append("/");
         sb.append(context);
         return sb.toString();
@@ -275,7 +267,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
      * @param checked   the set of previously checked class-contexts, null if none have been checked
      * @return a list of validator configs for the given class and context.
      */
-    private List<ValidatorConfig> buildValidatorConfigs(Class clazz, String context, boolean checkFile, Set checked) {
+    private List<ValidatorConfig> buildValidatorConfigs(Class clazz, String context, boolean checkFile, Set<String> checked) {
         List<ValidatorConfig> validatorConfigs = new ArrayList<ValidatorConfig>();
 
         if (checked == null) {

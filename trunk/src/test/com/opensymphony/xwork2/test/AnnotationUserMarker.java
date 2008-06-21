@@ -4,7 +4,10 @@
  */
 package com.opensymphony.xwork2.test;
 
-import com.opensymphony.xwork2.validator.annotations.*;
+import com.opensymphony.xwork2.validator.annotations.ExpressionValidator;
+import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
+import com.opensymphony.xwork2.validator.annotations.Validation;
+import com.opensymphony.xwork2.validator.annotations.Validations;
 
 /**
  * Marker interface to help test hierarchy traversal.

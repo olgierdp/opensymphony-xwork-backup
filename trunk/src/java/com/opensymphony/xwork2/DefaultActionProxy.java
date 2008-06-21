@@ -4,10 +4,6 @@
  */
 package com.opensymphony.xwork2;
 
-import java.io.Serializable;
-import java.util.Locale;
-import java.util.Map;
-
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
@@ -17,6 +13,9 @@ import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.profiling.UtilTimerStack;
+
+import java.io.Serializable;
+import java.util.Locale;
 
 
 /**

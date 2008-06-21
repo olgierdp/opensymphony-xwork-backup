@@ -145,8 +145,8 @@ public class LocationImpl implements Location, Serializable {
      *
      * @param padding The amount of lines before and after the error to include
      */
-    public List getSnippet(int padding) {
-        List snippet = new ArrayList();
+    public List<String> getSnippet(int padding) {
+        List<String> snippet = new ArrayList<String>();
         if (getLineNumber() > 0) {
             try {
                 InputStream in = new URL(getURI()).openStream();
@@ -168,6 +168,7 @@ public class LocationImpl implements Location, Serializable {
         return snippet;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -183,6 +184,7 @@ public class LocationImpl implements Location, Serializable {
         return false;
     }
     
+    @Override
     public int hashCode() {
         int hash = line ^ column;
         if (uri != null) hash ^= uri.hashCode();
@@ -191,6 +193,7 @@ public class LocationImpl implements Location, Serializable {
         return hash;
     }
     
+    @Override
     public String toString() {
         return LocationUtils.toString(this);
     }

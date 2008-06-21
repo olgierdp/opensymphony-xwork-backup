@@ -4,60 +4,39 @@
  */
 package com.opensymphony.xwork2.config.providers;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.File;
-import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
 import com.opensymphony.xwork2.Action;
-import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.ConfigurationUtil;
-import com.opensymphony.xwork2.config.entities.ActionConfig;
-import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
-import com.opensymphony.xwork2.config.entities.InterceptorConfig;
-import com.opensymphony.xwork2.config.entities.InterceptorStackConfig;
-import com.opensymphony.xwork2.config.entities.PackageConfig;
-import com.opensymphony.xwork2.config.entities.ResultConfig;
-import com.opensymphony.xwork2.config.entities.ResultTypeConfig;
+import com.opensymphony.xwork2.config.entities.*;
 import com.opensymphony.xwork2.config.impl.LocatableFactory;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.inject.Scope;
-import com.opensymphony.xwork2.util.ClassLoaderUtil;
-import com.opensymphony.xwork2.util.ClassPathFinder;
-import com.opensymphony.xwork2.util.DomHelper;
-import com.opensymphony.xwork2.util.FileManager;
-import com.opensymphony.xwork2.util.TextUtils;
+import com.opensymphony.xwork2.util.*;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.util.location.Location;
 import com.opensymphony.xwork2.util.location.LocationUtils;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Modifier;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.*;
 
 
 /**
@@ -133,6 +112,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     public void destroy() {
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -151,6 +131,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         return true;
     }
 
+    @Override
     public int hashCode() {
         return ((configFileName != null) ? configFileName.hashCode() : 0);
     }
@@ -182,7 +163,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
                     final String nodeName = child.getNodeName();
 
-                    if (nodeName.equals("bean")) {
+                    if ("bean".equals(nodeName)) {
                         String type = child.getAttribute("type");
                         String name = child.getAttribute("name");
                         String impl = child.getAttribute("class");
@@ -241,7 +222,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                                 LOG.debug("Unable to load optional class: " + ex);
                             }
                         }
-                    } else if (nodeName.equals("constant")) {
+                    } else if ("constant".equals(nodeName)) {
                         String name = child.getAttribute("name");
                         String value = child.getAttribute("value");
                         props.setProperty(name, value, childNode);
@@ -266,7 +247,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
                     final String nodeName = child.getNodeName();
 
-                    if (nodeName.equals("package")) {
+                    if ("package".equals(nodeName)) {
                         PackageConfig cfg = addPackage(child);
                         if (cfg.isNeedsRefresh()) {
                             reloads.add(child);
@@ -308,7 +289,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 for (Element rp : result) {
                     String parent = rp.getAttribute("extends");
                     if (parent != null) {
-                        List parents = ConfigurationUtil.buildParentsFromString(configuration, parent);
+                        List<PackageConfig> parents = ConfigurationUtil.buildParentsFromString(configuration, parent);
                         if (parents != null && parents.size() <= 0) {
                             LOG.error("Unable to find parent packages " + parent);
                         }
@@ -364,16 +345,16 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
 
 
-        Map results;
+        Map<String, ResultConfig> results;
         try {
             results = buildResults(actionElement, packageContext);
         } catch (ConfigurationException e) {
             throw new ConfigurationException("Error building results for action " + name + " in namespace " + packageContext.getNamespace(), e, actionElement);
         }
 
-        List interceptorList = buildInterceptorList(actionElement, packageContext);
+        List<InterceptorMapping> interceptorList = buildInterceptorList(actionElement, packageContext);
 
-        List exceptionMappings = buildExceptionMappings(actionElement, packageContext);
+        List<ExceptionMappingConfig> exceptionMappings = buildExceptionMappings(actionElement, packageContext);
 
         ActionConfig actionConfig = new ActionConfig.Builder(packageContext.getName(), name, className)
                 .methodName(methodName)
@@ -496,7 +477,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 ResultTypeConfig.Builder resultType = new ResultTypeConfig.Builder(name, className).defaultResultParam(paramName)
                         .location(DomHelper.getLocationObject(resultTypeElement));
 
-                Map params = XmlHelper.getParams(resultTypeElement);
+                Map<String, String> params = XmlHelper.getParams(resultTypeElement);
 
                 if (!params.isEmpty()) {
                     resultType.addParams(params);
@@ -525,15 +506,15 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         return null;
     }
 
-    protected List buildInterceptorList(Element element, PackageConfig.Builder context) throws ConfigurationException {
-        List interceptorList = new ArrayList();
+    protected List<InterceptorMapping> buildInterceptorList(Element element, PackageConfig.Builder context) throws ConfigurationException {
+        List<InterceptorMapping> interceptorList = new ArrayList<InterceptorMapping>();
         NodeList interceptorRefList = element.getElementsByTagName("interceptor-ref");
 
         for (int i = 0; i < interceptorRefList.getLength(); i++) {
             Element interceptorRefElement = (Element) interceptorRefList.item(i);
 
             if (interceptorRefElement.getParentNode().equals(element) || interceptorRefElement.getParentNode().getNodeName().equals(element.getNodeName())) {
-                List interceptors = lookupInterceptorReference(context, interceptorRefElement);
+                List<InterceptorMapping> interceptors = lookupInterceptorReference(context, interceptorRefElement);
                 interceptorList.addAll(interceptors);
             }
         }
@@ -567,7 +548,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         if (TextUtils.stringSet(TextUtils.noNull(parent))) { // has parents, let's look it up
 
-            List parents = ConfigurationUtil.buildParentsFromString(configuration, parent);
+            List<PackageConfig> parents = ConfigurationUtil.buildParentsFromString(configuration, parent);
 
             if (parents.size() <= 0) {
                 cfg.needsRefresh(true);
@@ -582,10 +563,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     /**
      * Build a map of ResultConfig objects from below a given XML element.
      */
-    protected Map buildResults(Element element, PackageConfig.Builder packageContext) {
+    protected Map<String, ResultConfig> buildResults(Element element, PackageConfig.Builder packageContext) {
         NodeList resultEls = element.getElementsByTagName("result");
 
-        Map results = new LinkedHashMap();
+        Map<String, ResultConfig> results = new LinkedHashMap<String, ResultConfig>();
 
         for (int i = 0; i < resultEls.getLength(); i++) {
             Element resultElement = (Element) resultEls.item(i);
@@ -631,11 +612,11 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 {
                     // if <result ...>something</result> then we add a parameter of 'something' as this is the most used result param
                     if (resultElement.getChildNodes().getLength() >= 1) {
-                        resultParams = new LinkedHashMap();
+                        resultParams = new LinkedHashMap<String, String>();
 
                         String paramName = config.getDefaultResultParam();
                         if (paramName != null) {
-                            StringBuffer paramValue = new StringBuffer();
+                            StringBuilder paramValue = new StringBuilder();
                             for (int j = 0; j < resultElement.getChildNodes().getLength(); j++) {
                                 if (resultElement.getChildNodes().item(j).getNodeType() == Node.TEXT_NODE) {
                                     String val = resultElement.getChildNodes().item(j).getNodeValue();
@@ -655,8 +636,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 }
 
                 // create new param map, so that the result param can override the config param
-                Map params = new LinkedHashMap();
-                Map configParams = config.getParams();
+                Map<String, String> params = new LinkedHashMap<String, String>();
+                Map<String, String> configParams = config.getParams();
                 if (configParams != null) {
                     params.putAll(configParams);
                 }
@@ -676,10 +657,10 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     /**
      * Build a map of ResultConfig objects from below a given XML element.
      */
-    protected List buildExceptionMappings(Element element, PackageConfig.Builder packageContext) {
+    protected List<ExceptionMappingConfig> buildExceptionMappings(Element element, PackageConfig.Builder packageContext) {
         NodeList exceptionMappingEls = element.getElementsByTagName("exception-mapping");
 
-        List exceptionMappings = new ArrayList();
+        List<ExceptionMappingConfig> exceptionMappings = new ArrayList<ExceptionMappingConfig>();
 
         for (int i = 0; i < exceptionMappingEls.getLength(); i++) {
             Element ehElement = (Element) exceptionMappingEls.item(i);
@@ -689,7 +670,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 String exceptionClassName = ehElement.getAttribute("exception");
                 String exceptionResult = ehElement.getAttribute("result");
 
-                Map params = XmlHelper.getParams(ehElement);
+                Map<String, String> params = XmlHelper.getParams(ehElement);
 
                 if (!TextUtils.stringSet(emName)) {
                     emName = exceptionResult;
@@ -733,7 +714,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         if (globalResultList.getLength() > 0) {
             Element globalResultElement = (Element) globalResultList.item(0);
-            Map results = buildResults(globalResultElement, packageContext);
+            Map<String, ResultConfig> results = buildResults(globalResultElement, packageContext);
             packageContext.addGlobalResultConfigs(results);
         }
     }
@@ -754,7 +735,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         if (globalExceptionMappingList.getLength() > 0) {
             Element globalExceptionMappingElement = (Element) globalExceptionMappingList.item(0);
-            List exceptionMappings = buildExceptionMappings(globalExceptionMappingElement, packageContext);
+            List<ExceptionMappingConfig> exceptionMappings = buildExceptionMappings(globalExceptionMappingElement, packageContext);
             packageContext.addGlobalExceptionMappingConfigs(exceptionMappings);
         }
     }
@@ -778,7 +759,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         for (int j = 0; j < interceptorRefList.getLength(); j++) {
             Element interceptorRefElement = (Element) interceptorRefList.item(j);
-            List interceptors = lookupInterceptorReference(context, interceptorRefElement);
+            List<InterceptorMapping> interceptors = lookupInterceptorReference(context, interceptorRefElement);
             config.addInterceptors(interceptors);
         }
 
@@ -805,7 +786,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             String name = interceptorElement.getAttribute("name");
             String className = interceptorElement.getAttribute("class");
 
-            Map params = XmlHelper.getParams(interceptorElement);
+            Map<String, String> params = XmlHelper.getParams(interceptorElement);
             InterceptorConfig config = new InterceptorConfig.Builder(name, className)
                     .addParams(params)
                     .location(DomHelper.getLocationObject(interceptorElement))
@@ -825,7 +806,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     //            addPackage(packageElement);
     //        }
     //    }
-    private List loadConfigurationFiles(String fileName, Element includeElement) {
+    private List<Document> loadConfigurationFiles(String fileName, Element includeElement) {
         List<Document> docs = new ArrayList<Document>();
         if (!includedFileNames.contains(fileName)) {
             if (LOG.isDebugEnabled()) {
@@ -897,7 +878,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
                         final String nodeName = child.getNodeName();
 
-                        if (nodeName.equals("include")) {
+                        if ("include".equals(nodeName)) {
                             String includeFileName = child.getAttribute("file");
                             if (includeFileName.indexOf('*') != -1) {
                                 // handleWildCardIncludes(includeFileName, docs, child);
@@ -955,7 +936,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         String relativeDir = null;
 
-        if (includeFileName.indexOf("/") != -1) {
+        if (includeFileName.contains("/")) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("includeFileName contains a /");
             }
@@ -970,7 +951,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         }
 
         for (URL baseSearchURL : curDirUrls) {
-            if (!baseSearchURL.getProtocol().equals("file")) {
+            if (!"file".equals(baseSearchURL.getProtocol())) {
                 continue;
             }
 
@@ -1067,9 +1048,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
      * @param context               The PackageConfig to lookup the interceptor from
      * @return A list of Interceptor objects
      */
-    private List lookupInterceptorReference(PackageConfig.Builder context, Element interceptorRefElement) throws ConfigurationException {
+    private List<InterceptorMapping> lookupInterceptorReference(PackageConfig.Builder context, Element interceptorRefElement) throws ConfigurationException {
         String refName = interceptorRefElement.getAttribute("name");
-        Map refParams = XmlHelper.getParams(interceptorRefElement);
+        Map<String, String> refParams = XmlHelper.getParams(interceptorRefElement);
 
         Location loc = LocationUtils.getLocation(interceptorRefElement);
         return InterceptorBuilder.constructInterceptorReference(context, refName, refParams, loc, objectFactory);

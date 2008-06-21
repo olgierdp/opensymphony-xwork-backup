@@ -4,38 +4,22 @@
  */
 package com.opensymphony.xwork2.ognl;
 
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import ognl.MethodAccessor;
-import ognl.OgnlRuntime;
-import ognl.PropertyAccessor;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.conversion.NullHandler;
-import com.opensymphony.xwork2.conversion.impl.InstantiatingNullHandler;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
-import com.opensymphony.xwork2.ognl.accessor.ObjectAccessor;
-import com.opensymphony.xwork2.ognl.accessor.ObjectProxyPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkCollectionPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkEnumerationAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkIteratorPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkListPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkMapPropertyAccessor;
-import com.opensymphony.xwork2.ognl.accessor.XWorkMethodAccessor;
-import com.opensymphony.xwork2.util.ClassLoaderUtil;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
-import com.opensymphony.xwork2.util.reflection.ReflectionProviderFactory;
+import ognl.MethodAccessor;
+import ognl.OgnlRuntime;
+import ognl.PropertyAccessor;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Creates an Ognl value stack

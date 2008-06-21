@@ -8,18 +8,6 @@
  */
 package com.opensymphony.xwork2.ognl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import ognl.Ognl;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.config.ConfigurationException;
@@ -31,7 +19,6 @@ import com.opensymphony.xwork2.inject.Context;
 import com.opensymphony.xwork2.inject.Factory;
 import com.opensymphony.xwork2.inject.Scope;
 import com.opensymphony.xwork2.mock.MockObjectTypeDeterminer;
-import com.opensymphony.xwork2.ognl.accessor.XWorkListPropertyAccessor;
 import com.opensymphony.xwork2.test.StubConfigurationProvider;
 import com.opensymphony.xwork2.util.Bar;
 import com.opensymphony.xwork2.util.Cat;
@@ -39,6 +26,9 @@ import com.opensymphony.xwork2.util.Foo;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
+import ognl.Ognl;
+
+import java.util.*;
 
 
 /**
@@ -49,6 +39,7 @@ public class SetPropertiesTest extends XWorkTestCase {
     
     private OgnlUtil ognlUtil;
     
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ognlUtil = container.getInstance(OgnlUtil.class);
@@ -136,6 +127,7 @@ public class SetPropertiesTest extends XWorkTestCase {
     public void doTestAddingToListsWithObjects(final boolean allowAdditions) {
 
         loadConfigurationProviders(new StubConfigurationProvider() {
+            @Override
             public void register(ContainerBuilder builder,
                     LocatableProperties props) throws ConfigurationException {
                 builder.factory(ObjectTypeDeterminer.class, new Factory() {
@@ -252,9 +244,8 @@ public class SetPropertiesTest extends XWorkTestCase {
         String bar2Title = "The Clone Wars";
         vs.setValue("barCollection(22).title", bar2Title);
         vs.setValue("barCollection(11).title", bar1Title);
-        Iterator barSetIter = barColl.iterator();
-        while (barSetIter.hasNext()) {
-            Bar next = (Bar) barSetIter.next();
+        for (Object aBarColl : barColl) {
+            Bar next = (Bar) aBarColl;
             if (next.getId().intValue() == 22) {
                 assertEquals(bar2Title, next.getTitle());
             } else {
@@ -268,10 +259,9 @@ public class SetPropertiesTest extends XWorkTestCase {
         vs.setValue("barCollection.makeNew[0].title", bar3Title, true);
 
         assertEquals(4, barColl.size());
-        barSetIter = barColl.iterator();
 
-        while (barSetIter.hasNext()) {
-            Bar next = (Bar) barSetIter.next();
+        for (Object aBarColl : barColl) {
+            Bar next = (Bar) aBarColl;
             if (next.getId() == null) {
                 assertNotNull(next.getTitle());
                 assertTrue(next.getTitle().equals(bar4Title)
@@ -283,6 +273,7 @@ public class SetPropertiesTest extends XWorkTestCase {
     public void testAddingToCollectionBasedOnPermission() {
         final MockObjectTypeDeterminer determiner = new MockObjectTypeDeterminer(Long.class,Bar.class,"id",true);
         loadConfigurationProviders(new StubConfigurationProvider() {
+            @Override
             public void register(ContainerBuilder builder,
                     LocatableProperties props) throws ConfigurationException {
                 builder.factory(ObjectTypeDeterminer.class, new Factory() {

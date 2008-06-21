@@ -7,14 +7,11 @@ package com.opensymphony.xwork2.interceptor;
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 
-import junit.framework.TestCase;
-
-import java.util.Date;
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 
 
 /**
@@ -110,6 +107,7 @@ public class ChainingInterceptorTest extends XWorkTestCase {
     }
 
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         stack = ActionContext.getContext().getValueStack();

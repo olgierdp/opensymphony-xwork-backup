@@ -4,8 +4,8 @@
  */
 package com.opensymphony.xwork2.mock;
 
-import com.opensymphony.xwork2.Result;
 import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.Result;
 
 /**
  * Mock for a {@link Result}.
@@ -15,6 +15,7 @@ import com.opensymphony.xwork2.ActionInvocation;
  */
 public class MockResult implements Result {
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -31,6 +32,7 @@ public class MockResult implements Result {
         // no op
     }
 
+    @Override
     public int hashCode() {
         return 10;
     }

@@ -4,10 +4,10 @@
  */
 package com.opensymphony.xwork2;
 
-import java.util.Map;
-
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.Inject;
+
+import java.util.Map;
 
 
 /**
@@ -28,19 +28,19 @@ public class DefaultActionProxyFactory implements ActionProxyFactory {
         this.container = container;
     }
     
-    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext) {
+    public ActionProxy createActionProxy(String namespace, String actionName, Map<String, Object> extraContext) {
         return createActionProxy(namespace, actionName, null, extraContext, true, true);
     }
 
-    public ActionProxy createActionProxy(String namespace, String actionName, String methodName, Map extraContext) {
+    public ActionProxy createActionProxy(String namespace, String actionName, String methodName, Map<String, Object> extraContext) {
         return createActionProxy(namespace, actionName, methodName, extraContext, true, true);
     }
 
-    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext) {
+    public ActionProxy createActionProxy(String namespace, String actionName, Map<String, Object> extraContext, boolean executeResult, boolean cleanupContext) {
         return createActionProxy(namespace, actionName, null, extraContext, executeResult, cleanupContext);
     }
 
-    public ActionProxy createActionProxy(String namespace, String actionName, String methodName, Map extraContext, boolean executeResult, boolean cleanupContext) {
+    public ActionProxy createActionProxy(String namespace, String actionName, String methodName, Map<String, Object> extraContext, boolean executeResult, boolean cleanupContext) {
         
         ActionInvocation inv = new DefaultActionInvocation(extraContext, true);
         container.inject(inv);

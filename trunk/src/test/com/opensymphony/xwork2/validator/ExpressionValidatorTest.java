@@ -7,11 +7,7 @@ package com.opensymphony.xwork2.validator;
 import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
-import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
-import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
-import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.ExpressionValidator;
 
 import java.util.Collection;
@@ -50,12 +46,12 @@ public class ExpressionValidatorTest extends XWorkTestCase {
     }
 
     public void testExpressionValidatorFailure() throws Exception {
-        HashMap params = new HashMap();
+        HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("date", "12/23/2002");
         params.put("foo", "5");
         params.put("bar", "7");
 
-        HashMap extraContext = new HashMap();
+        HashMap<String, Object> extraContext = new HashMap<String, Object>();
         extraContext.put(ActionContext.PARAMETERS, params);
 
         ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
@@ -71,14 +67,14 @@ public class ExpressionValidatorTest extends XWorkTestCase {
     }
 
     public void testExpressionValidatorSuccess() throws Exception {
-        HashMap params = new HashMap();
+        HashMap<String, Object> params = new HashMap<String, Object>();
 
         //make it not fail
         params.put("date", "12/23/2002");
         params.put("foo", "10");
         params.put("bar", "7");
 
-        HashMap extraContext = new HashMap();
+        HashMap<String, Object> extraContext = new HashMap<String, Object>();
         extraContext.put(ActionContext.PARAMETERS, params);
 
         ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.VALIDATION_ACTION_NAME, extraContext);
@@ -104,6 +100,7 @@ public class ExpressionValidatorTest extends XWorkTestCase {
         mock.verify();
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 

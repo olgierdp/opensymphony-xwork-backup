@@ -242,6 +242,7 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
         }
     }
 
+    @Override
     protected String doIntercept(ActionInvocation invocation) throws Exception {
         doBeforeInvocation(invocation);
         

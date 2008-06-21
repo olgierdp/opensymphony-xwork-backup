@@ -21,9 +21,9 @@ import java.util.Map;
  */
 public interface Parameterizable {
 
-    public void addParam(String name, Object value);
+    public void addParam(String name, String value);
 
-    void setParams(Map<String, Object> params);
+    void setParams(Map<String, String> params);
 
-    Map getParams();
+    Map<String, String> getParams();
 }

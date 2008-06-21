@@ -20,6 +20,7 @@ public class ModelDrivenAction2 extends ModelDrivenAction {
     /**
      * @return the model to be pushed onto the ValueStack after the Action itself
      */
+    @Override
     public Object getModel() {
         return model;
     }

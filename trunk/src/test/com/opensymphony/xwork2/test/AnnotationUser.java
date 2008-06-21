@@ -4,10 +4,10 @@
  */
 package com.opensymphony.xwork2.test;
 
-import com.opensymphony.xwork2.validator.annotations.*;
-import com.opensymphony.xwork2.util.KeyProperty;
-import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
 import com.opensymphony.xwork2.conversion.annotations.ConversionRule;
+import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
+import com.opensymphony.xwork2.util.KeyProperty;
+import com.opensymphony.xwork2.validator.annotations.*;
 
 import java.util.Collection;
 import java.util.List;

@@ -1,13 +1,12 @@
 package com.opensymphony.xwork2.config.providers;
 
+import com.opensymphony.xwork2.XWorkTestCase;
 import org.easymock.MockControl;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
 
 import java.util.Map;
-
-import com.opensymphony.xwork2.XWorkTestCase;
 
 /**
  * <code>XmlHelperTest</code>

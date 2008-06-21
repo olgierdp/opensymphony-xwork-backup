@@ -7,7 +7,6 @@ package com.opensymphony.xwork2.util;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Container;
-import com.opensymphony.xwork2.util.TextUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -224,11 +223,11 @@ public class TextParseUtil {
      * @param s The String to parse.
      * @return A set from comma delimted Strings.
      */
-    public static Set commaDelimitedStringToSet(String s) {
-        Set set = new HashSet();
+    public static Set<String> commaDelimitedStringToSet(String s) {
+        Set<String> set = new HashSet<String>();
         String[] split = s.split(",");
-        for (int i = 0; i < split.length; i++) {
-            String trimmed = split[i].trim();
+        for (String aSplit : split) {
+            String trimmed = aSplit.trim();
             if (trimmed.length() > 0)
                 set.add(trimmed);
         }

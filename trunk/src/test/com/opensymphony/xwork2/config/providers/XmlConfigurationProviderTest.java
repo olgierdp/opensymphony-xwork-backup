@@ -4,12 +4,12 @@
  */
 package com.opensymphony.xwork2.config.providers;
 
-import java.io.File;
-
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.RuntimeConfiguration;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.util.FileManager;
+
+import java.io.File;
 
 
 public class XmlConfigurationProviderTest extends ConfigurationTestBase {

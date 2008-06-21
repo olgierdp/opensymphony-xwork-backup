@@ -33,6 +33,7 @@ public class InterceptorMapping implements Serializable {
         return interceptor;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -44,6 +45,7 @@ public class InterceptorMapping implements Serializable {
         return true;
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = (name != null ? name.hashCode() : 0);

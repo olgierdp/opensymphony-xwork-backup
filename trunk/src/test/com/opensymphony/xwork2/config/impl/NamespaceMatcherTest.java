@@ -4,12 +4,11 @@
  */
 package com.opensymphony.xwork2.config.impl;
 
+import com.opensymphony.xwork2.util.WildcardHelper;
 import junit.framework.TestCase;
 
-import java.util.Set;
 import java.util.HashSet;
-
-import com.opensymphony.xwork2.util.WildcardHelper;
+import java.util.Set;
 
 public class NamespaceMatcherTest extends TestCase {
 

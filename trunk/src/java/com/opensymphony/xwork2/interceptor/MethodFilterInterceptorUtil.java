@@ -4,12 +4,12 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
+import com.opensymphony.xwork2.util.TextParseUtil;
+import com.opensymphony.xwork2.util.WildcardHelper;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-
-import com.opensymphony.xwork2.util.TextParseUtil;
-import com.opensymphony.xwork2.util.WildcardHelper;
 
 /**
  * Utility class contains common methods used by 
@@ -36,26 +36,23 @@ public class MethodFilterInterceptorUtil {
      * @param method the specified method to check
      * @return <tt>true</tt> if the method should be applied.
      */
-    public static boolean applyMethod(Set excludeMethods, Set includeMethods, String method) {
+    public static boolean applyMethod(Set<String> excludeMethods, Set<String> includeMethods, String method) {
         
         // quick check to see if any actual pattern matching is needed
         boolean needsPatternMatch = false;
         Iterator quickIter = includeMethods.iterator();
-        while (quickIter.hasNext()) {
-            String incMeth = (String) quickIter.next();
-            if (! incMeth.equals("*") && incMeth.contains("*")) {
+        for (String incMeth : includeMethods) {
+            if (!"*".equals(incMeth) && incMeth.contains("*")) {
                 needsPatternMatch = true;
             }
         }
         
-        quickIter = excludeMethods.iterator();
-        while (quickIter.hasNext()) {
-            String incMeth = (String) quickIter.next();
-            if (! incMeth.equals("*") && incMeth.contains("*")) {
+        for (String incMeth : excludeMethods) {
+            if (!"*".equals(incMeth) && incMeth.contains("*")) {
                 needsPatternMatch = true;
             }
         }
-        
+
         // this section will try to honor the original logic, while 
         // still allowing for wildcards later
         if (!needsPatternMatch && (includeMethods.contains("*") || includeMethods.size() == 0) ) {
@@ -68,7 +65,6 @@ public class MethodFilterInterceptorUtil {
         
         // test the methods using pattern matching
         WildcardHelper wildcard = new WildcardHelper();
-        Iterator iter = includeMethods.iterator();
         String methodCopy ;
         if (method == null ) { // no method specified
             methodCopy = "";
@@ -76,8 +72,7 @@ public class MethodFilterInterceptorUtil {
         else {
             methodCopy = new String(method);
         }
-        while(iter.hasNext()) {
-            String pattern = (String) iter.next();
+        for (String pattern : includeMethods) {
             if (pattern.contains("*")) {
                 int[] compiledPattern = wildcard.compilePattern(pattern);
                 HashMap<String,String> matchedPatterns = new HashMap<String, String>();
@@ -96,8 +91,8 @@ public class MethodFilterInterceptorUtil {
             return false;
         }
 
-        while(iter.hasNext()) {
-            String pattern = (String) iter.next();
+        // CHECK ME: Previous implementation used include method 
+        for ( String pattern : excludeMethods) {
             if (pattern.contains("*")) {
                 int[] compiledPattern = wildcard.compilePattern(pattern);
                 HashMap<String,String> matchedPatterns = new HashMap<String, String>();
@@ -130,8 +125,8 @@ public class MethodFilterInterceptorUtil {
      * @return <tt>true</tt> if the method should be applied.
      */
     public static boolean applyMethod(String excludeMethods, String includeMethods, String method) {
-    	Set includeMethodsSet = TextParseUtil.commaDelimitedStringToSet(includeMethods == null? "" : includeMethods);
-    	Set excludeMethodsSet = TextParseUtil.commaDelimitedStringToSet(excludeMethods == null? "" : excludeMethods);
+    	Set<String> includeMethodsSet = TextParseUtil.commaDelimitedStringToSet(includeMethods == null? "" : includeMethods);
+    	Set<String> excludeMethodsSet = TextParseUtil.commaDelimitedStringToSet(excludeMethods == null? "" : excludeMethods);
     	
     	return applyMethod(excludeMethodsSet, includeMethodsSet, method);
     }

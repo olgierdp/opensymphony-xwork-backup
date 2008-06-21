@@ -15,16 +15,15 @@
  */
 package com.opensymphony.xwork2.util.location;
 
+import com.opensymphony.xwork2.util.ClassLoaderUtil;
+import junit.framework.TestCase;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.List;
-
-import com.opensymphony.xwork2.util.ClassLoaderUtil;
-
-import junit.framework.TestCase;
 
 public class LocationImplTest extends TestCase {
     

@@ -1,11 +1,12 @@
 package com.opensymphony.xwork2.test.annotations;
 
-import java.util.Map;
-
 import com.opensymphony.xwork2.conversion.impl.DefaultTypeConverter;
 
+import java.util.Map;
+
 public class PersonTypeConverter extends DefaultTypeConverter {
-	public Object convertValue(Map context, Object value, Class toType) {
+	@Override
+    public Object convertValue(Map<String, Object> context, Object value, Class toType) {
 		if(value instanceof String) {
 			return decodePerson((String)value);
 		} else if(value instanceof String && value.getClass().isArray()) {

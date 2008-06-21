@@ -4,15 +4,21 @@
  */
 package com.opensymphony.xwork2.config.providers;
 
-import java.util.*;
-
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.config.ConfigurationException;
-import com.opensymphony.xwork2.config.entities.*;
+import com.opensymphony.xwork2.config.entities.InterceptorConfig;
+import com.opensymphony.xwork2.config.entities.InterceptorLocator;
+import com.opensymphony.xwork2.config.entities.InterceptorMapping;
+import com.opensymphony.xwork2.config.entities.InterceptorStackConfig;
 import com.opensymphony.xwork2.interceptor.Interceptor;
 import com.opensymphony.xwork2.util.location.Location;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -38,7 +44,7 @@ public class InterceptorBuilder {
      * @throws ConfigurationException
      */
     public static List<InterceptorMapping> constructInterceptorReference(InterceptorLocator interceptorLocator,
-                                                                         String refName, Map refParams, Location location, ObjectFactory objectFactory) throws ConfigurationException {
+                                                                         String refName, Map<String,String> refParams, Location location, ObjectFactory objectFactory) throws ConfigurationException {
         Object referencedConfig = interceptorLocator.getInterceptorConfig(refName);
         List<InterceptorMapping> result = new ArrayList<InterceptorMapping>();
 
@@ -86,10 +92,10 @@ public class InterceptorBuilder {
      * @return list of interceptors referenced by the refName in the supplied PackageConfig overridden with refParams.
      */
     private static List<InterceptorMapping> constructParameterizedInterceptorReferences(
-            InterceptorLocator interceptorLocator, InterceptorStackConfig stackConfig, Map refParams,
+            InterceptorLocator interceptorLocator, InterceptorStackConfig stackConfig, Map<String,String> refParams,
             ObjectFactory objectFactory) {
         List<InterceptorMapping> result;
-        Map<String, Map<Object, String>> params = new LinkedHashMap<String, Map<Object, String>>();
+        Map<String, Map<String, String>> params = new LinkedHashMap<String, Map<String, String>>();
 
         /*
          * We strip
@@ -112,19 +118,18 @@ public class InterceptorBuilder {
          *  interceptorStack1 -> [interceptor1.param1 -> someValue, interceptor1.param2 -> anotherValue]
          *
          */
-        for (Iterator iter = refParams.keySet().iterator(); iter.hasNext();) {
-            String key = (String) iter.next();
-            String value = (String) refParams.get(key);
+        for (String key : refParams.keySet()) {
+            String value = refParams.get(key);
 
             try {
                 String name = key.substring(0, key.indexOf('.'));
                 key = key.substring(key.indexOf('.') + 1);
 
-                Map<Object, String> map;
+                Map<String, String> map;
                 if (params.containsKey(name)) {
                     map = params.get(name);
                 } else {
-                    map = new LinkedHashMap<Object, String>();
+                    map = new LinkedHashMap<String, String>();
                 }
 
                 map.put(key, value);
@@ -139,7 +144,7 @@ public class InterceptorBuilder {
 
         for (String key : params.keySet()) {
 
-            Map<Object, String> map = params.get(key);
+            Map<String, String> map = params.get(key);
 
 
             Object interceptorCfgObj = interceptorLocator.getInterceptorConfig(key);
@@ -182,9 +187,8 @@ public class InterceptorBuilder {
                 // are resolved down to a specific interceptor.
 
                 InterceptorStackConfig stackCfg = (InterceptorStackConfig) interceptorCfgObj;
-                List tmpResult = constructParameterizedInterceptorReferences(interceptorLocator, stackCfg, map, objectFactory);
-                for (Iterator i = tmpResult.iterator(); i.hasNext();) {
-                    InterceptorMapping tmpInterceptorMapping = (InterceptorMapping) i.next();
+                List<InterceptorMapping> tmpResult = constructParameterizedInterceptorReferences(interceptorLocator, stackCfg, map, objectFactory);
+                for (InterceptorMapping tmpInterceptorMapping : tmpResult) {
                     if (result.contains(tmpInterceptorMapping)) {
                         int index = result.indexOf(tmpInterceptorMapping);
                         result.set(index, tmpInterceptorMapping);

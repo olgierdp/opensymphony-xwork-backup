@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,7 +21,7 @@ public interface ValidationAware {
      *
      * @param errorMessages Collection of String error messages
      */
-    void setActionErrors(Collection errorMessages);
+    void setActionErrors(Collection<String> errorMessages);
 
     /**
      * Get the Collection of Action-level error messages for this action. Error messages should not
@@ -29,14 +30,14 @@ public interface ValidationAware {
      *
      * @return Collection of String error messages
      */
-    Collection getActionErrors();
+    Collection<String> getActionErrors();
 
     /**
      * Set the Collection of Action-level String messages (not errors).
      *
      * @param messages Collection of String messages (not errors).
      */
-    void setActionMessages(Collection messages);
+    void setActionMessages(Collection<String> messages);
 
     /**
      * Get the Collection of Action-level messages for this action. Messages should not be added
@@ -45,14 +46,14 @@ public interface ValidationAware {
      *
      * @return Collection of String messages
      */
-    Collection getActionMessages();
+    Collection<String> getActionMessages();
 
     /**
      * Set the field error map of fieldname (String) to Collection of String error messages.
      *
      * @param errorMap field error map
      */
-    void setFieldErrors(Map errorMap);
+    void setFieldErrors(Map<String, List<String>> errorMap);
 
     /**
      * Get the field specific errors associated with this action. Error messages should not be added
@@ -61,7 +62,7 @@ public interface ValidationAware {
      *
      * @return Map with errors mapped from fieldname (String) to Collection of String error messages
      */
-    Map getFieldErrors();
+    Map<String, List<String>> getFieldErrors();
 
     /**
      * Add an Action-level error message to this Action.

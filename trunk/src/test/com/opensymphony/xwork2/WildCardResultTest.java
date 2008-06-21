@@ -5,8 +5,8 @@
 
 package com.opensymphony.xwork2;
 
-import com.opensymphony.xwork2.mock.MockResult;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+import com.opensymphony.xwork2.mock.MockResult;
 
 /**
  * <code>WildCardResultTest</code>
@@ -16,6 +16,7 @@ import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
  */
 public class WildCardResultTest extends XWorkTestCase {
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 

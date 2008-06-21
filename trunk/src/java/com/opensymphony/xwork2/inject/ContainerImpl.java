@@ -18,26 +18,11 @@ package com.opensymphony.xwork2.inject;
 
 import com.opensymphony.xwork2.inject.util.ReferenceCache;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Default {@link Container} implementation.
@@ -79,6 +64,7 @@ class ContainerImpl implements Container {
    */
   final Map<Class<?>, List<Injector>> injectors =
       new ReferenceCache<Class<?>, List<Injector>>() {
+        @Override
         protected List<Injector> create(Class<?> key) {
           List<Injector> injectors = new ArrayList<Injector>();
           addInjectors(key, injectors);
@@ -294,6 +280,7 @@ class ContainerImpl implements Container {
 
   Map<Class<?>, ConstructorInjector> constructors =
       new ReferenceCache<Class<?>, ConstructorInjector>() {
+        @Override
         @SuppressWarnings("unchecked")
         protected ConstructorInjector<?> create(Class<?> implementation) {
           return new ConstructorInjector(ContainerImpl.this, implementation);
@@ -541,6 +528,7 @@ class ContainerImpl implements Container {
 
   ThreadLocal<Object[]> localContext =
       new ThreadLocal<Object[]>() {
+        @Override
         protected Object[] initialValue() {
           return new Object[1];
         }

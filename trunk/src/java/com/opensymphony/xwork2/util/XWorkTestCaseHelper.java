@@ -5,15 +5,11 @@
 package com.opensymphony.xwork2.util;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.config.*;
 import com.opensymphony.xwork2.config.providers.XWorkConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
-import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
-import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
-import com.opensymphony.xwork2.ognl.OgnlValueStack;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 
 /**

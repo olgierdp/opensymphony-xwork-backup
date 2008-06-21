@@ -6,8 +6,6 @@ package com.opensymphony.xwork2;
 
 import java.util.Map;
 
-import com.opensymphony.xwork2.config.Configuration;
-
 
 /**
  * The {@link ActionProxyFactory} is used to create {@link ActionProxy}s to be executed.
@@ -32,7 +30,7 @@ public interface ActionProxyFactory {
      * @return ActionProxy  the created action proxy
      * @deprecated Since 2.1.1, use {@link #createActionProxy(String,String,String,Map) instead}
      */
-    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext);
+    @Deprecated public ActionProxy createActionProxy(String namespace, String actionName, Map<String, Object> extraContext);
 
     /**
      * Creates an {@link ActionProxy} for the given namespace and action name by looking up the configuration.The ActionProxy
@@ -47,7 +45,7 @@ public interface ActionProxyFactory {
      * @return ActionProxy  the created action proxy
      * @since 2.1.1
      */
-    public ActionProxy createActionProxy(String namespace, String actionName, String methodName, Map extraContext);
+    public ActionProxy createActionProxy(String namespace, String actionName, String methodName, Map<String, Object> extraContext);
 
     /**
      * Creates an {@link ActionProxy} for the given namespace and action name by looking up the configuration.The ActionProxy
@@ -61,7 +59,7 @@ public interface ActionProxyFactory {
      * @return ActionProxy  the created action proxy
      * @deprecated Since 2.1.1, use {@link #createActionProxy(String,String,String,Map,boolean,boolean)} instead
      */
-    public ActionProxy createActionProxy(String namespace, String actionName, Map extraContext, boolean executeResult, boolean cleanupContext);
+    @Deprecated public ActionProxy createActionProxy(String namespace, String actionName, Map<String, Object> extraContext, boolean executeResult, boolean cleanupContext);
 
     /**
      * Creates an {@link ActionProxy} for the given namespace and action name by looking up the configuration.The ActionProxy
@@ -76,7 +74,7 @@ public interface ActionProxyFactory {
      * @return ActionProxy  the created action proxy
      * @since 2.1.1
      */
-    public ActionProxy createActionProxy(String namespace, String actionName, String methodName, Map extraContext, boolean executeResult, boolean cleanupContext);
+    public ActionProxy createActionProxy(String namespace, String actionName, String methodName, Map<String, Object> extraContext, boolean executeResult, boolean cleanupContext);
 
 
      /**

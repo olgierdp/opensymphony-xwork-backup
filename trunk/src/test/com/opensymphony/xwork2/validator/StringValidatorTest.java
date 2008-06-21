@@ -5,14 +5,10 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.ValidationAwareSupport;
 import com.opensymphony.xwork2.XWorkTestCase;
-import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.test.Equidae;
-import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.RequiredStringValidator;
 
 import java.util.List;
@@ -181,6 +177,7 @@ public class StringValidatorTest extends XWorkTestCase {
         assertEquals(false, val.getTrim());
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         loadConfigurationProviders(new MockConfigurationProvider());

@@ -4,14 +4,6 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.InputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URI;
-import java.util.*;
-
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.config.ConfigurationException;
@@ -19,6 +11,14 @@ import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.ClassLoaderUtil;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.util.*;
 
 
 /**

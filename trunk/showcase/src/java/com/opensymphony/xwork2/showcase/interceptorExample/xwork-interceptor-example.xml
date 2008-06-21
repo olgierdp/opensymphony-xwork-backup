@@ -47,7 +47,7 @@
 			<result type="printToConsole">InterceptorExample - Action3 - Result</result>
 		</action>
 		
-		<action name="interceptorExampleAction4" class="com.opensymphony.xwork.showcase.interceptorExample.Action4">
+		<action name="interceptorExampleAction4" class="com.opensymphony.xwork2.showcase.interceptorExample.Action4">
 			<interceptor-ref name="myInterceptorStack">
 				<param name="interceptor1.param">new paramValue1</param>
 			</interceptor-ref>

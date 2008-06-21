@@ -5,13 +5,13 @@
 
 package com.opensymphony.xwork2.interceptor;
 
-import java.util.Collections;
-import java.util.Set;
-
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.util.TextParseUtil;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.util.Collections;
+import java.util.Set;
 
 
 /**
@@ -62,14 +62,14 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
 public abstract class MethodFilterInterceptor extends AbstractInterceptor {
     protected transient Logger log = LoggerFactory.getLogger(getClass());
     
-    protected Set excludeMethods = Collections.EMPTY_SET;
-    protected Set includeMethods = Collections.EMPTY_SET;
+    protected Set<String> excludeMethods = Collections.emptySet();
+    protected Set<String> includeMethods = Collections.emptySet();
 
     public void setExcludeMethods(String excludeMethods) {
         this.excludeMethods = TextParseUtil.commaDelimitedStringToSet(excludeMethods);
     }
     
-    public Set getExcludeMethodsSet() {
+    public Set<String> getExcludeMethodsSet() {
     	return excludeMethods;
     }
 
@@ -77,10 +77,11 @@ public abstract class MethodFilterInterceptor extends AbstractInterceptor {
         this.includeMethods = TextParseUtil.commaDelimitedStringToSet(includeMethods);
     }
     
-    public Set getIncludeMethodsSet() {
+    public Set<String> getIncludeMethodsSet() {
     	return includeMethods;
     }
 
+    @Override
     public String intercept(ActionInvocation invocation) throws Exception {
         if (applyInterceptor(invocation)) {
             return doIntercept(invocation);

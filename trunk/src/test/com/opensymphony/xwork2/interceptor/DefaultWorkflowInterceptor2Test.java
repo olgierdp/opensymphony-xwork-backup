@@ -4,21 +4,12 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import java.util.HashMap;
-
-import junit.framework.TestCase;
-
+import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.config.entities.InterceptorConfig;
+import com.opensymphony.xwork2.validator.ValidationInterceptor;
 import org.easymock.MockControl;
 
-import com.opensymphony.xwork2.Action;
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.ActionProxy;
-import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.XWorkTestCase;
-import com.opensymphony.xwork2.config.entities.InterceptorConfig;
-import com.opensymphony.xwork2.interceptor.DefaultWorkflowInterceptor;
-import com.opensymphony.xwork2.validator.ValidationInterceptor;
+import java.util.HashMap;
 
 /**
  * 

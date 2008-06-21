@@ -7,11 +7,7 @@ package com.opensymphony.xwork2;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.inject.Inject;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 
 /**
@@ -219,6 +215,7 @@ public class SimpleAction extends ActionSupport {
         return "OK";
     }
 
+    @Override
     public String execute() throws Exception {
         if (foo == bar) {
             return ERROR;

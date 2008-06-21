@@ -5,7 +5,6 @@
 package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.util.ValueStack;
-
 import junit.framework.Assert;
 
 

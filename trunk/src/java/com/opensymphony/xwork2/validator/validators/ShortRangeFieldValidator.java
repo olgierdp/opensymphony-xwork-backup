@@ -61,6 +61,7 @@ public class ShortRangeFieldValidator extends AbstractRangeValidator {
         return max;
     }
 
+    @Override
     public Comparable getMaxComparatorValue() {
         return max;
     }
@@ -73,6 +74,7 @@ public class ShortRangeFieldValidator extends AbstractRangeValidator {
         return min;
     }
 
+    @Override
     public Comparable getMinComparatorValue() {
         return min;
     }

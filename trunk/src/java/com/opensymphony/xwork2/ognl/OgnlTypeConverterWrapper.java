@@ -4,10 +4,10 @@
  */
 package com.opensymphony.xwork2.ognl;
 
+import com.opensymphony.xwork2.conversion.TypeConverter;
+
 import java.lang.reflect.Member;
 import java.util.Map;
-
-import com.opensymphony.xwork2.conversion.TypeConverter;
 
 /**
  * Wraps an XWork type conversion class for as an OGNL TypeConverter

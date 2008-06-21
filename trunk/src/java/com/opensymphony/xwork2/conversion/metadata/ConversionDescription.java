@@ -4,13 +4,13 @@
  */
 package com.opensymphony.xwork2.conversion.metadata;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import com.opensymphony.xwork2.conversion.annotations.ConversionRule;
 import com.opensymphony.xwork2.conversion.impl.DefaultObjectTypeDeterminer;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * <code>ConversionDescription</code>

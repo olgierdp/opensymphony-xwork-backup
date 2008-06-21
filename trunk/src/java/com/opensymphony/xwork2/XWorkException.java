@@ -101,7 +101,7 @@ public class XWorkException extends RuntimeException implements Locatable {
      * @return the underlying cause, <tt>null</tt> if no cause
      * @deprecated Use {@link #getCause()} 
      */
-    public Throwable getThrowable() {
+    @Deprecated public Throwable getThrowable() {
         return getCause();
     }
 
@@ -123,6 +123,7 @@ public class XWorkException extends RuntimeException implements Locatable {
      *
      * @return a string representation of this <code>Throwable</code>.
      */
+    @Override
     public String toString() {
         String msg = getMessage();
         if (msg == null && getCause() != null) {

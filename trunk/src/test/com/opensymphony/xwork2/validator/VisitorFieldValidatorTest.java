@@ -5,14 +5,8 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.TestBean;
 import com.opensymphony.xwork2.XWorkTestCase;
-import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
-import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
-
-import junit.framework.TestCase;
 
 import java.util.*;
 
@@ -29,6 +23,7 @@ public class VisitorFieldValidatorTest extends XWorkTestCase {
     private Locale origLocale;
 
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         origLocale = Locale.getDefault();
@@ -50,7 +45,7 @@ public class VisitorFieldValidatorTest extends XWorkTestCase {
 
         assertTrue(action.hasFieldErrors());
 
-        Map fieldErrors = action.getFieldErrors();
+        Map<String, List<String>> fieldErrors = action.getFieldErrors();
 
         //4 errors for the array, one for context
         assertEquals(5, fieldErrors.size());
@@ -59,13 +54,13 @@ public class VisitorFieldValidatorTest extends XWorkTestCase {
         //the error from the action should be there too
         assertTrue(fieldErrors.containsKey("context"));
 
-        List errors = (List) fieldErrors.get("testBeanArray[1].name");
+        List<String> errors = fieldErrors.get("testBeanArray[1].name");
         assertEquals(1, errors.size());
-        errors = (List) fieldErrors.get("testBeanArray[2].name");
+        errors = fieldErrors.get("testBeanArray[2].name");
         assertEquals(1, errors.size());
-        errors = (List) fieldErrors.get("testBeanArray[3].name");
+        errors = fieldErrors.get("testBeanArray[3].name");
         assertEquals(1, errors.size());
-        errors = (List) fieldErrors.get("testBeanArray[4].name");
+        errors = fieldErrors.get("testBeanArray[4].name");
         assertEquals(1, errors.size());
     }
 
@@ -73,13 +68,13 @@ public class VisitorFieldValidatorTest extends XWorkTestCase {
         validate("beanMessageBundle");
         assertTrue(action.hasFieldErrors());
 
-        Map fieldErrors = action.getFieldErrors();
+        Map<String, List<String>> fieldErrors = action.getFieldErrors();
         assertTrue(fieldErrors.containsKey("bean.count"));
 
-        List beanCountMessages = (List) fieldErrors.get("bean.count");
+        List<String> beanCountMessages = fieldErrors.get("bean.count");
         assertEquals(1, beanCountMessages.size());
 
-        String beanCountMessage = (String) beanCountMessages.get(0);
+        String beanCountMessage = beanCountMessages.get(0);
         assertEquals("bean: Count must be between 1 and 100, current value is -1.", beanCountMessage);
     }
 
@@ -91,7 +86,7 @@ public class VisitorFieldValidatorTest extends XWorkTestCase {
 
         assertTrue(action.hasFieldErrors());
 
-        Map fieldErrors = action.getFieldErrors();
+        Map<String, List<String>> fieldErrors = action.getFieldErrors();
 
         //4 for the list, 1 for context
         assertEquals(5, fieldErrors.size());
@@ -100,13 +95,13 @@ public class VisitorFieldValidatorTest extends XWorkTestCase {
         //the error from the action should be there too
         assertTrue(fieldErrors.containsKey("context"));
 
-        List errors = (List) fieldErrors.get("testBeanList[1].name");
+        List<String> errors = fieldErrors.get("testBeanList[1].name");
         assertEquals(1, errors.size());
-        errors = (List) fieldErrors.get("testBeanList[2].name");
+        errors = fieldErrors.get("testBeanList[2].name");
         assertEquals(1, errors.size());
-        errors = (List) fieldErrors.get("testBeanList[3].name");
+        errors = fieldErrors.get("testBeanList[3].name");
         assertEquals(1, errors.size());
-        errors = (List) fieldErrors.get("testBeanList[4].name");
+        errors = fieldErrors.get("testBeanList[4].name");
         assertEquals(1, errors.size());
     }
 
@@ -114,7 +109,7 @@ public class VisitorFieldValidatorTest extends XWorkTestCase {
         validate("visitorValidationAlias");
         assertTrue(action.hasFieldErrors());
 
-        Map fieldErrors = action.getFieldErrors();
+        Map<String, List<String>> fieldErrors = action.getFieldErrors();
         assertEquals(3, fieldErrors.size());
         assertTrue(fieldErrors.containsKey("bean.count"));
         assertTrue(fieldErrors.containsKey("bean.name"));
@@ -128,7 +123,7 @@ public class VisitorFieldValidatorTest extends XWorkTestCase {
         validate("visitorValidation");
         assertTrue(action.hasFieldErrors());
 
-        Map fieldErrors = action.getFieldErrors();
+        Map<String, List<String>> fieldErrors = action.getFieldErrors();
         assertEquals(3, fieldErrors.size());
         assertTrue(!fieldErrors.containsKey("bean.count"));
         assertTrue(fieldErrors.containsKey("bean.name"));
@@ -142,7 +137,7 @@ public class VisitorFieldValidatorTest extends XWorkTestCase {
         validate("visitorChildValidation");
         assertTrue(action.hasFieldErrors());
 
-        Map fieldErrors = action.getFieldErrors();
+        Map<String, List<String>> fieldErrors = action.getFieldErrors();
         assertEquals(5, fieldErrors.size());
         assertTrue(!fieldErrors.containsKey("bean.count"));
         assertTrue(fieldErrors.containsKey("bean.name"));
@@ -155,6 +150,7 @@ public class VisitorFieldValidatorTest extends XWorkTestCase {
         assertTrue(fieldErrors.containsKey("context"));
     }
     
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         ActionContext.setContext(null);

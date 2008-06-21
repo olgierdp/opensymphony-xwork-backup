@@ -4,20 +4,13 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
+import com.mockobjects.dynamic.Mock;
+import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.util.ValueStack;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.mockobjects.dynamic.Mock;
-import com.opensymphony.xwork2.Action;
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.SimpleAction;
-import com.opensymphony.xwork2.XWorkTestCase;
-import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
-
-import junit.framework.TestCase;
 
 /**
  * Unit test for {@link ParameterFilterInterceptor}.
@@ -32,6 +25,7 @@ public class ParameterFilterInterceptorTest extends XWorkTestCase {
     ValueStack stack;
     Map contextMap;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         contextMap=new HashMap();
@@ -46,6 +40,7 @@ public class ParameterFilterInterceptorTest extends XWorkTestCase {
         interceptor.init();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         interceptor.destroy();
@@ -101,9 +96,9 @@ public class ParameterFilterInterceptorTest extends XWorkTestCase {
     
     private void setUpParameters(String [] paramNames) {
         Map params=new HashMap();
-        for (int i=0;i<paramNames.length;i++){
-            params.put(paramNames[i], "irrelevant what this is");
-            
+        for (String paramName : paramNames) {
+            params.put(paramName, "irrelevant what this is");
+
         }
         contextMap.put(ActionContext.PARAMETERS, params);
     }

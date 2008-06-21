@@ -21,6 +21,7 @@ public class ModelDrivenAnnotationAction2 extends ModelDrivenAnnotationAction {
     /**
      * @return the model to be pushed onto the ValueStack after the Action itself
      */
+    @Override
     public Object getModel() {
         return model;
     }

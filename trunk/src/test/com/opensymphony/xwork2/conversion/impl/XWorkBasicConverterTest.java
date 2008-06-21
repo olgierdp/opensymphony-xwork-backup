@@ -4,15 +4,11 @@
  */
 package com.opensymphony.xwork2.conversion.impl;
 
+import com.opensymphony.xwork2.XWorkException;
+import junit.framework.TestCase;
+
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import com.opensymphony.xwork2.XWorkException;
-import com.opensymphony.xwork2.ActionContext;
-
-import junit.framework.TestCase;
 
 /**
  * Test case for XWorkBasicConverter
@@ -29,7 +25,7 @@ public class XWorkBasicConverterTest extends TestCase {
 
     public void testDateConversionWithEmptyValue() {
         XWorkBasicConverter basicConverter = new XWorkBasicConverter();
-        Object convertedObject = basicConverter.convertValue(new HashMap(), null, null, null, "", Date.class);
+        Object convertedObject = basicConverter.convertValue(new HashMap<String, Object>(), null, null, null, "", Date.class);
         // we must not get XWorkException as that will caused a conversion error
         assertNull(convertedObject);
     }
@@ -37,7 +33,7 @@ public class XWorkBasicConverterTest extends TestCase {
     public void testDateConversionWithInvalidValue() throws Exception {
         XWorkBasicConverter basicConverter = new XWorkBasicConverter();
         try {
-            Object convertedObject = basicConverter.convertValue(new HashMap(), null, null, null, "asdsd", Date.class);
+            Object convertedObject = basicConverter.convertValue(new HashMap<String, Object>(), null, null, null, "asdsd", Date.class);
             fail("XWorkException expected - conversion error occurred");
         } catch (XWorkException e) {
             // we MUST get this exception as this is a conversion error
@@ -46,7 +42,7 @@ public class XWorkBasicConverterTest extends TestCase {
 
     public void testEmptyArrayConversion() throws Exception {
         XWorkBasicConverter basicConverter = new XWorkBasicConverter();
-        Object convertedObject = basicConverter.convertValue(new HashMap(), null, null, null, new Object[]{}, Object[].class);
+        Object convertedObject = basicConverter.convertValue(new HashMap<String, Object>(), null, null, null, new Object[]{}, Object[].class);
         // we must not get XWorkException as that will caused a conversion error
         assertEquals(Object[].class, convertedObject.getClass());
         Object[] obj = (Object[]) convertedObject;
@@ -55,7 +51,7 @@ public class XWorkBasicConverterTest extends TestCase {
 
     public void testNullArrayConversion() throws Exception {
         XWorkBasicConverter basicConverter = new XWorkBasicConverter();
-        Object convertedObject = basicConverter.convertValue(new HashMap(), null, null, null, null, Object[].class);
+        Object convertedObject = basicConverter.convertValue(new HashMap<String, Object>(), null, null, null, null, Object[].class);
         // we must not get XWorkException as that will caused a conversion error
         assertNull(convertedObject);
     }

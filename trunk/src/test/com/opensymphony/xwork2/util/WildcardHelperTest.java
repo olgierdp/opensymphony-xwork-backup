@@ -17,9 +17,9 @@
  */
 package com.opensymphony.xwork2.util;
 
-import java.util.HashMap;
-
 import com.opensymphony.xwork2.XWorkTestCase;
+
+import java.util.HashMap;
 
 public class WildcardHelperTest extends XWorkTestCase {
 	

@@ -6,7 +6,6 @@ package com.opensymphony.xwork2.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.net.URL;
 import java.util.*;
 
@@ -161,7 +160,7 @@ public class ClassLoaderUtil {
         E next = null;
         Set<E> loaded = new HashSet<E>();
 
-        public AggregateIterator addEnumeration(Enumeration<E> e) {
+        public AggregateIterator<E> addEnumeration(Enumeration<E> e) {
             if (e.hasMoreElements()) {
                 if (cur == null) {
                     cur = e;

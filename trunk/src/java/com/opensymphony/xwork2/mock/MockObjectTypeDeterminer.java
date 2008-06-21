@@ -4,12 +4,11 @@
  */
 package com.opensymphony.xwork2.mock;
 
-import java.util.Map;
-
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 
-import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
+import java.util.Map;
 
 /**
  * Mocks the function of an ObjectTypeDeterminer for testing purposes.

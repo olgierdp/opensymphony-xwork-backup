@@ -3,16 +3,16 @@
  */
 package com.opensymphony.xwork2.ognl.accessor;
 
-import java.util.Map;
-
-import ognl.ObjectPropertyAccessor;
-import ognl.OgnlException;
-
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.ognl.OgnlValueStack;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
+import ognl.ObjectPropertyAccessor;
+import ognl.OgnlException;
+
+import java.util.Map;
 
 public class ObjectAccessor extends ObjectPropertyAccessor {
+    @Override
     public Object getProperty(Map map, Object o, Object o1) throws OgnlException {
         Object obj = super.getProperty(map, o, o1);
         OgnlValueStack.link(map, o.getClass(), (String) o1);
@@ -23,6 +23,7 @@ public class ObjectAccessor extends ObjectPropertyAccessor {
         return obj;
     }
 
+    @Override
     public void setProperty(Map map, Object o, Object o1, Object o2) throws OgnlException {
         super.setProperty(map, o, o1, o2);
     }

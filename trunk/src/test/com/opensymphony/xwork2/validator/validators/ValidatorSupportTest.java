@@ -10,9 +10,6 @@ import com.opensymphony.xwork2.ognl.OgnlValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.ValidationException;
-import com.opensymphony.xwork2.validator.validators.ValidatorSupport;
-
-import junit.framework.TestCase;
 
 /**
  * @author tmjee

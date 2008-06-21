@@ -5,12 +5,12 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.AnnotatedTestBean;
-import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.SimpleAnnotationAction;
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.test.AnnotationDataAware2;
+import com.opensymphony.xwork2.test.AnnotationUser;
 import com.opensymphony.xwork2.test.SimpleAnnotationAction2;
 import com.opensymphony.xwork2.test.SimpleAnnotationAction3;
-import com.opensymphony.xwork2.test.AnnotationUser;
 import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.validator.validators.*;
 
@@ -31,12 +31,12 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
 
     AnnotationActionValidatorManager annotationActionValidatorManager;
 
-    protected void setUp() throws Exception {
+    @Override protected void setUp() throws Exception {
         super.setUp();
         annotationActionValidatorManager = (AnnotationActionValidatorManager) container.getInstance(ActionValidatorManager.class);
     }
 
-    protected void tearDown() throws Exception {
+    @Override protected void tearDown() throws Exception {
         annotationActionValidatorManager = null;
         super.tearDown();
     }
@@ -84,7 +84,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
             assertTrue(context.hasErrors());
             assertTrue(context.hasFieldErrors());
 
-            List l = (List) context.getFieldErrors().get("count");
+            List<String> l = context.getFieldErrors().get("count");
             assertNotNull(l);
             assertEquals(1, l.size());
             assertEquals("Smaller Invalid Count: 99", l.get(0));
@@ -212,7 +212,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
             assertTrue(context.hasErrors());
             assertTrue(context.hasFieldErrors());
 
-            List l = (List) context.getFieldErrors().get("count");
+            List<String> l = context.getFieldErrors().get("count");
             assertNotNull(l);
             assertEquals(1, l.size());
             assertEquals("Count must be between 1 and 100, current value is 150.", l.get(0));
@@ -244,11 +244,11 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
             assertTrue(context.hasFieldErrors());
 
             // check field errors
-            List l = (List) context.getFieldErrors().get("email");
+            List<String> l = context.getFieldErrors().get("email");
             assertNotNull(l);
             assertEquals(1, l.size());
             assertEquals("Not a valid e-mail.", l.get(0));
-            l = (List) context.getFieldErrors().get("email2");
+            l = context.getFieldErrors().get("email2");
             assertNotNull(l);
             assertEquals(2, l.size());
             assertEquals("Not a valid e-mail2.", l.get(0));
@@ -256,7 +256,7 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
 
             // check action errors
             assertTrue(context.hasActionErrors());
-            l = (List) context.getActionErrors();
+            l = (List<String>) context.getActionErrors();
             assertNotNull(l);
             assertEquals(2, l.size()); // both expression test failed see AnnotationUser-validation.xml
             assertEquals("Email does not start with mark", l.get(0));

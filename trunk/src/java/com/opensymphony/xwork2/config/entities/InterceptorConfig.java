@@ -4,14 +4,13 @@
  */
 package com.opensymphony.xwork2.config.entities;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.Collections;
-import java.io.Serializable;
-
 import com.opensymphony.xwork2.util.location.Located;
 import com.opensymphony.xwork2.util.location.Location;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Configuration for Interceptors.
@@ -52,6 +51,7 @@ public class InterceptorConfig extends Located implements Serializable {
         return params;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -79,6 +79,7 @@ public class InterceptorConfig extends Located implements Serializable {
         return true;
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = ((name != null) ? name.hashCode() : 0);

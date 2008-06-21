@@ -4,10 +4,10 @@
  */
 package com.opensymphony.xwork2;
 
-import java.util.HashMap;
-
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+
+import java.util.HashMap;
 
 
 /**
@@ -60,10 +60,10 @@ public class ActionInvocationTest extends XWorkTestCase {
     }
 
     public void testSimple() {
-        HashMap params = new HashMap();
+        HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("blah", "this is blah");
 
-        HashMap extraContext = new HashMap();
+        HashMap<String, Object> extraContext = new HashMap<String, Object>();
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
@@ -76,7 +76,7 @@ public class ActionInvocationTest extends XWorkTestCase {
         }
     }
 
-    protected void setUp() throws Exception {
+    @Override protected void setUp() throws Exception {
         super.setUp();
 
         // ensure we're using the default configuration, not simple config

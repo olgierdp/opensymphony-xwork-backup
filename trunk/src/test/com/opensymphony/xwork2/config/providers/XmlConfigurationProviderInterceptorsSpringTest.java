@@ -10,11 +10,9 @@ import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.entities.InterceptorConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.interceptor.TimerInterceptor;
-import com.opensymphony.xwork2.spring.SpringObjectFactory;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.context.support.StaticApplicationContext;
 
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -56,6 +54,7 @@ public class XmlConfigurationProviderInterceptorsSpringTest extends Configuratio
         assertEquals("timer-interceptor", seen.getClassName());
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 

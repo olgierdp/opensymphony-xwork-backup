@@ -4,15 +4,14 @@
  */
 package com.opensymphony.xwork2.util.location;
 
+import junit.framework.TestCase;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.AttributesImpl;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
-import org.w3c.dom.Document;
-
-import junit.framework.TestCase;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class LocationAttributesTest extends TestCase {
     

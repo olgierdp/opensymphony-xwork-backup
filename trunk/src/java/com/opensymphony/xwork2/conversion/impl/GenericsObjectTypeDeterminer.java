@@ -18,7 +18,7 @@ import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
  * @deprecated Use DefaultObjectTypeDeterminer instead. Since XWork 2.0.4 the DefaultObjectTypeDeterminer handles the
  *             annotation processing.
  */
-public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
+@Deprecated public class GenericsObjectTypeDeterminer extends DefaultObjectTypeDeterminer {
 
     public GenericsObjectTypeDeterminer(XWorkConverter conv,
             XWorkBasicConverter basicConv, ReflectionProvider prov) {

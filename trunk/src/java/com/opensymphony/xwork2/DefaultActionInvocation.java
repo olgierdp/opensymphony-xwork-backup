@@ -4,13 +4,6 @@
  */
 package com.opensymphony.xwork2;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
@@ -23,6 +16,13 @@ import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.profiling.UtilTimerStack;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -46,10 +46,10 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     protected Object action;
     protected ActionProxy proxy;
-    protected List preResultListeners;
-    protected Map extraContext;
+    protected List<PreResultListener> preResultListeners;
+    protected Map<String, Object> extraContext;
     protected ActionContext invocationContext;
-    protected Iterator interceptors;
+    protected Iterator<InterceptorMapping> interceptors;
     protected ValueStack stack;
     protected Result result;
     protected Result explicitResult;
@@ -62,7 +62,7 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected Container container;
     protected UnknownHandler unknownHandler;
 
-    public DefaultActionInvocation(final Map extraContext, final boolean pushAction) {
+    public DefaultActionInvocation(final Map<String, Object> extraContext, final boolean pushAction) {
         DefaultActionInvocation.this.extraContext = extraContext;
         DefaultActionInvocation.this.pushAction = pushAction;
     }
@@ -165,7 +165,7 @@ public class DefaultActionInvocation implements ActionInvocation {
      */
     public void addPreResultListener(PreResultListener listener) {
         if (preResultListeners == null) {
-            preResultListeners = new ArrayList(1);
+            preResultListeners = new ArrayList<PreResultListener>(1);
         }
 
         preResultListeners.add(listener);
@@ -180,25 +180,25 @@ public class DefaultActionInvocation implements ActionInvocation {
             return ret;
         }
         ActionConfig config = proxy.getConfig();
-        Map results = config.getResults();
+        Map<String, ResultConfig> results = config.getResults();
 
         ResultConfig resultConfig = null;
 
         synchronized (config) {
             try {
-                resultConfig = (ResultConfig) results.get(resultCode);
+                resultConfig = results.get(resultCode);
             } catch (NullPointerException e) {
+                // swallow
             }
             if (resultConfig == null) {
                 // If no result is found for the given resultCode, try to get a wildcard '*' match.
-                resultConfig = (ResultConfig) results.get("*");
+                resultConfig = results.get("*");
             }
         }
 
         if (resultConfig != null) {
             try {
-                Result result = objectFactory.buildResult(resultConfig, invocationContext.getContextMap());
-                return result;
+                return objectFactory.buildResult(resultConfig, invocationContext.getContextMap());
             } catch (Exception e) {
                 LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClassName(), e);
                 throw new XWorkException(e, resultConfig);
@@ -239,9 +239,8 @@ public class DefaultActionInvocation implements ActionInvocation {
             // return above and flow through again
             if (!executed) {
                 if (preResultListeners != null) {
-                    for (Iterator iterator = preResultListeners.iterator();
-                         iterator.hasNext();) {
-                        PreResultListener listener = (PreResultListener) iterator.next();
+                    for (Object preResultListener : preResultListeners) {
+                        PreResultListener listener = (PreResultListener) preResultListener;
 
                         String _profileKey = "preResultListener: ";
                         try {
@@ -273,7 +272,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         return invokeAction(getAction(), proxy.getConfig());
     }
 
-    protected void createAction(Map contextMap) {
+    protected void createAction(Map<String, Object> contextMap) {
         // load action
         String timerKey = "actionCreate: " + proxy.getActionName();
         try {
@@ -307,8 +306,8 @@ public class DefaultActionInvocation implements ActionInvocation {
         }
     }
 
-    protected Map createContextMap() {
-        Map contextMap;
+    protected Map<String, Object> createContextMap() {
+        Map<String, Object> contextMap;
 
         if ((extraContext != null) && (extraContext.containsKey(ActionContext.VALUE_STACK))) {
             // In case the ValueStack was passed in
@@ -368,7 +367,7 @@ public class DefaultActionInvocation implements ActionInvocation {
 
     public void init(ActionProxy proxy) {
         this.proxy = proxy;
-        Map contextMap = createContextMap();
+        Map<String, Object> contextMap = createContextMap();
 
         // Setting this so that other classes, like object factories, can use the ActionProxy and other
         // contextual information to operate
@@ -389,7 +388,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         invocationContext.setName(proxy.getActionName());
 
         // get a new List so we don't get problems with the iterator if someone changes the list
-        List interceptorList = new ArrayList(proxy.getConfig().getInterceptors());
+        List<InterceptorMapping> interceptorList = new ArrayList<InterceptorMapping>(proxy.getConfig().getInterceptors());
         interceptors = interceptorList.iterator();
     }
 

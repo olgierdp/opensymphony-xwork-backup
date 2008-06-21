@@ -4,12 +4,12 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * A utility class for invoking prefixed methods in action class.
@@ -126,19 +126,18 @@ public class PrefixMethodInvocationUtil {
 	public static Method getPrefixedMethod(String[] prefixes, String methodName, Object action) {
 		assert(prefixes != null);
 		String capitalizedMethodName = capitalizeMethodName(methodName);
-		for (int a=0; a< prefixes.length; a++) {
-			String prefixedMethodName = prefixes[a]+capitalizedMethodName;
-			try {
-				Method method = action.getClass().getMethod(prefixedMethodName, new Class[0]);
-				return method;
-			}
-			catch(NoSuchMethodException e) {
-				// hmm -- OK, try next prefix
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("cannot find method ["+prefixedMethodName+"] in action ["+action+"]");
-				}
-			}
-		}
+        for (String prefixe : prefixes) {
+            String prefixedMethodName = prefixe + capitalizedMethodName;
+            try {
+                return action.getClass().getMethod(prefixedMethodName, new Class[0]);
+            }
+            catch (NoSuchMethodException e) {
+                // hmm -- OK, try next prefix
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("cannot find method [" + prefixedMethodName + "] in action [" + action + "]");
+                }
+            }
+        }
 		return null;
 	}
 	

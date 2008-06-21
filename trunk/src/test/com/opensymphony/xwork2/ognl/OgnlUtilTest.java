@@ -5,25 +5,16 @@
 package com.opensymphony.xwork2.ognl;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.interceptor.ChainingInterceptor;
-import com.opensymphony.xwork2.ognl.OgnlUtil;
-import com.opensymphony.xwork2.ognl.OgnlValueStack;
 import com.opensymphony.xwork2.test.User;
-import com.opensymphony.xwork2.util.Bar;
-import com.opensymphony.xwork2.util.CompoundRoot;
-import com.opensymphony.xwork2.util.Foo;
-import com.opensymphony.xwork2.util.Owner;
-import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
+import com.opensymphony.xwork2.util.*;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
-
 import ognl.*;
 
 import java.lang.reflect.Method;
-import java.text.*;
 import java.util.*;
 
 
@@ -36,6 +27,7 @@ public class OgnlUtilTest extends XWorkTestCase {
     
     private OgnlUtil ognlUtil;
     
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         ognlUtil = container.getInstance(OgnlUtil.class);
@@ -55,21 +47,21 @@ public class OgnlUtilTest extends XWorkTestCase {
                 Method[] methods = o.getClass().getDeclaredMethods();
                 System.out.println(getter);
 
-                for (int i = 0; i < methods.length; i++) {
-                    String name = methods[i].getName();
+                for (Method method : methods) {
+                    String name = method.getName();
 
-                    if (!getter.equals(name) || (methods[i].getParameterTypes().length != 1)) {
+                    if (!getter.equals(name) || (method.getParameterTypes().length != 1)) {
                         continue;
                     } else {
-                        Class clazz = methods[i].getParameterTypes()[0];
+                        Class clazz = method.getParameterTypes()[0];
 
                         try {
                             Object param = clazz.newInstance();
-                            methods[i].invoke(o, new Object[]{param});
+                            method.invoke(o, new Object[]{param});
 
                             return param;
                         } catch (Exception e) {
-                        	throw new RuntimeException(e);
+                            throw new RuntimeException(e);
                         }
                     }
                 }
@@ -90,9 +82,9 @@ public class OgnlUtilTest extends XWorkTestCase {
 
     public void testCanSetDependentObjectArray() {
         EmailAction action = new EmailAction();
-        Map context = Ognl.createDefaultContext(action);
+        Map<String, Object> context = Ognl.createDefaultContext(action);
 
-        Map props = new HashMap();
+        Map<String, Object> props = new HashMap<String, Object>();
         props.put("email[0].address", "addr1");
         props.put("email[1].address", "addr2");
         props.put("email[2].address", "addr3");
@@ -154,9 +146,9 @@ public class OgnlUtilTest extends XWorkTestCase {
         foo2.setTitle("foo2 title");
         foo2.setNumber(2);
 
-        Map context = Ognl.createDefaultContext(foo1);
+        Map<String, Object> context = Ognl.createDefaultContext(foo1);
 
-        List excludes = new ArrayList();
+        List<String> excludes = new ArrayList<String>();
         excludes.add("title");
         excludes.add("number");
 
@@ -184,7 +176,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         b2.setId(new Long(2));
 
         context = Ognl.createDefaultContext(b1);
-        List includes = new ArrayList();
+        List<String> includes = new ArrayList<String>();
         includes.add("title");
         includes.add("somethingElse");
 
@@ -203,7 +195,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         Foo foo = new Foo();
         Bar bar = new Bar();
 
-        Map context = Ognl.createDefaultContext(foo);
+        Map<String, Object> context = Ognl.createDefaultContext(foo);
 
         Calendar cal = Calendar.getInstance();
         cal.clear();
@@ -227,9 +219,9 @@ public class OgnlUtilTest extends XWorkTestCase {
         Foo foo = new Foo();
         foo.setBar(new Bar());
 
-        Map context = Ognl.createDefaultContext(foo);
+        Map<String, Object> context = Ognl.createDefaultContext(foo);
 
-        Map props = new HashMap();
+        Map<String, Object> props = new HashMap();
         props.put("bar.title", "i am barbaz");
         ognlUtil.setProperties(props, foo, context);
 
@@ -237,7 +229,7 @@ public class OgnlUtilTest extends XWorkTestCase {
     }
 
     public void testExceptionForUnmatchedGetterAndSetterWithThrowPropertyException() {
-        Map props = new HashMap();
+        Map<String, Object> props = new HashMap<String, Object>();
         props.put("myIntegerProperty", new Integer(1234));
 
         TestObject testObject = new TestObject();
@@ -251,7 +243,7 @@ public class OgnlUtilTest extends XWorkTestCase {
     }
 
     public void testExceptionForWrongPropertyNameWithThrowPropertyException() {
-        Map props = new HashMap();
+        Map<String, Object> props = new HashMap<String, Object>();
         props.put("myStringProperty", "testString");
 
         TestObject testObject = new TestObject();
@@ -266,9 +258,9 @@ public class OgnlUtilTest extends XWorkTestCase {
 
     public void testOgnlHandlesCrapAtTheEndOfANumber() {
         Foo foo = new Foo();
-        Map context = Ognl.createDefaultContext(foo);
+        Map<String, Object> context = Ognl.createDefaultContext(foo);
 
-        Map props = new HashMap();
+        Map<String, Object> props = new HashMap<String, Object>();
         props.put("aLong", "123a");
 
         ognlUtil.setProperties(props, foo, context);
@@ -280,7 +272,7 @@ public class OgnlUtilTest extends XWorkTestCase {
      */
     public void testSetIndexedValue() {
         ValueStack stack = ActionContext.getContext().getValueStack();
-        Map stackContext = stack.getContext();
+        Map<String, Object> stackContext = stack.getContext();
         stackContext.put(ReflectionContextState.CREATE_NULL_OBJECTS, Boolean.TRUE);
         stackContext.put(ReflectionContextState.DENY_METHOD_EXECUTION, Boolean.TRUE);
         stackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
@@ -289,7 +281,7 @@ public class OgnlUtilTest extends XWorkTestCase {
         stack.push(user);
 
         // indexed string w/ existing array
-        user.setList(new ArrayList());
+        user.setList(new ArrayList<String>());
         user.getList().add("");
 
         String[] foo = new String[]{"asdf"};
@@ -625,6 +617,7 @@ public class OgnlUtilTest extends XWorkTestCase {
             this.address = address;
         }
 
+        @Override
         public String toString() {
             return address;
         }
@@ -675,6 +668,7 @@ public class OgnlUtilTest extends XWorkTestCase {
             this.clazz = clazz;
         }
 
+        @Override
         public synchronized Object get(int index) {
             while (index >= this.size()) {
                 try {

@@ -37,6 +37,7 @@ public class ConditionalVisitorFieldValidator extends VisitorFieldValidator {
      * @param object the object being validated
      * @throws ValidationException
      */
+    @Override
     public void validate(Object object) throws ValidationException {
         if (validateExpression(object)) {
             super.validate(object);

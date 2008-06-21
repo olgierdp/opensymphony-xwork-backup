@@ -4,10 +4,9 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import java.util.HashSet;
-import com.opensymphony.xwork2.interceptor.MethodFilterInterceptorUtil;
-
 import com.opensymphony.xwork2.XWorkTestCase;
+
+import java.util.HashSet;
 
 public class MethodFilterInterceptorUtilTest extends XWorkTestCase {
     

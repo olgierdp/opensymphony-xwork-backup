@@ -103,6 +103,7 @@ public class TimerInterceptor extends AbstractInterceptor {
         this.logLevel = logLevel;
     }
 
+    @Override
     public String intercept(ActionInvocation invocation) throws Exception {
         if (! shouldLog()) {
             return invocation.invoke();
@@ -123,7 +124,7 @@ public class TimerInterceptor extends AbstractInterceptor {
         String result = invocation.invoke();
         long executionTime = System.currentTimeMillis() - startTime;
 
-        StringBuffer message = new StringBuffer(100);
+        StringBuilder message = new StringBuilder(100);
         message.append("Executed action [");
         String namespace = invocation.getProxy().getNamespace();
         if ((namespace != null) && (namespace.trim().length() > 0)) {

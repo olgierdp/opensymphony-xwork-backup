@@ -1,17 +1,15 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.*;
-import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.DoubleRangeFieldValidator;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Unit test for {@link DoubleRangeFieldValidator}.
@@ -32,14 +30,14 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         proxy.execute();
         assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
-        Map errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
+        Map<String, List<String>> errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
         Iterator it = errors.entrySet().iterator();
 
-        List errorMessages = (List) errors.get("percentage");
+        List<String> errorMessages = errors.get("percentage");
         assertNotNull("Expected double range validation error message.", errorMessages);
         assertEquals(1, errorMessages.size());
 
-        String errorMessage = (String) errorMessages.get(0);
+        String errorMessage = errorMessages.get(0);
         assertNotNull("Expecting: percentage must be between 0.1 and 10.1, current value is 100.0123.", errorMessage);
         assertEquals("percentage must be between 0.1 and 10.1, current value is 100.0123.", errorMessage);
 
@@ -51,10 +49,10 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         proxy.execute();
         assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
-        Map errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
+        Map<String, List<String>> errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
         Iterator it = errors.entrySet().iterator();
 
-        List errorMessages = (List) errors.get("percentage");
+        List<String> errorMessages = errors.get("percentage");
         assertNull("Expected no double range validation error message.", errorMessages);
     }
 
@@ -177,6 +175,7 @@ public class DoubleRangeValidatorTest extends XWorkTestCase {
         assertTrue(!context.hasErrors()); // should pass as null value passed in
     }
 
+    @Override
     protected void setUp() throws Exception {
         loadConfigurationProviders(new XmlConfigurationProvider("xwork-default.xml"),  new MockConfigurationProvider());
         val = new DoubleRangeFieldValidator();

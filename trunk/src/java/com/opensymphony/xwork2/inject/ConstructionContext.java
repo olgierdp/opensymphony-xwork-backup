@@ -17,11 +17,11 @@
 package com.opensymphony.xwork2.inject;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Context of a dependency construction. Used to manage circular references.

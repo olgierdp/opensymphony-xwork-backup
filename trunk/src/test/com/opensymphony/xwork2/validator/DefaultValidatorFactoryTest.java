@@ -4,9 +4,8 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import com.mockobjects.dynamic.Mock;
 import com.mockobjects.dynamic.C;
-
+import com.mockobjects.dynamic.Mock;
 import junit.framework.TestCase;
 
 /**

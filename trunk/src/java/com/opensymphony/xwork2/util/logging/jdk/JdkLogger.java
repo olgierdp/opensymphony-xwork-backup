@@ -4,10 +4,10 @@
  */
 package com.opensymphony.xwork2.util.logging.jdk;
 
-import java.util.logging.Level;
-
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerUtils;
+
+import java.util.logging.Level;
 
 /**
  * Delegates to jdk logger.  Maps fatal to Level.SEVERE along with error.

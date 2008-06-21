@@ -14,7 +14,6 @@ import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.config.entities.ResultTypeConfig;
 import com.opensymphony.xwork2.mock.MockResult;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,24 +31,24 @@ public class XmlConfigurationProviderResultsTest extends ConfigurationTestBase {
         final String filename = "com/opensymphony/xwork2/config/providers/xwork-test-results.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
 
-        HashMap parameters = new HashMap();
-        HashMap results = new HashMap();
+        HashMap<String, String> parameters = new HashMap<String, String>();
+        HashMap<String, ResultConfig> results = new HashMap<String, ResultConfig>();
 
         results.put("chainDefaultTypedResult", new ResultConfig.Builder("chainDefaultTypedResult", ActionChainResult.class.getName()).build());
 
         results.put("mockTypedResult", new ResultConfig.Builder("mockTypedResult", MockResult.class.getName()).build());
 
-        Map resultParams = new HashMap();
+        Map<String, String> resultParams = new HashMap<String, String>();
         resultParams.put("actionName", "bar.vm");
         results.put("specificLocationResult", new ResultConfig.Builder("specificLocationResult", ActionChainResult.class.getName())
                 .addParams(resultParams).build());
 
-        resultParams = new HashMap();
+        resultParams = new HashMap<String, String>();
         resultParams.put("actionName", "foo.vm");
         results.put("defaultLocationResult", new ResultConfig.Builder("defaultLocationResult", ActionChainResult.class.getName())
                 .addParams(resultParams).build());
 
-        resultParams = new HashMap();
+        resultParams = new HashMap<String, String>();
         resultParams.put("foo", "bar");
         results.put("noDefaultLocationResult", new ResultConfig.Builder("noDefaultLocationResult", ActionChainResult.class.getName())
                 .addParams(resultParams).build());
@@ -64,12 +63,12 @@ public class XmlConfigurationProviderResultsTest extends ConfigurationTestBase {
         provider.loadPackages();
 
         PackageConfig pkg = configuration.getPackageConfig("default");
-        Map actionConfigs = pkg.getActionConfigs();
+        Map<String, ActionConfig> actionConfigs = pkg.getActionConfigs();
 
         // assertions
         assertEquals(1, actionConfigs.size());
 
-        ActionConfig action = (ActionConfig) actionConfigs.get("Bar");
+        ActionConfig action = actionConfigs.get("Bar");
         assertEquals(expectedAction, action);
     }
 

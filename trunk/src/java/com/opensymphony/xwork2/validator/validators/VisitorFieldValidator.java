@@ -7,7 +7,10 @@ package com.opensymphony.xwork2.validator.validators;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.validator.*;
+import com.opensymphony.xwork2.validator.ActionValidatorManager;
+import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
+import com.opensymphony.xwork2.validator.ValidationException;
+import com.opensymphony.xwork2.validator.ValidatorContext;
 
 import java.util.Collection;
 
@@ -180,6 +183,7 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
          * @param fieldName field name in OGNL syntax
          * @return field name in OGNL syntax
          */
+        @Override
         public String getFullFieldName(String fieldName) {
             return field + "." + fieldName;
         }
@@ -188,10 +192,12 @@ public class VisitorFieldValidator extends FieldValidatorSupport {
             return parent.getFullFieldName(field + "." + fieldName);
         }
 
+        @Override
         public void addActionError(String anErrorMessage) {
             super.addFieldError(getFullFieldName(field), message + anErrorMessage);
         }
 
+        @Override
         public void addFieldError(String fieldName, String errorMessage) {
             super.addFieldError(getFullFieldName(fieldName), message + errorMessage);
         }

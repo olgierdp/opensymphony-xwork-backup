@@ -76,7 +76,7 @@ import java.util.Map;
  * @version $Id: EnumTypeConverter.java 1050 2006-06-26 21:46:27 +0200 (Mon, 26 Jun 2006) rainerh $
  * @deprecated Since Struts 2.1.0 as enum support is now built into XWork
  */
-public class EnumTypeConverter extends DefaultTypeConverter {
+@Deprecated public class EnumTypeConverter extends DefaultTypeConverter {
 
     /**
      * Converts the given object to a given type. How this is to be done is implemented in toClass. The OGNL context, o
@@ -89,7 +89,8 @@ public class EnumTypeConverter extends DefaultTypeConverter {
      * @return Converted value of type declared in toClass or TypeConverter.NoConversionPossible to indicate that the
      *         conversion was not possible.
      */
-    public Object convertValue(Map context, Object o, Class toClass) {
+    @Override
+    public Object convertValue(Map<String, Object> context, Object o, Class toClass) {
         if (o instanceof String[]) {
             return convertFromString(((String[]) o)[0], toClass);
         } else if (o instanceof String) {

@@ -4,9 +4,9 @@ import com.opensymphony.xwork2.config.entities.InterceptorMapping;
 import com.opensymphony.xwork2.mock.MockActionProxy;
 import com.opensymphony.xwork2.mock.MockInterceptor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 
 
 /**
@@ -23,7 +23,7 @@ public class DefaultActionInvocationTest extends XWorkTestCase {
      * @throws Exception when action throws exception
      */
     public void testInvoke() throws Exception {
-        List interceptorMappings = new ArrayList();
+        List<InterceptorMapping> interceptorMappings = new ArrayList<InterceptorMapping>();
         MockInterceptor mockInterceptor1 = new MockInterceptor();
         mockInterceptor1.setFoo("test1");
         mockInterceptor1.setExpectedFoo("test1");
@@ -46,8 +46,8 @@ public class DefaultActionInvocationTest extends XWorkTestCase {
 
 
     class DefaultActionInvocationTester extends DefaultActionInvocation {
-        DefaultActionInvocationTester(List interceptorMappings) {
-            super(new HashMap(), false);
+        DefaultActionInvocationTester(List<InterceptorMapping> interceptorMappings) {
+            super(new HashMap<String, Object>(), false);
             interceptors = interceptorMappings.iterator();
             MockActionProxy actionProxy = new MockActionProxy();
             actionProxy.setMethod("execute");

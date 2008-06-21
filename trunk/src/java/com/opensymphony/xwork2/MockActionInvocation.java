@@ -11,5 +11,5 @@ package com.opensymphony.xwork2;
  * @author plightbo
  * @deprecated Please use @see com.opensymphony.xwork2.mock.MockActionInvocation instead
  */
-public class MockActionInvocation extends com.opensymphony.xwork2.mock.MockActionInvocation {
+@Deprecated public class MockActionInvocation extends com.opensymphony.xwork2.mock.MockActionInvocation {
 }

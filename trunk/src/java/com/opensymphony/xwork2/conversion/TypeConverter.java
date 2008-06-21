@@ -56,7 +56,7 @@ public interface TypeConverter
        * @return Converted value of type toType or TypeConverter.NoConversionPossible to indicate that the
                  conversion was not possible.
      */
-    public Object convertValue(Map context, Object target, Member member, String propertyName, Object value, Class toType);
+    public Object convertValue(Map<String, Object> context, Object target, Member member, String propertyName, Object value, Class toType);
     
     public static final Object NO_CONVERSION_POSSIBLE = "ognl.NoConversionPossible";
     

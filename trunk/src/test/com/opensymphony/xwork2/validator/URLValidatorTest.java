@@ -7,10 +7,7 @@ package com.opensymphony.xwork2.validator;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.URLValidator;
-
-import junit.framework.TestCase;
 
 /**
  * Test case for URLValidator
@@ -95,13 +92,15 @@ public class URLValidatorTest extends XWorkTestCase {
 		assertFalse(validator.getValidatorContext().hasFieldErrors());
 	}
 	
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 	    super.setUp();
 		stack = ActionContext.getContext().getValueStack();
 		actionContext = ActionContext.getContext();
 	}
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 	    super.tearDown();
 		stack = null;
 		actionContext = null;

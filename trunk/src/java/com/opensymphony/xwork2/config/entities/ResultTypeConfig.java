@@ -4,13 +4,13 @@
  */
 package com.opensymphony.xwork2.config.entities;
 
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.Collections;
-import java.io.Serializable;
-
 import com.opensymphony.xwork2.util.location.Located;
 import com.opensymphony.xwork2.util.location.Location;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
@@ -55,7 +55,7 @@ public class ResultTypeConfig extends Located implements Serializable {
     /**
      * @deprecated Since 2.1, use {@link #getClassName()} instead
      */
-    public String getClazz() {
+    @Deprecated public String getClazz() {
         return className;
     }
 
@@ -71,6 +71,7 @@ public class ResultTypeConfig extends Located implements Serializable {
         return this.params;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -84,6 +85,7 @@ public class ResultTypeConfig extends Located implements Serializable {
         return true;
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = (className != null ? className.hashCode() : 0);

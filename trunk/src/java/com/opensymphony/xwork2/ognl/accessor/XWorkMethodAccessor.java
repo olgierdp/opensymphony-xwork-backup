@@ -4,19 +4,14 @@
  */
 package com.opensymphony.xwork2.ognl.accessor;
 
-import java.beans.PropertyDescriptor;
-import java.util.Collection;
-import java.util.Map;
-
-import ognl.MethodFailedException;
-import ognl.ObjectMethodAccessor;
-import ognl.OgnlContext;
-import ognl.OgnlRuntime;
-import ognl.PropertyAccessor;
-
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
+import ognl.*;
+
+import java.beans.PropertyDescriptor;
+import java.util.Collection;
+import java.util.Map;
 
 
 /**
@@ -33,13 +28,14 @@ public class XWorkMethodAccessor extends ObjectMethodAccessor {
     /**
      * @deprecated Use {@link ReflectionContextState#DENY_METHOD_EXECUTION} instead
      */
-    public static final String DENY_METHOD_EXECUTION = ReflectionContextState.DENY_METHOD_EXECUTION;
+    @Deprecated public static final String DENY_METHOD_EXECUTION = ReflectionContextState.DENY_METHOD_EXECUTION;
     /**
      * @deprecated Use {@link ReflectionContextState#DENY_INDEXED_ACCESS_EXECUTION} instead
      */
-    public static final String DENY_INDEXED_ACCESS_EXECUTION = ReflectionContextState.DENY_INDEXED_ACCESS_EXECUTION;
+    @Deprecated public static final String DENY_INDEXED_ACCESS_EXECUTION = ReflectionContextState.DENY_INDEXED_ACCESS_EXECUTION;
 
 
+    @Override
     public Object callMethod(Map context, Object object, String string, Object[] objects) throws MethodFailedException {
 
         //Collection property accessing
@@ -98,6 +94,7 @@ public class XWorkMethodAccessor extends ObjectMethodAccessor {
         }
     }
 
+    @Override
     public Object callStaticMethod(Map context, Class aClass, String string, Object[] objects) throws MethodFailedException {
         Boolean exec = (Boolean) context.get(ReflectionContextState.DENY_METHOD_EXECUTION);
         boolean e = ((exec == null) ? false : exec.booleanValue());

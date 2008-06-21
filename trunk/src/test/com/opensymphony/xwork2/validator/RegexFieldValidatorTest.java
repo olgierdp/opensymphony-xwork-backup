@@ -7,9 +7,7 @@ package com.opensymphony.xwork2.validator;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.RegexFieldValidator;
-import junit.framework.TestCase;
 
 import java.util.List;
 
@@ -80,7 +78,7 @@ public class RegexFieldValidatorTest extends XWorkTestCase {
 
         assertTrue(validator.getValidatorContext().hasErrors());
         assertTrue(validator.getValidatorContext().hasFieldErrors());
-        List msgs = (List) validator.getValidatorContext().getFieldErrors().get("username");
+        List<String> msgs = validator.getValidatorContext().getFieldErrors().get("username");
         assertNotNull(msgs);
         assertTrue(msgs.size() == 1); // should contain 1 error message
 

@@ -1,11 +1,11 @@
 package com.opensymphony.xwork2.test.annotations;
 
-import java.util.List;
-
 import com.opensymphony.xwork2.conversion.annotations.Conversion;
 import com.opensymphony.xwork2.conversion.annotations.ConversionType;
 import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
 import com.opensymphony.xwork2.util.Element;
+
+import java.util.List;
 
 @Conversion(
 	conversions={

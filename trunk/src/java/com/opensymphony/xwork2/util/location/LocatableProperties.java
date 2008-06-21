@@ -1,5 +1,7 @@
 package com.opensymphony.xwork2.util.location;
 
+import com.opensymphony.xwork2.util.PropertiesReader;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import com.opensymphony.xwork2.util.PropertiesReader;
 
 /**
  * Properties implementation that remembers the location of each property.  When

@@ -4,11 +4,11 @@
  */
 package com.opensymphony.xwork2.util;
 
+import junit.framework.TestCase;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
-
-import junit.framework.TestCase;
 
 public class ClassLoaderUtilTest extends TestCase {
 

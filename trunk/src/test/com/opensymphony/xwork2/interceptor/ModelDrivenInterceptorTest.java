@@ -4,18 +4,10 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import com.mockobjects.dynamic.Mock;
 import com.mockobjects.dynamic.ConstraintMatcher;
-import com.opensymphony.xwork2.Action;
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.ModelDriven;
-import com.opensymphony.xwork2.XWorkTestCase;
+import com.mockobjects.dynamic.Mock;
+import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
-
-import junit.framework.TestCase;
 
 import java.util.Date;
 
@@ -84,6 +76,7 @@ public class ModelDrivenInterceptorTest extends XWorkTestCase {
         modelDrivenInterceptor.intercept((ActionInvocation) mockActionInvocation.proxy());
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         mockActionInvocation = new Mock(ActionInvocation.class);
@@ -91,6 +84,7 @@ public class ModelDrivenInterceptorTest extends XWorkTestCase {
         model = new Date(); // any object will do
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         mockActionInvocation.verify();

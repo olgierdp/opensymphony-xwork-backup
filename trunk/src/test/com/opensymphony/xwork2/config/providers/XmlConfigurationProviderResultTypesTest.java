@@ -4,14 +4,14 @@
  */
 package com.opensymphony.xwork2.config.providers;
 
-import java.util.Map;
-
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 import com.opensymphony.xwork2.config.entities.ResultTypeConfig;
 import com.opensymphony.xwork2.mock.MockResult;
+
+import java.util.Map;
 
 
 /**

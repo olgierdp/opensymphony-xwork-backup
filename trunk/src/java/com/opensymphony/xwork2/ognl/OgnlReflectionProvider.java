@@ -1,19 +1,18 @@
 package com.opensymphony.xwork2.ognl;
 
+import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.util.reflection.ReflectionException;
+import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
+import ognl.Ognl;
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
+
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
-
-import ognl.Ognl;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
-
-import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.util.reflection.ReflectionException;
-import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 
 public class OgnlReflectionProvider implements ReflectionProvider {
     
@@ -46,17 +45,17 @@ public class OgnlReflectionProvider implements ReflectionProvider {
         }
     }
 
-    public void setProperties(Map props, Object o, Map context) {
+    public void setProperties(Map<String, String> props, Object o, Map<String, Object> context) {
         ognlUtil.setProperties(props, o, context);
     }
 
-    public void setProperties(Map props, Object o, Map context,
+    public void setProperties(Map<String, String> props, Object o, Map<String, Object> context,
             boolean throwPropertyExceptions) throws ReflectionException{
         ognlUtil.setProperties(props, o, context, throwPropertyExceptions);
         
     }
 
-    public void setProperties(Map properties, Object o) {
+    public void setProperties(Map<String, String> properties, Object o) {
         ognlUtil.setProperties(properties, o);
     }
 
@@ -70,12 +69,12 @@ public class OgnlReflectionProvider implements ReflectionProvider {
         }
     }
 
-    public void copy(Object from, Object to, Map context,
-            Collection exclusions, Collection inclusions) {
+    public void copy(Object from, Object to, Map<String, Object> context,
+            Collection<String> exclusions, Collection<String> inclusions) {
         ognlUtil.copy(from, to, context, exclusions, inclusions);
     }
 
-    public Object getRealTarget(String property, Map context, Object root)
+    public Object getRealTarget(String property, Map<String, Object> context, Object root)
             throws ReflectionException {
         try {
             return ognlUtil.getRealTarget(property, context, root);
@@ -84,7 +83,7 @@ public class OgnlReflectionProvider implements ReflectionProvider {
         }
     }
 
-    public void setProperty(String name, Object value, Object o, Map context) {
+    public void setProperty(String name, Object value, Object o, Map<String, Object> context) {
         ognlUtil.setProperty(name, value, o, context);
     }
 
@@ -97,7 +96,7 @@ public class OgnlReflectionProvider implements ReflectionProvider {
         }
     }
 
-    public Object getValue(String expression, Map context, Object root)
+    public Object getValue(String expression, Map<String, Object> context, Object root)
             throws ReflectionException {
         try {
             return ognlUtil.getValue(expression, context, root);
@@ -106,7 +105,7 @@ public class OgnlReflectionProvider implements ReflectionProvider {
         }
     }
 
-    public void setValue(String expression, Map context, Object root,
+    public void setValue(String expression, Map<String, Object> context, Object root,
             Object value) throws ReflectionException {
         try {
             Ognl.setValue(expression, context, root, value);

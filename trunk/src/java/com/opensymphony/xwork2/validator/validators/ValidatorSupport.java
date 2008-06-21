@@ -4,19 +4,14 @@
  */
 package com.opensymphony.xwork2.validator.validators;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.TextParseUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
-import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
-import com.opensymphony.xwork2.validator.ShortCircuitableValidator;
-import com.opensymphony.xwork2.validator.ValidationException;
-import com.opensymphony.xwork2.validator.Validator;
-import com.opensymphony.xwork2.validator.ValidatorContext;
+import com.opensymphony.xwork2.validator.*;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -71,25 +66,25 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
         stack.push(this);
 
         if (messageKey != null) {
-            if ((defaultMessage == null) || (defaultMessage.trim().equals(""))) {
+            if ((defaultMessage == null) || ("".equals(defaultMessage.trim()))) {
                 defaultMessage = messageKey;
             }
             if (validatorContext == null) {
                 validatorContext = new DelegatingValidatorContext(object);
             }
-            List parsedMessageParameters = null;
+            List<Object> parsedMessageParameters = null;
             if (messageParameters != null) {
-                parsedMessageParameters = new ArrayList();
-                for (int a = 0; a < messageParameters.length; a++) {
-                    if (messageParameters[a] != null) {
+                parsedMessageParameters = new ArrayList<Object>();
+                for (String messageParameter : messageParameters) {
+                    if (messageParameter != null) {
                         try {
-                            Object val = stack.findValue(messageParameters[a]);
+                            Object val = stack.findValue(messageParameter);
                             parsedMessageParameters.add(val);
                         } catch (Exception e) {
                             // if there's an exception in parsing, we'll just treat the expression itself as the
                             // parameter
-                            log.warn("exception while parsing message parameter [" + messageParameters[a] + "]", e);
-                            parsedMessageParameters.add(messageParameters[a]);
+                            log.warn("exception while parsing message parameter [" + messageParameter + "]", e);
+                            parsedMessageParameters.add(messageParameter);
                         }
                     }
                 }

@@ -16,17 +16,11 @@
  */
 package com.opensymphony.xwork2.util.finder;
 
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.util.Collection;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Arrays;
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Use with ClassFinder to filter the Urls to be scanned, example:

@@ -4,10 +4,6 @@
  */
 package com.opensymphony.xwork2.util;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.ognl.OgnlValueStackFactory;
-
 /**
  * Factory that creates a value stack, defaulting to the OgnlValueStackFactory
  */

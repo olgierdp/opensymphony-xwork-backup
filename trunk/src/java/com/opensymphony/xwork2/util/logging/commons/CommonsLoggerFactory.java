@@ -4,10 +4,9 @@
  */
 package com.opensymphony.xwork2.util.logging.commons;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Creates commons-logging-backed loggers

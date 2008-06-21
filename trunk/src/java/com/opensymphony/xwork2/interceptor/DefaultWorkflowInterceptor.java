@@ -124,6 +124,7 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
      *
      * @return String result name
      */
+    @Override
     protected String doIntercept(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
 

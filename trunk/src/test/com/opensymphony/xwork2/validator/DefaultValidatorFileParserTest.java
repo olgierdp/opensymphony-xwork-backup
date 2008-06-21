@@ -4,16 +4,15 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import com.opensymphony.xwork2.util.ClassLoaderUtil;
-import com.opensymphony.xwork2.XWorkException;
-import com.opensymphony.xwork2.validator.validators.*;
-import com.mockobjects.dynamic.Mock;
 import com.mockobjects.dynamic.C;
+import com.mockobjects.dynamic.Mock;
+import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.util.ClassLoaderUtil;
+import com.opensymphony.xwork2.validator.validators.*;
+import junit.framework.TestCase;
 
 import java.io.InputStream;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 
 /**

@@ -33,7 +33,7 @@ public class ActionConfig extends Located implements Serializable {
     public static final String WILDCARD = "*";
 
     protected List<InterceptorMapping> interceptors; // a list of interceptorMapping Objects eg. List<InterceptorMapping>
-    protected Map<String, String> params;
+    protected Map<String,String> params;
     protected Map<String, ResultConfig> results;
     protected List<ExceptionMappingConfig> exceptionMappings;
     protected String className;
@@ -123,7 +123,7 @@ public class ActionConfig extends Located implements Serializable {
         }
     }
 
-    public boolean equals(Object o) {
+    @Override public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -167,7 +167,7 @@ public class ActionConfig extends Located implements Serializable {
     }
 
 
-    public int hashCode() {
+    @Override public int hashCode() {
         int result;
         result = (interceptors != null ? interceptors.hashCode() : 0);
         result = 31 * result + (params != null ? params.hashCode() : 0);
@@ -181,8 +181,8 @@ public class ActionConfig extends Located implements Serializable {
         return result;
     }
 
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
+    @Override public String toString() {
+        StringBuilder sb = new StringBuilder();
         sb.append("{ActionConfig ");
         sb.append(name).append(" (");
         sb.append(className);

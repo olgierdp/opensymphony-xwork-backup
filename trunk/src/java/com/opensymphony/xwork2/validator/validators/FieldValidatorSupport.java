@@ -25,10 +25,12 @@ public abstract class FieldValidatorSupport extends ValidatorSupport implements 
         return fieldName;
     }
 
+    @Override
     public void setValidatorType(String type) {
         this.type = type;
     }
 
+    @Override
     public String getValidatorType() {
         return type;
     }

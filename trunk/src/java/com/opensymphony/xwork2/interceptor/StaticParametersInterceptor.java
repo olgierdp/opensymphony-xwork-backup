@@ -4,11 +4,6 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Collections;
-import java.util.TreeMap;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
@@ -17,6 +12,10 @@ import com.opensymphony.xwork2.util.TextParseUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -86,11 +85,12 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
         this.overwrite = Boolean.valueOf(value).booleanValue();
     }
 
+    @Override
     public String intercept(ActionInvocation invocation) throws Exception {
         ActionConfig config = invocation.getProxy().getConfig();
         Object action = invocation.getAction();
 
-        final Map parameters = config.getParams();
+        final Map<String, String> parameters = config.getParams();
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("Setting static parameters " + parameters);
@@ -105,15 +105,13 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
             ActionContext ac = ActionContext.getContext();
             final ValueStack stack = ac.getValueStack();
 
-            for (Iterator iterator = parameters.entrySet().iterator();
-                 iterator.hasNext();) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                stack.setValue(entry.getKey().toString(), entry.getValue());
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                stack.setValue(entry.getKey(), entry.getValue());
                 Object val = entry.getValue();
                 if (parse && val instanceof String) {
-                    val = TextParseUtil.translateVariables((String) val, stack);
+                    val = TextParseUtil.translateVariables(val.toString(), stack);
                 }
-                stack.setValue(entry.getKey().toString(), val);
+                stack.setValue(entry.getKey(), val);
             }
             addParametersToContext(ac, parameters);
         }
@@ -126,12 +124,12 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
      * @return the parameters from the action mapping in the context.  If none found, returns
      *         an empty map.
      */
-    protected Map retrieveParameters(ActionContext ac) {
+    protected Map<String, String> retrieveParameters(ActionContext ac) {
         ActionConfig config = ac.getActionInvocation().getProxy().getConfig();
         if (config != null) {
             return config.getParams();
         } else {
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
     }
 
@@ -143,24 +141,24 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
      * @param ac        The action context
      * @param newParams The parameter map to apply
      */
-    protected void addParametersToContext(ActionContext ac, Map newParams) {
-        Map previousParams = ac.getParameters();
+    protected void addParametersToContext(ActionContext ac, Map<String, ?> newParams) {
+        Map<String, Object> previousParams = ac.getParameters();
 
-        Map combinedParams;
+        Map<String, Object> combinedParams;
         if ( overwrite ) {
             if (previousParams != null) {
-                combinedParams = new TreeMap(previousParams);
+                combinedParams = new TreeMap<String, Object>(previousParams);
             } else {
-                combinedParams = new TreeMap();
+                combinedParams = new TreeMap<String, Object>();
             }
             if ( newParams != null) {
                 combinedParams.putAll(newParams);
             }
         } else {
             if (newParams != null) {
-                combinedParams = new TreeMap(newParams);
+                combinedParams = new TreeMap<String, Object>(newParams);
             } else {
-                combinedParams = new TreeMap();
+                combinedParams = new TreeMap<String, Object>();
             }
             if ( previousParams != null) {
                 combinedParams.putAll(previousParams);

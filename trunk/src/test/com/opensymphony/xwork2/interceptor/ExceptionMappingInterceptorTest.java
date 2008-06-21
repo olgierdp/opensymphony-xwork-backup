@@ -9,9 +9,7 @@ import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.ExceptionMappingConfig;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.ValidationException;
-import junit.framework.TestCase;
 
 import java.util.HashMap;
 
@@ -274,6 +272,7 @@ public class ExceptionMappingInterceptorTest extends XWorkTestCase {
         invocation = (ActionInvocation) mockInvocation.proxy();
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         stack = ActionContext.getContext().getValueStack();
@@ -284,6 +283,7 @@ public class ExceptionMappingInterceptorTest extends XWorkTestCase {
         interceptor.init();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         interceptor.destroy();

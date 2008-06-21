@@ -49,10 +49,12 @@ class Key<T> {
     return name;
   }
 
+  @Override
   public int hashCode() {
     return hashCode;
   }
 
+  @Override
   public boolean equals(Object o) {
     if (!(o instanceof Key)) {
       return false;
@@ -64,6 +66,7 @@ class Key<T> {
     return name.equals(other.name) && type.equals(other.type);
   }
 
+  @Override
   public String toString() {
     return "[type=" + type.getName() + ", name='" + name + "']";
   }

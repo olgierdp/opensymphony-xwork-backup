@@ -5,13 +5,13 @@
 
 package com.opensymphony.xwork2.interceptor;
 
-import java.util.Locale;
-import java.util.Map;
-
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * <!-- START SNIPPET: description -->
@@ -92,6 +92,7 @@ public class I18nInterceptor extends AbstractInterceptor {
         this.attributeName = attributeName;
     }
 
+    @Override
     public String intercept(ActionInvocation invocation) throws Exception {
         if (LOG.isDebugEnabled()) {
             LOG.debug("intercept '"
@@ -99,7 +100,7 @@ public class I18nInterceptor extends AbstractInterceptor {
                     + invocation.getProxy().getActionName() + "' { ");
         }
         //get requested locale
-        Map params = invocation.getInvocationContext().getParameters();
+        Map<String, Object> params = invocation.getInvocationContext().getParameters();
         Object requested_locale = params.remove(parameterName);
         if (requested_locale != null && requested_locale.getClass().isArray()
                 && ((Object[]) requested_locale).length == 1) {
@@ -111,7 +112,7 @@ public class I18nInterceptor extends AbstractInterceptor {
         }
 
         //save it in session
-        Map session = invocation.getInvocationContext().getSession();
+        Map<String, Object> session = invocation.getInvocationContext().getSession();
 
 
         if (session != null) {

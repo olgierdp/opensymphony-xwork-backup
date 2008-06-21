@@ -5,14 +5,13 @@
 
 package com.opensymphony.xwork2.ognl.accessor;
 
+import com.opensymphony.xwork2.ognl.ObjectProxy;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 import ognl.PropertyAccessor;
 
 import java.util.Map;
-
-import com.opensymphony.xwork2.ognl.ObjectProxy;
-import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 
 /**
  * Is able to access (set/get) properties on a given object.

@@ -4,32 +4,7 @@
  */
 package com.opensymphony.xwork2.conversion.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ModelDrivenAction;
-import com.opensymphony.xwork2.SimpleAction;
-import com.opensymphony.xwork2.TestBean;
-import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.ognl.OgnlValueStack;
 import com.opensymphony.xwork2.test.ModelDrivenAction2;
 import com.opensymphony.xwork2.test.User;
@@ -41,6 +16,18 @@ import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 
 /**
  * @author $Author$
@@ -48,7 +35,7 @@ import ognl.OgnlRuntime;
  */
 public class XWorkConverterTest extends XWorkTestCase {
 
-    Map context;
+    Map<String, Object> context;
     XWorkConverter converter;
     OgnlValueStack stack;
 
@@ -121,7 +108,7 @@ public class XWorkConverterTest extends XWorkTestCase {
 
         stack.push(action);
 
-        Map ognlStackContext = stack.getContext();
+        Map<String, Object> ognlStackContext = stack.getContext();
         ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
         ognlStackContext.put(XWorkConverter.CONVERSION_PROPERTY_FULLNAME, "bean.birth");
 
@@ -141,7 +128,7 @@ public class XWorkConverterTest extends XWorkTestCase {
 
         stack.push(action);
 
-        Map ognlStackContext = stack.getContext();
+        Map<String, Object> ognlStackContext = stack.getContext();
         ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         String[] value = new String[]{"invalid date"};
@@ -160,7 +147,7 @@ public class XWorkConverterTest extends XWorkTestCase {
         stack.push(action);
         stack.push(action.getModel());
 
-        Map ognlStackContext = stack.getContext();
+        Map<String, Object> ognlStackContext = stack.getContext();
         ognlStackContext.put(XWorkConverter.REPORT_CONVERSION_ERRORS, Boolean.TRUE);
 
         String[] value = new String[]{"invalid date"};
@@ -381,6 +368,7 @@ public class XWorkConverterTest extends XWorkTestCase {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(new ClassLoader(cl) {
+                @Override
                 public Enumeration<URL> getResources(String name) throws IOException {
                     if ("xwork-conversion.properties".equals(name)) {
                         return new Enumeration<URL>() {
@@ -655,6 +643,7 @@ public class XWorkConverterTest extends XWorkTestCase {
     public static class Bar1Impl implements Bar1 {
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 

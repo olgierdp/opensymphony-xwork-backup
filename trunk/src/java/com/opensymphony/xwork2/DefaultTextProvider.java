@@ -7,13 +7,12 @@ package com.opensymphony.xwork2;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 
-import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.text.MessageFormat;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * DefaultTextProvider gets texts from only the default resource bundles associated with the
@@ -46,7 +45,7 @@ public class DefaultTextProvider implements TextProvider, Serializable, Unchaina
         return text;
     }
 
-    public String getText(String key, List args) {
+    public String getText(String key, List<Object> args) {
         Object[] params;
         if (args != null) {
             params = args.toArray();
@@ -68,7 +67,7 @@ public class DefaultTextProvider implements TextProvider, Serializable, Unchaina
         return LocalizedTextUtil.findDefaultText(key, ActionContext.getContext().getLocale(), params);
     }
 
-    public String getText(String key, String defaultValue, List args) {
+    public String getText(String key, String defaultValue, List<Object> args) {
         String text = getText(key, args);
         if (text == null) {
             MessageFormat format = new MessageFormat(defaultValue);
@@ -105,19 +104,20 @@ public class DefaultTextProvider implements TextProvider, Serializable, Unchaina
 
 
     public String getText(String key, String defaultValue, String obj) {
-        List args = new ArrayList(1);
+        List<Object> args = new ArrayList<Object>(1);
         args.add(obj);
         return getText(key, defaultValue, args);
     }
 
-    public String getText(String key, String defaultValue, List args, ValueStack stack) {
+    public String getText(String key, String defaultValue, List<Object> args, ValueStack stack) {
         //we're not using the value stack here
         return getText(key, defaultValue, args);
     }
 
     public String getText(String key, String defaultValue, String[] args, ValueStack stack) {
         //we're not using the value stack here
-        return getText(key, defaultValue, Arrays.asList(args));
+        List<Object> values = new ArrayList<Object>(Arrays.asList(args));
+        return getText(key, defaultValue, values);
     }
 
     public ResourceBundle getTexts(String bundleName) {

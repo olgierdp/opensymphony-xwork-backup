@@ -4,15 +4,12 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import java.util.HashMap;
-
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.entities.InterceptorConfig;
-import com.opensymphony.xwork2.mock.MockActionProxy;
 import com.opensymphony.xwork2.validator.ValidationInterceptor;
 
-import junit.framework.TestCase;
+import java.util.HashMap;
 
 
 /**
@@ -341,6 +338,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
     }
     
     
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         actionMock = new Mock(ValidateAction.class);
@@ -353,6 +351,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
         invocation = (ActionInvocation) invocationMock.proxy();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         actionMock.verify();

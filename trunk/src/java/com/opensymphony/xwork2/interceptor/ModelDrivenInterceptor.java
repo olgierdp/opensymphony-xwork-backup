@@ -6,8 +6,8 @@ package com.opensymphony.xwork2.interceptor;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ModelDriven;
-import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.CompoundRoot;
+import com.opensymphony.xwork2.util.ValueStack;
 
 
 /**
@@ -71,6 +71,7 @@ public class ModelDrivenInterceptor extends AbstractInterceptor {
         this.refreshModelBeforeResult = val;
     }
 
+    @Override
     public String intercept(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
 

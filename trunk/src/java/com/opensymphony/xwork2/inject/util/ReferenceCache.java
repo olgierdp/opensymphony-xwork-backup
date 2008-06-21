@@ -20,12 +20,7 @@ import static com.opensymphony.xwork2.inject.util.ReferenceType.STRONG;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 
 /**
  * Extends {@link ReferenceMap} to support lazy loading values by overriding
@@ -171,6 +166,7 @@ public abstract class ReferenceCache<K, V> extends ReferenceMap<K, V> {
       final Function<? super K, ? extends V> function) {
     ensureNotNull(function);
     return new ReferenceCache<K, V>(keyReferenceType, valueReferenceType) {
+      @Override
       protected V create(K key) {
         return function.apply(key);
       }

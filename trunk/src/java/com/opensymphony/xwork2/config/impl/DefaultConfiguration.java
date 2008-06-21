@@ -67,11 +67,11 @@ public class DefaultConfiguration implements Configuration {
         return packageContexts.get(name);
     }
 
-    public Set getPackageConfigNames() {
+    public Set<String> getPackageConfigNames() {
         return packageContexts.keySet();
     }
 
-    public Map getPackageConfigs() {
+    public Map<String, PackageConfig> getPackageConfigs() {
         return packageContexts;
     }
     
@@ -245,11 +245,11 @@ public class DefaultConfiguration implements Configuration {
                     configs = new LinkedHashMap<String, ActionConfig>();
                 }
 
-                Map actionConfigs = packageConfig.getAllActionConfigs();
+                Map<String, ActionConfig> actionConfigs = packageConfig.getAllActionConfigs();
 
                 for (Object o : actionConfigs.keySet()) {
                     String actionName = (String) o;
-                    ActionConfig baseConfig = (ActionConfig) actionConfigs.get(actionName);
+                    ActionConfig baseConfig = actionConfigs.get(actionName);
                     configs.put(actionName, buildFullActionConfig(packageConfig, baseConfig));
                 }
                 
@@ -308,21 +308,19 @@ public class DefaultConfiguration implements Configuration {
 
             if (defaultInterceptorRefName != null) {
                 interceptors.addAll(InterceptorBuilder.constructInterceptorReference(new PackageConfig.Builder(packageContext), defaultInterceptorRefName,
-                        new LinkedHashMap(), packageContext.getLocation(), objectFactory));
+                        new LinkedHashMap<String, String>(), packageContext.getLocation(), objectFactory));
             }
         }
 
         
         
-        ActionConfig config = new ActionConfig.Builder(baseConfig)
+        return new ActionConfig.Builder(baseConfig)
             .addParams(params)
             .addResultConfigs(results)
             .defaultClassName(packageContext.getDefaultClassRef())  // fill in default if non class has been provided
             .interceptors(interceptors)
             .addExceptionMappings(packageContext.getAllExceptionMappingConfigs())
             .build();
-        
-        return config;
     }
 
 
@@ -336,7 +334,7 @@ public class DefaultConfiguration implements Configuration {
             this.namespaceActionConfigs = namespaceActionConfigs;
             this.namespaceConfigs = namespaceConfigs;
 
-            PatternMatcher matcher = container.getInstance(PatternMatcher.class);
+            PatternMatcher<int[]> matcher = container.getInstance(PatternMatcher.class);
             
             this.namespaceActionConfigMatchers = new LinkedHashMap<String, ActionConfigMatcher>();
             this.namespaceMatcher = new NamespaceMatcher(matcher, namespaceActionConfigs.keySet());
@@ -376,7 +374,7 @@ public class DefaultConfiguration implements Configuration {
             }
 
             // fail over to empty namespace
-            if ((config == null) && (namespace != null) && (!namespace.trim().equals(""))) {
+            if ((config == null) && (namespace != null) && (!"".equals(namespace.trim()))) {
                 config = findActionConfigInNamespace("", name);
             }
 
@@ -412,12 +410,13 @@ public class DefaultConfiguration implements Configuration {
          *
          * @return a Map of namespace - > Map of ActionConfig objects, with the key being the action name
          */
-        public synchronized Map getActionConfigs() {
+        public synchronized Map<String, Map<String, ActionConfig>>  getActionConfigs() {
             return namespaceActionConfigs;
         }
 
+        @Override
         public String toString() {
-            StringBuffer buff = new StringBuffer("RuntimeConfiguration - actions are\n");
+            StringBuilder buff = new StringBuilder("RuntimeConfiguration - actions are\n");
 
             for (String namespace : namespaceActionConfigs.keySet()) {
                 Map<String, ActionConfig> actionConfigs = namespaceActionConfigs.get(namespace);
@@ -434,6 +433,7 @@ public class DefaultConfiguration implements Configuration {
     class ContainerProperties extends LocatableProperties {
         private static final long serialVersionUID = -7320625750836896089L;
 
+        @Override
         public Object setProperty(String key, String value) {
             String oldValue = getProperty(key);
             if (oldValue != null && !oldValue.equals(value) && !defaultFrameworkBeanName.equals(oldValue)) {

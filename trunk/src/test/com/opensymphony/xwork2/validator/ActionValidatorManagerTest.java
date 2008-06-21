@@ -4,15 +4,12 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
-import com.opensymphony.xwork2.validator.validators.FieldExpressionValidator;
 import com.opensymphony.xwork2.validator.validators.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.validators.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.validators.VisitorFieldValidator;
-import com.opensymphony.xwork2.validator.DefaultActionValidatorManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -106,7 +103,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
 
 
 
-        final List validatorsForMockAction = new ArrayList() {
+        final List<Validator> validatorsForMockAction = new ArrayList<Validator>() {
             {
                 add(referenceNumberRequiredStringValidator);
                 add(orderRequiredValidator);
@@ -115,7 +112,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
             }
         };
 
-        final List validatorsForCustomer = new ArrayList() {
+        final List<Validator> validatorsForCustomer = new ArrayList<Validator>() {
             {
                 add(customerNameRequiredStringValidator);
                 add(customerAgeRequiredValidator);
@@ -124,7 +121,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
             }
         };
 
-        final List validatorsForAddress = new ArrayList() {
+        final List<Validator> validatorsForAddress = new ArrayList<Validator>() {
             {
                 add(customerAddressStreetRequiredFieldValidator);
                 add(customerAddressStreetRequiredFieldValidator2);
@@ -136,7 +133,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
 
         DefaultActionValidatorManager validatorManager = new DefaultActionValidatorManager() {
             @Override
-            public List getValidators(Class clazz, String context, String method) {
+            public List<Validator> getValidators(Class clazz, String context, String method) {
                 if (clazz.isAssignableFrom(MockAction.class)) {
                     return validatorsForMockAction;
                 }
@@ -146,7 +143,7 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
                 else if (clazz.isAssignableFrom(Address.class)) {
                     return validatorsForAddress;
                 }
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
         };
         customerVisitorValidator.setActionValidatorManager(validatorManager);
@@ -160,17 +157,17 @@ public class ActionValidatorManagerTest extends XWorkTestCase {
         assertFalse(action.hasActionMessages());
         assertTrue(action.hasFieldErrors());
         assertTrue(action.getFieldErrors().containsKey("referenceNumber"));
-        assertEquals(((List)action.getFieldErrors().get("referenceNumber")).size(), 1);
+        assertEquals((action.getFieldErrors().get("referenceNumber")).size(), 1);
         assertTrue(action.getFieldErrors().containsKey("order"));
-        assertEquals(((List)action.getFieldErrors().get("order")).size(), 1);
+        assertEquals((action.getFieldErrors().get("order")).size(), 1);
         assertTrue(action.getFieldErrors().containsKey("customer.name"));
-        assertEquals(((List)action.getFieldErrors().get("customer.name")).size(), 1);
+        assertEquals((action.getFieldErrors().get("customer.name")).size(), 1);
         assertTrue(action.getFieldErrors().containsKey("customer.age"));
-        assertEquals(((List)action.getFieldErrors().get("customer.age")).size(), 1);
+        assertEquals((action.getFieldErrors().get("customer.age")).size(), 1);
         assertTrue(action.getFieldErrors().containsKey("customer.address.street"));
-        assertEquals(((List)action.getFieldErrors().get("customer.address.street")).size(), 1);
+        assertEquals((action.getFieldErrors().get("customer.address.street")).size(), 1);
         assertTrue(action.getFieldErrors().containsKey("customer.address.pobox"));
-        assertEquals(((List)action.getFieldErrors().get("customer.address.pobox")).size(), 2);
+        assertEquals((action.getFieldErrors().get("customer.address.pobox")).size(), 2);
     }
 
     private class MockAction extends ActionSupport {

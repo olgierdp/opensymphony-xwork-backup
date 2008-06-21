@@ -4,15 +4,14 @@
  */
 package com.opensymphony.xwork2;
 
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.impl.MockConfiguration;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.util.XWorkTestCaseHelper;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 
 /**
  * Base test class for TestNG unit tests.  Provides common XWork variables

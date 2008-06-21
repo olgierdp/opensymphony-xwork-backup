@@ -5,15 +5,9 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.TestBean;
 import com.opensymphony.xwork2.XWorkTestCase;
-import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.test.TestBean2;
-import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
-
-import junit.framework.TestCase;
 
 import java.util.*;
 
@@ -30,6 +24,7 @@ public class VisitorFieldValidatorModelTest extends XWorkTestCase {
     private Locale origLocale;
 
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         origLocale = Locale.getDefault();
@@ -48,7 +43,7 @@ public class VisitorFieldValidatorModelTest extends XWorkTestCase {
         container.getInstance(ActionValidatorManager.class).validate(action, null);
         assertTrue(action.hasFieldErrors());
 
-        Map fieldErrors = action.getFieldErrors();
+        Map<String, List<String>> fieldErrors = action.getFieldErrors();
 
         // the required string validation inherited from the VisitorValidatorTestAction
         assertTrue(fieldErrors.containsKey("context"));
@@ -56,7 +51,7 @@ public class VisitorFieldValidatorModelTest extends XWorkTestCase {
         // the bean validation which is now at the top level because we set the appendPrefix to false
         assertTrue(fieldErrors.containsKey("name"));
 
-        List nameMessages = (List) fieldErrors.get("name");
+        List<String> nameMessages = fieldErrors.get("name");
         assertEquals(1, nameMessages.size());
 
         String nameMessage = (String) nameMessages.get(0);
@@ -74,7 +69,7 @@ public class VisitorFieldValidatorModelTest extends XWorkTestCase {
         container.getInstance(ActionValidatorManager.class).validate(action, null);
         assertTrue(action.hasFieldErrors());
 
-        Map fieldErrors = action.getFieldErrors();
+        Map<String, List<String>> fieldErrors = action.getFieldErrors();
 
         // the required string validation inherited from the VisitorValidatorTestAction
         assertTrue(fieldErrors.containsKey("context"));
@@ -82,22 +77,23 @@ public class VisitorFieldValidatorModelTest extends XWorkTestCase {
         // the bean validation which is now at the top level because we set the appendPrefix to false
         assertTrue(fieldErrors.containsKey("name"));
 
-        List nameMessages = (List) fieldErrors.get("name");
+        List<String> nameMessages = fieldErrors.get("name");
         assertEquals(1, nameMessages.size());
 
-        String nameMessage = (String) nameMessages.get(0);
+        String nameMessage = nameMessages.get(0);
         assertEquals("You must enter a name.", nameMessage);
 
         // should also have picked up validation check for DataAware interface
         assertTrue(fieldErrors.containsKey("data"));
 
-        List dataMessages = (List) fieldErrors.get("data");
+        List<String> dataMessages = fieldErrors.get("data");
         assertEquals(1, dataMessages.size());
 
-        String dataMessage = (String) dataMessages.get(0);
+        String dataMessage = dataMessages.get(0);
         assertEquals("You must enter a value for data.", dataMessage);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         ActionContext.setContext(null);

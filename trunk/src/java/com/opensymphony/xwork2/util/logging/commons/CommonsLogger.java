@@ -4,10 +4,9 @@
  */
 package com.opensymphony.xwork2.util.logging.commons;
 
-import org.apache.commons.logging.Log;
-
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerUtils;
+import org.apache.commons.logging.Log;
 
 /**
  * Simple logger that delegates to commons logging

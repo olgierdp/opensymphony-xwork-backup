@@ -81,10 +81,12 @@ public class DateRangeFieldValidator extends AbstractRangeValidator {
         return min;
     }
 
+    @Override
     protected Comparable getMaxComparatorValue() {
         return max;
     }
 
+    @Override
     protected Comparable getMinComparatorValue() {
         return min;
     }

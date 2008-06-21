@@ -50,6 +50,7 @@ public class LoggingInterceptor extends AbstractInterceptor {
     private static final String FINISH_MESSAGE = "Finishing execution stack for action ";
     private static final String START_MESSAGE = "Starting execution stack for action ";
 
+    @Override
     public String intercept(ActionInvocation invocation) throws Exception {
         logMessage(invocation, START_MESSAGE);
         String result = invocation.invoke();
@@ -59,7 +60,7 @@ public class LoggingInterceptor extends AbstractInterceptor {
 
     private void logMessage(ActionInvocation invocation, String baseMessage) {
         if (LOG.isInfoEnabled()) {
-            StringBuffer message = new StringBuffer(baseMessage);
+            StringBuilder message = new StringBuilder(baseMessage);
             String namespace = invocation.getProxy().getNamespace();
 
             if ((namespace != null) && (namespace.trim().length() > 0)) {

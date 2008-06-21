@@ -43,7 +43,7 @@ public class TextUtils {
     public final static String htmlEncode(String s, boolean encodeSpecialChars) {
         s = noNull(s);
 
-        StringBuffer str = new StringBuffer();
+        StringBuilder str = new StringBuilder();
 
         for (int j = 0; j < s.length(); j++) {
             char c = s.charAt(j);
@@ -109,8 +109,8 @@ public class TextUtils {
      * @param pieces Iteration of Strings to join.
      * @return String presentation of joined Strings.
      */
-    public final static String join(String glue, Iterator pieces) {
-        StringBuffer s = new StringBuffer();
+    public final static String join(String glue, Iterator<?> pieces) {
+        StringBuilder s = new StringBuilder();
 
         while (pieces.hasNext()) {
             s.append(pieces.next().toString());
@@ -145,7 +145,7 @@ public class TextUtils {
      *
      * @see #join(String, java.util.Iterator)
      */
-    public final static String join(String glue, Collection pieces) {
+    public final static String join(String glue, Collection<?> pieces) {
         return join(glue, pieces.iterator());
     }
 

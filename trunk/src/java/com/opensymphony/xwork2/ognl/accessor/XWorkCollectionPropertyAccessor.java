@@ -5,17 +5,6 @@
 
 package com.opensymphony.xwork2.ognl.accessor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import ognl.ObjectPropertyAccessor;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
-import ognl.SetPropertyAccessor;
-
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
@@ -23,6 +12,15 @@ import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
+import ognl.ObjectPropertyAccessor;
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
+import ognl.SetPropertyAccessor;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Gabe
@@ -68,6 +66,7 @@ public class XWorkCollectionPropertyAccessor extends SetPropertyAccessor {
      *
      * @see ognl.PropertyAccessor#getProperty(java.util.Map, Object, Object)
      */
+    @Override
     public Object getProperty(Map context, Object target, Object key)
             throws OgnlException {
 
@@ -184,8 +183,7 @@ public class XWorkCollectionPropertyAccessor extends SetPropertyAccessor {
             LOG.debug("creating set Map");
             map = new HashMap();
             map.put(null, new SurrugateList(collection));
-            for (Iterator i = collection.iterator(); i.hasNext();) {
-                Object currTest = i.next();
+            for (Object currTest : collection) {
                 Object currKey = _accessor.getProperty(context, currTest, property);
                 if (currKey != null) {
                     map.put(currKey, currTest);
@@ -202,8 +200,7 @@ public class XWorkCollectionPropertyAccessor extends SetPropertyAccessor {
     public Object getPropertyThroughIteration(Map context, Collection collection, String property, Object key)
             throws OgnlException {
         //TODO
-        for (Iterator i = collection.iterator(); i.hasNext();) {
-            Object currTest = i.next();
+        for (Object currTest : collection) {
             if (_accessor.getProperty(context, currTest, property).equals(key)) {
                 return currTest;
             }
@@ -212,6 +209,7 @@ public class XWorkCollectionPropertyAccessor extends SetPropertyAccessor {
         return null;
     }
 
+    @Override
     public void setProperty(Map arg0, Object arg1, Object arg2, Object arg3)
             throws OgnlException {
         
@@ -230,6 +228,7 @@ class SurrugateList extends ArrayList {
         this.surrugate = surrugate;
     }
 
+    @Override
     public void add(int arg0, Object arg1) {
         if (arg1 != null) {
             surrugate.add(arg1);
@@ -237,6 +236,7 @@ class SurrugateList extends ArrayList {
         super.add(arg0, arg1);
     }
 
+    @Override
     public boolean add(Object arg0) {
         if (arg0 != null) {
             surrugate.add(arg0);
@@ -244,16 +244,19 @@ class SurrugateList extends ArrayList {
         return super.add(arg0);
     }
 
+    @Override
     public boolean addAll(Collection arg0) {
         surrugate.addAll(arg0);
         return super.addAll(arg0);
     }
 
+    @Override
     public boolean addAll(int arg0, Collection arg1) {
         surrugate.addAll(arg1);
         return super.addAll(arg0, arg1);
     }
 
+    @Override
     public Object set(int arg0, Object arg1) {
         if (arg1 != null) {
             surrugate.add(arg1);

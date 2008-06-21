@@ -4,13 +4,6 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.Unchainable;
 import com.opensymphony.xwork2.inject.Inject;
@@ -19,6 +12,8 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
+
+import java.util.*;
 
 
 /**
@@ -91,8 +86,8 @@ public class ChainingInterceptor extends AbstractInterceptor {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ChainingInterceptor.class);
 	
-    protected Collection excludes;
-    protected Collection includes;
+    protected Collection<String> excludes;
+    protected Collection<String> includes;
     
     protected ReflectionProvider reflectionProvider;
     
@@ -101,17 +96,18 @@ public class ChainingInterceptor extends AbstractInterceptor {
         this.reflectionProvider = prov;
     }
 
+    @Override
     public String intercept(ActionInvocation invocation) throws Exception {
         ValueStack stack = invocation.getStack();
         CompoundRoot root = stack.getRoot();
 
         if (root.size() > 1) {
-            List list = new ArrayList(root);
+            List<CompoundRoot> list = new ArrayList<CompoundRoot>(root);
             list.remove(0);
             Collections.reverse(list);
 
-            Map ctxMap = invocation.getInvocationContext().getContextMap();
-            Iterator iterator = list.iterator();
+            Map<String, Object> ctxMap = invocation.getInvocationContext().getContextMap();
+            Iterator<CompoundRoot> iterator = list.iterator();
             int index = 1; // starts with 1, 0 has been removed
             while (iterator.hasNext()) {
             	index = index + 1;
@@ -135,7 +131,7 @@ public class ChainingInterceptor extends AbstractInterceptor {
      *
      * @return the exclude list
      */
-    public Collection getExcludes() {
+    public Collection<String> getExcludes() {
         return excludes;
     }
 
@@ -144,7 +140,7 @@ public class ChainingInterceptor extends AbstractInterceptor {
      *
      * @param excludes  the excludes list
      */
-    public void setExcludes(Collection excludes) {
+    public void setExcludes(Collection<String> excludes) {
         this.excludes = excludes;
     }
 
@@ -153,7 +149,7 @@ public class ChainingInterceptor extends AbstractInterceptor {
      *
      * @return the include list
      */
-    public Collection getIncludes() {
+    public Collection<String> getIncludes() {
         return includes;
     }
 
@@ -162,7 +158,7 @@ public class ChainingInterceptor extends AbstractInterceptor {
      *
      * @param includes  the includes list
      */
-    public void setIncludes(Collection includes) {
+    public void setIncludes(Collection<String> includes) {
         this.includes = includes;
     }
 

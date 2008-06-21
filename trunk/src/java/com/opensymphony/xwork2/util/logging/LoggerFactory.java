@@ -4,10 +4,10 @@
  */
 package com.opensymphony.xwork2.util.logging;
 
+import com.opensymphony.xwork2.util.logging.jdk.JdkLoggerFactory;
+
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import com.opensymphony.xwork2.util.logging.jdk.JdkLoggerFactory;
 
 /**
  * Creates loggers.  Static accessor will lazily try to decide on the best factory if none specified.

@@ -4,17 +4,14 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import java.util.Map;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.XWorkTestCase;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
 import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.validator.validators.RepopulateConversionErrorFieldValidatorSupport;
 
-import junit.framework.TestCase;
+import java.util.Map;
 
 /**
  * Test RepopulateConversionErrorFieldValidatorSupport.
@@ -69,7 +66,8 @@ public class RepopulateConversionErrorFieldValidatorSupportTest extends XWorkTes
 	}
 	
 	
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 	    super.setUp();
 		ValueStack stack = ActionContext.getContext().getValueStack();
 		MockActionInvocation invocation = new MockActionInvocation();
@@ -78,7 +76,7 @@ public class RepopulateConversionErrorFieldValidatorSupportTest extends XWorkTes
 		ActionContext.getContext().setActionInvocation(invocation);
 		
 		String[] conversionErrorValue = new String[] { "some value" };
-		Map conversionErrors = ActionContext.getContext().getConversionErrors();
+		Map<String, Object> conversionErrors = ActionContext.getContext().getConversionErrors();
 		conversionErrors.put("someFieldName", conversionErrorValue);
 		conversionErrors.put("xxxsomeFieldName", conversionErrorValue);
 		
@@ -92,13 +90,15 @@ public class RepopulateConversionErrorFieldValidatorSupportTest extends XWorkTes
 			new InternalRepopulateConversionErrorFieldValidatorSupport();
 		validator2.setFieldName("someFieldName");
 		validator2.setValidatorContext(new DelegatingValidatorContext(action) {
-			public String getFullFieldName(String fieldName) {
+			@Override
+            public String getFullFieldName(String fieldName) {
 				return "xxx"+fieldName;
 			}
 		});
 	}
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 	    super.tearDown();
 		validator1 = null;
 		action = null;
@@ -110,7 +110,8 @@ public class RepopulateConversionErrorFieldValidatorSupportTest extends XWorkTes
 	class InternalRepopulateConversionErrorFieldValidatorSupport extends RepopulateConversionErrorFieldValidatorSupport {
 		public boolean doValidateGetsCalled = false;
 		
-		protected void doValidate(Object object) throws ValidationException {
+		@Override
+        protected void doValidate(Object object) throws ValidationException {
 			doValidateGetsCalled = true;
 		}
 	}
