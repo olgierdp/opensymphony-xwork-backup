@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.ognl.accessor;
 
 import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
@@ -28,6 +29,12 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
     private final static Logger LOG = LoggerFactory.getLogger(CompoundRootAccessor.class);
     private static Map invalidMethods = new HashMap();
 
+    static boolean devMode = false;
+
+    @Inject("devMode")
+    public static void setDevMode(String mode) {
+        devMode = "true".equals(mode);
+    }
 
     public void setProperty(Map context, Object target, Object name, Object value) throws OgnlException {
         CompoundRoot root = (CompoundRoot) target;
@@ -66,7 +73,9 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
         if ((reportError != null) && (reportError.booleanValue())) {
             throw new XWorkException(msg);
         } else {
-            LOG.debug(msg);
+            if (devMode) {
+                LOG.warn(msg);
+            }
         }
     }
 
