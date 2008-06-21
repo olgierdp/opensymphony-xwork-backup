@@ -118,8 +118,9 @@ public @interface StringLengthFieldValidator {
 
     /**
      * The default error message for this validator.
+     * NOTE: It is required to set a message, if you are not using the message key for 18n lookup!
      */
-    String message();
+    String message() default "";
 
     /**
      * The message key to lookup for i18n.

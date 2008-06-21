@@ -108,7 +108,9 @@ public class ValidatorConfig extends Located {
         }
 
         public Builder defaultMessage(String msg) {
-            target.defaultMessage = msg;
+            if ((msg != null) && (msg.trim().length() > 0)) {
+                target.defaultMessage = msg;
+            }
             return this;
         }
 
