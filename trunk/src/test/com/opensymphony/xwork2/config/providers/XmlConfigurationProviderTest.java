@@ -78,4 +78,14 @@ public class XmlConfigurationProviderTest extends ConfigurationTestBase {
         assertNotNull(runtimeConfiguration.getActionConfig("/namespace4", "action4"));
         assertNotNull(runtimeConfiguration.getActionConfig("/namespace5", "action5"));
     }
+
+    public void testGuessResultType() {
+        XmlConfigurationProvider prov = new XmlConfigurationProvider();
+
+        assertEquals(null, prov.guessResultType(null));
+        assertEquals("foo", prov.guessResultType("foo"));
+        assertEquals("foo", prov.guessResultType("foo-"));
+        assertEquals("fooBar", prov.guessResultType("foo-bar"));
+        assertEquals("fooBarBaz", prov.guessResultType("foo-bar-baz"));
+    }
 }
