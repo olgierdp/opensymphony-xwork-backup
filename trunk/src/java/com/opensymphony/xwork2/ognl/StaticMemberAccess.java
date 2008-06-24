@@ -17,7 +17,7 @@ import java.util.Map;
 public class StaticMemberAccess extends DefaultMemberAccess {
 
     private boolean allowStaticMethodAccess;
-    
+
     public StaticMemberAccess(boolean method) {
         super(false);
         allowStaticMethodAccess = method;
@@ -33,26 +33,29 @@ public class StaticMemberAccess extends DefaultMemberAccess {
 
     @Override
     public boolean isAccessible(Map context, Object target, Member member,
-            String propertyName) {
-        
+                                String propertyName) {
+
         boolean allow = true;
         int modifiers = member.getModifiers();
         if (Modifier.isStatic(modifiers)) {
             if (member instanceof Method && !getAllowStaticMethodAccess()) {
                 allow = false;
+                if (target instanceof Class) {
+                    Class clazz = (Class) target;
+                    Method method = (Method) member;
+                    if (Enum.class.isAssignableFrom(clazz) && method.getName().equals("values"))
+                        allow = true;
+                }
             }
         }
-        
+
         // Now check for standard scope rules
         if (allow) {
             return super.isAccessible(context, target, member, propertyName);
         }
-        
+
         return false;
     }
-    
-    
-    
-    
+
 
 }
