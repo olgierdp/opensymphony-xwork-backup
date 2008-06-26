@@ -220,8 +220,8 @@ public class XWorkConverter extends DefaultTypeConverter {
         // class instances through the use of wacky classloaders. This sync
         // prevents multiple requests from causes configuration to be loaded
         // multiple times.
-        synchronized(clazz.toString().intern()) {
-        if ((property != null) && !noMapping.contains(clazz)) {
+        synchronized (clazz.toString().intern()) {
+            if ((property != null) && !noMapping.contains(clazz)) {
                 try {
                     Map mapping = (Map) mappings.get(clazz);
 

@@ -14,9 +14,9 @@ import com.opensymphony.xwork.test.TestBean2;
 import junit.framework.TestCase;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.Date;
 
 
 /**
@@ -183,6 +183,15 @@ public class LocalizedTextUtilTest extends TestCase {
         }
     }
 
+    public void testLocalizedDateFormatIsUsed() {
+        LocalizedTextUtil.addDefaultResourceBundle("com/opensymphony/xwork/util/LocalizedTextUtilTest");
+
+        Object[] params = new Object[] {new Date()};
+        String usDate = LocalizedTextUtil.findDefaultText("test.format.date", Locale.US, params);
+        String frenchDate = LocalizedTextUtil.findDefaultText("test.format.date", Locale.FRANCE, params);
+        assertFalse(usDate.equals(frenchDate));
+    }
+
     public void testParameterizedDefaultMessage() {
         try {
             String message = LocalizedTextUtil.findDefaultText(XWorkMessages.MISSING_ACTION_EXCEPTION, Locale.getDefault(), new String[] {
@@ -205,14 +214,6 @@ public class LocalizedTextUtilTest extends TestCase {
             e.printStackTrace();
             fail();
         }
-    }
-
-    public void testLocalizedDateFormatIsUsed() {
-        LocalizedTextUtil.addDefaultResourceBundle("com/opensymphony/xwork/util/LocalizedTextUtilTest");
-        Object[] params = new Object[] {new Date()};
-        String usDate = LocalizedTextUtil.findDefaultText("test.format.date",Locale.US,params);
-        String frenchDate = LocalizedTextUtil.findDefaultText("test.format.date",Locale.FRANCE,params);
-        assertFalse(usDate.equals(frenchDate));
     }
 
     protected void setUp() throws Exception {

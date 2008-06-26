@@ -18,6 +18,7 @@ import com.opensymphony.xwork.interceptor.AroundInterceptor;
  * @author Jason Carreira
  */
 public class ValidationInterceptor extends AroundInterceptor {
+    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Does nothing in this implementation.
@@ -37,8 +38,7 @@ public class ValidationInterceptor extends AroundInterceptor {
         String context = invocation.getProxy().getActionName();
 
         if (log.isDebugEnabled()) {
-            log.debug("Validating "
-                    + invocation.getProxy().getNamespace() + "/" + invocation.getProxy().getActionName() + ".");
+            log.debug("Validating " + invocation.getProxy().getNamespace() + "/" + invocation.getProxy().getActionName() + ".");
         }
 
         ActionValidatorManager.validate(action, context);

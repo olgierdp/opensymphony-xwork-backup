@@ -23,18 +23,19 @@ import java.util.ResourceBundle;
  * @author Jason Carreira
  */
 public class DelegatingValidatorContext implements ValidatorContext {
+    //~ Instance fields ////////////////////////////////////////////////////////
 
     private LocaleProvider localeProvider;
     private TextProvider textProvider;
     private ValidationAware validationAware;
 
+    //~ Constructors ///////////////////////////////////////////////////////////
+
     /**
      * Creates a new validation context given a ValidationAware object, and a text and locale provider. These objects
      * are used internally to set errors and get and set error text.
      */
-    public DelegatingValidatorContext(ValidationAware validationAware, TextProvider textProvider,
-            LocaleProvider localeProvider)
-    {
+    public DelegatingValidatorContext(ValidationAware validationAware, TextProvider textProvider, LocaleProvider localeProvider) {
         this.textProvider = textProvider;
         this.validationAware = validationAware;
         this.localeProvider = localeProvider;
@@ -63,6 +64,8 @@ public class DelegatingValidatorContext implements ValidatorContext {
         textProvider = new TextProviderSupport(clazz, localeProvider);
         validationAware = new LoggingValidationAware(clazz);
     }
+
+    //~ Methods ////////////////////////////////////////////////////////////////
 
     public void setActionErrors(Collection errorMessages) {
         validationAware.setActionErrors(errorMessages);
@@ -188,6 +191,8 @@ public class DelegatingValidatorContext implements ValidatorContext {
         return validationAware;
     }
 
+    //~ Inner Classes //////////////////////////////////////////////////////////
+
     /**
      * An implementation of LocaleProvider which gets the locale from the action context.
      */
@@ -198,10 +203,9 @@ public class DelegatingValidatorContext implements ValidatorContext {
     }
 
     /**
-     * An implementation of ValidationAware which logs errors and messages. 
+     * An implementation of ValidationAware which logs errors and messages.
      */
     private static class LoggingValidationAware implements ValidationAware {
-
         private Log log;
 
         public LoggingValidationAware(Class clazz) {
@@ -213,7 +217,8 @@ public class DelegatingValidatorContext implements ValidatorContext {
         }
 
         public void setActionErrors(Collection errorMessages) {
-            for (Iterator iterator = errorMessages.iterator(); iterator.hasNext();) {
+            for (Iterator iterator = errorMessages.iterator();
+                    iterator.hasNext();) {
                 String s = (String) iterator.next();
                 addActionError(s);
             }
@@ -235,7 +240,8 @@ public class DelegatingValidatorContext implements ValidatorContext {
         }
 
         public void setFieldErrors(Map errorMap) {
-            for (Iterator iterator = errorMap.entrySet().iterator(); iterator.hasNext();) {
+            for (Iterator iterator = errorMap.entrySet().iterator();
+                    iterator.hasNext();) {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 addFieldError((String) entry.getKey(), (String) entry.getValue());
             }

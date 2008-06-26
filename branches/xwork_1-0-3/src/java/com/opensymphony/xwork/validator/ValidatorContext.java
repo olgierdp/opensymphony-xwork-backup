@@ -16,6 +16,7 @@ import com.opensymphony.xwork.ValidationAware;
  * @author Jason Carreira
  */
 public interface ValidatorContext extends ValidationAware, TextProvider, LocaleProvider {
+    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Translates a simple field name into a full field name in OGNL syntax.

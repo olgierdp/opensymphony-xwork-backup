@@ -26,13 +26,15 @@ import java.util.*;
  * @author Mark Woon
  */
 public class ActionValidatorManager {
+    //~ Static fields/initializers /////////////////////////////////////////////
 
     /** The file suffix for any validation file. */
     protected static final String VALIDATION_CONFIG_SUFFIX = "-validation.xml";
-
     private static final Map validatorCache = Collections.synchronizedMap(new HashMap());
     private static final Map validatorFileCache = Collections.synchronizedMap(new HashMap());
     private static final Log LOG = LogFactory.getLog(ActionValidatorManager.class);
+
+    //~ Methods ////////////////////////////////////////////////////////////////
 
     /**
      * Returns a list of validators for the given class and context. This is the primary
@@ -172,6 +174,7 @@ public class ActionValidatorManager {
         StringBuffer sb = new StringBuffer(clazz.getName());
         sb.append("/");
         sb.append(context);
+
         return sb.toString();
     }
 
