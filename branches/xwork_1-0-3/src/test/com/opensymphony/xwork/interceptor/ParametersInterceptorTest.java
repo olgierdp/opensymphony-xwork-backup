@@ -13,6 +13,7 @@ import com.opensymphony.xwork.SimpleAction;
 import com.opensymphony.xwork.TestBean;
 import com.opensymphony.xwork.config.ConfigurationManager;
 import com.opensymphony.xwork.config.providers.MockConfigurationProvider;
+import com.opensymphony.xwork.util.OgnlValueStack;
 
 import junit.framework.TestCase;
 
@@ -82,14 +83,27 @@ public class ParametersInterceptorTest extends TestCase {
     public void testParameters() {
         Map params = new HashMap();
         params.put("blah", "This is blah");
+        params.put("#session.foo", "Foo");
+        params.put("\u0023session[\'user\']", "0wn3d");
+        params.put("\u0023session.user2", "0wn3d");
+        params.put("('\u0023'%20%2b%20'session[\'user3\']')(unused)", "0wn3d");
+        params.put("('\\u0023' + 'session[\\'user4\\']')(unused)", "0wn3d");
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
 
         try {
             ActionProxy proxy = ActionProxyFactory.getFactory().createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
+            OgnlValueStack stack = proxy.getInvocation().getStack();
+            HashMap session = new HashMap();
+            stack.getContext().put("session", session);
             proxy.execute();
             assertEquals("This is blah", ((SimpleAction) proxy.getAction()).getBlah());
+            assertNull(session.get("foo"));
+            assertNull(session.get("user"));
+            assertNull(session.get("user2"));
+            assertNull(session.get("user3"));
+            assertNull(session.get("user4"));
         } catch (Exception e) {
             e.printStackTrace();
             fail();

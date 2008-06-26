@@ -41,6 +41,14 @@ import java.util.Map;
 public class ParametersInterceptor extends AroundInterceptor {
     //~ Methods ////////////////////////////////////////////////////////////////
 
+    protected boolean acceptableName(String name) {
+        if ((name.indexOf('=') != -1) || (name.indexOf(',') != -1) || (name.indexOf('#') != -1) || (name.indexOf(':') != -1) || (name.indexOf("\\u0023") != -1)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     protected void after(ActionInvocation dispatcher, String result) throws Exception {
     }
 
@@ -65,7 +73,11 @@ public class ParametersInterceptor extends AroundInterceptor {
                     for (Iterator iterator = parameters.entrySet().iterator();
                             iterator.hasNext();) {
                         Map.Entry entry = (Map.Entry) iterator.next();
-                        stack.setValue(entry.getKey().toString(), entry.getValue());
+                        String name = entry.getKey().toString();
+
+                        if (acceptableName(name)) {
+                            stack.setValue(name, entry.getValue());
+                        }
                     }
                 }
             } finally {
