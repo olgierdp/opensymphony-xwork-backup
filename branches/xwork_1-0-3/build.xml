@@ -1,0 +1,292 @@
+<project name="xwork" default="jar" basedir=".">
+
+    <path id="cp">
+        <fileset dir="lib">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="editor.classpath">
+        <path refid="cp"/>
+
+        <fileset dir="lib/editor">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="jalopy.classpath">
+        <fileset dir="lib/build/jalopy">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <property file="build.properties"/>
+
+    <property name="lib" value="lib"/>
+    <property name="lib.core" value="${lib}/core"/>
+    <property name="lib.build" value="${lib}/build"/>
+    <property name="lib.optional" value="${lib}/optional"/>
+    <property name="lib.editor" value="${lib}/editor"/>
+
+    <property name="src" value="src"/>
+    <property name="src.java" value="${src}/java"/>
+    <property name="src.test" value="${src}/test"/>
+    <property name="src.etc" value="${src}/etc"/>
+    <property name="src.editor" value="${src}/editor"/>
+
+    <property name="build" value="build"/>
+    <property name="build.test" value="${build}/test"/>
+    <property name="build.java-test" value="${build}/java-test"/>
+    <property name="build.java" value="${build}/java"/>
+    <property name="build.clover" value="${build}/clover"/>
+    <property name="build.dist" value="${build}/dist"/>
+    <property name="build.editor" value="${build}/editor"/>
+
+    <property name="clover.initstring" value="${build.clover}/coverage.db"/>
+
+    <property name="docs" value="docs"/>
+
+    <target name="clean">
+        <delete dir="${build}"/>
+    </target>
+
+    <target name="java">
+        <mkdir dir="${build.java}"/>
+        <javac srcdir="${src.java}" destdir="${build.java}" classpathref="cp" debug="on"/>
+        <copy filtering="no" todir="${build.java}">
+            <fileset dir="${src.java}">
+                <exclude name="**/*.java"/>
+                <exclude name="**/package.html"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="ensure-test-name" unless="test">
+        <fail message="You must run this target with -Dtest=TestName"/>
+    </target>
+
+    <target name="runtest" description="Runs the test you specify on the command line with -Dtest=" depends="java, ensure-test-name">
+        <junit printsummary="withOutAndErr" fork="yes">
+            <classpath>
+                <pathelement location="${build.test}"/>
+                <pathelement location="${build.java-test}"/>
+                <pathelement location="${src.etc}/test"/>
+                <pathelement location="${src.etc}"/>
+                <path refid="cp"/>
+            </classpath>
+            <formatter type="plain" usefile="false"/>
+            <batchtest>
+                <fileset dir="${src.test}">
+                    <include name="**/${test}.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="test" depends="format, java">
+        <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
+
+        <mkdir dir="${build.test}"/>
+        <javac srcdir="${src.test}" destdir="${build.test}" classpath="${build.java}" classpathref="cp" debug="on"/>
+        <copy filtering="no" todir="${build.test}">
+            <fileset dir="${src.test}">
+                <exclude name="**/*.java"/>
+                <exclude name="**/package.html"/>
+            </fileset>
+        </copy>
+
+        <mkdir dir="${build.java-test}"/>
+        <javac srcdir="${src.java}" destdir="${build.java-test}" classpathref="cp" debug="on"/>
+        <copy filtering="no" todir="${build.java-test}">
+            <fileset dir="${src.java}">
+                <exclude name="**/*.java"/>
+                <exclude name="**/package.html"/>
+            </fileset>
+        </copy>
+
+        <mkdir dir="${build.dist}/docs/junit"/>
+        <junit printsummary="yes" haltonfailure="yes" haltonerror="yes" fork="yes">
+            <classpath>
+                <pathelement location="${build.test}"/>
+                <pathelement location="${build.java-test}"/>
+                <pathelement location="${src.etc}/test"/>
+                <pathelement location="${src.etc}"/>
+                <path refid="cp"/>
+            </classpath>
+
+            <formatter type="xml"/>
+            <formatter type="brief" usefile="false"/>
+
+            <batchtest todir="${build.dist}/docs/junit">
+                <fileset dir="${src.test}">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="format">
+        <taskdef name="jalopy" classname="de.hunsicker.jalopy.plugin.ant.AntPlugin">
+            <classpath refid="jalopy.classpath"/>
+        </taskdef>
+
+        <jalopy fileformat="unix"
+            convention="${basedir}/src/etc/jalopy.xml"
+            history="file"
+            historymethod="adler32"
+            loglevel="error"
+            threads="2"
+            classpathref="cp">
+            <fileset dir="${src.java}">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="${src.test}">
+                <include name="**/*.java"/>
+            </fileset>
+        </jalopy>
+    </target>
+
+    <target name="jar" depends="java">
+        <mkdir dir="${build}"/>
+
+        <copy todir="${build.java}">
+            <fileset dir="${src.etc}" includes="*.dtd"/>
+        </copy>
+
+        <jar basedir="${build.java}" jarfile="${build}/${name}-${version}.jar"/>
+    </target>
+
+    <target name="check-jdk14">
+        <condition property="jdk14">
+            <available classname="java.util.prefs.Preferences"/>
+        </condition>
+    </target>
+
+    <target name="warn-nojdk14" depends="check-jdk14" unless="jdk14">
+        <echo message="JDK1.4 or later is not being used... The editor will not be built"/>
+    </target>
+
+    <target name="editor-java" depends="warn-nojdk14" if="jdk14">
+        <mkdir dir="${build.editor}"/>
+        <mkdir dir="${build.editor}/META-INF"/>
+        <javac srcdir="${src.editor}" destdir="${build.editor}" includes="com/opensymphony/xworkeditor/**" classpathref="editor.classpath" debug="on"/>
+        <copy filtering="no" todir="${build.editor}">
+            <fileset dir="${src.editor}">
+                <exclude name="**/*.java"/>
+                <exclude name="**/package.html"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="create-xelements" depends="warn-nojdk14" if="jdk14">
+        <taskdef name="xelements" classname="com.xe.xface.ant.XElementsTask" classpathref="editor.classpath"/>
+        <xelements dest="${build.editor}/META-INF">
+            <fileset dir="${src.editor}">
+                <include name="**/*.java"/>
+            </fileset>
+        </xelements>
+    </target>
+
+    <target name="editor-jar" depends="warn-nojdk14,editor-java,create-xelements" if="jdk14">
+        <mkdir dir="${build}"/>
+
+        <copy todir="${build.editor}" file="${src.etc}/xwork-1.0.dtd"/>
+
+        <dirname property="lib.dir" file="${lib.editor}"/>
+        <pathconvert pathsep=" " refid="editor.classpath" property="editor.jar.classpath">
+            <map from="${lib.dir}${file.separator}" to="lib${file.separator}"/>
+        </pathconvert>
+
+        <jar basedir="${build.editor}" jarfile="${build}/${name}-editor-${version}.jar">
+            <manifest>
+                <attribute name="Main-Class" value="com.opensymphony.xworkeditor.Application"/>
+                <attribute name="Class-Path" value="${editor.jar.classpath}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="javadocs">
+        <mkdir dir="${build.dist}/docs/api"/>
+        <javadoc sourcepath="${src.java}"
+            destdir="${build.dist}/docs/api"
+            packagenames="com.opensymphony.*"
+            classpathref="cp"
+            author="true"
+            version="true"
+            windowTitle="${name} ${version} API"
+            doctitle="${name}"
+            footer="&lt;a href=&quot;http://www.opensymphony.com/&quot; target=&quot;_top&quot;&gt;XWork Project Page&lt;/a&gt;"
+            use="true"
+            verbose="false">
+            <link href="http://java.sun.com/j2se/1.3/docs/api/"/>
+            <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/"/>
+        </javadoc>
+    </target>
+
+    <target name="junit.report" depends="test">
+        <junitreport todir="${build.dist}/docs/junit">
+            <fileset dir="${build.dist}/docs/junit">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${build.dist}/docs/junit"/>
+        </junitreport>
+    </target>
+
+    <target name="docs" depends="javadocs, junit.report">
+        <copy todir="${build.dist}/docs">
+            <fileset dir="${docs}"/>
+        </copy>
+
+        <copy todir="${build.dist}/docs">
+            <fileset dir="${src.etc}">
+                <include name="*.dtd"/>
+            </fileset>
+        </copy>
+
+    </target>
+
+    <target name="dist" depends="jar, editor-jar, docs">
+        <copy file="${build}/${name}-${version}.jar" todir="${build.dist}"/>
+        <copy todir="${build.dist}">
+            <fileset dir="${build}">
+                <include name="${name}-editor-${version}.jar"/>
+            </fileset>
+        </copy>
+
+        <copy todir="${build.dist}/src">
+            <fileset dir="${src}"/>
+        </copy>
+
+        <mkdir dir="${build.dist}/lib"/>
+        <copy todir="${build.dist}/lib">
+            <fileset dir="${lib}"/>
+        </copy>
+
+        <copy todir="${build.dist}">
+            <fileset dir="${basedir}">
+                <include name="build.*"/>
+            </fileset>
+        </copy>
+
+        <!-- copy changelog and README -->
+        <tstamp/>
+        <copy filtering="on" todir="${build.dist}">
+            <fileset dir=".">
+                <include name="*.html"/>
+            </fileset>
+            <filterset>
+                <filter token="version" value="${version}"/>
+                <filter token="builddate" value="${TODAY}"/>
+            </filterset>
+        </copy>
+
+        <zip zipfile="${build}/${name}-${version}.zip" basedir="${build.dist}">
+            <exclude name="docs/clover/**/*"/>
+            <exclude name="docs/junit/**/*"/>
+        </zip>
+    </target>
+
+</project>
+
+
+
