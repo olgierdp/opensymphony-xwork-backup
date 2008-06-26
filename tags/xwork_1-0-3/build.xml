@@ -84,10 +84,7 @@
     </target>
 
     <target name="test" depends="format, java">
-        <taskdef resource="clovertasks"/>
         <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
-
-        <mkdir dir="${build.clover}"/>
 
         <mkdir dir="${build.test}"/>
         <javac srcdir="${src.test}" destdir="${build.test}" classpath="${build.java}" classpathref="cp" debug="on"/>
@@ -99,7 +96,7 @@
         </copy>
 
         <mkdir dir="${build.java-test}"/>
-        <javac srcdir="${src.java}" destdir="${build.java-test}" classpathref="cp" debug="on" compiler="org.apache.tools.ant.taskdefs.CloverCompilerAdapter"/>
+        <javac srcdir="${src.java}" destdir="${build.java-test}" classpathref="cp" debug="on"/>
         <copy filtering="no" todir="${build.java-test}">
             <fileset dir="${src.java}">
                 <exclude name="**/*.java"/>
@@ -226,24 +223,6 @@
         </javadoc>
     </target>
 
-    <target name="clover.report" depends="test">
-        <clover-report>
-            <current outfile="${build.dist}/docs/clover">
-                <format type="html"/>
-            </current>
-        </clover-report>
-    </target>
-
-    <target name="clover.historical" depends="clover.report">
-        <clover-historypoint historyDir="${build.clover}"/>
-
-        <clover-report>
-            <historical outfile="${build.dist}/docs/clover" historyDir="${build.clover}">
-                <format type="html"/>
-            </historical>
-        </clover-report>
-    </target>
-
     <target name="junit.report" depends="test">
         <junitreport todir="${build.dist}/docs/junit">
             <fileset dir="${build.dist}/docs/junit">
@@ -253,7 +232,7 @@
         </junitreport>
     </target>
 
-    <target name="docs" depends="javadocs, clover.report, junit.report">
+    <target name="docs" depends="javadocs, junit.report">
         <copy todir="${build.dist}/docs">
             <fileset dir="${docs}"/>
         </copy>
