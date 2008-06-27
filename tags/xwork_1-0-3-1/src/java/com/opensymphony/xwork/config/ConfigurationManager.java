@@ -1,0 +1,161 @@
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
+package com.opensymphony.xwork.config;
+
+import com.opensymphony.util.FileManager;
+
+import com.opensymphony.xwork.config.impl.DefaultConfiguration;
+import com.opensymphony.xwork.config.providers.XmlConfigurationProvider;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+
+/**
+ * ConfigurationManager
+ *
+ * @author Jason Carreira
+ *         Created Mar 1, 2003 1:06:04 AM
+ */
+public class ConfigurationManager {
+    //~ Static fields/initializers /////////////////////////////////////////////
+
+    protected static final Log LOG = LogFactory.getLog(ConfigurationManager.class);
+    protected static Configuration configurationInstance;
+    private static List configurationProviders = new ArrayList();
+
+    static {
+        destroyConfiguration();
+    }
+
+    //~ Constructors ///////////////////////////////////////////////////////////
+
+    private ConfigurationManager() {
+    }
+
+    //~ Methods ////////////////////////////////////////////////////////////////
+
+    public static synchronized void setConfiguration(Configuration configuration) {
+        configurationInstance = configuration;
+    }
+
+    /**
+     * Get the current XWork configuration object.  By default an instance of DefaultConfiguration will be returned
+     *
+     * @see com.opensymphony.xwork.config.impl.DefaultConfiguration
+     */
+    public static synchronized Configuration getConfiguration() {
+        if (configurationInstance == null) {
+            configurationInstance = new DefaultConfiguration();
+            configurationInstance.reload();
+        } else {
+            conditionalReload();
+        }
+
+        return configurationInstance;
+    }
+
+    /**
+     * <p/>
+     * get the current list of ConfigurationProviders.
+     * </p>
+     * <p/>
+     * if no custom ConfigurationProviders have been added, this method
+     * will return a list containing only the default ConfigurationProvider, XMLConfigurationProvider.  if a custom
+     * ConfigurationProvider has been added, then the XmlConfigurationProvider must be added by hand.
+     * </p>
+     *
+     * @return the list of registered ConfigurationProvider objects
+     * @todo the lazy instantiation of XmlConfigurationProvider should be refactored to be elsewhere.  the behavior described above seems unintuitive.
+     * @see com.opensymphony.xwork.config.ConfigurationProvider
+     */
+    public static List getConfigurationProviders() {
+        synchronized (configurationProviders) {
+            if (configurationProviders.size() == 0) {
+                configurationProviders.add(new XmlConfigurationProvider());
+            }
+
+            return configurationProviders;
+        }
+    }
+
+    /**
+     * adds a configuration provider to the List of ConfigurationProviders.  a given ConfigurationProvider may be added
+     * more than once
+     *
+     * @param provider the ConfigurationProvider to register
+     */
+    public static void addConfigurationProvider(ConfigurationProvider provider) {
+        synchronized (configurationProviders) {
+            if (!configurationProviders.contains(provider)) {
+                configurationProviders.add(provider);
+            }
+        }
+    }
+
+    /**
+     * clears the registered ConfigurationProviders.  this method will call destroy() on each of the registered
+     * ConfigurationProviders
+     *
+     * @see com.opensymphony.xwork.config.ConfigurationProvider#destroy
+     */
+    public static void clearConfigurationProviders() {
+        synchronized (configurationProviders) {
+            for (Iterator iterator = configurationProviders.iterator();
+                    iterator.hasNext();) {
+                ConfigurationProvider provider = (ConfigurationProvider) iterator.next();
+                provider.destroy();
+            }
+
+            configurationProviders.clear();
+        }
+    }
+
+    public static synchronized void destroyConfiguration() {
+        synchronized (configurationProviders) {
+            configurationProviders = new ArrayList();
+            configurationInstance = null;
+        }
+    }
+
+    /**
+     * reloads the Configuration files if the configuration files indicate that they need to be reloaded.
+     *
+     * @todo as FileManager.setReloadingConfigs never appears to be set anywhere, will this ever do anything?
+     * @todo it currently appears that the reload strategy is to check on each call to getConfiguration().  this seems extremely burdensome.  a caching mechanism should be implemented
+     */
+    private static synchronized void conditionalReload() {
+        if (FileManager.isReloadingConfigs()) {
+            boolean reload;
+
+            synchronized (configurationProviders) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Checking ConfigurationProviders for reload.");
+                }
+
+                reload = false;
+
+                for (Iterator iterator = getConfigurationProviders().iterator();
+                        iterator.hasNext();) {
+                    ConfigurationProvider provider = (ConfigurationProvider) iterator.next();
+
+                    if (provider.needsReload()) {
+                        reload = true;
+
+                        break;
+                    }
+                }
+            }
+
+            if (reload) {
+                configurationInstance.reload();
+            }
+        }
+    }
+}

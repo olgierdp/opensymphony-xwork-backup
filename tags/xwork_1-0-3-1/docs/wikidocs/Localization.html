@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <title>XWork : Localization</title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">	    
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <div class="pageheader">
+					    <span class="pagetitle">
+                            XWork : Localization
+                                                    </span>
+				    </div>
+				    <div class="pagesubheading">
+					    This page last changed on Jul 13, 2004 by <font color="#0050B2">unkyaku</font>.
+				    </div>
+
+				    <p class="paragraph">Any action can indicate that it supports localization by implementing com.opensymphony.xwork.TextProvider.  To access a localized message, simply use one of the various getText() method calls.</p>The default implementation for this is com.opensymphony.xwork.TextProviderSupport, which in turn relies on com.opensymphony.xwork.util.LocalizedTextUtil.  Any Action that extends com.opensymphony.xwork.ActionSupport will automatically gain localization support via TextProviderSupport.<p class="paragraph">In this implementation, when you attempt to look up a message, it attempts to do the following:</p><ul class="star">
+<li> Look for the message in the Action&#039;s class hierarchy.<ul class="star">
+<li> Look for the message in a resource bundle for the class</li>
+<li> If not found, look for the message in a resource bundle for any interface implemented by the class</li>
+<li> If not found, get the super-class and repeat from the first sub-step unless the super-class is Object</li>
+</ul></li>
+</ul>
+<ul class="star">
+<li> If not found and the Action is a ModelDriven Action, then look for the message in<br/>
+the model&#039;s class hierarchy (repeat sub-steps listed above).
+</li>
+</ul>
+<ul class="star">
+<li> If not found, look for the message in a child property.  This is determined by evaluating the message key as an OGNL expression.  For example, if the key is <em class="emphasis">user.address.state</em>, then it will attempt to see if &quot;user&quot; can be resolved into an object.  If so, repeat the entire process fromthe beginning with the object&#039;s class and <em class="emphasis">address.state</em> as the message key.</li>
+</ul>
+<ul class="star">
+<li> If not found, look for the message in the Action&#039;s package hierarchy.</li>
+</ul>
+<ul class="star">
+<li> If still not found, look for the message in the default resource bundles.</li>
+</ul><p class="paragraph"><h3 class="heading3"><a name="Localization-DefaultResourceBundles."> Default Resource Bundles.</a></h3></p>It is possible to register default resource bundles with XWork via LocalizedTextUtil.addDefaultResourceBundle().<p class="paragraph">Message lookup in the default resource bundles is done in reverse order of their registration (i.e. the first resource bundle registered is the last to be searched).</p>By default, one default resource bundle name is registered with LocalizedTextUtil &#8211; &quot;com/opensymphony/xwork/xwork-messages&quot; &#8211; which is bundled with the XWork jar file to provide system-level message texts.
+<p class="paragraph"><h3 class="heading3"><a name="Localization-Example"> Example</a></h3></p>Given a ModelDriven Action called BarnAction where getModel() returns a Horse object, and the Horse object has the following class structure:<br/>
+
+<div class="code"><div class="codeContent">
+<pre><span class="java&#45;keyword">interface</span> acme.test.Animal;&#10;class acme.test.AnimalImpl <span class="java&#45;keyword">implements</span> Animal;&#10;<span class="java&#45;keyword">interface</span> acme.test.Quadraped <span class="java&#45;keyword">extends</span> Animal;&#10;class acme.test.QuadrapedImpl <span class="java&#45;keyword">extends</span> Animal <span class="java&#45;keyword">implements</span> Quadraped;&#10;class acme.test.Horse <span class="java&#45;keyword">extends</span> QuadrapedImpl;</pre>
+</div></div><p class="paragraph">Then the localization system will attempt to look up the message in the following resource bundles in this order:</p><div class="preformatted"><div class="preformattedContent">
+<pre>acme.test.BarnAction.properties&#10;acme.test.Horse.properties&#10;acme.test.QuadrapedImpl.properties&#10;acme.test.Quadraped.properties&#10;acme.test.AnimalImpl.properties&#10;acme.test.Animal.properties&#10;acme.test.package.properties&#10;acme.package.properties</pre>
+</div></div>
+<p class="paragraph"><h2 class="heading2"><a name="Localization-MessageKeyInterpolation"> Message Key Interpolation</a></h2></p>When looking for the message, if the key indexes a collection (e.g. user.phone[0]) and a message for that specific key cannot be found, the general form will also be looked up (i.e. user.phone[*]).<p class="paragraph"><h2 class="heading2"><a name="Localization-MessageInterpolation"> Message Interpolation</a></h2></p>If a message is found, it will also be interpolated.  Anything within <b class="strong">$&#123;...&#125;</b> will be treated as an OGNL expression and evaluated as such.
+
+				    
+                    			    </td>
+		    </tr>
+	    </table>
+	    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td height="12" background="border/border_bottom.gif"><img src="border/spacer.gif" width="1" height="1" border="0"/></td>
+			</tr>
+		    <tr>
+			    <td align="center"><font color="grey">Document generated by Confluence on Sep 07, 2004 00:34</font></td>
+		    </tr>
+	    </table>
+    </body>
+</html>
