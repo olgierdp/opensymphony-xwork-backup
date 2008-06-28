@@ -384,15 +384,8 @@ public class XWorkConverterTest extends XWorkTestCase {
                                         "too many times");
                                 }
 
-                        try {
-                                    done = true;
-                                    return new File(
-                                        "src/test/com/opensymphony/xwork2/conversion/impl/test-xwork-conversion.properties").
-                                        toURI().toURL();
-                                } catch (MalformedURLException e) {
-                                    // Eeck
-                                    throw new RuntimeException(e);
-                        }
+                                done = true;
+                                return getClass().getResource("/com/opensymphony/xwork2/conversion/impl/test-xwork-conversion.properties");
                             }
                         };
                     } else {

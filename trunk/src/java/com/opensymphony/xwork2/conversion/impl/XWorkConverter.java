@@ -7,6 +7,7 @@ package com.opensymphony.xwork2.conversion.impl;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.XWorkMessages;
+import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.conversion.TypeConverter;
 import com.opensymphony.xwork2.conversion.annotations.Conversion;
 import com.opensymphony.xwork2.conversion.annotations.ConversionRule;
@@ -170,18 +171,10 @@ public class XWorkConverter extends DefaultTypeConverter {
     @Inject
     public void setObjectFactory(ObjectFactory factory) {
         this.objectFactory = factory;
-        try {
-            // note: this file is deprecated
-            loadConversionProperties("xwork-default-conversion.properties");
-        } catch (Exception e) {
-            //swallow
-        }
+        // note: this file is deprecated
+        loadConversionProperties("xwork-default-conversion.properties");
 
-        try {
-            loadConversionProperties("xwork-conversion.properties");
-        } catch (Exception e) {
-            //swallow
-        }
+        loadConversionProperties("xwork-conversion.properties");
     }
 
     @Inject
@@ -401,7 +394,7 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     protected void handleConversionException(Map<String, Object> context, String property, Object value, Object object) {
-        if ((Boolean.TRUE.equals(context.get(REPORT_CONVERSION_ERRORS)))) {
+        if (context != null && (Boolean.TRUE.equals(context.get(REPORT_CONVERSION_ERRORS)))) {
             String realProperty = property;
             String fullName = (String) context.get(CONVERSION_PROPERTY_FULLNAME);
 
@@ -724,30 +717,42 @@ public class XWorkConverter extends DefaultTypeConverter {
         }
     }
 
-    public void loadConversionProperties(String propsName) throws IOException {
-        Iterator<URL> resources = ClassLoaderUtil.getResources(propsName, getClass(), true);
-        while (resources.hasNext()) {
-            URL url = resources.next();
-            Properties props = new Properties();
-            props.load(url.openStream());
+    public void loadConversionProperties(String propsName) {
+        loadConversionProperties(propsName, false);
+    }
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("processing conversion file [" + propsName + "]");
-            }
+    public void loadConversionProperties(String propsName, boolean require) {
+        try {
+            Iterator<URL> resources = ClassLoaderUtil.getResources(propsName, getClass(), true);
+            while (resources.hasNext()) {
+                URL url = resources.next();
+                Properties props = new Properties();
+                props.load(url.openStream());
 
-            for (Object o : props.entrySet()) {
-                Map.Entry entry = (Map.Entry) o;
-                String key = (String) entry.getKey();
-
-                try {
-                    TypeConverter _typeConverter = createTypeConverter((String) entry.getValue());
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("\t" + key + ":" + entry.getValue() + " [treated as TypeConverter " + _typeConverter + "]");
-                    }
-                    defaultMappings.put(key, _typeConverter);
-                } catch (Exception e) {
-                    LOG.error("Conversion registration error", e);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("processing conversion file [" + propsName + "]");
                 }
+
+                for (Object o : props.entrySet()) {
+                    Map.Entry entry = (Map.Entry) o;
+                    String key = (String) entry.getKey();
+
+                    try {
+                        TypeConverter _typeConverter = createTypeConverter((String) entry.getValue());
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("\t" + key + ":" + entry.getValue() + " [treated as TypeConverter " + _typeConverter + "]");
+                        }
+                        defaultMappings.put(key, _typeConverter);
+                    } catch (Exception e) {
+                        LOG.error("Conversion registration error", e);
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            if (require) {
+                throw new XWorkException("Cannot load conversion properties file: "+propsName, ex);
+            } else {
+                LOG.debug("Cannot load conversion properties file: "+propsName, ex);
             }
         }
     }

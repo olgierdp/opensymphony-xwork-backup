@@ -162,7 +162,8 @@ public class DefaultConfiguration implements Configuration {
                 return DefaultConfiguration.this;
             }
         });
-        
+
+        ActionContext oldContext = ActionContext.getContext();
         try {
             // Set the bootstrap container for the purposes of factory creation
             Container bootstrap = createBootstrapContainer();
@@ -194,15 +195,20 @@ public class DefaultConfiguration implements Configuration {
     
             rebuildRuntimeConfiguration();
         } finally {
-            ActionContext.setContext(null);
+            if (oldContext == null) {
+                ActionContext.setContext(null);
+            }
         }
         return packageProviders;
     }
     
     protected ActionContext setContext(Container cont) {
-        ValueStack vs = cont.getInstance(ValueStackFactory.class).createValueStack();
-        ActionContext context = new ActionContext(vs.getContext());
-        ActionContext.setContext(context);
+        ActionContext context = ActionContext.getContext();
+        if (context == null) {
+            ValueStack vs = cont.getInstance(ValueStackFactory.class).createValueStack();
+            context = new ActionContext(vs.getContext());
+            ActionContext.setContext(context);
+        }
         return context;
     }
 

@@ -45,25 +45,26 @@ public class SimpleActionValidationTest extends XWorkTestCase {
             assertFalse(validationAware.hasFieldErrors());
 
             // put in an out-of-range value to see if the old validators still work
+            ActionContext.setContext(new ActionContext(new HashMap<String, Object>()));
             params.put("bar", "42");
             proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.VALIDATION_ALIAS_NAME, extraContext);
             proxy.execute();
             validationAware = (ValidationAware) proxy.getAction();
             assertTrue(validationAware.hasFieldErrors());
 
-            Map errors = validationAware.getFieldErrors();
+            Map<String, List<String>> errors = validationAware.getFieldErrors();
             assertTrue(errors.containsKey("baz"));
 
-            List bazErrors = (List) errors.get("baz");
+            List<String> bazErrors = errors.get("baz");
             assertEquals(1, bazErrors.size());
 
-            String message = (String) bazErrors.get(0);
+            String message = bazErrors.get(0);
             assertEquals("baz out of range.", message);
             assertTrue(errors.containsKey("bar"));
 
-            List barErrors = (List) errors.get("bar");
+            List<String> barErrors = errors.get("bar");
             assertEquals(1, barErrors.size());
-            message = (String) barErrors.get(0);
+            message = barErrors.get(0);
             assertEquals("bar must be between 6 and 10, current value is 42.", message);
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,11 +89,11 @@ public class SimpleActionValidationTest extends XWorkTestCase {
             proxy.execute();
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
-            Map errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
-            List bazErrors = (List) errors.get("baz");
+            Map<String, List<String>> errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
+            List<String> bazErrors = errors.get("baz");
             assertEquals(1, bazErrors.size());
 
-            String errorMessage = (String) bazErrors.get(0);
+            String errorMessage = bazErrors.get(0);
             assertNotNull(errorMessage);
             assertEquals("Baz Field must be greater than 0", errorMessage);
         } catch (Exception e) {
@@ -116,11 +117,11 @@ public class SimpleActionValidationTest extends XWorkTestCase {
             proxy.execute();
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
-            Map errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
-            List fooErrors = (List) errors.get("foo");
+            Map<String, List<String>> errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
+            List<String> fooErrors = errors.get("foo");
             assertEquals(1, fooErrors.size());
 
-            String errorMessage = (String) fooErrors.get(0);
+            String errorMessage = fooErrors.get(0);
             assertNotNull(errorMessage);
             assertEquals("Foo Range Message", errorMessage);
         } catch (Exception e) {
@@ -145,7 +146,7 @@ public class SimpleActionValidationTest extends XWorkTestCase {
         validator.validate(this);
         assertTrue(validatorContext.hasActionErrors());
 
-        Collection errors = validatorContext.getActionErrors();
+        Collection<String> errors = validatorContext.getActionErrors();
         assertEquals(1, errors.size());
         assertEquals(messageKey, errors.toArray()[0]);
     }
@@ -162,11 +163,11 @@ public class SimpleActionValidationTest extends XWorkTestCase {
             proxy.execute();
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
-            Map errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
-            List barErrors = (List) errors.get("bar");
+            Map<String, List<String>> errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
+            List<String> barErrors = errors.get("bar");
             assertEquals(1, barErrors.size());
 
-            String errorMessage = (String) barErrors.get(0);
+            String errorMessage = barErrors.get(0);
             assertNotNull(errorMessage);
             assertEquals("bar must be between 6 and 10, current value is 42.", errorMessage);
         } catch (Exception e) {
@@ -197,11 +198,11 @@ public class SimpleActionValidationTest extends XWorkTestCase {
             proxy.execute();
             assertTrue(((ValidationAware) proxy.getAction()).hasFieldErrors());
 
-            Map errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
-            List beanCountErrors = (List) errors.get("bean.count");
+            Map<String, List<String>> errors = ((ValidationAware) proxy.getAction()).getFieldErrors();
+            List<String> beanCountErrors = errors.get("bean.count");
             assertEquals(1, beanCountErrors.size());
 
-            String errorMessage = (String) beanCountErrors.get(0);
+            String errorMessage = beanCountErrors.get(0);
             assertNotNull(errorMessage);
             assertEquals("bean.count out of range.", errorMessage);
         } catch (Exception e) {
