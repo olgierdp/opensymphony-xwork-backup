@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.net.URL;
 import java.net.URISyntaxException;
+import java.net.URI;
 
 
 /**
@@ -319,21 +320,25 @@ public class ValidatorFactory {
             Iterator<URL> urls = ClassLoaderUtil.getResources("", ValidatorFactory.class, false);
             while (urls.hasNext()) {
                 URL u = urls.next();
-
-                File f = new File(u.toURI());
-                FilenameFilter filter = new FilenameFilter() {
-                    public boolean accept(File file, String fileName) {
-                        return fileName.contains("-validators.xml");
+                try {
+                    URI uri = new URI(u.toExternalForm().replaceAll(" ", "%20"));
+                    if ("file".equalsIgnoreCase(uri.getScheme())) {
+                        File f = new File(uri);
+                        FilenameFilter filter = new FilenameFilter() {
+                            public boolean accept(File file, String fileName) {
+                                return fileName.contains("-validators.xml");
+                            }
+                        };
+                        files.addAll(Arrays.asList(f.listFiles(filter)));
                     }
-                };
-                files.addAll(Arrays.asList(f.listFiles(filter)));
-            }    
-        } catch (URISyntaxException e) {
-            // swallow
+                } catch (Exception ex) {
+                    LOG.error("Unable to load " + u.toString(), ex);
+                }
+            }
         } catch (IOException e) {
             throw new ConfigurationException("Unable to load validator files", e);
-        }    
-    
+        }
+
         // Parse default validator configurations
         String resourceName = "com/opensymphony/xwork2/validator/validators/default.xml";
         retrieveValidatorConfiguration(resourceName);
