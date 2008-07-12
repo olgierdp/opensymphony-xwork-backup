@@ -176,7 +176,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         if (explicitResult != null) {
             Result ret = explicitResult;
             explicitResult = null;
-            ;
+            
             return ret;
         }
         ActionConfig config = proxy.getConfig();
