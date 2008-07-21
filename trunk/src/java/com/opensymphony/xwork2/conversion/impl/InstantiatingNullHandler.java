@@ -6,6 +6,7 @@ package com.opensymphony.xwork2.conversion.impl;
 
 import com.opensymphony.xwork2.ObjectFactory;
 import com.opensymphony.xwork2.conversion.NullHandler;
+import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
@@ -63,17 +64,23 @@ public class InstantiatingNullHandler implements NullHandler {
     private static final Logger LOG = LoggerFactory.getLogger(InstantiatingNullHandler.class);
     private ReflectionProvider reflectionProvider;
     private ObjectFactory objectFactory;
-    
+    private ObjectTypeDeterminer objectTypeDeterminer;
+
+    @Inject
+    public void setObjectTypeDeterminer(ObjectTypeDeterminer det) {
+        this.objectTypeDeterminer = det;
+    }
+
     @Inject
     public void setReflectionProvider(ReflectionProvider prov) {
         this.reflectionProvider = prov;
     }
-    
+
     @Inject
     public void setObjectFactory(ObjectFactory fac) {
         this.objectFactory = fac;
     }
-    
+
     public Object nullMethodResult(Map<String, Object> context, Object target, String methodName, Object[] args) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Entering nullMethodResult ");
@@ -133,6 +140,9 @@ public class InstantiatingNullHandler implements NullHandler {
             return new ArrayList();
         } else if (clazz == Map.class) {
             return new HashMap();
+        } else if (clazz == EnumMap.class) {
+            Class keyClass = objectTypeDeterminer.getKeyClass(target.getClass(), property);
+            return new EnumMap(keyClass);
         }
 
         return objectFactory.buildBean(clazz, context);
