@@ -4,22 +4,30 @@
  */
 package com.opensymphony.xwork2.interceptor;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.conversion.impl.InstantiatingNullHandler;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.util.ClearableValueStack;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
 import com.opensymphony.xwork2.util.TextParseUtil;
 import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -116,6 +124,13 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
     private String acceptedParamNames = "[\\p{Graph}&&[^,#:=]]*";
     private Pattern acceptedPattern = Pattern.compile(acceptedParamNames);
+
+    private ValueStackFactory valueStackFactory;
+
+    @Inject
+    public void setValueStackFactory(ValueStackFactory valueStackFactory) {
+        this.valueStackFactory = valueStackFactory;
+    }
 
     @Inject("devMode")
     public static void setDevMode(String mode) {
@@ -229,11 +244,22 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             }
         }
 
+        ValueStack newStack = valueStackFactory.createValueStack(stack);
+        if (newStack instanceof ClearableValueStack) {
+            //if the stack's context can be cleared, do that to prevent OGNL
+            //from having access to objects in the stack, see XW-641
+            ((ClearableValueStack)newStack).clearContextValues();
+            Map<String, Object> context = newStack.getContext();
+            ReflectionContextState.setCreatingNullObjects(context, true);
+            ReflectionContextState.setDenyMethodExecution(context, true);
+            ReflectionContextState.setReportingConversionErrors(context, true);
+        }
+
         for (Map.Entry<String, Object> entry : acceptableParameters.entrySet()) {
             String name = entry.getKey();
             Object value = entry.getValue();
             try {
-                stack.setValue(name, value);
+                newStack.setValue(name, value);
             } catch (RuntimeException e) {
                 if (devMode) {
                     String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification:\n{0}", new Object[]{
@@ -246,6 +272,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
                 }
             }
         }
+
         addParametersToContext(ActionContext.getContext(), acceptableParameters);
     }
 

@@ -12,6 +12,7 @@ import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
+import com.opensymphony.xwork2.util.ClearableValueStack;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
@@ -42,7 +43,7 @@ import java.util.Set;
  * @author tm_jee
  * @version $Date$ $Id$
  */
-public class OgnlValueStack implements Serializable, ValueStack {
+public class OgnlValueStack implements Serializable, ValueStack, ClearableValueStack {
 
     private static final long serialVersionUID = 370737852934925530L;
 
@@ -435,6 +436,13 @@ public class OgnlValueStack implements Serializable, ValueStack {
         aStack.setRoot(xworkConverter, accessor, this.root, allow);
 
         return aStack;
+    }
+
+
+    public void clearContextValues() {
+        //this is an OGNL ValueStack so the context will be an OgnlContext
+        //it would be better to make context of type OgnlContext
+       ((OgnlContext)context).getValues().clear();
     }
 
 
