@@ -22,6 +22,7 @@ import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.ClearableValueStack;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
+import com.opensymphony.xwork2.util.MemberAccessValueStack;
 import com.opensymphony.xwork2.util.TextParseUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
@@ -255,6 +256,15 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             ReflectionContextState.setReportingConversionErrors(context, true);
         }
 
+        boolean memberAccessStack = newStack instanceof MemberAccessValueStack;
+        if (memberAccessStack) {
+            //block or allow access to properties
+            //see WW-2761 for more details
+            MemberAccessValueStack accessValueStack = (MemberAccessValueStack) newStack;
+            accessValueStack.setAcceptedProperties(acceptedParams);
+            accessValueStack.setExcludeProperties(excludeParams);
+        }
+
         for (Map.Entry<String, Object> entry : acceptableParameters.entrySet()) {
             String name = entry.getKey();
             Object value = entry.getValue();
@@ -325,8 +335,8 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
         if (!this.acceptedParams.isEmpty()) {
             for (Pattern pattern : acceptedParams) {
                 Matcher matcher = pattern.matcher(paramName);
-                if (!matcher.matches()) {
-                    return false;
+                if (matcher.matches()) {
+                    return true;
                 }
             }
         }

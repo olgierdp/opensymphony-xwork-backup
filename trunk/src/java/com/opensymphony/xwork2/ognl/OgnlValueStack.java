@@ -14,6 +14,7 @@ import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
 import com.opensymphony.xwork2.util.ClearableValueStack;
 import com.opensymphony.xwork2.util.CompoundRoot;
+import com.opensymphony.xwork2.util.MemberAccessValueStack;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Ognl implementation of a value stack that allows for dynamic Ognl expressions to be evaluated against it. When
@@ -43,7 +45,7 @@ import java.util.Set;
  * @author tm_jee
  * @version $Date$ $Id$
  */
-public class OgnlValueStack implements Serializable, ValueStack, ClearableValueStack {
+public class OgnlValueStack implements Serializable, ValueStack, ClearableValueStack, MemberAccessValueStack {
 
     private static final long serialVersionUID = 370737852934925530L;
 
@@ -60,6 +62,8 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
     Class defaultType;
     Map<Object, Object> overrides;
     transient OgnlUtil ognlUtil;
+
+    transient SecurityMemberAccess securityMemberAccess;
 
     protected OgnlValueStack(XWorkConverter xworkConverter, CompoundRootAccessor accessor, TextProvider prov, boolean allowStaticAccess) {
         setRoot(xworkConverter, accessor, new CompoundRoot(), allowStaticAccess);
@@ -79,8 +83,9 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
     protected void setRoot(XWorkConverter xworkConverter,
                            CompoundRootAccessor accessor, CompoundRoot compoundRoot, boolean allowStaticMethodAccess) {
         this.root = compoundRoot;
+        this.securityMemberAccess =  new SecurityMemberAccess(allowStaticMethodAccess);
         this.context = Ognl.createDefaultContext(this.root, accessor, new OgnlTypeConverterWrapper(xworkConverter),
-                new StaticMemberAccess(allowStaticMethodAccess));
+               securityMemberAccess);
         context.put(VALUE_STACK, this);
         Ognl.setClassResolver(context, accessor);
         ((OgnlContext) context).setTraceEvaluations(false);
@@ -445,5 +450,11 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
        ((OgnlContext)context).getValues().clear();
     }
 
+    public void setAcceptedProperties(Set<Pattern> acceptedProperties) {
+        securityMemberAccess.setAcceptedProperties(acceptedProperties);
+    }
 
+    public void setExcludeProperties(Set<Pattern> excludeProperties) {
+       securityMemberAccess.setExcludeProperties(excludeProperties);
+    }
 }
