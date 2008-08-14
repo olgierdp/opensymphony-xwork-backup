@@ -23,7 +23,7 @@ public class SecurityMemberAccess extends DefaultMemberAccess {
 
     private boolean allowStaticMethodAccess;
     Set<Pattern> excludeProperties = Collections.emptySet();
-    Set<Pattern> acceptedProperties = Collections.emptySet();
+    Set<Pattern> acceptProperties = Collections.emptySet();
 
     public SecurityMemberAccess(boolean method) {
         super(false);
@@ -75,8 +75,8 @@ public class SecurityMemberAccess extends DefaultMemberAccess {
     }
 
     protected boolean isAccepted(String paramName) {
-        if (!this.acceptedProperties.isEmpty()) {
-            for (Pattern pattern : acceptedProperties) {
+        if (!this.acceptProperties.isEmpty()) {
+            for (Pattern pattern : acceptProperties) {
                 Matcher matcher = pattern.matcher(paramName);
                 if (matcher.matches()) {
                     return true;
@@ -107,12 +107,7 @@ public class SecurityMemberAccess extends DefaultMemberAccess {
         this.excludeProperties = excludeProperties;
     }
 
-    public void setAcceptedProperties(Set<Pattern> acceptedProperties) {
-        this.acceptedProperties = acceptedProperties;
-    }
-
-    public void clearMemerAccessRestrictions() {
-        this.acceptedProperties.clear();
-        this.excludeProperties.clear();
+    public void setAcceptProperties(Set<Pattern> acceptedProperties) {
+        this.acceptProperties = acceptedProperties;
     }
 }

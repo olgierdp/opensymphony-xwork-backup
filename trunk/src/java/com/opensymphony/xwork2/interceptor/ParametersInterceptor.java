@@ -120,7 +120,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
     boolean ordered = false;
     Set<Pattern> excludeParams = Collections.emptySet();
-    Set<Pattern> acceptedParams = Collections.emptySet();
+    Set<Pattern> acceptParams = Collections.emptySet();
     static boolean devMode = false;
 
     private String acceptedParamNames = "[\\p{Graph}&&[^,#:=]]*";
@@ -138,12 +138,12 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
         devMode = "true".equals(mode);
     }
 
-    public void setAcceptedParamNames(String commaDelim) {
+    public void setAcceptParamNames(String commaDelim) {
         Collection<String> acceptPatterns = asCollection(commaDelim);
         if (acceptPatterns != null) {
-            acceptedParams = new HashSet<Pattern>();
+            acceptParams = new HashSet<Pattern>();
             for (String pattern : acceptPatterns) {
-                acceptedParams.add(Pattern.compile(pattern));
+                acceptParams.add(Pattern.compile(pattern));
             }
         }
     }
@@ -261,7 +261,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             //block or allow access to properties
             //see WW-2761 for more details
             MemberAccessValueStack accessValueStack = (MemberAccessValueStack) newStack;
-            accessValueStack.setAcceptedProperties(acceptedParams);
+            accessValueStack.setAcceptProperties(acceptParams);
             accessValueStack.setExcludeProperties(excludeParams);
         }
 
@@ -332,8 +332,8 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     }
 
     protected boolean isAccepted(String paramName) {
-        if (!this.acceptedParams.isEmpty()) {
-            for (Pattern pattern : acceptedParams) {
+        if (!this.acceptParams.isEmpty()) {
+            for (Pattern pattern : acceptParams) {
                 Matcher matcher = pattern.matcher(paramName);
                 if (matcher.matches()) {
                     return true;

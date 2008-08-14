@@ -201,7 +201,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
 
         ActionConfig config = configuration.getRuntimeConfiguration().getActionConfig("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME);
         ParametersInterceptor pi =(ParametersInterceptor) config.getInterceptors().get(0).getInterceptor();
-        pi.setAcceptedParamNames("blah, baz");
+        pi.setAcceptParamNames("blah, baz");
 
         proxy.execute();
 

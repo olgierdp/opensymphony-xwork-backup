@@ -10,5 +10,5 @@ import java.util.regex.Pattern;
 public interface MemberAccessValueStack {
     void setExcludeProperties(Set<Pattern> excludeProperties);
 
-    void setAcceptedProperties(Set<Pattern> acceptedProperties);
+    void setAcceptProperties(Set<Pattern> acceptedProperties);
 }

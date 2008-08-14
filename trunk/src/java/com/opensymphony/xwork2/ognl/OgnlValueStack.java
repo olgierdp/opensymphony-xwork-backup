@@ -450,8 +450,8 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
        ((OgnlContext)context).getValues().clear();
     }
 
-    public void setAcceptedProperties(Set<Pattern> acceptedProperties) {
-        securityMemberAccess.setAcceptedProperties(acceptedProperties);
+    public void setAcceptProperties(Set<Pattern> acceptedProperties) {
+        securityMemberAccess.setAcceptProperties(acceptedProperties);
     }
 
     public void setExcludeProperties(Set<Pattern> excludeProperties) {
