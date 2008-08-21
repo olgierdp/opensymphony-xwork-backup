@@ -114,25 +114,24 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     private static final Log LOG = LogFactory.getLog(ParametersInterceptor.class);
 
     boolean ordered = false;
-    Set<Pattern> excludeParams = Collections.EMPTY_SET;
-    Set<Pattern> acceptedParams = Collections.EMPTY_SET;
+    Set<Pattern> excludeParams = Collections.emptySet();
+    Set<Pattern> acceptParams = Collections.emptySet();
+    static boolean devMode = false;
 
     private String acceptedParamNames = "[\\p{Graph}&&[^,#:=]]*";
     private Pattern acceptedPattern = Pattern.compile(acceptedParamNames);
-
-    static boolean devMode = false;
 
     @Inject(value = "devMode", required = false)
     public static void setDevMode(String mode) {
         devMode = "true".equals(mode);
     }
 
-    public void setAcceptedParamNames(String commaDelim) {
+    public void setAcceptParamNames(String commaDelim) {
         Collection<String> acceptPatterns = asCollection(commaDelim);
         if (acceptPatterns != null) {
-            acceptedParams = new HashSet<Pattern>();
+            acceptParams = new HashSet<Pattern>();
             for (String pattern : acceptPatterns) {
-                acceptedParams.add(Pattern.compile(pattern));
+                acceptParams.add(Pattern.compile(pattern));
             }
         }
     }
@@ -154,7 +153,6 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             return l1 < l2 ? -1 : (l2 < l1 ? 1 : s1.compareTo(s2));
         }
 
-        ;
     };
 
     public String doIntercept(ActionInvocation invocation) throws Exception {
@@ -198,6 +196,26 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             params = new TreeMap(parameters);
         }
 
+        ValueStack newStack = ValueStackFactory.getFactory().createValueStack(stack);
+        if (newStack instanceof ClearableValueStack) {
+            //if the stack's context can be cleared, do that to prevent OGNL
+            //from having access to objects in the stack, see XW-641
+            ((ClearableValueStack)newStack).clearContextValues();
+            Map<String, Object> context = newStack.getContext();
+            OgnlContextState.setCreatingNullObjects(context, true);
+            OgnlContextState.setDenyMethodExecution(context, true);
+            OgnlContextState.setReportingConversionErrors(context, true);
+        }
+
+        boolean memberAccessStack = newStack instanceof MemberAccessValueStack;
+        if (memberAccessStack) {
+            //block or allow access to properties
+            //see WW-2761 for more details
+            MemberAccessValueStack accessValueStack = (MemberAccessValueStack) newStack;
+            accessValueStack.setAcceptProperties(acceptParams);
+            accessValueStack.setExcludeProperties(excludeParams);
+        }
+
         for (Iterator iterator = params.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             String name = entry.getKey().toString();
@@ -209,7 +227,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             if (acceptableName) {
                 Object value = entry.getValue();
                 try {
-                    stack.setValue(name, value);
+                    newStack.setValue(name, value);
                 } catch (RuntimeException e) {
                     if (devMode) {
                         String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification:\n{0}", new Object[]{
@@ -276,11 +294,11 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     }
 
     protected boolean isAccepted(String paramName) {
-        if (!this.acceptedParams.isEmpty()) {
-            for (Pattern pattern : acceptedParams) {
+        if (!this.acceptParams.isEmpty()) {
+            for (Pattern pattern : acceptParams) {
                 Matcher matcher = pattern.matcher(paramName);
-                if (!matcher.matches()) {
-                    return false;
+                if (matcher.matches()) {
+                    return true;
                 }
             }
         }

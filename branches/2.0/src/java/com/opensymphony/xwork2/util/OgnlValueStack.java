@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import ognl.ObjectPropertyAccessor;
 import ognl.Ognl;
@@ -34,13 +35,13 @@ import com.opensymphony.xwork2.inject.Inject;
  *
  * @author Patrick Lightbody
  * @author tm_jee
- * 
+ *
  * @version $Date$ $Id$
  */
-public class OgnlValueStack implements Serializable, ValueStack {
-	
+public class OgnlValueStack implements Serializable, ValueStack, ClearableValueStack, MemberAccessValueStack {
+
 	private static final long serialVersionUID = 370737852934925530L;
-	
+
 	private static CompoundRootAccessor accessor;
     private static Log LOG = LogFactory.getLog(OgnlValueStack.class);
     private static boolean devMode;
@@ -92,6 +93,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
     Class defaultType;
     Map overrides;
 
+    transient SecurityMemberAccess securityMemberAccess;
 
     public OgnlValueStack() {
         setRoot(new CompoundRoot());
@@ -106,7 +108,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
     public static CompoundRootAccessor getAccessor() {
         return accessor;
     }
-    
+
     @Inject(value = "devMode", required = false)
     public static void setDevMode(String mode) {
         devMode = "true".equals(mode);
@@ -142,7 +144,7 @@ public class OgnlValueStack implements Serializable, ValueStack {
     		this.overrides.putAll(overrides);
     	}
     }
-    
+
     /* (non-Javadoc)
      * @see com.opensymphony.xwork2.util.ValueStack#getExprOverrides()
      */
@@ -316,19 +318,19 @@ public class OgnlValueStack implements Serializable, ValueStack {
      */
     public void set(String key, Object o) {
     	//set basically is backed by a Map
-    	//pushed on the stack with a key 
-    	//being put on the map and the 
+    	//pushed on the stack with a key
+    	//being put on the map and the
     	//Object being the value
-    	
+
     	Map setMap=null;
-    	
-    	//check if this is a Map 
+
+    	//check if this is a Map
     	//put on the stack  for setting
     	//if so just use the old map (reduces waste)
     	Object topObj=peek();
-    	if (topObj instanceof Map 
+    	if (topObj instanceof Map
     			&&((Map)topObj).get(MAP_IDENTIFIER_KEY)!=null) {
-    		
+
     		setMap=(Map)topObj;
     	}	else {
     		setMap=new HashMap();
@@ -340,12 +342,12 @@ public class OgnlValueStack implements Serializable, ValueStack {
     		push(setMap);
     	}
     	setMap.put(key,o);
-    	
+
     }
-    
-    
+
+
     private static final String MAP_IDENTIFIER_KEY="com.opensymphony.xwork2.util.OgnlValueStack.MAP_IDENTIFIER_KEY";
-    
+
     /* (non-Javadoc)
      * @see com.opensymphony.xwork2.util.ValueStack#size()
      */
@@ -355,8 +357,9 @@ public class OgnlValueStack implements Serializable, ValueStack {
 
     private void setRoot(CompoundRoot compoundRoot) {
         this.root = compoundRoot;
+        this.securityMemberAccess =  new SecurityMemberAccess(allowStaticMethodAccess);
         this.context = Ognl.createDefaultContext(this.root, accessor, XWorkConverter.getInstance(),
-                new StaticMemberAccess(allowStaticMethodAccess));
+                this.securityMemberAccess);
         context.put(VALUE_STACK, this);
         Ognl.setClassResolver(context, accessor);
         ((OgnlContext) context).setTraceEvaluations(false);
@@ -368,5 +371,19 @@ public class OgnlValueStack implements Serializable, ValueStack {
         aStack.setRoot(this.root);
 
         return aStack;
+    }
+
+    public void clearContextValues() {
+        //this is an OGNL ValueStack so the context will be an OgnlContext
+        //it would be better to make context of type OgnlContext
+       ((OgnlContext)context).getValues().clear();
+    }
+
+    public void setAcceptProperties(Set<Pattern> acceptedProperties) {
+        securityMemberAccess.setAcceptProperties(acceptedProperties);
+    }
+
+    public void setExcludeProperties(Set<Pattern> excludeProperties) {
+       securityMemberAccess.setExcludeProperties(excludeProperties);
     }
 }
