@@ -19,7 +19,8 @@
     <!--  static injections -->
     <bean class="com.opensymphony.xwork2.util.OgnlValueStack" static="true" />
     <bean class="com.opensymphony.xwork2.util.XWorkConverter" static="true" />
-    
+    <bean class="com.opensymphony.xwork2.validator.ValidatorFileParser" static="true" />
+
     <package name="xwork-default">
     	
     	<!-- START SNIPPET: xwork2-default-result-types -->

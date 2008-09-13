@@ -5,8 +5,9 @@
 package com.opensymphony.xwork2.validator;
 
 import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.util.DomHelper;
 import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.util.DomHelper;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
@@ -31,7 +32,19 @@ import java.util.Map;
  */
 public class ValidatorFileParser {
 
-    static final String MULTI_TEXTVALUE_SEPARATOR = " ";
+    static final String DEFAULT_MULTI_TEXTVALUE_SEPARATOR = " ";
+    static final String MULTI_TEXTVALUE_SEPARATOR_CONFIG_KEY = "xwork.validatorfileparser.multi_textvalue_separator";
+
+    static String multiTextvalueSeparator=DEFAULT_MULTI_TEXTVALUE_SEPARATOR;
+
+    @Inject(value=MULTI_TEXTVALUE_SEPARATOR_CONFIG_KEY, required = false)
+    public static void setMultiTextvalueSeparator(String type) {
+        multiTextvalueSeparator = type;
+    }
+
+    public static String getMultiTextvalueSeparator() {
+        return multiTextvalueSeparator;
+    }
 
     /**
      * Parse resource for a list of ValidatorConfig objects.
@@ -164,7 +177,7 @@ public class ValidatorFileParser {
                 final String nodeValue = item.getNodeValue();
                 if (nodeValue != null) {
                     if (firstCDataFound) {
-                        value.append(MULTI_TEXTVALUE_SEPARATOR);
+                        value.append(getMultiTextvalueSeparator());
                     } else {
                         firstCDataFound = true;
                     }
