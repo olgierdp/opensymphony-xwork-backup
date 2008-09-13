@@ -35,8 +35,20 @@ public class DefaultValidatorFileParser implements ValidatorFileParser {
 
     private static Logger LOG = LoggerFactory.getLogger(DefaultValidatorFileParser.class);
 
-    static final String MULTI_TEXTVALUE_SEPARATOR = " ";
+    static final String DEFAULT_MULTI_TEXTVALUE_SEPARATOR = " ";
+    static final String MULTI_TEXTVALUE_SEPARATOR_CONFIG_KEY = "xwork.validatorfileparser.multi_textvalue_separator";
+
     private ObjectFactory objectFactory;
+    private String multiTextvalueSeparator=DEFAULT_MULTI_TEXTVALUE_SEPARATOR;
+
+    @Inject(value=MULTI_TEXTVALUE_SEPARATOR_CONFIG_KEY, required = false)
+    public void setMultiTextvalueSeparator(String type) {
+        multiTextvalueSeparator = type;
+    }
+
+    public String getMultiTextvalueSeparator() {
+        return multiTextvalueSeparator;
+    }
 
     @Inject
     public void setObjectFactory(ObjectFactory fac) {
@@ -120,7 +132,7 @@ public class DefaultValidatorFileParser implements ValidatorFileParser {
      * @see org.w3c.dom.EntityReference
      * @see org.w3c.dom.Comment
      */
-    public static String getTextValue(Element valueEle) {
+    public String getTextValue(Element valueEle) {
         StringBuilder value = new StringBuilder();
         NodeList nl = valueEle.getChildNodes();
         boolean firstCDataFound = false;
@@ -130,7 +142,7 @@ public class DefaultValidatorFileParser implements ValidatorFileParser {
                 final String nodeValue = item.getNodeValue();
                 if (nodeValue != null) {
                     if (firstCDataFound) {
-                        value.append(MULTI_TEXTVALUE_SEPARATOR);
+                        value.append(getMultiTextvalueSeparator());
                     } else {
                         firstCDataFound = true;
                     }
