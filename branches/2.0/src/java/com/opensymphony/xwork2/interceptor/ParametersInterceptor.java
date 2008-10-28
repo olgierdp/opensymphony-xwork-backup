@@ -197,7 +197,8 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
         }
 
         ValueStack newStack = ValueStackFactory.getFactory().createValueStack(stack);
-        if (newStack instanceof ClearableValueStack) {
+        boolean clearableStack = newStack instanceof ClearableValueStack;
+        if (clearableStack) {
             //if the stack's context can be cleared, do that to prevent OGNL
             //from having access to objects in the stack, see XW-641
             ((ClearableValueStack)newStack).clearContextValues();
@@ -243,6 +244,9 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
                 }
             }
         }
+
+        if (clearableStack && (stack.getContext() != null) && (newStack.getContext() != null))
+            stack.getContext().put(ActionContext.CONVERSION_ERRORS, newStack.getContext().get(ActionContext.CONVERSION_ERRORS));
     }
 
     /**
