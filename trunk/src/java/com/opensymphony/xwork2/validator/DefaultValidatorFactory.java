@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.*;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipEntry;
 
 
 /**
@@ -107,7 +109,44 @@ public class DefaultValidatorFactory implements ValidatorFactory {
                                 return fileName.contains("-validators.xml");
                             }
                         };
-                        files.addAll(Arrays.asList(f.listFiles(filter)));
+                        // First check if this is a directory
+                        // If yes, then just do a "list" to get all files in this directory
+                        // and match the filenames with *-validators.xml. If the filename
+                        // matches then add to the list of files to be parsed
+                        if (f.isDirectory()) {
+                            files.addAll(Arrays.asList(f.listFiles(filter)));
+                        } else {
+                            // If this is not a directory, then get hold of the inputstream.
+                            // If its not a ZipInputStream, then create a ZipInputStream out
+                            // of it. The intention is to allow nested jar files to be scanned
+                            // for *-validators.xml.
+                            // Ex: struts-app.jar -> MyApp.jar -> Login-validators.xml should be
+                            // parsed and loaded.
+                            ZipInputStream zipInputStream = null;
+                            try {
+                                InputStream inputStream = u.openStream();
+                                if (inputStream instanceof ZipInputStream) {
+                                    zipInputStream = (ZipInputStream) inputStream;
+                                } else {
+                                    zipInputStream = new ZipInputStream(inputStream);
+                                }
+                                ZipEntry zipEntry = zipInputStream.getNextEntry();
+                                while (zipEntry != null) {
+                                    if (zipEntry.getName().endsWith("-validators.xml")) {
+                                        if (LOG.isTraceEnabled()) {
+                                            LOG.trace("Adding validator " + zipEntry.getName());
+                                        }
+                                        files.add(new File(zipEntry.getName()));
+                                    }
+                                    zipEntry = zipInputStream.getNextEntry();
+                                }
+                            } finally {
+                                //cleanup
+                                if (zipInputStream != null) {
+                                    zipInputStream.close();
+                                }
+                            }
+                        }
                     }
                 } catch (Exception ex) {
                     LOG.error("Unable to load #0", ex, u.toString());
