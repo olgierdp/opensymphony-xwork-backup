@@ -102,6 +102,28 @@ public class StaticParametersInterceptorTest extends XWorkTestCase {
         assertEquals("${top.hero}", user.getName());
     }
 
+    public void testFewParametersParse() throws Exception {
+        MockActionInvocation mai = new MockActionInvocation();
+        MockActionProxy map = new MockActionProxy();
+        ActionConfig ac = new ActionConfig.Builder("", "", "")
+                .addParam("top.age", "${top.myAge}")
+                .addParam("top.email", "${top.myEmail}")
+                .build();
+        map.setConfig(ac);
+        mai.setProxy(map);
+        mai.setAction(new SimpleFooAction());
+
+        User user = new User();
+        ActionContext.getContext().getValueStack().push(user);
+        int before = ActionContext.getContext().getValueStack().size();
+        interceptor.setParse("true");
+        interceptor.intercept(mai);
+
+        assertEquals(before, ActionContext.getContext().getValueStack().size());
+        assertEquals(user.getMyAge(), user.age);
+        assertEquals(user.getMyEmail(), user.email);
+    }
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -117,6 +139,8 @@ public class StaticParametersInterceptorTest extends XWorkTestCase {
 
     private class User {
         private String name;
+        private int age;
+        private String email;
 
         public String getName() {
             return name;
@@ -124,6 +148,22 @@ public class StaticParametersInterceptorTest extends XWorkTestCase {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public int getMyAge() {
+            return 33;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        public String getMyEmail() {
+            return "lukasz dot lenart at gmail dot com";
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
         }
 
         public String getHero() {

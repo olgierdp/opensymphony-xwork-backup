@@ -116,7 +116,6 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
             final ValueStack stack = ac.getValueStack();
 
             for (Map.Entry<String, String> entry : parameters.entrySet()) {
-                stack.setValue(entry.getKey(), entry.getValue());
                 Object val = entry.getValue();
                 if (parse && val instanceof String) {
                     val = TextParseUtil.translateVariables(val.toString(), stack);
