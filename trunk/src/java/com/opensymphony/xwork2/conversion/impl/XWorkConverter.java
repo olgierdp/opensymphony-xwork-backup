@@ -281,7 +281,8 @@ public class XWorkConverter extends DefaultTypeConverter {
             try {
                 return tc.convertValue(context, target, member, property, value, toClass);
             } catch (Exception e) {
-                e.printStackTrace();
+                if (LOG.isDebugEnabled())
+                    LOG.debug("unable to convert value using type converter [#0]", e, tc.getClass().getName());
                 handleConversionException(context, property, value, target);
 
                 return TypeConverter.NO_CONVERSION_POSSIBLE;
@@ -294,7 +295,8 @@ public class XWorkConverter extends DefaultTypeConverter {
                     LOG.debug("falling back to default type converter [" + defaultTypeConverter + "]");
                 return defaultTypeConverter.convertValue(context, target, member, property, value, toClass);
             } catch (Exception e) {
-                e.printStackTrace();
+                if (LOG.isDebugEnabled())
+                    LOG.debug("unable to convert value using type converter [#0]", e, defaultTypeConverter.getClass().getName());
                 handleConversionException(context, property, value, target);
 
                 return TypeConverter.NO_CONVERSION_POSSIBLE;
@@ -305,7 +307,8 @@ public class XWorkConverter extends DefaultTypeConverter {
                     LOG.debug("falling back to Ognl's default type conversion");
                 return super.convertValue(value, toClass);
             } catch (Exception e) {
-                e.printStackTrace();
+                if (LOG.isDebugEnabled())
+                    LOG.debug("unable to convert value using type converter [#0]", e, super.getClass().getName());
                 handleConversionException(context, property, value, target);
 
                 return TypeConverter.NO_CONVERSION_POSSIBLE;
