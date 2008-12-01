@@ -13,6 +13,25 @@ import java.util.Arrays;
  */
 public class TextUtilsTest extends XWorkTestCase {
 
+	public void testJavaScriptEscapeNoEscapes() {
+        assertEquals("", TextUtils.escapeJavaScript(null));
+        assertEquals("", TextUtils.escapeJavaScript(""));
+        assertEquals("   ", TextUtils.escapeJavaScript("   "));
+        assertEquals("Hello World", TextUtils.escapeJavaScript("Hello World"));
+	}
+	
+	public void testJavaScriptEscape() {
+		assertEquals("\\t", TextUtils.escapeJavaScript("\t"));
+		assertEquals("\\b", TextUtils.escapeJavaScript("\b"));
+		assertEquals("\\n", TextUtils.escapeJavaScript("\n"));
+		assertEquals("\\f", TextUtils.escapeJavaScript("\f"));
+		assertEquals("\\r", TextUtils.escapeJavaScript("\r"));
+		assertEquals("\\\\", TextUtils.escapeJavaScript("\\"));
+		assertEquals("\\\"", TextUtils.escapeJavaScript("\""));
+		assertEquals("\\'", TextUtils.escapeJavaScript("'"));
+		assertEquals("<\\/script", TextUtils.escapeJavaScript("</script"));
+	}
+	
     public void testHtmlEncodeNoHTML() {
         assertEquals("", TextUtils.htmlEncode(null));
         assertEquals("", TextUtils.htmlEncode(""));

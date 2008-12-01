@@ -92,6 +92,54 @@ public class TextUtils {
 
         return str.toString();
     }
+
+    /**
+     * Escape a String into a JavaScript-compatible String.
+     *
+     * @param s the String to escape.
+     * @return the escaped string
+     */
+    public final static String escapeJavaScript(String s) {
+        s = noNull(s);
+        StringBuffer str = new StringBuffer();
+
+        for (int j = 0; j < s.length(); j++) {
+            char c = s.charAt(j);
+            switch (c) {
+                case '\t':
+                    str.append("\\t");
+                    break;
+                case '\b':
+                    str.append("\\b");
+                    break;
+                case '\n':
+                    str.append("\\n");
+                    break;
+                case '\f':
+                    str.append("\\f");
+                    break;
+                case '\r':
+                    str.append("\\r");
+                    break;
+                case '\\':
+                    str.append("\\\\");
+                    break;
+                case '"':
+                    str.append("\\\"");
+                    break;
+                case '\'':
+                    str.append("\\'");
+                    break;
+                case '/':
+                    str.append("\\/");
+                    break;
+                default:
+                    str.append(c);
+            }
+        }
+        return str.toString();
+    }
+
     
     /**
      * Join an Iteration of Strings together.
