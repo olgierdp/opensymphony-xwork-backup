@@ -4,14 +4,20 @@
  */
 package com.opensymphony.xwork2.ognl.accessor;
 
+import java.beans.PropertyDescriptor;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+
+import ognl.MethodFailedException;
+import ognl.ObjectMethodAccessor;
+import ognl.OgnlContext;
+import ognl.OgnlRuntime;
+import ognl.PropertyAccessor;
+
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
-import ognl.*;
-
-import java.beans.PropertyDescriptor;
-import java.util.Collection;
-import java.util.Map;
 
 
 /**
@@ -81,18 +87,35 @@ public class XWorkMethodAccessor extends ObjectMethodAccessor {
             Boolean exec = (Boolean) context.get(ReflectionContextState.DENY_INDEXED_ACCESS_EXECUTION);
             boolean e = ((exec == null) ? false : exec.booleanValue());
             if (!e) {
-                return super.callMethod(context, object, string, objects);
+                return callMethodWithDebugInfo(context, object, string, objects);
             }
         }
         Boolean exec = (Boolean) context.get(ReflectionContextState.DENY_METHOD_EXECUTION);
         boolean e = ((exec == null) ? false : exec.booleanValue());
 
         if (!e) {
-            return super.callMethod(context, object, string, objects);
+            return callMethodWithDebugInfo(context, object, string, objects);
         } else {
             return null;
         }
     }
+
+	private Object callMethodWithDebugInfo(Map context, Object object, String methodName,
+			Object[] objects) throws MethodFailedException {
+		try {
+			return super.callMethod(context, object, methodName, objects);
+		}
+		catch(MethodFailedException e) {
+			if (LOG.isDebugEnabled()) {
+				if (!(e.getReason() instanceof NoSuchMethodException)) {
+					// the method exists on the target object, but something went wrong
+					String s = "Error calling method through OGNL: object: [#0] method: [#1] args: [#2]";
+					LOG.debug(s, e.getReason(), object.toString(), methodName, Arrays.toString(objects));
+				}
+			}
+			throw e;
+		}
+	}
 
     @Override
     public Object callStaticMethod(Map context, Class aClass, String string, Object[] objects) throws MethodFailedException {
@@ -100,9 +123,26 @@ public class XWorkMethodAccessor extends ObjectMethodAccessor {
         boolean e = ((exec == null) ? false : exec.booleanValue());
 
         if (!e) {
-            return super.callStaticMethod(context, aClass, string, objects);
+            return callStaticMethodWithDebugInfo(context, aClass, string, objects);
         } else {
             return null;
         }
     }
+
+	private Object callStaticMethodWithDebugInfo(Map context, Class aClass, String methodName,
+			Object[] objects) throws MethodFailedException {
+		try {
+			return super.callStaticMethod(context, aClass, methodName, objects);
+		}
+		catch(MethodFailedException e) {
+			if (LOG.isDebugEnabled()) {
+				if (!(e.getReason() instanceof NoSuchMethodException)) {
+					// the method exists on the target class, but something went wrong
+					String s = "Error calling method through OGNL, class: [#0] method: [#1] args: [#2]";
+					LOG.debug(s, e.getReason(), aClass.getName(), methodName, Arrays.toString(objects));
+				}
+			}
+			throw e;
+		}
+	}
 }
