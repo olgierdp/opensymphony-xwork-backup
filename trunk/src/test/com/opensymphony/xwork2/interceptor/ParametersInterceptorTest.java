@@ -151,6 +151,26 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         assertEquals("This is blah", ((SimpleAction) proxy.getAction()).getBlah());
     }
 
+     public void testParametersWithSpacesInTheName() throws Exception {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("theProtectedMap['p0 p1']", "test1");
+        params.put("theProtectedMap['p0p1 ']", "test2");
+        params.put("theProtectedMap[' p0p1 ']", "test3");
+        params.put("theProtectedMap[' p0 p1 ']", "test4");
+
+        HashMap<String, Object> extraContext = new HashMap<String, Object>();
+        extraContext.put(ActionContext.PARAMETERS, params);
+
+        ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
+        proxy.execute();
+        Map<String, String> existingMap =  ((SimpleAction) proxy.getAction()).getTheProtectedMap();
+        assertEquals(4, existingMap.size());
+        assertEquals("test1", existingMap.get("p0 p1"));
+        assertEquals("test2", existingMap.get("p0p1 "));
+        assertEquals("test3", existingMap.get(" p0p1 "));
+        assertEquals("test4", existingMap.get(" p0 p1 "));
+    }
+
     public void testExcludedTrickyParameters() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>() {
             {

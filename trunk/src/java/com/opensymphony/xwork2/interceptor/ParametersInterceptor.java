@@ -123,7 +123,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     Set<Pattern> acceptParams = Collections.emptySet();
     static boolean devMode = false;
 
-    private String acceptedParamNames = "[\\p{Graph}&&[^,#:=]]*";
+    private String acceptedParamNames = "[[\\p{Graph}\\s]&&[^,#:=]]*";
     private Pattern acceptedPattern = Pattern.compile(acceptedParamNames);
 
     private ValueStackFactory valueStackFactory;
