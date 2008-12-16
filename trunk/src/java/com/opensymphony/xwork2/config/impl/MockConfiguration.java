@@ -6,9 +6,11 @@ package com.opensymphony.xwork2.config.impl;
 
 import com.opensymphony.xwork2.config.*;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
+import com.opensymphony.xwork2.config.entities.UnknownHandlerConfig;
 import com.opensymphony.xwork2.config.providers.XWorkConfigurationProvider;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
+import com.opensymphony.xwork2.inject.Scope;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
 
 import java.util.*;
@@ -22,9 +24,16 @@ public class MockConfiguration implements Configuration {
     private Map<String, PackageConfig> packages = new HashMap<String, PackageConfig>();
     private Set<String> loadedFiles = new HashSet<String>();
     private Container container;
-    
+    protected List<UnknownHandlerConfig> unknownHandlerStack;
+    private ContainerBuilder builder;
+
     public MockConfiguration() {
-        ContainerBuilder builder = new ContainerBuilder();
+        builder = new ContainerBuilder();
+    }
+
+    public void selfRegister() {
+        //this cannot be done in the constructor, as it causes an infinite loop
+        builder.factory(Configuration.class, MockConfiguration.class, Scope.SINGLETON);
         LocatableProperties props = new LocatableProperties();
         new XWorkConfigurationProvider().register(builder, props);
         builder.constant("devMode", "false");
@@ -82,5 +91,13 @@ public class MockConfiguration implements Configuration {
             List<ContainerProvider> containerProviders)
             throws ConfigurationException {
         throw new UnsupportedOperationException();
+    }
+
+    public List<UnknownHandlerConfig> getUnknownHandlerStack() {
+        return unknownHandlerStack;
+    }
+
+    public void setUnknownHandlerStack(List<UnknownHandlerConfig> unknownHandlerStack) {
+        this.unknownHandlerStack = unknownHandlerStack;
     }
 }

@@ -28,6 +28,7 @@ public class TestNGXWorkTestCase {
     protected void setUp() throws Exception {
         configurationManager = XWorkTestCaseHelper.setUp();
         configuration = new MockConfiguration();
+        ((MockConfiguration)configuration).selfRegister();
         container = configuration.getContainer();
         actionProxyFactory = container.getInstance(ActionProxyFactory.class);
     }

@@ -12,6 +12,7 @@ import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.ConfigurationUtil;
 import com.opensymphony.xwork2.config.entities.*;
+import com.opensymphony.xwork2.config.entities.UnknownHandlerConfig;
 import com.opensymphony.xwork2.config.impl.LocatableFactory;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
@@ -76,6 +77,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         this.errorIfMissing = errorIfMissing;
 
         Map<String, String> mappings = new HashMap<String, String>();
+        mappings.put("-//OpenSymphony Group//XWork 2.1//EN", "xwork-2.1.dtd");
         mappings.put("-//OpenSymphony Group//XWork 2.0//EN", "xwork-2.0.dtd");
         mappings.put("-//OpenSymphony Group//XWork 1.1.1//EN", "xwork-1.1.1.dtd");
         mappings.put("-//OpenSymphony Group//XWork 1.1//EN", "xwork-1.1.dtd");
@@ -226,6 +228,18 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                         String name = child.getAttribute("name");
                         String value = child.getAttribute("value");
                         props.setProperty(name, value, childNode);
+                    } else if (nodeName.equals("unknown-handler-stack")) {
+                        List<UnknownHandlerConfig> unknownHandlerStack = new ArrayList<UnknownHandlerConfig>();
+                        NodeList unknownHandlers = child.getElementsByTagName("unknown-handler-ref");
+                        int unknownHandlersSize = unknownHandlers.getLength();
+
+                        for (int k = 0; k < unknownHandlersSize; k++) {
+                            Element unknownHandler = (Element) unknownHandlers.item(k);
+                            unknownHandlerStack.add(new UnknownHandlerConfig(unknownHandler.getAttribute("name")));
+                        }
+
+                        if (!unknownHandlerStack.isEmpty())
+                            configuration.setUnknownHandlerStack(unknownHandlerStack);
                     }
                 }
             }

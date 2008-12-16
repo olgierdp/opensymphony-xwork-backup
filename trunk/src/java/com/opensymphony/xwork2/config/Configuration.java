@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.config;
 
 import com.opensymphony.xwork2.config.entities.PackageConfig;
+import com.opensymphony.xwork2.config.entities.UnknownHandlerConfig;
 import com.opensymphony.xwork2.inject.Container;
 
 import java.io.Serializable;
@@ -19,7 +20,7 @@ import java.util.Set;
  * @author Mike
  */
 public interface Configuration extends Serializable {
-    
+
     void rebuildRuntimeConfiguration();
 
     PackageConfig getPackageConfig(String name);
@@ -63,4 +64,16 @@ public interface Configuration extends Serializable {
     Container getContainer();
 
     Set<String> getLoadedFileNames();
+
+    /**
+     * @since 2.1
+     * @return list of unknown handlers
+     */
+    List<UnknownHandlerConfig> getUnknownHandlerStack();
+
+    /**
+     * @since 2.1
+     * @param unknownHandlerStack
+     */
+    void setUnknownHandlerStack(List<UnknownHandlerConfig> unknownHandlerStack);
 }

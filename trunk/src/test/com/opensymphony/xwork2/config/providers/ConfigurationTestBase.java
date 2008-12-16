@@ -20,8 +20,9 @@ public abstract class ConfigurationTestBase extends XWorkTestCase {
 
     protected ConfigurationProvider buildConfigurationProvider(final String filename) {
         configuration = new MockConfiguration();
+        ((MockConfiguration)configuration).selfRegister();
         container = configuration.getContainer();
-        
+
         XmlConfigurationProvider prov = new XmlConfigurationProvider(filename, true);
         prov.setObjectFactory(container.getInstance(ObjectFactory.class));
         prov.init(configuration);

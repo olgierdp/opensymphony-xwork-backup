@@ -6,8 +6,10 @@ package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
+import com.mockobjects.dynamic.Mock;
 
 import java.util.HashMap;
+import java.util.Arrays;
 
 
 /**
@@ -25,18 +27,18 @@ public class ActionInvocationTest extends XWorkTestCase {
                 "baz", "myCommand", null, null);
         assertEquals(SimpleAction.COMMAND_RETURN_CODE, commandActionProxy.execute());
     }
-    
+
     public void testCommandInvocationDoMethod() throws Exception {
         ActionProxy baseActionProxy = actionProxyFactory.createActionProxy(
                 "baz", "doMethodTest", null, null);
         assertEquals("input", baseActionProxy.execute());
     }
-    
+
     public void testCommandInvocationUnknownHandler() throws Exception {
-    	
+
         DefaultActionProxy baseActionProxy = (DefaultActionProxy) actionProxyFactory.createActionProxy(
                 "baz", "unknownMethodTest", "unknownmethod", null);
-        ((DefaultActionInvocation)baseActionProxy.getInvocation()).unknownHandler = new UnknownHandler() {
+        UnknownHandler unknownHandler = new UnknownHandler() {
 			public ActionConfig handleUnknownAction(String namespace, String actionName) throws XWorkException { return null;}
 			public Result handleUnknownResult(ActionContext actionContext, String actionName, ActionConfig actionConfig, String resultCode) throws XWorkException {
 				return null;
@@ -49,9 +51,14 @@ public class ActionInvocationTest extends XWorkTestCase {
 				}
 			}
         };
+
+        UnknownHandlerManagerMock uhm = new UnknownHandlerManagerMock();
+        uhm.addUnknownHandler(unknownHandler);
+        ((DefaultActionInvocation)baseActionProxy.getInvocation()).setUnknownHandlerManager(uhm);
+
         assertEquals("found", baseActionProxy.execute());
     }
-    
+
     public void testResultReturnInvocationAndWired() throws Exception {
         ActionProxy baseActionProxy = actionProxyFactory.createActionProxy(
                 "baz", "resultAction", null, null);

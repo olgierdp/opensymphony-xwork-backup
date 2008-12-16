@@ -50,6 +50,7 @@ public class DefaultConfiguration implements Configuration {
     protected Container container;
     protected String defaultFrameworkBeanName;
     protected Set<String> loadedFileNames = new TreeSet<String>();
+    protected List<UnknownHandlerConfig> unknownHandlerStack;
 
 
     ObjectFactory objectFactory;
@@ -57,7 +58,7 @@ public class DefaultConfiguration implements Configuration {
     public DefaultConfiguration() {
         this("xwork");
     }
-    
+
     public DefaultConfiguration(String defaultBeanName) {
         this.defaultFrameworkBeanName = defaultBeanName;
     }
@@ -67,6 +68,14 @@ public class DefaultConfiguration implements Configuration {
         return packageContexts.get(name);
     }
 
+    public List<UnknownHandlerConfig> getUnknownHandlerStack() {
+        return unknownHandlerStack;
+    }
+
+    public void setUnknownHandlerStack(List<UnknownHandlerConfig> unknownHandlerStack) {
+        this.unknownHandlerStack = unknownHandlerStack;
+    }
+
     public Set<String> getPackageConfigNames() {
         return packageContexts.keySet();
     }
@@ -74,7 +83,7 @@ public class DefaultConfiguration implements Configuration {
     public Map<String, PackageConfig> getPackageConfigs() {
         return packageContexts;
     }
-    
+
     public Set<String> getLoadedFileNames() {
         return loadedFileNames;
     }
@@ -82,7 +91,7 @@ public class DefaultConfiguration implements Configuration {
     public RuntimeConfiguration getRuntimeConfiguration() {
         return runtimeConfiguration;
     }
-    
+
     /**
      * @return the container
      */
@@ -96,12 +105,12 @@ public class DefaultConfiguration implements Configuration {
             if (check.getLocation() != null && packageContext.getLocation() != null
                     && check.getLocation().equals(packageContext.getLocation())) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("The package name '" + name 
-                    + "' is already been loaded by the same location and could be removed: " 
+                    LOG.debug("The package name '" + name
+                    + "' is already been loaded by the same location and could be removed: "
                     + packageContext.getLocation());
-                } 
+                }
             } else {
-                throw new ConfigurationException("The package name '" + name 
+                throw new ConfigurationException("The package name '" + name
                         + "' at location "+packageContext.getLocation()
                         + " is already been used by another package at location " + check.getLocation(),
                         packageContext);
@@ -121,7 +130,7 @@ public class DefaultConfiguration implements Configuration {
     public void rebuildRuntimeConfiguration() {
         runtimeConfiguration = buildRuntimeConfiguration();
     }
-    
+
     /**
      * Calls the ConfigurationProviderFactory.getConfig() to tell it to reload the configuration and then calls
      * buildRuntimeConfiguration().
@@ -129,11 +138,11 @@ public class DefaultConfiguration implements Configuration {
      * @throws ConfigurationException
      */
     public synchronized void reload(List<ConfigurationProvider> providers) throws ConfigurationException {
-        
+
         // Silly copy necessary due to lack of ability to cast generic lists
         List<ContainerProvider> contProviders = new ArrayList<ContainerProvider>();
         contProviders.addAll(providers);
-        
+
         reloadContainer(contProviders);
     }
 
@@ -156,7 +165,7 @@ public class DefaultConfiguration implements Configuration {
             containerProvider.register(builder, props);
         }
         props.setConstants(builder);
-        
+
         builder.factory(Configuration.class, new Factory<Configuration>() {
             public Configuration create(Context context) throws Exception {
                 return DefaultConfiguration.this;
@@ -181,7 +190,7 @@ public class DefaultConfiguration implements Configuration {
                     packageProviders.add((PackageProvider)containerProvider);
                 }
             }
-            
+
             // Then process any package providers from the plugins
             Set<String> packageProviderNames = container.getInstanceNames(PackageProvider.class);
             if (packageProviderNames != null) {
@@ -192,7 +201,7 @@ public class DefaultConfiguration implements Configuration {
                     packageProviders.add(provider);
                 }
             }
-    
+
             rebuildRuntimeConfiguration();
         } finally {
             if (oldContext == null) {
@@ -201,7 +210,7 @@ public class DefaultConfiguration implements Configuration {
         }
         return packageProviders;
     }
-    
+
     protected ActionContext setContext(Container cont) {
         ActionContext context = ActionContext.getContext();
         if (context == null) {
@@ -258,9 +267,9 @@ public class DefaultConfiguration implements Configuration {
                     ActionConfig baseConfig = actionConfigs.get(actionName);
                     configs.put(actionName, buildFullActionConfig(packageConfig, baseConfig));
                 }
-                
-                
-                
+
+
+
                 namespaceActionConfigs.put(namespace, configs);
                 if (packageConfig.getFullDefaultActionRef() != null) {
                     namespaceConfigs.put(namespace, packageConfig.getFullDefaultActionRef());
@@ -318,8 +327,8 @@ public class DefaultConfiguration implements Configuration {
             }
         }
 
-        
-        
+
+
         return new ActionConfig.Builder(baseConfig)
             .addParams(params)
             .addResultConfigs(results)
@@ -341,7 +350,7 @@ public class DefaultConfiguration implements Configuration {
             this.namespaceConfigs = namespaceConfigs;
 
             PatternMatcher<int[]> matcher = container.getInstance(PatternMatcher.class);
-            
+
             this.namespaceActionConfigMatchers = new LinkedHashMap<String, ActionConfigMatcher>();
             this.namespaceMatcher = new NamespaceMatcher(matcher, namespaceActionConfigs.keySet());
 
@@ -435,7 +444,7 @@ public class DefaultConfiguration implements Configuration {
             return buff.toString();
         }
     }
-    
+
     class ContainerProperties extends LocatableProperties {
         private static final long serialVersionUID = -7320625750836896089L;
 
@@ -451,7 +460,7 @@ public class DefaultConfiguration implements Configuration {
         public void setConstants(ContainerBuilder builder) {
             for (Object keyobj : keySet()) {
                 String key = (String)keyobj;
-                builder.factory(String.class, key, 
+                builder.factory(String.class, key,
                         new LocatableConstantFactory<String>(getProperty(key), getPropertyLocation(key)));
             }
         }

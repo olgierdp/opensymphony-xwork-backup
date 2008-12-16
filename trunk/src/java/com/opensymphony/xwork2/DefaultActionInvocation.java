@@ -4,6 +4,7 @@
  */
 package com.opensymphony.xwork2;
 
+import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.InterceptorMapping;
@@ -60,7 +61,8 @@ public class DefaultActionInvocation implements ActionInvocation {
     protected ActionEventListener actionEventListener;
     protected ValueStackFactory valueStackFactory;
     protected Container container;
-    protected UnknownHandler unknownHandler;
+    private Configuration configuration;
+    protected UnknownHandlerManager unknownHandlerManager;
 
     public DefaultActionInvocation(final Map<String, Object> extraContext, final boolean pushAction) {
         DefaultActionInvocation.this.extraContext = extraContext;
@@ -68,8 +70,18 @@ public class DefaultActionInvocation implements ActionInvocation {
     }
 
     @Inject
+    public void setUnknownHandlerManager(UnknownHandlerManager unknownHandlerManager) {
+        this.unknownHandlerManager = unknownHandlerManager;
+    }
+
+    @Inject
     public void setValueStackFactory(ValueStackFactory fac) {
         this.valueStackFactory = fac;
+    }
+
+    @Inject
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     @Inject
@@ -82,12 +94,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         this.container = cont;
     }
 
-    @Inject(required = false)
-    public void setUnknownHandler(UnknownHandler hand) {
-        this.unknownHandler = hand;
-    }
-
-    @Inject(required = false)
+    @Inject(required=false)
     public void setActionEventListener(ActionEventListener listener) {
         this.actionEventListener = listener;
     }
@@ -176,7 +183,7 @@ public class DefaultActionInvocation implements ActionInvocation {
         if (explicitResult != null) {
             Result ret = explicitResult;
             explicitResult = null;
-            
+
             return ret;
         }
         ActionConfig config = proxy.getConfig();
@@ -203,8 +210,8 @@ public class DefaultActionInvocation implements ActionInvocation {
                 LOG.error("There was an exception while instantiating the result of type " + resultConfig.getClassName(), e);
                 throw new XWorkException(e, resultConfig);
             }
-        } else if (resultCode != null && !Action.NONE.equals(resultCode) && unknownHandler != null) {
-            return unknownHandler.handleUnknownResult(invocationContext, proxy.getActionName(), proxy.getConfig(), resultCode);
+        } else if (resultCode != null && !Action.NONE.equals(resultCode) && unknownHandlerManager.hasUnknownHandlers()) {
+            return unknownHandlerManager.handleUnknownResult(invocationContext, proxy.getActionName(), proxy.getConfig(), resultCode);
         }
         return null;
     }
@@ -226,8 +233,8 @@ public class DefaultActionInvocation implements ActionInvocation {
                 String interceptorMsg = "interceptor: " + interceptor.getName();
                 UtilTimerStack.push(interceptorMsg);
                 try {
-                    resultCode = interceptor.getInterceptor().intercept(DefaultActionInvocation.this);
-                }
+                                resultCode = interceptor.getInterceptor().intercept(DefaultActionInvocation.this);
+                            }
                 finally {
                     UtilTimerStack.pop(interceptorMsg);
                 }
@@ -415,9 +422,9 @@ public class DefaultActionInvocation implements ActionInvocation {
                     method = getAction().getClass().getMethod(altMethodName, new Class[0]);
                 } catch (NoSuchMethodException e1) {
                     // well, give the unknown handler a shot
-                    if (unknownHandler != null) {
+                    if (unknownHandlerManager.hasUnknownHandlers()) {
                         try {
-                            methodResult = unknownHandler.handleUnknownActionMethod(action, methodName);
+                            methodResult = unknownHandlerManager.handleUnknownMethod(action, methodName);
                             methodCalled = true;
                         } catch (NoSuchMethodException e2) {
                             // throw the original one
