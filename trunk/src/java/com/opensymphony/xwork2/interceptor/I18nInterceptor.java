@@ -105,10 +105,10 @@ public class I18nInterceptor extends AbstractInterceptor {
         if (requested_locale != null && requested_locale.getClass().isArray()
                 && ((Object[]) requested_locale).length == 1) {
             requested_locale = ((Object[]) requested_locale)[0];
-        }
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("requested_locale=" + requested_locale);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("requested_locale=" + requested_locale);
+            }
         }
 
         //save it in session
