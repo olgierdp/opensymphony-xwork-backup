@@ -394,8 +394,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             return true;
         }
         try {
-            Class clazz = objectFactory.getClassInstance(className);
             if (objectFactory.isNoArgConstructorRequired()) {
+                Class clazz = objectFactory.getClassInstance(className);
                 if (!Modifier.isPublic(clazz.getModifiers())) {
                     throw new ConfigurationException("Action class [" + className + "] is not public", loc);
                 }
