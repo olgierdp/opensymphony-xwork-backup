@@ -147,13 +147,16 @@ public class TextParseUtil {
         for (char open : openChars) {
             int loopCount = 1;
             int pos = 0;
-            while (true) {
 
-                int start = expression.indexOf(open + "{", pos);
+            //this creates an implicit StringBuffer and shouldn't be used in the inner loop
+            final String lookupChars = open + "{";
+
+            while (true) {
+                int start = expression.indexOf(lookupChars, pos);
                 if (start == -1) {
                     pos = 0;
                     loopCount++;
-                    start = expression.indexOf(open + "{");
+                    start = expression.indexOf(lookupChars);
                 }
                 if (loopCount > maxLoopCount) {
                     // translateVariables prevent infinite loop / expression recursive evaluation
@@ -191,18 +194,18 @@ public class TextParseUtil {
                         if (!TextUtils.stringSet(left)) {
                             result = o;
                         } else {
-                            result = left + middle;
+                            result = left.concat(middle);
                         }
 
                         if (TextUtils.stringSet(right)) {
-                            result = result + right;
+                            result = result.toString().concat(right);
                         }
 
-                        expression = left + middle + right;
+                        expression = left.concat(middle).concat(right);
                     } else {
                         // the variable doesn't exist, so don't display anything
-                        result = left + right;
-                        expression = left + right;
+                        expression = left.concat(right);
+                        result = expression;
                     }
                     pos = (left != null && left.length() > 0 ? left.length() - 1: 0) +
                           (middle != null && middle.length() > 0 ? middle.length() - 1: 0) +
