@@ -69,7 +69,11 @@ public class DefaultTextProvider implements TextProvider, Serializable, Unchaina
 
     public String getText(String key, String defaultValue, List<Object> args) {
         String text = getText(key, args);
-        if (text == null) {
+        if(text == null && defaultValue == null) {
+            defaultValue = key;
+        }
+        if (text == null && defaultValue != null) {
+
             MessageFormat format = new MessageFormat(defaultValue);
             format.setLocale(ActionContext.getContext().getLocale());
             format.applyPattern(defaultValue);
@@ -83,7 +87,7 @@ public class DefaultTextProvider implements TextProvider, Serializable, Unchaina
 
             return format.format(params);
         }
-        return text;
+        return text;        
     }
 
     public String getText(String key, String defaultValue, String[] args) {
