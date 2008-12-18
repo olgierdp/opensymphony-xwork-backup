@@ -7,8 +7,11 @@ package com.opensymphony.xwork2.interceptor;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.interceptor.annotations.InputConfig;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
+import java.lang.reflect.Method;
 
 /**
  * <!-- START SNIPPET: description -->
@@ -137,10 +140,22 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
                 }
 
                 String resultName = inputResultName;
-                
+
                 if (action instanceof ValidationWorkflowAware) {
                     resultName = ((ValidationWorkflowAware) action).getInputResultName();
                 }
+
+                InputConfig annotation = action.getClass().getMethod(invocation.getProxy().getMethod(), new Class[0]).getAnnotation(InputConfig.class);
+                if (annotation != null) {
+                    if (!annotation.methodName().equals("")) {
+                        Method method = action.getClass().getMethod(annotation.methodName());
+                        resultName = (String) method.invoke(action);
+                    } else {
+                        resultName = annotation.resultName();
+                    }
+                }
+
+
                 return resultName;
             }
         }
