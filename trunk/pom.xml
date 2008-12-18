@@ -407,11 +407,13 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clover-plugin</artifactId>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-clover2-plugin</artifactId>
+                <version>2.3.2</version>
                 <configuration>
                     <jdk>1.5</jdk>
-                    <licenseLocation>lib/bootstrap/clover.license</licenseLocation>
+                    <!--<licenseLocation>lib/bootstrap/clover.license</licenseLocation>-->
+                    <generateXml>true</generateXml>
                 </configuration>
             </plugin>
             <plugin>
