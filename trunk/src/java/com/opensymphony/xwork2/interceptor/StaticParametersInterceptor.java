@@ -13,6 +13,7 @@ import com.opensymphony.xwork2.config.entities.Parameterizable;
 import com.opensymphony.xwork2.util.TextParseUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
@@ -113,28 +114,36 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
 
         if (parameters != null) {
             ActionContext ac = ActionContext.getContext();
-            final ValueStack stack = ac.getValueStack();
+            Map<String, Object> contextMap = ac.getContextMap();
+            try {
+                ReflectionContextState.setCreatingNullObjects(contextMap, true);
+                ReflectionContextState.setReportingConversionErrors(contextMap, true);
+                final ValueStack stack = ac.getValueStack();
 
-            for (Map.Entry<String, String> entry : parameters.entrySet()) {
-                Object val = entry.getValue();
-                if (parse && val instanceof String) {
-                    val = TextParseUtil.translateVariables(val.toString(), stack);
-                }
-                try {
-                    stack.setValue(entry.getKey(), val);
-                } catch (RuntimeException e) {
-                    if (devMode) {
-                        String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification:\n{0}", new Object[]{
-                                "Unexpected Exception caught setting '" + entry.getKey() + "' on '" + action.getClass() + ": " + e.getMessage()
-                        });
-                        LOG.error(developerNotification);
-                        if (action instanceof ValidationAware) {
-                            ((ValidationAware) action).addActionMessage(developerNotification);
+                for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                    Object val = entry.getValue();
+                    if (parse && val instanceof String) {
+                        val = TextParseUtil.translateVariables(val.toString(), stack);
+                    }
+                    try {
+                        stack.setValue(entry.getKey(), val);
+                    } catch (RuntimeException e) {
+                        if (devMode) {
+                            String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification:\n{0}", new Object[]{
+                                    "Unexpected Exception caught setting '" + entry.getKey() + "' on '" + action.getClass() + ": " + e.getMessage()
+                            });
+                            LOG.error(developerNotification);
+                            if (action instanceof ValidationAware) {
+                                ((ValidationAware) action).addActionMessage(developerNotification);
+                            }
                         }
                     }
                 }
+                addParametersToContext(ac, parameters);
+            } finally {
+                ReflectionContextState.setCreatingNullObjects(contextMap, false);
+                ReflectionContextState.setReportingConversionErrors(contextMap, false);
             }
-            addParametersToContext(ac, parameters);
         }
         return invocation.invoke();
     }
