@@ -74,6 +74,18 @@ public interface ReflectionProvider {
     Object getRealTarget(String property, Map<String, Object> context, Object root) throws ReflectionException;
     
     /**
+     * Sets the named property to the supplied value on the Object,
+     *
+     * @param name    the name of the property to be set
+     * @param value   the value to set into the named property
+     * @param o       the object upon which to set the property
+     * @param context the context which may include the TypeConverter
+     * @param throwPropertyExceptions boolean which tells whether it should throw exceptions for
+     *                                problems setting the properties
+     */
+    void setProperty(String name, Object value, Object o, Map<String, Object> context, boolean throwPropertyExceptions);
+
+    /**
      * Sets the named property to the supplied value on the Object, defaults to not throwing
      * property exceptions.
      *

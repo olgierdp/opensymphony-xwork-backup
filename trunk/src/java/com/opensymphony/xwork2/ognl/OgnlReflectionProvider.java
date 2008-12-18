@@ -87,6 +87,10 @@ public class OgnlReflectionProvider implements ReflectionProvider {
         ognlUtil.setProperty(name, value, o, context);
     }
 
+    public void setProperty(String name, Object value, Object o, Map<String, Object> context, boolean throwPropertyExceptions) {
+        ognlUtil.setProperty(name, value, o, context, throwPropertyExceptions);
+    }
+
     public Map getBeanMap(Object source) throws IntrospectionException,
             ReflectionException {
         try {

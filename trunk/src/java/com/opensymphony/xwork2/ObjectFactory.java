@@ -214,11 +214,19 @@ public class ObjectFactory implements Serializable {
 
         if (resultClassName != null) {
             result = (Result) buildBean(resultClassName, extraContext);
-            try {
-                reflectionProvider.setProperties(resultConfig.getParams(), result, extraContext, true);
-            } catch (ReflectionException ex) {
-                if (result instanceof ReflectionExceptionHandler) {
-                    ((ReflectionExceptionHandler)result).handle(ex);
+            Map<String, String> params = resultConfig.getParams();
+            if (params != null) {
+                for (Map.Entry<String, String> paramEntry : params.entrySet()) {
+                    try {
+                        reflectionProvider.setProperty(paramEntry.getKey(), paramEntry.getValue(), result, extraContext, true);
+                    } catch (ReflectionException ex) {
+                        if (LOG.isErrorEnabled())
+                            LOG.error("Unable to set parameter [#0] in result of type [#1]", ex,
+                                    paramEntry.getKey(), resultConfig.getClassName());
+                        if (result instanceof ReflectionExceptionHandler) {
+                            ((ReflectionExceptionHandler) result).handle(ex);
+                        }
+                    }
                 }
             }
         }
