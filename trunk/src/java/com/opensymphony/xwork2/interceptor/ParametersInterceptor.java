@@ -313,12 +313,14 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             if (entry.getValue() instanceof Object[]) {
                 Object[] valueArray = (Object[]) entry.getValue();
                 logEntry.append("[ ");
-                for (int indexA = 0; indexA < (valueArray.length - 1); indexA++) {
-                    Object valueAtIndex = valueArray[indexA];
-                    logEntry.append(String.valueOf(valueAtIndex));
-                    logEntry.append(", ");
+		if (valueArray.length > 0 ) {
+                    for (int indexA = 0; indexA < (valueArray.length - 1); indexA++) {
+                        Object valueAtIndex = valueArray[indexA];
+                        logEntry.append(String.valueOf(valueAtIndex));
+                        logEntry.append(", ");
+                    }
+                    logEntry.append(String.valueOf(valueArray[valueArray.length - 1]));
                 }
-                logEntry.append(String.valueOf(valueArray[valueArray.length - 1]));
                 logEntry.append(" ] ");
             } else {
                 logEntry.append(String.valueOf(entry.getValue()));
