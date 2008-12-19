@@ -371,6 +371,7 @@
                         <exclude>**/TestBean2.java</exclude>
                         <exclude>**/TestInterceptor.java</exclude>
                         <exclude>**/AnnotatedTestBean.java</exclude>
+                        <exclude>**/ContainerImplTest.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>

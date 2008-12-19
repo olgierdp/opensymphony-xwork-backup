@@ -23,6 +23,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.Map.Entry;
+import java.security.AccessControlException;
 
 /**
  * Default {@link Container} implementation.
@@ -166,7 +167,16 @@ class ContainerImpl implements Container {
     public FieldInjector(ContainerImpl container, Field field, String name)
         throws MissingDependencyException {
       this.field = field;
-      field.setAccessible(true);
+        if (!field.isAccessible()) {
+            SecurityManager sm = System.getSecurityManager();
+            try {
+                if (sm != null) sm.checkPermission(new ReflectPermission("suppressAccessChecks"));
+                field.setAccessible(true);
+            } catch(AccessControlException e) {
+                throw new DependencyException("Security manager in use, could not access field: "
+                        + field.getDeclaringClass().getName() + "(" + field.getName() + ")", e);
+            }
+        }
 
       Key<?> key = Key.newInstance(field.getType(), name);
       factory = container.getFactory(key);
@@ -258,7 +268,16 @@ class ContainerImpl implements Container {
     public MethodInjector(ContainerImpl container, Method method, String name)
         throws MissingDependencyException {
       this.method = method;
-      method.setAccessible(true);
+        if (!method.isAccessible()) {
+            SecurityManager sm = System.getSecurityManager();
+            try {
+                if (sm != null) sm.checkPermission(new ReflectPermission("suppressAccessChecks"));
+                method.setAccessible(true);
+            } catch(AccessControlException e) {
+                throw new DependencyException("Security manager in use, could not access method: "
+                        + name + "(" + method.getName() + ")", e);
+            }
+        }
 
       Class<?>[] parameterTypes = method.getParameterTypes();
       if (parameterTypes.length == 0) {
@@ -298,7 +317,16 @@ class ContainerImpl implements Container {
       this.implementation = implementation;
 
       constructor = findConstructorIn(implementation);
-      constructor.setAccessible(true);
+        if (!constructor.isAccessible()) {
+            SecurityManager sm = System.getSecurityManager();
+            try {
+                if (sm != null) sm.checkPermission(new ReflectPermission("suppressAccessChecks"));
+                constructor.setAccessible(true);
+            } catch(AccessControlException e) {
+                throw new DependencyException("Security manager in use, could not access constructor: "
+                        + implementation.getName() + "(" + constructor.getName() + ")", e);
+            }
+        }
 
       MissingDependencyException exception = null;
       Inject inject = null;
