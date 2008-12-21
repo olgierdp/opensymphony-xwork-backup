@@ -72,7 +72,7 @@ public class FileManager {
         return loadFile(fileUrl);
     }
 
-    /**
+     /**
      * Loads opens the named file and returns the InputStream
      *
      * @param fileUrl - the URL of the file to open
@@ -80,21 +80,35 @@ public class FileManager {
      * @throws IllegalArgumentException if there is no file with the given file name
      */
     public static InputStream loadFile(URL fileUrl) {
+         return loadFile(fileUrl, true);
+     }
+
+    /**
+     * Loads opens the named file and returns the InputStream
+     *
+     * @param fileUrl - the URL of the file to open
+     * @param openStream - if true, open an InputStream to the file and return it
+     * @return an InputStream of the file contents or null
+     * @throws IllegalArgumentException if there is no file with the given file name
+     */
+    public static InputStream loadFile(URL fileUrl, boolean openStream) {
         if (fileUrl == null) {
             return null;
         }
 
         String fileName = fileUrl.toString();
-        InputStream is;
+        InputStream is = null;
 
-        try {
-            is = fileUrl.openStream();
+        if (openStream) {
+            try {
+                is = fileUrl.openStream();
 
-            if (is == null) {
+                if (is == null) {
+                    throw new IllegalArgumentException("No file '" + fileName + "' found as a resource");
+                }
+            } catch (IOException e) {
                 throw new IllegalArgumentException("No file '" + fileName + "' found as a resource");
             }
-        } catch (IOException e) {
-            throw new IllegalArgumentException("No file '" + fileName + "' found as a resource");
         }
 
         if (isReloadingConfigs()) {
