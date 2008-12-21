@@ -143,6 +143,27 @@
             <name>Claus Ibsen</name>
             <email>claus.ibsen at gmail.com</email>
         </developer>
+        <developer>
+            <name>Musachy Barroso</name>
+            <id>musachy</id>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Wes Wannemacher</name>
+            <id>wesw</id>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Lukasz Lenart</name>
+            <id>lukasz03</id>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
     </developers>
     <contributors>
         <contributor>
