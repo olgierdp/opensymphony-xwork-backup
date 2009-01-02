@@ -1,0 +1,46 @@
+<!--
+/*
+ * $Id$
+ *
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
+ */
+-->
+<assembly>
+    <id>java14</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>opensymphony:xwork</exclude>
+                <exclude>sun.jdk:rt</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>src/etc</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+            </includes>
+        </fileSet>
+
+        <!-- Include the backport jars into java14 dir -->
+        <fileSet>
+            <directory>target</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>xwork-${version}-javadoc.jar</include>
+                <include>xwork-${version}-sources.jar</include>
+                <include>xwork-${version}-j4.jar</include>
+            </includes>
+        </fileSet>
+
+    </fileSets>
+</assembly>
