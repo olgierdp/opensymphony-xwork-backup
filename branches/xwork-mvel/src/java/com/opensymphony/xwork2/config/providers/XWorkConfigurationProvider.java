@@ -3,9 +3,7 @@ package com.opensymphony.xwork2.config.providers;
 import com.opensymphony.xwork2.ActionProxyFactory;
 import com.opensymphony.xwork2.DefaultActionProxyFactory;
 import com.opensymphony.xwork2.DefaultTextProvider;
-import com.opensymphony.xwork2.DefaultUnknownHandlerManager;
 import com.opensymphony.xwork2.TextProvider;
-import com.opensymphony.xwork2.UnknownHandlerManager;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
@@ -17,9 +15,12 @@ import com.opensymphony.xwork2.conversion.impl.XWorkBasicConverter;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Scope;
+import com.opensymphony.xwork2.mvel.MVELReflectionProvider;
+import com.opensymphony.xwork2.mvel.MVELUtil;
+import com.opensymphony.xwork2.mvel.accessors.MVELGetListener;
+import com.opensymphony.xwork2.mvel.accessors.MVELListPropertyAccessor;
+import com.opensymphony.xwork2.mvel.accessors.MVELNullPropertyHandlerWrapper;
 import com.opensymphony.xwork2.ognl.ObjectProxy;
-import com.opensymphony.xwork2.ognl.OgnlReflectionContextFactory;
-import com.opensymphony.xwork2.ognl.OgnlReflectionProvider;
 import com.opensymphony.xwork2.ognl.OgnlUtil;
 import com.opensymphony.xwork2.ognl.OgnlValueStackFactory;
 import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
@@ -36,7 +37,6 @@ import com.opensymphony.xwork2.util.PatternMatcher;
 import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.WildcardHelper;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
-import com.opensymphony.xwork2.util.reflection.ReflectionContextFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 import com.opensymphony.xwork2.validator.ActionValidatorManager;
 import com.opensymphony.xwork2.validator.AnnotationActionValidatorManager;
@@ -47,6 +47,8 @@ import com.opensymphony.xwork2.validator.ValidatorFactory;
 import com.opensymphony.xwork2.validator.ValidatorFileParser;
 import ognl.MethodAccessor;
 import ognl.PropertyAccessor;
+import org.mvel2.integration.Listener;
+import org.mvel2.integration.PropertyHandler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,13 +86,12 @@ public class XWorkConfigurationProvider implements ConfigurationProvider {
                .factory(ValidatorFactory.class, DefaultValidatorFactory.class, Scope.SINGLETON)
                .factory(ValidatorFileParser.class, DefaultValidatorFileParser.class, Scope.SINGLETON)
                .factory(PatternMatcher.class, WildcardHelper.class, Scope.SINGLETON)
-               .factory(ReflectionProvider.class, OgnlReflectionProvider.class, Scope.SINGLETON)
-               .factory(ReflectionContextFactory.class, OgnlReflectionContextFactory.class, Scope.SINGLETON)
+               //.factory(ReflectionProvider.class, OgnlReflectionProvider.class, Scope.SINGLETON)
+               //.factory(ReflectionContextFactory.class, OgnlReflectionContextFactory.class, Scope.SINGLETON)
                .factory(PropertyAccessor.class, CompoundRoot.class.getName(), CompoundRootAccessor.class, Scope.SINGLETON)
                .factory(PropertyAccessor.class, Object.class.getName(), ObjectAccessor.class, Scope.SINGLETON)
                .factory(PropertyAccessor.class, Iterator.class.getName(), XWorkIteratorPropertyAccessor.class, Scope.SINGLETON)
                .factory(PropertyAccessor.class, Enumeration.class.getName(), XWorkEnumerationAccessor.class, Scope.SINGLETON)
-               .factory(UnknownHandlerManager.class, DefaultUnknownHandlerManager.class, Scope.SINGLETON)
                
                // silly workarounds for ognl since there is no way to flush its caches
                .factory(PropertyAccessor.class, List.class.getName(), XWorkListPropertyAccessor.class, Scope.SINGLETON)
@@ -109,7 +110,15 @@ public class XWorkConfigurationProvider implements ConfigurationProvider {
                .factory(ActionValidatorManager.class, "no-annotations", DefaultActionValidatorManager.class, Scope.SINGLETON)
                .factory(TextProvider.class, "system", DefaultTextProvider.class, Scope.SINGLETON)
                .factory(OgnlUtil.class, Scope.SINGLETON)
-               .factory(XWorkBasicConverter.class, Scope.SINGLETON);
+               .factory(XWorkBasicConverter.class, Scope.SINGLETON)
+
+               .factory(MVELUtil.class, Scope.SINGLETON)
+               .factory(com.opensymphony.xwork2.mvel.CompoundRootAccessor.class, Scope.SINGLETON)
+               .factory(ReflectionProvider.class, MVELReflectionProvider.class, Scope.SINGLETON)
+               .factory(Listener.class, MVELGetListener.class, Scope.SINGLETON)
+               .factory(PropertyHandler.class, List.class.getName(), MVELListPropertyAccessor.class, Scope.SINGLETON)
+               .factory(PropertyHandler.class, "nullHandler", MVELNullPropertyHandlerWrapper.class, Scope.SINGLETON)
+                ;
         props.setProperty("devMode", Boolean.FALSE.toString());
     }
 

@@ -40,6 +40,7 @@ public class SimpleAction extends ActionSupport {
     private String aliasDest;
     private Map<String,String> protectedMap = new HashMap<String,String>();
     private Map<String,String> existingMap = new HashMap<String,String>();
+    private Map<String,Object> dummyMap = new HashMap<String,Object>();
     
     public static boolean resultCalled;
 
@@ -48,7 +49,11 @@ public class SimpleAction extends ActionSupport {
         resultCalled = false;
         existingMap.put("existingKey", "value");
     }
-    
+
+    public Map<String, Object> getDummyMap() {
+        return dummyMap;
+    }
+
     public Map<String,String> getTheProtectedMap() {
         return protectedMap;
     }
