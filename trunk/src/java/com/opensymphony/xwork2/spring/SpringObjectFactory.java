@@ -158,6 +158,8 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
                 return autoWireBean(bean, autoWiringFactory);
             }
         } catch (UnsatisfiedDependencyException e) {
+            if (LOG.isErrorEnabled())
+                LOG.error("Error building bean", e);
             // Fall back
             return autoWireBean(super.buildBean(clazz, extraContext), autoWiringFactory);
         }
