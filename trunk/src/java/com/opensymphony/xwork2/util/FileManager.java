@@ -206,7 +206,7 @@ public class FileManager {
         }
 
         public boolean needsReloading() {
-            return (this.lastModified < this.file.lastModified());
+            return (this.file != null) && (this.lastModified < this.file.lastModified());
         }
 
     }
