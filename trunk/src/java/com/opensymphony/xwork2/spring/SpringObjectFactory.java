@@ -79,6 +79,10 @@ public class SpringObjectFactory extends ObjectFactory implements ApplicationCon
                 LOG.info("Setting autowire strategy to constructor");
                 this.autowireStrategy = autowireStrategy;
                 break;
+            case AutowireCapableBeanFactory.AUTOWIRE_NO:
+                LOG.info("Setting autowire strategy to none");
+                this.autowireStrategy = autowireStrategy;
+                break;
             default:
                 throw new IllegalStateException("Invalid autowire type set");
         }
