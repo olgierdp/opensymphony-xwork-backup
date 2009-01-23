@@ -255,6 +255,9 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             ReflectionContextState.setCreatingNullObjects(context, true);
             ReflectionContextState.setDenyMethodExecution(context, true);
             ReflectionContextState.setReportingConversionErrors(context, true);
+
+            //keep locale from original context
+            context.put(ActionContext.LOCALE, stack.getContext().get(ActionContext.LOCALE));
         }
 
         boolean memberAccessStack = newStack instanceof MemberAccessValueStack;
