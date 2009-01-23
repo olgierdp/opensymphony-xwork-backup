@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -114,7 +115,12 @@ public class FileManager {
         if (isReloadingConfigs()) {
             if (!fileName.startsWith(JAR_FILE_NAME_PREFIX)) {
 
-                File file = new File(fileUrl.getFile());
+                File file;
+                try {
+                    file = new File(fileUrl.toURI());
+                } catch (URISyntaxException e) {
+                    file = new File(fileUrl.getPath());
+                }
                 long lastModified;
 
                 if (!file.exists() || !file.canRead()) {
@@ -126,7 +132,7 @@ public class FileManager {
                     files.put(fileName, new FileRevision(file, lastModified));
                 } else {
                     // Never expire a non-file resource
-                    files.put(fileName, new FileRevision());
+                    files.put(fileName, new Revision());
                 }
             }  else {
                 // File within a Jar
@@ -181,9 +187,6 @@ public class FileManager {
         private File file;
         private long lastModified;
 
-        public FileRevision() {
-        }
-
         public FileRevision(File file, long lastUpdated) {
             if (file == null) {
                 throw new IllegalArgumentException("File cannot be null");
@@ -206,7 +209,7 @@ public class FileManager {
         }
 
         public boolean needsReloading() {
-            return (this.file != null) && (this.lastModified < this.file.lastModified());
+            return this.lastModified < this.file.lastModified();
         }
 
     }
