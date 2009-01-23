@@ -7,9 +7,11 @@ package com.opensymphony.xwork2.config.providers;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.RuntimeConfiguration;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
+import com.opensymphony.xwork2.util.ClassLoaderUtil;
 import com.opensymphony.xwork2.util.FileManager;
 
 import java.io.File;
+import java.net.URL;
 
 
 public class XmlConfigurationProviderTest extends ConfigurationTestBase {
@@ -88,4 +90,20 @@ public class XmlConfigurationProviderTest extends ConfigurationTestBase {
         assertEquals("fooBar", prov.guessResultType("foo-bar"));
         assertEquals("fooBarBaz", prov.guessResultType("foo-bar-baz"));
     }
+
+    public void testEmptySpaces() throws Exception {
+        FileManager.setReloadingConfigs(true);
+        final String filename = "com/opensymphony/xwork2/config/providers/xwork- test.xml";
+        ConfigurationProvider provider = buildConfigurationProvider(filename);
+
+        assertTrue(!provider.needsReload());
+
+        URL url = ClassLoaderUtil.getResource(filename, XmlConfigurationProvider.class);
+        File file = new File(getClass().getResource("/" + filename).toURI());
+        assertTrue(file.exists());
+        file.setLastModified(System.currentTimeMillis());
+
+        assertTrue(provider.needsReload());
+    }
+
 }
