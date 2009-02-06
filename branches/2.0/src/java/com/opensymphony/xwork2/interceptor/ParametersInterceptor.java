@@ -206,6 +206,9 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             OgnlContextState.setCreatingNullObjects(context, true);
             OgnlContextState.setDenyMethodExecution(context, true);
             OgnlContextState.setReportingConversionErrors(context, true);
+
+            //keep locale from original context
+            context.put(ActionContext.LOCALE, stack.getContext().get(ActionContext.LOCALE));
         }
 
         boolean memberAccessStack = newStack instanceof MemberAccessValueStack;
