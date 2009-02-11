@@ -244,7 +244,9 @@ public class ClassFinder {
                     if (clazz.isAnnotationPresent(annotation)) {
                         classes.add(clazz);
                     }
-                } catch (ClassNotFoundException e) {
+                } catch (Throwable e) {
+                    if (LOG.isErrorEnabled())
+                        LOG.error("Error loading class [#0]", e, classInfo.getName());
                     classesNotLoaded.add(classInfo.getName());
                 }
             }
@@ -273,7 +275,9 @@ public class ClassFinder {
                             methods.add(method);
                         }
                     }
-                } catch (ClassNotFoundException e) {
+                } catch (Throwable e) {
+                    if (LOG.isErrorEnabled())
+                        LOG.error("Error loading class [#0]", e, classInfo.getName());
                     classesNotLoaded.add(classInfo.getName());
                 }
             }
@@ -302,7 +306,9 @@ public class ClassFinder {
                             constructors.add(constructor);
                         }
                     }
-                } catch (ClassNotFoundException e) {
+                } catch (Throwable e) {
+                    if (LOG.isErrorEnabled())
+                        LOG.error("Error loading class [#0]", e, classInfo.getName());
                     classesNotLoaded.add(classInfo.getName());
                 }
             }
@@ -331,7 +337,9 @@ public class ClassFinder {
                             fields.add(field);
                         }
                     }
-                } catch (ClassNotFoundException e) {
+                } catch (Throwable e) {
+                    if (LOG.isErrorEnabled())
+                        LOG.error("Error loading class [#0]", e, classInfo.getName());
                     classesNotLoaded.add(classInfo.getName());
                 }
             }
@@ -349,7 +357,9 @@ public class ClassFinder {
                 } else if (classInfo.getPackageName().equals(packageName)){
                     classes.add(classInfo.get());
                 }
-            } catch (ClassNotFoundException e) {
+            } catch (Throwable e) {
+                if (LOG.isErrorEnabled())
+                    LOG.error("Error loading class [#0]", e, classInfo.getName());
                 classesNotLoaded.add(classInfo.getName());
             }
         }
