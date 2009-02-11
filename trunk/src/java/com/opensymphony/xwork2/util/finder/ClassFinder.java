@@ -365,6 +365,8 @@ public class ClassFinder {
                     classes.add(classInfo.get());
                 }
             } catch (Throwable e) {
+                if (LOG.isErrorEnabled())
+                    LOG.error("Error loading class [#0]", e, classInfo.getName());
                 classesNotLoaded.add(classInfo.getName());
             }
         }
@@ -377,7 +379,9 @@ public class ClassFinder {
         for (ClassInfo classInfo : classInfos.values()) {
             try {
                 classes.add(classInfo.get());
-            } catch (ClassNotFoundException e) {
+            } catch (Throwable e) {
+                if (LOG.isErrorEnabled())
+                    LOG.error("Error loading class [#0]", e, classInfo.getName());
                 classesNotLoaded.add(classInfo.getName());
             }
         }
