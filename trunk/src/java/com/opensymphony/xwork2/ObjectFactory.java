@@ -220,9 +220,6 @@ public class ObjectFactory implements Serializable {
                     try {
                         reflectionProvider.setProperty(paramEntry.getKey(), paramEntry.getValue(), result, extraContext, true);
                     } catch (ReflectionException ex) {
-                        if (LOG.isErrorEnabled())
-                            LOG.error("Unable to set parameter [#0] in result of type [#1]", ex,
-                                    paramEntry.getKey(), resultConfig.getClassName());
                         if (result instanceof ReflectionExceptionHandler) {
                             ((ReflectionExceptionHandler) result).handle(ex);
                         }
