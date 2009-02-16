@@ -16,6 +16,8 @@
  */
 package com.opensymphony.xwork2.util.finder;
 
+import com.opensymphony.xwork2.util.TextUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -140,8 +142,10 @@ public class UrlSet {
         String[] paths = pathString.split(File.pathSeparator);
         UrlSet urlSet = this;
         for (String path : paths) {
-            File file = new File(path);
-            urlSet = urlSet.exclude(file);
+            if (TextUtils.stringSet(path)) {
+                File file = new File(path);
+                urlSet = urlSet.exclude(file);
+            }
         }
         return urlSet;
     }
