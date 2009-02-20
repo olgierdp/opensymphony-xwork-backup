@@ -698,7 +698,7 @@ public class XWorkConverter extends DefaultTypeConverter {
         Map<String, Object> mapping = oldValues;
 
         if (FileManager.isReloadingConfigs()) {
-            if (FileManager.fileNeedsReloading(buildConverterFilename(clazz))) {
+            if (FileManager.fileNeedsReloading(buildConverterFilename(clazz), clazz)) {
                 mapping = buildConverterMapping(clazz);
             }
         }

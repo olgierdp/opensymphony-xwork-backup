@@ -49,6 +49,11 @@ public class FileManager {
         return reloadingConfigs;
     }
 
+    public static boolean fileNeedsReloading(String fileName, Class clazz) {
+        URL fileUrl = ClassLoaderUtil.getResource(fileName, clazz);
+        return fileUrl != null && fileNeedsReloading(fileUrl.toString());
+    }
+      
     public static boolean fileNeedsReloading(String fileName) {
         Revision revision = files.get(fileName);
 

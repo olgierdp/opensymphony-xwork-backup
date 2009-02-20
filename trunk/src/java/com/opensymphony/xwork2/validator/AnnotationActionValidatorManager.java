@@ -319,7 +319,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
     private List<ValidatorConfig> loadFile(String fileName, Class clazz, boolean checkFile) {
         List<ValidatorConfig> retList = Collections.emptyList();
 
-        if ((checkFile && FileManager.fileNeedsReloading(fileName)) || !validatorFileCache.containsKey(fileName)) {
+        if ((checkFile && FileManager.fileNeedsReloading(fileName, clazz)) || !validatorFileCache.containsKey(fileName)) {
             InputStream is = null;
 
             try {
