@@ -11,7 +11,7 @@ import com.opensymphony.xwork2.util.ClassLoaderUtil;
 import com.opensymphony.xwork2.util.FileManager;
 
 import java.io.File;
-import java.net.URL;
+import java.net.URI;
 
 
 public class XmlConfigurationProviderTest extends ConfigurationTestBase {
@@ -92,18 +92,52 @@ public class XmlConfigurationProviderTest extends ConfigurationTestBase {
     }
 
     public void testEmptySpaces() throws Exception {
-        FileManager.setReloadingConfigs(true);
         final String filename = "com/opensymphony/xwork2/config/providers/xwork- test.xml";
-        ConfigurationProvider provider = buildConfigurationProvider(filename);
+        FileManager.setReloadingConfigs(true);
 
+        ConfigurationProvider provider = buildConfigurationProvider(filename);
         assertTrue(!provider.needsReload());
 
-        URL url = ClassLoaderUtil.getResource(filename, XmlConfigurationProvider.class);
-        File file = new File(getClass().getResource("/" + filename).toURI());
+        URI uri = ClassLoaderUtil.getResource(filename, ConfigurationProvider.class).toURI();
+
+        File file = new File(uri);
+
         assertTrue(file.exists());
         file.setLastModified(System.currentTimeMillis());
 
         assertTrue(provider.needsReload());
+    }
+
+    public void testJaredFiles() throws Exception {
+        FileManager.setReloadingConfigs(true);
+        testProvider("xwork-jar.xml");
+        testProvider("xwork-zip.xml");
+        testProvider("xwork - jar.xml");
+        testProvider("xwork - zip.xml");
+
+        testProvider("xwork-jar2.xml");
+        testProvider("xwork-zip2.xml");
+        testProvider("xwork - jar2.xml");
+        testProvider("xwork - zip2.xml");
+    }
+
+    private void testProvider(String configFile) throws Exception {
+        ConfigurationProvider provider = buildConfigurationProvider(configFile);
+        assertTrue(!provider.needsReload());
+
+        String fullPath = ClassLoaderUtil.getResource(configFile, ConfigurationProvider.class).toString();
+
+        int startIndex = fullPath.indexOf(":file:/");
+        int endIndex = fullPath.indexOf("!/");
+
+        String jar = fullPath.substring(startIndex + ":file:/".length(), endIndex).replaceAll("%20", " ");
+
+        File file = new File(jar);
+
+        assertTrue(file.exists());
+        file.setLastModified(System.currentTimeMillis());
+
+        assertTrue(!provider.needsReload());
     }
 
 }
