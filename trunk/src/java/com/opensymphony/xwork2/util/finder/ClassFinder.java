@@ -120,13 +120,21 @@ public class ClassFinder {
     }
 
     public ClassFinder(ClassLoader classLoader, Collection<URL> urls, boolean extractBaseInterfaces) {
+        this(classLoader, urls, extractBaseInterfaces, new HashSet(){
+            {
+                add("jar");
+            }
+        });
+    }
+
+    public ClassFinder(ClassLoader classLoader, Collection<URL> urls, boolean extractBaseInterfaces, Set<String> protocols) {
         this.classLoader = classLoader;
         this.extractBaseInterfaces = extractBaseInterfaces;
 
         List<String> classNames = new ArrayList<String>();
         for (URL location : urls) {
             try {
-                if ("jar".equals(location.getProtocol())) {
+                if (protocols.contains(location.getProtocol())) {
                     classNames.addAll(jar(location));
                 } else if ("file".equals(location.getProtocol())) {
                     try {
