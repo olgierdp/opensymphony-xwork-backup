@@ -428,11 +428,13 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
         try {
             if (double.class == toType || Double.class == toType) {
                 bigValue = new BigDecimal(stringValue);
-                lowerBound = BigDecimal.valueOf(Double.MIN_VALUE);
+                // Double.MIN_VALUE is the smallest positive non-zero number
+                lowerBound = BigDecimal.valueOf(Double.MAX_VALUE).negate();
                 upperBound = BigDecimal.valueOf(Double.MAX_VALUE);
             } else if (float.class == toType || Float.class == toType) {
                 bigValue = new BigDecimal(stringValue);
-                lowerBound = BigDecimal.valueOf(Float.MIN_VALUE);
+                // Float.MIN_VALUE is the smallest positive non-zero number
+                lowerBound = BigDecimal.valueOf(Float.MAX_VALUE).negate();
                 upperBound = BigDecimal.valueOf(Float.MAX_VALUE);
             } else if (byte.class == toType || Byte.class == toType) {
                 bigValue = new BigInteger(stringValue);

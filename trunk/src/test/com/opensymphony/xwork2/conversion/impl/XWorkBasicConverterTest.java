@@ -87,4 +87,72 @@ public class XWorkBasicConverterTest extends TestCase {
         assertEquals("123,99", value);
     }    
     */
+
+    public void testDoubleValues() {
+        XWorkBasicConverter basicConverter = new XWorkBasicConverter();
+
+        assertTrue(basicConverter.isInRange(-1.2, "-1.2", Double.class));
+        assertTrue(basicConverter.isInRange(1.5, "1.5", Double.class));
+
+        Object value = basicConverter.convertValue("-1.3", double.class);
+        assertNotNull(value);
+        assertEquals(-1.3, value);
+
+        value = basicConverter.convertValue("1.8", double.class);
+        assertNotNull(value);
+        assertEquals(1.8, value);
+
+        value = basicConverter.convertValue("-1.9", double.class);
+        assertNotNull(value);
+        assertEquals(-1.9, value);
+
+        value = basicConverter.convertValue("1.7", Double.class);
+        assertNotNull(value);
+        assertEquals(1.7, value);
+    }
+
+    public void testFloatValues() {
+        XWorkBasicConverter basicConverter = new XWorkBasicConverter();
+
+        assertTrue(basicConverter.isInRange(-1.65, "-1.65", Float.class));
+        assertTrue(basicConverter.isInRange(1.9876, "1.9876", float.class));
+
+        Float value = (Float) basicConverter.convertValue("-1.444401", Float.class);
+        assertNotNull(value);
+        assertEquals(Float.valueOf("-1.444401"), value);
+
+        value = (Float) basicConverter.convertValue("1.46464989", Float.class);
+        assertNotNull(value);
+        assertEquals(Float.valueOf(1.46464989f), value);
+    }
+
+    public void testNegativeFloatValue() throws Exception {
+        XWorkBasicConverter basicConverter = new XWorkBasicConverter();
+        Object convertedObject = basicConverter.convertValue("-94.1231233", Float.class);
+        assertTrue(convertedObject instanceof Float);
+        assertEquals(-94.1231233f, ((Float) convertedObject).floatValue(), 0.0001);
+    }
+
+    public void testPositiveFloatValue() throws Exception {
+        XWorkBasicConverter basicConverter = new XWorkBasicConverter();
+        Object convertedObject = basicConverter.convertValue("94.1231233", Float.class);
+        assertTrue(convertedObject instanceof Float);
+        assertEquals(94.1231233f, ((Float) convertedObject).floatValue(), 0.0001);
+    }
+
+
+    public void testNegativeDoubleValue() throws Exception {
+        XWorkBasicConverter basicConverter = new XWorkBasicConverter();
+        Object convertedObject = basicConverter.convertValue("-94.1231233", Double.class);
+        assertTrue(convertedObject instanceof Double);
+        assertEquals(-94.1231233d, ((Double) convertedObject).doubleValue(), 0.0001);
+    }
+
+    public void testPositiveDoubleValue() throws Exception {
+        XWorkBasicConverter basicConverter = new XWorkBasicConverter();
+        Object convertedObject = basicConverter.convertValue("94.1231233", Double.class);
+        assertTrue(convertedObject instanceof Double);
+        assertEquals(94.1231233d, ((Double) convertedObject).doubleValue(), 0.0001);
+    }
+
 }
