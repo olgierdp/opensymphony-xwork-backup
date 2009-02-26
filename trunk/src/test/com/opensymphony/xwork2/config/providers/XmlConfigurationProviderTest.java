@@ -108,7 +108,7 @@ public class XmlConfigurationProviderTest extends ConfigurationTestBase {
         assertTrue(provider.needsReload());
     }
 
-    public void testJaredFiles() throws Exception {
+    public void testConfigsInJarFiles() throws Exception {
         FileManager.setReloadingConfigs(true);
         testProvider("xwork-jar.xml");
         testProvider("xwork-zip.xml");
