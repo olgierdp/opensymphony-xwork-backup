@@ -153,7 +153,7 @@ public class ClassLoaderUtil {
      * Aggregates Enumeration instances into one iterator and filters out duplicates.  Always keeps one
      * ahead of the enumerator to protect against returning duplicates.
      */
-    protected static class AggregateIterator<E> implements Iterator<E> {
+    static class AggregateIterator<E> implements Iterator<E> {
 
         LinkedList<Enumeration<E>> enums = new LinkedList<Enumeration<E>>();
         Enumeration<E> cur = null;
@@ -201,9 +201,10 @@ public class ClassLoaderUtil {
         private E loadNext() {
             if (determineCurrentEnumeration() != null) {
                 E tmp = cur.nextElement();
+                int loadedSize = loaded.size();
                 while (loaded.contains(tmp)) {
                     tmp = loadNext();
-                    if (tmp == null) {
+                    if (tmp == null || loaded.size() > loadedSize) {
                         break;
                     }
                 }
