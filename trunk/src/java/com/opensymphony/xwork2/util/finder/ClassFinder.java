@@ -19,6 +19,7 @@ package com.opensymphony.xwork2.util.finder;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.URLUtil;
+import com.opensymphony.xwork2.XWorkException;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.FieldVisitor;
@@ -154,7 +155,12 @@ public class ClassFinder {
         }
 
         for (String className : classNames) {
-            readClassDef(className);
+            try {
+                readClassDef(className);
+            } catch (Throwable e) {
+                if (LOG.isErrorEnabled())
+                    LOG.error("Unable to read class [#0]", e, className);
+            }
         }
     }
 
@@ -761,10 +767,10 @@ public class ClassFinder {
                     in.close();
                 }
             } else {
-                new Exception("Could not load " + className).printStackTrace();
+                throw new XWorkException("Could not load " + className);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new XWorkException("Could not load " + className, e);
         }
 
     }
