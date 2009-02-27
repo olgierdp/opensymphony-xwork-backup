@@ -18,6 +18,7 @@ package com.opensymphony.xwork2.util.finder;
 
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import com.opensymphony.xwork2.util.URLUtil;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.FieldVisitor;
@@ -462,11 +463,7 @@ public class ClassFinder {
     }
 
     private List<String> jar(URL location) throws IOException {
-        String jarPath = location.getFile();
-        if (jarPath.contains("!")){
-            jarPath = jarPath.substring(0, jarPath.indexOf("!"));
-        }
-        URL url = new URL(jarPath);
+        URL url = URLUtil.getJarURL(location);
         InputStream in = url.openStream();
         try {
             JarInputStream jarStream = new JarInputStream(in);
