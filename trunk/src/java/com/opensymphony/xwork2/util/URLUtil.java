@@ -13,21 +13,21 @@ import java.net.MalformedURLException;
  * Helper class to extract file paths from different urls
  */
 public class URLUtil {
-    public static final Pattern JAR_PATTERN = Pattern.compile("^(jar:|wsjar:|zip:)(file:)?(.*)!/(.*)");
+    public static final Pattern JAR_PATTERN = Pattern.compile("^(jar:|wsjar:|zip:)?(file:)?(.*?)(\\!/)(.*)");
     private static final int JAR_FILE_PATH = 3;
 
     /**
-     * Convert URLs to URLs with "jar" protocol
+     * Convert URLs to URLs with "file" protocol
      * @param url URL to convert to a jar url
-     * @return a URL to a jar, or null if the URL parameter is a regular file
+     * @return a URL to a file, or null if the URL external form cannot be parsed
      */
-    public static URL getJarURL(URL url) {
+    public static URL normalizeToFileProtocol(URL url) {
         String fileName = url.toExternalForm();
         Matcher jarMatcher = JAR_PATTERN.matcher(fileName);
         try {
             if (jarMatcher.matches()) {
                 String path = jarMatcher.group(JAR_FILE_PATH);
-                return new URL("jar:file:" + path + "!/");
+                return new URL("file", "", path);
             } else {
                 //it is not a jar or zip file
                 return null;

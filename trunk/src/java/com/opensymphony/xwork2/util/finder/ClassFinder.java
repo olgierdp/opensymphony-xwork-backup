@@ -469,7 +469,7 @@ public class ClassFinder {
     }
 
     private List<String> jar(URL location) throws IOException {
-        URL url = URLUtil.getJarURL(location);
+        URL url = URLUtil.normalizeToFileProtocol(location);
         InputStream in = url.openStream();
         try {
             JarInputStream jarStream = new JarInputStream(in);
