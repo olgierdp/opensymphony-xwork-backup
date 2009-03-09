@@ -133,6 +133,8 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         params.put("\\u0023session.user2", "0wn3d");
         params.put("('\u0023'%20%2b%20'session[\'user3\']')(unused)", "0wn3d");
         params.put("('\\u0023' + 'session[\\'user4\\']')(unused)", "0wn3d");
+        params.put("\\u0023session[\'user5\']", "0wn3d");
+        params.put("\\u0023session.user6", "0wn3d");
 
         HashMap extraContext = new HashMap();
         extraContext.put(ActionContext.PARAMETERS, params);
@@ -148,6 +150,8 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         assertNull(session.get("user2"));
         assertNull(session.get("user3"));
         assertNull(session.get("user4"));
+        assertNull(session.get("user5"));
+        assertNull(session.get("user6"));
     }
 
     public void testParameters() throws Exception {
@@ -271,7 +275,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
 
     public void testExcludedParametersAreIgnored() throws Exception {
         ParametersInterceptor pi = new ParametersInterceptor();
-        pi.setExcludeParams("dojo\\..*");
+        pi.setExcludeParams("dojo\\..*,.*\\\\.*");
         final Map actual = new HashMap();
         final ValueStack stack = new OgnlValueStack() {
             public void setValue(String expr, Object value) {
@@ -302,6 +306,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
             {
                 put("dojo.test", "dojoValue");
                 put("fooKey", "fooValue");
+                put("bar\\Key", "barValue");
             }
         };
         pi.setParameters(new NoParametersAction(), stack, parameters);
