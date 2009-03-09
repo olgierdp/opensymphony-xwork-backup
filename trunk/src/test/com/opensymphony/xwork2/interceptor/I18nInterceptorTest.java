@@ -127,6 +127,16 @@ public class I18nInterceptorTest extends TestCase {
         assertEquals(Locale.CHINA, session.get("hello"));
     }
 
+    public void testActionContextLocaleIsPreservedWhenNotOverridden() throws Exception {
+        final Locale locale1 = Locale.TRADITIONAL_CHINESE;
+        mai.getInvocationContext().setLocale(locale1);
+        interceptor.intercept(mai);
+
+        Locale locale = (Locale) session.get(I18nInterceptor.DEFAULT_SESSION_ATTRIBUTE);
+        assertNotNull(locale); // should be stored here
+        assertEquals(locale1, locale);
+    }
+
     @Override
     protected void setUp() throws Exception {
         interceptor = new I18nInterceptor();

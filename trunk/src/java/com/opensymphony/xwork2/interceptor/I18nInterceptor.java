@@ -114,32 +114,36 @@ public class I18nInterceptor extends AbstractInterceptor {
         //save it in session
         Map<String, Object> session = invocation.getInvocationContext().getSession();
 
-
-        if (session != null) {
-            synchronized (session) {
-                if (requested_locale != null) {
-                    Locale locale = (requested_locale instanceof Locale) ?
-                            (Locale) requested_locale : LocalizedTextUtil.localeFromString(requested_locale.toString(), null);
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("store locale=" + locale);
-                    }
-
-                    if (locale != null) {
-                        session.put(attributeName, locale);
-                    }
-                }
-
-                //set locale for action
-                Object locale = session.get(attributeName);
-                if (locale != null && locale instanceof Locale) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("apply locale=" + locale);
-                    }
-
-                    saveLocale(invocation, (Locale)locale);
-                }
+        Locale locale = null;
+        if (requested_locale != null) {
+            locale = (requested_locale instanceof Locale) ?
+                    (Locale) requested_locale : LocalizedTextUtil.localeFromString(requested_locale.toString(), null);
+            if (locale != null && LOG.isDebugEnabled()) {
+                LOG.debug("applied request locale=" + locale);
             }
         }
+        if (session != null) {
+            synchronized (session) {
+                if (locale == null) {
+                    // check session for saved locale
+                    Object sessionLocale = session.get(attributeName);
+                    if (sessionLocale != null && sessionLocale instanceof Locale) {
+                        locale = (Locale) sessionLocale;
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("applied session locale=" + locale);
+                        }
+                    } else {
+                        // no overriding locale definition found, stay with current invokation (=browser) locale
+                        locale = invocation.getInvocationContext().getLocale();
+                        if (locale != null && LOG.isDebugEnabled()) {
+                            LOG.debug("applied invocation context locale=" + locale);
+                        }
+                    }
+                }
+                session.put(attributeName, locale);
+            }
+        }
+        saveLocale(invocation, locale);
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("before Locale=" + invocation.getStack().findValue("locale"));
