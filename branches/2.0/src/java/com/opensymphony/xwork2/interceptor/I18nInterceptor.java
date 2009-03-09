@@ -70,7 +70,7 @@ import java.util.Map;
  * @author Aleksei Gopachenko
  */
 public class I18nInterceptor extends AbstractInterceptor {
-    protected static final Log log = LogFactory.getLog(I18nInterceptor.class);
+    protected static final Log LOG = LogFactory.getLog(I18nInterceptor.class);
 
     public static final String DEFAULT_SESSION_ATTRIBUTE = "WW_TRANS_I18N_LOCALE";
     public static final String DEFAULT_PARAMETER = "request_locale";
@@ -79,8 +79,8 @@ public class I18nInterceptor extends AbstractInterceptor {
     protected String attributeName = DEFAULT_SESSION_ATTRIBUTE;
 
     public I18nInterceptor() {
-        if (log.isDebugEnabled()) {
-            log.debug("new I18nInterceptor()");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("new I18nInterceptor()");
         }
     }
 
@@ -92,9 +92,10 @@ public class I18nInterceptor extends AbstractInterceptor {
         this.attributeName = attributeName;
     }
 
+    @SuppressWarnings({"unchecked"})
     public String intercept(ActionInvocation invocation) throws Exception {
-        if (log.isDebugEnabled()) {
-            log.debug("intercept '"
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("intercept '"
                     + invocation.getProxy().getNamespace() + "/"
                     + invocation.getProxy().getActionName() + "' { ");
         }
@@ -106,47 +107,55 @@ public class I18nInterceptor extends AbstractInterceptor {
             requested_locale = ((Object[]) requested_locale)[0];
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("requested_locale=" + requested_locale);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("requested_locale=" + requested_locale);
         }
 
         //save it in session
         Map session = invocation.getInvocationContext().getSession();
-        if (session != null) {
-            if (requested_locale != null) {
-                Locale locale = (requested_locale instanceof Locale) ?
-                        (Locale) requested_locale : LocalizedTextUtil.localeFromString(requested_locale.toString(), null);
-                if (log.isDebugEnabled()) {
-                    log.debug("store locale=" + locale);
-                }
 
-                if (locale != null) {
-                    session.put(attributeName, locale);
-                }
-            }
-
-            //set locale for action
-            Object locale = session.get(attributeName);
-            if (locale != null && locale instanceof Locale) {
-                if (log.isDebugEnabled()) {
-                    log.debug("apply locale=" + locale);
-                }
-
-                saveLocale(invocation, (Locale)locale);
+        Locale locale = null;
+        if (requested_locale != null) {
+            locale = (requested_locale instanceof Locale) ?
+                    (Locale) requested_locale : LocalizedTextUtil.localeFromString(requested_locale.toString(), null);
+            if (locale != null && LOG.isDebugEnabled()) {
+                LOG.debug("applied request locale=" + locale);
             }
         }
+        if (session != null) {
+            synchronized (session) {
+                if (locale == null) {
+                    // check session for saved locale
+                    Object sessionLocale = session.get(attributeName);
+                    if (sessionLocale != null && sessionLocale instanceof Locale) {
+                        locale = (Locale) sessionLocale;
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("applied session locale=" + locale);
+                        }
+                    } else {
+                        // no overriding locale definition found, stay with current invokation (=browser) locale
+                        locale = invocation.getInvocationContext().getLocale();
+                        if (locale != null && LOG.isDebugEnabled()) {
+                            LOG.debug("applied invocation context locale=" + locale);
+                        }
+                    }
+                }
+                session.put(attributeName, locale);
+            }
+        }
+        saveLocale(invocation, locale);
 
-        if (log.isDebugEnabled()) {
-            log.debug("before Locale=" + invocation.getStack().findValue("locale"));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("before Locale=" + invocation.getStack().findValue("locale"));
         }
 
         final String result = invocation.invoke();
-        if (log.isDebugEnabled()) {
-            log.debug("after Locale=" + invocation.getStack().findValue("locale"));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("after Locale=" + invocation.getStack().findValue("locale"));
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("intercept } ");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("intercept } ");
         }
 
         return result;
