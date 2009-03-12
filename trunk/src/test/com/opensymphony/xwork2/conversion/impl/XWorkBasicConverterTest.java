@@ -109,6 +109,14 @@ public class XWorkBasicConverterTest extends TestCase {
         value = basicConverter.convertValue("1.7", Double.class);
         assertNotNull(value);
         assertEquals(1.7, value);
+
+        value = basicConverter.convertValue("0.0", Double.class);
+        assertNotNull(value);
+        assertEquals(0.0, value);
+
+        value = basicConverter.convertValue("0.0", double.class);
+        assertNotNull(value);
+        assertEquals(0.0, value);
     }
 
     public void testFloatValues() {
