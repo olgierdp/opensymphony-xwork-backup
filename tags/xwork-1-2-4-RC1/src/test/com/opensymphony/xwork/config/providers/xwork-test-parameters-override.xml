@@ -1,0 +1,18 @@
+<!DOCTYPE xwork PUBLIC
+    "-//OpenSymphony Group//XWork 1.1.2//EN"
+    "http://www.opensymphony.com/xwork/xwork-1.1.2.dtd"
+ >
+
+<xwork>
+
+    <parameters>
+        <parameter name="param1" value="value1" />
+        <parameter name="param2" value="value2" />
+        <parameter name="param3" value="value3" />
+        <parameter name="param4" value="value4" />
+        <parameter name="param5" value="value5" />
+    </parameters>
+
+    <include file="com/opensymphony/xwork/config/providers/xwork-test-parameters-override2.xml" />
+
+</xwork>
