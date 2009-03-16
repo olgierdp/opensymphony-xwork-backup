@@ -86,6 +86,11 @@ public class LocalizedTextUtil {
     private static final Collection misses = new HashSet();
     private static final Map messageFormats = new HashMap();
 
+    /**
+     * @GuardedBy #misses
+     */
+    private static ClassLoader delegatedClassLoader;
+
     static {
         clearDefaultResourceBundles();
     }
@@ -221,6 +226,7 @@ public class LocalizedTextUtil {
      * Finds the given resorce bundle by it's name.
      * <p/>
      * Will use <code>Thread.currentThread().getContextClassLoader()</code> as the classloader.
+     * If {@link #delegatedClassLoader} is defined and the bundle cannot be found the current classloader it will delegate to that.
      * 
      * @param aBundleName  the name of the bundle (usually it's FQN classname).
      * @param locale       the locale.
@@ -233,12 +239,54 @@ public class LocalizedTextUtil {
                     return ResourceBundle.getBundle(aBundleName, locale, Thread.currentThread().getContextClassLoader());
                 }
             } catch (MissingResourceException ex) {
-                misses.add(aBundleName);
+
+                if (delegatedClassLoader != null)
+                {
+                    try
+                    {
+                        return ResourceBundle.getBundle(aBundleName, locale, delegatedClassLoader);
+                    }
+                    catch (MissingResourceException e)
+                    {
+                        misses.add(aBundleName);
+                    }
+                }
+                else
+                {
+                    misses.add(aBundleName);
+                }
             }
         }
 
         return null;
     }
+
+    /**
+     * Sets a {@link ClassLoader} to look up the bundle from if none can be found on the current thread's classloader
+     *
+     * @param classLoader
+     */
+    public static void setDelegatedClassLoader(final ClassLoader classLoader)
+    {
+        synchronized (misses)
+        {
+            delegatedClassLoader = classLoader;
+        }
+    }
+
+    /**
+     * Removes the bundle from any cached "misses"
+     *
+     * @param bundleName
+     */
+    public static void clearBundle(final String bundleName)
+    {
+        synchronized (misses)
+        {
+            misses.remove(bundleName);
+        }
+    }
+
 
     /**
      * Calls {@link #findText(Class aClass, String aTextName, Locale locale, String defaultMessage, Object[] args)}
