@@ -385,10 +385,10 @@
                 <configuration>
                     <useSystemClassLoader>false</useSystemClassLoader>
                     <additionalClasspathElements>
-                        <element>${project.build.testSourceDirectory}\\xwork-jar.jar</element>
-                        <element>${project.build.testSourceDirectory}\\xwork-zip.zip</element>
-                        <element>${project.build.testSourceDirectory}\\xwork - jar.jar</element>
-                        <element>${project.build.testSourceDirectory}\\xwork - zip.zip</element>
+                        <element>${project.build.testSourceDirectory}/xwork-jar.jar</element>
+                        <element>${project.build.testSourceDirectory}/xwork-zip.zip</element>
+                        <element>${project.build.testSourceDirectory}/xwork - jar.jar</element>
+                        <element>${project.build.testSourceDirectory}/xwork - zip.zip</element>
                     </additionalClasspathElements>
                     <includes>
                         <include>**/*Test.java</include>
@@ -400,6 +400,7 @@
                         <exclude>**/TestInterceptor.java</exclude>
                         <exclude>**/AnnotatedTestBean.java</exclude>
                         <exclude>**/ContainerImplTest.java</exclude>
+                        <exclude>**/URLUtilTest.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
