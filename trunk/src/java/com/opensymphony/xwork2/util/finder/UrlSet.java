@@ -24,6 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Use with ClassFinder to filter the Urls to be scanned, example:
  * <pre>
@@ -142,7 +144,7 @@ public class UrlSet {
         String[] paths = pathString.split(File.pathSeparator);
         UrlSet urlSet = this;
         for (String path : paths) {
-            if (TextUtils.stringSet(path)) {
+            if (StringUtils.isNotEmpty(path)) {
                 File file = new File(path);
                 urlSet = urlSet.exclude(file);
             }

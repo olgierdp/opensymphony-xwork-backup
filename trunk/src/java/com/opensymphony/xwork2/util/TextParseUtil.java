@@ -11,6 +11,8 @@ import com.opensymphony.xwork2.inject.Container;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * Utility class for text parsing.
@@ -191,13 +193,13 @@ public class TextParseUtil {
                     String middle = null;
                     if (o != null) {
                         middle = o.toString();
-                        if (!TextUtils.stringSet(left)) {
+                        if (StringUtils.isEmpty(left)) {
                             result = o;
                         } else {
                             result = left.concat(middle);
                         }
 
-                        if (TextUtils.stringSet(right)) {
+                        if (StringUtils.isNotEmpty(right)) {
                             result = result.toString().concat(right);
                         }
 

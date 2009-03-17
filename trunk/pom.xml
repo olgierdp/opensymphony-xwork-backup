@@ -528,10 +528,22 @@
                                     <exclude>org.testng:testng:jdk15</exclude>
                                 </excludes>
                             </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>commons-lang:commons-lang</artifact>
+                                    <includes>
+                                        <include>org/apache/commons/lang/StringUtils.class</include>
+                                    </includes>
+                                </filter>
+                            </filters>
                             <relocations>
                                 <relocation>
                                     <pattern>org.objectweb.asm</pattern>
                                     <shadedPattern>org.objectweb.asm.xwork</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.lang</pattern>
+                                    <shadedPattern>org.apache.commons.lang.xwork</shadedPattern>
                                 </relocation>
                             </relocations>
                             <transformers>
@@ -600,6 +612,11 @@
             <artifactId>commons-logging</artifactId>
             <version>1.1.1</version>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.4</version>
         </dependency>
         <dependency>
             <groupId>opensymphony</groupId>

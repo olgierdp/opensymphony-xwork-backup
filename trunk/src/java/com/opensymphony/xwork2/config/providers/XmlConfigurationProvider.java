@@ -29,6 +29,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -185,14 +186,14 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                             scope = Scope.THREAD;
                         }
 
-                        if (!TextUtils.stringSet(name)) {
+                        if (StringUtils.isEmpty(name)) {
                             name = Container.DEFAULT_NAME;
                         }
 
                         try {
                             Class cimpl = ClassLoaderUtil.loadClass(impl, getClass());
                             Class ctype = cimpl;
-                            if (TextUtils.stringSet(type)) {
+                            if (StringUtils.isNotEmpty(type)) {
                                 ctype = ClassLoaderUtil.loadClass(type, getClass());
                             }
                             if ("true".equals(onlyStatic)) {
@@ -343,9 +344,9 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         // if there isnt a class name specified for an <action/> then try to
         // use the default-class-ref from the <package/>
-        if (!TextUtils.stringSet(className)) {
+        if (StringUtils.isEmpty(className)) {
             // if there is a package default-class-ref use that, otherwise use action support
-           /* if (TextUtils.stringSet(packageContext.getDefaultClassRef())) {
+           /* if (StringUtils.isNotEmpty(packageContext.getDefaultClassRef())) {
                 className = packageContext.getDefaultClassRef();
             } else {
                 className = ActionSupport.class.getName();
@@ -381,7 +382,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         packageContext.addActionConfig(name, actionConfig);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Loaded " + (TextUtils.stringSet(packageContext.getNamespace()) ? (packageContext.getNamespace() + "/") : "") + name + " in '" + packageContext.getName() + "' package:" + actionConfig);
+            LOG.debug("Loaded " + (StringUtils.isNotEmpty(packageContext.getNamespace()) ? (packageContext.getNamespace() + "/") : "") + name + " in '" + packageContext.getName() + "' package:" + actionConfig);
         }
     }
 
@@ -552,11 +553,11 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         String parent = packageElement.getAttribute("extends");
         String abstractVal = packageElement.getAttribute("abstract");
         boolean isAbstract = Boolean.valueOf(abstractVal).booleanValue();
-        String name = TextUtils.noNull(packageElement.getAttribute("name"));
-        String namespace = TextUtils.noNull(packageElement.getAttribute("namespace"));
+        String name = StringUtils.defaultString(packageElement.getAttribute("name"));
+        String namespace = StringUtils.defaultString(packageElement.getAttribute("namespace"));
 
 
-        if (TextUtils.stringSet(packageElement.getAttribute("externalReferenceResolver"))) {
+        if (StringUtils.isNotEmpty(packageElement.getAttribute("externalReferenceResolver"))) {
             throw new ConfigurationException("The 'externalReferenceResolver' attribute has been removed.  Please use " +
                     "a custom ObjectFactory or Interceptor.", packageElement);
         }
@@ -567,7 +568,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 .location(DomHelper.getLocationObject(packageElement));
 
 
-        if (TextUtils.stringSet(TextUtils.noNull(parent))) { // has parents, let's look it up
+        if (StringUtils.isNotEmpty(StringUtils.defaultString(parent))) { // has parents, let's look it up
 
             List<PackageConfig> parents = ConfigurationUtil.buildParentsFromString(configuration, parent);
 
@@ -597,16 +598,16 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 String resultType = resultElement.getAttribute("type");
 
                 // if you don't specify a name on <result/>, it defaults to "success"
-                if (!TextUtils.stringSet(resultName)) {
+                if (StringUtils.isEmpty(resultName)) {
                     resultName = Action.SUCCESS;
                 }
 
                 // there is no result type, so let's inherit from the parent package
-                if (!TextUtils.stringSet(resultType)) {
+                if (StringUtils.isEmpty(resultType)) {
                     resultType = packageContext.getFullDefaultResultType();
 
                     // now check if there is a result type now
-                    if (!TextUtils.stringSet(resultType)) {
+                    if (StringUtils.isEmpty(resultType)) {
                         // uh-oh, we have a problem
                         throw new ConfigurationException("No result type specified for result named '"
                                 + resultName + "', perhaps the parent package does not specify the result type?", resultElement);
@@ -715,7 +716,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
                 Map<String, String> params = XmlHelper.getParams(ehElement);
 
-                if (!TextUtils.stringSet(emName)) {
+                if (StringUtils.isEmpty(emName)) {
                     emName = exceptionResult;
                 }
 

@@ -11,6 +11,8 @@ import com.opensymphony.xwork2.util.location.Location;
 import java.io.Serializable;
 import java.util.*;
 
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * Contains everything needed to configure and execute an action:
@@ -228,7 +230,7 @@ public class ActionConfig extends Located implements Serializable {
         }
 
         public Builder defaultClassName(String name) {
-        	if (!TextUtils.stringSet(target.className)) {
+        	if (StringUtils.isEmpty(target.className)) {
         	  	target.className = name;
         	}
             return this;

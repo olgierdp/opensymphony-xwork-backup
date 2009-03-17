@@ -17,6 +17,8 @@ import com.opensymphony.xwork2.util.profiling.UtilTimerStack;
 import java.io.Serializable;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * The Default ActionProxy implementation
@@ -145,9 +147,9 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     private void resolveMethod() {
         // if the method is set to null, use the one from the configuration
         // if the one from the configuration is also null, use "execute"
-        if (!TextUtils.stringSet(this.method)) {
+        if (StringUtils.isEmpty(this.method)) {
             this.method = config.getMethodName();
-            if (!TextUtils.stringSet(this.method)) {
+            if (StringUtils.isEmpty(this.method)) {
                 this.method = "execute";
             }
         }

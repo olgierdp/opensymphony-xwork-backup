@@ -4,6 +4,8 @@
  */
 package com.opensymphony.xwork2.util;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -41,7 +43,7 @@ public class TextUtils {
      * @return the escaped string
      */
     public final static String htmlEncode(String s, boolean encodeSpecialChars) {
-        s = noNull(s);
+        s = StringUtils.defaultString(s);
 
         StringBuilder str = new StringBuilder();
 
@@ -100,7 +102,7 @@ public class TextUtils {
      * @return the escaped string
      */
     public final static String escapeJavaScript(String s) {
-        s = noNull(s);
+        s = StringUtils.defaultString(s);
         StringBuffer str = new StringBuffer();
 
         for (int j = 0; j < s.length(); j++) {
@@ -138,122 +140,6 @@ public class TextUtils {
             }
         }
         return str.toString();
-    }
-
-    
-    /**
-     * Join an Iteration of Strings together.
-     *
-     * <h5>Example</h5>
-     *
-     * <pre>
-     *   // get Iterator of Strings ("abc","def","123");
-     *   Iterator i = getIterator();
-     *   out.print( TextUtils.join(", ",i) );
-     *   // prints: "abc, def, 123"
-     * </pre>
-     *
-     * @param glue Token to place between Strings.
-     * @param pieces Iteration of Strings to join.
-     * @return String presentation of joined Strings.
-     */
-    public final static String join(String glue, Iterator<?> pieces) {
-        StringBuilder s = new StringBuilder();
-
-        while (pieces.hasNext()) {
-            s.append(pieces.next().toString());
-
-            if (pieces.hasNext()) {
-                s.append(glue);
-            }
-        }
-
-        return s.toString();
-    }
-
-    /**
-     * Join an array of Strings together.
-     *
-     * @param glue Token to place between Strings.
-     * @param pieces Array of Strings to join.
-     * @return String presentation of joined Strings.
-     *
-     * @see #join(String, java.util.Iterator)
-     */
-    public final static String join(String glue, String[] pieces) {
-        return join(glue, Arrays.asList(pieces).iterator());
-    }
-
-    /**
-     * Join a Collection of Strings together.
-     *
-     * @param glue Token to place between Strings.
-     * @param pieces Collection of Strings to join.
-     * @return String presentation of joined Strings.
-     *
-     * @see #join(String, java.util.Iterator)
-     */
-    public final static String join(String glue, Collection<?> pieces) {
-        return join(glue, pieces.iterator());
-    }
-
-    /**
-     * Return <code>string</code>, or <code>defaultString</code> if
-     * <code>string</code> is <code>null</code> or <code>""</code>.
-     * Never returns <code>null</code>.
-     *
-     * <p>Examples:</p>
-     * <pre>
-     * // prints "hello"
-     * String s=null;
-     * System.out.println(TextUtils.noNull(s,"hello");
-     *
-     * // prints "hello"
-     * s="";
-     * System.out.println(TextUtils.noNull(s,"hello");
-     *
-     * // prints "world"
-     * s="world";
-     * System.out.println(TextUtils.noNull(s, "hello");
-     * </pre>
-     *
-     * @param string the String to check.
-     * @param defaultString The default string to return if <code>string</code> is <code>null</code> or <code>""</code>
-     * @return <code>string</code> if <code>string</code> is non-empty, and <code>defaultString</code> otherwise
-     * @see #stringSet(java.lang.String)
-     */
-    public final static String noNull(String string, String defaultString) {
-        return (stringSet(string)) ? string : defaultString;
-    }
-
-    /**
-     * Return <code>string</code>, or <code>""</code> if <code>string</code>
-     * is <code>null</code>. Never returns <code>null</code>.
-     * <p>Examples:</p>
-     * <pre>
-     * // prints 0
-     * String s=null;
-     * System.out.println(TextUtils.noNull(s).length());
-     *
-     * // prints 1
-     * s="a";
-     * System.out.println(TextUtils.noNull(s).length());
-     * </pre>
-     * @param string the String to check
-     * @return a valid (non-null) string reference
-     */
-    public final static String noNull(String string) {
-        return noNull(string, "");
-    }
-
-    /**
-     * Check whether <code>string</code> has been set to
-     * something other than <code>""</code> or <code>null</code>.
-     * @param string the <code>String</code> to check
-     * @return a boolean indicating whether the string was non-empty (and non-null)
-     */
-    public final static boolean stringSet(String string) {
-        return (string != null) && !"".equals(string);
     }
 
     /**

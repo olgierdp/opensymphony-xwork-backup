@@ -21,6 +21,8 @@ import java.math.BigInteger;
 import java.text.*;
 import java.util.*;
 
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * <!-- START SNIPPET: javadoc -->
@@ -508,7 +510,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 intArray.add(Integer.valueOf(aX));
             }
 
-            result = TextUtils.join(", ", intArray);
+            result = StringUtils.join(intArray, ", ");
         } else if (value instanceof long[]) {
             long[] x = (long[]) value;
             List<Long> longArray = new ArrayList<Long>(x.length);
@@ -517,7 +519,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 longArray.add(Long.valueOf(aX));
             }
 
-            result = TextUtils.join(", ", longArray);
+            result = StringUtils.join(longArray, ", ");
         } else if (value instanceof double[]) {
             double[] x = (double[]) value;
             List<Double> doubleArray = new ArrayList<Double>(x.length);
@@ -526,7 +528,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 doubleArray.add(new Double(aX));
             }
 
-            result = TextUtils.join(", ", doubleArray);
+            result = StringUtils.join(doubleArray, ", ");
         } else if (value instanceof boolean[]) {
             boolean[] x = (boolean[]) value;
             List<Boolean> booleanArray = new ArrayList<Boolean>(x.length);
@@ -535,7 +537,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 booleanArray.add(new Boolean(aX));
             }
 
-            result = TextUtils.join(", ", booleanArray);
+            result = StringUtils.join(booleanArray, ", ");
         } else if (value instanceof Date) {
             DateFormat df = null;
             if (value instanceof java.sql.Time) {
@@ -550,7 +552,7 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             }
             result = df.format(value);
         } else if (value instanceof String[]) {
-            result = TextUtils.join(", ", (String[]) value);
+            result = StringUtils.join((String[]) value, ", ");
         }
 
         return result;
