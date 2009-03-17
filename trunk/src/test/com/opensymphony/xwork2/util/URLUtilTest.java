@@ -66,6 +66,22 @@ public class URLUtilTest extends TestCase {
         assertEquals("file:c:/somefile.jar", outputURL.toExternalForm());
     }
 
+    public void testVsFile() throws MalformedURLException {
+        URL url = new URL("vfsfile:/c:/somefile.jar!/");
+        URL outputURL = URLUtil.normalizeToFileProtocol(url);
+
+        assertNotNull(outputURL);
+        assertEquals("file:/c:/somefile.jar", outputURL.toExternalForm());
+
+        url = new URL("vfsfile:/c:/somefile.jar!/somestuf/bla/bla");
+        outputURL = URLUtil.normalizeToFileProtocol(url);
+        assertEquals("file:/c:/somefile.jar", outputURL.toExternalForm());
+
+        url = new URL("vfsfile:c:/somefile.jar!/somestuf/bla/bla");
+        outputURL = URLUtil.normalizeToFileProtocol(url);
+        assertEquals("file:c:/somefile.jar", outputURL.toExternalForm());
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
 

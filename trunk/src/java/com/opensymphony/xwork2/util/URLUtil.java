@@ -13,7 +13,7 @@ import java.net.MalformedURLException;
  * Helper class to extract file paths from different urls
  */
 public class URLUtil {
-    public static final Pattern JAR_PATTERN = Pattern.compile("^(jar:|wsjar:|zip:)?(file:)?(.*?)(\\!/)(.*)");
+    public static final Pattern JAR_PATTERN = Pattern.compile("^(jar:|wsjar:|zip:|vfsfile:)?(file:)?(.*?)(\\!/)(.*)");
     private static final int JAR_FILE_PATH = 3;
 
     /**
