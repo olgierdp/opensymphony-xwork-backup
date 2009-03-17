@@ -402,19 +402,26 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 clazz.getConstructor(new Class[]{});
             }
         } catch (ClassNotFoundException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Class not found for action [" + className + "]", e);
+            }
             throw new ConfigurationException("Action class [" + className + "] not found", loc);
         } catch (NoSuchMethodException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("No constructor found for action [" + className + "]", e);
+            }
             throw new ConfigurationException("Action class [" + className + "] does not have a public no-arg constructor", e, loc);
-
-            // Probably not a big deal, like request or session-scoped Spring 2 beans that need a real request
         } catch (RuntimeException ex) {
+            // Probably not a big deal, like request or session-scoped Spring 2 beans that need a real request
             LOG.info("Unable to verify action class [" + className + "] exists at initialization");
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Action verification cause", ex);
             }
-
-            // Default to failing fast
         } catch (Exception ex) {
+            // Default to failing fast
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Unable to verify action class [" + className + "]", ex);
+            }
             throw new ConfigurationException(ex, loc);
         }
         return true;
