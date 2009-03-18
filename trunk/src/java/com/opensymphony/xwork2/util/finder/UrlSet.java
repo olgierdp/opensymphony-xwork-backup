@@ -16,8 +16,6 @@
  */
 package com.opensymphony.xwork2.util.finder;
 
-import com.opensymphony.xwork2.util.TextUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;

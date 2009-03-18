@@ -37,4 +37,28 @@ public class URLUtil {
             return null;
         }
     }
+
+    /**
+     * Verify That the given String is in valid URL format.
+     * @param url The url string to verify.
+     * @return a boolean indicating whether the URL seems to be incorrect.
+     */
+    public final static boolean verifyUrl(String url) {
+        if (url == null) {
+            return false;
+        }
+
+        if (url.startsWith("https://")) {
+            // URL doesn't understand the https protocol, hack it
+            url = "http://" + url.substring(8);
+        }
+
+        try {
+            new URL(url);
+
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        }
+    }
 }

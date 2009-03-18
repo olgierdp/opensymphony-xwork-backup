@@ -99,4 +99,16 @@ public class URLUtilTest extends TestCase {
             //the factory cant be set multiple times..just ignore exception no biggie
         }
     }
+
+    public void testVerifyUrl() {
+        assertEquals(false, URLUtil.verifyUrl(null));
+        assertEquals(false, URLUtil.verifyUrl(""));
+        assertEquals(false, URLUtil.verifyUrl("   "));
+        assertEquals(false, URLUtil.verifyUrl("no url"));
+
+        assertEquals(true, URLUtil.verifyUrl("http://www.opensymphony.com"));
+        assertEquals(true, URLUtil.verifyUrl("https://www.opensymphony.com"));
+        assertEquals(true, URLUtil.verifyUrl("https://www.opensymphony.com:443/login"));
+        assertEquals(true, URLUtil.verifyUrl("http://localhost:8080/myapp"));
+    }
 }
