@@ -520,8 +520,8 @@
                                     <exclude>org.easymock:easymock</exclude>
                                     <exclude>aopalliance:aopalliance</exclude>
                                     <exclude>aspectwerkz:aspectwerkz-core</exclude>
-                                    <exclude>aspectj:aspectjrt</exclude>
-                                    <exclude>aspectj:aspectjweaver</exclude>
+                                    <exclude>org.aspectj:aspectjrt</exclude>
+                                    <exclude>org.aspectj:aspectjweaver</exclude>
                                     <exclude>cglib:cglib</exclude>
                                     <exclude>cglib:cglib-nodep</exclude>
                                     <exclude>asm:asm-util</exclude>
