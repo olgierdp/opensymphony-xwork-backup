@@ -10,7 +10,6 @@ import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.conversion.TypeConverter;
 import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.util.TextUtils;
 import com.opensymphony.xwork2.util.XWorkList;
 
 import java.lang.reflect.Array;
