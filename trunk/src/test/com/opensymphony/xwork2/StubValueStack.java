@@ -47,12 +47,24 @@ public class StubValueStack implements ValueStack {
         return (String) ctx.get(expr);
     }
 
+    public String findString(String expr, boolean throwExceptionOnFailure) {
+        return findString(expr, false);
+    }
+
     public Object findValue(String expr) {
         return ctx.get(expr);
     }
 
+    public Object findValue(String expr, boolean throwExceptionOnFailure) {
+        return findValue(expr, false);
+    }
+
     public Object findValue(String expr, Class asType) {
         return ctx.get(expr);
+    }
+
+    public Object findValue(String expr, Class asType, boolean throwExceptionOnFailure) {
+        return findValue(expr, asType, false);
     }
 
     public Object peek() {

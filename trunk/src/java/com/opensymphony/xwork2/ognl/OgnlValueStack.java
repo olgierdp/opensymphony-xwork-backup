@@ -209,10 +209,14 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
         return (String) findValue(expr, String.class);
     }
 
+    public String findString(String expr, boolean throwExceptionOnFailure) {
+        return (String) findValue(expr, String.class, throwExceptionOnFailure);
+    }
+
     /* (non-Javadoc)
      * @see com.opensymphony.xwork2.util.ValueStack#findValue(java.lang.String)
      */
-    public Object findValue(String expr) {
+    public Object findValue(String expr, boolean throwExceptionOnFailure) {
         try {
             if (expr == null) {
                 return null;
@@ -230,14 +234,18 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
             if (value != null) {
                 return value;
             } else {
-                checkForInvalidProperties(expr);
+                checkForInvalidProperties(expr, throwExceptionOnFailure, throwExceptionOnFailure);
                 return findInContext(expr);
             }
         } catch (OgnlException e) {
-            checkForInvalidProperties(expr);
+            checkForInvalidProperties(expr, throwExceptionOnFailure, throwExceptionOnFailure);
+
             return findInContext(expr);
         } catch (Exception e) {
             logLookupFailure(expr, e);
+
+            if (throwExceptionOnFailure)
+                throw new XWorkException(e);
 
             return findInContext(expr);
         } finally {
@@ -245,10 +253,14 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
         }
     }
 
+     public Object findValue(String expr) {
+         return findValue(expr, false);
+     }
+
     /* (non-Javadoc)
      * @see com.opensymphony.xwork2.util.ValueStack#findValue(java.lang.String, java.lang.Class)
      */
-    public Object findValue(String expr, Class asType) {
+    public Object findValue(String expr, Class asType, boolean throwExceptionOnFailure) {
         try {
             if (expr == null) {
                 return null;
@@ -262,13 +274,18 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
             if (value != null) {
                 return value;
             } else {
+                checkForInvalidProperties(expr, throwExceptionOnFailure, throwExceptionOnFailure);
                 return findInContext(expr);
             }
         } catch (OgnlException e) {
+            checkForInvalidProperties(expr, throwExceptionOnFailure, throwExceptionOnFailure);
             return findInContext(expr);
         } catch (Exception e) {
             logLookupFailure(expr, e);
 
+            if (throwExceptionOnFailure)
+                throw new XWorkException(e);
+            
             return findInContext(expr);
         } finally {
             ReflectionContextState.clear(context);
@@ -279,6 +296,9 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
         return getContext().get(name);
     }
 
+    public Object findValue(String expr, Class asType) {
+        return findValue(expr, asType, false);
+    }
 
     /**
      * This method looks for matching methods/properties in an action to warn the user if
@@ -286,11 +306,13 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
      *
      * @param expr the property expression
      */
-    private void checkForInvalidProperties(String expr) {
+    private void checkForInvalidProperties(String expr, boolean throwExceptionPropNotFound, boolean throwExceptionMethodFound) {
         if (expr.contains("(") && expr.contains(")")) {
-            if (devMode) {
+            if (devMode)
                 LOG.warn("Could not find method [" + expr + "]");
-            }
+
+            if (throwExceptionMethodFound)
+                    throw new XWorkException("Could not find method [" + expr + "]");
         } else if (findInContext(expr) == null) {
             // find objects with Action in them and inspect matching getters
             Set<String> availableProperties = new LinkedHashSet<String>();
@@ -307,6 +329,9 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
                 if (devMode) {
                     LOG.warn("Could not find property [" + expr + "]");
                 }
+
+                if (throwExceptionMethodFound)
+                    throw new XWorkException("Could not find property [" + expr + "]");
             }
         }
     }

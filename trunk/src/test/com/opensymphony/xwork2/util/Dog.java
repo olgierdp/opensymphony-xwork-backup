@@ -105,4 +105,8 @@ public class Dog implements Serializable {
     public Boolean nullSafeMethod(Boolean arg) {
         return (arg == null) ? Boolean.TRUE : arg;
     }
+
+    public void getBite() {
+        throw new RuntimeException("wuf wuf");
+    }
 }

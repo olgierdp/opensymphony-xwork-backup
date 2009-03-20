@@ -81,6 +81,46 @@ public class OgnlValueStackTest extends XWorkTestCase {
         assertEquals("1, 2", vs.findValue("childAges", String.class));
     }
 
+    public void testFailOnException() {
+        OgnlValueStack vs = createValueStack();
+
+        Dog dog = new Dog();
+        vs.push(dog);
+        try {
+            vs.findValue("bite", true);
+            fail("Failed to throw exception on EL error");
+        } catch (Exception ex) {
+            //ok
+        }
+    }
+
+    public void testFailOnMissingProperty() {
+        OgnlValueStack vs = createValueStack();
+
+        Dog dog = new Dog();
+        vs.push(dog);
+        try {
+            vs.findValue("someprop", true);
+            fail("Failed to throw exception on EL missing property");
+        } catch (Exception ex) {
+            //ok
+        }
+    }
+
+    public void testFailOnMissingNestedProperty() {
+        OgnlValueStack vs = createValueStack();
+
+        Dog dog = new Dog();
+        dog.setHates(new Cat());
+        vs.push(dog);
+        try {
+            vs.findValue("hates.someprop", true);
+            fail("Failed to throw exception on EL missing nested property");
+        } catch (Exception ex) {
+            //ok
+        }
+    }
+
     public void testBasic() {
         OgnlValueStack vs = createValueStack();
 

@@ -74,6 +74,7 @@ public interface ValueStack {
     public abstract void setValue(String expr, Object value, boolean throwExceptionOnFailure);
 
     public abstract String findString(String expr);
+    public abstract String findString(String expr, boolean throwExceptionOnFailure);
 
     /**
      * Find a value by evaluating the given expression against the stack in the default search order.
@@ -83,6 +84,8 @@ public interface ValueStack {
      */
     public abstract Object findValue(String expr);
 
+    public abstract Object findValue(String expr, boolean throwExceptionOnFailure);
+
     /**
      * Find a value by evaluating the given expression against the stack in the default search order.
      *
@@ -91,6 +94,7 @@ public interface ValueStack {
      * @return the result of evaluating the expression
      */
     public abstract Object findValue(String expr, Class asType);
+    public abstract Object findValue(String expr, Class asType,  boolean throwExceptionOnFailure);
 
     /**
      * Get the object on the top of the stack <b>without</b> changing the stack.
