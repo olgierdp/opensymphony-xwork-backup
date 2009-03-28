@@ -120,7 +120,7 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
     
     private ActionValidatorManager actionValidatorManager;
     
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultWorkflowInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ValidationInterceptor.class);
     
     private final static String VALIDATE_PREFIX = "validate";
     private final static String ALT_VALIDATE_PREFIX = "validateDo";
