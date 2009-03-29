@@ -134,7 +134,7 @@ public class XmlConfigurationProviderTest extends ConfigurationTestBase {
 
         File file = new File(jar);
 
-        assertTrue(file.exists());
+        assertTrue("File [" + file + "] doesn't exist!", file.exists());
         file.setLastModified(System.currentTimeMillis());
 
         assertTrue(!provider.needsReload());
