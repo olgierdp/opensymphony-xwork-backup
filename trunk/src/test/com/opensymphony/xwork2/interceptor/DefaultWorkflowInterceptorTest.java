@@ -7,6 +7,7 @@ package com.opensymphony.xwork2.interceptor;
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.entities.InterceptorConfig;
+import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.validator.ValidationInterceptor;
 
 import java.util.HashMap;
@@ -26,6 +27,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
     private Action action;
     private ActionProxy proxy;
     private Mock proxyMock;
+    private ActionConfig config;
 
 
     public void testInvokesActionInvocationIfNoErrors() throws Exception {
@@ -34,7 +36,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
-        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getConfig", config);
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
@@ -56,7 +58,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
-        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getConfig", config);
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
@@ -97,7 +99,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
-        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getConfig", config);
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
@@ -119,7 +121,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
-        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getConfig", config);
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
@@ -147,7 +149,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
-        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getConfig", config);
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
@@ -176,7 +178,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
-        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getConfig", config);
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
@@ -206,7 +208,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
-        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getConfig", config);
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
@@ -236,7 +238,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
-        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getConfig", config);
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
@@ -264,7 +266,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
         
         final String result = "testing123";
         proxyMock.expectAndReturn("getMethod", "execute");
-        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getConfig", config);
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("invoke", result);
         
@@ -288,7 +290,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
-        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getConfig", config);
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
@@ -321,7 +323,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
-        proxyMock.expectAndReturn("getActionName", "name");
+        proxyMock.expectAndReturn("getConfig", config);
         proxyMock.expectAndReturn("getMethod", "execute");
         invocationMock.expectAndReturn("getAction", action);
         invocationMock.expectAndReturn("getProxy", proxy);
@@ -341,6 +343,7 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        config = new ActionConfig.Builder("", "name", "").build();
         actionMock = new Mock(ValidateAction.class);
         action = (ValidateAction) actionMock.proxy();
         invocationMock = new Mock(ActionInvocation.class);

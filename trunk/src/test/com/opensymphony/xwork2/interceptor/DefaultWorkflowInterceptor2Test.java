@@ -6,6 +6,7 @@ package com.opensymphony.xwork2.interceptor;
 
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.entities.InterceptorConfig;
+import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.validator.ValidationInterceptor;
 import org.easymock.MockControl;
 
@@ -85,9 +86,10 @@ public class DefaultWorkflowInterceptor2Test extends XWorkTestCase {
 		ActionProxy actionProxy = (ActionProxy) actionProxyControl.getMock();
 		actionProxy.getMethod();
 		actionProxyControl.expectAndDefaultReturn(null, "execute");
-		
-		
-		MockControl actionInvocationControl = MockControl.createControl(ActionInvocation.class);
+
+        ActionConfig config = new ActionConfig.Builder("", "action", "").build();
+
+        MockControl actionInvocationControl = MockControl.createControl(ActionInvocation.class);
 		ActionInvocation actionInvocation = (ActionInvocation) actionInvocationControl.getMock();
 		actionInvocation.invoke();
 		actionInvocationControl.expectAndDefaultReturn(null, "test");
@@ -95,9 +97,9 @@ public class DefaultWorkflowInterceptor2Test extends XWorkTestCase {
 		actionInvocationControl.expectAndDefaultReturn(null, actionProxy);
 		actionInvocation.getAction();
 		actionInvocationControl.expectAndDefaultReturn(null, action);
-		actionProxy.getActionName();
-		actionProxyControl.expectAndDefaultReturn(null, "action");
-		
+		actionProxy.getConfig();
+		actionProxyControl.expectAndDefaultReturn(null, config);
+
 		actionInvocationControl.replay();
 		actionProxyControl.replay();
 		
@@ -125,7 +127,8 @@ public class DefaultWorkflowInterceptor2Test extends XWorkTestCase {
 		ActionProxy actionProxy = (ActionProxy) actionProxyControl.getMock();
 		actionProxy.getMethod();
 		actionProxyControl.expectAndDefaultReturn(null, "execute");
-		
+
+        ActionConfig config = new ActionConfig.Builder("", "action", "").build();
 		
 		MockControl actionInvocationControl = MockControl.createControl(ActionInvocation.class);
 		ActionInvocation actionInvocation = (ActionInvocation) actionInvocationControl.getMock();
@@ -135,8 +138,8 @@ public class DefaultWorkflowInterceptor2Test extends XWorkTestCase {
 		actionInvocationControl.expectAndDefaultReturn(null, actionProxy);
 		actionInvocation.getAction();
 		actionInvocationControl.expectAndDefaultReturn(null, action);
-		actionProxy.getActionName();
-                actionProxyControl.expectAndDefaultReturn(null, "action");
+		actionProxy.getConfig();
+        actionProxyControl.expectAndDefaultReturn(null, config);
 		
 		actionInvocationControl.replay();
 		actionProxyControl.replay();

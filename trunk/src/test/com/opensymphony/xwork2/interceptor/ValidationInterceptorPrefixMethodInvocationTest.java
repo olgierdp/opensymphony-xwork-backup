@@ -6,6 +6,7 @@ package com.opensymphony.xwork2.interceptor;
 
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.entities.InterceptorConfig;
+import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.validator.ValidationInterceptor;
 import org.easymock.MockControl;
 
@@ -27,13 +28,15 @@ public class ValidationInterceptorPrefixMethodInvocationTest extends XWorkTestCa
 		controlAction.setVoidCallable(1);
 		mockAction.validate();
 		controlAction.setVoidCallable();
+
+        ActionConfig config = new ActionConfig.Builder("", "action", "").build();
 		
 		MockControl controlActionProxy = MockControl.createControl(ActionProxy.class);
 		ActionProxy mockActionProxy = (ActionProxy) controlActionProxy.getMock();
 		mockActionProxy.getMethod();
 		controlActionProxy.setDefaultReturnValue("save");
-		mockActionProxy.getActionName();
-		controlActionProxy.setDefaultReturnValue("something");
+		mockActionProxy.getConfig();
+		controlActionProxy.setDefaultReturnValue(config);
 		
 		MockControl controlActionInvocation = MockControl.createControl(ActionInvocation.class);
 		ActionInvocation mockActionInvocation = (ActionInvocation) controlActionInvocation.getMock();
@@ -65,13 +68,15 @@ public class ValidationInterceptorPrefixMethodInvocationTest extends XWorkTestCa
 		controlAction.setVoidCallable(1);
 		mockAction.validate();
 		controlAction.setVoidCallable();
+
+        ActionConfig config = new ActionConfig.Builder("", "action", "").build();
 		
 		MockControl controlActionProxy = MockControl.createControl(ActionProxy.class);
 		ActionProxy mockActionProxy = (ActionProxy) controlActionProxy.getMock();
 		mockActionProxy.getMethod();
 		controlActionProxy.setDefaultReturnValue("submit");
-		mockActionProxy.getActionName();
-                controlActionProxy.setDefaultReturnValue("something");
+		mockActionProxy.getConfig();
+        controlActionProxy.setDefaultReturnValue(config);
 		
 		MockControl controlActionInvocation = MockControl.createControl(ActionInvocation.class);
 		ActionInvocation mockActionInvocation = (ActionInvocation) controlActionInvocation.getMock();

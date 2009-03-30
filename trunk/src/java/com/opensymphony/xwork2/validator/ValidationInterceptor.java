@@ -192,7 +192,9 @@ public class ValidationInterceptor extends MethodFilterInterceptor {
     protected void doBeforeInvocation(ActionInvocation invocation) throws Exception {
         Object action = invocation.getAction();
         ActionProxy proxy = invocation.getProxy();
-        String context = proxy.getActionName();
+        //use the name from the config, instead of the action name
+        //otherwise actions with patterns in the name won't be cached, see WW-2996
+        String context = proxy.getConfig().getName();
         String method = proxy.getMethod();
 
         if (log.isDebugEnabled()) {
