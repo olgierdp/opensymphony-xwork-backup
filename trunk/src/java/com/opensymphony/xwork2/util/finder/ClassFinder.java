@@ -150,7 +150,8 @@ public class ClassFinder {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                if (LOG.isErrorEnabled())
+                    LOG.error("Unable to read URL [#0]", e, location.toExternalForm());
             }
         }
 
