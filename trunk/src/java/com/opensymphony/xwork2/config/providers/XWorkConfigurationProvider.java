@@ -111,6 +111,7 @@ public class XWorkConfigurationProvider implements ConfigurationProvider {
                .factory(OgnlUtil.class, Scope.SINGLETON)
                .factory(XWorkBasicConverter.class, Scope.SINGLETON);
         props.setProperty("devMode", Boolean.FALSE.toString());
+        props.setProperty("logMissingProperties", Boolean.FALSE.toString());
     }
 
 }

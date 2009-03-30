@@ -233,6 +233,7 @@ public class DefaultConfiguration implements Configuration {
         builder.factory(PropertyAccessor.class, CompoundRoot.class.getName(), CompoundRootAccessor.class, Scope.SINGLETON);
         builder.factory(OgnlUtil.class, Scope.SINGLETON);
         builder.constant("devMode", "false");
+        builder.constant("logMissingProperties", "false");
         return builder.create(true);
     }
 

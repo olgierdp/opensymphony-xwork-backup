@@ -51,6 +51,7 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
 
     private static Logger LOG = LoggerFactory.getLogger(OgnlValueStack.class);
     private boolean devMode;
+    private boolean logMissingProperties;
 
     public static void link(Map<String, Object> context, Class clazz, String name) {
         context.put("__link", new Object[]{clazz, name});
@@ -95,6 +96,11 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
     @Inject("devMode")
     public void setDevMode(String mode) {
         devMode = "true".equalsIgnoreCase(mode);
+    }
+
+    @Inject("logMissingProperties")
+    public void setLogMissingProperties(String logMissingProperties) {
+        this.logMissingProperties = "true".equalsIgnoreCase(logMissingProperties);
     }
 
     /* (non-Javadoc)
@@ -326,7 +332,7 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
                 }
             }
             if (!availableProperties.contains(expr)) {
-                if (devMode) {
+                if (devMode && logMissingProperties) {
                     LOG.warn("Could not find property [" + expr + "]");
                 }
 
