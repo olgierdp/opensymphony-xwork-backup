@@ -13,6 +13,8 @@ import com.opensymphony.xwork2.validator.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * Abstract implementation of the Validator interface suitable for subclassing.
@@ -96,7 +98,8 @@ public abstract class ValidatorSupport implements Validator, ShortCircuitableVal
             message = defaultMessage;
         }
 
-        message = TextParseUtil.translateVariables(message, stack);
+        if (StringUtils.isNotBlank(message))
+            message = TextParseUtil.translateVariables(message, stack);
 
         stack.pop();
 
