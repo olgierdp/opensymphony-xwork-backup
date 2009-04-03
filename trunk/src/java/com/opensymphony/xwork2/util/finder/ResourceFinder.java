@@ -16,6 +16,8 @@
  */
 package com.opensymphony.xwork2.util.finder;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -25,11 +27,15 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
+
 /**
  * @author David Blevins
  * @version $Rev$ $Date$
  */
 public class ResourceFinder {
+    private static final Logger LOG = LoggerFactory.getLogger(ResourceFinder.class);
 
     private final URL[] urls;
     private final String path;
@@ -832,6 +838,44 @@ public class ResourceFinder {
         return resources;
     }
 
+    /**
+     * Gets a list of subpckages from jars or dirs
+     */
+    public Set<String> getPackages(String uri) throws IOException {
+        String basePath = path + uri;
+
+        Set<String> resources = new HashSet<String>();
+        if (!basePath.endsWith("/")) {
+            basePath += "/";
+        }
+        Enumeration<URL> urls = getResources(basePath);
+
+        while (urls.hasMoreElements()) {
+            URL location = urls.nextElement();
+
+            try {
+                if ("jar".equals(location.getProtocol())) {
+
+                    readJarDirectoryEntries(location, basePath, resources);
+
+                } else if ("file".equals(location.getProtocol())) {
+
+                    readSubDirectories(new File(location.toURI()), uri, resources);
+
+                }
+            } catch (Exception e) {
+            }
+        }
+
+        //remove "/" from the paths
+        Set<String> packageNames = new HashSet<String>(resources.size());
+        for(String resource : resources) {
+            packageNames.add(StringUtils.chomp(StringUtils.replace(resource, "/", "."), "."));
+        }
+
+        return packageNames;
+    }
+
     private static void readDirectoryEntries(URL location, Map<String, URL> resources) throws MalformedURLException {
         File dir = new File(URLDecoder.decode(location.getPath()));
         if (dir.isDirectory()) {
@@ -841,6 +885,23 @@ public class ResourceFinder {
                     String name = file.getName();
                     URL url = file.toURL();
                     resources.put(name, url);
+                }
+            }
+        }
+    }
+
+    /**
+     * Reads subdirectories of a file. The output is a list of subdirectories, relative to the basepath
+     */
+     private static void readSubDirectories(File dir, String basePath, Set<String> resources) throws MalformedURLException {
+        if (dir.isDirectory()) {
+            File[] files = dir.listFiles();
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    String name = file.getName();
+                    String subName = StringUtils.chomp(basePath, "/") + "/" + name;
+                    resources.add(subName);
+                    readSubDirectories(file, subName, resources);
                 }
             }
         }
@@ -868,6 +929,23 @@ public class ResourceFinder {
 
             URL resource = new URL(location, name);
             resources.put(name, resource);
+        }
+    }
+
+    //read directories in the jar that start with the basePath
+    private static void readJarDirectoryEntries(URL location, String basePath, Set<String> resources) throws IOException {
+        JarURLConnection conn = (JarURLConnection) location.openConnection();
+        JarFile jarfile = null;
+        jarfile = conn.getJarFile();
+
+        Enumeration<JarEntry> entries = jarfile.entries();
+        while (entries != null && entries.hasMoreElements()) {
+            JarEntry entry = entries.nextElement();
+            String name = entry.getName();
+
+            if (entry.isDirectory() && StringUtils.startsWith(name, basePath)) {
+                resources.add(name);
+            }
         }
     }
 
