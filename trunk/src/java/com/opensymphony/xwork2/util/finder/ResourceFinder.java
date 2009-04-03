@@ -841,7 +841,7 @@ public class ResourceFinder {
     /**
      * Gets a list of subpckages from jars or dirs
      */
-    public Set<String> getPackages(String uri) throws IOException {
+    public Set<String> findPackages(String uri) throws IOException {
         String basePath = path + uri;
 
         Set<String> resources = new HashSet<String>();
@@ -867,7 +867,42 @@ public class ResourceFinder {
             }
         }
 
-        //remove "/" from the paths
+        return convertPathsToPackages(resources);
+    }
+
+    /**
+     * Gets a list of subpckages from jars or dirs
+     */
+    public Map<URL, Set<String>> findPackagesMap(String uri) throws IOException {
+        String basePath = path + uri;
+
+        if (!basePath.endsWith("/")) {
+            basePath += "/";
+        }
+        Enumeration<URL> urls = getResources(basePath);
+        Map<URL, Set<String>> result = new HashMap<URL, Set<String>>();
+
+        while (urls.hasMoreElements()) {
+            URL location = urls.nextElement();
+
+            try {
+                if ("jar".equals(location.getProtocol())) {
+                    Set<String> resources = new HashSet<String>();
+                    readJarDirectoryEntries(location, basePath, resources);
+                    result.put(location, convertPathsToPackages(resources));
+                } else if ("file".equals(location.getProtocol())) {
+                    Set<String> resources = new HashSet<String>();
+                    readSubDirectories(new File(location.toURI()), uri, resources);
+                    result.put(location, convertPathsToPackages(resources));
+                }
+            } catch (Exception e) {
+            }
+        }
+
+        return result;
+    }
+
+    private Set<String> convertPathsToPackages(Set<String> resources) {
         Set<String> packageNames = new HashSet<String>(resources.size());
         for(String resource : resources) {
             packageNames.add(StringUtils.chomp(StringUtils.replace(resource, "/", "."), "."));
