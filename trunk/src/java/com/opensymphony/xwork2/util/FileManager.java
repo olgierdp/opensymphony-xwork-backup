@@ -191,6 +191,8 @@ public class FileManager {
                 file = new File(fileUrl.toURI());
             } catch (URISyntaxException e) {
                 file = new File(fileUrl.getPath());
+            }  catch (Throwable t) {
+                return null;
             }
             if (file.exists() && file.canRead()) {
                 long lastModified = file.lastModified();
@@ -248,7 +250,7 @@ public class FileManager {
                 JarFile jarFile = new JarFile(jarFileName);
                 ZipEntry entry = jarFile.getEntry(fileNameInJar);
                 return new JarEntryRevision(jarFileName.toString(), fileNameInJar, entry.getTime());
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 return null;
             }
         }

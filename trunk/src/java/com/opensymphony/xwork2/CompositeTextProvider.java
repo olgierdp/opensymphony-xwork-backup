@@ -1,8 +1,8 @@
 package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.util.ValueStack;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 import java.util.*;
 
@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class CompositeTextProvider implements TextProvider {
 
-    private static final Log LOG = LogFactory.getLog(CompositeTextProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CompositeTextProvider.class);
 
     private List<TextProvider> textProviders = new ArrayList<TextProvider>();
 
