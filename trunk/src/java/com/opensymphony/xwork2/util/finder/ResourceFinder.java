@@ -1,18 +1,6 @@
-/**
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
  */
 package com.opensymphony.xwork2.util.finder;
 
@@ -39,26 +27,26 @@ public class ResourceFinder {
 
     private final URL[] urls;
     private final String path;
-    private final ClassLoader classLoader;
+    private final ClassLoaderInterface classLoaderInterface;
     private final List<String> resourcesNotLoaded = new ArrayList<String>();
 
     public ResourceFinder(URL... urls) {
-        this(null, Thread.currentThread().getContextClassLoader(), urls);
+        this(null, new ClassLoaderInterfaceDelegate(Thread.currentThread().getContextClassLoader()), urls);
     }
 
     public ResourceFinder(String path) {
-        this(path, Thread.currentThread().getContextClassLoader(), null);
+        this(path, new ClassLoaderInterfaceDelegate(Thread.currentThread().getContextClassLoader()), null);
     }
 
     public ResourceFinder(String path, URL... urls) {
-        this(path, Thread.currentThread().getContextClassLoader(), urls);
+        this(path, new ClassLoaderInterfaceDelegate(Thread.currentThread().getContextClassLoader()), urls);
     }
 
-    public ResourceFinder(String path, ClassLoader classLoader) {
-        this(path, classLoader, null);
+    public ResourceFinder(String path, ClassLoaderInterface classLoaderInterface) {
+        this(path, classLoaderInterface, null);
     }
 
-    public ResourceFinder(String path, ClassLoader classLoader, URL... urls) {
+    public ResourceFinder(String path, ClassLoaderInterface classLoaderInterface, URL... urls) {
         if (path == null){
             path = "";
         } else if (path.length() > 0 && !path.endsWith("/")) {
@@ -66,10 +54,7 @@ public class ResourceFinder {
         }
         this.path = path;
 
-        if (classLoader == null) {
-            classLoader = Thread.currentThread().getContextClassLoader();
-        }
-        this.classLoader = classLoader;
+        this.classLoaderInterface = classLoaderInterface == null ? new ClassLoaderInterfaceDelegate(Thread.currentThread().getContextClassLoader()) : classLoaderInterface ;
 
         for (int i = 0; urls != null && i < urls.length; i++) {
             URL url = urls[i];
@@ -300,7 +285,7 @@ public class ResourceFinder {
      */
     public Class findClass(String uri) throws IOException, ClassNotFoundException {
         String className = findString(uri);
-        return (Class) classLoader.loadClass(className);
+        return (Class) classLoaderInterface.loadClass(className);
     }
 
     /**
@@ -318,7 +303,7 @@ public class ResourceFinder {
         List<Class> classes = new ArrayList<Class>();
         List<String> strings = findAllStrings(uri);
         for (String className : strings) {
-            Class clazz = classLoader.loadClass(className);
+            Class clazz = classLoaderInterface.loadClass(className);
             classes.add(clazz);
         }
         return classes;
@@ -341,7 +326,7 @@ public class ResourceFinder {
         List<String> strings = findAvailableStrings(uri);
         for (String className : strings) {
             try {
-                Class clazz = classLoader.loadClass(className);
+                Class clazz = classLoaderInterface.loadClass(className);
                 classes.add(clazz);
             } catch (Exception notAvailable) {
                 resourcesNotLoaded.add(className);
@@ -379,7 +364,7 @@ public class ResourceFinder {
         for (Map.Entry<String, String> entry : map.entrySet()) {
             String string = entry.getKey();
             String className = entry.getValue();
-            Class clazz = classLoader.loadClass(className);
+            Class clazz = classLoaderInterface.loadClass(className);
             classes.put(string, clazz);
         }
         return classes;
@@ -416,7 +401,7 @@ public class ResourceFinder {
             String string = entry.getKey();
             String className = entry.getValue();
             try {
-                Class clazz = classLoader.loadClass(className);
+                Class clazz = classLoaderInterface.loadClass(className);
                 classes.put(string, clazz);
             } catch (Exception notAvailable) {
                 resourcesNotLoaded.add(className);
@@ -454,7 +439,7 @@ public class ResourceFinder {
      */
     public Class findImplementation(Class interfase) throws IOException, ClassNotFoundException {
         String className = findString(interfase.getName());
-        Class impl = classLoader.loadClass(className);
+        Class impl = classLoaderInterface.loadClass(className);
         if (!interfase.isAssignableFrom(impl)) {
             throw new ClassCastException("Class not of type: " + interfase.getName());
         }
@@ -490,7 +475,7 @@ public class ResourceFinder {
         List<Class> implementations = new ArrayList<Class>();
         List<String> strings = findAllStrings(interfase.getName());
         for (String className : strings) {
-            Class impl = classLoader.loadClass(className);
+            Class impl = classLoaderInterface.loadClass(className);
             if (!interfase.isAssignableFrom(impl)) {
                 throw new ClassCastException("Class not of type: " + interfase.getName());
             }
@@ -528,7 +513,7 @@ public class ResourceFinder {
         List<String> strings = findAvailableStrings(interfase.getName());
         for (String className : strings) {
             try {
-                Class impl = classLoader.loadClass(className);
+                Class impl = classLoaderInterface.loadClass(className);
                 if (interfase.isAssignableFrom(impl)) {
                     implementations.add(impl);
                 } else {
@@ -572,7 +557,7 @@ public class ResourceFinder {
         for (Map.Entry<String, String> entry : map.entrySet()) {
             String string = entry.getKey();
             String className = entry.getValue();
-            Class impl = classLoader.loadClass(className);
+            Class impl = classLoaderInterface.loadClass(className);
             if (!interfase.isAssignableFrom(impl)) {
                 throw new ClassCastException("Class not of type: " + interfase.getName());
             }
@@ -612,7 +597,7 @@ public class ResourceFinder {
             String string = entry.getKey();
             String className = entry.getValue();
             try {
-                Class impl = classLoader.loadClass(className);
+                Class impl = classLoaderInterface.loadClass(className);
                 if (interfase.isAssignableFrom(impl)) {
                     implementations.put(string, impl);
                 } else {
@@ -1024,14 +1009,14 @@ public class ResourceFinder {
 
     private URL getResource(String fullUri) {
         if (urls == null){
-            return classLoader.getResource(fullUri);
+            return classLoaderInterface.getResource(fullUri);
         }
         return findResource(fullUri, urls);
     }
 
     private Enumeration<URL> getResources(String fulluri) throws IOException {
         if (urls == null) {
-            return classLoader.getResources(fulluri);
+            return classLoaderInterface.getResources(fulluri);
         }
         Vector<URL> resources = new Vector();
         for (URL url : urls) {

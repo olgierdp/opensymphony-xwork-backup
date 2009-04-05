@@ -1,28 +1,24 @@
-/**
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
  */
 package com.opensymphony.xwork2.util.finder;
+
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
-
-import org.apache.commons.lang.StringUtils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Use with ClassFinder to filter the Urls to be scanned, example:
@@ -40,10 +36,10 @@ import org.apache.commons.lang.StringUtils;
  * @version $Rev$ $Date$
  */
 public class UrlSet {
-
+    private static final Logger LOG = LoggerFactory.getLogger(UrlSet.class);
     private final Map<String,URL> urls;
 
-    public UrlSet(ClassLoader classLoader) throws IOException {
+    public UrlSet(ClassLoaderInterface classLoader) throws IOException {
         this(getUrls(classLoader));
     }
 
@@ -95,7 +91,7 @@ public class UrlSet {
         return new UrlSet(urls);
     }
 
-    public UrlSet exclude(ClassLoader parent) throws IOException {
+    public UrlSet exclude(ClassLoaderInterface parent) throws IOException {
         return exclude(new UrlSet(parent));
     }
 
@@ -177,16 +173,24 @@ public class UrlSet {
         return new ArrayList<URL>(urls.values());
     }
 
-    private static List<URL> getUrls(ClassLoader classLoader) throws IOException {
+    private static List<URL> getUrls(ClassLoaderInterface classLoader) throws IOException {
         List<URL> list = new ArrayList<URL>();
+
+        //find jars
         ArrayList<URL> urls = Collections.list(classLoader.getResources("META-INF"));
+
         for (URL url : urls) {
-            String externalForm = url.toExternalForm();
-            int i = externalForm.lastIndexOf("META-INF");
-            externalForm = externalForm.substring(0, i);
-            url = new URL(externalForm);
-            list.add(url);
+            if ("jar".equalsIgnoreCase(url.getProtocol())) {
+                String externalForm = url.toExternalForm();
+                //build a URL pointing to the jar, instead of the META-INF dir
+                url = new URL(StringUtils.substringBefore(externalForm, "META-INF"));
+                list.add(url);
+            } else if (LOG.isDebugEnabled())
+                LOG.debug("Ignoring URL [#0] because it is not a jar", url.toExternalForm());
+
         }
+
+        //usually the "classes" dir
         list.addAll(Collections.list(classLoader.getResources("")));
         return list;
     }

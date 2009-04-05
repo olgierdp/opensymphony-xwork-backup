@@ -1,18 +1,6 @@
-/**
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
  */
 package com.opensymphony.xwork2.util.finder;
 
@@ -42,7 +30,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 /**
- * ClassFinder searches the classpath of the specified classloader for
+ * ClassFinder searches the classpath of the specified ClassLoaderInterface for
  * packages, classes, constructors, methods, or fields with specific annotations.
  *
  * For security reasons ASM is used to find the annotations.  Classes are not
@@ -62,75 +50,75 @@ public class ClassFinder {
     private final Map<String, List<Info>> annotated = new HashMap<String, List<Info>>();
     private final Map<String, ClassInfo> classInfos = new LinkedHashMap<String, ClassInfo>();
 
-    private final ClassLoader classLoader;
     private final List<String> classesNotLoaded = new ArrayList<String>();
 
     private boolean extractBaseInterfaces;
+    private ClassLoaderInterface classLoaderInterface;
 
     /**
-     * Creates a ClassFinder that will search the urls in the specified classloader
-     * excluding the urls in the classloader's parent.
+     * Creates a ClassFinder that will search the urls in the specified ClassLoaderInterface
+     * excluding the urls in the ClassLoaderInterface's parent.
      *
-     * To include the parent classloader, use:
+     * To include the parent ClassLoaderInterface, use:
      *
-     *    new ClassFinder(classLoader, false);
+     *    new ClassFinder(ClassLoaderInterface, false);
      *
      * To exclude the parent's parent, use:
      *
-     *    new ClassFinder(classLoader, classLoader.getParent().getParent());
+     *    new ClassFinder(ClassLoaderInterface, ClassLoaderInterface.getParent().getParent());
      *
      * @param classLoader source of classes to scan
      * @throws Exception if something goes wrong
      */
-    public ClassFinder(ClassLoader classLoader) throws Exception {
+    public ClassFinder(ClassLoaderInterface classLoader) throws Exception {
         this(classLoader, true);
     }
 
     /**
-     * Creates a ClassFinder that will search the urls in the specified classloader.
+     * Creates a ClassFinder that will search the urls in the specified ClassLoaderInterface.
      *
      * @param classLoader source of classes to scan
-     * @param excludeParent Allegedly excludes classes from parent classloader, whatever that might mean
+     * @param excludeParent Allegedly excludes classes from parent ClassLoaderInterface, whatever that might mean
      * @throws Exception if something goes wrong.
      */
-    public ClassFinder(ClassLoader classLoader, boolean excludeParent) throws Exception {
+    public ClassFinder(ClassLoaderInterface classLoader, boolean excludeParent) throws Exception {
         this(classLoader, getUrls(classLoader, excludeParent));
     }
 
     /**
      * Creates a ClassFinder that will search the urls in the specified classloader excluding
-     * the urls in the 'exclude' classloader.
+     * the urls in the 'exclude' ClassLoaderInterface.
      *
      * @param classLoader source of classes to scan
      * @param exclude source of classes to exclude from scanning
      * @throws Exception if something goes wrong
      */
-    public ClassFinder(ClassLoader classLoader, ClassLoader exclude) throws Exception {
+    public ClassFinder(ClassLoaderInterface classLoader, ClassLoaderInterface exclude) throws Exception {
         this(classLoader, getUrls(classLoader, exclude));
     }
 
-    public ClassFinder(ClassLoader classLoader, URL url) {
+    public ClassFinder(ClassLoaderInterface classLoader, URL url) {
         this(classLoader, Arrays.asList(url));
     }
 
-    public ClassFinder(ClassLoader classLoader, String... dirNames) {
+    public ClassFinder(ClassLoaderInterface classLoader, String... dirNames) {
         this(classLoader, getURLs(classLoader, dirNames));
     }
 
-    public ClassFinder(ClassLoader classLoader, Collection<URL> urls) {
-        this(classLoader, urls, false);
+    public ClassFinder(ClassLoaderInterface classLoaderInterface, Collection<URL> urls) {
+        this(classLoaderInterface, urls, false);
     }
 
-    public ClassFinder(ClassLoader classLoader, Collection<URL> urls, boolean extractBaseInterfaces) {
-        this(classLoader, urls, extractBaseInterfaces, new HashSet(){
+    public ClassFinder(ClassLoaderInterface classLoaderInterface, Collection<URL> urls, boolean extractBaseInterfaces) {
+        this(classLoaderInterface, urls, extractBaseInterfaces, new HashSet(){
             {
                 add("jar");
             }
         });
     }
 
-    public ClassFinder(ClassLoader classLoader, Collection<URL> urls, boolean extractBaseInterfaces, Set<String> protocols) {
-        this.classLoader = classLoader;
+    public ClassFinder(ClassLoaderInterface classLoaderInterface, Collection<URL> urls, boolean extractBaseInterfaces, Set<String> protocols) {
+        this.classLoaderInterface = classLoaderInterface;
         this.extractBaseInterfaces = extractBaseInterfaces;
 
         List<String> classNames = new ArrayList<String>();
@@ -170,7 +158,7 @@ public class ClassFinder {
     }
 
     public ClassFinder(List<Class> classes){
-        this.classLoader = null;
+        this.classLoaderInterface = null;
         List<Info> infos = new ArrayList<Info>();
         List<Package> packages = new ArrayList<Package>();
         for (Class clazz : classes) {
@@ -414,7 +402,7 @@ public class ClassFinder {
         return classes;
     }
 
-    private static List<URL> getURLs(ClassLoader classLoader, String[] dirNames) {
+    private static List<URL> getURLs(ClassLoaderInterface classLoader, String[] dirNames) {
         List<URL> urls = new ArrayList<URL>();
         for (String dirName : dirNames) {
             try {
@@ -432,11 +420,11 @@ public class ClassFinder {
         return urls;
     }
 
-    private static Collection<URL> getUrls(ClassLoader classLoader, boolean excludeParent) throws IOException {
-        return getUrls(classLoader, excludeParent? classLoader.getParent() : null);
+    private static Collection<URL> getUrls(ClassLoaderInterface classLoaderInterface, boolean excludeParent) throws IOException {
+        return getUrls(classLoaderInterface, excludeParent? classLoaderInterface.getParent() : null);
     }
 
-    private static Collection<URL> getUrls(ClassLoader classLoader, ClassLoader excludeParent) throws IOException {
+    private static Collection<URL> getUrls(ClassLoaderInterface classLoader, ClassLoaderInterface excludeParent) throws IOException {
         UrlSet urlSet = new UrlSet(classLoader);
         if (excludeParent != null){
             urlSet = urlSet.exclude(excludeParent);
@@ -608,7 +596,7 @@ public class ClassFinder {
             if (clazz != null) return clazz;
             if (notFound != null) throw notFound;
             try {
-                this.clazz = classLoader.loadClass(name);
+                this.clazz = classLoaderInterface.loadClass(name);
                 return clazz;
             } catch (ClassNotFoundException notFound) {
                 classesNotLoaded.add(name);
@@ -758,7 +746,7 @@ public class ClassFinder {
             className = className.replace('.', '/') + ".class";
         }
         try {
-            URL resource = classLoader.getResource(className);
+            URL resource = classLoaderInterface.getResource(className);
             if (resource != null) {
                 InputStream in = resource.openStream();
                 try {
