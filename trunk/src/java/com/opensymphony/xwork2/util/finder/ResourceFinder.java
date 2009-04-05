@@ -115,12 +115,7 @@ public class ResourceFinder {
     public URL find(String uri) throws IOException {
         String fullUri = path + uri;
 
-        URL resource = getResource(fullUri);
-        if (resource == null) {
-            throw new IOException("Could not find resource '" + fullUri + "'");
-        }
-
-        return resource;
+        return getResource(fullUri);
     }
 
     public List<URL> findAll(String uri) throws IOException {
