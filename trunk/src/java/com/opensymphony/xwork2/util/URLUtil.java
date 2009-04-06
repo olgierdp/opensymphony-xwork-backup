@@ -13,7 +13,13 @@ import java.net.MalformedURLException;
  * Helper class to extract file paths from different urls
  */
 public class URLUtil {
-    public static final Pattern JAR_PATTERN = Pattern.compile("^(jar:|wsjar:|zip:|vfsfile:)?(file:)?(.*?)(\\!/)(.*)");
+
+    /**
+     * Prefix for Jar files in JBoss Virtual File System
+     */
+    public static final String JBOSS5_VFSZIP = "vfszip";
+
+    private static final Pattern JAR_PATTERN = Pattern.compile("^(jar:|wsjar:|zip:|vfsfile:|code-source:)?(file:)?(.*?)(\\!/|.jar/)(.*)");
     private static final int JAR_FILE_PATH = 3;
 
     /**
@@ -25,7 +31,9 @@ public class URLUtil {
         String fileName = url.toExternalForm();
         Matcher jarMatcher = JAR_PATTERN.matcher(fileName);
         try {
-            if (jarMatcher.matches()) {
+            if (isJBoss5Url(url)){
+                return new URL("file", null, fileName.substring(JBOSS5_VFSZIP.length() + 1));
+            } else  if (jarMatcher.matches()) {
                 String path = jarMatcher.group(JAR_FILE_PATH);
                 return new URL("file", "", path);
             } else {
@@ -61,4 +69,24 @@ public class URLUtil {
             return false;
         }
     }
+
+    /**
+     * Check if given URL is matching Jar pattern for different servers
+     * @param fileUrl
+     * @return
+     */
+    public static boolean isJarURL(URL fileUrl) {
+        Matcher jarMatcher = URLUtil.JAR_PATTERN.matcher(fileUrl.getPath());
+        return jarMatcher.matches(); 
+    }
+
+    /**
+     * Check if given URL is pointing to JBoss 5 VFS resource
+     * @param fileUrl
+     * @return
+     */
+    public static boolean isJBoss5Url(URL fileUrl) {
+        return JBOSS5_VFSZIP.equals(fileUrl.getProtocol());
+    }
+
 }

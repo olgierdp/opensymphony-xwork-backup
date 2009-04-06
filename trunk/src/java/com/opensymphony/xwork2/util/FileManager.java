@@ -4,6 +4,9 @@
  */
 package com.opensymphony.xwork2.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,11 +30,13 @@ import java.util.zip.ZipEntry;
 public class FileManager {
     //~ Static fields/initializers /////////////////////////////////////////////
 
+    private static Log LOG = LogFactory.getLog(FileManager.class);
+
     private static Map<String, Revision> files = Collections.synchronizedMap(new HashMap<String, Revision>());
     protected static boolean reloadingConfigs = true;
 
-    private static final String JAR_FILE_NAME_PREFIX = "jar:file:";
     private static final String JAR_FILE_NAME_SEPARATOR = "!/";
+    private static final String JAR_FILE_EXTENSION_END = ".jar/";
 
 
     //~ Constructors ///////////////////////////////////////////////////////////
@@ -120,7 +125,12 @@ public class FileManager {
         if (isReloadingConfigs()) {
             Revision revision;
 
-            if (fileName.startsWith(JAR_FILE_NAME_PREFIX)) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Creating revision for URL: " +fileName);
+            }
+            if (URLUtil.isJBoss5Url(fileUrl)) {
+                revision = JBossFileRevision.build(fileUrl);
+            } else if (URLUtil.isJarURL(fileUrl)) {
                 revision = JarEntryRevision.build(fileUrl);
             } else {
                 revision = FileRevision.build(fileUrl);
@@ -203,6 +213,35 @@ public class FileManager {
     }
 
     /**
+     * Represents file resource revision, used for vfszip://* resources
+     */
+    private static class JBossFileRevision extends FileRevision {
+
+        public JBossFileRevision(File file, long lastUpdated) {
+            super(file, lastUpdated);
+        }
+
+        public static Revision build(URL fileUrl) {
+            File file;
+            URL url = URLUtil.normalizeToFileProtocol(fileUrl);
+            try {
+                if (url != null) {
+                    file = new File(url.toURI());
+                } else {
+                    return null;
+                }
+            } catch (URISyntaxException e) {
+                file = new File(url.getPath());
+            }
+            if (file.exists() && file.canRead()) {
+                long lastModified = file.lastModified();
+                return new FileRevision(file, lastModified);
+            }
+            return null;
+        }
+    }
+
+    /**
      * Represents jar resurce revision, used for jar://* resource
      */
     private static class JarEntryRevision extends Revision {
@@ -243,14 +282,27 @@ public class FileManager {
             try {
                 String fileName = fileUrl.toString();
                 int separatorIndex = fileName.indexOf(JAR_FILE_NAME_SEPARATOR);
+                if (separatorIndex == -1) {
+                    separatorIndex = fileName.lastIndexOf(JAR_FILE_EXTENSION_END);
+                }
+                if (separatorIndex == -1) {
+                    LOG.warn("Could not find end of jar file!");
+                    return null;
+                }
                 // Split file name
-                String jarFileName = fileName.substring(JAR_FILE_NAME_PREFIX.length(), separatorIndex);
+                String jarFileName = fileName.substring(0, separatorIndex);
                 String fileNameInJar = fileName.substring(separatorIndex + JAR_FILE_NAME_SEPARATOR.length()).replaceAll("%20", " ");
 
-                JarFile jarFile = new JarFile(jarFileName);
-                ZipEntry entry = jarFile.getEntry(fileNameInJar);
-                return new JarEntryRevision(jarFileName.toString(), fileNameInJar, entry.getTime());
+                URL url = URLUtil.normalizeToFileProtocol(fileUrl);
+                if (url != null) {
+                    JarFile jarFile = new JarFile(new File(url.getPath().replaceAll("%20", " ")));
+                    ZipEntry entry = jarFile.getEntry(fileNameInJar);
+                    return new JarEntryRevision(jarFileName.toString(), fileNameInJar, entry.getTime());
+                } else {
+                    return null;
+                }
             } catch (Throwable e) {
+                LOG.warn("Could not create JarEntryRevision!", e);
                 return null;
             }
         }

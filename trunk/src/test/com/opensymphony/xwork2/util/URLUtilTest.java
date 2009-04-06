@@ -80,6 +80,10 @@ public class URLUtilTest extends TestCase {
         url = new URL("vfsfile:c:/somefile.jar!/somestuf/bla/bla");
         outputURL = URLUtil.normalizeToFileProtocol(url);
         assertEquals("file:c:/somefile.jar", outputURL.toExternalForm());
+
+        url = new URL("vfszip:/c:/somefile.war/somelibrary.jar");
+        outputURL = URLUtil.normalizeToFileProtocol(url);
+        assertEquals("file:/c:/somefile.war/somelibrary.jar", outputURL.toExternalForm());
     }
 
     protected void setUp() throws Exception {
@@ -110,5 +114,19 @@ public class URLUtilTest extends TestCase {
         assertEquals(true, URLUtil.verifyUrl("https://www.opensymphony.com"));
         assertEquals(true, URLUtil.verifyUrl("https://www.opensymphony.com:443/login"));
         assertEquals(true, URLUtil.verifyUrl("http://localhost:8080/myapp"));
+    }
+
+    public void testIsJarURL() throws Exception {
+        assertTrue(URLUtil.isJarURL(new URL("jar:file:/c:/somelibrary.jar!/com/opensymphony")));
+        assertTrue(URLUtil.isJarURL(new URL("zip:/c:/somelibrary.jar!/com/opensymphony")));
+        assertTrue(URLUtil.isJarURL(new URL("wsjar:/c:/somelibrary.jar!/com/opensymphony")));
+        assertTrue(URLUtil.isJarURL(new URL("vfsfile:/c:/somelibrary.jar!/com/opensymphony")));
+        assertTrue(URLUtil.isJarURL(new URL("vfszip:/c:/somelibrary.jar/com/opensymphony")));
+    }
+
+    public void testIsJBoss5Url() throws Exception {
+        assertTrue(URLUtil.isJBoss5Url(new URL("vfszip:/c:/somewar.war/somelibrary.jar")));
+        assertFalse(URLUtil.isJBoss5Url(new URL("vfsfile:/c:/somewar.war/somelibrary.jar")));
+        assertFalse(URLUtil.isJBoss5Url(new URL("jar:file:/c:/somelibrary.jar")));
     }
 }

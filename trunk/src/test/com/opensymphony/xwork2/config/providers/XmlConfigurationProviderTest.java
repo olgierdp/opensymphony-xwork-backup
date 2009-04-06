@@ -20,16 +20,16 @@ public class XmlConfigurationProviderTest extends ConfigurationTestBase {
         FileManager.setReloadingConfigs(true);
         final String filename = "com/opensymphony/xwork2/config/providers/xwork-test-actions.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
-        
+
         assertTrue(!provider.needsReload());
-        
+
         File file = new File(getClass().getResource("/"+filename).getFile());
         assertTrue(file.exists());
         file.setLastModified(System.currentTimeMillis());
-        
+
         assertTrue(provider.needsReload());
     }
-    
+
     public void testInheritence() throws Exception {
         final String filename = "com/opensymphony/xwork2/config/providers/xwork-include-parent.xml";
         ConfigurationProvider provider = buildConfigurationProvider(filename);
@@ -130,7 +130,7 @@ public class XmlConfigurationProviderTest extends ConfigurationTestBase {
         int startIndex = fullPath.indexOf(":file:/");
         int endIndex = fullPath.indexOf("!/");
 
-        String jar = fullPath.substring(startIndex + ":file:/".length() - 1, endIndex).replaceAll("%20", " ");
+        String jar = fullPath.substring(startIndex + ":file:/".length(), endIndex).replaceAll("%20", " ");
 
         File file = new File(jar);
 
