@@ -4,11 +4,12 @@
  */
 package com.opensymphony.xwork2.conversion.impl;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkException;
 import junit.framework.TestCase;
 
-import java.util.Date;
-import java.util.HashMap;
+import java.text.DateFormat;
+import java.util.*;
 
 /**
  * Test case for XWorkBasicConverter
@@ -38,6 +39,68 @@ public class XWorkBasicConverterTest extends TestCase {
         } catch (XWorkException e) {
             // we MUST get this exception as this is a conversion error
         }
+    }
+
+    public void testDateWithLocalePoland() throws Exception {
+        XWorkBasicConverter basicConverter = new XWorkBasicConverter();
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        Locale locale = new Locale("pl", "PL");
+        map.put(ActionContext.LOCALE, locale);
+
+        String reference = "2009-01-09";
+        Object convertedObject = basicConverter.convertValue(map, null, null, null, reference, Date.class);
+
+        assertNotNull(convertedObject);
+
+        compareDates(locale, convertedObject);
+    }
+
+    public void testDateWithLocaleFrance() throws Exception {
+        XWorkBasicConverter basicConverter = new XWorkBasicConverter();
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        Locale locale = new Locale("fr", "FR");
+        map.put(ActionContext.LOCALE, locale);
+
+        String reference = "09/01/2009";
+        Object convertedObject = basicConverter.convertValue(map, null, null, null, reference, Date.class);
+
+        assertNotNull(convertedObject);
+
+        compareDates(locale, convertedObject);
+    }
+
+    public void testDateWithLocaleUK() throws Exception {
+        XWorkBasicConverter basicConverter = new XWorkBasicConverter();
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        Locale locale = new Locale("en", "US");
+        map.put(ActionContext.LOCALE, locale);
+
+        String reference = "01/09/2009";
+        Object convertedObject = basicConverter.convertValue(map, null, null, null, reference, Date.class);
+
+        assertNotNull(convertedObject);
+
+        compareDates(locale, convertedObject);
+    }
+
+    private void compareDates(Locale locale, Object convertedObject) {
+        Calendar cal = Calendar.getInstance(locale);
+        cal.set(Calendar.YEAR, 2009);
+        cal.set(Calendar.MONTH, Calendar.JANUARY);
+        cal.set(Calendar.DATE, 9);
+
+        Calendar cal1 = Calendar.getInstance(locale);
+        cal1.setTime((Date) convertedObject);
+
+        assertEquals(cal.get(Calendar.YEAR), cal1.get(Calendar.YEAR));
+        assertEquals(cal.get(Calendar.MONTH), cal1.get(Calendar.MONTH));
+        assertEquals(cal.get(Calendar.DATE), cal1.get(Calendar.DATE));
+
+        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+        assertEquals(df.format(cal.getTime()), df.format(convertedObject));
     }
 
     public void testEmptyArrayConversion() throws Exception {

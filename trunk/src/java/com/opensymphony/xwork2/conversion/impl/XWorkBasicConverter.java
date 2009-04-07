@@ -332,12 +332,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
                 }
             } else if (java.util.Date.class == toType) {
                 Date check = null;
-                SimpleDateFormat d1 = (SimpleDateFormat) DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG, locale);
-                SimpleDateFormat d2 = (SimpleDateFormat) DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale);
-                SimpleDateFormat d3 = (SimpleDateFormat) DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
-                SimpleDateFormat rfc3399 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                SimpleDateFormat[] dfs = {d1, d2, d3, rfc3399}; //added RFC 3339 date format (XW-473)
-                for (SimpleDateFormat df1 : dfs) {
+                DateFormat[] dfs = getDateFormats(locale);
+                for (DateFormat df1 : dfs) {
                     try {
                         check = df1.parse(sa);
                         df = df1;
@@ -371,6 +367,21 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
             result = (Date) value;
         }
         return result;
+    }
+
+    private DateFormat[] getDateFormats(Locale locale) {
+        DateFormat dt1 = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG, locale);
+        DateFormat dt2 = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale);
+        DateFormat dt3 = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
+
+        DateFormat d1 = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+        DateFormat d2 = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
+        DateFormat d3 = DateFormat.getDateInstance(DateFormat.LONG, locale);
+
+        DateFormat rfc3399 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        DateFormat[] dfs = {dt1, dt2, dt3, rfc3399, d1, d2, d3}; //added RFC 3339 date format (XW-473)
+        return dfs;
     }
 
     private Object doConvertToNumber(Map<String, Object> context, Object value, Class toType) {
