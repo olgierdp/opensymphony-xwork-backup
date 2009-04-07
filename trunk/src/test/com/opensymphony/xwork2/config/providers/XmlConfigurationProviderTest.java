@@ -6,15 +6,49 @@ package com.opensymphony.xwork2.config.providers;
 
 import com.opensymphony.xwork2.config.ConfigurationProvider;
 import com.opensymphony.xwork2.config.RuntimeConfiguration;
+import com.opensymphony.xwork2.config.impl.MockConfiguration;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
 import com.opensymphony.xwork2.util.ClassLoaderUtil;
 import com.opensymphony.xwork2.util.FileManager;
+import com.opensymphony.xwork2.ObjectFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
+
+import org.w3c.dom.Document;
 
 
 public class XmlConfigurationProviderTest extends ConfigurationTestBase {
+
+    public void testLoadOrder() throws Exception {
+        configuration = new MockConfiguration();
+        ((MockConfiguration)configuration).selfRegister();
+        container = configuration.getContainer();
+
+        XmlConfigurationProvider prov = new XmlConfigurationProvider("xwork-test-load-order.xml", true) {
+            @Override
+            protected Iterator<URL> getConfigurationUrls(String fileName) throws IOException {
+                List<URL> urls = new ArrayList<URL>();
+                urls.add(ClassLoaderUtil.getResource("com/opensymphony/xwork2/config/providers/loadorder1/xwork-test-load-order.xml", XmlConfigurationProvider.class));
+                urls.add(ClassLoaderUtil.getResource("com/opensymphony/xwork2/config/providers/loadorder2/xwork-test-load-order.xml", XmlConfigurationProvider.class));
+                urls.add(ClassLoaderUtil.getResource("com/opensymphony/xwork2/config/providers/loadorder3/xwork-test-load-order.xml", XmlConfigurationProvider.class));
+                return urls.iterator();
+            }
+        };
+        prov.setObjectFactory(container.getInstance(ObjectFactory.class));
+        prov.init(configuration);
+        List<Document> docs = prov.getDocuments();
+        assertEquals(3, docs.size());
+
+        assertEquals(1, XmlHelper.getLoadOrder(docs.get(0)));
+        assertEquals(2, XmlHelper.getLoadOrder(docs.get(1)));
+        assertEquals(3, XmlHelper.getLoadOrder(docs.get(2)));
+    }
 
     public void testNeedsReload() throws Exception {
         FileManager.setReloadingConfigs(true);
@@ -139,5 +173,5 @@ public class XmlConfigurationProviderTest extends ConfigurationTestBase {
 
         assertTrue(!provider.needsReload());
     }
-
+         
 }

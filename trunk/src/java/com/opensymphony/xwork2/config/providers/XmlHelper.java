@@ -7,6 +7,8 @@ package com.opensymphony.xwork2.config.providers;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Document;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -95,4 +97,21 @@ public class XmlHelper {
         return paramValue.toString().trim();
     }
 
+    /**
+     * Return the value of the "order" attribute from the root element
+     */
+     public static int getLoadOrder(Document doc) {
+        Element rootElement = doc.getDocumentElement();
+        String number = rootElement.getAttribute("order");
+        if (StringUtils.isNotBlank(number)) {
+            try {
+                return Integer.parseInt(number);
+            } catch (NumberFormatException e) {
+                return Integer.MAX_VALUE;
+            }
+        } else {
+            //no order specified
+            return Integer.MAX_VALUE;
+        }
+    }
 }

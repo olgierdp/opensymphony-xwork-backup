@@ -78,6 +78,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         this.errorIfMissing = errorIfMissing;
 
         Map<String, String> mappings = new HashMap<String, String>();
+        mappings.put("-//OpenSymphony Group//XWork 2.1.3//EN", "xwork-2.1.3.dtd");
         mappings.put("-//OpenSymphony Group//XWork 2.1//EN", "xwork-2.1.dtd");
         mappings.put("-//OpenSymphony Group//XWork 2.0//EN", "xwork-2.0.dtd");
         mappings.put("-//OpenSymphony Group//XWork 1.1.1//EN", "xwork-1.1.1.dtd");
@@ -354,6 +355,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
         } else {
             if (!verifyAction(className, name, location)) {
+                if (LOG.isErrorEnabled())
+                    LOG.error("Unable to verify action [#0] with class [#1], from [#2]", name, className, location.toString());
                 return;
             }
         }
@@ -852,6 +855,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
     //    }
     private List<Document> loadConfigurationFiles(String fileName, Element includeElement) {
         List<Document> docs = new ArrayList<Document>();
+        List<Document> finalDocs = new ArrayList<Document>();
         if (!includedFileNames.contains(fileName)) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Loading action configurations from: " + fileName);
@@ -860,7 +864,6 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             includedFileNames.add(fileName);
 
             Iterator<URL> urls = null;
-            Document doc = null;
             InputStream is = null;
 
             IOException ioException = null;
@@ -890,7 +893,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
                     in.setSystemId(url.toString());
 
-                    doc = DomHelper.parse(in, dtdMappings);
+                    docs.add(DomHelper.parse(in, dtdMappings));
                 } catch (XWorkException e) {
                     if (includeElement != null) {
                         throw new ConfigurationException("Unable to load " + url, e, includeElement);
@@ -909,7 +912,16 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                         }
                     }
                 }
+            }
 
+            //sort the documents, according to the "order" attribute
+            Collections.sort(docs, new Comparator<Document>() {
+                public int compare(Document doc1, Document doc2) {
+                    return XmlHelper.getLoadOrder(doc1) - XmlHelper.getLoadOrder(doc2);
+                }
+            });
+
+            for (Document doc : docs) {
                 Element rootElement = doc.getDocumentElement();
                 NodeList children = rootElement.getChildNodes();
                 int childSize = children.getLength();
@@ -930,16 +942,15 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                                 wildcardFinder.setPattern(includeFileName);
                                 Vector<String> wildcardMatches = wildcardFinder.findMatches();
                                 for (String match : wildcardMatches) {
-                                    docs.addAll(loadConfigurationFiles(match, child));
+                                    finalDocs.addAll(loadConfigurationFiles(match, child));
                                 }
                             } else {
-
-                                docs.addAll(loadConfigurationFiles(includeFileName, child));
+                                finalDocs.addAll(loadConfigurationFiles(includeFileName, child));
                             }
                         }
                     }
                 }
-                docs.add(doc);
+                finalDocs.add(doc);
                 loadedFileUrls.add(url.toString());
             }
 
@@ -947,7 +958,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 LOG.debug("Loaded action configuration from: " + fileName);
             }
         }
-        return docs;
+        return finalDocs;
     }
 
     private void handleWildCardIncludes(String includeFileName, List<Document> docs, Element child) {
@@ -1100,4 +1111,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
         return InterceptorBuilder.constructInterceptorReference(context, refName, refParams, loc, objectFactory);
     }
 
+    List<Document> getDocuments() {
+        return documents;
+    }
 }
