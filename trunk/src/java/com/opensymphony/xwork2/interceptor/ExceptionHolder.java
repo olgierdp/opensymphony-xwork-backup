@@ -7,6 +7,7 @@ package com.opensymphony.xwork2.interceptor;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Serializable;
 
 /**
  * <!-- START SNIPPET: javadoc -->
@@ -18,7 +19,7 @@ import java.io.StringWriter;
  *
  * @author Matthew E. Porter (matthew dot porter at metissian dot com)
  */
-public class ExceptionHolder {
+public class ExceptionHolder implements Serializable {
 
     private Exception exception;
 
