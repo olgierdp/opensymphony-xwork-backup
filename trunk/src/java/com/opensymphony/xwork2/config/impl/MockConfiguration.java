@@ -76,7 +76,8 @@ public class MockConfiguration implements Configuration {
         throw new UnsupportedOperationException();
     }
 
-    public void removePackageConfig(String name) {
+    public PackageConfig removePackageConfig(String name) {
+        return packages.remove(name);
     }
 
     public Container getContainer() {
