@@ -100,7 +100,7 @@ public class XmlHelper {
     /**
      * Return the value of the "order" attribute from the root element
      */
-     public static int getLoadOrder(Document doc) {
+     public static Integer getLoadOrder(Document doc) {
         Element rootElement = doc.getDocumentElement();
         String number = rootElement.getAttribute("order");
         if (StringUtils.isNotBlank(number)) {

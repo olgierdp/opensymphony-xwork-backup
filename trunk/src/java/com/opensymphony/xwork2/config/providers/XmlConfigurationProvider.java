@@ -917,7 +917,7 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
             //sort the documents, according to the "order" attribute
             Collections.sort(docs, new Comparator<Document>() {
                 public int compare(Document doc1, Document doc2) {
-                    return XmlHelper.getLoadOrder(doc1) - XmlHelper.getLoadOrder(doc2);
+                    return XmlHelper.getLoadOrder(doc1).compareTo(XmlHelper.getLoadOrder(doc2));
                 }
             });
 
