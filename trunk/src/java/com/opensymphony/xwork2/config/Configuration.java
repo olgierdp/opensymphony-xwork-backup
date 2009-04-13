@@ -40,6 +40,14 @@ public interface Configuration extends Serializable {
     void addPackageConfig(String name, PackageConfig packageConfig);
 
     /**
+     * Removes a package from the the list of packages. Changes to the configuration won't take effect until buildRuntimeConfiguration
+     * is called.
+     * @param packageName the name of the package to remove
+     * @return the package removed (if any)
+     */
+    PackageConfig removePackageConfig(String packageName);
+
+    /**
      * Allow the Configuration to clean up any resources that have been used.
      */
     void destroy();

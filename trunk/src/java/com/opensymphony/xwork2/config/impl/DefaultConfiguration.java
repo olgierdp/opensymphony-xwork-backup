@@ -119,6 +119,10 @@ public class DefaultConfiguration implements Configuration {
         packageContexts.put(name, packageContext);
     }
 
+    public PackageConfig removePackageConfig(String packageName) {
+        return packageContexts.remove(packageName);
+    }
+
     /**
      * Allows the configuration to clean up any resources used
      */
