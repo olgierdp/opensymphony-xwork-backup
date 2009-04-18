@@ -203,7 +203,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
     }
 
     private  List<ValidatorConfig> buildAliasValidatorConfigs(Class aClass, String context, boolean checkFile) {
-        String fileName = aClass.getName().replace('.', '/') + "-" + context + VALIDATION_CONFIG_SUFFIX;
+        String fileName = aClass.getName().replace('.', '/') + "-" + context.replace('/', '-') + VALIDATION_CONFIG_SUFFIX;
 
         return loadFile(fileName, aClass, checkFile);
     }

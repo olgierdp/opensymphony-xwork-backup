@@ -7,6 +7,7 @@ package com.opensymphony.xwork2.validator;
 import com.opensymphony.xwork2.AnnotatedTestBean;
 import com.opensymphony.xwork2.SimpleAnnotationAction;
 import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.SimpleAction;
 import com.opensymphony.xwork2.test.AnnotationDataAware2;
 import com.opensymphony.xwork2.test.AnnotationUser;
 import com.opensymphony.xwork2.test.SimpleAnnotationAction2;
@@ -226,6 +227,12 @@ public class AnnotationActionValidatorManagerTest extends XWorkTestCase {
         List validatorList = annotationActionValidatorManager.getValidators(SimpleAnnotationAction.class, alias);
         List validatorList2 = annotationActionValidatorManager.getValidators(SimpleAnnotationAction2.class, alias);
         assertFalse(validatorList.size() == validatorList2.size());
+    }
+
+    public void testSameAliasWithAliasWithSlashes() {
+        List validatorList = annotationActionValidatorManager.getValidators(SimpleAction.class, "some/alias");
+        assertNotNull(validatorList);
+        assertEquals(11, validatorList.size());
     }
 
     public void testSkipUserMarkerActionLevelShortCircuit() {
