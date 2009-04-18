@@ -4,8 +4,8 @@
  */
 package com.opensymphony.xwork2.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.opensymphony.xwork2.util.logging.Logger;
+import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
-
 /**
  * FileManager
  * <p/>
@@ -30,7 +29,7 @@ import java.util.zip.ZipEntry;
 public class FileManager {
     //~ Static fields/initializers /////////////////////////////////////////////
 
-    private static Log LOG = LogFactory.getLog(FileManager.class);
+    private static Logger LOG = LoggerFactory.getLogger(FileManager.class);
 
     private static Map<String, Revision> files = Collections.synchronizedMap(new HashMap<String, Revision>());
     protected static boolean reloadingConfigs = true;
