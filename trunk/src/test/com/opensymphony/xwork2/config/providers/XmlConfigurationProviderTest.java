@@ -164,10 +164,10 @@ public class XmlConfigurationProviderTest extends ConfigurationTestBase {
         int startIndex = fullPath.indexOf(":file:/");
         int endIndex = fullPath.indexOf("!/");
 
-        String jar = fullPath.substring(startIndex + ":file:/".length(), endIndex).replaceAll("%20", " ");
+        String jar = fullPath.substring(startIndex + (":file:/".length() -1 ), endIndex).replaceAll("%20", " ");
 
         File file = new File(jar);
-
+        
         assertTrue("File [" + file + "] doesn't exist!", file.exists());
         file.setLastModified(System.currentTimeMillis());
 
