@@ -237,7 +237,7 @@ public class ExceptionMappingInterceptor extends AbstractInterceptor {
     	}
     }
 
-    private String findResultFromExceptions(List<ExceptionMappingConfig> exceptionMappings, Throwable t) {
+    protected String findResultFromExceptions(List<ExceptionMappingConfig> exceptionMappings, Throwable t) {
         String result = null;
 
         // Check for specific exception mappings.
