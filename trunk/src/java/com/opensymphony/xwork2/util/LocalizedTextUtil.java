@@ -75,6 +75,8 @@ public class LocalizedTextUtil {
     private static final ConcurrentMap<String, ResourceBundle> bundlesMap = new ConcurrentHashMap<String, ResourceBundle>();
     private static final Map<MessageFormatKey, MessageFormat> messageFormats = new HashMap<MessageFormatKey, MessageFormat>();
 
+    private static ClassLoader delegatedClassLoader;
+    
     static {
         clearDefaultResourceBundles();
     }
@@ -216,6 +218,8 @@ public class LocalizedTextUtil {
      * Finds the given resorce bundle by it's name.
      * <p/>
      * Will use <code>Thread.currentThread().getContextClassLoader()</code> as the classloader.
+     * If {@link #delegatedClassLoader} is defined and the bundle cannot be found the current
+     * classloader it will delegate to that.
      *
      * @param aBundleName the name of the bundle (usually it's FQN classname).
      * @param locale      the locale.
@@ -237,11 +241,52 @@ public class LocalizedTextUtil {
 
             bundle = bundlesMap.get(key);
         } catch (MissingResourceException ex) {
-            bundle = EMPTY_BUNDLE;
-            bundlesMap.put(key, bundle);
+            if ( delegatedClassLoader != null) {
+                try {
+                    if (!bundlesMap.containsKey(key)) {
+                        bundle = ResourceBundle.getBundle(
+                                aBundleName,
+                                locale,
+                                delegatedClassLoader);
+                        bundlesMap.put(key, bundle);
+                    }
+
+                    bundle = bundlesMap.get(key);
+                    
+                } catch (MissingResourceException e) {
+                    bundle = EMPTY_BUNDLE;
+                    bundlesMap.put(key, bundle);
+                }
+            } else {
+                bundle = EMPTY_BUNDLE;
+                bundlesMap.put(key, bundle);
+            }
         }
         return (bundle == EMPTY_BUNDLE) ? null : bundle;
     }
+
+    /**
+     * Sets a {@link ClassLoader} to look up the bundle from if none can be found on the current thread's classloader
+     *
+     * @param classLoader
+     */
+    public static void setDelegatedClassLoader(final ClassLoader classLoader) {
+        synchronized (bundlesMap) {
+            delegatedClassLoader = classLoader;
+        }
+    }
+
+    /**
+     * Removes the bundle from any cached "misses"
+     *
+     * @param bundleName
+     */
+    public static void clearBundle(final String bundleName) {
+        synchronized (bundlesMap) {
+            bundlesMap.remove(bundleName);
+        }
+    }
+
 
     /**
      * Creates a key to used for lookup/storing in the bundle misses cache.
