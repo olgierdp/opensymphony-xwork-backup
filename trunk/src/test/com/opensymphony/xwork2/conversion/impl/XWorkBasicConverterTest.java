@@ -226,4 +226,11 @@ public class XWorkBasicConverterTest extends TestCase {
         assertEquals(94.1231233d, ((Double) convertedObject).doubleValue(), 0.0001);
     }
 
+    public void testNestedEnumValue() throws Exception {
+        XWorkBasicConverter basicConverter = new XWorkBasicConverter();
+        Object convertedObject = basicConverter.convertValue(ParentClass.NestedEnum.TEST.name(), ParentClass.NestedEnum.class);
+        assertTrue(convertedObject instanceof ParentClass.NestedEnum);
+        assertEquals(ParentClass.NestedEnum.TEST, convertedObject);
+    }
+
 }
