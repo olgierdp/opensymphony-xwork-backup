@@ -379,7 +379,7 @@ import com.opensymphony.xwork2.util.ValueStack;
  * <!-- END SNIPPET: i18n -->
  * @author Jason Carreira
  */
-public interface Validator {
+public interface Validator<T> {
 
     /**
      * Sets the default message to use for validation failure
