@@ -104,7 +104,7 @@ public class I18nInterceptorTest extends TestCase {
     }
 
     public void testWithVariantRequestOnly() throws Exception {
-        params.put(I18nInterceptor.DEFAULT_PARAMETER, "fr_CA_xx");
+        params.put(I18nInterceptor.DEFAULT_REQUESTONLY_PARAMETER, "fr_CA_xx");
         interceptor.intercept(mai);
 
         assertNull(params.get(I18nInterceptor.DEFAULT_PARAMETER)); // should have been removed
