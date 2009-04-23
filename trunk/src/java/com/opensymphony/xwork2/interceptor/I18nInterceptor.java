@@ -19,7 +19,8 @@ import java.util.Map;
  * An interceptor that handles setting the locale specified in a session as the locale for the current action request.
  * In addition, this interceptor will look for a specific HTTP request parameter and set the locale to whatever value is
  * provided. This means that this interceptor can be used to allow for your application to dynamically change the locale
- * for the user's session. This is very useful for applications that require multi-lingual support and want the user to
+ * for the user's session or, alternatively, only for the current request (since XWork 2.1.3).
+ * This is very useful for applications that require multi-lingual support and want the user to
  * be able to set his or her language preference at any point. The locale parameter is removed during the execution of
  * this interceptor, ensuring that properties aren't set on an action (such as request_locale) that have no typical
  * corresponding setter in your action.
@@ -37,6 +38,9 @@ import java.util.Map;
  *
  * <li>parameterName (optional) - the name of the HTTP request parameter that dictates the locale to switch to and save
  * in the session. By default this is <b>request_locale</b></li>
+ *
+ * <li>requestOnlyParameterName (optional) - the name of the HTTP request parameter that dictates the locale to switch to
+ * for the current request only, without saving it in the session. By default this is <b>request_only_locale</b></li>
  *
  * <li>attributeName (optional) - the name of the session key to store the selected locale. By default this is
  * <b>WW_TRANS_I18N_LOCALE</b></li>
@@ -74,8 +78,10 @@ public class I18nInterceptor extends AbstractInterceptor {
 
     public static final String DEFAULT_SESSION_ATTRIBUTE = "WW_TRANS_I18N_LOCALE";
     public static final String DEFAULT_PARAMETER = "request_locale";
+    public static final String DEFAULT_REQUESTONLY_PARAMETER = "request_only_locale";
 
     protected String parameterName = DEFAULT_PARAMETER;
+    protected String requestOnlyParameterName = DEFAULT_REQUESTONLY_PARAMETER;
     protected String attributeName = DEFAULT_SESSION_ATTRIBUTE;
 
     public I18nInterceptor() {
@@ -86,6 +92,10 @@ public class I18nInterceptor extends AbstractInterceptor {
 
     public void setParameterName(String parameterName) {
         this.parameterName = parameterName;
+    }
+
+    public void setRequestOnlyParameterName( String requestOnlyParameterName ) {
+        this.requestOnlyParameterName = requestOnlyParameterName;
     }
 
     public void setAttributeName(String attributeName) {
@@ -101,13 +111,13 @@ public class I18nInterceptor extends AbstractInterceptor {
         }
         //get requested locale
         Map<String, Object> params = invocation.getInvocationContext().getParameters();
-        Object requested_locale = params.remove(parameterName);
-        if (requested_locale != null && requested_locale.getClass().isArray()
-                && ((Object[]) requested_locale).length == 1) {
-            requested_locale = ((Object[]) requested_locale)[0];
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("requested_locale=" + requested_locale);
+        boolean storeInSession = true;
+        Object requested_locale = findLocaleParameter(params, parameterName);
+        if (requested_locale == null) {
+        	requested_locale = findLocaleParameter(params, requestOnlyParameterName);
+            if (requested_locale != null) {
+            	storeInSession = false;
             }
         }
 
@@ -140,7 +150,9 @@ public class I18nInterceptor extends AbstractInterceptor {
                         }
                     }
                 }
-                session.put(attributeName, locale);
+                if (storeInSession) {
+                    session.put(attributeName, locale);
+                }
             }
         }
         saveLocale(invocation, locale);
@@ -159,6 +171,19 @@ public class I18nInterceptor extends AbstractInterceptor {
         }
 
         return result;
+    }
+
+    private Object findLocaleParameter( Map<String, Object> params, String parameterName ) {
+        Object requested_locale = params.remove(parameterName);
+        if (requested_locale != null && requested_locale.getClass().isArray()
+                && ((Object[]) requested_locale).length == 1) {
+            requested_locale = ((Object[]) requested_locale)[0];
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("requested_locale=" + requested_locale);
+            }
+        }
+        return requested_locale;
     }
 
     /**
