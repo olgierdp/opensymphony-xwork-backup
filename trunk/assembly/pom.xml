@@ -1,0 +1,126 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.opensymphony</groupId>
+    <artifactId>xwork-assembly</artifactId>
+    <packaging>pom</packaging>
+    <name>XWork: Assembly</name>
+    <description>
+        XWork Assembly
+    </description>
+
+    <parent>
+        <groupId>com.opensymphony</groupId>
+        <artifactId>xwork-parent</artifactId>
+        <version>2.1.4-SNAPSHOT</version>
+    </parent>
+
+    <scm>
+        <connection>scm:svn:http://svn.opensymphony.com/svn/xwork/trunk/assembly</connection>
+        <developerConnection>
+            scm:svn:https://svn.opensymphony.com/svn/xwork/trunk/assembly
+        </developerConnection>
+        <url>https://svn.opensymphony.com/svn/xwork/trunk/assembly</url>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>The OpenSymphony Software License 1.1</name>
+            <!--<url>http://opensymphony.com/xwork/license.action</url>-->
+            <url>${basedir}/src/resources/LICENSE.txt</url>
+            <comments>
+                This license is derived and fully compatible with the Apache Software
+                License - see http://www.apache.org/LICENSE.txt
+            </comments>
+        </license>
+    </licenses>
+    
+    <profiles>
+        <profile>
+            <id>j4</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>2.2-beta-1</version>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attached</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>${basedir}/src/main/assembly/all.xml</descriptor>
+                                <descriptor>${basedir}/src/main/assembly/java14.xml</descriptor>
+                                <descriptor>${basedir}/src/main/assembly/lib.xml</descriptor>
+                                <descriptor>${basedir}/src/main/assembly/src.xml</descriptor>
+                            </descriptors>
+                            <finalName>xwork-${version}</finalName>
+                            <outputDirectory>${basedir}/target/assembly/out</outputDirectory>
+                            <workDirectory>${basedir}/target/assembly/work</workDirectory>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <!-- Backported JDK 1.4 jars -->
+                <dependency>
+                    <groupId>net.sf.retrotranslator</groupId>
+                    <artifactId>retrotranslator-runtime</artifactId>
+                    <version>1.2.1</version>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>backport-util-concurrent</groupId>
+                    <artifactId>backport-util-concurrent</artifactId>
+                    <version>3.0</version>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.opensymphony</groupId>
+                    <artifactId>xwork</artifactId>
+                    <version>${version}</version>
+                    <type>jar</type>
+                    <classifier>jdk14</classifier>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <build>
+         <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2-beta-1</version>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attached</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptors>
+                        <descriptor>${basedir}/src/main/assembly/all.xml</descriptor>
+                        <descriptor>${basedir}/src/main/assembly/java14.xml</descriptor>
+                        <descriptor>${basedir}/src/main/assembly/lib.xml</descriptor>
+                        <descriptor>${basedir}/src/main/assembly/src.xml</descriptor>
+                    </descriptors>
+                    <finalName>xwork-${version}</finalName>
+                    <outputDirectory>${basedir}/target/assembly/out</outputDirectory>
+                    <workDirectory>${basedir}/target/assembly/work</workDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+

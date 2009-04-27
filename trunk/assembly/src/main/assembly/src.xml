@@ -1,0 +1,103 @@
+<!--
+/*
+ * $Id$
+ *
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
+ */
+-->
+<assembly>
+    <id>src</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>true</includeBaseDirectory>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <scope>optional</scope>
+            <excludes>
+                <exclude>sun.jdk:rt</exclude>
+            </excludes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <scope>compile</scope>
+            <excludes>
+                <exclude>sun.jdk:rt</exclude>
+            </excludes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <scope>provided</scope>
+            <excludes>
+                <exclude>sun.jdk:rt</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>../</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>pom*</include>
+            </includes>
+            <excludes>
+                <exclude>null</exclude>
+                <exclude>dist</exclude>
+                <exclude>build</exclude>
+                <exclude>target</exclude>
+                <exclude>test-build</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>../src</directory>
+            <outputDirectory>src</outputDirectory>
+        </fileSet>
+
+        <!-- Include the source code in the assembly -->
+        <fileSet>
+            <directory>../core</directory>
+            <outputDirectory>core</outputDirectory>
+            <includes>
+                <include>pom.xml</include>
+                <include>src/</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>../plugins</directory>
+            <outputDirectory>plugins</outputDirectory>
+            <excludes>
+                <exclude>*/target/**</exclude>
+                <exclude>target/**</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <directory>../assembly</directory>
+            <outputDirectory>assembly</outputDirectory>
+            <includes>
+                <include>pom.xml</include>
+                <include>src/</include>
+            </includes>
+        </fileSet>
+<!--
+        <fileSet>
+            <directory>../showcase</directory>
+            <outputDirectory>showcase</outputDirectory>
+            <includes>
+                <include>pom.xml</include>
+                <include>src/</include>
+            </includes>
+        </fileSet>
+-->
+
+    </fileSets>
+</assembly>
