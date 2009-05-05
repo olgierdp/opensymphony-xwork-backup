@@ -12,13 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Use with ClassFinder to filter the Urls to be scanned, example:
@@ -38,9 +32,16 @@ import java.util.Map;
 public class UrlSet {
     private static final Logger LOG = LoggerFactory.getLogger(UrlSet.class);
     private final Map<String,URL> urls;
+    private Set<String> protocols;
+    
 
     public UrlSet(ClassLoaderInterface classLoader) throws IOException {
         this(getUrls(classLoader));
+    }
+
+    public UrlSet(ClassLoaderInterface classLoader, Set<String> protocols) throws IOException {
+        this(getUrls(classLoader, protocols));
+        this.protocols = protocols;
     }
 
     public UrlSet(URL... urls){
@@ -92,7 +93,7 @@ public class UrlSet {
     }
 
     public UrlSet exclude(ClassLoaderInterface parent) throws IOException {
-        return exclude(new UrlSet(parent));
+        return exclude(new UrlSet(parent, this.protocols));
     }
 
     public UrlSet exclude(File file) throws MalformedURLException {
@@ -194,4 +195,32 @@ public class UrlSet {
         list.addAll(Collections.list(classLoader.getResources("")));
         return list;
     }
+
+    private static List<URL> getUrls(ClassLoaderInterface classLoader, Set<String> protocols) throws IOException {
+
+        if (protocols == null) {
+            return getUrls(classLoader);
+        }
+
+        List<URL> list = new ArrayList<URL>();
+
+        //find jars
+        ArrayList<URL> urls = Collections.list(classLoader.getResources("META-INF"));
+
+        for (URL url : urls) {
+            if (protocols.contains(url.getProtocol())) {
+                String externalForm = url.toExternalForm();
+                //build a URL pointing to the jar, instead of the META-INF dir
+                url = new URL(StringUtils.substringBefore(externalForm, "META-INF"));
+                list.add(url);
+            } else if (LOG.isDebugEnabled())
+                LOG.debug("Ignoring URL [#0] because it is not a valid protocol", url.toExternalForm());
+
+        }
+
+        //usually the "classes" dir
+        list.addAll(Collections.list(classLoader.getResources("")));
+        return list;
+    }
+
 }
