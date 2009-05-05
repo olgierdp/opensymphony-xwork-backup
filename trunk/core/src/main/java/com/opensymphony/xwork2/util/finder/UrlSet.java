@@ -125,14 +125,17 @@ public class UrlSet {
 
     public UrlSet excludeJavaHome() throws MalformedURLException {
         String path = System.getProperty("java.home");
+        if (path != null) {
 
-        File java = new File(path);
+            File java = new File(path);
 
-        if (path.matches("/System/Library/Frameworks/JavaVM.framework/Versions/[^/]+/Home")){
-            java = java.getParentFile();
+            if (path.matches("/System/Library/Frameworks/JavaVM.framework/Versions/[^/]+/Home")){
+                java = java.getParentFile();
+            }
+            return exclude(java);
+        } else {
+            return this;
         }
-
-        return exclude(java);
     }
 
     public UrlSet excludePaths(String pathString) throws MalformedURLException {
