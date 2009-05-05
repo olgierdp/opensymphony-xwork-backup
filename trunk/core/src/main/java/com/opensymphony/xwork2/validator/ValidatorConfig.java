@@ -43,6 +43,7 @@ public class ValidatorConfig extends Located {
         this.defaultMessage = orig.defaultMessage;
         this.messageKey = orig.messageKey;
         this.shortCircuit = orig.shortCircuit;
+        this.messageParams = orig.messageParams;
     }
     
     /**
