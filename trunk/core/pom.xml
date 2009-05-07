@@ -162,7 +162,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <shadedArtifactId>xwork</shadedArtifactId>
+                            <shadedArtifactId>xwork-core</shadedArtifactId>
                             <artifactSet>
                                 <excludes>
                                     <exclude>junit:junit</exclude>
