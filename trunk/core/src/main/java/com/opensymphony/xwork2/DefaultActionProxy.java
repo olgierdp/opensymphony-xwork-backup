@@ -38,7 +38,7 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
     protected Configuration configuration;
     protected ActionConfig config;
     protected ActionInvocation invocation;
-    protected UnknownHandler unknownHandler;
+    protected UnknownHandlerManager unknownHandlerManager;
     protected String actionName;
     protected String namespace;
     protected String method;
@@ -79,9 +79,9 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
         this.configuration = config;
     }
     
-    @Inject(required=false)
-    public void setUnknownHandler(UnknownHandler handler) {
-        this.unknownHandler = handler;
+    @Inject
+    public void setUnknownHandler(UnknownHandlerManager unknownHandlerManager) {
+        this.unknownHandlerManager = unknownHandlerManager;
     }
     
     @Inject(required=false) 
@@ -160,8 +160,8 @@ public class DefaultActionProxy implements ActionProxy, Serializable {
             UtilTimerStack.push(profileKey);
             config = configuration.getRuntimeConfiguration().getActionConfig(namespace, actionName);
     
-            if (config == null && unknownHandler != null) {
-                config = unknownHandler.handleUnknownAction(namespace, actionName);
+            if (config == null && unknownHandlerManager.hasUnknownHandlers()) {
+                config = unknownHandlerManager.handleUnknownAction(namespace, actionName);
             }
             if (config == null) {
                 String message;
