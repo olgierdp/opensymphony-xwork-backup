@@ -86,6 +86,26 @@ public class URLUtilTest extends TestCase {
         assertEquals("file:/c:/somefile.war/somelibrary.jar", outputURL.toExternalForm());
     }
 
+    public void testJBossFile() throws MalformedURLException {
+        URL url = new URL("vfszip:/c:/somefile.jar!/");
+        URL outputURL = URLUtil.normalizeToFileProtocol(url);
+
+        assertNotNull(outputURL);
+        assertEquals("file:/c:/somefile.jar", outputURL.toExternalForm());
+
+        url = new URL("vfszip:/c:/somefile.jar!/somestuf/bla/bla");
+        outputURL = URLUtil.normalizeToFileProtocol(url);
+        assertEquals("file:/c:/somefile.jar", outputURL.toExternalForm());
+
+        url = new URL("vfsmemory:c:/somefile.jar!/somestuf/bla/bla");
+        outputURL = URLUtil.normalizeToFileProtocol(url);
+        assertEquals("file:c:/somefile.jar", outputURL.toExternalForm());
+
+        url = new URL("vfsmemory:/c:/somefile.war/somelibrary.jar");
+        outputURL = URLUtil.normalizeToFileProtocol(url);
+        assertEquals("file:/c:/somefile.war/somelibrary.jar", outputURL.toExternalForm());
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -128,5 +148,6 @@ public class URLUtilTest extends TestCase {
         assertTrue(URLUtil.isJBoss5Url(new URL("vfszip:/c:/somewar.war/somelibrary.jar")));
         assertFalse(URLUtil.isJBoss5Url(new URL("vfsfile:/c:/somewar.war/somelibrary.jar")));
         assertFalse(URLUtil.isJBoss5Url(new URL("jar:file:/c:/somelibrary.jar")));
+        assertTrue(URLUtil.isJBoss5Url(new URL("vfsmemory:/c:/somewar.war/somelibrary.jar")));
     }
 }
