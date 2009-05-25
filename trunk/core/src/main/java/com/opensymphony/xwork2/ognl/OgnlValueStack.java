@@ -160,15 +160,12 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
             context.put(REPORT_ERRORS_ON_NO_PROP, (throwExceptionOnFailure) ? Boolean.TRUE : Boolean.FALSE);
             ognlUtil.setValue(expr, context, root, value);
         } catch (OgnlException e) {
+            String msg = "Error setting expression '" + expr + "' with value '" + value + "'";
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(msg, e);
+            }
             if (throwExceptionOnFailure) {
-                e.printStackTrace(System.out);
-                System.out.println("expr: " + expr + " val: " + value + " context: " + context + " root:" + root + " value: " + value);
-                String msg = "Error setting expression '" + expr + "' with value '" + value + "'";
                 throw new XWorkException(msg, e);
-            } else {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn("Error setting value", e);
-                }
             }
         } catch (RuntimeException re) { //XW-281
             if (throwExceptionOnFailure) {
