@@ -114,7 +114,15 @@ public class DefaultValidatorFactory implements ValidatorFactory {
                         // and match the filenames with *-validators.xml. If the filename
                         // matches then add to the list of files to be parsed
                         if (f.isDirectory()) {
-                            files.addAll(Arrays.asList(f.listFiles(filter)));
+                            try {
+                                File[] ff = f.listFiles(filter);
+                                if ( ff != null && ff.length > 0) {
+                                    files.addAll(Arrays.asList(ff));
+                                }
+                            } catch (SecurityException se) {
+                                LOG.error("Security Exception while accessing directory '" + f + "'", se);
+                            }
+
                         } else {
                             // If this is not a directory, then get hold of the inputstream.
                             // If its not a ZipInputStream, then create a ZipInputStream out
