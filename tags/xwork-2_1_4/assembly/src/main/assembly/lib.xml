@@ -1,0 +1,56 @@
+<!--
+/*
+ * $Id$
+ *
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
+ */
+-->
+<assembly>
+    <id>lib</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>sun.jdk:rt</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+            </includes>
+        </fileSet>
+ 
+        <!-- Include the generated jars in archive root -->
+        <fileSet>
+            <directory>../core/target</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>xwork-core-${version}.jar</include>
+                <include>xwork-core-${version}-sources.jar</include>
+                <include>xwork-core-${version}-javadoc.jar</include>
+            </includes>
+        </fileSet>
+        <!--
+                <fileSet>
+                    <directory>../plugins/mock/target</directory>
+                    <outputDirectory>lib</outputDirectory>
+                    <includes>
+                        <include>xwork-mock-plugin-${version}.jar</include>
+                        <include>xwork-mock-plugin-${version}-sources.jar</include>
+                        <include>xwork-mock-plugin-${version}-javadoc.jar</include>
+                    </includes>
+                </fileSet>
+        -->
+        
+    </fileSets>
+</assembly>
