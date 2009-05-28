@@ -53,7 +53,7 @@
     </licenses>
 
     <modules>
-        <module>mock</module>
+        <!--module>mock</module-->
     </modules>
 
     <dependencies>
