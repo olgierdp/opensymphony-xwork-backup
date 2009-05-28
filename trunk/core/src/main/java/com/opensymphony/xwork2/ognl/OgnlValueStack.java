@@ -98,7 +98,7 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
         devMode = "true".equalsIgnoreCase(mode);
     }
 
-    @Inject("logMissingProperties")
+    @Inject(value = "logMissingProperties", required = false )
     public void setLogMissingProperties(String logMissingProperties) {
         this.logMissingProperties = "true".equalsIgnoreCase(logMissingProperties);
     }
