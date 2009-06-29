@@ -37,6 +37,7 @@ public class OgnlUtil {
 
     private TypeConverter defaultConverter;
     static boolean devMode = false;
+    static boolean enableExpressionCache = true;
 
     @Inject
     public void setXWorkConverter(XWorkConverter conv) {
@@ -47,7 +48,12 @@ public class OgnlUtil {
     public static void setDevMode(String mode) {
         devMode = "true".equals(mode);
     }
-    
+
+    @Inject("enableOGNLExpressionCache")
+    public static void setEnableExpressionCache(String cache) {
+       enableExpressionCache = "true".equals(cache);
+    }
+
     /**
      * Sets the object's properties using the default type converter, defaulting to not throw
      * exceptions for problems setting the properties.
@@ -202,12 +208,15 @@ public class OgnlUtil {
 
 
     public Object compile(String expression) throws OgnlException {
-        Object o = expressions.get(expression);
-        if (o == null) {
-            o = Ognl.parseExpression(expression);
-            expressions.put(expression, o);
-        }
-        return o;
+        if (enableExpressionCache) {
+            Object o = expressions.get(expression);
+            if (o == null) {
+                o = Ognl.parseExpression(expression);
+                expressions.put(expression, o);
+            }
+            return o;
+        } else
+            return Ognl.parseExpression(expression);
     }
 
     /**

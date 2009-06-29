@@ -80,6 +80,20 @@ public class OgnlUtilTest extends XWorkTestCase {
         assertEquals(dogName, owner.getDog().getName());
     }
 
+    public void testCacheEnabled() throws OgnlException {
+        OgnlUtil.setEnableExpressionCache("true");
+        Object expr0 = ognlUtil.compile("test");
+        Object expr2 = ognlUtil.compile("test");
+        assertSame(expr0, expr2);
+    }
+
+     public void testCacheDisabled() throws OgnlException {
+        OgnlUtil.setEnableExpressionCache("false");
+        Object expr0 = ognlUtil.compile("test");
+        Object expr2 = ognlUtil.compile("test");
+        assertNotSame(expr0, expr2);
+    }
+
     public void testCanSetDependentObjectArray() {
         EmailAction action = new EmailAction();
         Map<String, Object> context = Ognl.createDefaultContext(action);
