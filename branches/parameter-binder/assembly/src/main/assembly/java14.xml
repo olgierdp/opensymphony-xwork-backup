@@ -1,0 +1,56 @@
+<!--
+/*
+ * $Id$
+ *
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
+ */
+-->
+<assembly>
+    <id>java14</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>opensymphony:xwork</exclude>
+                <exclude>sun.jdk:rt</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+            </includes>
+        </fileSet>
+        <!-- Include the backport jars into java14 dir -->
+        <fileSet>
+            <directory>../core/target</directory>
+            <outputDirectory>java14</outputDirectory>
+            <includes>
+                <include>xwork-core-${version}-jdk14.jar</include>
+                <include>xwork-core-${version}-sources.jar</include>
+                <include>xwork-core-${version}-javadoc.jar</include>
+            </includes>
+        </fileSet>
+        <!--
+                <fileSet>
+                    <directory>../plugins/mock/target</directory>
+                    <outputDirectory>java14</outputDirectory>
+                    <includes>
+                        <include>xwork-mock-plugin-${version}-jdk14.jar</include>
+                        <include>xwork-mock-plugin-${version}-sources.jar</include>
+                        <include>xwork-mock-plugin-${version}-javadoc.jar</include>
+                    </includes>
+                </fileSet>
+        -->
+        
+    </fileSets>
+</assembly>
