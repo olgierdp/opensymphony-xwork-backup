@@ -6,6 +6,8 @@ import com.opensymphony.xwork2.DefaultTextProvider;
 import com.opensymphony.xwork2.DefaultUnknownHandlerManager;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.UnknownHandlerManager;
+import com.opensymphony.xwork2.parameters.XWorkParameterParserUtils;
+import com.opensymphony.xwork2.parameters.XWorkParametersBinder;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
@@ -80,6 +82,8 @@ public class XWorkConfigurationProvider implements ConfigurationProvider {
                .factory(ActionProxyFactory.class, DefaultActionProxyFactory.class, Scope.SINGLETON)
                .factory(ObjectTypeDeterminer.class, DefaultObjectTypeDeterminer.class, Scope.SINGLETON)
                .factory(XWorkConverter.class, Scope.SINGLETON)
+               .factory(XWorkParameterParserUtils.class, Scope.SINGLETON)
+               .factory(XWorkParametersBinder.class, Scope.SINGLETON) 
                .factory(ValueStackFactory.class, OgnlValueStackFactory.class, Scope.SINGLETON)
                .factory(ValidatorFactory.class, DefaultValidatorFactory.class, Scope.SINGLETON)
                .factory(ValidatorFileParser.class, DefaultValidatorFileParser.class, Scope.SINGLETON)
