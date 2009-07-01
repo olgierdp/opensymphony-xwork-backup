@@ -45,12 +45,18 @@ public class XWorkParametersBinder {
     protected Container container;
     private XWorkParametersMapPropertyAccessor mapAccessor;
 
+    private static final Map<String, List<Node>> nodesCache = new WeakHashMap<String, List<Node>>();
+
     public void setProperty(Map<String, Object> context, Object action, String paramName, Object paramValue) {
         try {
             OgnlContext ognlContext = new OgnlContext(context);
 
-            XWorkParameterParser parser = new XWorkParameterParser(paramName);
-            List<Node> nodes = parser.expression();
+            List<Node> nodes = nodesCache.get(paramName);
+            if (nodes == null) {
+                XWorkParameterParser parser = new XWorkParameterParser(paramName);
+                nodes = parser.expression();
+                nodesCache.put(paramName, nodes);
+            }
 
             Object lastObject = action;
             Object lastProperty = null;
