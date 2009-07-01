@@ -43,6 +43,33 @@ public class XWorkParametersBinderTest extends XWorkTestCase {
         assertEquals("Lex Luthor", action.getName());
     }
 
+    public void testPropertyAsIndex() throws ParseException, OgnlException {
+        String expr = "['name']";
+        SimpleAction action = new SimpleAction();
+
+        assertNull(action.getName());
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        binder.setProperty(context, action, expr, "Lex Luthor");
+
+        assertEquals("Lex Luthor", action.getName());
+    }
+
+    public void testPropertyAsIndexEmptyString() throws ParseException, OgnlException {
+        String expr = "['']";
+        SimpleAction action = new SimpleAction();
+
+        assertNull(action.getName());
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        try {
+            binder.setProperty(context, action, expr, "Lex Luthor");
+            fail("should have failed");
+        } catch (Exception e) {
+            //ok
+        }
+    }
+
     public void testNested() throws ParseException, OgnlException {
         String expr = "bean.name";
         SimpleAction action = new SimpleAction();
@@ -94,6 +121,56 @@ public class XWorkParametersBinderTest extends XWorkTestCase {
         binder.setProperty(context, action, expr, "Lex Luthor");
 
         assertEquals("Lex Luthor", action.getSomeMap().get("Name"));
+    }
+
+     public void testSimplePropertyOnObjectInMap() throws ParseException, OgnlException {
+        String expr = "otherMap['my_hero'].name";
+        SimpleAction action = new SimpleAction();
+
+        assertNull(action.getOtherMap().get("my_hero"));
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        binder.setProperty(context, action, expr, "Lex Luthor");
+
+        assertEquals("Lex Luthor", action.getOtherMap().get("my_hero").getName());
+    }
+
+    public void testSimplePropertyOnObjectInMapNull() throws ParseException, OgnlException {
+        String expr = "otherMap['my_hero'].name";
+        SimpleAction action = new SimpleAction();
+        action.setOtherMap(null);
+
+        assertNull(action.getOtherMap());
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        binder.setProperty(context, action, expr, "Lex Luthor");
+
+        assertEquals("Lex Luthor", action.getOtherMap().get("my_hero").getName());
+    }
+
+    public void testSimplePropertyOnObjectInList() throws ParseException, OgnlException {
+        String expr = "otherList[0].name";
+        SimpleAction action = new SimpleAction();
+
+        assertEquals(0, action.getOtherList().size());
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        binder.setProperty(context, action, expr, "Lex Luthor");
+
+        assertEquals("Lex Luthor", action.getOtherList().get(0).getName());
+    }
+
+    public void testSimplePropertyOnObjectInListNull() throws ParseException, OgnlException {
+        String expr = "otherList[0].name";
+        SimpleAction action = new SimpleAction();
+        action.setOtherList(null);
+
+        assertNull(action.getOtherList());
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        binder.setProperty(context, action, expr, "Lex Luthor");
+
+        assertEquals("Lex Luthor", action.getOtherList().get(0).getName());
     }
 
     //Lists

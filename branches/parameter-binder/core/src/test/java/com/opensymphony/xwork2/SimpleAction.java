@@ -45,12 +45,31 @@ public class SimpleAction extends ActionSupport {
     private int[] intArray = new int[5];
     private Collection<SimpleAction> someCollection = new ArrayList<SimpleAction>();
 
+    private Map<String,TestBean> otherMap = new HashMap<String,TestBean>();
+    private List<TestBean> otherList = new ArrayList<TestBean>();
+
     public static boolean resultCalled;
     private SimpleAction nestedAction;
 
     public SimpleAction() {
         resultCalled = false;
         existingMap.put("existingKey", "value");
+    }
+
+    public List<TestBean> getOtherList() {
+        return otherList;
+    }
+
+    public void setOtherList(List<TestBean> otherList) {
+        this.otherList = otherList;
+    }
+
+    public void setOtherMap(Map<String, TestBean> otherMap) {
+        this.otherMap = otherMap;
+    }
+
+    public Map<String, TestBean> getOtherMap() {
+        return otherMap;
     }
 
     public Collection<SimpleAction> getSomeCollection() {

@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import com.opensymphony.xwork2.parameters.nodes.*;
+import com.opensymphony.xwork2.parameters.ParserUtils;
+import org.apache.commons.lang.StringUtils;
 
 class XWorkParameterParser implements XWorkParameterParserConstants {
-    private XWorkParameterParserUtils parserUtils;
-
     public XWorkParameterParser(String paramName) {
         this((new StringReader(paramName)));
     }
@@ -48,6 +48,11 @@ class XWorkParameterParser implements XWorkParameterParserConstants {
     } else if (jj_2_4(2)) {
       id = jj_consume_token(IDENTIFIER);
         {if (true) return new IdentifierNode(id.image);}
+    } else if (jj_2_5(2)) {
+      jj_consume_token(LBRACKET);
+      id = jj_consume_token(STRING_LITERAL);
+      jj_consume_token(RBRACKET);
+        {if (true) return new IdentifierNode(ParserUtils.getStringLiteral(id.image));}
     } else {
       jj_consume_token(-1);
       throw new ParseException();
@@ -79,19 +84,19 @@ class XWorkParameterParser implements XWorkParameterParserConstants {
 
   final public Object value() throws ParseException {
     Token t;
-    if (jj_2_5(2)) {
+    if (jj_2_6(2)) {
       t = jj_consume_token(STRING_LITERAL);
-        {if (true) return t.image.substring(1, t.image.length() - 1);}
-    } else if (jj_2_6(2)) {
+        {if (true) return ParserUtils.getStringLiteral(t.image);}
+    } else if (jj_2_7(2)) {
       t = jj_consume_token(INTEGER_LITERAL);
         {if (true) return Integer.valueOf(t.image);}
-    } else if (jj_2_7(2)) {
+    } else if (jj_2_8(2)) {
       t = jj_consume_token(FLOATING_POINT_LITERAL);
         {if (true) return Double.valueOf(t.image);}
-    } else if (jj_2_8(2)) {
+    } else if (jj_2_9(2)) {
       jj_consume_token(TRUE);
         {if (true) return Boolean.TRUE;}
-    } else if (jj_2_9(2)) {
+    } else if (jj_2_10(2)) {
       jj_consume_token(FALSE);
         {if (true) return Boolean.FALSE;}
     } else {
@@ -164,18 +169,26 @@ class XWorkParameterParser implements XWorkParameterParserConstants {
     finally { jj_save(8, xla); }
   }
 
+  private boolean jj_2_10(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_10(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(9, xla); }
+  }
+
   private boolean jj_3_1() {
     if (jj_scan_token(DOT)) return true;
     if (jj_3R_2()) return true;
     return false;
   }
 
-  private boolean jj_3_4() {
-    if (jj_scan_token(IDENTIFIER)) return true;
+  private boolean jj_3_5() {
+    if (jj_scan_token(LBRACKET)) return true;
+    if (jj_scan_token(STRING_LITERAL)) return true;
     return false;
   }
 
-  private boolean jj_3_9() {
+  private boolean jj_3_10() {
     if (jj_scan_token(FALSE)) return true;
     return false;
   }
@@ -186,13 +199,23 @@ class XWorkParameterParser implements XWorkParameterParserConstants {
     return false;
   }
 
+  private boolean jj_3_4() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_9() {
+    if (jj_scan_token(TRUE)) return true;
+    return false;
+  }
+
   private boolean jj_3_3() {
     if (jj_3R_4()) return true;
     return false;
   }
 
   private boolean jj_3_8() {
-    if (jj_scan_token(TRUE)) return true;
+    if (jj_scan_token(FLOATING_POINT_LITERAL)) return true;
     return false;
   }
 
@@ -203,7 +226,10 @@ class XWorkParameterParser implements XWorkParameterParserConstants {
     jj_scanpos = xsp;
     if (jj_3_3()) {
     jj_scanpos = xsp;
-    if (jj_3_4()) return true;
+    if (jj_3_4()) {
+    jj_scanpos = xsp;
+    if (jj_3_5()) return true;
+    }
     }
     }
     return false;
@@ -215,11 +241,6 @@ class XWorkParameterParser implements XWorkParameterParserConstants {
   }
 
   private boolean jj_3_7() {
-    if (jj_scan_token(FLOATING_POINT_LITERAL)) return true;
-    return false;
-  }
-
-  private boolean jj_3_6() {
     if (jj_scan_token(INTEGER_LITERAL)) return true;
     return false;
   }
@@ -230,7 +251,7 @@ class XWorkParameterParser implements XWorkParameterParserConstants {
     return false;
   }
 
-  private boolean jj_3_5() {
+  private boolean jj_3_6() {
     if (jj_scan_token(STRING_LITERAL)) return true;
     return false;
   }
@@ -254,7 +275,7 @@ class XWorkParameterParser implements XWorkParameterParserConstants {
    private static void jj_la1_init_0() {
       jj_la1_0 = new int[] {};
    }
-  final private JJCalls[] jj_2_rtns = new JJCalls[9];
+  final private JJCalls[] jj_2_rtns = new JJCalls[10];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
@@ -479,7 +500,7 @@ class XWorkParameterParser implements XWorkParameterParserConstants {
 
   private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < 10; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -495,6 +516,7 @@ class XWorkParameterParser implements XWorkParameterParserConstants {
             case 6: jj_3_7(); break;
             case 7: jj_3_8(); break;
             case 8: jj_3_9(); break;
+            case 9: jj_3_10(); break;
           }
         }
         p = p.next;

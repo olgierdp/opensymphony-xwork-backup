@@ -40,10 +40,10 @@ import ognl.OgnlException;
 import ognl.OgnlContext;
 
 public class XWorkParametersBinder {
-    protected XWorkParameterParserUtils parameterParserUtils;
     protected ReflectionProvider reflectionProvider;
     protected NullHandler nullHandler;
     protected Container container;
+    private XWorkParametersMapPropertyAccessor mapAccessor;
 
     public void setProperty(Map<String, Object> context, Object action, String paramName, Object paramValue) {
         try {
@@ -65,6 +65,10 @@ public class XWorkParametersBinder {
                 if (node instanceof IdentifierNode) {
                     //A.B
                     String id = ((IdentifierNode) node).getIdentifier();
+
+                    if (StringUtils.isBlank(id))
+                        throw new ParseException("Expression '" + paramName + "' is invalid");
+
                     lastProperty = id;
 
                     //if this is not the last expression, create the object if it doesn't exist
@@ -85,12 +89,20 @@ public class XWorkParametersBinder {
 
                     lastProperty = index;
                     PropertyAccessor accessor = getPropertyAccessor(lastObject);
-                    lastObject = accessor.getProperty(ognlContext, lastObject, id);
+                    //the list or map
+                    Object container = accessor.getProperty(ognlContext, lastObject, id);
 
-                    //create the lastObject
-                    if (lastObject == null) {
-                        //create it
-                        lastObject = create(ognlContext, action, id);
+                    if (container == null) {
+                        //create the list or map
+                        container = create(ognlContext, lastObject, id);
+                    }
+
+                    lastObject = container;
+
+                    if (!lastNode) {
+                        //the expression goes on like A[B].C, so now create A[B]
+                        accessor = getPropertyAccessor(lastObject);
+                        lastObject = getAndCreate(ognlContext, lastObject, index, accessor);
                     }
                 } else if (node instanceof CollectionNode) {
                     //A(B)
@@ -121,7 +133,7 @@ public class XWorkParametersBinder {
         if (object instanceof CompoundRoot)
             return container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName());
         if (object instanceof Map)
-            return container.getInstance(PropertyAccessor.class, Map.class.getName());
+            return mapAccessor;
         else if (object instanceof List)
             return container.getInstance(PropertyAccessor.class, List.class.getName());
         else if (object instanceof Collection)
@@ -148,9 +160,14 @@ public class XWorkParametersBinder {
         }
     }
 
-    @Inject
-    public void setParameterParserUtils(XWorkParameterParserUtils parameterParserUtils) {
-        this.parameterParserUtils = parameterParserUtils;
+    protected Object getAndCreate(Map<String, Object> context, Object root, Object property, PropertyAccessor accessor) throws OgnlException {
+        boolean originalValue = ReflectionContextState.isCreatingNullObjects(context);
+        try {
+            ReflectionContextState.setCreatingNullObjects(context, true);
+            return accessor.getProperty(context, root, property);
+        } finally {
+            ReflectionContextState.setCreatingNullObjects(context, originalValue);
+        }
     }
 
     @Inject
@@ -166,5 +183,7 @@ public class XWorkParametersBinder {
     @Inject
     public void setContainer(Container container) {
         this.container = container;
+        this.mapAccessor = new XWorkParametersMapPropertyAccessor();
+        container.inject(mapAccessor);
     }
 }

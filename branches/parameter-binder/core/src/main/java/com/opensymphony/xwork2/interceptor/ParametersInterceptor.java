@@ -363,8 +363,10 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
                     return true;
                 }
             }
-        }
-        return acceptedPattern.matcher(paramName).matches();
+
+            return false;
+        } else
+            return acceptedPattern.matcher(paramName).matches();
     }
 
     protected boolean isExcluded(String paramName) {

@@ -6,7 +6,6 @@ import com.opensymphony.xwork2.DefaultTextProvider;
 import com.opensymphony.xwork2.DefaultUnknownHandlerManager;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.UnknownHandlerManager;
-import com.opensymphony.xwork2.parameters.XWorkParameterParserUtils;
 import com.opensymphony.xwork2.parameters.XWorkParametersBinder;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
@@ -82,7 +81,6 @@ public class XWorkConfigurationProvider implements ConfigurationProvider {
                .factory(ActionProxyFactory.class, DefaultActionProxyFactory.class, Scope.SINGLETON)
                .factory(ObjectTypeDeterminer.class, DefaultObjectTypeDeterminer.class, Scope.SINGLETON)
                .factory(XWorkConverter.class, Scope.SINGLETON)
-               .factory(XWorkParameterParserUtils.class, Scope.SINGLETON)
                .factory(XWorkParametersBinder.class, Scope.SINGLETON) 
                .factory(ValueStackFactory.class, OgnlValueStackFactory.class, Scope.SINGLETON)
                .factory(ValidatorFactory.class, DefaultValidatorFactory.class, Scope.SINGLETON)
@@ -117,7 +115,7 @@ public class XWorkConfigurationProvider implements ConfigurationProvider {
         props.setProperty("devMode", Boolean.FALSE.toString());
         props.setProperty("logMissingProperties", Boolean.FALSE.toString());
         props.setProperty("enableOGNLExpressionCache", Boolean.TRUE.toString());
-        props.setProperty("enableSimpleParametersBinder", Boolean.FALSE.toString());
+        props.setProperty("enableSimpleParametersBinder", Boolean.TRUE.toString());
     }
 
 }

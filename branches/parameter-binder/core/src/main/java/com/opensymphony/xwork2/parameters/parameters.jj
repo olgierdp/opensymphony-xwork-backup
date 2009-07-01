@@ -13,10 +13,11 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import com.opensymphony.xwork2.parameters.nodes.*;
+import com.opensymphony.xwork2.parameters.ParserUtils;
+import org.apache.commons.lang.StringUtils;
+
 
 class XWorkParameterParser {
-    private XWorkParameterParserUtils parserUtils;
-
     public XWorkParameterParser(String paramName) {
         this((new StringReader(paramName)));
     }
@@ -55,6 +56,9 @@ Node subexpression():
     | id=<IDENTIFIER> {
         return new IdentifierNode(id.image);
       }
+    | <LBRACKET>id=<STRING_LITERAL><RBRACKET> {
+        return new IdentifierNode(ParserUtils.getStringLiteral(id.image));
+      }
 }
 
 
@@ -86,7 +90,7 @@ Object value():
 }
 {
       t=<STRING_LITERAL> {
-        return t.image.substring(1, t.image.length() - 1);
+        return ParserUtils.getStringLiteral(t.image);
       }
     | t=<INTEGER_LITERAL> {
         return Integer.valueOf(t.image);
