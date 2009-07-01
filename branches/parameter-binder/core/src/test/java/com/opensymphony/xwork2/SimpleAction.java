@@ -41,13 +41,48 @@ public class SimpleAction extends ActionSupport {
     private Map<String,String> protectedMap = new HashMap<String,String>();
     private Map<String,String> existingMap = new HashMap<String,String>();
     private Map<String,String> someMap;
+    private String[] stringArray = new String[5];
+    private int[] intArray = new int[5];
+    private Collection<SimpleAction> someCollection = new ArrayList<SimpleAction>();
 
     public static boolean resultCalled;
-
+    private SimpleAction nestedAction;
 
     public SimpleAction() {
         resultCalled = false;
         existingMap.put("existingKey", "value");
+    }
+
+    public Collection<SimpleAction> getSomeCollection() {
+        return someCollection;
+    }
+
+    public void setSomeCollection(Collection<SimpleAction> someCollection) {
+        this.someCollection = someCollection;
+    }
+
+    public SimpleAction getNestedAction() {
+        return nestedAction;
+    }
+
+    public void setNestedAction(SimpleAction nestedAction) {
+        this.nestedAction = nestedAction;
+    }
+
+    public String[] getStringArray() {
+        return stringArray;
+    }
+
+    public void setStringArray(String[] stringArray) {
+        this.stringArray = stringArray;
+    }
+
+    public int[] getIntArray() {
+        return intArray;
+    }
+
+    public void setIntArray(int[] intArray) {
+        this.intArray = intArray;
     }
 
     public Map<String, String> getSomeMap() {

@@ -25,14 +25,14 @@ import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.parameters.nodes.Node;
 import com.opensymphony.xwork2.parameters.nodes.IdentifierNode;
 import com.opensymphony.xwork2.parameters.nodes.IndexedNode;
+import com.opensymphony.xwork2.parameters.nodes.CollectionNode;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
+import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.conversion.NullHandler;
+import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
 
-import java.util.Map;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Collection;
+import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 import ognl.PropertyAccessor;
@@ -45,10 +45,10 @@ public class XWorkParametersBinder {
     protected NullHandler nullHandler;
     protected Container container;
 
-    public void setProperty(Map<String, Object> context, Object action, String paramName, Object paramValue) throws ParseException, OgnlException {
-        if (StringUtils.isNotBlank(paramName)) {
+    public void setProperty(Map<String, Object> context, Object action, String paramName, Object paramValue) {
+        try {
             OgnlContext ognlContext = new OgnlContext(context);
-            
+
             XWorkParameterParser parser = new XWorkParameterParser(paramName);
             List<Node> nodes = parser.expression();
 
@@ -68,9 +68,8 @@ public class XWorkParametersBinder {
                     lastProperty = id;
 
                     //if this is not the last expression, create the object if it doesn't exist
-                    //Object value = reflectionProvider.getValue(id, ognlContext, lastObject);
                     PropertyAccessor accessor = getPropertyAccessor(lastObject);
-                    Object value = accessor.getProperty(ognlContext, action, id);
+                    Object value = accessor.getProperty(ognlContext, lastObject, id);
                     if (!lastNode) {
                         if (value == null) {
                             //create it
@@ -85,7 +84,23 @@ public class XWorkParametersBinder {
                     Object index = indexedNode.getIndex();
 
                     lastProperty = index;
-                    lastObject = reflectionProvider.getValue(id, ognlContext, lastObject);
+                    PropertyAccessor accessor = getPropertyAccessor(lastObject);
+                    lastObject = accessor.getProperty(ognlContext, lastObject, id);
+
+                    //create the lastObject
+                    if (lastObject == null) {
+                        //create it
+                        lastObject = create(ognlContext, action, id);
+                    }
+                } else if (node instanceof CollectionNode) {
+                    //A(B)
+                    CollectionNode indexedNode = (CollectionNode) node;
+                    String id = indexedNode.getIdentifier();
+                    Object index = indexedNode.getIndex();
+
+                    lastProperty = index;
+                    PropertyAccessor accessor = getPropertyAccessor(lastObject);
+                    lastObject = accessor.getProperty(ognlContext, lastObject, id);
 
                     //create the lastObject
                     if (lastObject == null) {
@@ -97,17 +112,24 @@ public class XWorkParametersBinder {
 
             PropertyAccessor accessor = getPropertyAccessor(lastObject);
             accessor.setProperty(ognlContext, lastObject, lastProperty, paramValue);
-        } else
-            throw new ParseException("Parameter name cannot be empty");
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected PropertyAccessor getPropertyAccessor(Object object) {
+        if (object instanceof CompoundRoot)
+            return container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName());
         if (object instanceof Map)
             return container.getInstance(PropertyAccessor.class, Map.class.getName());
         else if (object instanceof List)
             return container.getInstance(PropertyAccessor.class, List.class.getName());
         else if (object instanceof Collection)
             return container.getInstance(PropertyAccessor.class, Collection.class.getName());
+        else if (object instanceof Enumeration)
+            return container.getInstance(PropertyAccessor.class, Enumeration.class.getName());
+        else if (object instanceof Iterator)
+            return container.getInstance(PropertyAccessor.class, Iterator.class.getName());
         else
             return container.getInstance(PropertyAccessor.class, Object.class.getName());
 

@@ -17,15 +17,11 @@ import java.util.regex.Pattern;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.parameters.XWorkParametersBinder;
 import com.opensymphony.xwork2.conversion.impl.InstantiatingNullHandler;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.util.ClearableValueStack;
-import com.opensymphony.xwork2.util.LocalizedTextUtil;
-import com.opensymphony.xwork2.util.MemberAccessValueStack;
-import com.opensymphony.xwork2.util.TextParseUtil;
-import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.ValueStackFactory;
+import com.opensymphony.xwork2.util.*;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
@@ -128,6 +124,10 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
     private ValueStackFactory valueStackFactory;
 
+    //only used if enableSimpleParametersBinder is true
+    private XWorkParametersBinder parametersBinder;
+    private boolean enableSimpleParametersBinder;
+
     @Inject
     public void setValueStackFactory(ValueStackFactory valueStackFactory) {
         this.valueStackFactory = valueStackFactory;
@@ -136,6 +136,16 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     @Inject("devMode")
     public static void setDevMode(String mode) {
         devMode = "true".equals(mode);
+    }
+
+    @Inject(value= "enableSimpleParametersBinder", required = false)
+    public void setEnableSimpleParametersBinder(String simpleBinder) {
+        this.enableSimpleParametersBinder = "true".equals(simpleBinder);
+    }
+
+    @Inject
+    public void setParametersBinder(XWorkParametersBinder parametersBinder) {
+        this.parametersBinder = parametersBinder;
     }
 
     public void setAcceptParamNames(String commaDelim) {
@@ -269,11 +279,16 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             accessValueStack.setExcludeProperties(excludeParams);
         }
 
+        Map<String, Object> newContext = newStack.getContext();
+        CompoundRoot stackRoot = newStack.getRoot();
         for (Map.Entry<String, Object> entry : acceptableParameters.entrySet()) {
             String name = entry.getKey();
             Object value = entry.getValue();
             try {
-                newStack.setValue(name, value);
+                if (enableSimpleParametersBinder)
+                    parametersBinder.setProperty(newContext, stackRoot, name, value);
+                else
+                    newStack.setValue(name, value);
             } catch (RuntimeException e) {
                 if (devMode) {
                     String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification:\n{0}", new Object[]{
@@ -316,7 +331,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             if (entry.getValue() instanceof Object[]) {
                 Object[] valueArray = (Object[]) entry.getValue();
                 logEntry.append("[ ");
-		if (valueArray.length > 0 ) {
+		        if (valueArray.length > 0 ) {
                     for (int indexA = 0; indexA < (valueArray.length - 1); indexA++) {
                         Object valueAtIndex = valueArray[indexA];
                         logEntry.append(String.valueOf(valueAtIndex));

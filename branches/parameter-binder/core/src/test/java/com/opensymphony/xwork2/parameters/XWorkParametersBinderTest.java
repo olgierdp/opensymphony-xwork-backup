@@ -43,7 +43,7 @@ public class XWorkParametersBinderTest extends XWorkTestCase {
         assertEquals("Lex Luthor", action.getName());
     }
 
-    public void testNestedNotNull() throws ParseException, OgnlException {
+    public void testNested() throws ParseException, OgnlException {
         String expr = "bean.name";
         SimpleAction action = new SimpleAction();
 
@@ -98,18 +98,68 @@ public class XWorkParametersBinderTest extends XWorkTestCase {
 
     //Lists
     public void testSimpleList() throws ParseException, OgnlException {
-           String expr = "someList[0]";
-           SimpleAction action = new SimpleAction();
+        String expr = "someList[0]";
+        SimpleAction action = new SimpleAction();
 
-           assertEquals(0, action.getSomeList().size());
+        assertEquals(0, action.getSomeList().size());
 
-           Map<String, Object> context = new HashMap<String, Object>();
-           binder.setProperty(context, action, expr, "Lex Luthor");
+        Map<String, Object> context = new HashMap<String, Object>();
+        binder.setProperty(context, action, expr, "Lex Luthor");
 
-           assertEquals("Lex Luthor", action.getSomeList().get(0));
-       }
+        assertEquals("Lex Luthor", action.getSomeList().get(0));
+    }
 
+    public void testSimpleListNull() throws ParseException, OgnlException {
+        String expr = "someList[0]";
+        SimpleAction action = new SimpleAction();
+        action.setSomeList(null);
 
+        assertNull(action.getSomeList());
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        binder.setProperty(context, action, expr, "Lex Luthor");
+
+        assertEquals("Lex Luthor", action.getSomeList().get(0));
+    }
+
+    public void testSimpleListNullRandomIndex() throws ParseException, OgnlException {
+        String expr = "someList[15]";
+        SimpleAction action = new SimpleAction();
+        action.setSomeList(null);
+
+        assertNull(action.getSomeList());
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        binder.setProperty(context, action, expr, "Lex Luthor");
+
+        assertEquals("Lex Luthor", action.getSomeList().get(15));
+    }
+
+    public void testNestedNull2() throws ParseException, OgnlException {
+        String expr = "nestedAction.bean.name";
+        SimpleAction action = new SimpleAction();
+        action.setNestedAction(null);
+
+        assertNull(action.getNestedAction());
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        binder.setProperty(context, action, expr, "Lex Luthor");
+
+        assertEquals("Lex Luthor", action.getNestedAction().getBean().getName());
+    }
+
+    public void testNestedNull3() throws ParseException, OgnlException {
+        String expr = "nestedAction.nestedAction.bean.name";
+        SimpleAction action = new SimpleAction();
+        action.setNestedAction(null);
+
+        assertNull(action.getNestedAction());
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        binder.setProperty(context, action, expr, "Lex Luthor");
+
+        assertEquals("Lex Luthor", action.getNestedAction().getBean().getName());
+    }
 
     @Override
     protected void setUp() throws Exception {
