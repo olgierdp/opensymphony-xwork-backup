@@ -22,6 +22,7 @@ package com.opensymphony.xwork2.parameters;
 
 import com.opensymphony.xwork2.SimpleAction;
 import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.util.CompoundRoot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +43,22 @@ public class XWorkParametersBinderTest extends XWorkTestCase {
 
         assertEquals("Lex Luthor", action.getName());
     }
+
+    public void testSimpleOnCompoundRoot() throws ParseException, OgnlException {
+        String expr = "name";
+        SimpleAction action = new SimpleAction();
+
+        CompoundRoot root = new CompoundRoot();
+        root.push(action);
+
+        assertNull(action.getName());
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        binder.setProperty(context, action, expr, "Lex Luthor");
+
+        assertEquals("Lex Luthor", action.getName());
+    }
+
 
     public void testPropertyAsIndex() throws ParseException, OgnlException {
         String expr = "['name']";
@@ -123,7 +140,7 @@ public class XWorkParametersBinderTest extends XWorkTestCase {
         assertEquals("Lex Luthor", action.getSomeMap().get("Name"));
     }
 
-     public void testSimplePropertyOnObjectInMap() throws ParseException, OgnlException {
+    public void testSimplePropertyOnObjectInMap() throws ParseException, OgnlException {
         String expr = "otherMap['my_hero'].name";
         SimpleAction action = new SimpleAction();
 

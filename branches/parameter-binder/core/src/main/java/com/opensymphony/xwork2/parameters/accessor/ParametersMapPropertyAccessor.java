@@ -18,9 +18,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.opensymphony.xwork2.parameters;
+package com.opensymphony.xwork2.parameters.accessor;
 
-import ognl.MapPropertyAccessor;
 import ognl.OgnlException;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
@@ -28,7 +27,6 @@ import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.ognl.accessor.XWorkMapPropertyAccessor;
 import com.opensymphony.xwork2.inject.Inject;
 
 import java.util.Map;
@@ -39,12 +37,9 @@ import java.util.Map;
  * because we didn't parse the expression as an ONGL expression, calling getProperty might fail in some
  * scenarios. This class is not intended to be used outside this package
  */
-class XWorkParametersMapPropertyAccessor extends MapPropertyAccessor {
+public class ParametersMapPropertyAccessor implements ParametersPropertyAccessor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(XWorkMapPropertyAccessor.class);
-
-    private static final String[] INDEX_ACCESS_PROPS = new String[]
-            {"size", "isEmpty", "keys", "values"};
+    private static final Logger LOG = LoggerFactory.getLogger(ParametersMapPropertyAccessor.class);
 
     private XWorkConverter xworkConverter;
     private ObjectFactory objectFactory;
@@ -73,34 +68,22 @@ class XWorkParametersMapPropertyAccessor extends MapPropertyAccessor {
         }
 
         ReflectionContextState.updateCurrentPropertyPath(context, name);
-        // if this is one of the regular index access
-        // properties then just let the superclass deal with the
-        // get.
-        if (name instanceof String && contains(INDEX_ACCESS_PROPS, (String) name)) {
-            return super.getProperty(context, target, name);
-        }
-
+       
         Object result = null;
 
-        try{
-            result = super.getProperty(context, target, name);
-        } catch(Exception ex){
-        }
 
         if (result == null) {
             //find the key class and convert the name to that class
             Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
 
             String lastProperty = (String) context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
-            if (lastClass == null || lastProperty == null) {
-                return super.getProperty(context, target, name);
-            }
+
             Class keyClass = objectTypeDeterminer
                     .getKeyClass(lastClass, lastProperty);
 
             if (keyClass == null) {
 
-                keyClass = java.lang.String.class;
+                keyClass = String.class;
             }
             Object key = getKey(context, name);
             Map map = (Map) target;
@@ -171,11 +154,10 @@ class XWorkParametersMapPropertyAccessor extends MapPropertyAccessor {
         }
         Class keyClass = objectTypeDeterminer.getKeyClass(lastClass, lastProperty);
         if (keyClass == null) {
-            keyClass = java.lang.String.class;
+            keyClass = String.class;
         }
 
         return xworkConverter.convertValue(context, name, keyClass);
 
     }
 }
-

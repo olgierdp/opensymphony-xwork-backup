@@ -7,6 +7,7 @@ import com.opensymphony.xwork2.DefaultUnknownHandlerManager;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.UnknownHandlerManager;
 import com.opensymphony.xwork2.parameters.XWorkParametersBinder;
+import com.opensymphony.xwork2.parameters.accessor.*;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
 import com.opensymphony.xwork2.config.ConfigurationProvider;
@@ -81,7 +82,7 @@ public class XWorkConfigurationProvider implements ConfigurationProvider {
                .factory(ActionProxyFactory.class, DefaultActionProxyFactory.class, Scope.SINGLETON)
                .factory(ObjectTypeDeterminer.class, DefaultObjectTypeDeterminer.class, Scope.SINGLETON)
                .factory(XWorkConverter.class, Scope.SINGLETON)
-               .factory(XWorkParametersBinder.class, Scope.SINGLETON) 
+               .factory(XWorkParametersBinder.class, Scope.SINGLETON)
                .factory(ValueStackFactory.class, OgnlValueStackFactory.class, Scope.SINGLETON)
                .factory(ValidatorFactory.class, DefaultValidatorFactory.class, Scope.SINGLETON)
                .factory(ValidatorFileParser.class, DefaultValidatorFileParser.class, Scope.SINGLETON)
@@ -93,6 +94,15 @@ public class XWorkConfigurationProvider implements ConfigurationProvider {
                .factory(PropertyAccessor.class, Iterator.class.getName(), XWorkIteratorPropertyAccessor.class, Scope.SINGLETON)
                .factory(PropertyAccessor.class, Enumeration.class.getName(), XWorkEnumerationAccessor.class, Scope.SINGLETON)
                .factory(UnknownHandlerManager.class, DefaultUnknownHandlerManager.class, Scope.SINGLETON)
+
+               .factory(ParametersPropertyAccessor.class, List.class.getName(), ParametersListPropertyAccessor.class, Scope.SINGLETON)
+               .factory(ParametersPropertyAccessor.class, ArrayList.class.getName(), ParametersListPropertyAccessor.class, Scope.SINGLETON)
+               .factory(ParametersPropertyAccessor.class, HashSet.class.getName(), ParametersCollectionPropertyAccessor.class, Scope.SINGLETON)
+               .factory(ParametersPropertyAccessor.class, Set.class.getName(), ParametersCollectionPropertyAccessor.class, Scope.SINGLETON)
+               .factory(ParametersPropertyAccessor.class, HashMap.class.getName(), ParametersMapPropertyAccessor.class, Scope.SINGLETON)
+               .factory(ParametersPropertyAccessor.class, Map.class.getName(), ParametersMapPropertyAccessor.class, Scope.SINGLETON)
+               .factory(ParametersPropertyAccessor.class, CompoundRoot.class.getName(), ParametersCompoundRootAccessor.class, Scope.SINGLETON)
+               .factory(ParametersPropertyAccessor.class, Object.class.getName(), ParametersObjectPropertyAccessor.class, Scope.SINGLETON)
                
                // silly workarounds for ognl since there is no way to flush its caches
                .factory(PropertyAccessor.class, List.class.getName(), XWorkListPropertyAccessor.class, Scope.SINGLETON)

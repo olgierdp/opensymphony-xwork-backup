@@ -26,30 +26,33 @@ import com.opensymphony.xwork2.parameters.nodes.Node;
 import com.opensymphony.xwork2.parameters.nodes.IdentifierNode;
 import com.opensymphony.xwork2.parameters.nodes.IndexedNode;
 import com.opensymphony.xwork2.parameters.nodes.CollectionNode;
+import com.opensymphony.xwork2.parameters.accessor.ParametersPropertyAccessor;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.conversion.NullHandler;
-import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
 
 import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
-import ognl.PropertyAccessor;
-import ognl.OgnlException;
-import ognl.OgnlContext;
+
 
 public class XWorkParametersBinder {
     protected ReflectionProvider reflectionProvider;
     protected NullHandler nullHandler;
     protected Container container;
-    private XWorkParametersMapPropertyAccessor mapAccessor;
+
+    protected ParametersPropertyAccessor mapAccessor;
+    protected ParametersPropertyAccessor compoundAccessor;
+    protected ParametersPropertyAccessor objectAccessor;
+    protected ParametersPropertyAccessor listAccessor;
+    protected ParametersPropertyAccessor collectionAccesor;
 
     private static final Map<String, List<Node>> nodesCache = new WeakHashMap<String, List<Node>>();
 
-    public void setProperty(Map<String, Object> context, Object action, String paramName, Object paramValue) {
+    public void setProperty(Map<String, Object> originalContext, Object action, String paramName, Object paramValue) {
         try {
-            OgnlContext ognlContext = new OgnlContext(context);
+            Map context = getImplemenationContext(originalContext);
 
             List<Node> nodes = nodesCache.get(paramName);
             if (nodes == null) {
@@ -78,12 +81,12 @@ public class XWorkParametersBinder {
                     lastProperty = id;
 
                     //if this is not the last expression, create the object if it doesn't exist
-                    PropertyAccessor accessor = getPropertyAccessor(lastObject);
-                    Object value = accessor.getProperty(ognlContext, lastObject, id);
+                    ParametersPropertyAccessor accessor = getPropertyAccessor(lastObject);
+                    Object value = accessor.getProperty(context, lastObject, id);
                     if (!lastNode) {
                         if (value == null) {
                             //create it
-                            value = create(ognlContext, action, id);
+                            value = create(context, action, id);
                         }
                         lastObject = value;
                     }
@@ -94,13 +97,13 @@ public class XWorkParametersBinder {
                     Object index = indexedNode.getIndex();
 
                     lastProperty = index;
-                    PropertyAccessor accessor = getPropertyAccessor(lastObject);
+                    ParametersPropertyAccessor accessor = getPropertyAccessor(lastObject);
                     //the list or map
-                    Object container = accessor.getProperty(ognlContext, lastObject, id);
+                    Object container = accessor.getProperty(context, lastObject, id);
 
                     if (container == null) {
                         //create the list or map
-                        container = create(ognlContext, lastObject, id);
+                        container = create(context, lastObject, id);
                     }
 
                     lastObject = container;
@@ -108,7 +111,7 @@ public class XWorkParametersBinder {
                     if (!lastNode) {
                         //the expression goes on like A[B].C, so now create A[B]
                         accessor = getPropertyAccessor(lastObject);
-                        lastObject = getAndCreate(ognlContext, lastObject, index, accessor);
+                        lastObject = getAndCreate(context, lastObject, index, accessor);
                     }
                 } else if (node instanceof CollectionNode) {
                     //A(B)
@@ -117,39 +120,43 @@ public class XWorkParametersBinder {
                     Object index = indexedNode.getIndex();
 
                     lastProperty = index;
-                    PropertyAccessor accessor = getPropertyAccessor(lastObject);
-                    lastObject = accessor.getProperty(ognlContext, lastObject, id);
+                    ParametersPropertyAccessor accessor = getPropertyAccessor(lastObject);
+                    lastObject = accessor.getProperty(context, lastObject, id);
 
                     //create the lastObject
                     if (lastObject == null) {
                         //create it
-                        lastObject = create(ognlContext, action, id);
+                        lastObject = create(context, action, id);
                     }
                 }
             }
 
-            PropertyAccessor accessor = getPropertyAccessor(lastObject);
-            accessor.setProperty(ognlContext, lastObject, lastProperty, paramValue);
+            ParametersPropertyAccessor accessor = getPropertyAccessor(lastObject);
+            accessor.setProperty(context, lastObject, lastProperty, paramValue);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
     }
 
-    protected PropertyAccessor getPropertyAccessor(Object object) {
+    protected Map getImplemenationContext(Map context) {
+        return context;
+    }
+
+    protected ParametersPropertyAccessor getPropertyAccessor(Object object) {
         if (object instanceof CompoundRoot)
-            return container.getInstance(PropertyAccessor.class, CompoundRoot.class.getName());
+            return compoundAccessor;
         if (object instanceof Map)
             return mapAccessor;
         else if (object instanceof List)
-            return container.getInstance(PropertyAccessor.class, List.class.getName());
+            return listAccessor;
         else if (object instanceof Collection)
-            return container.getInstance(PropertyAccessor.class, Collection.class.getName());
+            return collectionAccesor;
         else if (object instanceof Enumeration)
-            return container.getInstance(PropertyAccessor.class, Enumeration.class.getName());
+            return container.getInstance(ParametersPropertyAccessor.class, Enumeration.class.getName());
         else if (object instanceof Iterator)
-            return container.getInstance(PropertyAccessor.class, Iterator.class.getName());
+            return container.getInstance(ParametersPropertyAccessor.class, Iterator.class.getName());
         else
-            return container.getInstance(PropertyAccessor.class, Object.class.getName());
+            return objectAccessor;
 
     }
 
@@ -166,11 +173,11 @@ public class XWorkParametersBinder {
         }
     }
 
-    protected Object getAndCreate(Map<String, Object> context, Object root, Object property, PropertyAccessor accessor) throws OgnlException {
+    protected Object getAndCreate(Map<String, Object> context, Object root, Object property, ParametersPropertyAccessor accessor) throws Exception {
         boolean originalValue = ReflectionContextState.isCreatingNullObjects(context);
         try {
             ReflectionContextState.setCreatingNullObjects(context, true);
-            return accessor.getProperty(context, root, property);
+            return accessor.getProperty(context, root, property.toString());
         } finally {
             ReflectionContextState.setCreatingNullObjects(context, originalValue);
         }
@@ -189,7 +196,30 @@ public class XWorkParametersBinder {
     @Inject
     public void setContainer(Container container) {
         this.container = container;
-        this.mapAccessor = new XWorkParametersMapPropertyAccessor();
-        container.inject(mapAccessor);
+    }
+
+    @Inject("java.util.Map")
+    public void setMapAccessor(ParametersPropertyAccessor mapAccessor) {
+        this.mapAccessor = mapAccessor;
+    }
+
+    @Inject("com.opensymphony.xwork2.util.CompoundRoot")
+    public void setCompoundAccessor(ParametersPropertyAccessor compoundAccessor) {
+        this.compoundAccessor = compoundAccessor;
+    }
+
+    @Inject("java.lang.Object")
+    public void setObjectAccessor(ParametersPropertyAccessor objectAccessor) {
+        this.objectAccessor = objectAccessor;
+    }
+
+    @Inject("java.util.List")
+    public void setListAccessor(ParametersPropertyAccessor listAccessor) {
+        this.listAccessor = listAccessor;
+    }
+
+    @Inject("java.util.Set")
+    public void setCollectionAccesor(ParametersPropertyAccessor collectionAccesor) {
+        this.collectionAccesor = collectionAccesor;
     }
 }
