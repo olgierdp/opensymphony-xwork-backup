@@ -46,14 +46,8 @@ public class ParametersMapPropertyAccessor implements ParametersPropertyAccessor
     private XWorkConverter xworkConverter;
     private ObjectFactory objectFactory;
     private ObjectTypeDeterminer objectTypeDeterminer;
-    private AccessorBytecodeUtil accessorBytecodeUtil;
 
     private final Map<Key, Class> keyClassCache = new WeakHashMap<Key, Class>();
-
-    @Inject
-    public void setAccessorBytecodeUtil(AccessorBytecodeUtil accessorBytecodeUtil) {
-        this.accessorBytecodeUtil = accessorBytecodeUtil;
-    }
 
     @Inject
     public void setXWorkConverter(XWorkConverter conv) {
