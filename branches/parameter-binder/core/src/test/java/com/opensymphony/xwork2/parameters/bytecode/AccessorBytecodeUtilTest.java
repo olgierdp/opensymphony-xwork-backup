@@ -26,6 +26,22 @@ public class AccessorBytecodeUtilTest extends XWorkTestCase {
         assertEquals("Dostoevsky", result);
     }
 
+    public void testGetterCache() throws Exception {
+        Getter getter0 = accessorBytecodeUtil.getGetter(SimpleAction.class, "name");
+        Getter getter1 = accessorBytecodeUtil.getGetter(SimpleAction.class, "name");
+
+        assertEquals(1, accessorBytecodeUtil.gettersCache.size());
+        assertSame(getter0, getter1);
+    }
+
+    public void testSetterCache() throws Exception {
+        Setter setter0 = accessorBytecodeUtil.getSetter(SimpleAction.class, String.class, "name");
+        Setter setter1 = accessorBytecodeUtil.getSetter(SimpleAction.class, String.class, "name");
+
+        assertEquals(1, accessorBytecodeUtil.settersCache.size());
+        assertSame(setter0, setter1);
+    }
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
