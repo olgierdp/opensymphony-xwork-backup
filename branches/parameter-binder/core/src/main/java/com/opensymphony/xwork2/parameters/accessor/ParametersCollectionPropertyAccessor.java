@@ -21,7 +21,7 @@ import java.util.Map;
 
 
 /**
- * @author Gabe
+ * Implementation similar to XWorkCollectionPropertyAccessor, but does not depend on OGNL
  */
 public class ParametersCollectionPropertyAccessor implements ParametersPropertyAccessor {
 

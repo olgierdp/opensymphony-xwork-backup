@@ -17,11 +17,7 @@ import java.util.*;
 
 
 /**
- * A stack that is able to call methods on objects in the stack.
- *
- * @author $Author: rainerh $
- * @author Rainer Hermanns
- * @version $Revision: 1836 $
+ * Implementation similar to CompundRootAccessor, but does not depend on OGNL 
  */
 public class ParametersCompoundRootAccessor implements ParametersPropertyAccessor {
 

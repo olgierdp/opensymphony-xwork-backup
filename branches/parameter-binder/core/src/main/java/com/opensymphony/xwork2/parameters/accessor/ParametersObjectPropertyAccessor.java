@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork2.parameters.accessor;
 
 
@@ -11,7 +15,9 @@ import com.opensymphony.xwork2.parameters.bytecode.Setter;
 
 import java.util.Map;
 
-
+/**
+ * Implementation similar to XWorkObjectPropertyAccessor, but does not depend on OGNL
+ */
 public class ParametersObjectPropertyAccessor implements ParametersPropertyAccessor {
     protected AccessorBytecodeUtil accessorBytecodeUtil;
 

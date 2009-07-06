@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.xwork2.parameters.bytecode;
 
 import com.opensymphony.xwork2.XWorkTestCase;

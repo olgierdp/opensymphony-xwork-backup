@@ -17,7 +17,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * Implementation similar to XWorkListPropertyAccessor, but does not depend on OGNL
+ */
 public class ParametersListPropertyAccessor implements ParametersPropertyAccessor {
 
     private XWorkCollectionPropertyAccessor _sAcc = new XWorkCollectionPropertyAccessor();
