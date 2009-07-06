@@ -27,9 +27,11 @@ import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.conversion.ObjectTypeDeterminer;
 import com.opensymphony.xwork2.ObjectFactory;
+import com.opensymphony.xwork2.parameters.bytecode.AccessorBytecodeUtil;
 import com.opensymphony.xwork2.inject.Inject;
 
 import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Same code as XWorkMapPropertyAccessor, but all exceptions are catched from
@@ -44,6 +46,14 @@ public class ParametersMapPropertyAccessor implements ParametersPropertyAccessor
     private XWorkConverter xworkConverter;
     private ObjectFactory objectFactory;
     private ObjectTypeDeterminer objectTypeDeterminer;
+    private AccessorBytecodeUtil accessorBytecodeUtil;
+
+    private final Map<Key, Class> keyClassCache = new WeakHashMap<Key, Class>();
+
+    @Inject
+    public void setAccessorBytecodeUtil(AccessorBytecodeUtil accessorBytecodeUtil) {
+        this.accessorBytecodeUtil = accessorBytecodeUtil;
+    }
 
     @Inject
     public void setXWorkConverter(XWorkConverter conv) {
@@ -67,8 +77,6 @@ public class ParametersMapPropertyAccessor implements ParametersPropertyAccessor
             LOG.debug("Entering getProperty ("+context+","+target+","+name+")");
         }
 
-        ReflectionContextState.updateCurrentPropertyPath(context, name);
-       
         Object result = null;
 
 
@@ -152,12 +160,52 @@ public class ParametersMapPropertyAccessor implements ParametersPropertyAccessor
             // commented out the above -- it makes absolutely no sense for when setting basic maps!
             return name;
         }
-        Class keyClass = objectTypeDeterminer.getKeyClass(lastClass, lastProperty);
+
+        Key key = new Key(lastClass, lastProperty);
+        //lookup in the cache first
+        Class keyClass = keyClassCache.get(key);
+
+        if (keyClass == null) {
+            keyClass = objectTypeDeterminer.getKeyClass(lastClass, lastProperty);
+
+            if (keyClass != null)
+                keyClassCache.put(key, keyClass);    
+        }
+
         if (keyClass == null) {
             keyClass = String.class;
+            keyClassCache.put(key, String.class);    
         }
 
         return xworkConverter.convertValue(context, name, keyClass);
 
+    }
+}
+
+class Key {
+    Class clazz;
+    String property;
+
+    Key(Class clazz, String property) {
+        this.clazz = clazz;
+        this.property = property;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Key key = (Key) o;
+
+        if (clazz != null ? !clazz.equals(key.clazz) : key.clazz != null) return false;
+        if (property != null ? !property.equals(key.property) : key.property != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result = clazz != null ? clazz.hashCode() : 0;
+        result = 31 * result + (property != null ? property.hashCode() : 0);
+        return result;
     }
 }

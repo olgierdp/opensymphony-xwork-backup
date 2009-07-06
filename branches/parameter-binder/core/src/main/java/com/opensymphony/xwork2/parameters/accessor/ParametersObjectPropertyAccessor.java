@@ -5,30 +5,34 @@ import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
+import com.opensymphony.xwork2.parameters.bytecode.AccessorBytecodeUtil;
+import com.opensymphony.xwork2.parameters.bytecode.Getter;
+import com.opensymphony.xwork2.parameters.bytecode.Setter;
 
 import java.util.Map;
 
 
 public class ParametersObjectPropertyAccessor implements ParametersPropertyAccessor {
-    protected ReflectionProvider reflectionProvider;
+    protected AccessorBytecodeUtil accessorBytecodeUtil;
 
     @Override
     public Object getProperty(Map context, Object target, Object property) throws Exception {
-        Object obj = reflectionProvider.getValue(property.toString(), context, target);
+        Getter getter = accessorBytecodeUtil.getGetter(target.getClass(), property.toString());
+        Object obj = getter.invoke(target);
 
         context.put(XWorkConverter.LAST_BEAN_CLASS_ACCESSED, target.getClass());
         context.put(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED, property.toString());
-        ReflectionContextState.updateCurrentPropertyPath(context, property);
         return obj;
     }
 
     @Override
     public void setProperty(Map context, Object target, Object property, Object value) throws Exception {
-        reflectionProvider.setProperty(property.toString(), value, target, context);
+        Setter setter = accessorBytecodeUtil.getSetter(target.getClass(), value.getClass(), property.toString());
+        setter.invoke(target, value);
     }
 
     @Inject
-    public void setReflectionProvider(ReflectionProvider reflectionProvider) {
-        this.reflectionProvider = reflectionProvider;
+    public void setAccessorBytecodeUtil(AccessorBytecodeUtil accessorBytecodeUtil) {
+        this.accessorBytecodeUtil = accessorBytecodeUtil;
     }
 }

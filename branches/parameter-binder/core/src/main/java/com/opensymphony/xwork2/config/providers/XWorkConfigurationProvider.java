@@ -7,6 +7,7 @@ import com.opensymphony.xwork2.DefaultUnknownHandlerManager;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.UnknownHandlerManager;
 import com.opensymphony.xwork2.parameters.XWorkParametersBinder;
+import com.opensymphony.xwork2.parameters.bytecode.AccessorBytecodeUtil;
 import com.opensymphony.xwork2.parameters.accessor.*;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationException;
@@ -103,6 +104,7 @@ public class XWorkConfigurationProvider implements ConfigurationProvider {
                .factory(ParametersPropertyAccessor.class, Map.class.getName(), ParametersMapPropertyAccessor.class, Scope.SINGLETON)
                .factory(ParametersPropertyAccessor.class, CompoundRoot.class.getName(), ParametersCompoundRootAccessor.class, Scope.SINGLETON)
                .factory(ParametersPropertyAccessor.class, Object.class.getName(), ParametersObjectPropertyAccessor.class, Scope.SINGLETON)
+               .factory(AccessorBytecodeUtil.class)
                
                // silly workarounds for ognl since there is no way to flush its caches
                .factory(PropertyAccessor.class, List.class.getName(), XWorkListPropertyAccessor.class, Scope.SINGLETON)
