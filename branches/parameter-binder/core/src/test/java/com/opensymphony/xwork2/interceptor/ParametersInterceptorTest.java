@@ -205,7 +205,7 @@ public class ParametersInterceptorTest extends XWorkTestCase {
         Map<String, Object> params = new HashMap<String, Object>() {
             {
                 put("blah", "This is blah");
-                put("['baz']", "123");
+                put("baz", "123");
                 put("name", "try_1");
                 put("(name)", "try_2");
                 put("['name']", "try_3");

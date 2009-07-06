@@ -30,7 +30,9 @@ import com.opensymphony.xwork2.parameters.accessor.ParametersPropertyAccessor;
 import com.opensymphony.xwork2.util.reflection.ReflectionProvider;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import com.opensymphony.xwork2.util.CompoundRoot;
+import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.conversion.NullHandler;
+import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 
 import java.util.*;
 
@@ -50,9 +52,20 @@ public class XWorkParametersBinder {
 
     private static final Map<String, List<Node>> nodesCache = new WeakHashMap<String, List<Node>>();
 
-    public void setProperty(Map<String, Object> originalContext, Object action, String paramName, Object paramValue) {
+    private boolean devMode;
+
+    @Inject("devMode")
+    public void setDevMode(String devMode) {
+        this.devMode = "true".equals(devMode);
+    }
+
+    public void setProperty(Map<String, Object> context, Object action, String paramName, Object paramValue) {
+        setProperty(context, action, paramName, paramValue, devMode);
+    }
+
+    public void setProperty(Map<String, Object> context, Object action, String paramName, Object paramValue, boolean throwExceptionOnFailure) {
         try {
-            Map context = getImplemenationContext(originalContext);
+            context.put(ValueStack.REPORT_ERRORS_ON_NO_PROP, (throwExceptionOnFailure) ? Boolean.TRUE : Boolean.FALSE);
 
             List<Node> nodes = nodesCache.get(paramName);
             if (nodes == null) {
@@ -79,16 +92,33 @@ public class XWorkParametersBinder {
                         throw new ParseException("Expression '" + paramName + "' is invalid");
 
                     lastProperty = id;
-
-                    //if this is not the last expression, create the object if it doesn't exist
                     ParametersPropertyAccessor accessor = getPropertyAccessor(lastObject);
-                    Object value = accessor.getProperty(context, lastObject, id);
-                    if (!lastNode) {
-                        if (value == null) {
-                            //create it
-                            value = create(context, action, id);
+
+                    if (lastObject instanceof Map) {
+                        Object container = accessor.getProperty(context, lastObject, id);
+
+                        if (!lastNode) {
+                            //the expression goes on like A.B.C, so now create A.B
+                            accessor = getPropertyAccessor(lastObject);
+                            lastObject = getAndCreate(context, lastObject, id, accessor);
                         }
-                        lastObject = value;
+                    } else {
+                        //lastObject was a regular object
+
+                        //if this is not the last expression, create the object if it doesn't exist
+                        Object value = accessor.getProperty(context, lastObject, id);
+
+                        //type determiner needs this
+                        ReflectionContextState.setLastBeanClassAccessed(context, lastObject.getClass());
+                        ReflectionContextState.setLastBeanPropertyAccessed(context, id);
+
+                        if (!lastNode) {
+                            if (value == null) {
+                                //create it
+                                value = create(context, action, id);
+                            }
+                            lastObject = value;
+                        }
                     }
                 } else if (node instanceof IndexedNode) {
                     //A[B]
@@ -135,11 +165,11 @@ public class XWorkParametersBinder {
             accessor.setProperty(context, lastObject, lastProperty, paramValue);
         } catch (Throwable e) {
             throw new RuntimeException(e);
+        } finally {
+            ReflectionContextState.clear(context);
+            context.remove(XWorkConverter.CONVERSION_PROPERTY_FULLNAME);
+            context.remove(ValueStack.REPORT_ERRORS_ON_NO_PROP);
         }
-    }
-
-    protected Map getImplemenationContext(Map context) {
-        return context;
     }
 
     protected ParametersPropertyAccessor getPropertyAccessor(Object object) {

@@ -136,6 +136,18 @@ public class XWorkParametersBinderTest extends XWorkTestCase {
         assertEquals("Lex Luthor", action.getOtherMap().get("my_hero").getName());
     }
 
+     public void testSimplePropertyOnObjectInMapNotIndexed() throws ParseException, OgnlException {
+        String expr = "otherMap.my_hero.name";
+        SimpleAction action = new SimpleAction();
+
+        assertNull(action.getOtherMap().get("my_hero"));
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        binder.setProperty(context, action, expr, "Lex Luthor");
+
+        assertEquals("Lex Luthor", action.getOtherMap().get("my_hero").getName());
+    }
+
     public void testSimplePropertyOnObjectInMapNull() throws ParseException, OgnlException {
         String expr = "otherMap['my_hero'].name";
         SimpleAction action = new SimpleAction();

@@ -21,7 +21,7 @@ public class AccessorBytecodeUtil implements Opcodes {
     protected final String SETTER_INTERFACE = toPathName(Setter.class.getName());
     protected final String GETTER_INTERFACE = toPathName(Getter.class.getName());
 
-    protected final AccessorsClassLoader classLoader = new AccessorsClassLoader();
+    protected final AccessorsClassLoader classLoader = new AccessorsClassLoader(AccessorBytecodeUtil.class.getClassLoader());
 
     protected ReflectionProvider reflectionProvider;
 
@@ -183,6 +183,10 @@ public class AccessorBytecodeUtil implements Opcodes {
 }
 
 class AccessorsClassLoader extends ClassLoader {
+    AccessorsClassLoader(ClassLoader parent) {
+        super(parent);
+    }
+
     public Class defineClass(String name, byte[] bytes) {
         return defineClass(name, bytes, 0, bytes.length);
     }

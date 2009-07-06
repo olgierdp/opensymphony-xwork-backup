@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.xwork2.interceptor;
+package com.opensymphony.xwork2.parameters;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +21,8 @@ import com.opensymphony.xwork2.SimpleAction;
 import com.opensymphony.xwork2.TestBean;
 import com.opensymphony.xwork2.TextProvider;
 import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.interceptor.ParametersInterceptor;
+import com.opensymphony.xwork2.interceptor.NoParameters;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
@@ -32,14 +34,10 @@ import com.opensymphony.xwork2.ognl.accessor.CompoundRootAccessor;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.ValueStackFactory;
+import org.apache.commons.lang.StringUtils;
 
 
-/**
- * Unit test for {@link ParametersInterceptor}.
- *
- * @author Jason Carreira
- */
-public class ParametersBinderInterceptorTest extends XWorkTestCase {
+public class XWorkParametersBinderInterceptorTest extends XWorkTestCase {
 
     public void testDoesNotAllowMethodInvocations() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
@@ -177,7 +175,7 @@ public class ParametersBinderInterceptorTest extends XWorkTestCase {
         Map<String, Object> params = new HashMap<String, Object>() {
             {
                 put("blah", "This is blah");
-                put("['baz']", "123");
+                put("baz", "123");
                 put("name", "try_1");
                 put("(name)", "try_2");
                 put("['name']", "try_3");
@@ -268,7 +266,7 @@ public class ParametersBinderInterceptorTest extends XWorkTestCase {
         ActionProxy proxy = actionProxyFactory.createActionProxy("", MockConfigurationProvider.PARAM_INTERCEPTOR_ACTION_NAME, extraContext);
         proxy.execute();
         final String actionMessage = "" + ((SimpleAction) proxy.getAction()).getActionMessages().toArray()[0];
-        assertTrue(actionMessage.contains("Error setting expression 'not_a_property' with value 'There is no action property named like this'"));
+        assertTrue(StringUtils.isNotBlank(actionMessage));
     }
 
     public void testNonexistentParametersAreIgnoredInProductionMode() throws Exception {
@@ -299,88 +297,12 @@ public class ParametersBinderInterceptorTest extends XWorkTestCase {
         interceptor.destroy();
     }
 
-    public void testNoOrdered() throws Exception {
-        ParametersInterceptor pi = new ParametersInterceptor();
-        container.inject(pi);
-        final Map<String, Object> actual = new LinkedHashMap<String, Object>();
-        pi.setValueStackFactory(createValueStackFactory(actual));
-        ValueStack stack = createStubValueStack(actual);
-
-        Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("user.address.city", "London");
-        parameters.put("user.name", "Superman");
-
-        Action action = new SimpleAction();
-        pi.setParameters(action, stack, parameters);
-
-        assertEquals("ordered should be false by default", false, pi.isOrdered());
-        assertEquals(2, actual.size());
-        assertEquals("London", actual.get("user.address.city"));
-        assertEquals("Superman", actual.get("user.name"));
-
-        // is not ordered
-        List<Object> values = new ArrayList<Object>(actual.values());
-        assertEquals("London", values.get(0));
-        assertEquals("Superman", values.get(1));
-    }
-
-    public void testOrdered() throws Exception {
-        ParametersInterceptor pi = new ParametersInterceptor();
-        pi.setOrdered(true);
-        container.inject(pi);
-        final Map<String, Object> actual = new LinkedHashMap<String, Object>();
-        pi.setValueStackFactory(createValueStackFactory(actual));
-        ValueStack stack = createStubValueStack(actual);
-
-        Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("user.address.city", "London");
-        parameters.put("user.name", "Superman");
-
-        Action action = new SimpleAction();
-        pi.setParameters(action, stack, parameters);
-
-        assertEquals(true, pi.isOrdered());
-        assertEquals(2, actual.size());
-        assertEquals("London", actual.get("user.address.city"));
-        assertEquals("Superman", actual.get("user.name"));
-
-        // should be ordered so user.name should be first
-        List<Object> values = new ArrayList<Object>(actual.values());
-        assertEquals("Superman", values.get(0));
-        assertEquals("London", values.get(1));
-    }
-
     public void testSetOrdered() throws Exception {
         ParametersInterceptor pi = new ParametersInterceptor();
         container.inject(pi);
         assertEquals("ordered should be false by default", false, pi.isOrdered());
         pi.setOrdered(true);
         assertEquals(true, pi.isOrdered());
-    }
-
-    public void testExcludedParametersAreIgnored() throws Exception {
-        ParametersInterceptor pi = new ParametersInterceptor();
-        container.inject(pi);
-        pi.setExcludeParams("dojo\\..*");
-        final Map actual = new HashMap();
-        pi.setValueStackFactory(createValueStackFactory(actual));
-        ValueStack stack = createStubValueStack(actual);
-        container.inject(stack);
-
-        final Map<String, Object> expected = new HashMap<String, Object>() {
-            {
-                put("fooKey", "fooValue");
-            }
-        };
-
-        Map<String, Object> parameters = new HashMap<String, Object>() {
-            {
-                put("dojo.test", "dojoValue");
-                put("fooKey", "fooValue");
-            }
-        };
-        pi.setParameters(new NoParametersAction(), stack, parameters);
-        assertEquals(expected, actual);
     }
 
     private ValueStackFactory createValueStackFactory(final Map<String, Object> context) {

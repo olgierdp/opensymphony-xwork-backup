@@ -32,6 +32,7 @@ public class ParametersCompoundRootAccessor implements ParametersPropertyAccesso
         devMode = "true".equals(mode);
     }
 
+    @Inject
     public void setReflectionProvider(ReflectionProvider reflectionProvider) {
         this.reflectionProvider = reflectionProvider;
     }
@@ -94,7 +95,7 @@ public class ParametersCompoundRootAccessor implements ParametersPropertyAccesso
                         return reflectionProvider.getValue(name.toString(), context, root);
                     }
                 } catch (Exception e) {
-                    final String msg = "Caught an Ognl exception while getting property " + name;
+                    final String msg = "Caught an exception while getting property " + name;
                     throw new XWorkException(msg, e);
                 }
             }

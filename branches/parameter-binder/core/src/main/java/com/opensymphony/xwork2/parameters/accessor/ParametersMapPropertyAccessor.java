@@ -52,42 +52,40 @@ public class ParametersMapPropertyAccessor implements ParametersPropertyAccessor
     public Object getProperty(Map context, Object target, Object name) throws OgnlException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Entering getProperty ("+context+","+target+","+name+")");
+            LOG.debug("Entering getProperty (" + context + "," + target + "," + name + ")");
         }
 
         Object result = null;
 
 
-        if (result == null) {
-            //find the key class and convert the name to that class
-            Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
+        //find the key class and convert the name to that class
+        Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
 
-            String lastProperty = (String) context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
+        String lastProperty = (String) context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
 
-            Class keyClass = objectTypeDeterminer
-                    .getKeyClass(lastClass, lastProperty);
+        Class keyClass = objectTypeDeterminer
+                .getKeyClass(lastClass, lastProperty);
 
-            if (keyClass == null) {
+        if (keyClass == null) {
 
-                keyClass = String.class;
-            }
-            Object key = getKey(context, name);
-            Map map = (Map) target;
-            result = map.get(key);
+            keyClass = String.class;
+        }
+        Object key = getKey(context, name);
+        Map map = (Map) target;
+        result = map.get(key);
 
-            if (result == null &&
-                    context.get(ReflectionContextState.CREATE_NULL_OBJECTS) != null
-                    &&  objectTypeDeterminer.shouldCreateIfNew(lastClass,lastProperty,target,null,false)) {
-                Class valueClass = objectTypeDeterminer.getElementClass(lastClass, lastProperty, key);
+        if (result == null &&
+                context.get(ReflectionContextState.CREATE_NULL_OBJECTS) != null
+                && objectTypeDeterminer.shouldCreateIfNew(lastClass, lastProperty, target, null, false)) {
+            Class valueClass = objectTypeDeterminer.getElementClass(lastClass, lastProperty, key);
 
-                try {
-                    result = objectFactory.buildBean(valueClass, context);
-                    map.put(key, result);
-                } catch (Exception exc) {
-
-                }
+            try {
+                result = objectFactory.buildBean(valueClass, context);
+                map.put(key, result);
+            } catch (Exception exc) {
 
             }
+
         }
         return result;
     }
@@ -109,26 +107,26 @@ public class ParametersMapPropertyAccessor implements ParametersPropertyAccessor
     @Override
     public void setProperty(Map context, Object target, Object name, Object value) throws OgnlException {
         if (LOG.isDebugEnabled()) {
-     		LOG.debug("Entering setProperty("+context+","+target+","+name+","+value+")");
-     	}
+            LOG.debug("Entering setProperty(" + context + "," + target + "," + name + "," + value + ")");
+        }
 
         Object key = getKey(context, name);
         Map map = (Map) target;
         map.put(key, getValue(context, value));
-     }
+    }
 
-     private Object getValue(Map context, Object value) {
-         Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
-         String lastProperty = (String) context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
-         if (lastClass == null || lastProperty == null) {
-             return value;
-         }
-         Class elementClass = objectTypeDeterminer.getElementClass(lastClass, lastProperty, null);
-         if (elementClass == null) {
-             return value; // nothing is specified, we assume it will be the value passed in.
-         }
-         return xworkConverter.convertValue(context, value, elementClass);
-}
+    private Object getValue(Map context, Object value) {
+        Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
+        String lastProperty = (String) context.get(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED);
+        if (lastClass == null || lastProperty == null) {
+            return value;
+        }
+        Class elementClass = objectTypeDeterminer.getElementClass(lastClass, lastProperty, null);
+        if (elementClass == null) {
+            return value; // nothing is specified, we assume it will be the value passed in.
+        }
+        return xworkConverter.convertValue(context, value, elementClass);
+    }
 
     private Object getKey(Map context, Object name) {
         Class lastClass = (Class) context.get(XWorkConverter.LAST_BEAN_CLASS_ACCESSED);
@@ -147,12 +145,12 @@ public class ParametersMapPropertyAccessor implements ParametersPropertyAccessor
             keyClass = objectTypeDeterminer.getKeyClass(lastClass, lastProperty);
 
             if (keyClass != null)
-                keyClassCache.put(key, keyClass);    
+                keyClassCache.put(key, keyClass);
         }
 
         if (keyClass == null) {
             keyClass = String.class;
-            keyClassCache.put(key, String.class);    
+            keyClassCache.put(key, String.class);
         }
 
         return xworkConverter.convertValue(context, name, keyClass);
