@@ -110,6 +110,13 @@
                   <target>1.5</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.opensymphony.xwork2.showcase.helloworld.HelloWorldTutorial</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
