@@ -11,13 +11,13 @@
 		</result-types>
 	
 		<interceptors>
-			<interceptor name="interceptor1" class="com.opensymphony.xwork2.showcase.interceptorExample.Interceptor1" >
+			<interceptor name="interceptor1" class="interceptorExample.Interceptor1" >
 				<param name="param">paramValue1</param>
 			</interceptor>
 			<interceptor name="interceptor2" class="com.opensmyphony.xwork2.showcase.interceptorExample.Interceptor2">
 				<param name="param">paramValue2</param>
 			</interceptor>
-			<interceptor name="interceptor3" class="com.opensymphony.xwork2.showcase.interceptorExample.Interceptor3">
+			<interceptor name="interceptor3" class="interceptorExample.Interceptor3">
 				<param name="param">paramValue2</param> 
 			</interceptor>
 			<interceptor-stack name="myInterceptorStack">
@@ -28,26 +28,26 @@
 		</interceptors>
 		
 		<action name="interceptorExampleAction1" 
-		class="com.opensymphony.xwork2.showcase.interceptorExample.Action1"
+		class="interceptorExample.Action1"
 		>
 			<interceptor-ref name="interceptor1" />
 			<interceptor-ref name="interceptor2" />
 			<result type="printToConsole">InterceptorExample - Action1 - Result</result>
 		</action>
 		
-		<action name="interceptorExampleAction2" class="com.opensymphony.xwork2.showcase.interceptorExample.Action2">
+		<action name="interceptorExampleAction2" class="interceptorExample.Action2">
 			<interceptor-ref name="myInterceptorStack" />
 			<result type="printToConsole">InterceptorExample - Action2 - Result</result>
 		</action>
 		
-		<action name="interceptorExampleAction3" class="com.opensymphony.xwork2.showcase.interceptorExample.Action3">
+		<action name="interceptorExampleAction3" class="interceptorExample.Action3">
 			<interceptor-ref name="interceptor1">
 				<param name="param">new paramValue1</param>
 			</interceptor-ref>
 			<result type="printToConsole">InterceptorExample - Action3 - Result</result>
 		</action>
 		
-		<action name="interceptorExampleAction4" class="com.opensymphony.xwork2.showcase.interceptorExample.Action4">
+		<action name="interceptorExampleAction4" class="interceptorExample.Action4">
 			<interceptor-ref name="myInterceptorStack">
 				<param name="interceptor1.param">new paramValue1</param>
 			</interceptor-ref>

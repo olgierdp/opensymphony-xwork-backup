@@ -65,12 +65,18 @@
     <dependencies>
         <dependency>
             <groupId>com.opensymphony</groupId>
-            <artifactId>xwork</artifactId>
+            <artifactId>xwork-core</artifactId>
             <version>2.1.5-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
         <sourceDirectory>src/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/resources</directory>
+            </resource>
+        </resources>
+
         <testSourceDirectory>src/test</testSourceDirectory>
         <testResources>
             <testResource>

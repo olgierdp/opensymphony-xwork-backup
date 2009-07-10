@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 
 import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.ActionProxyFactory;
+import com.opensymphony.xwork2.XWork;
 import com.opensymphony.xwork2.config.Configuration;
 import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.providers.XmlConfigurationProvider;
@@ -26,7 +27,7 @@ public class HelloWorldTutorial {
 				new XmlConfigurationProvider(
 						"com/opensymphony/xwork2/showcase/helloworld/xwork-hello-world.xml", 
 						true));
-        
+        /*
         Configuration conf = confManager.getConfiguration();
 		ActionProxyFactory actionProxyFactory = conf.getContainer().getInstance(ActionProxyFactory.class);
 		ActionProxy actionProxy = actionProxyFactory.createActionProxy(
@@ -34,5 +35,8 @@ public class HelloWorldTutorial {
 		
 		
 		actionProxy.execute();
+		*/
+        XWork xwork = new XWork(confManager);
+        xwork.executeAction("/helloWorld", "helloWorld", "execute", new LinkedHashMap());
 	}
 }
