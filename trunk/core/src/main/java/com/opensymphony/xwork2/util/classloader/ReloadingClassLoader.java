@@ -13,6 +13,12 @@ import java.io.InputStream;
 import java.io.File;
 import java.net.URL;
 import java.net.URISyntaxException;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.Set;
+import java.util.Collections;
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * The ReloadingClassLoader uses a delegation mechanism to allow
@@ -27,6 +33,8 @@ public class ReloadingClassLoader extends ClassLoader {
     private final ClassLoader parent;
     private ResourceStore[] stores;
     private ClassLoader delegate;
+
+    private Set<Pattern> acceptClasses = Collections.emptySet();
 
     public ReloadingClassLoader(final ClassLoader pParent) {
         super(pParent);
@@ -119,7 +127,7 @@ public class ReloadingClassLoader extends ClassLoader {
     }
 
     public Class loadClass(String name) throws ClassNotFoundException {
-        return delegate.loadClass(name);
+        return isAccepted(name) ? delegate.loadClass(name) : parent.loadClass(name);
     }
 
     public void setClassAssertionStatus(String className, boolean enabled) {
@@ -132,6 +140,23 @@ public class ReloadingClassLoader extends ClassLoader {
 
     public void setPackageAssertionStatus(String packageName, boolean enabled) {
         delegate.setPackageAssertionStatus(packageName, enabled);
+    }
+
+    public void setAccepClasses(Set<Pattern> acceptClasses) {
+        this.acceptClasses = acceptClasses;
+    }
+
+    protected boolean isAccepted(String className) {
+        if (!this.acceptClasses.isEmpty()) {
+            for (Pattern pattern : acceptClasses) {
+                Matcher matcher = pattern.matcher(className);
+                if (matcher.matches()) {
+                    return true;
+                }
+            }
+            return false;
+        } else
+            return true;
     }
 }
 
