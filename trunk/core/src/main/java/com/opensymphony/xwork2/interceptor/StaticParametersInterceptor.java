@@ -27,6 +27,7 @@ import java.util.TreeMap;
  *
  * This interceptor populates the action with the static parameters defined in the action configuration. If the action
  * implements {@link Parameterizable}, a map of the static parameters will be also be passed directly to the action.
+ * The static params will be added to the request params map, unless "merge" is set to false.
  *
  * <p/> Parameters are typically defined with &lt;param&gt; elements within xwork.xml.
  *
@@ -72,6 +73,7 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
 
     private boolean parse;
     private boolean overwrite;
+    private boolean merge = true;
 
     static boolean devMode = false;
 
@@ -84,6 +86,10 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
 
     public void setParse(String value) {
         this.parse = Boolean.valueOf(value).booleanValue();
+    }
+
+     public void setMerge(String value) {
+        this.merge = Boolean.valueOf(value).booleanValue();
     }
 
     /**
@@ -139,7 +145,9 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
                         }
                     }
                 }
-                addParametersToContext(ac, parameters);
+
+                if (merge)
+                    addParametersToContext(ac, parameters);
             } finally {
                 ReflectionContextState.setCreatingNullObjects(contextMap, false);
                 ReflectionContextState.setReportingConversionErrors(contextMap, false);
