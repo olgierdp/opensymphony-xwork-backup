@@ -26,6 +26,20 @@ import java.util.*;
  */
 public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, ClassResolver {
 
+    /**
+     * Used by OGNl to generate bytecode
+     */
+    public String getSourceAccessor(OgnlContext context, Object target, Object index) {
+        return null;
+    }
+
+    /**
+     * Used by OGNl to generate bytecode
+     */
+    public String getSourceSetter(OgnlContext context, Object target, Object index) {
+        return null;  
+    }
+
     private final static Logger LOG = LoggerFactory.getLogger(CompoundRootAccessor.class);
     private static Map invalidMethods = new HashMap();
 

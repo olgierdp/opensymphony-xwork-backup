@@ -237,7 +237,7 @@
         <currentVersion>${pom.version}</currentVersion>
         <struts2.springPlatformVersion>2.5.6</struts2.springPlatformVersion>
         <asm.version>3.1</asm.version>
-        <ognl.version>2.6.11</ognl.version>
+        <ognl.version>2.7.3</ognl.version>
     </properties>
 
     <profiles>
@@ -559,7 +559,7 @@
             <version>2.4</version>
         </dependency>
         <dependency>
-            <groupId>opensymphony</groupId>
+            <groupId>ognl</groupId>
             <artifactId>ognl</artifactId>
             <version>${ognl.version}</version>
         </dependency>

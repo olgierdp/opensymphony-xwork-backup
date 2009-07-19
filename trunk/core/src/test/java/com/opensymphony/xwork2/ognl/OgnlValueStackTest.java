@@ -394,12 +394,9 @@ public class OgnlValueStackTest extends XWorkTestCase {
         BadJavaBean bean = new BadJavaBean();
         vs.push(bean);
 
-        try {
-            vs.setValue("count", "1", true);
-            fail("Expected an exception for mismatched getter and setter");
-        } catch (XWorkException e) {
-            //expected
-        }
+        //this used to fail in OGNl versdion < 2.7
+        vs.setValue("count", "1", true);
+        assertEquals("1", bean.getCount());
 
         try {
             vs.setValue("count2", "a", true);
@@ -415,12 +412,9 @@ public class OgnlValueStackTest extends XWorkTestCase {
         BadJavaBean bean = new BadJavaBean();
         vs.push(bean);
 
-        try {
-            vs.setValue("count", "1", true);
-            fail("Expected an exception for mismatched getter and setter");
-        } catch (XWorkException e) {
-            //expected
-        }
+        //this used to fail in OGNl versdion < 2.7
+        vs.setValue("count", "1", true);
+        assertEquals("1", bean.getCount());
 
         try {
             vs.setValue("count2", "a", true);

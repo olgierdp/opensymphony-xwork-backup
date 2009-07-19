@@ -242,18 +242,15 @@ public class OgnlUtilTest extends XWorkTestCase {
         assertEquals(foo.getBar().getTitle(), "i am barbaz");
     }
 
-    public void testExceptionForUnmatchedGetterAndSetterWithThrowPropertyException() {
+    public void testNoExceptionForUnmatchedGetterAndSetterWithThrowPropertyException() {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put("myIntegerProperty", new Integer(1234));
 
         TestObject testObject = new TestObject();
 
-        try {
-            ognlUtil.setProperties(props, testObject, true);
-            fail("should rise IllegalAccessException because of Wrong getter method");
-        } catch (Exception e) {
-            //expected
-        }
+        //this used to fail in OGNL versions < 2.7
+        ognlUtil.setProperties(props, testObject, true);
+        assertEquals(1234, props.get("myIntegerProperty"));
     }
 
     public void testExceptionForWrongPropertyNameWithThrowPropertyException() {
