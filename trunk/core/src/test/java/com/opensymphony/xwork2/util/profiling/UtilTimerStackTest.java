@@ -75,6 +75,7 @@ public class UtilTimerStackTest extends TestCase {
         minTimeProp = System.getProperty(UtilTimerStack.MIN_TIME);
 
         System.setProperty(UtilTimerStack.ACTIVATE_PROPERTY, "true");
+        UtilTimerStack.setActive(true);
         System.setProperty(UtilTimerStack.MIN_TIME, "0");
     }
 

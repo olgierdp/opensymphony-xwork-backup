@@ -127,15 +127,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
  * <!-- START SNIPPET: activationThroughCode -->
  *   
  *  UtilTimerStack.setActivate(true);
- *  
- *  // or 
- *  
- *  System.setProperty("xwork.profile.activate", "true");
- *   
- *  // or
- *  
- *  System.setProperty(UtilTimerStack.ACTIVATE_PROPERTY, "true");
- *  
+ *    
  * <!-- END SNIPPET: activationThroughCode --> 
  * </pre>
  * 
@@ -293,6 +285,15 @@ public class UtilTimerStack
     private static final Logger LOG = LoggerFactory.getLogger(UtilTimerStack.class);
 
     /**
+     * Initialized in a static block, it can be changed at runtime by calling setActive(...)
+     */
+    private static boolean active;
+
+    static {
+        active = "true".equalsIgnoreCase(System.getProperty(ACTIVATE_PROPERTY));
+    }
+
+    /**
      * Create and start a performance profiling with the <code>name</code> given. Deal with 
      * profile hierarchy automatically, so caller don't have to be concern about it.
      * 
@@ -397,7 +398,7 @@ public class UtilTimerStack
      */
     public static boolean isActive()
     {
-        return System.getProperty(ACTIVATE_PROPERTY) != null;
+        return active;
     }
 
     /**
@@ -411,6 +412,8 @@ public class UtilTimerStack
             System.setProperty(ACTIVATE_PROPERTY, "true");
         else
         	System.clearProperty(ACTIVATE_PROPERTY);
+
+        UtilTimerStack.active = active; 
     }
 
 
