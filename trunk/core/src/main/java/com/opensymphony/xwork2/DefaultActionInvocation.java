@@ -191,16 +191,15 @@ public class DefaultActionInvocation implements ActionInvocation {
 
         ResultConfig resultConfig = null;
 
-        synchronized (config) {
-            try {
-                resultConfig = results.get(resultCode);
-            } catch (NullPointerException e) {
-                // swallow
-            }
-            if (resultConfig == null) {
-                // If no result is found for the given resultCode, try to get a wildcard '*' match.
-                resultConfig = results.get("*");
-            }
+        try {
+            resultConfig = results.get(resultCode);
+        } catch (NullPointerException e) {
+            // swallow
+        }
+        
+        if (resultConfig == null) {
+            // If no result is found for the given resultCode, try to get a wildcard '*' match.
+            resultConfig = results.get("*");
         }
 
         if (resultConfig != null) {
