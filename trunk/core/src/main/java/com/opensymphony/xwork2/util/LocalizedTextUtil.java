@@ -20,6 +20,7 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
@@ -68,7 +69,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class LocalizedTextUtil {
 
-    private static final List<String> DEFAULT_RESOURCE_BUNDLES = Collections.synchronizedList(new ArrayList<String>());
+    private static final List<String> DEFAULT_RESOURCE_BUNDLES = new CopyOnWriteArrayList<String>();
     private static final Logger LOG = LoggerFactory.getLogger(LocalizedTextUtil.class);
     private static boolean reloadBundles = false;
     private static final ResourceBundle EMPTY_BUNDLE = new EmptyResourceBundle();
@@ -177,18 +178,16 @@ public class LocalizedTextUtil {
      * @return a localized message based on the specified key, or null if no localized message can be found for it
      */
     public static String findDefaultText(String aTextName, Locale locale) {
-        synchronized (DEFAULT_RESOURCE_BUNDLES) {
-            List<String> localList = DEFAULT_RESOURCE_BUNDLES;
+        List<String> localList = DEFAULT_RESOURCE_BUNDLES;
 
-            for (String bundleName : localList) {
-                ResourceBundle bundle = findResourceBundle(bundleName, locale);
-                if (bundle != null) {
-                    reloadBundles();
-                    try {
-                        return bundle.getString(aTextName);
-                    } catch (MissingResourceException e) {
-                        // ignore and try others
-                    }
+        for (String bundleName : localList) {
+            ResourceBundle bundle = findResourceBundle(bundleName, locale);
+            if (bundle != null) {
+                reloadBundles();
+                try {
+                    return bundle.getString(aTextName);
+                } catch (MissingResourceException e) {
+                    // ignore and try others
                 }
             }
         }
