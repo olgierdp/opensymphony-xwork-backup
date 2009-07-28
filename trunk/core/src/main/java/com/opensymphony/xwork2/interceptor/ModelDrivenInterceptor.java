@@ -111,7 +111,7 @@ public class ModelDrivenInterceptor extends AbstractInterceptor {
 
             // Check to see if the new model instance is already on the stack
             for (Object item : root) {
-                if (item == newModel) {
+                if (item.equals(newModel)) {
                     needsRefresh = false;
                 }
             }
