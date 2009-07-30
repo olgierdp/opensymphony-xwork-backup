@@ -32,7 +32,7 @@ public class ClassLoaderInterfaceDelegate implements ClassLoaderInterface {
     }
 
     public InputStream getResourceAsStream(String name) {
-        return getResourceAsStream(name);
+        return classLoader.getResourceAsStream(name);
     }
 
     public ClassLoaderInterface getParent() {
