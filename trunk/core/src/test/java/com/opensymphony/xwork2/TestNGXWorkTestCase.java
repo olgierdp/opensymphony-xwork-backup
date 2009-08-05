@@ -23,16 +23,16 @@ public class TestNGXWorkTestCase {
     protected Configuration configuration;
     protected Container container;
     protected ActionProxyFactory actionProxyFactory;
-    
+
     @BeforeTest
     protected void setUp() throws Exception {
         configurationManager = XWorkTestCaseHelper.setUp();
         configuration = new MockConfiguration();
-        ((MockConfiguration)configuration).selfRegister();
+        ((MockConfiguration) configuration).selfRegister();
         container = configuration.getContainer();
         actionProxyFactory = container.getInstance(ActionProxyFactory.class);
     }
-    
+
     @AfterTest
     protected void tearDown() throws Exception {
         XWorkTestCaseHelper.tearDown(configurationManager);
@@ -41,7 +41,7 @@ public class TestNGXWorkTestCase {
         container = null;
         actionProxyFactory = null;
     }
-    
+
     protected void loadConfigurationProviders(ConfigurationProvider... providers) {
         configurationManager = XWorkTestCaseHelper.loadConfigurationProviders(configurationManager, providers);
         configuration = configurationManager.getConfiguration();
