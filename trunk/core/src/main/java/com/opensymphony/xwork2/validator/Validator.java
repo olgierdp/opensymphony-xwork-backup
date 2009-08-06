@@ -178,7 +178,7 @@ import com.opensymphony.xwork2.util.ValueStack;
  * <!-- END SNIPPET: validatorVsFieldValidators3 -->
  * <p/>
  * <pre>
- * <!-- START-SNIPPET: similarVaidatorDeclaredInDiffSyntax -->
+ * <!-- START SNIPPET: similarVaidatorDeclaredInDiffSyntax -->
  * &lt;field name="email_address"&gt;
  *   &lt;field-validator type="required"&gt;
  *       &lt;message&gt;You cannot leave the email address field empty.&lt;/message&gt;
