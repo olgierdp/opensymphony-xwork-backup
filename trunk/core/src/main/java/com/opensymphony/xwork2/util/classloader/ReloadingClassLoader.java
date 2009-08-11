@@ -7,6 +7,7 @@ package com.opensymphony.xwork2.util.classloader;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.classloader.FileResourceStore;
+import com.opensymphony.xwork2.util.URLUtil;
 import com.opensymphony.xwork2.XWorkException;
 
 import java.io.InputStream;
@@ -39,10 +40,10 @@ public class ReloadingClassLoader extends ClassLoader {
     public ReloadingClassLoader(final ClassLoader pParent) {
         super(pParent);
         parent = pParent;
-        URL root = pParent.getResource("");
+        URL root = URLUtil.normalizeToFileProtocol(pParent.getResource(""));
         try {
             if (root != null) {
-                stores = new ResourceStore[]{new FileResourceStore(new File(root.toURI()))};
+                stores = new ResourceStore[]{new FileResourceStore(new File( root.toURI()))};
             }
             else {
                 throw new XWorkException("Unable to start the reloadable class loader, consider setting 'struts.convention.classes.reload' to false");
