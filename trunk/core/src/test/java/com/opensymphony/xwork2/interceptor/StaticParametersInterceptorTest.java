@@ -152,6 +152,7 @@ public class StaticParametersInterceptorTest extends XWorkTestCase {
         super.setUp();
         interceptor = new StaticParametersInterceptor();
         interceptor.init();
+        container.inject(interceptor);
     }
 
     @Override

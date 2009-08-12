@@ -10,9 +10,7 @@ import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.Parameterizable;
-import com.opensymphony.xwork2.util.TextParseUtil;
-import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.util.LocalizedTextUtil;
+import com.opensymphony.xwork2.util.*;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
@@ -79,6 +77,13 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaticParametersInterceptor.class);
 
+    private ValueStackFactory valueStackFactory;
+
+    @Inject
+    public void setValueStackFactory(ValueStackFactory valueStackFactory) {
+        this.valueStackFactory = valueStackFactory;
+    }
+
     @Inject("devMode")
     public static void setDevMode(String mode) {
         devMode = "true".equals(mode);
@@ -126,13 +131,28 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
                 ReflectionContextState.setReportingConversionErrors(contextMap, true);
                 final ValueStack stack = ac.getValueStack();
 
+                ValueStack newStack = valueStackFactory.createValueStack(stack);
+                boolean clearableStack = newStack instanceof ClearableValueStack;
+                if (clearableStack) {
+                    //if the stack's context can be cleared, do that to prevent OGNL
+                    //from having access to objects in the stack, see XW-641
+                    ((ClearableValueStack)newStack).clearContextValues();
+                    Map<String, Object> context = newStack.getContext();
+                    ReflectionContextState.setCreatingNullObjects(context, true);
+                    ReflectionContextState.setDenyMethodExecution(context, true);
+                    ReflectionContextState.setReportingConversionErrors(context, true);
+
+                    //keep locale from original context
+                    context.put(ActionContext.LOCALE, stack.getContext().get(ActionContext.LOCALE));
+                }
+
                 for (Map.Entry<String, String> entry : parameters.entrySet()) {
                     Object val = entry.getValue();
                     if (parse && val instanceof String) {
                         val = TextParseUtil.translateVariables(val.toString(), stack);
                     }
                     try {
-                        stack.setValue(entry.getKey(), val);
+                        newStack.setValue(entry.getKey(), val);
                     } catch (RuntimeException e) {
                         if (devMode) {
                             String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification:\n{0}", new Object[]{
