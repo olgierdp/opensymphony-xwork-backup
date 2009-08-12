@@ -4,11 +4,14 @@
  */
 package com.opensymphony.xwork2.validator;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.TestBean;
-import com.opensymphony.xwork2.XWorkTestCase;
+import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.config.entities.ActionConfig;
+import com.opensymphony.xwork2.interceptor.DefaultWorkflowInterceptor;
 
 import java.util.*;
+
+import org.easymock.EasyMock;
+import org.easymock.IAnswer;
 
 
 /**
@@ -35,6 +38,22 @@ public class VisitorFieldValidatorTest extends XWorkTestCase {
         Calendar cal = new GregorianCalendar(1900, 01, 01);
         bean.setBirth(cal.getTime());
         bean.setCount(-1);
+
+        ActionConfig config = new ActionConfig.Builder("", "name", "").build();
+        ActionInvocation invocation = EasyMock.createNiceMock(ActionInvocation.class);
+        ActionProxy proxy = EasyMock.createNiceMock(ActionProxy.class);
+
+        EasyMock.expect(invocation.getProxy()).andReturn(proxy).anyTimes();
+        EasyMock.expect(invocation.getAction()).andReturn(action).anyTimes();
+        EasyMock.expect(invocation.invoke()).andReturn(Action.SUCCESS).anyTimes();
+        EasyMock.expect(proxy.getMethod()).andReturn("execute").anyTimes();
+        EasyMock.expect(proxy.getConfig()).andReturn(config).anyTimes();
+        
+
+        EasyMock.replay(invocation);
+        EasyMock.replay(proxy);
+
+        ActionContext.getContext().setActionInvocation(invocation);
     }
 
     public void testArrayValidation() throws Exception {

@@ -6,6 +6,8 @@ package com.opensymphony.xwork2.validator;
 
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.FileManager;
 import com.opensymphony.xwork2.util.ValueStack;
@@ -53,7 +55,7 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
     }
 
     public synchronized List<Validator> getValidators(Class clazz, String context, String method) {
-        final String validatorKey = buildValidatorKey(clazz, context);
+        final String validatorKey = buildValidatorKey(clazz);
 
         if (validatorCache.containsKey(validatorKey)) {
             if (FileManager.isReloadingConfigs()) {
@@ -192,13 +194,20 @@ public class AnnotationActionValidatorManager implements ActionValidatorManager 
      * Builds a key for validators - used when caching validators.
      *
      * @param clazz   the action.
-     * @param context the action's context.
      * @return a validator key which is the class name plus context.
      */
-    protected static String buildValidatorKey(Class clazz, String context) {
+    protected static String buildValidatorKey(Class clazz) {
+        ActionInvocation invocation = ActionContext.getContext().getActionInvocation();
+        ActionProxy proxy = invocation.getProxy();
+
+        //the key needs to use the name of the action from the config file,
+        //instead of the url, so wild card actions will have the same validator
+        //see WW-2996
         StringBuilder sb = new StringBuilder(clazz.getName());
         sb.append("/");
-        sb.append(context);
+        sb.append(proxy.getConfig().getName());
+        sb.append("|");
+        sb.append(proxy.getMethod());
         return sb.toString();
     }
 

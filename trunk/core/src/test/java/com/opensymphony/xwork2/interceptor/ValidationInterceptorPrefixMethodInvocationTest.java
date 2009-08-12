@@ -9,6 +9,9 @@ import com.opensymphony.xwork2.config.entities.InterceptorConfig;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.validator.ValidationInterceptor;
 import org.easymock.MockControl;
+import org.easymock.EasyMock;
+import org.easymock.IAnswer;
+import org.easymock.IMocksControl;
 
 import java.util.HashMap;
 
@@ -19,86 +22,31 @@ import java.util.HashMap;
  * @version $Date$ $Id$
  */
 public class ValidationInterceptorPrefixMethodInvocationTest extends XWorkTestCase {
+    private ActionInvocation invocation;
+    private ActionConfig config;
+    private ActionProxy proxy;
+    private ValidateAction action;
+    private String result;
+    private String method;
 
-	public void testPrefixMethodInvocation1() throws Exception {
-		
-		MockControl controlAction = MockControl.createControl(ValidateAction.class);
-		ValidateAction mockAction = (ValidateAction) controlAction.getMock();
-		mockAction.validateDoSave();
-		controlAction.setVoidCallable(1);
-		mockAction.validate();
-		controlAction.setVoidCallable();
-
-        ActionConfig config = new ActionConfig.Builder("", "action", "").build();
-		
-		MockControl controlActionProxy = MockControl.createControl(ActionProxy.class);
-		ActionProxy mockActionProxy = (ActionProxy) controlActionProxy.getMock();
-		mockActionProxy.getMethod();
-		controlActionProxy.setDefaultReturnValue("save");
-		mockActionProxy.getConfig();
-		controlActionProxy.setDefaultReturnValue(config);
-		
-		MockControl controlActionInvocation = MockControl.createControl(ActionInvocation.class);
-		ActionInvocation mockActionInvocation = (ActionInvocation) controlActionInvocation.getMock();
-		mockActionInvocation.getAction();
-		controlActionInvocation.setDefaultReturnValue(mockAction);
-		mockActionInvocation.getProxy();
-		controlActionInvocation.setDefaultReturnValue(mockActionProxy);
-		mockActionInvocation.invoke();
-		controlActionInvocation.setDefaultReturnValue(Action.INPUT);
-		
-		
-		controlAction.replay();
-		controlActionProxy.replay();
-		controlActionInvocation.replay();
+    public void testPrefixMethodInvocation1() throws Exception {
+		method = "save";
+		result = Action.INPUT;
 		
 		ValidationInterceptor interceptor = create();
-		String result = interceptor.intercept(mockActionInvocation);
+		String result = interceptor.intercept(invocation);
 		
 		assertEquals(Action.INPUT, result);
-		controlAction.verify();
-		controlActionProxy.verify();
-		controlActionInvocation.verify();
 	}
 	
 	public void testPrefixMethodInvocation2() throws Exception {
-		MockControl controlAction = MockControl.createControl(ValidateAction.class);
-		ValidateAction mockAction = (ValidateAction) controlAction.getMock();
-		mockAction.validateSubmit();
-		controlAction.setVoidCallable(1);
-		mockAction.validate();
-		controlAction.setVoidCallable();
+		method = "save";
+		result = "okok";
 
-        ActionConfig config = new ActionConfig.Builder("", "action", "").build();
-		
-		MockControl controlActionProxy = MockControl.createControl(ActionProxy.class);
-		ActionProxy mockActionProxy = (ActionProxy) controlActionProxy.getMock();
-		mockActionProxy.getMethod();
-		controlActionProxy.setDefaultReturnValue("submit");
-		mockActionProxy.getConfig();
-        controlActionProxy.setDefaultReturnValue(config);
-		
-		MockControl controlActionInvocation = MockControl.createControl(ActionInvocation.class);
-		ActionInvocation mockActionInvocation = (ActionInvocation) controlActionInvocation.getMock();
-		mockActionInvocation.getAction();
-		controlActionInvocation.setDefaultReturnValue(mockAction);
-		mockActionInvocation.getProxy();
-		controlActionInvocation.setDefaultReturnValue(mockActionProxy);
-		mockActionInvocation.invoke();
-		controlActionInvocation.setReturnValue("okok");
-		
-		
-		controlAction.replay();
-		controlActionProxy.replay();
-		controlActionInvocation.replay();
-		
 		ValidationInterceptor interceptor = create();
-		String result = interceptor.intercept(mockActionInvocation);
+		String result = interceptor.intercept(invocation);
 		
 		assertEquals("okok", result);
-		controlAction.verify();
-		controlActionProxy.verify();
-		controlActionInvocation.verify();
 	}
 	
 	protected ValidationInterceptor create() {
@@ -111,5 +59,41 @@ public class ValidationInterceptorPrefixMethodInvocationTest extends XWorkTestCa
 		void validateDoSave();
 		void validateSubmit();
 		String submit();
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        config = new ActionConfig.Builder("", "action", "").build();
+        invocation = EasyMock.createNiceMock(ActionInvocation.class);
+        proxy = EasyMock.createNiceMock(ActionProxy.class);
+        action = EasyMock.createNiceMock(ValidateAction.class);
+
+
+        EasyMock.expect(invocation.getProxy()).andReturn(proxy).anyTimes();
+        EasyMock.expect(invocation.getAction()).andReturn(action).anyTimes();
+        EasyMock.expect(invocation.invoke()).andAnswer(new IAnswer<String>() {
+            @Override
+            public String answer() throws Throwable {
+                return result;
+            }
+        }).anyTimes();
+
+        EasyMock.expect(proxy.getConfig()).andReturn(config).anyTimes();
+        EasyMock.expect(proxy.getMethod()).andAnswer(new IAnswer<String>() {
+            public String answer() throws Throwable {
+                return method;
+            }
+        }).anyTimes();
+
+
+        EasyMock.replay(invocation);
+        EasyMock.replay(action);
+        EasyMock.replay(proxy);
+
+        ActionContext contex = new ActionContext(new HashMap<String, Object>());
+        ActionContext.setContext(contex);
+        contex.setActionInvocation(invocation);
     }
 }

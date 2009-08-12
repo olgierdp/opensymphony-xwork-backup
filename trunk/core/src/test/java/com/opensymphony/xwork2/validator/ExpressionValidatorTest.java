@@ -8,12 +8,15 @@ import com.mockobjects.dynamic.C;
 import com.mockobjects.dynamic.Mock;
 import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.config.providers.MockConfigurationProvider;
+import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.validator.validators.ExpressionValidator;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.easymock.EasyMock;
 
 /**
  * Unit test for ExpressionValidator.
@@ -105,6 +108,22 @@ public class ExpressionValidatorTest extends XWorkTestCase {
         super.setUp();
 
         loadConfigurationProviders(new MockConfigurationProvider());
+
+        ActionConfig config = new ActionConfig.Builder("", "name", "").build();
+        ActionInvocation invocation = EasyMock.createNiceMock(ActionInvocation.class);
+        ActionProxy proxy = EasyMock.createNiceMock(ActionProxy.class);
+
+        EasyMock.expect(invocation.getProxy()).andReturn(proxy).anyTimes();
+        EasyMock.expect(invocation.getAction()).andReturn(null).anyTimes();
+        EasyMock.expect(invocation.invoke()).andReturn(Action.SUCCESS).anyTimes();
+        EasyMock.expect(proxy.getMethod()).andReturn("execute").anyTimes();
+        EasyMock.expect(proxy.getConfig()).andReturn(config).anyTimes();
+
+
+        EasyMock.replay(invocation);
+        EasyMock.replay(proxy);
+
+        ActionContext.getContext().setActionInvocation(invocation);
     }
 
 }
