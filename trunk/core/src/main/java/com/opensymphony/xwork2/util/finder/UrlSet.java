@@ -6,6 +6,7 @@ package com.opensymphony.xwork2.util.finder;
 
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import com.opensymphony.xwork2.util.URLUtil;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -33,7 +34,8 @@ public class UrlSet {
     private static final Logger LOG = LoggerFactory.getLogger(UrlSet.class);
     private final Map<String,URL> urls;
     private Set<String> protocols;
-    
+    private static final String CLASSES_DIR = "/WEB-INF/classes";
+
 
     public UrlSet(ClassLoaderInterface classLoader) throws IOException {
         this(getUrls(classLoader));
@@ -177,6 +179,22 @@ public class UrlSet {
         return new ArrayList<URL>(urls.values());
     }
 
+    private static URL getClassesURL(ClassLoaderInterface classLoader) throws IOException {
+        List<URL> urls = Collections.list(classLoader.getResources(""));
+        for (URL url : urls) {
+            String externalForm = StringUtils.removeEnd(url.toExternalForm(), "/");
+            if (externalForm.endsWith(".war/WEB-INF/classes")) {
+                //if it is inside a war file, get the url to the file
+                externalForm = StringUtils.substringBefore(externalForm, CLASSES_DIR);
+                return URLUtil.normalizeToFileProtocol(new URL(externalForm));
+            } else if (externalForm.endsWith(CLASSES_DIR)) {
+                return URLUtil.normalizeToFileProtocol(url);
+            }
+        }
+
+        return null;
+    }
+
     private static List<URL> getUrls(ClassLoaderInterface classLoader) throws IOException {
         List<URL> list = new ArrayList<URL>();
 
@@ -194,8 +212,11 @@ public class UrlSet {
 
         }
 
-        //usually the "classes" dir
-        list.addAll(Collections.list(classLoader.getResources("")));
+        //get the "classes" dir
+        URL classesURL = getClassesURL(classLoader);
+        if (classesURL != null)
+            list.add(classesURL);
+
         return list;
     }
 
@@ -221,8 +242,11 @@ public class UrlSet {
 
         }
 
-        //usually the "classes" dir
-        list.addAll(Collections.list(classLoader.getResources("")));
+        //get the "classes" dir
+        URL classesURL = getClassesURL(classLoader);
+        if (classesURL != null)
+            list.add(classesURL);
+        
         return list;
     }
 

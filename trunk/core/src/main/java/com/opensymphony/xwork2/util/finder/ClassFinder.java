@@ -13,6 +13,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.commons.EmptyVisitor;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -478,6 +479,10 @@ public class ClassFinder {
             }
             String className = entry.getName();
             className = className.replaceFirst(".class$", "");
+
+            //war files are treated as .jar files, so takeout WEB-INF/classes
+            className = StringUtils.removeStart(className, "WEB-INF/classes/"); 
+
             className = className.replace('/', '.');
             classNames.add(className);
         }
