@@ -150,40 +150,39 @@ public abstract class RepopulateConversionErrorFieldValidatorSupport extends Fie
 		
 		String fieldName = getFieldName();
 		String fullFieldName = getValidatorContext().getFullFieldName(fieldName);
-		Object value = conversionErrors.get(fullFieldName);
-		
-		final Map<Object, Object> fakeParams = new LinkedHashMap<Object, Object>();
-		boolean doExprOverride = false;
-		
-		if (value instanceof String[]) {
-			// take the first element, if possible
-			String[] tmpValue = (String[]) value;
-			if (tmpValue != null && (tmpValue.length > 0) ) {
-				doExprOverride = true;
-				fakeParams.put(fullFieldName, "'"+tmpValue[0]+"'");
-			}
-			else {
-				LOG.warn("value is an empty array of String or with first element in it as null ["+value+"], will not repopulate conversion error ");
-			}
-		}
-		else if (value instanceof String) {
-			String tmpValue = (String) value;
-			doExprOverride = true;
-			fakeParams.put(fullFieldName, "'"+tmpValue+"'");
-		}
-		else {
-			// opps... it should be 
-			LOG.warn("conversion error value is not a String or array of String but instead is ["+value+"], will not repopulate conversion error");
-		}
-		
-		if (doExprOverride) {
-			invocation.addPreResultListener(new PreResultListener() {
-				public void beforeResult(ActionInvocation invocation, String resultCode) {
-					ValueStack stack = ActionContext.getContext().getValueStack();
-					stack.setExprOverrides(fakeParams);
-				}
-			});
-		}
+        if (conversionErrors.containsKey(fullFieldName)) {
+            Object value = conversionErrors.get(fullFieldName);
+
+            final Map<Object, Object> fakeParams = new LinkedHashMap<Object, Object>();
+            boolean doExprOverride = false;
+
+            if (value instanceof String[]) {
+                // take the first element, if possible
+                String[] tmpValue = (String[]) value;
+                if (tmpValue != null && (tmpValue.length > 0)) {
+                    doExprOverride = true;
+                    fakeParams.put(fullFieldName, "'" + tmpValue[0] + "'");
+                } else {
+                    LOG.warn("value is an empty array of String or with first element in it as null [" + value + "], will not repopulate conversion error ");
+                }
+            } else if (value instanceof String) {
+                String tmpValue = (String) value;
+                doExprOverride = true;
+                fakeParams.put(fullFieldName, "'" + tmpValue + "'");
+            } else {
+                // opps... it should be 
+                LOG.warn("conversion error value is not a String or array of String but instead is [" + value + "], will not repopulate conversion error");
+            }
+
+            if (doExprOverride) {
+                invocation.addPreResultListener(new PreResultListener() {
+                    public void beforeResult(ActionInvocation invocation, String resultCode) {
+                        ValueStack stack = ActionContext.getContext().getValueStack();
+                        stack.setExprOverrides(fakeParams);
+                    }
+                });
+            }
+        }
 	}
 	
 	protected abstract void doValidate(Object object) throws ValidationException;
