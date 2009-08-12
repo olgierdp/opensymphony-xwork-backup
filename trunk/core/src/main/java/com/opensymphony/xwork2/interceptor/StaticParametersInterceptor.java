@@ -166,6 +166,9 @@ public class StaticParametersInterceptor extends AbstractInterceptor {
                     }
                 }
 
+                 if (clearableStack && (stack.getContext() != null) && (newStack.getContext() != null))
+                    stack.getContext().put(ActionContext.CONVERSION_ERRORS, newStack.getContext().get(ActionContext.CONVERSION_ERRORS));
+
                 if (merge)
                     addParametersToContext(ac, parameters);
             } finally {
