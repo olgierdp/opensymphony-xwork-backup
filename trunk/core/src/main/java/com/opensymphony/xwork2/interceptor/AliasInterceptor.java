@@ -7,8 +7,14 @@ package com.opensymphony.xwork2.interceptor;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.ValidationAware;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ClearableValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
+import com.opensymphony.xwork2.util.LocalizedTextUtil;
+import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
@@ -70,10 +76,23 @@ import java.util.Map;
  */
 public class AliasInterceptor extends AbstractInterceptor {
 
-    private static final Logger log = LoggerFactory.getLogger(AliasInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AliasInterceptor.class);
 
     private static final String DEFAULT_ALIAS_KEY = "aliases";
     protected String aliasesKey = DEFAULT_ALIAS_KEY;
+
+    protected ValueStackFactory valueStackFactory;
+    static boolean devMode = false;
+
+    @Inject("devMode")
+    public static void setDevMode(String mode) {
+        devMode = "true".equals(mode);
+    }   
+
+    @Inject
+    public void setValueStackFactory(ValueStackFactory valueStackFactory) {
+        this.valueStackFactory = valueStackFactory;
+    }
 
     /**
      * Sets the name of the action parameter to look for the alias map.
@@ -90,6 +109,7 @@ public class AliasInterceptor extends AbstractInterceptor {
 
         ActionConfig config = invocation.getProxy().getConfig();
         ActionContext ac = invocation.getInvocationContext();
+        Object action = invocation.getAction();
 
         // get the action's parameters
         final Map<String, String> parameters = config.getParams();
@@ -101,6 +121,22 @@ public class AliasInterceptor extends AbstractInterceptor {
             Object obj = stack.findValue(aliasExpression);
 
             if (obj != null && obj instanceof Map) {
+                //get secure stack
+                ValueStack newStack = valueStackFactory.createValueStack(stack);
+                boolean clearableStack = newStack instanceof ClearableValueStack;
+                if (clearableStack) {
+                    //if the stack's context can be cleared, do that to prevent OGNL
+                    //from having access to objects in the stack, see XW-641
+                    ((ClearableValueStack)newStack).clearContextValues();
+                    Map<String, Object> context = newStack.getContext();
+                    ReflectionContextState.setCreatingNullObjects(context, true);
+                    ReflectionContextState.setDenyMethodExecution(context, true);
+                    ReflectionContextState.setReportingConversionErrors(context, true);
+
+                    //keep locale from original context
+                    context.put(ActionContext.LOCALE, stack.getContext().get(ActionContext.LOCALE));
+                }
+
                 // override
                 Map aliases = (Map) obj;
                 for (Object o : aliases.entrySet()) {
@@ -110,18 +146,33 @@ public class AliasInterceptor extends AbstractInterceptor {
                     Object value = stack.findValue(name);
                     if (null == value) {
                         // workaround
-                        Map<String, String> contextParameters = (Map<String, String>) stack.getContext().get("parameters");
+                        Map<String, Object> contextParameters = ActionContext.getContext().getParameters();
 
                         if (null != contextParameters) {
                             value = contextParameters.get(name);
                         }
                     }
                     if (null != value) {
-                        stack.setValue(alias, value);
+                        try {
+                            newStack.setValue(alias, value);
+                        } catch (RuntimeException e) {
+                            if (devMode) {
+                                String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification:\n{0}", new Object[]{
+                                        "Unexpected Exception caught setting '" + entry.getKey() + "' on '" + action.getClass() + ": " + e.getMessage()
+                                });
+                                LOG.error(developerNotification);
+                                if (action instanceof ValidationAware) {
+                                    ((ValidationAware) action).addActionMessage(developerNotification);
+                                }
+                            }
+                        }
                     }
                 }
+
+                if (clearableStack && (stack.getContext() != null) && (newStack.getContext() != null))
+                    stack.getContext().put(ActionContext.CONVERSION_ERRORS, newStack.getContext().get(ActionContext.CONVERSION_ERRORS));
             } else {
-                log.debug("invalid alias expression:" + aliasesKey);
+                LOG.debug("invalid alias expression:" + aliasesKey);
             }
         }
         
