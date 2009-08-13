@@ -19,9 +19,9 @@ public class PerformanceTest extends XWorkTestCase {
         XWorkParametersBinder binder = container.getInstance(XWorkParametersBinder.class);
         OgnlUtil ognlUtil = container.getInstance(OgnlUtil.class);
 
-        int k = 15000;
+        int k = 20000;
 
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
         for (int i = 0; i < k; i++) {
             binder.setProperty(emptyMap, action, "theProtectedMap['p0 p1']", "test");
             binder.setProperty(emptyMap, action, "otherMap['my_hero'].name", "test");
