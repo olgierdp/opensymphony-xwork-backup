@@ -460,13 +460,18 @@ public class ClassFinder {
 
     private List<String> jar(URL location) throws IOException {
         URL url = URLUtil.normalizeToFileProtocol(location);
-        InputStream in = url.openStream();
-        try {
-            JarInputStream jarStream = new JarInputStream(in);
-            return jar(jarStream);
-        } finally {
-            in.close();
-        }
+        if (url != null) {
+            InputStream in = url.openStream();
+            try {
+                JarInputStream jarStream = new JarInputStream(in);
+                return jar(jarStream);
+            } finally {
+                in.close();
+            }
+        } else if (LOG.isDebugEnabled())
+            LOG.debug("Unable to read [#0]", location.toExternalForm());
+        
+        return Collections.emptyList();
     }
 
     private List<String> jar(JarInputStream jarStream) throws IOException {
