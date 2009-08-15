@@ -37,7 +37,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
      * Used by OGNl to generate bytecode
      */
     public String getSourceSetter(OgnlContext context, Object target, Object index) {
-        return null;  
+        return null;
     }
 
     private final static Logger LOG = LoggerFactory.getLogger(CompoundRootAccessor.class);
@@ -66,8 +66,12 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     return;
                 } else if (o instanceof Map) {
                     Map<Object, Object> map = (Map) o;
-                    map.put(name, value);
-                    return;
+                    try {
+                        map.put(name, value);
+                        return;
+                    } catch (UnsupportedOperationException e) {
+                        // This is an unmodifiable Map, so move on to the next element in the stack
+                    }
                 }
 //            } catch (OgnlException e) {
 //                if (e.getReason() != null) {
@@ -181,7 +185,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     String s = (String) aSet;
                     sb.append(s).append("\n");
                 }
-                
+
                 return sb.toString();
             } catch (IntrospectionException e) {
                 e.printStackTrace();
