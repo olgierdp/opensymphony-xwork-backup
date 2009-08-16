@@ -1,0 +1,175 @@
+<!--
+/*
+ * $Id$
+ *
+ * Copyright (c) 2002-2006 by OpenSymphony
+ * All rights reserved.
+ */
+-->
+<assembly>
+    <id>all</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>net.sf.retrotranslator:retrotranslator-runtime</exclude>
+                <exclude>backport-util-concurrent:backport-util-concurrent</exclude>
+                <exclude>junit:junit</exclude>
+                <exclude>*:jdk14</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>../</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>pom*</include>
+            </includes>
+            <excludes>
+                <exclude>null</exclude>
+                <exclude>dist</exclude>
+                <exclude>build</exclude>
+                <exclude>target</exclude>
+                <exclude>test-build</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>../src</directory>
+            <outputDirectory>src</outputDirectory>
+        </fileSet>
+
+
+        <!-- Include the Confluence docs in the assembly -->
+        <fileSet>
+            <directory>../docs</directory>
+            <outputDirectory>docs</outputDirectory>
+        </fileSet>
+
+        <!-- Include the website in the assembly -->
+        <fileSet>
+            <directory>../target/site</directory>
+            <outputDirectory>docs/site</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>../core/target/site</directory>
+            <outputDirectory>docs/site/xwork-core</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>../assembly/target/site</directory>
+            <outputDirectory>docs/site/xwork-assembly</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>../plugins/target/site</directory>
+            <outputDirectory>docs/site/xwork-plugins</outputDirectory>
+        </fileSet>
+
+        <!-- Include Plugin Sites -->
+        <fileSet>
+            <directory>../plugins/mock/target/site</directory>
+            <outputDirectory>docs/site/xwork-plugins/xwork-mock-plugin</outputDirectory>
+        </fileSet>
+
+        <!-- Include the XWork Javadoc in the assembly -->
+        <fileSet>
+            <directory>../core/target/apidocs</directory>
+            <outputDirectory>docs/xwork-apidocs</outputDirectory>
+        </fileSet>
+
+        <!-- Include the source code in the assembly -->
+        <fileSet>
+            <directory>../core</directory>
+            <outputDirectory>core</outputDirectory>
+            <includes>
+                <include>pom.xml</include>
+                <include>src/</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>../plugins</directory>
+            <outputDirectory>plugins</outputDirectory>
+            <excludes>
+                <exclude>*/target/**</exclude>
+                <exclude>target/**</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <directory>../assembly</directory>
+            <outputDirectory>assembly</outputDirectory>
+            <includes>
+                <include>pom.xml</include>
+                <include>src/</include>
+            </includes>
+        </fileSet>
+<!--
+        <fileSet>
+            <directory>../showcase</directory>
+            <outputDirectory>showcase</outputDirectory>
+            <includes>
+                <include>pom.xml</include>
+                <include>src/</include>
+            </includes>
+        </fileSet>
+-->        
+
+        <!-- Include the generated jars in archive root -->
+        <fileSet>
+            <directory>../core/target</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>xwork-core-${version}.jar</include>
+                <include>xwork-core-${version}-sources.jar</include>
+                <include>xwork-core-${version}-javadoc.jar</include>
+            </includes>
+        </fileSet>
+<!--
+        <fileSet>
+            <directory>../plugins/mock/target</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>xwork-mock-plugin-${version}.jar</include>
+                <include>xwork-mock-plugin-${version}-sources.jar</include>
+                <include>xwork-mock-plugin-${version}-javadoc.jar</include>
+            </includes>
+        </fileSet>
+-->
+
+        
+        <!-- Include the backport jars into java14 dir -->
+        <fileSet>
+            <directory>../core/target</directory>
+            <outputDirectory>java14</outputDirectory>
+            <includes>
+                <include>xwork-core-${version}-jdk14.jar</include>
+                <include>xwork-core-${version}-sources.jar</include>
+                <include>xwork-core-${version}-javadoc.jar</include>
+            </includes>
+        </fileSet>
+<!--
+        <fileSet>
+            <directory>../plugins/mock/target</directory>
+            <outputDirectory>java14</outputDirectory>
+            <includes>
+                <include>xwork-mock-plugin-${version}-jdk14.jar</include>
+                <include>xwork-mock-plugin-${version}-sources.jar</include>
+                <include>xwork-mock-plugin-${version}-javadoc.jar</include>
+            </includes>
+        </fileSet>
+-->
+    </fileSets>
+</assembly>
