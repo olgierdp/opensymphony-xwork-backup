@@ -6,7 +6,9 @@ package com.opensymphony.xwork2.util.finder;
 
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
+import com.opensymphony.xwork2.util.URLUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.ObjectUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -159,6 +161,30 @@ public class UrlSet {
             }
         }
         return new UrlSet(urls);
+    }
+
+    /**
+     * Try to find a classes directory inside a war file add its normalized url to this set
+     */
+    public UrlSet includeClassesUrl(ClassLoaderInterface classLoaderInterface) throws IOException {
+        Enumeration<URL> rootUrlEnumeration = classLoaderInterface.getResources("");
+        while (rootUrlEnumeration.hasMoreElements()) {
+            URL url = rootUrlEnumeration.nextElement();
+            String externalForm = StringUtils.removeEnd(url.toExternalForm(), "/");
+            if (externalForm.endsWith(".war/WEB-INF/classes")) {
+                //if it is inside a war file, get the url to the file
+                externalForm = StringUtils.substringBefore(externalForm, "/WEB-INF/classes");
+                URL warUrl = new URL(externalForm);
+                URL normalizedUrl = URLUtil.normalizeToFileProtocol(warUrl);
+                URL finalUrl = (URL) ObjectUtils.defaultIfNull(normalizedUrl, warUrl);
+
+                Map<String, URL> newUrls = new HashMap<String, URL>(this.urls);
+                newUrls.put(finalUrl.toExternalForm(), finalUrl);
+                return new UrlSet(newUrls);
+            }
+        }
+
+        return this;
     }
 
     public UrlSet relative(File file) throws MalformedURLException {
