@@ -7,12 +7,14 @@ package com.opensymphony.xwork2.interceptor;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.SimpleFooAction;
+import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.mock.MockActionInvocation;
 import junit.framework.TestCase;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.io.Serializable;
 
 /**
  * Unit test for I18nInterceptor.
@@ -23,9 +25,9 @@ public class I18nInterceptorTest extends TestCase {
 
     private I18nInterceptor interceptor;
     private ActionContext ac;
-    private Map params;
+    private Map<String, Serializable> params;
     private Map session;
-    private MockActionInvocation mai;
+    private ActionInvocation mai;
 
     public void testEmptyParamAndSession() throws Exception {
         interceptor.intercept(mai);
@@ -158,7 +160,8 @@ public class I18nInterceptorTest extends TestCase {
         interceptor.intercept(mai);
 
         Locale locale = (Locale) session.get(I18nInterceptor.DEFAULT_SESSION_ATTRIBUTE);
-        assertNotNull(locale); // should be stored here
+        assertNull(locale); // should not be stored here
+        locale = mai.getInvocationContext().getLocale();
         assertEquals(locale1, locale);
     }
 
@@ -166,18 +169,18 @@ public class I18nInterceptorTest extends TestCase {
     protected void setUp() throws Exception {
         interceptor = new I18nInterceptor();
         interceptor.init();
-        params = new HashMap();
+        params = new HashMap<String, Serializable>();
         session = new HashMap();
 
-        Map ctx = new HashMap();
+        Map<String, Object> ctx = new HashMap<String, Object>();
         ctx.put(ActionContext.PARAMETERS, params);
         ctx.put(ActionContext.SESSION, session);
         ac = new ActionContext(ctx);
 
         Action action = new SimpleFooAction();
         mai = new MockActionInvocation();
-        mai.setAction(action);
-        mai.setInvocationContext(ac);
+        ((MockActionInvocation) mai).setAction(action);
+        ((MockActionInvocation) mai).setInvocationContext(ac);
     }
 
     @Override

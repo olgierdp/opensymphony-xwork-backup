@@ -148,6 +148,7 @@ public class I18nInterceptor extends AbstractInterceptor {
                         if (locale != null && LOG.isDebugEnabled()) {
                             LOG.debug("applied invocation context locale=" + locale);
                         }
+                        storeInSession = false;
                     }
                 }
                 if (storeInSession) {
