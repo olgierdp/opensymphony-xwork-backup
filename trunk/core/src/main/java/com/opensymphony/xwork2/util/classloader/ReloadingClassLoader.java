@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.apache.commons.lang.ObjectUtils;
+
 /**
  * The ReloadingClassLoader uses a delegation mechanism to allow
  * classes to be reloaded. That means that loadClass calls may
@@ -40,12 +42,13 @@ public class ReloadingClassLoader extends ClassLoader {
     public ReloadingClassLoader(final ClassLoader pParent) {
         super(pParent);
         parent = pParent;
-        URL root = URLUtil.normalizeToFileProtocol(pParent.getResource(""));
+        URL parentRoot = pParent.getResource("");
+        URL root = URLUtil.normalizeToFileProtocol(parentRoot);
+        root = (URL) ObjectUtils.defaultIfNull(root, parentRoot);
         try {
             if (root != null) {
-                stores = new ResourceStore[]{new FileResourceStore(new File( root.toURI()))};
-            }
-            else {
+                stores = new ResourceStore[]{new FileResourceStore(new File(root.toURI()))};
+            } else {
                 throw new XWorkException("Unable to start the reloadable class loader, consider setting 'struts.convention.classes.reload' to false");
             }
         } catch (URISyntaxException e) {
@@ -56,7 +59,7 @@ public class ReloadingClassLoader extends ClassLoader {
             if (root != null)
                 LOG.error("Exception while trying to build the ResourceStore for URL [#0]", e, root.toString());
             else
-                 LOG.error("Exception while trying to get root resource from class loader", e);
+                LOG.error("Exception while trying to get root resource from class loader", e);
             LOG.error("Consider setting struts.convention.classes.reload=false");
             throw e;
         }
