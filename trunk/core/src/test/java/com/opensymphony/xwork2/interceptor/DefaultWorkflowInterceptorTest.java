@@ -167,7 +167,6 @@ public class DefaultWorkflowInterceptorTest extends XWorkTestCase {
         EasyMock.expect(invocation.getProxy()).andReturn(proxy).anyTimes();
         EasyMock.expect(invocation.getAction()).andReturn(action).anyTimes();
         EasyMock.expect(invocation.invoke()).andAnswer(new IAnswer<String>() {
-            @Override
             public String answer() throws Throwable {
                 return result;
             }
