@@ -6,10 +6,12 @@ package com.opensymphony.xwork2.conversion.impl;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.test.annotations.Person;
 import junit.framework.TestCase;
 
 import java.text.DateFormat;
 import java.util.*;
+import java.lang.reflect.Member;
 
 /**
  * Test case for XWorkBasicConverter
@@ -232,5 +234,17 @@ public class XWorkBasicConverterTest extends TestCase {
         assertTrue(convertedObject instanceof ParentClass.NestedEnum);
         assertEquals(ParentClass.NestedEnum.TEST, convertedObject);
     }
+
+
+    public void testConvert() {
+        XWorkBasicConverter converter = new XWorkBasicConverter();
+        Map context = new HashMap();
+        Person o = new Person();
+        Member member = null;
+        String s = "names";
+        Object value = new Person[0];
+        Class toType = String.class;
+        converter.convertValue(context, value, member, s, value, toType);
+    }     
 
 }

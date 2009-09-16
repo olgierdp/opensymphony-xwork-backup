@@ -127,6 +127,8 @@ public class XWorkBasicConverter extends DefaultTypeConverter {
 
                 if (array.length >= 1) {
                     value = array[0];
+                } else {
+                    value = null;
                 }
 
                 // let's try to convert the first element only
