@@ -41,6 +41,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
     }
 
     private final static Logger LOG = LoggerFactory.getLogger(CompoundRootAccessor.class);
+    private final static Class[] EMPTY_CLASS_ARRAY = new Class[0];
     private static Map invalidMethods = new HashMap();
 
     static boolean devMode = false;
@@ -263,7 +264,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
 
     private Class[] getArgTypes(Object[] args) {
         if (args == null) {
-            return new Class[0];
+            return EMPTY_CLASS_ARRAY;
         }
 
         Class[] classes = new Class[args.length];

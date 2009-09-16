@@ -70,6 +70,8 @@ import java.util.Map;
  */
 public class ScopedModelDrivenInterceptor extends AbstractInterceptor {
 
+    private static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
+    
     private static final String GET_MODEL = "getModel";
     private String scope;
     private String name;
@@ -109,7 +111,7 @@ public class ScopedModelDrivenInterceptor extends AbstractInterceptor {
                 String cName = className;
                 if (cName == null) {
                     try {
-                        Method method = action.getClass().getMethod(GET_MODEL, new Class[0]);
+                        Method method = action.getClass().getMethod(GET_MODEL, EMPTY_CLASS_ARRAY);
                         Class cls = method.getReturnType();
                         cName = cls.getName();
                     } catch (NoSuchMethodException e) {

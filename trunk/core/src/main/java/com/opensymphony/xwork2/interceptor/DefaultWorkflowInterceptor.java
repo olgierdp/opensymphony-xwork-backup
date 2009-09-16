@@ -109,6 +109,8 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultWorkflowInterceptor.class);
 
+    private static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
+    
     private String inputResultName = Action.INPUT;
 
     /**
@@ -145,7 +147,7 @@ public class DefaultWorkflowInterceptor extends MethodFilterInterceptor {
                     resultName = ((ValidationWorkflowAware) action).getInputResultName();
                 }
 
-                InputConfig annotation = action.getClass().getMethod(invocation.getProxy().getMethod(), new Class[0]).getAnnotation(InputConfig.class);
+                InputConfig annotation = action.getClass().getMethod(invocation.getProxy().getMethod(), EMPTY_CLASS_ARRAY).getAnnotation(InputConfig.class);
                 if (annotation != null) {
                     if (!annotation.methodName().equals("")) {
                         Method method = action.getClass().getMethod(annotation.methodName());

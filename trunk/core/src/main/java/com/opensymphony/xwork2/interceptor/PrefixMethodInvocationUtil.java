@@ -56,6 +56,8 @@ public class PrefixMethodInvocationUtil {
 
     private static final String DEFAULT_INVOCATION_METHODNAME = "execute";
 
+    private static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
+
     /**
 	 * This method will prefix <code>actionInvocation</code>'s <code>ActionProxy</code>'s
 	 * <code>method</code> with <code>prefixes</code> before invoking the prefixed method.
@@ -129,7 +131,7 @@ public class PrefixMethodInvocationUtil {
         for (String prefixe : prefixes) {
             String prefixedMethodName = prefixe + capitalizedMethodName;
             try {
-                return action.getClass().getMethod(prefixedMethodName, new Class[0]);
+                return action.getClass().getMethod(prefixedMethodName, EMPTY_CLASS_ARRAY);
             }
             catch (NoSuchMethodException e) {
                 // hmm -- OK, try next prefix

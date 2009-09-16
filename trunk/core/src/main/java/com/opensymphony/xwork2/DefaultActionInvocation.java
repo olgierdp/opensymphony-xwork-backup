@@ -45,6 +45,8 @@ public class DefaultActionInvocation implements ActionInvocation {
     //}
     private static final Logger LOG = LoggerFactory.getLogger(DefaultActionInvocation.class);
 
+    private static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
+
     protected Object action;
     protected ActionProxy proxy;
     protected List<PreResultListener> preResultListeners;
@@ -413,12 +415,12 @@ public class DefaultActionInvocation implements ActionInvocation {
             Object methodResult = null;
             Method method = null;
             try {
-                method = getAction().getClass().getMethod(methodName, new Class[0]);
+                method = getAction().getClass().getMethod(methodName, EMPTY_CLASS_ARRAY);
             } catch (NoSuchMethodException e) {
                 // hmm -- OK, try doXxx instead
                 try {
                     String altMethodName = "do" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
-                    method = getAction().getClass().getMethod(altMethodName, new Class[0]);
+                    method = getAction().getClass().getMethod(altMethodName, EMPTY_CLASS_ARRAY);
                 } catch (NoSuchMethodException e1) {
                     // well, give the unknown handler a shot
                     if (unknownHandlerManager.hasUnknownHandlers()) {
