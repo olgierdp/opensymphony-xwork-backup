@@ -68,6 +68,10 @@ public class SecurityMemberAccess extends DefaultMemberAccess {
     }
 
     protected boolean isAcceptableProperty(String name) {
+        if ( name == null) {
+            return true;
+        }
+
         if (isAccepted(name) && !isExcluded(name)) {
             return true;
         }
