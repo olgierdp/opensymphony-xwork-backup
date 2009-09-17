@@ -27,6 +27,9 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.text.MessageFormat;
 
 
 /**
@@ -117,6 +120,10 @@ public class XWorkConverter extends DefaultTypeConverter {
 
     public static final String LAST_BEAN_CLASS_ACCESSED = "last.bean.accessed";
     public static final String LAST_BEAN_PROPERTY_ACCESSED = "last.property.accessed";
+    public static final String MESSAGE_INDEX_PATTERN = "\\[\\d+\\]\\.";
+    public static final String MESSAGE_INDEX_BRACKET_PATTERN = "[\\[\\]\\.]";
+    public static final String PERIOD = ".";
+    public static final Pattern messageIndexPattern = Pattern.compile(MESSAGE_INDEX_PATTERN); 
 
     /**
      * Target class conversion Mappings.
@@ -188,16 +195,36 @@ public class XWorkConverter extends DefaultTypeConverter {
                 new Object[]{
                         propertyName
                 });
+
+        List<String> indexValues = getIndexValues(propertyName);
+
+        propertyName = removeAllIndexesInProperyName(propertyName);
+
         String getTextExpression = "getText('" + CONVERSION_ERROR_PROPERTY_PREFIX + propertyName + "','" + defaultMessage + "')";
         String message = (String) stack.findValue(getTextExpression);
 
         if (message == null) {
             message = defaultMessage;
+        } else {
+            message = MessageFormat.format(message, indexValues.toArray());
         }
 
         return message;
     }
 
+    private static String removeAllIndexesInProperyName(String propertyName) {
+        return propertyName.replaceAll(MESSAGE_INDEX_PATTERN, PERIOD);
+    }
+
+    private static List<String> getIndexValues(String propertyName) {
+        Matcher matcher = messageIndexPattern.matcher(propertyName);
+        List<String> indexes = new ArrayList<String>();
+        while (matcher.find()) {
+            Integer index = new Integer(matcher.group().replaceAll(MESSAGE_INDEX_BRACKET_PATTERN, "")) + 1;
+            indexes.add(Integer.toString(index));
+        }
+        return indexes;
+    }
 
     public static String buildConverterFilename(Class clazz) {
         String className = clazz.getName();
