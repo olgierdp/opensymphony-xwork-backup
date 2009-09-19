@@ -82,6 +82,29 @@
 
     <releases>
         <release>
+            <version>2.1.6</version>
+            <date>09/19/2009</date>
+            <jiraId>21826</jiraId>
+            <downloads>
+                <download>
+                    <url>http://release.opensymphony.com/xwork/2.1.6/xwork-2.1.6-all.zip</url>
+                    <name>All: Contains all jars, libs, sources and docs</name>
+                </download>
+                <download>
+                    <url>http://release.opensymphony.com/xwork/2.1.6/xwork-2.1.6-src.zip</url>
+                    <name>Sources: Sources and deps with maven2 pom and basic ant build</name>
+                </download>
+                <download>
+                    <url>http://release.opensymphony.com/xwork/2.1.6/xwork-2.1.6-java14.zip</url>
+                    <name>Java14: Java 1.4 compliant jars and deps</name>
+                </download>
+                <download>
+                    <url>http://release.opensymphony.com/xwork/2.1.6/xwork-2.1.6-lib.zip</url>
+                    <name>Lib: Jars and Libs only</name>
+                </download>
+            </downloads>
+        </release>
+        <release>
             <version>2.1.5</version>
             <date>08/16/2009</date>
             <jiraId>21824</jiraId>
