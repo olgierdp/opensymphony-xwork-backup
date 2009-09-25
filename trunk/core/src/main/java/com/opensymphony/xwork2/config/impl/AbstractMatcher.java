@@ -24,6 +24,8 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import java.io.Serializable;
 import java.util.*;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 /**
  * <p> Matches patterns against pre-compiled wildcard expressions pulled from
  * target objects. It uses the wildcard matcher from the Apache Cocoon
@@ -159,9 +161,20 @@ public abstract class AbstractMatcher<E> implements Serializable {
      */
     protected Map<String,String> replaceParameters(Map<String, String> orig, Map<String,String> vars) {
         Map<String,String> map = new LinkedHashMap<String,String>();
+        
+        //this will set the group index references, like {1}
         for (String key : orig.keySet()) {
             map.put(key, convertParam(orig.get(key), vars));
         }
+        
+        //the values map will contain entries like name->"Lex Luthor" and 1->"Lex Luthor"
+        //now add the non-numeric values
+        for (String key: vars.keySet()) {
+            if (!NumberUtils.isNumber(key)) {
+                map.put(key, vars.get(key));
+            }
+        }
+        
         return map;
     }
 
