@@ -119,6 +119,10 @@ public class ClassFinder {
     }
 
     public ClassFinder(ClassLoaderInterface classLoaderInterface, Collection<URL> urls, boolean extractBaseInterfaces, Set<String> protocols) {
+	    this(classLoaderInterface,urls,extractBaseInterfaces,protocols,new DefaultClassnameFilterImpl());
+    }
+
+    public ClassFinder(ClassLoaderInterface classLoaderInterface, Collection<URL> urls, boolean extractBaseInterfaces, Set<String> protocols, Test<String> classNameFilter) {
         this.classLoaderInterface = classLoaderInterface;
         this.extractBaseInterfaces = extractBaseInterfaces;
 
@@ -146,7 +150,8 @@ public class ClassFinder {
 
         for (String className : classNames) {
             try {
-                readClassDef(className);
+                if (classNameFilter.test(className))
+                    readClassDef(className);
             } catch (Throwable e) {
                 if (LOG.isErrorEnabled())
                     LOG.error("Unable to read class [#0]", e, className);
@@ -858,6 +863,12 @@ public class ClassFinder {
             AnnotationInfo annotationInfo = new AnnotationInfo(desc);
             annotationInfos.add(annotationInfo);
             return new InfoBuildingVisitor(annotationInfo);
+        }
+    }
+
+    private static final class DefaultClassnameFilterImpl implements Test<String> {
+        public boolean test(String className) {
+            return true;
         }
     }
 }
