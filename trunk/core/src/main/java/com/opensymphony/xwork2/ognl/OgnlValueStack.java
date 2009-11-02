@@ -320,12 +320,10 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
             // find objects with Action in them and inspect matching getters
             Set<String> availableProperties = new LinkedHashSet<String>();
             for (Object o : root) {
-                if (o instanceof ActionSupport || o.getClass().getSimpleName().endsWith("Action")) {
-                    try {
-                        findAvailableProperties(o.getClass(), expr, availableProperties, null);
-                    } catch (IntrospectionException ise) {
-                        // ignore
-                    }
+                try {
+                    findAvailableProperties(o.getClass(), expr, availableProperties, null);
+                } catch (IntrospectionException ise) {
+                    // ignore
                 }
             }
             if (!availableProperties.contains(expr)) {
