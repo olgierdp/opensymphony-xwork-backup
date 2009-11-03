@@ -101,9 +101,12 @@ public class ReflectionContextState {
 		String currentPath=getCurrentPropertyPath(context);
 		if (name!=null) {
 			if (currentPath!=null) {
-				currentPath=currentPath + "." + name.toString();
+                StringBuilder sb = new StringBuilder(currentPath);
+                sb.append(".");
+                sb.append(name.toString());
+				currentPath = sb.toString();
 			}	else {
-				currentPath=name.toString();
+				currentPath = name.toString();
 			}
 			context.put(CURRENT_PROPERTY_PATH, currentPath);
 		}
