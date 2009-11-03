@@ -65,6 +65,7 @@ public class XWorkParametersBinder {
 
     public void setProperty(Map<String, Object> context, Object action, String paramName, Object paramValue, boolean throwExceptionOnFailure) {
         try {
+            paramName = cleanupExpression(paramName);
             context.put(ValueStack.REPORT_ERRORS_ON_NO_PROP, (throwExceptionOnFailure) ? Boolean.TRUE : Boolean.FALSE);
 
             List<Node> nodes = nodesCache.get(paramName);
@@ -170,6 +171,14 @@ public class XWorkParametersBinder {
             context.remove(XWorkConverter.CONVERSION_PROPERTY_FULLNAME);
             context.remove(ValueStack.REPORT_ERRORS_ON_NO_PROP);
         }
+    }
+
+    protected String cleanupExpression(String expr) {
+        if ((StringUtils.startsWith(expr, "#{") || StringUtils.startsWith(expr, "${"))
+                && StringUtils.endsWith(expr, "}"))
+            return expr.substring(2, expr.length() - 1);
+        else
+            return expr;
     }
 
     protected ParametersPropertyAccessor getPropertyAccessor(Object object) {

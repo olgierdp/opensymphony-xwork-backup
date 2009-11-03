@@ -21,6 +21,7 @@ import com.opensymphony.xwork2.parameters.XWorkParametersBinder;
 import com.opensymphony.xwork2.conversion.impl.InstantiatingNullHandler;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Inject;
+import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.util.*;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
@@ -124,13 +125,17 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
     private ValueStackFactory valueStackFactory;
 
-    //only used if enableSimpleParametersBinder is true
-    private XWorkParametersBinder parametersBinder;
     private boolean enableSimpleParametersBinder = true;
+    private Container container;
 
     @Inject
     public void setValueStackFactory(ValueStackFactory valueStackFactory) {
         this.valueStackFactory = valueStackFactory;
+    }
+
+    @Inject
+    public void setValueStackFactory(Container container) {
+        this.container = container;
     }
 
     @Inject("devMode")
@@ -141,11 +146,6 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
     @Inject(value= "enableSimpleParametersBinder", required = false)
     public void setEnableSimpleParametersBinder(String simpleBinder) {
         this.enableSimpleParametersBinder = "true".equals(simpleBinder);
-    }
-
-    @Inject
-    public void setParametersBinder(XWorkParametersBinder parametersBinder) {
-        this.parametersBinder = parametersBinder;
     }
 
     public void setAcceptParamNames(String commaDelim) {
@@ -281,13 +281,15 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
         Map<String, Object> newContext = newStack.getContext();
         CompoundRoot stackRoot = newStack.getRoot();
+        XWorkParametersBinder parametersBinder = container.getInstance(XWorkParametersBinder.class);
+        
         for (Map.Entry<String, Object> entry : acceptableParameters.entrySet()) {
             String name = entry.getKey();
             Object value = entry.getValue();
             try {
-                if (enableSimpleParametersBinder)
+                if (enableSimpleParametersBinder) {
                     parametersBinder.setProperty(newContext, stackRoot, name, value);
-                else
+                } else
                     newStack.setValue(name, value);
             } catch (RuntimeException e) {
                 if (devMode) {

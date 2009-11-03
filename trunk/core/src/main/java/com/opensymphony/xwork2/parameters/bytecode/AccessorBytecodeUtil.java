@@ -129,19 +129,26 @@ public class AccessorBytecodeUtil implements Opcodes {
         cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER, className, null, "java/lang/Object", new String[]{SETTER_INTERFACE});
 
         {
+            fv = cw.visitField(ACC_PRIVATE, "propertyClass", "Ljava/lang/Class;", null, null);
+            fv.visitEnd();
+        }
+        {
             fv = cw.visitField(ACC_PRIVATE, "propertyName", "Ljava/lang/String;", null, null);
             fv.visitEnd();
         }
         {
-            mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(Ljava/lang/String;)V", null, null);
+            mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(Ljava/lang/String;Ljava/lang/Class;)V", null, null);
             mv.visitCode();
             mv.visitVarInsn(ALOAD, 0);
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, 1);
             mv.visitFieldInsn(PUTFIELD, className, "propertyName", "Ljava/lang/String;");
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 2);
+            mv.visitFieldInsn(PUTFIELD, className, "propertyClass", "Ljava/lang/Class;");
             mv.visitInsn(RETURN);
-            mv.visitMaxs(2, 2);
+            mv.visitMaxs(2, 3);
             mv.visitEnd();
         }
         {
@@ -165,14 +172,23 @@ public class AccessorBytecodeUtil implements Opcodes {
             mv.visitMaxs(1, 1);
             mv.visitEnd();
         }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "getPropertyClass", "()Ljava/lang/Class;", null, null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, className, "propertyClass", "Ljava/lang/Class;");
+            mv.visitInsn(ARETURN);
+            mv.visitMaxs(1, 1);
+            mv.visitEnd();
+        }
         cw.visitEnd();
 
         //this one needs "." instead of "/" in the name
         String finalClassName = targetType.getName() + postfix;
 
         Class clazz = classLoader.defineClass(finalClassName, cw.toByteArray());
-        Constructor constructor = clazz.getConstructor(new Class[]{String.class});
-        Setter setter = (Setter) constructor.newInstance(new Object[]{propertyName});
+        Constructor constructor = clazz.getConstructor(new Class[]{String.class, Class.class});
+        Setter setter = (Setter) constructor.newInstance(new Object[]{propertyName, valueType});
         settersCache.put(key, setter);
         return setter;
     }

@@ -92,7 +92,7 @@ public class ParametersCompoundRootAccessor implements ParametersPropertyAccesso
 
                 try {
                     if ((reflectionProvider.getGetMethod(o.getClass(), name.toString()) != null) || ((o instanceof Map) && ((Map) o).containsKey(name))) {
-                        return reflectionProvider.getValue(name.toString(), context, root);
+                        return reflectionProvider.getValue(name.toString(), context, o);
                     }
                 } catch (Exception e) {
                     final String msg = "Caught an exception while getting property " + name;

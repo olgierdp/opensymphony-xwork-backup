@@ -11,4 +11,5 @@ package com.opensymphony.xwork2.parameters.bytecode;
 public interface Setter {
     void invoke(Object target, Object param);
     String getPropertyName();
+    Class getPropertyClass();
 }

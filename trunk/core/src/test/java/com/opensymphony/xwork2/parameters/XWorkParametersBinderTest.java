@@ -12,12 +12,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ognl.OgnlException;
+import org.objectweb.asm.util.ASMifierClassVisitor;
 
 public class XWorkParametersBinderTest extends XWorkTestCase {
     private XWorkParametersBinder binder;
 
     public void testSimple() throws ParseException, OgnlException {
         String expr = "name";
+        SimpleAction action = new SimpleAction();
+
+        assertNull(action.getName());
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        binder.setProperty(context, action, expr, "Lex Luthor");
+
+        assertEquals("Lex Luthor", action.getName());
+    }
+
+    public void testSimpleWrapped() throws ParseException, OgnlException {
+        String expr = "#{name}";
         SimpleAction action = new SimpleAction();
 
         assertNull(action.getName());
