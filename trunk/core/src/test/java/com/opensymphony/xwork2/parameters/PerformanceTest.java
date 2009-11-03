@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class PerformanceTest extends XWorkTestCase {
     public void testPerformance() throws Exception {
 
-        SimpleAction action = new SimpleAction();
+        /*SimpleAction action = new SimpleAction();
         Map<String, Object> emptyMap = new HashMap();
         XWorkParametersBinder binder = container.getInstance(XWorkParametersBinder.class);
         OgnlUtil ognlUtil = container.getInstance(OgnlUtil.class);
@@ -42,6 +42,6 @@ public class PerformanceTest extends XWorkTestCase {
         }
 
         end = System.currentTimeMillis();
-        System.out.println("ognl: " + (end - start) / 1000);
+        System.out.println("ognl: " + (end - start) / 1000);*/
     }
 }
