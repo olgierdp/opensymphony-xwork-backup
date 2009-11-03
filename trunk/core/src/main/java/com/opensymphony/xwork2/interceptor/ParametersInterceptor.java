@@ -125,7 +125,7 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
     private ValueStackFactory valueStackFactory;
 
-    private boolean enableSimpleParametersBinder = true;
+    private boolean enableSimpleParametersBinder;
     private Container container;
 
     @Inject
