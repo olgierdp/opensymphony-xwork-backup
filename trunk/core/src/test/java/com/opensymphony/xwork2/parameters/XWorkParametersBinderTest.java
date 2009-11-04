@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ognl.OgnlException;
-import org.objectweb.asm.util.ASMifierClassVisitor;
 
 public class XWorkParametersBinderTest extends XWorkTestCase {
     private XWorkParametersBinder binder;
