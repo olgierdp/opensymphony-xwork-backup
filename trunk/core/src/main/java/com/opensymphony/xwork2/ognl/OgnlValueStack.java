@@ -361,7 +361,7 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
                     // if there is a nested property (indicated by a dot), chop it off so we can look for method name
                     String rawProperty = (property.contains(".")) ? property.substring(0, property.indexOf(".")) : property;
                     String methodToLookFor = "get" + rawProperty.substring(0, 1).toUpperCase() + rawProperty.substring(1);
-                    Method[] methods = pd.getPropertyType().getDeclaredMethods();
+                    Method[] methods = pd.getPropertyType().getMethods();
                     for (Method method : methods) {
                         if (method.getName().equals(methodToLookFor)) {
                             availableProperties.add(name + "." + rawProperty);

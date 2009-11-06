@@ -32,6 +32,15 @@ public class Foo {
     int number;
     long aLong;
     Calendar calendar;
+    BarJunior barJunior;
+
+    public BarJunior getBarJunior() {
+        return barJunior;
+    }
+
+    public void setBarJunior(BarJunior barJunior) {
+        this.barJunior = barJunior;
+    }
 
     public void setALong(long aLong) {
         this.aLong = aLong;
