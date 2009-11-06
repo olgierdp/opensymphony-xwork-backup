@@ -168,6 +168,7 @@
                                     <exclude>junit:junit</exclude>
                                     <exclude>commons-logging:commons-logging</exclude>
                                     <exclude>opensymphony:ognl</exclude>
+                                    <exclude>ognl:ognl</exclude>
                                     <exclude>org.springframework:spring-core</exclude>
                                     <exclude>org.springframework:spring-aop</exclude>
                                     <exclude>org.springframework:spring-aspects</exclude>

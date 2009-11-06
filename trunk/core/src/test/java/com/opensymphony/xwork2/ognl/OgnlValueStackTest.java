@@ -107,9 +107,9 @@ public class OgnlValueStackTest extends XWorkTestCase {
         vs.findValue("barJunior.title", true);
     }
 
-     public void testFailOnErrorOnInheritedPropertiesWithMethods() {
+     public void testSuccessFailOnErrorOnInheritedPropertiesWithMethods() {
         //this shuld not fail as the property is defined on a parent class
-        /*OgnlValueStack vs = createValueStack();
+        OgnlValueStack vs = createValueStack();
 
         Foo foo = new Foo();
         BarJunior barjr = new BarJunior();
@@ -117,7 +117,23 @@ public class OgnlValueStackTest extends XWorkTestCase {
         vs.push(foo);
 
         assertNull(barjr.getTitle());
-        vs.findValue("getBarJunior().title", true);*/
+        vs.findValue("getBarJunior().title", true);
+    }
+
+    public void testFailFailOnErrorOnInheritedPropertiesWithMethods() {
+        OgnlValueStack vs = createValueStack();
+
+        Foo foo = new Foo();
+        BarJunior barjr = new BarJunior();
+        foo.setBarJunior(barjr);
+        vs.push(foo);
+
+        assertNull(barjr.getTitle());
+        try {
+            vs.findValue("getBarJunior().title2", true);
+            fail("should have failed on missing property");
+        } catch (Exception e) {
+        }
     }
 
     public void testFailOnMissingProperty() {
@@ -132,6 +148,34 @@ public class OgnlValueStackTest extends XWorkTestCase {
             //ok
         }
     }
+
+    public void testFailOnMissingMethod() {
+        OgnlValueStack vs = createValueStack();
+
+        Dog dog = new Dog();
+        vs.push(dog);
+        try {
+            vs.findValue("someprop()", true);
+            fail("Failed to throw exception on EL missing method");
+        } catch (Exception ex) {
+            //ok
+        }
+    }
+
+    public void testFailsOnMethodThatThrowsException() {
+        SimpleAction action = new SimpleAction();
+        OgnlValueStack stack = createValueStack();
+        stack.push(action);
+
+        action.setThrowException(true);
+        try {
+            stack.findValue("exceptionMethod1()", true);
+            fail("Failed to throw exception on EL method exception");
+        } catch (Exception ex) {
+            //ok
+        }
+    }
+
 
     public void testDoesNotFailOnNonActionObjects() {
         //if a value is not found, then it will check for missing properties

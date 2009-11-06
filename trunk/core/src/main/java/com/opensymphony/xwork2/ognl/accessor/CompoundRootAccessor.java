@@ -5,6 +5,7 @@
 package com.opensymphony.xwork2.ognl.accessor;
 
 import com.opensymphony.xwork2.XWorkException;
+import com.opensymphony.xwork2.ognl.OgnlValueStack;
 import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.CompoundRoot;
 import com.opensymphony.xwork2.util.ValueStack;
@@ -134,7 +135,11 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                 }
             }
 
-            return null;
+            //property was not found
+            if (context.containsKey(OgnlValueStack.THROW_EXCEPTION_ON_FAILURE))
+                throw new NoSuchPropertyException(target, name);
+            else
+                return null;
         } else {
             return null;
         }
@@ -222,7 +227,7 @@ public class CompoundRootAccessor implements PropertyAccessor, MethodAccessor, C
                     // try the next one
                     Throwable reason = e.getReason();
 
-                    if ((mc != null) && (reason != null) && (reason.getClass() == NoSuchMethodException.class)) {
+                    if (!context.containsKey(OgnlValueStack.THROW_EXCEPTION_ON_FAILURE) && (mc != null) && (reason != null) && (reason.getClass() == NoSuchMethodException.class)) {
                         invalidMethods.put(mc, Boolean.TRUE);
                     } else if (reason != null) {
                         throw new MethodFailedException(o, name, e.getReason());

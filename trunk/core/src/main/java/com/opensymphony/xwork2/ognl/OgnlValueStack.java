@@ -20,10 +20,7 @@ import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.logging.LoggerUtils;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
-import ognl.Ognl;
-import ognl.OgnlContext;
-import ognl.OgnlException;
-import ognl.PropertyAccessor;
+import ognl.*;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -52,6 +49,7 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
     private static Logger LOG = LoggerFactory.getLogger(OgnlValueStack.class);
     private boolean devMode;
     private boolean logMissingProperties;
+    public static final String THROW_EXCEPTION_ON_FAILURE = OgnlValueStack.class.getName() + ".throwExceptionOnFailure";
 
     public static void link(Map<String, Object> context, Class clazz, String name) {
         context.put("__link", new Object[]{clazz, name});
@@ -233,17 +231,34 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
                 return findValue(expr, defaultType);
             }
 
-            Object value = ognlUtil.getValue(expr, context, root);
+            Object value = null;
+            try {
+                if (throwExceptionOnFailure)
+                    context.put(THROW_EXCEPTION_ON_FAILURE, true);
+                value = ognlUtil.getValue(expr, context, root);
+            } finally {
+                context.remove(THROW_EXCEPTION_ON_FAILURE);
+            }
+
             if (value != null) {
                 return value;
             } else {
-                checkForInvalidProperties(expr, throwExceptionOnFailure, throwExceptionOnFailure);
                 return findInContext(expr);
             }
         } catch (OgnlException e) {
-            checkForInvalidProperties(expr, throwExceptionOnFailure, throwExceptionOnFailure);
+            Object ret = findInContext(expr);
 
-            return findInContext(expr);
+            if (ret != null)
+                return ret;
+            else {
+                if (e instanceof NoSuchPropertyException && devMode && logMissingProperties)
+                    LOG.warn("Could not find property [" + ((NoSuchPropertyException)e).getName() + "]");
+
+                if (throwExceptionOnFailure)
+                    throw new XWorkException(e);
+                else
+                    return null;
+            }
         } catch (Exception e) {
             logLookupFailure(expr, e);
 
@@ -273,16 +288,34 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
                 expr = (String) overrides.get(expr);
             }
 
-            Object value = ognlUtil.getValue(expr, context, root, asType);
+            Object value = null;
+            try {
+                if (throwExceptionOnFailure)
+                    context.put(THROW_EXCEPTION_ON_FAILURE, true);
+                value = ognlUtil.getValue(expr, context, root, asType);
+            } finally {
+                context.remove(THROW_EXCEPTION_ON_FAILURE);
+            }
+
             if (value != null) {
                 return value;
             } else {
-                checkForInvalidProperties(expr, throwExceptionOnFailure, throwExceptionOnFailure);
                 return findInContext(expr);
             }
         } catch (OgnlException e) {
-            checkForInvalidProperties(expr, throwExceptionOnFailure, throwExceptionOnFailure);
-            return findInContext(expr);
+            Object ret = findInContext(expr);
+
+            if (ret != null)
+                return ret;
+            else {
+                if (e instanceof NoSuchPropertyException && devMode && logMissingProperties)
+                    LOG.warn("Could not find property [" + ((NoSuchPropertyException)e).getName() + "]");
+                
+                if (throwExceptionOnFailure)
+                    throw new XWorkException(e);
+                else
+                    return null;
+            }
         } catch (Exception e) {
             logLookupFailure(expr, e);
 
@@ -301,40 +334,6 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
 
     public Object findValue(String expr, Class asType) {
         return findValue(expr, asType, false);
-    }
-
-    /**
-     * This method looks for matching methods/properties in an action to warn the user if
-     * they specified a property that doesn't exist.
-     *
-     * @param expr the property expression
-     */
-    private void checkForInvalidProperties(String expr, boolean throwExceptionPropNotFound, boolean throwExceptionMethodFound) {
-        if (expr.contains("(") && expr.contains(")")) {
-            if (devMode)
-                LOG.warn("Could not find method [" + expr + "]");
-
-            if (throwExceptionMethodFound)
-                    throw new XWorkException("Could not find method [" + expr + "]");
-        } else if (findInContext(expr) == null) {
-            // find objects with Action in them and inspect matching getters
-            Set<String> availableProperties = new LinkedHashSet<String>();
-            for (Object o : root) {
-                try {
-                    findAvailableProperties(o.getClass(), expr, availableProperties, null);
-                } catch (IntrospectionException ise) {
-                    // ignore
-                }
-            }
-            if (!availableProperties.contains(expr)) {
-                if (devMode && logMissingProperties) {
-                    LOG.warn("Could not find property [" + expr + "]");
-                }
-
-                if (throwExceptionMethodFound)
-                    throw new XWorkException("Could not find property [" + expr + "]");
-            }
-        }
     }
 
     /**
