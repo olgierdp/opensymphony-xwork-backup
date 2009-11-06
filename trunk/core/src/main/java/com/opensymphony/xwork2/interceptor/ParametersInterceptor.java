@@ -17,12 +17,15 @@ import java.util.regex.Pattern;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ValidationAware;
-import com.opensymphony.xwork2.parameters.XWorkParametersBinder;
 import com.opensymphony.xwork2.conversion.impl.InstantiatingNullHandler;
 import com.opensymphony.xwork2.conversion.impl.XWorkConverter;
 import com.opensymphony.xwork2.inject.Inject;
-import com.opensymphony.xwork2.inject.Container;
-import com.opensymphony.xwork2.util.*;
+import com.opensymphony.xwork2.util.ClearableValueStack;
+import com.opensymphony.xwork2.util.LocalizedTextUtil;
+import com.opensymphony.xwork2.util.MemberAccessValueStack;
+import com.opensymphony.xwork2.util.TextParseUtil;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.util.ValueStackFactory;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 import com.opensymphony.xwork2.util.reflection.ReflectionContextState;
@@ -125,27 +128,14 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
 
     private ValueStackFactory valueStackFactory;
 
-    private boolean enableSimpleParametersBinder;
-    private Container container;
-
     @Inject
     public void setValueStackFactory(ValueStackFactory valueStackFactory) {
         this.valueStackFactory = valueStackFactory;
     }
 
-    @Inject
-    public void setValueStackFactory(Container container) {
-        this.container = container;
-    }
-
     @Inject("devMode")
     public static void setDevMode(String mode) {
         devMode = "true".equals(mode);
-    }
-
-    @Inject(value= "enableSimpleParametersBinder", required = false)
-    public void setEnableSimpleParametersBinder(String simpleBinder) {
-        this.enableSimpleParametersBinder = "true".equals(simpleBinder);
     }
 
     public void setAcceptParamNames(String commaDelim) {
@@ -279,18 +269,11 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
             accessValueStack.setExcludeProperties(excludeParams);
         }
 
-        Map<String, Object> newContext = newStack.getContext();
-        CompoundRoot stackRoot = newStack.getRoot();
-        XWorkParametersBinder parametersBinder = container.getInstance(XWorkParametersBinder.class);
-        
         for (Map.Entry<String, Object> entry : acceptableParameters.entrySet()) {
             String name = entry.getKey();
             Object value = entry.getValue();
             try {
-                if (enableSimpleParametersBinder) {
-                    parametersBinder.setProperty(newContext, stackRoot, name, value);
-                } else
-                    newStack.setValue(name, value);
+                newStack.setValue(name, value);
             } catch (RuntimeException e) {
                 if (devMode) {
                     String developerNotification = LocalizedTextUtil.findText(ParametersInterceptor.class, "devmode.notification", ActionContext.getContext().getLocale(), "Developer Notification:\n{0}", new Object[]{
@@ -365,7 +348,6 @@ public class ParametersInterceptor extends MethodFilterInterceptor {
                     return true;
                 }
             }
-
             return false;
         } else
             return acceptedPattern.matcher(paramName).matches();
