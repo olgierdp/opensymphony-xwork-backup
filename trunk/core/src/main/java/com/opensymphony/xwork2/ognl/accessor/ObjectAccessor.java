@@ -15,7 +15,6 @@ public class ObjectAccessor extends ObjectPropertyAccessor {
     @Override
     public Object getProperty(Map map, Object o, Object o1) throws OgnlException {
         Object obj = super.getProperty(map, o, o1);
-        OgnlValueStack.link(map, o.getClass(), (String) o1);
 
         map.put(XWorkConverter.LAST_BEAN_CLASS_ACCESSED, o.getClass());
         map.put(XWorkConverter.LAST_BEAN_PROPERTY_ACCESSED, o1.toString());

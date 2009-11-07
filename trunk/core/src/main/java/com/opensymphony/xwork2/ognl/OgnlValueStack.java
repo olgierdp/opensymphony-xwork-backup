@@ -51,11 +51,6 @@ public class OgnlValueStack implements Serializable, ValueStack, ClearableValueS
     private boolean logMissingProperties;
     public static final String THROW_EXCEPTION_ON_FAILURE = OgnlValueStack.class.getName() + ".throwExceptionOnFailure";
 
-    public static void link(Map<String, Object> context, Class clazz, String name) {
-        context.put("__link", new Object[]{clazz, name});
-    }
-
-
     CompoundRoot root;
     transient Map<String, Object> context;
     Class defaultType;

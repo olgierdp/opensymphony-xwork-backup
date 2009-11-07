@@ -455,7 +455,9 @@ public class XWorkConverter extends DefaultTypeConverter {
     }
 
     private Object[] getClassProperty(Map<String, Object> context) {
-        return (Object[]) context.get("__link");
+        Object lastClass = context.get(LAST_BEAN_CLASS_ACCESSED);
+        Object lastProperty = context.get(LAST_BEAN_PROPERTY_ACCESSED);
+        return (lastClass != null && lastProperty != null) ? new Object[] {lastClass, lastProperty} : null;
     }
 
     /**
