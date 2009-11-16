@@ -6,7 +6,11 @@ package com.opensymphony.xwork2;
 
 import com.opensymphony.xwork2.util.ValueStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Unit test for {@link ActionSupport}.
@@ -17,17 +21,19 @@ public class ActionSupportTest extends XWorkTestCase {
 
     private ActionSupport as;
 
-    @Override protected void setUp() throws Exception {
+    @Override
+    protected void setUp() throws Exception {
         super.setUp();
         as = new ActionSupport();
     }
 
-    @Override protected void tearDown() throws Exception {
+    @Override
+    protected void tearDown() throws Exception {
         super.tearDown();
         as = null;
     }
 
-    public void testNothingDoneOnActionSupport() throws Exception{
+    public void testNothingDoneOnActionSupport() throws Exception {
         assertEquals(false, as.hasErrors());
 
         assertNotNull(as.getActionErrors());
@@ -41,37 +47,37 @@ public class ActionSupportTest extends XWorkTestCase {
         assertNotNull(as.getFieldErrors());
         assertEquals(0, as.getFieldErrors().size());
         assertEquals(false, as.hasFieldErrors());
-        
+
         assertNull(as.getText(null));
-        
+
         try {
-        	as.pause(null);
-		} catch (Exception e) {
-        	fail("Should not fail");
-		}
-        
+            as.pause(null);
+        } catch (Exception e) {
+            fail("Should not fail");
+        }
+
         assertEquals(Action.INPUT, as.input());
         assertEquals(Action.SUCCESS, as.doDefault());
         assertEquals(Action.SUCCESS, as.execute());
-        try{
-        	as.clone();
-        	fail("Failure expected for clone()");
-        }catch(CloneNotSupportedException e){
-        	// success!
+        try {
+            as.clone();
+            fail("Failure expected for clone()");
+        } catch (CloneNotSupportedException e) {
+            // success!
         }
-        
-        
-        assertNull(as.getText(null, (List)null));
-        assertNull(as.getText(null, (String)null));
-        assertNull(as.getText(null, (String[])null));
-        
-        assertNull(as.getText(null, (String)null, (List)null));
-        assertNull(as.getText(null, (String)null, (String)null));
-        assertNull(as.getText(null, (String)null, (String[])null));
 
-        assertNull(as.getText(null, (String)null, (List)null, (ValueStack)null));
-        assertNull(as.getText(null, (String)null, (String[])null, (ValueStack)null));
-        
+
+        assertNull(as.getText(null, (List) null));
+        assertNull(as.getText(null, (String) null));
+        assertNull(as.getText(null, (String[]) null));
+
+        assertNull(as.getText(null, (String) null, (List) null));
+        assertNull(as.getText(null, (String) null, (String) null));
+        assertNull(as.getText(null, (String) null, (String[]) null));
+
+        assertNull(as.getText(null, (String) null, (List) null, (ValueStack) null));
+        assertNull(as.getText(null, (String) null, (String[]) null, (ValueStack) null));
+
         assertNotNull(as.getLocale());
         assertEquals(ActionContext.getContext().getLocale(), as.getLocale());
 
@@ -164,6 +170,23 @@ public class ActionSupportTest extends XWorkTestCase {
         ActionContext.getContext().setLocale(new Locale("da"));
         MyActionSupport mas = new MyActionSupport();
 
+        checkGetTexts(mas);
+    }
+
+    public void testSimpleGetTextsWithInjectedTextProvider() throws Exception {
+        ActionContext.getContext().setLocale(new Locale("da"));
+        MyActionSupport mas = new MyActionSupport();
+
+        TextProvider textProvider = container.getInstance(TextProvider.class, "system");
+
+        assertNotNull(textProvider);
+
+        container.inject(mas);
+
+        checkGetTexts(mas);
+    }
+
+    private void checkGetTexts(MyActionSupport mas) {
         assertEquals("Hello World", mas.getText("hello"));
         assertEquals("not.in.bundle", mas.getText("not.in.bundle"));
 
@@ -218,7 +241,7 @@ public class ActionSupportTest extends XWorkTestCase {
         ActionContext.getContext().setLocale(new Locale("da"));
         MyActionSupport mas = new MyActionSupport();
 
-        String[] args = { "Santa", "loud" };
+        String[] args = {"Santa", "loud"};
         assertEquals("Hello World", mas.getText("hello", "this is default", args)); // no args in bundle
         assertEquals("Hello World Santa", mas.getText("hello.0", "this is default", args)); // only 1 arg in bundle
         assertEquals("Hello World. This is Santa speaking loud", mas.getText("hello.1", "this is default", args));
@@ -261,7 +284,7 @@ public class ActionSupportTest extends XWorkTestCase {
 
         ValueStack stack = ActionContext.getContext().getValueStack();
 
-        String[] args = { "Santa", "loud" };
+        String[] args = {"Santa", "loud"};
         assertEquals("Hello World", mas.getText("hello", "this is default", args, stack)); // no args in bundle
         assertEquals("Hello World Santa", mas.getText("hello.0", "this is default", args, stack)); // only 1 arg in bundle
         assertEquals("Hello World. This is Santa speaking loud", mas.getText("hello.1", "this is default", args, stack));
@@ -281,11 +304,13 @@ public class ActionSupportTest extends XWorkTestCase {
 
     private class MyActionSupport extends ActionSupport {
 
-        @Override public String doDefault() throws Exception {
+        @Override
+        public String doDefault() throws Exception {
             return "santa";
         }
 
-        @Override public void validate() {
+        @Override
+        public void validate() {
             super.validate(); // to have code coverage
             addActionMessage("validation was called");
         }

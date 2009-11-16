@@ -4,12 +4,18 @@
  */
 package com.opensymphony.xwork2;
 
+import com.opensymphony.xwork2.inject.Container;
+import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 
 /**
@@ -20,9 +26,10 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
 
     protected static Logger LOG = LoggerFactory.getLogger(ActionSupport.class);
 
-    private final transient TextProvider textProvider = new TextProviderFactory().createInstance(getClass(), this);
     private final ValidationAwareSupport validationAware = new ValidationAwareSupport();
 
+    private transient TextProvider textProvider;
+    private Container container;
 
     public void setActionErrors(Collection<String> errorMessages) {
         validationAware.setActionErrors(errorMessages);
@@ -43,14 +50,16 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
     /**
      * @deprecated Use {@link #getActionErrors()}.
      */
-    @Deprecated public Collection<String> getErrorMessages() {
+    @Deprecated
+    public Collection<String> getErrorMessages() {
         return getActionErrors();
     }
 
     /**
      * @deprecated Use {@link #getFieldErrors()}.
      */
-    @Deprecated public Map<String, List<String>> getErrors() {
+    @Deprecated
+    public Map<String, List<String>> getErrors() {
         return getFieldErrors();
     }
 
@@ -73,51 +82,51 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
     }
 
     public boolean hasKey(String key) {
-        return textProvider.hasKey(key);
+        return getTextProvider().hasKey(key);
     }
 
     public String getText(String aTextName) {
-        return textProvider.getText(aTextName);
+        return getTextProvider().getText(aTextName);
     }
 
     public String getText(String aTextName, String defaultValue) {
-        return textProvider.getText(aTextName, defaultValue);
+        return getTextProvider().getText(aTextName, defaultValue);
     }
 
     public String getText(String aTextName, String defaultValue, String obj) {
-        return textProvider.getText(aTextName, defaultValue, obj);
+        return getTextProvider().getText(aTextName, defaultValue, obj);
     }
 
     public String getText(String aTextName, List<Object> args) {
-        return textProvider.getText(aTextName, args);
+        return getTextProvider().getText(aTextName, args);
     }
 
     public String getText(String key, String[] args) {
-        return textProvider.getText(key, args);
+        return getTextProvider().getText(key, args);
     }
 
     public String getText(String aTextName, String defaultValue, List<Object> args) {
-        return textProvider.getText(aTextName, defaultValue, args);
+        return getTextProvider().getText(aTextName, defaultValue, args);
     }
 
     public String getText(String key, String defaultValue, String[] args) {
-        return textProvider.getText(key, defaultValue, args);
+        return getTextProvider().getText(key, defaultValue, args);
     }
 
     public String getText(String key, String defaultValue, List<Object> args, ValueStack stack) {
-        return textProvider.getText(key, defaultValue, args, stack);
+        return getTextProvider().getText(key, defaultValue, args, stack);
     }
 
     public String getText(String key, String defaultValue, String[] args, ValueStack stack) {
-        return textProvider.getText(key, defaultValue, args, stack);
+        return getTextProvider().getText(key, defaultValue, args, stack);
     }
 
     public ResourceBundle getTexts() {
-        return textProvider.getTexts();
+        return getTextProvider().getTexts();
     }
 
     public ResourceBundle getTexts(String aBundleName) {
-        return textProvider.getTexts(aBundleName);
+        return getTextProvider().getTexts(aBundleName);
     }
 
     public void addActionError(String anErrorMessage) {
@@ -217,7 +226,8 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
     public void validate() {
     }
 
-    @Override public Object clone() throws CloneNotSupportedException {
+    @Override
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
@@ -237,6 +247,30 @@ public class ActionSupport implements Action, Validateable, ValidationAware, Tex
      * @param result the result to return - the same type of return value in the {@link #execute()} method.
      */
     public void pause(String result) {
+    }
+
+    /**
+     * If called first time it will create {@link com.opensymphony.xwork2.TextProviderFactory},
+     * inject dependency (if {@link com.opensymphony.xwork2.inject.Container} is accesible) into in,
+     * then will create new {@link com.opensymphony.xwork2.TextProvider} and store it in a field
+     * for future references and at the returns reference to that field
+     *
+     * @return reference to field with TextProvider
+     */
+    private TextProvider getTextProvider() {
+        if (textProvider == null) {
+            TextProviderFactory tpf = new TextProviderFactory();
+            if (container != null) {
+                container.inject(tpf);
+            }
+            textProvider = tpf.createInstance(getClass(), this);
+        }
+        return textProvider;
+    }
+
+    @Inject
+    public void setContainer(Container container) {
+        this.container = container;
     }
 
 }
