@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
  * <!-- START SNIPPET: description -->
- *
+ * <p/>
  * An interceptor that handles setting the locale specified in a session as the locale for the current action request.
  * In addition, this interceptor will look for a specific HTTP request parameter and set the locale to whatever value is
  * provided. This means that this interceptor can be used to allow for your application to dynamically change the locale
@@ -24,43 +24,43 @@ import java.util.Map;
  * be able to set his or her language preference at any point. The locale parameter is removed during the execution of
  * this interceptor, ensuring that properties aren't set on an action (such as request_locale) that have no typical
  * corresponding setter in your action.
- *
+ * <p/>
  * <p/>For example, using the default parameter name, a request to <b>foo.action?request_locale=en_US</b>, then the
  * locale for US English is saved in the user's session and will be used for all future requests.
- *
+ * <p/>
  * <!-- END SNIPPET: description -->
- *
+ * <p/>
  * <p/> <u>Interceptor parameters:</u>
- *
+ * <p/>
  * <!-- START SNIPPET: parameters -->
- *
+ * <p/>
  * <ul>
- *
+ * <p/>
  * <li>parameterName (optional) - the name of the HTTP request parameter that dictates the locale to switch to and save
  * in the session. By default this is <b>request_locale</b></li>
- *
+ * <p/>
  * <li>requestOnlyParameterName (optional) - the name of the HTTP request parameter that dictates the locale to switch to
  * for the current request only, without saving it in the session. By default this is <b>request_only_locale</b></li>
- *
+ * <p/>
  * <li>attributeName (optional) - the name of the session key to store the selected locale. By default this is
  * <b>WW_TRANS_I18N_LOCALE</b></li>
- *
- * </ul>
- *
- * <!-- END SNIPPET: parameters -->
- *
- * <p/> <u>Extending the interceptor:</u>
- *
  * <p/>
- *
+ * </ul>
+ * <p/>
+ * <!-- END SNIPPET: parameters -->
+ * <p/>
+ * <p/> <u>Extending the interceptor:</u>
+ * <p/>
+ * <p/>
+ * <p/>
  * <!-- START SNIPPET: extending -->
- *
+ * <p/>
  * There are no known extensions points for this interceptor.
- *
+ * <p/>
  * <!-- END SNIPPET: extending -->
- *
+ * <p/>
  * <p/> <u>Example code:</u>
- *
+ * <p/>
  * <pre>
  * <!-- START SNIPPET: example -->
  * &lt;action name="someAction" class="com.examples.SomeAction"&gt;
@@ -94,7 +94,7 @@ public class I18nInterceptor extends AbstractInterceptor {
         this.parameterName = parameterName;
     }
 
-    public void setRequestOnlyParameterName( String requestOnlyParameterName ) {
+    public void setRequestOnlyParameterName(String requestOnlyParameterName) {
         this.requestOnlyParameterName = requestOnlyParameterName;
     }
 
@@ -115,9 +115,9 @@ public class I18nInterceptor extends AbstractInterceptor {
         boolean storeInSession = true;
         Object requested_locale = findLocaleParameter(params, parameterName);
         if (requested_locale == null) {
-        	requested_locale = findLocaleParameter(params, requestOnlyParameterName);
+            requested_locale = findLocaleParameter(params, requestOnlyParameterName);
             if (requested_locale != null) {
-            	storeInSession = false;
+                storeInSession = false;
             }
         }
 
@@ -135,6 +135,7 @@ public class I18nInterceptor extends AbstractInterceptor {
         if (session != null) {
             synchronized (session) {
                 if (locale == null) {
+                    storeInSession = false;
                     // check session for saved locale
                     Object sessionLocale = session.get(attributeName);
                     if (sessionLocale != null && sessionLocale instanceof Locale) {
@@ -143,12 +144,11 @@ public class I18nInterceptor extends AbstractInterceptor {
                             LOG.debug("applied session locale=" + locale);
                         }
                     } else {
-                        // no overriding locale definition found, stay with current invokation (=browser) locale
+                        // no overriding locale definition found, stay with current invocation (=browser) locale
                         locale = invocation.getInvocationContext().getLocale();
                         if (locale != null && LOG.isDebugEnabled()) {
                             LOG.debug("applied invocation context locale=" + locale);
                         }
-                        storeInSession = false;
                     }
                 }
                 if (storeInSession) {
@@ -174,7 +174,7 @@ public class I18nInterceptor extends AbstractInterceptor {
         return result;
     }
 
-    private Object findLocaleParameter( Map<String, Object> params, String parameterName ) {
+    private Object findLocaleParameter(Map<String, Object> params, String parameterName) {
         Object requested_locale = params.remove(parameterName);
         if (requested_locale != null && requested_locale.getClass().isArray()
                 && ((Object[]) requested_locale).length == 1) {
@@ -191,7 +191,7 @@ public class I18nInterceptor extends AbstractInterceptor {
      * Save the given locale to the ActionInvocation.
      *
      * @param invocation The ActionInvocation.
-     * @param locale The locale to save.
+     * @param locale     The locale to save.
      */
     protected void saveLocale(ActionInvocation invocation, Locale locale) {
         invocation.getInvocationContext().setLocale(locale);
