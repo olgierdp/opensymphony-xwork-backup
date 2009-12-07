@@ -1,0 +1,27 @@
+<xface:tab
+	xmlns:xface="http://www.xesoft.com/xmlns/xface"
+	xmlns:xprocess="http://www.xesoft.com/xmlns/xprocess"
+	id="params">
+	<xface:relative-layout constraints="/xwork-editor/xwork-panel-right2.layout.xml"/>
+
+	<xface:toolbar id="toolbar">
+		<xface:toolbar-button id="create_param" image="xwork-editor/images/add_param.gif"/>
+		<xface:toolbar-button id="delete_param" image="xwork-editor/images/delete.gif">
+			<xface:selected-list-enabled-adapter element="../../../table" selection="both"/>
+		</xface:toolbar-button>
+	</xface:toolbar>
+
+	<xface:table id="table">
+		<xface:xml-tablemodel id="model" xpath="param"/>
+		<xface:column id="name" property="@name"/>
+		<xface:column id="value" property="text()"/>
+	</xface:table>
+
+	<!--
+		Panel Includes
+   -->
+	<xface:include src="editparameter.xfm.xml" />	
+	<xface:include src="createparameter.xfm.xml" />
+	<xface:include src="deleteparameter.xfm.xml" />
+
+</xface:tab>

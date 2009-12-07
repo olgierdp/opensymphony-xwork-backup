@@ -1,0 +1,2 @@
+This branch of XWork is used by Atlassian Confluence, which depend on an old
+version of WebWork.  It contains only major bug fixes and depends on Java 5.
