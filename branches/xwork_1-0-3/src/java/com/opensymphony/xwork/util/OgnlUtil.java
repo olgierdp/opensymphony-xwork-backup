@@ -21,6 +21,7 @@ import java.beans.PropertyDescriptor;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -33,7 +34,7 @@ public class OgnlUtil {
     //~ Static fields/initializers /////////////////////////////////////////////
 
     private static final Log log = LogFactory.getLog(OgnlUtil.class);
-    private static HashMap expressions = new HashMap();
+    private static Map expressions = new ConcurrentHashMap();
 
     //~ Methods ////////////////////////////////////////////////////////////////
 

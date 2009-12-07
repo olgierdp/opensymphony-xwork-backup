@@ -52,7 +52,8 @@
 
     <target name="java">
         <mkdir dir="${build.java}"/>
-        <javac srcdir="${src.java}" destdir="${build.java}" classpathref="cp" debug="on"/>
+        <javac srcdir="${src.java}" destdir="${build.java}" classpathref="cp" debug="on"
+               target="1.5" source="1.5"/>
         <copy filtering="no" todir="${build.java}">
             <fileset dir="${src.java}">
                 <exclude name="**/*.java"/>
